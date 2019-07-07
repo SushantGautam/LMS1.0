@@ -1,5 +1,5 @@
 # UBLRnD LMS
 
-Continued of previous version Project LMS
+Continued version of previous LMS
 
-Change in structure of the project
+Change in structure of the project that is change in structure of files and directories
