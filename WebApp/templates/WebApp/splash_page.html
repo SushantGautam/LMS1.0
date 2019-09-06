@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Splash-Page
+{% endblock %}
+
+<!-- Only if user is not assigned to any member type -->
+{% if msg %}
+{% block sidebar %}
+<div class="col-md-3 left_col">
+<div class="left_col scroll-view">
+    <div class="navbar nav_title" style="border: 0;">
+        <a href="/" class="site_title"><img src="/static/images/logo.png" alt="Logo" id="ubl_logo"/>
+        <span id="LMS">u-LMS 2019</span></a>
+    </div>
+    <div class="clearfix"></div>
+    <div class="profile clearfix">
+        <div class="profile_pic">
+            <img src="{% if request.user.Member_Avatar %}
+            /media/{{ request.user.Member_Avatar }}
+        {% elif request.user.Member_Gender == '1' %}
+            {% static 'images/profile/male.jpg' %}
+        {% elif request.user.Member_Gender == '2' %}
+            {% static 'images/profile/female.png' %}
+        {% else %}
+            {% static 'images/profile/profile.png' %}
+        {% endif %}" alt="Profile pic" class="img-circle profile_img"/>
+        </div>
+        <div class="profile_info">
+                <span>Welcome,</span>
+                <h2>{{ request.user.username }}</h2>
+        </div>
+    </div>
+    <br>
+    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+        <div class="menu_section">
+            <hr>
+                <ul class="nav side-menu">
+                    <li></li>
+                </ul>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+{% endif %}
+<!-- end -->
+
+{% block content %}
+
+<!-- Only if user is not assigned to any member type -->
+{% if msg %}
+    <br><br>
+    <h3 class="text-danger">{{ msg }}</h3>
+{% endif %}
+<!-- end -->
+
+<div class="splashDiv">
+    <img src="/static/images/logo_orange.png" alt="..." id="ubl_logo_orange"/>
+    <h1>Welcome to U-LMS 2019</h1>
+</div>
+
+{% endblock %}

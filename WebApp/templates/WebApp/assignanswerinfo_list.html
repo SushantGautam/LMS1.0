@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Assignment Answer</li>
+{% endblock %}
+{% block content %}
+    <div class="inningInfoListClass">
+        <hr class="header_hr">
+        <h2 class="tableHeader">List of Assignments</h2>
+        <hr class="header_hr">
+
+        <div class="btn-createnew">
+            <a class="btn btn-success" href="{% url 'assignanswerinfo_create' %}">Assign new Answer</a>
+        </div>
+        <br><br><br>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered bg-white nowrap">
+                <thead class="thead-light bg-primary">
+                <tr>
+                    <td>ID</td>
+                    <td>Assignment Code</td>
+                    <td>Assignment Score</td>
+                    <td>Question Code</td>
+                    <td>Student Code</td>
+                    <td>Use Flag</td>
+                </tr>
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{{ object.get_absolute_url }}">{{ object.Assignment_Code }}</a></td>
+                        <td>{{ object.Assignment_Score }}</td>
+                        <td>{{ object.Question_Code }}</td>
+                        <td>{{ object.Student_Code }}</td>
+                        <td>{{ object.Use_Flag }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+    </div>
+{% endblock %}

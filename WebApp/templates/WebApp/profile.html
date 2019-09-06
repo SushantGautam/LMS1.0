@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    | Profile
+{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Profile</li>
+{% endblock %}
+{% block content %}
+    {% include 'profile.html' %}
+    <div class="text-center">
+        <h4>
+            <ul class="list-unstyled" ̥>
+                <li>
+                    Center Name: {{ center.Center_Name }}
+                </li>
+                <br>
+                <li>
+                    Center Address: {{ center.Center_Address }}
+                </li>
+                <br>
+            </ul>
+        </h4>
+    </div>
+{% endblock content %}
+

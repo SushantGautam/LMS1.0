@@ -1,0 +1,75 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{#<link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">#}
+
+<form method="post" id="ajaxassignmentinfoform">
+    {% csrf_token %}
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+        <div id="div_id_Assignment_Topic" class="form-group">
+            <label for="id_Assignment_Topic" class="control-label ">
+                Assignment Topic
+            </label>
+            <div class="controls ">
+                <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic"
+                       class="textinput textInput form-control" required="required">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+        <div id="div_id_Assignment_Deadline" class="form-group">
+            <label for="id_Assignment_Deadline" class="control-label ">
+                Assignment Deadline
+            </label>
+            <div class="controls ">
+                <input type="date" name="Assignment_Deadline" class="datetimeinput form-control"
+                       id="id_Assignment_Deadline">
+            </div>
+        </div>
+    </div>
+
+    {#    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">#}
+    {#        <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"#}
+    {#               class="select form-control">#}
+    {#    </div>#}
+    {#    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">#}
+    {#        <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.Chapter_No }}"#}
+    {#               class="select form-control">#}
+    {#    </div>#}
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
+               class="select form-control">
+    </div>
+    <div class="submitButton  col-md-12">
+        <button class="btn btn-success" type="submit">Submit</button>
+    </div>
+
+</form>
+{#<script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>#}
+
+<script>
+    $("#ajaxassignmentinfoform").submit(function (e) {
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        $.ajax({
+            url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+            data: {
+                "csrfmiddlewaretoken":'{{ csrf_token }}',
+                "Assignment_Topic": $('#id_Assignment_Topic').val(),
+                "Assignment_Deadline": $('#id_Assignment_Deadline').val(),
+                "Course_Code": $('#id_Course_Code').val(),
+                "Chapter_Code": $('#id_Chapter_Code').val(),
+                "Register_Agent": $('#id_Register_Agent').val()
+            },
+
+            // get the form data
+            type: $(this).attr('method'), // GET or POST
+            success: function (response) {
+                console.log('Success')
+                location.reload()
+            },
+            error: function () {
+                console.log('Error in posting assignment create form')
+            }
+        });
+    });
+</script>

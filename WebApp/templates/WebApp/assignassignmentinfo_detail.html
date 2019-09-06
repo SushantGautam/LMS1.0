@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'assignassignmentinfo_list' %}">Assign Assignment</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Code }}</li>
+{% endblock %}
+{% block content %}
+    <div class="outerdiv">
+        <h2 class="detailListHeader">Assiged Assignment</h2>
+        <hr class="header_hr">
+        <br>
+        <table class="table">
+            <tr>
+                <td>Use Flag</td>
+                <td>{{ object.Use_Flag }}</td>
+            </tr>
+            <tr>
+                <td>Inning Code</td>
+                <td>{{ object.Inning_Code }}</td>
+            </tr>
+            <tr>
+                <td>Assignment Code</td>
+                <td>{{ object.Assignment_Code }}</td>
+            </tr>
+            <tr>
+                <td>Assigned By</td>
+                <td>{{ object.Assigned_By }}</td>
+            </tr>
+        </table>
+        <div class="text-center">
+            <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Assignment</a>
+            <a class="btn btn-danger" href="{{ object.get_delete_url }}">Delete Assignment</a>
+        </div>
+    </div>
+{% endblock %}

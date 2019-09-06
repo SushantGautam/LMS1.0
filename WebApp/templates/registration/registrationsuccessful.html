@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Registration Successful{% endblock %}
+
+{% block smart_forum_title %} Registration Successful  {% endblock %}
+
+{% block content %}
+     <div class="alert alert-success" role="alert">
+ <a href="{% url 'login' %}"> Login </a> with your new credentials.
+</div>
+
+{% endblock %}

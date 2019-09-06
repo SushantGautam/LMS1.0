@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Members</li>
+{% endblock %}
+{% block content %}
+
+
+    <div class="memberDiv">
+        <hr class="header_hr">
+        <h2 class="tableHeader">List of Members</h2>
+
+        <nav id="navbar_parent" class="navbar navbar-light" style="background-color: grey">
+            <ul class="nav navbar-nav navbar-center member-list">
+                <li><a class="navbar-brand" id="all_button" href="#">All</a></li>
+                <li><a class="navbar-brand" id="teacher_button" href="#">Teacher</a></li>
+                <li><a class="navbar-brand" id="student_button" href="#">Student</a></li>
+            </ul>
+            <span style="float:right; margin:15px"><a href="{% url 'memberinfo_list' %}" style="color: white">Active Members</a></span>
+        </nav>
+        <hr class="header_hr">
+        <div class="col-md-6 text-danger">{% include 'WebApp/theme/alerts.html' %}</div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <nav id="navbar_parent" class="navbar navbar-dark">
+
+                <div class="btn-createnew">
+                    <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
+                </div>
+            </nav>
+        </div>
+        <br><br><br>
+
+        <div class=" col-md-12 table-responsive">
+            <table class="table table-striped table-bordered bg-white nowrap">
+                <thead class="thead-light bg-primary">
+                <tr class="tableTitleRow">
+                    <td>ID</td>
+                    <td>Member ID</td>
+                    <td>Name</td>
+                    <td>Current Address</td>
+                    <td>Email</td>
+                    <td>Phone</td>
+                    <td>Gender</td>
+                    <td>Student</td>
+                    <td>Teacher</td>
+{#                    <td>Status</td>#}
+                </tr>
+                </thead>
+                {% for object in object_list %}
+                    {% if object.id != request.user.id %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><b><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
+
+                            <td>{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
+                            <td>{{ object.Member_Temporary_Address }}</td>
+                            <td>{{ object.email }}</td>
+                            <td>{{ object.Member_Phone }}</td>
+                            <td>
+                                {% if object.Member_Gender == 'M' %}
+                                    Male
+                                {% elif object.Member_Gender == 'F' %}
+                                    Female
+                                {% endif %}
+                            </td>
+                            <td>{{ object.Is_Student }}</td>
+                            <td>{{ object.Is_Teacher }}</td>
+{#                            <td>#}
+{#                                {% if object.Use_Flag == True %}#}
+{#                                    Active#}
+{#                                {% elif  object.Use_Flag == False %}#}
+{#                                    Deactivated#}
+{#                                {% endif %}#}
+{#                            </td>#}
+                        </tr>
+
+
+
+                    {% endif %}
+
+                {% endfor %}
+            </table>
+
+        </div>
+    </div>
+
+    <br>
+    <br>
+
+
+{% endblock %}
+{% block customjss %}
+    <script type="text/javascript">
+        $("#all_button").css("color", "white");
+        $("#student_button").css("color", "black");
+        $("#teacher_button").css("color", "black");
+
+        setTimeout(function () {
+            $('#message').fadeOut('slow');
+        }, 3000);
+
+        $(document).ready(function () {
+
+            var table_main = $('.table').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }],
+                "columnDefs": [
+                    {
+                        "targets": [7, 8],
+                        "visible": false,
+                        "searchable": true
+                    },
+                    {
+                        "targets": [7, 8],
+                        "visible": false,
+                        "searchable": true
+                    }
+
+                ]
+
+            });
+
+
+            $("#student_button").bind("click", function () {
+                $("#student_button").css("color", "white");
+                $("#teacher_button").css("color", "black");
+                $("#all_button").css("color", "black");
+                table_main.columns().search('').draw();
+                table_main.column(7).search("True").draw();
+
+
+            });
+            $("#teacher_button").bind("click", function () {
+                $("#student_button").css("color", "black");
+                $("#teacher_button").css("color", "white");
+                $("#all_button").css("color", "black");
+
+                table_main.columns().search('').draw();
+                table_main.column(8).search("True").draw();
+
+            });
+
+            $("#all_button").bind("click", function () {
+                $("#all_button").css("color", "white");
+                $("#student_button").css("color", "black");
+                $("#teacher_button").css("color", "black");
+                table_main.columns().search('').draw();
+            });
+
+
+        });
+    </script>
+
+{% endblock %}

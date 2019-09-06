@@ -1,0 +1,57 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {#    <title>Title</title>#}
+</head>
+<body>
+<div class="headerDiv">
+{#    <h2 class="infoFormHeader">#}
+{#        Create New Session#}
+{#    </h2>#}
+{#    <hr class="header_hr">#}
+</div>
+<div class="col-md-6 col-md-offset-3 col-sm-offset-1 text-center" style="margin-top: 3%">
+    <form method="post" id="FormID">
+        {% csrf_token %}
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            {{ form.Session_Name|as_crispy_field }}
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div id="div_id_Description" class="form-group">
+                <label for="id_Description" class="control-label ">
+                    Description
+                </label>
+                <div class="controls ">
+                        <textarea name="Description" cols="40" id="id_Description" rows="1"
+                                  class="textarea form-control"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            <label>
+                Status
+            </label><br>
+            <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
+                    {% if object.Use_Flag == False %}
+                   &nbsp;
+                    {% else %}
+                   checked
+                    {% endif %}
+            ><br> <br>
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
+                   class="select form-control">
+        </div>
+
+        <div class="submitButton">
+            <button class="btn btn-success" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

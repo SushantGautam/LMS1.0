@@ -1,0 +1,304 @@
+{% extends "student_module/base.html" %} 
+{% load static%}
+{% block title %}
+    Quiz
+{% endblock %} 
+{% block breadcrumb %} 
+<li class="breadcrumb-item"><a href="/">COURSE</a></li>
+                
+<li class="breadcrumb-item " > QUIZ</li> 
+<li class="breadcrumb-item active" aria-current="page">HTML</li> 
+
+{% endblock %} 
+
+{% block content %} 
+
+
+  <section class="timer ">
+      <div class="container">
+          <div class="row"> 
+              <div class="col-md-12 ">
+                   <div class="col-md-4 col-sm-4">
+                       <h1>Questions</h1>
+                   </div>
+                   <div class="col-md-4 col-sm-4  ">
+                       <div class="topic">
+                            <h1>HTML</h1>
+                       </div>
+                      
+                   </div>
+                   <div class="col-md-4 col-sm-4 text-right">
+                   
+         
+                    
+                      <div class="pie degree" id="quiz-timer" data-timer="50">
+                          <span class="block-timer"></span>
+                             <span id="time"></span>
+                             <!-- <span id="time1">0</span> -->
+                      </div>
+                 </div>
+            
+                
+                <!-- <div id="second"></div>  -->
+
+          </div>
+          
+         </div> 
+      </div>
+  </section>
+ 
+
+
+
+<!-- <div class="questionsRow"><a href="#" class="button" id="nextquestions">Previous</a> <a href="#" class="button" id="skipquestions">Next</a></div> -->
+  
+
+<div class="" role="main">
+    <div class="">
+  
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              
+                    <div class="x_content">
+
+                       
+                        <div id="wizard" class="form_wizard wizard_horizontal">
+                            <ul class="wizard_steps">
+                                <li>
+                                    <a href="#step-1">
+                                        <span class="step_no">1</span>
+                                       
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-2">
+                                        <span class="step_no">2</span>
+                                        
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-3">
+                                        <span class="step_no">3</span>
+                                        
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-4">
+                                        <span class="step_no">4</span>
+                                        
+                                    </a>
+                                </li>
+                            </ul>
+                          <div class="quiz-questions"> 
+                                <div id="step-1">
+                                        <div class="privew1">
+                                                <div class="questionsBox">
+                                                    <div class="questions">1.&nbsp;Which of the following is correct about data-keyboard Data attribute of Modal Plugin?</div>
+                                                    <ul class="answerList">
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" name="answerGroup" value="0" id="answerGroup_0"> It specifies static for a backdrop, if you don't want the modal to be closed when the user clicks outside of the modal.</label>
+                                                        </li>
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" name="answerGroup" value="1" id="answerGroup_1"> It closes the modal when escape key is pressed; set to false to disable.</label>
+                                                        </li>
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" name="answerGroup" value="2" id="answerGroup_2"> It shows the modal when initialized.</label>
+                                                        </li>
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" name="answerGroup" value="3" id="answerGroup_3"> Using the jQuery .load method, injects content into the modal body. If an href with a valid URL is added, it will load that content.</label>
+                                                        </li>
+                                                    </ul>
+                                                   
+                                            </div>
+                                            
+                                                <div class="questionsBox">
+                                                    <div class="questions">2.&nbsp;Which of the following is correct about data-keyboard Data attribute of Modal Plugin?</div>
+                                                    <ul class="answerList">
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" name="answerGroup1" value="0" id="answerGroup_1"> It specifies static for a backdrop, if you don't want the modal to be closed when the user clicks outside of the modal.</label>
+                                                        </li>
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" name="answerGroup1" value="1" id="answerGroup_2"> It closes the modal when escape key is pressed; set to false to disable.</label>
+                                                        </li>
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" name="answerGroup1" value="2" id="answerGroup_3"> It shows the modal when initialized.</label>
+                                                        </li>
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" name="answerGroup1" value="3" id="answerGroup_4"> Using the jQuery .load method, injects content into the modal body. If an href with a valid URL is added, it will load that content.</label>
+                                                        </li>
+                                                    </ul>
+                                                   
+                                                </div>
+                                            </div> 
+                                    </div>
+                                    <div id="step-2">
+                                            <div class="privew1">
+                                                    <div class="questionsBox">
+                                                        <div class="questions">1.&nbsp;Which of the following is correct about data-keyboard Data attribute of Modal Plugin?</div>
+                                                        <ul class="answerList">
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="0" id="answerGroup_0"> It specifies static for a backdrop, if you don't want the modal to be closed when the user clicks outside of the modal.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="1" id="answerGroup_1"> It closes the modal when escape key is pressed; set to false to disable.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="2" id="answerGroup_2"> It shows the modal when initialized.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="3" id="answerGroup_3"> Using the jQuery .load method, injects content into the modal body. If an href with a valid URL is added, it will load that content.</label>
+                                                            </li>
+                                                        </ul>
+                                                       
+                                                </div>
+                                                
+                                                    <div class="questionsBox">
+                                                        <div class="questions">2.&nbsp;Which of the following is correct about data-keyboard Data attribute of Modal Plugin?</div>
+                                                        <ul class="answerList">
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="0" id="answerGroup_1"> It specifies static for a backdrop, if you don't want the modal to be closed when the user clicks outside of the modal.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="1" id="answerGroup_2"> It closes the modal when escape key is pressed; set to false to disable.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="2" id="answerGroup_3"> It shows the modal when initialized.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="3" id="answerGroup_4"> Using the jQuery .load method, injects content into the modal body. If an href with a valid URL is added, it will load that content.</label>
+                                                            </li>
+                                                        </ul>
+                                                       
+                                                    </div>
+                                                </div> 
+                                    </div>
+                                    <div id="step-3">
+                                            <div class="privew1">
+                                                    <div class="questionsBox">
+                                                        <div class="questions">1.&nbsp;Which of the following is correct about data-keyboard Data attribute of Modal Plugin?</div>
+                                                        <ul class="answerList">
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="0" id="answerGroup_0"> It specifies static for a backdrop, if you don't want the modal to be closed when the user clicks outside of the modal.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="1" id="answerGroup_1"> It closes the modal when escape key is pressed; set to false to disable.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="2" id="answerGroup_2"> It shows the modal when initialized.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="3" id="answerGroup_3"> Using the jQuery .load method, injects content into the modal body. If an href with a valid URL is added, it will load that content.</label>
+                                                            </li>
+                                                        </ul>
+                                                       
+                                                </div>
+                                                
+                                                    <div class="questionsBox">
+                                                        <div class="questions">2.&nbsp;Which of the following is correct about data-keyboard Data attribute of Modal Plugin?</div>
+                                                        <ul class="answerList">
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="0" id="answerGroup_1"> It specifies static for a backdrop, if you don't want the modal to be closed when the user clicks outside of the modal.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="1" id="answerGroup_2"> It closes the modal when escape key is pressed; set to false to disable.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="2" id="answerGroup_3"> It shows the modal when initialized.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="3" id="answerGroup_4"> Using the jQuery .load method, injects content into the modal body. If an href with a valid URL is added, it will load that content.</label>
+                                                            </li>
+                                                        </ul>
+                                                       
+                                                    </div>
+                                                </div> 
+                                    </div>
+                                    <div id="step-4">
+                                            <div class="privew1">
+                                                    <div class="questionsBox">
+                                                        <div class="questions">1.&nbsp;Which of the following is correct about data-keyboard Data attribute of Modal Plugin?</div>
+                                                        <ul class="answerList">
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="0" id="answerGroup_0"> It specifies static for a backdrop, if you don't want the modal to be closed when the user clicks outside of the modal.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="1" id="answerGroup_1"> It closes the modal when escape key is pressed; set to false to disable.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="2" id="answerGroup_2"> It shows the modal when initialized.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup" value="3" id="answerGroup_3"> Using the jQuery .load method, injects content into the modal body. If an href with a valid URL is added, it will load that content.</label>
+                                                            </li>
+                                                        </ul>
+                                                       
+                                                </div>
+                                                
+                                                    <div class="questionsBox">
+                                                        <div class="questions">2.&nbsp;Which of the following is correct about data-keyboard Data attribute of Modal Plugin?</div>
+                                                        <ul class="answerList">
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="0" id="answerGroup_1"> It specifies static for a backdrop, if you don't want the modal to be closed when the user clicks outside of the modal.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="1" id="answerGroup_2"> It closes the modal when escape key is pressed; set to false to disable.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="2" id="answerGroup_3"> It shows the modal when initialized.</label>
+                                                            </li>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" name="answerGroup1" value="3" id="answerGroup_4"> Using the jQuery .load method, injects content into the modal body. If an href with a valid URL is added, it will load that content.</label>
+                                                            </li>
+                                                        </ul>
+                                                       
+                                                    </div>
+                                                </div> 
+                                    </div>
+
+                          </div>
+                           
+
+                       </div>     
+                          
+                        </div>
+                
+{% endblock %} 
+{% block javascripts %} 
+    <script src=" {% static '/vendorsx/nprogress/nprogress.js' %}"></script>
+    <script src=" {% static '/vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+{% endblock %}
+
+

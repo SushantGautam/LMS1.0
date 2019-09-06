@@ -1,0 +1,117 @@
+{% extends 'forum/base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+
+
+{% block breadcrumb %}
+
+<li><a href="{% url 'forum:index' %}">Forum</a></li>
+<li class="active">{{ node_group }} </li>
+
+
+{% endblock %}
+
+{% block main_contain %}
+<!-- <div class="panel panel-default">
+    <div class="card">
+
+    </div>
+
+</div> -->
+<div class="x_panel">
+    <div class="x_title">
+        <h2>
+            Detail of Category: {{ panel_title }}
+            <br>
+            <small class="small_header">
+                <!-- <i class="fa fa-star"></i> No of Topics: {{ node_group.topic_count }} -->
+            </small>
+        </h2>
+
+        <div class=" pull-right">
+
+            <a class="btn btn-white btn-flat" href="{% url 'forum:create_thread' nodegroup_pk=node_group.pk %}"><i
+                    class="fa fa-fw fa-plus"></i>
+                Ask New
+                Question</a>
+            <a class="btn btn-white btn-flat" href="{% url 'forum:create_topic' nodegroup_pk=node_group.pk %}"><i
+                    class="fa fa-fw fa-plus"></i>
+                Sub Category
+            </a></i>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped table-bordered  nowrap">
+            <p class="text-muted font-13 m-b-30">{{ node_group.description }}</p>
+            <thead class="thead-light bg-primary">
+
+                <tr class="tableTitleRow">
+
+                    <td>Topic icon</td>
+                    <td>Sub
+                        category
+                    </td>
+                    <td>
+                        Posts
+                    </td>
+                    <td>
+                        Replies
+                    </td>
+                    <td>Last
+                        Thread
+                    </td>
+
+                </tr>
+            </thead>
+            <tbody>
+
+
+                {% for list in latest_thread_for_topics %}
+                <tr role="row" class="odd">
+                    <td class="sorting_1">
+                        <div class="icon-block half img-circle bg-grey-300">
+                            <i class="fa fa-{{ list.0.topic_icon }}"></i>
+                        </div>
+                    </td>
+                    <td><a href="{% url 'forum:topic' pk=list.0.pk %}">{{ list.0 }}</a>
+                    </td>
+
+                    <td> {{ list.0.thread_count }} </td>
+                    <td> {{ list.2 }} </td>
+                    {% if list.1 %}
+                    <td><a href="{% url 'forum:thread' pk=list.1.pk %}"> {{ list.1.title }} </a></td>
+                    {% else %}
+                    <td> No threads yet</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+
+{% endblock %}
+{% block footer_ext %}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var table_main = $('.table').DataTable({
+            dom: 'lBfrtip',
+            buttons: []
+
+        });
+    });
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% load forum_tags %}
+{% load i18n %}
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="user_profile">
+            <a href="{% url 'forum:user_info' request.user.pk %}">
+                <img src="/media/{{ request.user.Member_Avatar }}"
+                    class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default" alt="..."
+                    style="width: 100%" />
+            </a>
+        </div>
+        <a href="{% url 'forum:user_info' request.user.pk %}">
+            <h3 class="btn-white btn-flat">{{ request.user.username }}</h3>
+        </a>
+        <ul class="list-unstyled user_data">
+            <li><a class="btn-white btn-flat" href="{% url 'forum:user_threads' request.user.pk %}"><i
+                        class="fa fa-question-circle fa-lg"></i> Questions
+                    Asked: {{ request.user.threads.count }}</a>
+            </li>
+            <li><a class="btn-white btn-flat" href="{% url 'forum:user_posts' request.user.pk %}">
+                    <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.count }}</a>
+            </li>
+
+            <li>
+                <p><i class="fa fa-user fa-lg"></i>
+                    {% if request.user.is_superuser %}
+                    Super User
+                    {% elif request.user.Is_Teacher %}
+                    , Teacher
+                    {% elif request.user.Is_Student %}
+                    , Student
+                    {% elif request.user.Is_CenterAdmin %}
+                    , Center Admin
+                    {% elif request.user.Is_Parent %}
+                    , Parent
+                    {% endif %}
+                </p>
+            </li>
+
+        </ul>
+        <a class="btn btn-primary" href="{% url 'forum:user_info' request.user.pk %}">
+            <i class="fa fa-user-md m-right-xs"></i> View Profile</a>
+        <br>
+
+    </div>
+</div>

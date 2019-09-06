@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Assign Assignment</li>
+{% endblock %}
+{% block content %}
+    <div class="assignhomeworkInfoListClass">
+        <h2 class="tableHeader">List of Assigned Assignment</h2>
+        <hr class="header_hr">
+        <div class="btn-createnew">
+            <a class="btn btn-success" href="{% url 'assignassignmentinfo_create' %}">Assign Assignment</a>
+        </div>
+        <br><br><br>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered bg-white">
+                <thead class="thead-light bg-primary">
+                <tr class="tableTitleRow">
+                    <td>ID</td>
+                    <td>Assignment Code</td>
+                    <td>Session Code</td>
+                    <td>Assigned By</td>
+                    <td>Use Flag</td>
+                </tr>
+                </thead>
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{{ object.get_absolute_url }}">{{ object.Assignment_Code }}</a></td>
+                        <td>{{ object.Inning_Code }}</td>
+                        <td>{{ object.Assigned_By }}</td>
+                        <td>{{ object.Use_Flag }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+
+
+{% endblock %}
+
+{% block customjss %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.table').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }]
+            });
+        });
+    </script>
+
+{% endblock %}

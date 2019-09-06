@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'assignassignmentinfo_list' %}">Assign Assignment</a></li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {% if '/create/' in request.path %}
+            Enter Assignment
+        {% else %}
+            Edit Assignment
+        {% endif %}
+    </li>
+{% endblock %}
+{% block content %}
+    <div class="headerDiv">
+        <h2 class="infoFormHeader">
+            {% if '/create/' in request.path %}
+                Enter Assignment
+            {% else %}
+                Edit Assignment
+            {% endif %}
+        </h2>
+        <hr class="header_hr">
+    </div>
+
+    <div class="x_content">
+        <form method="post" id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left">
+            {% csrf_token %}
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                {{ form.Inning_Code|as_crispy_field }}
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                {{ form.Assignment_Code|as_crispy_field }}
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                {{ form.Assigned_By|as_crispy_field }}
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                {{ form.Use_Flag|as_crispy_field }}
+            </div>
+            <div class="submitButton col-md-12">
+                <button class="btn btn-success" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+
+
+{% endblock %}

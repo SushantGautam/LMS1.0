@@ -1,0 +1,63 @@
+{% extends "student_module/base.html"%}
+{% load static %}
+{% block title %}
+Polls
+{% endblock %}
+{% block stylesheets %}
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'questions_student' %}">Survey</a></li>
+<li class="breadcrumb-item active" aria-current="page">Polls</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="clearfix"></div>
+
+<div class="container" id="surveyView">
+    <h2 class="pollTitle">Survey Title</h2>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel" id="pollsQuestions" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+            <div class="x_title">
+                <h2 class="title "><strong>1. What is hadoop?</strong></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <label>
+                    <ul class="radioInputs">
+                        <li><input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios">
+                            <label id="pollsOptions">one. only select one option</label></li>
+                        <li><input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios">
+                            <label id="pollsOptions">one. only select one option</label></li>
+                        <li><input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios">
+                            <label id="pollsOptions">one. only select one option</label></li>
+                        <li><input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios">
+                            <label id="pollsOptions">one. only select one option</label></li>
+                    </ul>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel" id="pollsQuestions" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+            <div class="x_title">
+                <h2 class="title "><strong>2. What is hadoop?</strong></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <textarea id="message" required="required" class="form-control" name="message" data-parsley-minlength="20"
+                    data-parsley-maxlength="100" style="height:15vh" placeholder="Write a answer..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success" style="width: 15rem; height: 5rem; font-size: 18px; float: right; margin-top: 10px; margin-right:10px;">Submit</button>
+</div>
+
+</div>
+</div>
+</div>
+{% endblock %}

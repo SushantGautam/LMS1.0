@@ -1,0 +1,64 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<form method="post" id="ajaxsessionform">
+    {% csrf_token %}
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        {{ form.Session_Name|as_crispy_field }}
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div id="div_id_Description" class="form-group">
+            <label for="id_Description" class="control-label ">
+                Description
+            </label>
+            <div class="controls ">
+                <textarea name="Description" cols="40" id="id_Description" rows="1"
+                          class="textarea form-control"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+        <label>
+            Status
+        </label><br>
+        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
+                {% if object.Use_Flag == False %}
+               &nbsp;
+                {% else %}
+               checked
+                {% endif %}
+        ><br> <br>
+    </div>
+
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+        <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
+               class="select form-control">
+    </div>
+
+    <div class="submitButton">
+        <button class="btn btn-success" id="ajaxsessionsubmit-btn">Submit</button>
+        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
+    </div>
+</form>
+
+<script>
+    $("#ajaxsessionform").submit(function(e) {
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        $.ajax({
+            url: "{% url 'sessioninfo_create_ajax' %}",  // URL to your view that serves new info
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            success: function(response) {
+                var id_Session_Name =$('#id_Session_Name').val();
+                $(".close-btn").click();
+                $('#id_Inning_Name').append(`
+                    <option value="`+response.pk+`" selected>`+id_Session_Name+`</option>
+                `);
+            },
+            error: function(){
+                console.log('Error in posting session create form')
+            }
+        });
+    });
+</script>

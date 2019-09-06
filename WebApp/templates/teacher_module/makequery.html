@@ -1,0 +1,430 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% block title %}
+    Polls
+{% endblock %}
+{% block stylesheets %}
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
+
+    <div class="clearfix"></div>
+    <ol aria-label="breadcrumb" class="breadcrumb navClass">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Survey</li>
+    </ol>
+
+    <div class="container" id="mainSurveyPage">
+        <div class="row">
+            <div class="searchBarSurvey col-sm-5">
+                <form>
+                    <input type="search" placeholder="Survey...">
+                    <div class="pollButtons">
+                        <button type="button" class="btn btn-info">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-7">
+                <div class="btn-group" id="status" data-toggle="buttons">
+                    <label class="btn btn-default btn-on-3 btn-sm active">
+                        <input type="radio" value="1" name="multifeatured_module[module_id][status]" checked="checked">Active</label>
+                    <label class="btn btn-default btn-off-3 btn-sm ">
+                        <input type="radio" value="0" name="multifeatured_module[module_id][status]">Expire</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-9" id="test">
+            <div class="hR"></div>
+            <div class="row" id="rowCards">
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                    <div class="questionLists ">
+                        <div class="card">
+                            <div class="card-body" style="width: 20rem;">
+                                <h2 class="card-title "><strong>1. What is hadoop?</strong></h2>
+                                <hr>
+                                <h5 class="card-text text-justify">
+                                    <a href=" {% url 'polls' %}">
+                                        <div class="pollButtons">
+                                            <button type="button" class="btn btn-info">Text survey</button>
+                                        </div>
+                                    </a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                    <div class="questionLists ">
+                        <div class="card">
+                            <div class="card-body" style="width: 20rem;">
+                                <h2 class="card-title "><strong>2. What is hadoop?</strong></h2>
+                                <hr>
+                                <h5 class="card-text text-justify">
+                                    <a href=" {% url 'polls' %}">
+                                        <div class="pollButtons">
+                                            <button type="button" class="btn btn-info">Text survey</button>
+                                        </div>
+                                    </a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                    <div class="questionLists ">
+                        <div class="card">
+                            <div class="card-body" style="width: 20rem;">
+                                <h2 class="card-title "><strong>3. What is hadoop?</strong></h2>
+                                <hr>
+                                <h5 class="card-text text-justify">
+                                    <a href=" {% url 'polls' %}">
+                                        <div class="pollButtons">
+                                            <button type="button" class="btn btn-info">Text survey</button>
+                                        </div>
+                                    </a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="questionLists ">
+                    <div class="card">
+                        <div class="card-body" style="width: 20rem;">
+                            <h2 class="card-title "><strong>4. What is hadoop?</strong></h2>
+                            <hr>
+                            <h5 class="card-text text-justify">
+                                <a href=" {% url 'polls' %}">
+                                    <div class="pollButtons">
+                                        <button type="button" class="btn btn-info">Text survey</button>
+                                    </div>
+                                </a>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="questionLists ">
+                    <div class="card">
+                        <div class="card-body" style="width: 20rem;">
+                            <h2 class="card-title "><strong>2. What is hadoop?</strong></h2>
+                            <hr>
+                            <h5 class="card-text text-justify">
+                                <a href=" {% url 'polls' %}">
+                                    <div class="pollButtons">
+                                        <button type="button" class="btn btn-info">Text survey</button>
+                                    </div>
+                                </a>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="questionLists ">
+                    <div class="card">
+                        <div class="card-body" style="width: 20rem;">
+                            <h2 class="card-title "><strong>3. What is hadoop?</strong></h2>
+                            <hr>
+                            <h5 class="card-text text-justify">
+                                <a href=" {% url 'polls' %}">
+                                    <div class="pollButtons">
+                                        <button type="button" class="btn btn-info">Text survey</button>
+                                    </div>
+                                </a>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-3">
+            <div class="categoryContainer">
+                <div class="card" style="width: 20rem; height: 30rem;">
+                    <div class="card-body">
+                        <h2 class="card-title "><strong>Category</strong></h2>
+                        <hr>
+                        <h5 class="card-text">
+                            <a href="">General</a>
+                            <button class="general btn btn-success" data-popup-open="popup-1"><a href="#">Add</a>
+                            </button>
+                        </h5>
+                        <h5 class="card-text">
+                            <a href="">Session</a>
+                            <button class="session btn btn-success" data-popup-open="popup-1"><a href="#">Add</a>
+                            </button>
+                        </h5>
+                        <h5 class="card-text">
+                            <a href="">Course</a>
+                            <button class="courseAdd btn btn-success" data-popup-open="popup-1"><a
+                                    href="#">Add</a></button>
+                        </h5>
+                        <h5 class="card-text">
+                            <a href="">System</a>
+                            <button class="system btn btn-success" data-popup-open="popup-1"><a href="#">Add</a>
+                            </button>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="popup" data-popup="popup-1">
+            <div class="popup-inner">
+                <article class="index-form">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-6">
+                                <form id="outerform">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="label_inputs">
+                                            <div class="form-group has-feedback">
+                                                <label for="id_Title" class="control-label ">
+                                                    Title
+                                                </label>
+                                                <input type="text" value="" name="title" id="id_title"
+                                                       required="required"
+                                                       class="form-control has-feedback-left" placeholder="Title">
+                                                <span class="fa fa-paragraph form-control-feedback left"
+                                                      aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group " id="chooseSession" style="display: none;">
+                                                <label for="inputState">Session</label>
+                                                {#                                                <select id="inputState" class="form-control">#}
+                                                {#                                                    <option selected>Choose...</option>#}
+                                                {#                                                    <option>...</option>#}
+                                                {#                                                </select>#}
+                                                <select name="session" id="id_session" required="required"
+                                                        class="select form-control">
+                                                    <option value="" selected="">----</option>
+                                                    {% for c in sessions %}
+                                                        <option value="{{ c.id|capfirst }}">{{ c.Inning_Name|capfirst }}</option>
+                                                    {% endfor %}
+
+
+                                                </select>
+
+                                            </div>
+                                            <div class="form-group " id="chooseCourse" style="display: none;">
+                                                <label for="inputState">Course</label>
+                                                <select name="session" id="id_course" required="required"
+                                                        class="select form-control">
+                                                    <option value="" selected="">----</option>
+                                                    {% for l in courses %}
+                                                        <option value="{{ l.id|capfirst }}">{{ l.Course_Name|capfirst }}</option>
+                                                    {% endfor %}
+
+
+                                                </select>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label for="id_name" class="control-label ">
+                                                    Name
+                                                </label>
+                                                <input type="text" value="" name="name" id="id_name" required="required"
+                                                       class="form-control has-feedback-left" placeholder="Name">
+                                                <span class="fa fa-user form-control-feedback left"
+                                                      aria-hidden="true"></span>
+                                            </div>
+
+                                            <div class="form-group has-feedback">
+                                                <label for="id_Start_date" class="control-label ">
+                                                    Start date
+                                                </label>
+                                                <input type="date" name="Start_date" value="" id="Start_date"
+                                                       required="required"
+                                                       class="form-control has-feedback-left">
+                                                <span class="fa fa-calendar form-control-feedback left"
+                                                      aria-hidden="true"></span>
+                                            </div>
+
+                                            <div class="form-group has-feedback">
+                                                <label for="id_End_date" class="control-label ">
+                                                    End date
+                                                </label>
+                                                <input type="date" name="End_date" value="" id="id_End_date"
+                                                       required="required"
+                                                       class="form-control has-feedback-left">
+                                                <span class="fa fa-calendar form-control-feedback left"
+                                                      aria-hidden="true"></span>
+                                            </div>
+
+                                            <div class="form-group has-feedback">
+                                                <label for="id_Survery_Cover" class="control-label ">
+                                                    Survey cover
+                                                </label>
+                                                <input type="file" name="Survery_Cover" value="" id="id_Survery_Cover"
+                                                       class="form-control has-feedback-left"
+                                                       placeholder="Survery Cover">
+                                                <span class="fa fa-image form-control-feedback left"
+                                                      aria-hidden="true"></span>
+                                            </div>
+
+                                            <label> Status</label><br>
+                                            <input type="checkbox" id="id_Use_Flag" class="js-switch"
+                                                   name="Use_Flag"><br>
+
+                                            <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+
+
+                                            <div class="selectQuestionType" style=" display: none;">
+                                                <div class="btn-group" id="switchButtons" data-toggle="buttons">
+                                                    <label class="mcq_question btn btn-default btn-on btn-md active">
+                                                        <input type="radio" value="1"
+                                                               name="multifeatured_module[module_id][switchButtons]"
+                                                               checked="checked">MCQ</label>
+                                                    <label class="short_question btn btn-default btn-off btn-md ">
+                                                        <input type="radio" value="0"
+                                                               name="multifeatured_module[module_id][switchButtons]">SAQ</label>
+                                                </div>
+
+                                                <div class="questionContainer">
+                                                    <div id="mcq_que">
+                                                        <div class="queContainer">
+                                                            <div class="questionSection ">
+                                                                <label for="questions">Questions:</label>
+                                                                <button class="btn btn-success" id="newQuestion">+
+                                                                    Questions
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="optionContainer">
+                                                            <ul id="mySelect" style="list-style: none;">
+                                                            </ul>
+                                                        </div>
+
+                                                        <div class="btn btn-info" id="save-btn">Save</div>
+
+                                                        <a href="">
+                                                            <div class="btn btn-primary">Save As New</div>
+                                                        </a>
+                                                    </div>
+
+                                                    <div id="short_que" style="display: none;">
+                                                        <div class="queContainer">
+                                                            <div class="form-group ">
+                                                                <label for="questions">Questions:</label>
+                                                                <button class="btn btn-success"><a href=""
+                                                                                                   id="addButtons">+
+                                                                    Questions</a></button>
+                                                            </div>
+                                                            <div class="short_que_Container">
+                                                                <ul id="short_que_add" style="list-style: none;">
+                                                                </ul>
+                                                            </div>
+
+                                                            <div class="btn btn-info">Save</div>
+
+                                                            <a href="">
+                                                                <div class="btn btn-primary">Save As New</div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                    </div>
+                </article>
+                <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+
+        $("#nextButton").click(function () {
+            var title = document.getElementById("id_title").value;
+            var start_date = document.getElementById("Start_date").value;
+            var end_date = document.getElementById("id_End_date").value;
+            var session_index = document.getElementById("id_session");
+            var Session_Code = session_index.options[session_index.selectedIndex].value;
+            var course_index = document.getElementById("id_course");
+            var Course_Code = course_index.options[course_index.selectedIndex].value;
+            console.log(Course_Code + "subject");
+            console.log(Session_Code + "session");
+
+            var data = {
+                "Survey_Title": title,
+                "Start_Date": start_date,
+                "End_Date": end_date,
+                "Survey_Cover": null,
+                "Use_Flag": 'True',
+                "Added_By": '{{ user.id }}',
+                "Category_Code": null,
+                "Assigned_To": Session_Code,
+                "Course_Code": Course_Code,
+
+            }
+
+            $.ajax({
+                url: '/survey/api/v1/surveyinfo/',
+                type: 'POST',
+                data: data,
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (arg) {
+                    // alert("data entry success" + Session_Code + " " + Course_Code);
+                }
+            }).done(function (server_data) {
+                console.log(server_data)
+            }).fail(function (res) {
+                console.log(res);
+                console.log("failed");
+                alert('data entry failed');
+            });
+
+
+        });
+        $("#save-btn").click(function () {
+            q = document.querySelectorAll('[id^="options-"]');
+            {#var dates = document.querySelectorAll('[id^="options-"]');#}
+            q.forEach(function (e, i) {
+
+                var elm = document.getElementById(e.id).querySelectorAll('[id="optionid"]');
+                var q_id=e.id[e.id.length - 1];
+                var question_content;
+
+                var questioncontainer = document.querySelectorAll('[id="question-'+q_id+'"]');
+                //console.log(question);
+                questioncontainer.forEach(function (que,index) {
+                    var question = document.getElementById(que.id).querySelectorAll('[id="questionid"]');
+                    question.forEach(function (ques,i) {
+                        question_content=ques.value;
+                    });
+                });
+
+
+                // use ajax to post question here
+                console.log(question_content);
+
+
+
+
+                elm.forEach(function (elem, i) {
+
+                    //use ajax to post options here
+                    console.log(elem.value,question_content);
+
+                });
+            });
+
+
+        });
+    </script>
+{% endblock %}

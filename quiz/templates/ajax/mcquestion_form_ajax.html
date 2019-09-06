@@ -1,0 +1,143 @@
+{% load static %}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+ <!-- Bootstrap -->
+ <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<link href="{% static '/build/css/custom.css' %}" rel="stylesheet">
+{{ form.media }}
+<form method="post" action="{% url 'mcquestion_create' %}" id="mcq_form_post">
+	{% csrf_token %}
+	<div class="form-group">
+		<div class="col-md-12">
+			<div class="col-md-6">
+{#				<label class="quiz-add-label" for="">Question</label>#}
+				{{form.content|as_crispy_field}}
+			</div>
+			<div class="col-md-6">
+{#				<label class="quiz-add-label" for="">Answer Order</label>#}
+				{{form.answer_order|as_crispy_field}}
+			</div>
+		</div>
+	</div>
+	{% if form.cent_code %}
+	<div class="form-group">
+		<div class="col-md-12">
+			<div class="col-md-6">
+{#				<label class="quiz-add-label" for="">Center Code</label>#}
+				{{form.cent_code|as_crispy_field}}
+			</div>
+			<div class="col-md-6">
+{#				<label class="quiz-add-label" for="">Course Info</label>#}
+				{{form.course_code|as_crispy_field}}
+			</div>
+		</div>
+	</div>
+	{% endif %}
+	<div class="form-group">
+		<div class="col-md-12">
+			<div class="col-md-6">
+{#				<label class="quiz-add-label" for="">Figure</label>#}
+				{{form.figure|as_crispy_field}}
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-12">
+			<label class="quiz-add-label" for="">Quiz</label>
+		</div>
+		<div class="col-md-12 controls">
+			{{form.quiz}}
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-12">
+			{{ answers_formset.management_form }}
+			{% for form in answers_formset.forms %}
+			<div class='table ques-add-quiz '>
+				<div class="row">
+					<div class="col-md-6">
+{#						<label for="id_answer_set-0-content" class="control-label  requiredField">#}
+							Content<span class="asteriskField">*</span> </label>
+						<!-- <div class="controls "> <input type="text" name="answer_set-0-content" maxlength="1000" class="textinput textInput form-control form-control" id="id_answer_set-0-content"> <p id="hint_id_answer_set-0-content" class="help-block">Enter the answer text that you want displayed</p> </div>       -->
+						{{form.content|as_crispy_field}}
+					</div>
+					<div class="col-md-6">
+						<ul class="mcq-line">
+							<li>
+								<div id="div_id_answer_set-0-correct" class="checkbox">
+									<br>
+									<label for="id_answer_set-0-correct" class=""> <input type="checkbox" name="answer_set-0-correct"
+											class="checkboxinput" id="id_answer_set-0-correct">
+										Correct</label>
+								</div>
+							</li>
+							&nbsp; &nbsp;
+							<li>
+								<div id="div_id_answer_set-0-DELETE" class="checkbox">
+									<br>
+									<label for="id_answer_set-0-DELETE" class=""> <input type="checkbox" name="answer_set-0-DELETE"
+											class="checkboxinput" id="id_answer_set-0-DELETE">
+										Delete</label>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+			<div class="add-more">
+				<a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more questions</a>
+			</div>
+			<hr>
+			<!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
+			<button class="btn btn-primary" type="submit">Submit</button>
+		</div>
+	</div>
+</form>
+
+{% block customjss %}
+<script>
+	function cloneMore(selector, type) {
+		var newElement = $(selector).clone(true);
+		var total = $('#id_' + type + '-TOTAL_FORMS').val();
+		newElement.find(':input').each(function () {
+			var name = $(this).attr('name').replace('-' + (total - 1) + '-', '-' + total + '-');
+			var id = 'id_' + name;
+			$(this).attr({
+				'name': name,
+				'id': id
+			}).val('').removeAttr('checked value');
+		});
+		newElement.find('label').each(function () {
+			var newFor = $(this).attr('for').replace('-' + (total - 1) + '-', '-' + total + '-');
+			$(this).attr('for', newFor);
+		});
+		total++;
+		$('#id_' + type + '-TOTAL_FORMS').val(total);
+		$(selector).after(newElement);
+	}
+
+	$('#add_more').click(function () {
+		cloneMore('div.table:last', 'answer_set');
+	});
+
+	$("#mcq_form_post").submit(function (e) {
+		e.preventDefault(); // avoid to execute the actual submit of the form.
+		$.ajax({
+			url: "{% url 'mcquestion_create' %}", // URL to your view that serves new info
+			data: $(this).serialize(), // get the form data
+			type: $(this).attr('method'), // GET or POST
+			success: function (response) {
+				console.log(response['new_mcq_id']);
+				console.log(response['new_mcq_content']);
+				$('#id_mcquestion').prepend(
+					`<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
+				$('#mcquestion_form_popup').modal('toggle');
+			},
+			error: function () {
+				console.log('Error in posting form');
+			}
+		});
+	});
+</script>
+{% endblock customjss %}

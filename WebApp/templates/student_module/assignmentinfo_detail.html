@@ -1,0 +1,15 @@
+{% extends "student_module/base.html" %}
+{% load static %}
+{% block breadcrumb %}
+    {#    <li class="breadcrumb-item"><a href="{% url 'assignmentinfo_list'  %}">Assignment</a></li>#}
+    <li class="breadcrumb-item"><a href="{% url 'student_mycourses_list' %}">My Courses</a></li>
+    <li class="breadcrumb-item"><a href="{{ object.Course_Code.student_get_absolute_url }}">{{ object.Course_Code }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ object.Chapter_Code.student_get_absolute_url }}">{{ object.Chapter_Code }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Topic }}</li>
+{% endblock %}
+{% block content %}
+
+    {% include 'assignment/assignmentinfo_detail.html' %}
+
+{% endblock content %}
+

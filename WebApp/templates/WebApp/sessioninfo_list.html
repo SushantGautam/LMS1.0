@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Sessions</li>
+{% endblock %}
+{% block content %}
+    <div class="groupmappingListClass">
+
+        <hr class="header_hr">
+        <h2 class="tableHeader">List of Sessions</h2>
+        <hr class="header_hr">
+        <div class="btn-createnew">
+            <a class="btn btn-success" href="{% url 'sessioninfo_create' %}">Create New Session</a>
+        </div>
+        <br><br><br>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered bg-white nowrap">
+                <thead class="thead-light bg-primary">
+                <tr>
+                    <td>ID</td>
+                    <td>Session Name</td>
+                    <td>Description</td>
+                    <td>Status</td>
+                    <td>Center COde</td>
+                    {#                    <td>Students</td>#}
+                </tr>
+                </thead>
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><b><a href="{{ object.get_absolute_url }}">{{ object.Session_Name }}</a></b></td>
+                        <td>{{ object.Description }}</td>
+                        <td>{{ object.Use_Flag }}</td>
+                        <td>{{ object.Center_Code }}</td>
+
+                        {#                        <td>{{ object.memberinfo_id }}</td>#}
+
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block customjss %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.table').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }]
+            });
+        });
+    </script>
+{% endblock %}

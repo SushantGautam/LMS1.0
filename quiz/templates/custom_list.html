@@ -1,0 +1,30 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+{%  load static %}
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'teacher_home' %}">Home</a>
+        {% if title %} &rsaquo; {{ title }}{% endif %}
+    </div>
+{% endblock %}
+
+
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'teacher_home' %}">Question List</a></h1>
+{% endblock %}
+
+
+        {% block usertools %}
+        {% if has_permission %}
+        <div id="user-tools">
+            {% block welcome-msg %}
+            {% endblock %}
+            {% block userlinks %}
+            {% endblock %}
+        </div>
+        {% endif %}
+        {% endblock %}
+
+
+

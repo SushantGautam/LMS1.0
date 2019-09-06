@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">Member</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.username }}</li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="outerdiv">
+        <h2 class="detailListHeader">Member Information</h2>
+        <hr class="header_hr">
+        <div class="col-md-5 col-sm-12 col-xs-12">
+            <div class="text-center">
+                <img src="{% if object.Member_Avatar %}
+                    {{ object.Member_Avatar.url }}
+                {% elif object.Member_Gender == '1' %}
+                    {% static 'images/profile/male.jpg' %}
+                {% elif object.Member_Gender == '2' %}
+                    {% static 'images/profile/female.png' %}
+                {% else %}
+                    {% static 'images/profile/profile.png' %}
+                {% endif %}" align="middle" style="width: 400px; margin-top: 50px; margin-bottom: 50px;">
+            </div>
+        </div>
+        <div class="col-md-7 col-sm-12 col-xs-12">
+            <h5><b>
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <td>Member ID</td>
+                        <td>{{ object.username }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>First Name</td>
+                        <td>{{ object.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td>{{ object.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{ object.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Permanent Address</td>
+                        <td>{{ object.Member_Permanent_Address }}</td>
+                    </tr>
+                    <tr>
+                        <td>Temporary Address</td>
+                        <td>{{ object.Member_Temporary_Address }}</td>
+                    </tr>
+                    <tr>
+                        <td>Member BirthDate</td>
+                        <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Member Phone</td>
+                        <td>{{ object.Member_Phone }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Member Gender</td>
+                        <td>{% if object.Member_Gender == 'M' %}
+                            Male
+                        {% elif object.Member_Gender == 'F' %}
+                            Female
+                        {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td>{% if  object.Use_Flag  == True %}
+                            On
+                        {% else %}
+                            Off
+                        {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Register DateTime</td>
+                        <td>{{ object.date_joined|date:"m/d/Y" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Member Type</td>
+                        <td>
+                            {% if object.Is_CenterAdmin %}
+                                &nbsp;Admin
+                            {% endif %}
+                            {% if object.Is_Teacher %}
+                                &nbsp;Teacher
+                            {% endif %}
+                            {% if object.Is_Student %}
+                                &nbsp;Student
+                            {% endif %}
+
+                        </td>
+                    </tr>
+
+                </table>
+            </b></h5>
+        </div>
+
+        <br>
+        <div class="text-center">
+            <a class="btn btn-info" href="/change-password/{{ object.id }}/"> Change Password </a>
+            <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Member</a>
+            <a class="btn btn-danger confirm-delete">Delete Member</a>
+            <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form">
+                {% csrf_token %}
+                <input type="hidden">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block customjss %}
+    <script>
+        $(document).on('click', '.confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Member?');
+            if (ans == true) {
+                $('#delete_form').submit();
+            } else {
+                return false;
+            }
+        });
+    </script>
+{% endblock %}

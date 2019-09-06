@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<p>
+  <a class="btn btn-default" href="{% url 'messageinfo_list' %}"
+    >MessageInfo Listing</a
+  >
+</p>
+<table class="table">
+  <tr>
+    <td>teacher_code</td>
+    <td>{{ object.teacher_code }}</td>
+  </tr>
+  <tr>
+    <td>message</td>
+    <td>{{ object.message }}</td>
+  </tr>
+  <tr>
+    <td>message_read</td>
+    <td>{{ object.message_read }}</td>
+  </tr>
+</table>
+
+<a class="btn btn-primary" href="{{ object.get_update_url }}"
+  >Edit MessageInfo</a
+>
+
+{% endblock %}

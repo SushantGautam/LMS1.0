@@ -1,0 +1,175 @@
+{% load static %}
+
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+{% load crispy_forms_tags %}
+
+<div class="selectQuestionType">
+                        <div class="btn-group" id="switchButtons" data-toggle="buttons">
+                            <label class="mcq_question btn btn-default btn-on btn-md active">
+                                <input type="radio" value="1" name="multifeatured_module[module_id][switchButtons]"
+                                    checked="checked">MCQ</label>
+                            <label class="short_question btn btn-default btn-off btn-md ">
+                                <input type="radio" value="0"
+                                    name="multifeatured_module[module_id][switchButtons]">SAQ</label>
+                        </div>
+
+                        <div class="questionContainer">
+                            <div id="mcq_que">
+                                <div class="questionSection ">
+                                    <label for="questions">Questions:</label>
+                                    <button class="btn btn-success" id="newQuestion">Add
+                                        Questions</button>
+                                </div>
+
+                                <div class="optionContainer">
+                                    <ul id="mySelect" style="list-style: none;">
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div id="short_que" style="display: none;">
+                                <div class="queContainer">
+                                    <div class="form-group ">
+                                        <label for="questions">Questions:</label>
+                                        <button class="btn btn-success"><a href="" id="addButtons">Add
+                                                Questions</a></button>
+                                    </div>
+                                    <div class="short_que_Container">
+                                        <ul id="short_que_add" style="list-style: none;">
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
+                        type="button">Next</button>
+
+
+
+<!---
+
+<form method="post" id="categoryForm">
+    {% csrf_token %}
+    <div role="form">
+        <div class="row setup-content" id="step-2">
+            <div class="col-xs-12">
+                <div class="col-md-12">
+                    <div class="selectQuestionType">
+                        <div class="btn-group" id="switchButtons" data-toggle="buttons">
+                            <label class="mcq_question btn btn-default btn-on btn-md active">
+                                <input type="radio" value="1" name="multifeatured_module[module_id][switchButtons]"
+                                    checked="checked">MCQ</label>
+                            <label class="short_question btn btn-default btn-off btn-md ">
+                                <input type="radio" value="0"
+                                    name="multifeatured_module[module_id][switchButtons]">SAQ</label>
+                        </div>
+
+                        <div class="questionContainer">
+                            <div id="mcq_que">
+                                <div class="questionSection ">
+                                    <label for="questions">Questions:</label>
+                                    <button class="btn btn-success" id="newQuestion">Add
+                                        Questions</button>
+                                </div>
+
+                                <div class="optionContainer">
+                                    <ul id="mySelect" style="list-style: none;">
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div id="short_que" style="display: none;">
+                                <div class="queContainer">
+                                    <div class="form-group ">
+                                        <label for="questions">Questions:</label>
+                                        <button class="btn btn-success"><a href="" id="addButtons">Add
+                                                Questions</a></button>
+                                    </div>
+                                    <div class="short_que_Container">
+                                        <ul id="short_que_add" style="list-style: none;">
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
+                        type="button">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script src=" {% static 'build/js/custom.js' %}"></script>
+
+
+
+
+        <div class="row setup-content" id="step-2">
+            <div class="col-xs-12">
+                <div class="col-md-12">
+                    <div class="selectQuestionType">
+                        <div class="btn-group" id="switchButtons" data-toggle="buttons">
+                            <label class="mcq_question btn btn-default btn-on btn-md active">
+                                <input type="radio" value="1" name="multifeatured_module[module_id][switchButtons]"
+                                    checked="checked">MCQ</label>
+                            <label class="short_question btn btn-default btn-off btn-md ">
+                                <input type="radio" value="0"
+                                    name="multifeatured_module[module_id][switchButtons]">SAQ</label>
+                        </div>
+
+                        <div class="questionContainer">
+                            <div id="mcq_que">
+                                <div class="questionSection ">
+                                    <label for="questions">Questions:</label>
+                                    <button class="btn btn-success" id="newQuestion">Add
+                                        Questions</button>
+                                </div>
+
+                                <div class="optionContainer">
+                                    <ul id="mySelect" style="list-style: none;">
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div id="short_que" style="display: none;">
+                                <div class="queContainer">
+                                    <div class="form-group ">
+                                        <label for="questions">Questions:</label>
+                                        <button class="btn btn-success"><a href="" id="addButtons">Add
+                                                Questions</a></button>
+                                    </div>
+                                    <div class="short_que_Container">
+                                        <ul id="short_que_add" style="list-style: none;">
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
+                        type="button">Next</button>
+                </div>
+            </div>
+        </div>
+        <div class="row setup-content" id="step-3">
+            <div class="col-xs-12">
+                <div class="col-md-12">
+                    <h3> Successfully completed form fill in. Click
+                        on
+                        submit
+                        button to finish.</h3>
+                   <button class="btn btn-primary" type="submit">Submit</button> 
+                </div>
+            </div>
+        </div>
+
+        -->
+
+        <script src=" {% static 'build/js/custom.js' %}"></script>

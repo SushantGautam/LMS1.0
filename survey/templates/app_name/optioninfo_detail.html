@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'app_name_optioninfo_list' %}">OptionInfo Listing</a></p>
+<table class="table">
+<tr><td>Option_Name</td><td>{{ object.Option_Name }}</td></tr>
+</table>
+<a class="btn btn-primary" href="{{object.get_update_url}}">Edit OptionInfo</a>
+
+{% endblock %}

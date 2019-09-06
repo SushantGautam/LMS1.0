@@ -1,0 +1,248 @@
+{% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet" />
+{% endblock stylesheets %} {% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page">
+    <a href="{% url 'questions_student' %}">Survey</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
+{% endblock %} {% block content %}
+
+<!-- <table class="table">
+    <tr>
+        <td>Survey_Title</td>
+        <td>{{ object.Survey_Title }}</td>
+    </tr>
+    <tr>
+        <td>Start_Date</td>
+        <td>{{ object.Start_Date }}</td>
+    </tr>
+    <tr>
+        <td>End_Date</td>
+        <td>{{ object.End_Date }}</td>
+    </tr>
+    <tr>
+        <td>Survey_Cover</td>
+        <td>{{ object.Survey_Cover }}</td>
+    </tr>
+    <tr>
+        <td>Use_Flag</td>
+        <td>{{ object.Use_Flag }}</td>
+    </tr>
+</table> -->
+<a class="btn btn-primary" href="{{ object.get_update_url }}">Edit SurveyInfo</a>
+
+<div class="clearfix"></div>
+
+<div class="container">
+    <div class="row" id="surveyView">
+        <div class="container">
+            <h2 class="pollTitle">{{ object.Survey_Title }}</h2>
+            <div class="horizontalBar"></div>
+
+            <div class="viewSurveyTitle">
+                <ul class="card_labels">
+                    <li>
+                        <div class="form-group">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                                for="first-name">Category :
+                                <span class="category-label">{{ object.Category_Code }}</span>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="surveyViewDates">
+                        <i class="fa fa-calendar"></i><label>Start date: {{ object.Start_Date }}</label>
+                    </li>
+                    <li class="surveyViewDates">
+                        <i class="fa fa-calendar"></i><label>End date: {{ object.End_Date }}</label>
+                    </li>
+                </ul>
+
+                <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-popup-open="popup-2">
+                    Retake survey
+                </button>
+
+                <!-- <div class="popup" data-popup="popup-2">
+                    <div class="popup-inner ">
+                        <article class="index-form">
+                            <div class="label_inputs">
+                                <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="x_panel">
+                                            <div class="x_content">
+                                                <br>
+
+                                                <div class="form-group">
+                                                    <label class="control-label " id="categoryTitle"
+                                                        for="first-name">Category :
+                                                        {% for category in categories %}
+                                                        <span class="generalLabel">{{ category.Category_Name }}</span>
+                                                        {% endfor %}
+                                                    </label>
+                                                </div>
+
+                                                <div id="surveyForm">
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div> -->
+            </div>
+
+            <form id="surveyform" method="post" action="{% url 'ParticipateSurvey' %}">
+                {% csrf_token %}
+                {% for question in questions %}
+                {% if question.Question_Type == "MCQ" %}
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel" id="pollsQuestions" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                        <div class="x_title">
+                            <h2 class="title ">
+                                <strong>{{ forloop.counter }} . &nbsp;
+                                    {{ question.Question_Name }}</strong>
+                            </h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+                            <ul class="radioInputs">
+                                {% for option in options %}
+                                {% if option.Question_Code.pk == question.pk %}
+                                <li>
+                                    <!-- <label class="optionIndex">A.</label> -->
+                                    <input type="radio" name="{{ question.pk }}" id="pollsOptions"
+                                        value="{{ option.pk }}">{{ option.Option_Name }}
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="bs-chart-container" id="progressResult" style="width: 80%;">
+                            <h4>Results:</h4>
+                            <div class="surveyResults">
+                                <strong>Option A</strong>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                                        <span class>50% </span>
+                                    </div>
+                                </div>
+                                <strong>Option B</strong>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 5%">
+                                        <span class>5%</span>
+                                    </div>
+                                </div>
+                                <strong>Option C</strong>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                        <span class>20% </span>
+                                    </div>
+                                </div>
+                                <strong>Option D</strong>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 25%">
+                                        <span class>25% </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel" id="pollsQuestions" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                        <div>
+                            <h2 class="title ">
+                                <strong>{{ question.Question_Name }}</strong>
+                            </h2>
+                            <h5>
+                                {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}
+                            </h5>
+                        </div>
+                        <div style="
+                        width: 100%;
+                        height: 2px;
+                        display: flex;
+                        flex-direction: auto;
+                        background-color: #f1f1f1; "></div>
+
+                        <div class="x_content" style="margin-left: 40px;">
+                            <label class="SAQ_answer_label">Answers:</label>
+                            <textarea class="form-control SAQ_answer" name="{{ question.pk }}" rows="5" id="comment"
+                                form="surveyform"></textarea>
+
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %} {% endfor %}
+
+                <input type="hidden" name="surveyInfoId" value="{{ object.id }}">
+                <input type="hidden" name="userId" value="{{ request.user.id }}">
+                <!-- {{ request.user.id }} -->
+                <button>Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    console.log('bitch');
+    $('#retakeSurveyBtn').on('click', function () {
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#surveyForm").html(data);
+            }
+        });
+    });
+    // categoryAddButton({{ categoryName }});
+
+    $('#surveyform').submit(function (e) {
+        // e.preventDefault();
+        var canSubmit = true;
+        console.log('bitch')
+        {% for x in object.submitsurvey.all %}
+        console.log('{{x.id}}');
+        console.log('{{ x.Student_Code.id }}');
+        console.log('{{ request.user.id }}');
+        {% if x.Student_Code.id == request.user.id %}
+        canSubmit = false;
+        {% endif %}
+        {% endfor %}
+        console.log(canSubmit)
+        if (canSubmit) {
+            $.ajax({
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                url: "{% url 'ParticipateSurvey' %}",  // URL to your view that serves new info
+                error: function () {
+                    console.log('Error Already submitted')
+                }
+            });
+        }
+        else {
+            alert('You cannot submit')
+            e.preventDefault();
+        }
+
+    });
+
+</script>
+
+{% endblock %}

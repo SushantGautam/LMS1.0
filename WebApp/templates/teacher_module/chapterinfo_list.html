@@ -1,0 +1,10 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Chapters</li>
+{% endblock %}
+
+{% block content %}
+    {% include 'chapter/chapterinfo_list.html' %}
+{% endblock content %}
+

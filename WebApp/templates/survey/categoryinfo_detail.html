@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'categoryinfo_list' %}">CategoryInfo Listing</a></p>
+<table class="table">
+    <tr>
+        <td>Category_Name</td>
+        <td>{{ object.Category_Name }}</td>
+    </tr>
+</table>
+<a class="btn btn-primary" href="{{object.get_update_url}}">Edit CategoryInfo</a>
+
+{% endblock %}

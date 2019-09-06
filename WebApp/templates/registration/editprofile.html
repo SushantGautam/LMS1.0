@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+{% block smart_forum_title %} Edit Profile  {% endblock %}
+{% block smart_forum_Heading %} Edit Profile  {% endblock %}
+
+{% block content %}
+    <base href="/"/>
+    <div class="alert alert-info" role="alert">
+ Edit Profile
+</div>
+    <div class="posts__item bg-fef2e0">
+        <div class="posts__section-left">
+            <div class="posts__topic">
+                <div class="posts__content">
+
+
+                   <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

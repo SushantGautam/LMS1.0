@@ -1,0 +1,143 @@
+{% load forum_tags %}
+{% load i18n %}
+{% load static %}
+<div class="nav_menu">
+    <nav>
+        <div class="nav toggle">
+            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+        </div>
+
+        <span class="centerNameTopNav">
+            {% if user.Center_Code %}
+                Center : <b>{{ user.Center_Code }}</b>
+            {% endif %}
+        </span>
+
+
+        <ul class="nav navbar-nav navbar-right">
+
+            {% if request.user.is_authenticated %}
+
+                <li class="">
+                    <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown"
+                       aria-expanded="false">
+
+                        <img src="
+                                    {% if request.user.Member_Avatar %}
+                                        /media/{{ request.user.Member_Avatar }}
+                                    {% elif request.user.Member_Gender == '1' %}
+                                        {% static 'images/profile/male.jpg' %}
+                                    {% elif request.user.Member_Gender == '2' %}
+                                        {% static 'images/profile/female.png' %}
+                                    {% else %}
+                                        {% static 'images/profile/profile.png' %}
+                                    {% endif %}" alt="">
+                        {{ request.user.username }}
+                        <span class="fa fa-angle-down" id="topNavSpan"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-usermenu pull-right">
+                        {% if request.user.Is_Student %}
+                            <li><a href="/students"> Login as Student</a></li>
+                        {% endif %}
+                        {% if request.user.Is_Teacher %}
+                            <li><a href="/teachers"> Login as Teacher</a></li>
+                        {% endif %}
+                        {# <li><a href="/"> Login as Admin</a></li>#}
+                        <!-- <li><a href=""> Profile</a></li> -->
+                        {#                        <li><a href="/"> Login as Admin</a></li>#}
+                        <li><a href="{% url 'user_profile' %}"> Profile</a></li>
+
+
+                        <li><a href="javascript:">Help</a></li>
+                        <li><a href="/logout"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                    </ul>
+                </li>
+                <li role="presentation" class="dropdown">
+                    <a href="javascript:" class="dropdown-toggle info-number" data-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="fa fa-envelope-o"></i>
+                        {% if unread_count %}
+                            <span class="badge bg-green">{{ unread_count }}</span>
+                        {% endif %}
+                    </a>
+                    <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+                        {% for notification in notifications %}
+                            <li>
+                                {% if notification.thread %}
+                                    {% url 'forum:thread' notification.thread_id as thread_url %}
+                                    <a href="{{ thread_url }}">
+                                    <span class="image"><img src="/media/{{ notification.sender.Member_Avatar }}"
+                                                             alt=""/></span>
+                                        <span>
+                                <span>{{ notification.sender }} </span>
+                                <span class="time">{{ notification.pub_date }}</span>
+                            </span>
+                                        <span class="message">
+                                {% blocktrans with username=notification.sender.username thread_title=notification.thread.title %}
+                                    mentioned you in thread:
+                                    <strong> {{ thread_title }}</strong>
+
+
+                                {% endblocktrans %}
+                            </span>
+                                    </a>
+                                {% else %}
+                                    {% url 'forum:thread' notification.post.thread_id as thread_url %}
+                                    <a href="{{ thread_url }}">
+                                    <span class="image"><img src="/media/{{ notification.sender.Member_Avatar }}"
+                                                             alt=""/></span>
+                                        <span>
+                                <span>{{ notification.sender }} </span>
+                                <span class="time">{{ notification.pub_date }}</span>
+                            </span>
+                                        <span class="message">
+                                {% blocktrans with username=notification.sender.username thread_title=notification.post.thread.title %}
+                                    mentioned you when replying to
+
+                                    <strong> {{ thread_title }}</strong>
+
+                                {% endblocktrans %}
+                            </span>
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                        <li>
+                            <div class="text-center">
+                                <a href="{% url 'forum:notifications' %}">
+                                    <strong>See All Notifications</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                    {% if request.path == '/messageinfo/' %}
+                        <li>
+                            <i class="fa fa-bell fa-2x" id="fa-bell" aria-hidden="true"></i>
+                        </li>
+
+                        <li>
+                            <i class="fa fa-users fa-2x" id="fa-users" aria-hidden="true"></i>
+                        </li>
+
+                        <li>
+                            <i class="fa fa-comment fa-2x" id="fa-comment" aria-hidden="true"></i>
+                        </li>
+
+                    {% endif %}
+
+                </li>
+
+            {% else %}
+
+                <li><a href="/login">Log In</a></li>
+                <li><a href="/register">Register</a></li>
+            {% endif %}
+
+
+        </ul>
+    </nav>
+
+</div>

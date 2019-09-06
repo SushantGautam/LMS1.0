@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Session Mapping</li>
+{% endblock %}
+{% block content %}
+    <div class="inningInfoListClass">
+        <hr class="header_hr">
+        <h2 class="tableHeader">Session Mapping</h2>
+        <br>
+        <h3 class="text-center"><b>
+            <a href="#" onclick="return show('cardView','tableView');">Card View</a> &nbsp; &nbsp; &nbsp;
+            <a href="#" onclick="return show('tableView','cardView');">Table View</a></b>
+        </h3>
+        <hr class="header_hr">
+
+        <div class="table-responsive" id="tableView" >
+            <div class="btn-createnew">
+                <a class="btn btn-success" href="{% url 'inninginfo_create' %}">Create new Session Mapping</a>
+            </div>
+            <br><br><br>
+            <table class="table table-striped table-bordered bg-white nowrap">
+                <thead class="thead-light bg-primary">
+                <tr class="tableTitleRow">
+                    <td>ID</td>
+                    <td>Session Name</td>
+                    <td>Group</td>
+                    <td>Start Date</td>
+                    <td>End Date</td>
+                    <td>Register Agent</td>
+                    <td>Center Code</td>
+                </tr>
+                </thead>
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        {# <td>{{ object.inning_name }}</td>#}
+                        <td><B><a href="{{ object.get_absolute_url }}">{{ object.Inning_Name }}</a></B></td>
+                        <td>{{ object.Groups }}</td>
+                        <td>{{ object.Start_Date }}</td>
+                        <td>{{ object.End_Date }}</td>
+                        {#                        <td>{{ object.use_flag }}</td>#}
+                        {#                        <td>{{ object.reg_date }}</td>#}
+                        {#                        <td>{{ object.reg_time }}</td>#}
+                        <td>{{ object.Register_Agent }}</td>
+                        <td>{{ object.Center_Code }}</td>
+                        {#                        <td>{{ object.udt_time }}</td>#}
+                        {#                        <td>{{ object.udt_agent }}</td>#}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div id="cardView" style="display:none">
+            <div class="btn-createnew">
+                <a class="btn btn-success" href="{% url 'inninginfo_create' %}">Create new Session Mapping</a>
+            </div>
+            <br><br><br>
+            <div class="container" id="divID">
+                {% for object in object_list %}
+
+                    <div class="col-md-3 col-sm-4 col-xs-12 card-body" id="listCard">
+
+                        <div class="card-header" style="background: white">
+                            <h5 class="card-title"><strong>Session : &nbsp;<a
+                                    href="{{ object.get_absolute_url }}">{{ object.Inning_Name }}</a></strong>
+                            </h5>
+                            <h5 class="card-title">Group&nbsp; : &nbsp;{{ object.Groups }}</h5>
+                            <h5 class="card-title">Center : &nbsp;{{ object.Center_Code }}</h5>
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+{% block customjss %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.table').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }]
+            });
+        });
+    </script>
+    <script>
+        function show(shown, hidden) {
+            document.getElementById(shown).style.display = 'block';
+            document.getElementById(hidden).style.display = 'none';
+            return false;
+        }
+    </script>
+
+{% endblock %}

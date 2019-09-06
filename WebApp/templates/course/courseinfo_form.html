@@ -1,0 +1,141 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<style>
+    .simple-rating i {
+        color: #f5ba00;
+        display: inline-block;
+        padding: 1px 5px;
+        cursor: pointer;
+        font-size: x-large;
+    }
+</style>
+
+<div class="headerDiv">
+    <h2 class="infoFormHeader">
+        {% if 'create' in request.path %}
+            Create New Course
+        {% else %}
+            Edit Course Info
+        {% endif %}
+    </h2>
+    <hr class="header_hr">
+</div>
+
+<form method="POST" id="FormID" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+        {#        {{ form.Course_Name|as_crispy_field }}#}
+
+        <div id="div_id_Course_Name" class="form-group">
+            <label for="id_Course_Name" class="control-label ">
+                Course Name
+            </label>
+            <div class="controls ">
+                <input type="text" name="Course_Name" value="{{ object.Course_Name }}"
+                       class="textinput textInput form-control"
+                       maxlength="500" id="id_Course_Name">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+        <div id="div_id_Course_Provider" class="form-group">
+            <label for="id_Course_Provider" class="control-label ">
+                Course Provider
+            </label>
+            <div class="controls ">
+                <input type="text" name="Course_Provider"
+                       value="{{ object.Course_Provider }}"
+                       class="textinput textInput form-control" maxlength="250" id="id_Course_Provider">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            {{ form.Course_Cover_File|as_crispy_field }}
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            <label for="id_Course_Level" class="control-label ">
+                Course Level
+            </label>
+            <input class="rating" id="id_Lecture_Level" type="hidden" name="Lecture_Level"
+                   value="{{ object.Lecture_Level }}">
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+        <div id="div_id_Lecture_Description" class="form-group">
+            <label for="id_Lecture_Description" class="control-label ">
+                Course Description
+            </label>
+            <div class="controls ">
+                    <textarea name="Lecture_Description" cols="40" rows="3" id="id_Lecture_Description"
+                              class="textarea form-control">{{ object.Lecture_Description }}</textarea>
+            </div>
+        </div>
+    </div>
+
+
+    {% if 'edit' in request.path %}
+        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+            <label>
+                Status
+            </label><br>
+            <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
+                    {% if object.Use_Flag == False %}
+                   &nbsp;
+                    {% else %}
+                   checked
+                    {% endif %}
+            ><br> <br>
+        </div>
+    {% endif %}
+
+    {#    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}
+    {#        {% if '/teachers' in request.path %}#}
+    {#            <input type="hidden" name="Teacher_Code" id="id_Center_Code" value="{{ request.user.id }}"#}
+    {#                   class="select form-control">#}
+    {#        {% else %}#}
+    {#            {{ form.Teacher_Code|as_crispy_field }}#}
+    {#        {% endif %}#}
+    {#    </div>#}
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+        <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
+               class="select form-control">
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
+               class="select form-control">
+    </div>
+
+    <div class="submitButton  col-md-12">
+        <button class="btn btn-success" type="submit">Submit</button>
+    </div>
+
+</form>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+    {% if object.Course_Level %}
+        var rating = parseInt({{ object.Course_Level }});
+    {% else %}
+        var rating = 0;
+    {% endif %}
+
+    $('#id_Lecture_Cover_File').change(function(){
+        if (this.files.length > 0) {
+            $.each(this.files, function (index, value) {
+                image_size = (Math.round((value.size / 1024)));
+                if(image_size > 2048) {
+                    $('#id_Lecture_Cover_File').val('');
+                    alert("File size exceeds 2MB");
+                }
+            });
+        }
+    });
+</script>
+
+
+
