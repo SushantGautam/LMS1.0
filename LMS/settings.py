@@ -16,8 +16,7 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['lms-nsd.sushant.info.np',
-                 'localhost', '127.0.0.1', 'lsm-nsdev.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', '210.127.211.100']
 
 # Application definition
 

@@ -209,6 +209,9 @@
                 },
                 error: function () {
                     console.log('Error in generating chapter create form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
                 }
             });
         });

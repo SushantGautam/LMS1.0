@@ -6203,5 +6203,15 @@ input[type=checkbox], input[type=radio] {
     /* http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif */
 }
 
+.se-pre-con-ajax {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('../../images/Spinner-1s-200px.svg') center no-repeat #fff;
+}
+
 /*memberinfo list status buttons*/
 
