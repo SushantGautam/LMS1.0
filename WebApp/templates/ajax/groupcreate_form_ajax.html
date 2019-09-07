@@ -22,7 +22,7 @@
                class="select form-control">
     </div>
     <div class="submitButton col-md-12">
-        <button class="btn btn-success" type="submit">Submit</button>
+        <button class="btn btn-success" type="submit" id="submit_ajax">Submit</button>
         <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
     </div>
 </form>
@@ -30,6 +30,7 @@
 <script>
     $("#ajaxgroupform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
+        $('#id_Students_to option').prop('selected', true);
         $.ajax({
             url: "{% url 'group_create_ajax' %}",  // URL to your view that serves new info
             data: $(this).serialize(), // get the form data

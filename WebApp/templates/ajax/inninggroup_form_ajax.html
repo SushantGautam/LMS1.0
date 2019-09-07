@@ -33,6 +33,7 @@
 <script>
     $("#ajaxgroupforms").submit(function(e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
+        $('#id_Teacher_Code_to option').prop('selected', true);
         $.ajax({
             url: "{% url 'inninggroup_create_ajax' %}",  // URL to your view that serves new info
             data: $(this).serialize(), // get the form data
