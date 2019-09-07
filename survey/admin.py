@@ -14,8 +14,6 @@ class CategoryInfoAdminForm(forms.ModelForm):
 class CategoryInfoAdmin(admin.ModelAdmin):
     form = CategoryInfoAdminForm
     list_display = ['Category_Name', 'Category_Icon']
-    # readonly_fields = ['Category_Name']
-
 
 admin.site.register(CategoryInfo, CategoryInfoAdmin)
 
@@ -29,7 +27,7 @@ class SurveyInfoAdminForm(forms.ModelForm):
 
 class SurveyInfoAdmin(admin.ModelAdmin):
     form = SurveyInfoAdminForm
-    list_display = ['Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover',
+    list_display = ['Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover','Retaken_From','Version_No',
                     'Use_Flag', 'Added_By', 'Category_Code', 'Session_Code', 'Course_Code', 'Center_Code']
     # readonly_fields = ['Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover', 'Use_Flag']
 
@@ -62,7 +60,7 @@ class OptionInfoAdminForm(forms.ModelForm):
 
 class OptionInfoAdmin(admin.ModelAdmin):
     form = OptionInfoAdminForm
-    list_display = ['Option_Name', 'Question_Code']
+    list_display = ['Option_Name', 'Question_Code','Vote_Count']
     # readonly_fields = ['Option_Name']
 
 
@@ -78,7 +76,7 @@ class SubmitSurveyAdminForm(forms.ModelForm):
 
 class SubmitSurveyAdmin(admin.ModelAdmin):
     form = SubmitSurveyAdminForm
-    list_display = ['Survey_Code', 'Student_Code']
+    list_display = ['Survey_Code', 'Student_Code','Created_Date']
 
 
 admin.site.register(SubmitSurvey, SubmitSurveyAdmin)

@@ -348,7 +348,9 @@
         });
 
         $('#add-newgroup-btn').on('click', function () {
+            //$('#create_groupmapping_modal_body').load('{% url "group_create_ajax" %} script');
             $('#create_groupmapping_modal_body').empty();
+            
             $.ajax({
                 type: "GET",
                 url: "{% url 'group_create_ajax' %}",  // URL to your view that serves new info
@@ -368,6 +370,13 @@
                 url: "{% url 'inninggroup_create_ajax' %}",  // URL to your view that serves new info
                 success: function(response) {
                     $('#create_inninggroup_modal_body').append(response);
+                    window.addEventListener('load', function(e) {
+                        $('select.selectfilter, select.selectfilterstacked').each(function() {
+                            var $el = $(this),
+                                data = $el.data();
+                            SelectFilter.init($el.attr('id'), data.fieldName, parseInt(data.isStacked, 10));
+                        });
+                    });
                 },
                 error: function(){
                     console.log('Error in generating group create form')

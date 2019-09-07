@@ -1,4 +1,4 @@
-<svg class="lds-gooeyring" width="200px" height="200px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; animation-play-state: running; animation-delay: 0s; background: none;"><defs style="animation-play-state: running; animation-delay: 0s;">
+<svg class="lds-gooeyring" width="160px" height="160px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; animation-play-state: running; animation-delay: 0s; background: none;"><defs style="animation-play-state: running; animation-delay: 0s;">
      <filter id="gooey" x="-100%" y="-100%" width="300%" height="300%" color-interpolation-filters="sRGB" style="animation-play-state: running; animation-delay: 0s;">
        <feGaussianBlur in="SourceGraphic" stdDeviation="2.8000000000000003" style="animation-play-state: running; animation-delay: 0s;"></feGaussianBlur>
 <feComponentTransfer result="cutoff" style="animation-play-state: running; animation-delay: 0s;">

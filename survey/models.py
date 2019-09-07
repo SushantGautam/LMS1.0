@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, \
-    ImageField, DateField, Count
+     ImageField, DateField, Count
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from WebApp.models import MemberInfo, InningInfo, CourseInfo, CenterInfo
@@ -12,7 +12,6 @@ from WebApp.models import MemberInfo, InningInfo, CourseInfo, CenterInfo
 
 class CategoryInfo(models.Model):
 
-    # Fields
     Category_Name = CharField(max_length=100, blank=True, null=True)
     Category_Icon = CharField(max_length=50, blank=True, null=True)
 
@@ -34,35 +33,38 @@ class CategoryInfo(models.Model):
 
 class SurveyInfo(models.Model):
 
-    # Fields
     Survey_Title = CharField(max_length=500, blank=True, null=True)
     Start_Date = DateField(auto_now=False, auto_now_add=False, null=True)
     End_Date = DateField(auto_now=False, auto_now_add=False, null=True)
-    Survey_Cover = ImageField(
-        upload_to="Survey_Covers/", blank=True, null=True)
+    Survey_Cover = ImageField(upload_to="Survey_Covers/", blank=True, null=True)
     Use_Flag = BooleanField(default=True)
+    Retaken_From = IntegerField(blank=True, null=True, help_text="Store id of previous survey from which it was retaken")
+    Version_No = IntegerField(default=1,help_text="To maintain the versioning of the survey")
+    Created_Date = DateTimeField(auto_now_add=True)
+    Updated_Date = DateTimeField(auto_now=True)
 
     Center_Code = ForeignKey(
         'WebApp.CenterInfo',
-        related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
+        related_name="surveyinfo", on_delete=models.DO_NOTHING
+    )
+    
+    Category_Code = ForeignKey(
+        'CategoryInfo',
+        related_name="surveyinfo", on_delete=models.DO_NOTHING
     )
 
     Session_Code = ForeignKey(
         'WebApp.InningInfo',
         related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
     )
-    Added_By = ForeignKey(
-        'WebApp.MemberInfo',
-        related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
-    )
-    Category_Code = ForeignKey(
-        'CategoryInfo',
-        related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
-    )
-    
     Course_Code = ForeignKey(
         'WebApp.CourseInfo',
         related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
+    )
+
+    Added_By = ForeignKey(
+        'WebApp.MemberInfo',
+        related_name="surveyinfo", on_delete=models.DO_NOTHING
     )
 
     class Meta:
@@ -87,13 +89,11 @@ class SurveyInfo(models.Model):
 class QuestionInfo(models.Model):
 
     QUESTION_TYPE_CHOICES = [
-    ('SAQ', 'Short Answer'),
-    ('MCQ', 'Multiple Choice'),
+        ('SAQ', 'Short Answer'),
+        ('MCQ', 'Multiple Choice'),
     ]
 
-    # Fields
-    Question_Name = CharField(max_length=500, blank=True, null=True)
-    # Question_Answer = CharField(max_length=500, blank=True, null=True)
+    Question_Name = CharField(max_length=500)
     Question_Type = CharField(max_length=3, choices=QUESTION_TYPE_CHOICES, default='SAQ')
     Survey_Code = ForeignKey(
         'SurveyInfo',
@@ -125,16 +125,12 @@ class QuestionInfo(models.Model):
 
 class OptionInfo(models.Model):
 
-    # Fields
-    Option_Name = CharField(max_length=500, blank=True, null=True)
+    Option_Name = CharField(max_length=500)
+    Vote_Count = IntegerField(default=0)
     Question_Code = ForeignKey(
         'QuestionInfo',
         related_name="optioninfo", on_delete=models.CASCADE
     )
-    # Selected_By = models.ManyToManyField(
-    #     MemberInfo,
-    #     on_delete=models.CASCADE
-    # )
 
     class Meta:
         ordering = ('-pk',)
@@ -154,7 +150,7 @@ class OptionInfo(models.Model):
 
 class SubmitSurvey(models.Model):
 
-    # Fields
+    Created_Date = DateTimeField(auto_now_add=True)
     Survey_Code = ForeignKey(
         'SurveyInfo',
         related_name="submitsurvey", on_delete=models.CASCADE
@@ -179,9 +175,7 @@ class SubmitSurvey(models.Model):
 
 class AnswerInfo(models.Model):
 
-    # Fields
     Answer_Value = CharField(max_length=500, blank=True, null=True)
-    # Created_Date = DateTimeField(auto_now_add=True)
     Question_Code = ForeignKey(
         'QuestionInfo',
         related_name="answerinfo", on_delete=models.CASCADE
