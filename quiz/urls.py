@@ -84,4 +84,5 @@ urlpatterns += (
     path('saquestion/detail/<int:pk>/', views.SAQuestionDetailView.as_view(), name='saquestion_detail'),
     path('saquestion/delete/<int:pk>/', views.SAQuestionDeleteView, name='saquestion_delete'),
 
+    path('quizfw/', views.QuizCreateWizard.as_view(), name='quizfw'),
 )

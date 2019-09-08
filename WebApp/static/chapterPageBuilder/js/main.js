@@ -148,7 +148,7 @@ $(document).ready(function() {
                     method: 'POST',
                     type: 'POST',
                     success: function(data) {
-                        console.log(data);
+                        // console.log(data);
                         div.css({
                             'background-image': 'url('+load_file_url+'/' + file.name + '")',
                             'background-repeat': 'no-repeat',
@@ -185,18 +185,19 @@ $(document).ready(function() {
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         let div = $(input).parent().parent().parent();
-                        console.log(div);
+                        // console.log(div);
                         var data = new FormData();
-                        var count = 0
-                        $.each($('.imgInp')[0].files, function(i, file) {
-                            console.log(Math.round((file.size / 1024))) // get image size
+                        // var count = 0
+                        // console.log(input.files);
+                        $.each(input.files, function(i, file) {
+                            // console.log(Math.round((file.size / 1024))) // get image size
                             data.append('file-' + i, file);
-                            count++;
+                            // count++;
                         });
-                        data.append('count', count);
+                        // data.append('count', count);
                         data.append('chapterID', chapterID);
                         data.append('courseID', courseID);
-                        console.log("imageuploadfromhere")
+                        // console.log("imageuploadfromhere")
                         $.ajax({
                             url: save_file_url,
                             data: data,
@@ -213,7 +214,7 @@ $(document).ready(function() {
                                   'background-size': 'contain',
                                   'background-position': 'center',
                                   'border': '0'
-                              });
+                                });
                             },
                             error: function(data, status, errorThrown) {
                                 alert(data.responseJSON.message);
@@ -553,7 +554,7 @@ $(document).ready(function() {
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         let div = $(input).parent().parent().parent();
-                        console.log(div);
+                        // console.log(div);
                         var data = new FormData();
                         $.each($('.imgInp')[0].files, function(i, file) {
                             data.append('file-' + i, file);
@@ -716,7 +717,7 @@ $(document).ready(function() {
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         let div = $(input).parent().parent().parent();
-                        console.log(div);
+                        // console.log(div);
                         var data = new FormData();
                         $.each($('.imgInp')[0].files, function(i, file) {
                             data.append('file-' + i, file);
@@ -1039,8 +1040,8 @@ $(document).ready(function() {
             });
 
             var a = document.getElementsByClassName("current")[0];
-            console.log(a);
-            console.log($('#' + a.id));
+            // console.log(a);
+            // console.log($('#' + a.id));
             $('#' + a.id).append(dom);
             // canvas.append(dom);
             };

@@ -1,0 +1,49 @@
+{% load static %}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+{% load crispy_forms_tags %}
+{{ wizard.form.media }}
+
+<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+<form action="" method="post" id="quiz_form_1">{% csrf_token %}
+<table>
+{{ wizard.management_form }}
+{% if wizard.form.forms %}
+    {{ wizard.form.management_form }}
+    {% for form in wizard.form.forms %}
+        {{ form|crispy }}
+    {% endfor %}
+{% else %}
+    {{ wizard.form|crispy }}
+{% endif %}
+</table>
+{% if wizard.steps.prev %}
+<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">first step</button>
+<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">prev step</button>
+{% endif %}
+<input type="submit" value="Submt and Next"/>
+</form>
+
+{% block customjss %}
+<script>
+        $('.buttonNext').on('click', function () {
+            $("#quiz_form_1").submit();
+        });
+
+        $("#quiz_form_1").submit(function (e) {
+            console.log('inside step 1 script');
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            $.ajax({
+                url: "{% url 'quizfw' %}", // URL to your view that serves new info
+                data: $(this).serialize(), // get the form data
+                type: $(this).attr('method'), // GET or POST
+                success: function (data) {
+                    $("#form1_ajax").html(data);
+                },
+                error: function () {
+                    console.log('Error in posting form');
+                }
+            });
+        });
+</script>
+{% endblock customjss %}

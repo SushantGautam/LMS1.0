@@ -809,26 +809,26 @@ def chapterpagebuilder(request, course, chapter):
 @csrf_exempt
 def save_file(request):
     if request.method == "POST":
-        count = request.POST['count']
+        # count = request.POST['count']
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         path = ''
-        for x in range(int(count)):
-            if request.FILES['file-'+str(x)]:
-                image = request.FILES['file-'+str(x)]
-                if (image.size/1024) > 500:
-                    return JsonResponse(data = {"message":"File size exceeds 2MB"}, status=500)
-                path = settings.MEDIA_ROOT
-                image
-                # following is commented because filesystemstorage auto create directories if not exist
-                # if not os.path.exists(os.path.join(path, 'chapterBuilder')):
-                #     os.makedirs(os.path.join(path, 'chapterBuilder'))
-                # if not os.path.exists(path+'chapterBuilder/'+courseID):
-                #     os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID))
-                # if not os.path.exists(path+'chapterBuilder/'+courseID+'/'+chapterID):
-                #     os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID+'/'+chapterID))    
-                fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-                filename = fs.save(image.name, image)
+        # for x in range(int(count)):
+        if request.FILES['file-0']:
+            image = request.FILES['file-0']
+            if (image.size/1024) > 500:
+                return JsonResponse(data = {"message":"File size exceeds 2MB"}, status=500)
+            path = settings.MEDIA_ROOT
+            image
+            # following is commented because filesystemstorage auto create directories if not exist
+            # if not os.path.exists(os.path.join(path, 'chapterBuilder')):
+            #     os.makedirs(os.path.join(path, 'chapterBuilder'))
+            # if not os.path.exists(path+'chapterBuilder/'+courseID):
+            #     os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID))
+            # if not os.path.exists(path+'chapterBuilder/'+courseID+'/'+chapterID):
+            #     os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID+'/'+chapterID))    
+            fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            filename = fs.save(image.name, image)
         return JsonResponse(data={"message": "success"})
 
 
