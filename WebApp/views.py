@@ -276,6 +276,18 @@ class MemberInfoCreateView(CreateView):
     form_class = MemberInfoForm
 
 
+def MemberInfoActivate(request,pk):
+    try:
+        obj = MemberInfo.objects.get(pk=pk)
+        obj.Use_Flag=True
+        obj.save()
+    except:
+        messages.error(request,'Cannot perform the action. Please try again later')
+    
+    return redirect('memberinfo_list_inactive')
+
+
+
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
     success_url = reverse_lazy('user_profile')
