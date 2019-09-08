@@ -348,9 +348,10 @@ class CourseInfoListView(ListView):
 
         query = self.request.GET.get('query')
         if query:
+            query = query.strip()
             qs = qs.filter(Course_Name__contains=query)
             if not len(qs):
-                messages.error(self.request, 'Search not found')
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
