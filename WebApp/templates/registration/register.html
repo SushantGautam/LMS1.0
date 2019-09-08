@@ -2,110 +2,106 @@
 {% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Register</title>
 
-    <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}"/>
-    <link rel="stylesheet" href="{% static 'css/floating-labels.css' %}"/>
-    <link
-            href="https://fonts.googleapis.com/css?family=Poppins"
-            rel="stylesheet"
-    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/floating-labels.css' %}" />
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
 
 
 </head>
+
 <body>
 
-<div class="col-lg-6 col-md-6 col-xs-12">
+    <div class="col-lg-6 col-md-6 col-xs-12">
 
-    <img
+        <img id="regImg" src="/static/images/logo_orange.png" alt="" width="45%" />
+        <h1 id="regHeader" align="center" style="color: gray">
+            <hr />
+            u-LMS 2019
 
-            id="regImg"
-            src="/static/images/logo_orange.png"
-            alt=""
-            width="45%"
+        </h1>
+    </div>
+    <div class="col-lg-6 col-md-6 col-xs-12">
+        <form class="form-reg" method="POST" action="">
+            {% csrf_token %}
 
-    />
-    <h1 id="regHeader" align="center" style="color: gray">
-        <hr/>
-        u-LMS 2019
-
-    </h1>
-</div>
-<div class="col-lg-6 col-md-6 col-xs-12">
-    <form class="form-reg" method="POST" action="">
-        {% csrf_token %}
-
-        <div id="div_id_username" class="form-group has-error"><label for="id_username"
-                                                                      class="control-label  requiredField">
-            Username * </label>
-            <div class="controls "><input type="text" name="username" maxlength="150" autofocus="" id="id_username"
-                                          required="" class="textinput textInput form-control form-control-danger">
-                <p id="hint_id_username" class="help-block" style="font-size: small">150 characters or fewer.
-                    Letters, digits and
-                    @/./+/-/_ only.</p></div>
-        </div>
-
-        <div id="div_id_email" class="form-group"><label for="id_email" class="control-label ">
-            Email address
-        </label>
-            <div class="controls "><input type="email" name="email" maxlength="254" id="id_email"
-                                          class="emailinput form-control"></div>
-        </div>
-        <div id="div_id_Member_Gender" class="form-group">{{ form.Center_Code|as_crispy_field }}
-        </div>
-        {{ form.Member_Gender|as_crispy_field }}
-        <div id="div_id_Member_Type" class="form-group">
-            <label for="id_Member_Type" class="control-label ">
-                Member Type
-            </label>
-            <br>
-            <div class="form-group" style="display: inline; float: left;">
-                <div id="div_id_Is_Student" class="checkbox">
-                    <input type="checkbox" name="Is_Student" id="id_Is_Student" class="checkboxinput">
-                    Student &nbsp;&nbsp;&nbsp;
+            <div id="div_id_username" class="form-group has-error"><label for="id_username"
+                    class="control-label  requiredField">
+                    Username * </label>
+                <div class="controls "><input type="text" name="username" maxlength="150" autofocus="" id="id_username"
+                        required="" class="textinput textInput form-control form-control-danger">
+                    <p id="hint_id_username" class="help-block" style="font-size: small">150 characters or fewer.
+                        Letters, digits and
+                        @/./+/-/_ only.</p>
                 </div>
             </div>
-            <div class="form-group" style="display: inline;float: left">
-                <div id="div_id_Is_Teacher" class="checkbox">
-                    <input type="checkbox" name="Is_Teacher" id="id_Is_Teacher" class="checkboxinput">
-                    Teacher
+
+            <div id="div_id_email" class="form-group"><label for="id_email" class="control-label ">
+                    Email address
+                </label>
+                <div class="controls "><input type="email" name="email" maxlength="254" id="id_email"
+                        class="emailinput form-control"></div>
+            </div>
+            <div id="div_id_Member_Gender" class="form-group">{{ form.Center_Code|as_crispy_field }}
+            </div>
+            {{ form.Member_Gender|as_crispy_field }}
+            <div id="div_id_Member_Type" class="form-group">
+                <label for="id_Member_Type" class="control-label ">
+                    Member Type
+                </label>
+                <br>
+                <div class="form-group" style="display: inline; float: left;">
+                    <div id="div_id_Is_Student" class="checkbox">
+                        <input type="checkbox" name="Is_Student" id="id_Is_Student" class="checkboxinput">
+                        Student &nbsp;&nbsp;&nbsp;
+                    </div>
+                </div>
+                <div class="form-group" style="display: inline;float: left">
+                    <div id="div_id_Is_Teacher" class="checkbox">
+                        <input type="checkbox" name="Is_Teacher" id="id_Is_Teacher" class="checkboxinput">
+                        Teacher
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div id="div_id_password1" class="form-group"><label for="id_password1"
+                    class="control-label  requiredField">
+                    Password * </label>
+                <div class="controls "><input type="password" name="password1" id="id_password1" required=""
+                        class="textinput textInput form-control">
+                    <ul style="font-size: small">
+                        <li>Your password must contain at least 8 characters.</li>
+                        <li>Your password can't be entirely numeric.</li>
+                    </ul>
                 </div>
             </div>
-            <br>
-        </div>
-        <div id="div_id_password1" class="form-group"><label for="id_password1" class="control-label  requiredField">
-            Password * </label>
-            <div class="controls "><input type="password" name="password1" id="id_password1" required=""
-                                          class="textinput textInput form-control">
-                <ul style="font-size: small">
-                    <li>Your password must contain at least 8 characters.</li>
-                    <li>Your password can't be entirely numeric.</li>
-                </ul>
+            <div id="div_id_password2" class="form-group"><label for="id_password2"
+                    class="control-label  requiredField">
+                    Password confirmation<span class="asteriskField">*</span> </label>
+                <div class="controls "><input type="password" name="password2" id="id_password2" required=""
+                        class="textinput textInput form-control">
+                    <p id="hint_id_password2" class="help-block" style="font-size: small">Enter the same password as
+                        before,
+                        for verification.</p>
+                </div>
             </div>
-        </div>
-        <div id="div_id_password2" class="form-group"><label for="id_password2" class="control-label  requiredField">
-            Password confirmation<span class="asteriskField">*</span> </label>
-            <div class="controls "><input type="password" name="password2" id="id_password2" required=""
-                                          class="textinput textInput form-control">
-                <p id="hint_id_password2" class="help-block" style="font-size: small">Enter the same password as before,
-                    for verification.</p>
-            </div>
-        </div>
-        <div class="control-label">
-            <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False"
-                   class="select form-control">
-            {#           {{ form.Use_Flag|as_crispy_field }} #}
-        </div>
+            <div class="control-label">
+                <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False" class="select form-control">
 
-        <button class="btn btn-lg btn-success btn-block" type="submit">
-            Register
-        </button>
-    </form>
-</div>
+            </div>
+
+            <button class="btn btn-lg btn-success btn-block" type="submit">
+                Register
+            </button>
+        </form>
+    </div>
 
 </body>
+
 </html>

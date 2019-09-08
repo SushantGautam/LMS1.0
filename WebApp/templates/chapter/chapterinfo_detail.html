@@ -1,6 +1,6 @@
 {% load static %}
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true" id="create_assignment_modal">
+    aria-hidden="true" id="create_assignment_modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -16,29 +16,28 @@
     </div>
 </div>
 <div class="outerDiv">
-
     <div class="col-md-6 col-sm-12 col xs-12">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                 <h2 class="detailListHeader">Chapter {{ object.Chapter_No }}
-                    : {{ object.Chapter_Name }} </h2></div>
-            <a class="btn-sm btn-success"
-               href="#" id="course-viewer" data-toggle="modal" data-target="#course-modal">Course
+                    : {{ object.Chapter_Name }} </h2>
+            </div>
+            <a class="btn-sm btn-success" href="#" id="course-viewer" data-toggle="modal"
+                data-target="#course-modal">Course
                 Viewer &nbsp;</a>
 
             {% if '/students' not in request.path %}
-                <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
-                    <a class="btn-sm btn-primary"
-                       href="{% if '/teachers' in request.path %}
+            <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
+                <a class="btn-sm btn-primary" href="{% if '/teachers' in request.path %}
                 /teachers{{ object.get_update_url }}
             {% else %}
                 {{ object.get_update_url }}
             {% endif %}">Edit Chapter &nbsp;</a>
-                    <a class="btn-sm btn-success"
-                       href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Course
-                        Builder &nbsp;</a>
-                    <a class="btn-sm btn-danger" href="{{ object.get_delete_url }}">Delete Chapter</a>
-                </div>
+                <a class="btn-sm btn-success"
+                    href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Course
+                    Builder &nbsp;</a>
+                <a class="btn-sm btn-danger" href="{{ object.get_delete_url }}">Delete Chapter</a>
+            </div>
             {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12" id="tabs">
                 <table class="table">
@@ -50,10 +49,10 @@
                     {#                        <td>Page Number</td>#}
                     {#                        <td>{{ object.Page_Num }}</td>#}
                     {#                    </tr>#}
-                    {#                    <tr>#}
-                    {#                        <td>Status</td>#}
-                    {#                        <td>{{ object.Use_Flag }}</td>#}
-                    {#                    </tr>#}
+                    <tr>
+                        <td>Status</td>
+                        <td>{{ object.Use_Flag }}</td>
+                    </tr>
                     <tr>
                         <td>Register Agent</td>
                         <td>{{ object.Register_Agent }}</td>
@@ -68,10 +67,10 @@
                             <div class="btn-group" id="status" data-toggle="buttons">
                                 <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
                                     <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                                           checked="checked">ON</label>
+                                        checked="checked">ON</label>
                                 <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
                                     <input type="radio" value="0"
-                                           name="multifeatured_module[module_id][status]">OFF</label>
+                                        name="multifeatured_module[module_id][status]">OFF</label>
                             </div>
                         </td>
                     </tr>
@@ -81,10 +80,10 @@
                             <div class="btn-group" id="status" data-toggle="buttons">
                                 <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
                                     <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                                           checked="checked">ON</label>
+                                        checked="checked">ON</label>
                                 <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
                                     <input type="radio" value="0"
-                                           name="multifeatured_module[module_id][status]">OFF</label>
+                                        name="multifeatured_module[module_id][status]">OFF</label>
                             </div>
                         </td>
                     </tr>
@@ -108,41 +107,41 @@
             {#                            </div>#}
             {#                        {% endif %}#}
             {% if '/students' not in request.path %}
-                <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
-                    <button type="button" class="btn-sm btn-success" data-toggle="modal"
-                            data-target="#exampleModal1" id="add-newassignment-btn">
-                        Create New Assignment
-                    </button>
-                </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
+                <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModal1"
+                    id="add-newassignment-btn">
+                    Create New Assignment
+                </button>
+            </div>
             {% endif %}
         </div>
         <div class="col-md-12">
             <hr class="header_hr">
             {% for o in assignments %}
-                <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
-                    <div class="col-md-8 col-sm-8 col-xs-8">
-                        <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
-                        <h5>
-                            <b style="color: #000000">{{ o.Assignment_Topic }}</b>
-                        </h5>
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4">
-                        <a href="{% if '/students' in request.path %}
+            <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
+                <div class="col-md-8 col-sm-8 col-xs-8">
+                    <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
+                    <h5>
+                        <b style="color: #000000">{{ o.Assignment_Topic }}</b>
+                    </h5>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-4">
+                    <a href="{% if '/students' in request.path %}
                                 {{ o.student_get_absolute_url }}
                             {% else %}
                                {{ o.get_absolute_url }}
                             {% endif %}">
-                            <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                        <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                 margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
-                            </button>
-                        </a>
-                    </div>
-
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <hr style="margin-top: 1px; margin-bottom: 10px;">
-                        <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
-                    </div>
+                        </button>
+                    </a>
                 </div>
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <hr style="margin-top: 1px; margin-bottom: 10px;">
+                    <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
+                </div>
+            </div>
             {% endfor %}
         </div>
     </div>
@@ -154,37 +153,25 @@
 <div id="course-modal" class="modal fade" role="dialog">
     <div class="modal-lg modal-dialog">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">
-              <span id="chaptertitle">
-                  <!-- Chapter title goes here -->
-              </span></h4>
-            <!-- <button id="prev-btn" class="btn btn-secondary">Previous</button>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">
+                    <span id="chaptertitle">
+                        <!-- Chapter title goes here -->
+                    </span></h4>
+                <!-- <button id="prev-btn" class="btn btn-secondary">Previous</button>
             <button id="next-btn" class="btn btn-secondary">Next</button> -->
-        </div>
-        <div class="modal-body">
-            <div class="col-md-1">
-                <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
             </div>
 
-            <div class="modal-body">
-                <div class="col-md-1">
-                    <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
-                </div>
-                <div class="col-md-10" id="modal-container" style="position: relative">
 
-                </div>
-                <div class="col-md-1">
-                    <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i></button>
+            <div class="col-md-10" id="modal-container" style="position: relative">
 
-                </div>
+            </div>
+            <div class="col-md-1">
+                <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i></button>
 
-                <div class="modal-body" id="modal-container" style="position: relative">
-
-                </div>
             </div>
 
         </div>
@@ -210,10 +197,10 @@
         });
     });
 
-    function loaddata(data){
+    function loaddata(data) {
         $('#chaptertitle').text(data.chaptertitle);
-        $.each(data.pages, function(key, value){
-            $.each(value, function(count){
+        $.each(data.pages, function (key, value) {
+            $.each(value, function (count) {
 
                 // Create modal
                 $('#modal-container').append(`
@@ -236,12 +223,12 @@
                             `);
                         });
                     }
-                    if(div == 'pic'){
-                        $.each(div_value, function(css, css_value){
-                            // console.log(css_value.tops)
+                    if (div == 'pic') {
+                        $.each(div_value, function (css, css_value) {
+                            console.log(css_value.tops)
                             src = css_value['background-image']
                             imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                            $('#page'+key+ '> .divholder').append(`
+                            $('#page' + key + '> .modal-body').append(`
                                 <div style = "position: absolute; top: ${css_value.tops}; left: ${css_value.left}; width = 100%">
                                     <image src = ${imgsrc} />
                                 </div>
@@ -283,31 +270,31 @@
 </script>
 
 {% block customjss %}
-    <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
-    <script>
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus')
-        });
+<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+<script>
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    });
 
-        $('#add-newassignment-btn').on('click', function () {
-            $('#create_assignment_modal_body').empty();
-            $('#create_assignment_modal_body').append(
-                `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+    $('#add-newassignment-btn').on('click', function () {
+        $('#create_assignment_modal_body').empty();
+        $('#create_assignment_modal_body').append(
+            `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
                class="select form-control">
             <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
                class="select form-control">`
-            )
-            {# alert('asdasdasd') #}
-            $.ajax({
-                type: "GET",
-                url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
-                success: function (response) {
-                    $('#create_assignment_modal_body').append(response);
-                },
-                error: function () {
-                    console.log('Error in generating assignment create form')
-                }
-            });
+        )
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+            success: function (response) {
+                $('#create_assignment_modal_body').append(response);
+            },
+            error: function () {
+                console.log('Error in generating assignment create form')
+            }
         });
-    </script>
+    });
+</script>
 {% endblock %}
