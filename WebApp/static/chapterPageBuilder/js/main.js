@@ -139,7 +139,10 @@ $(document).ready(function() {
         
             function upload(file) {
                 const data = new FormData();
-                data.append("fileName", file);
+                data.append("file-0", file);
+                data.append('chapterID', chapterID);
+                data.append('courseID', courseID);
+                data.append('type', 'pic');
                 $.ajax({
                     url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
                     data: data,
@@ -148,14 +151,16 @@ $(document).ready(function() {
                     method: 'POST',
                     type: 'POST',
                     success: function(data) {
-                        // console.log(data);
                         div.css({
-                            'background-image': 'url('+load_file_url+'/' + file.name + '")',
+                            'background-image': 'url('+load_file_url+'/' + file.name + ')',
                             'background-repeat': 'no-repeat',
                             'background-size': 'contain',
                             'background-position': 'center',
                             'border': '0'
                         });
+                    },
+                    error: function(data, status, errorThrown) {
+                        alert(data.responseJSON.message);
                     }
                 });
                 let div = $('#picture-drag').parent().parent();
@@ -195,6 +200,7 @@ $(document).ready(function() {
                             // count++;
                         });
                         // data.append('count', count);
+                        data.append('type', 'pic');
                         data.append('chapterID', chapterID);
                         data.append('courseID', courseID);
                         // console.log("imageuploadfromhere")
@@ -218,7 +224,7 @@ $(document).ready(function() {
                             },
                             error: function(data, status, errorThrown) {
                                 alert(data.responseJSON.message);
-                             }
+                            }
                         });
 
                         $('#picture-drag').css({
@@ -313,11 +319,11 @@ $(document).ready(function() {
                                     });
         
                                     div.append(`
-                                <video width="400" height="200" controls>
-                                <source src="../uploads/${file.name}" type="video/mp4">
-                                 Your browser does not support the video tag.
-                              </video>
-                          `);
+                                            <video width="400" height="200" controls>
+                                            <source src="../uploads/${file.name}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    `);
         
                                     $(div).hover(function() {
                                         $(this).css("border", "1px solid red");
@@ -362,13 +368,15 @@ $(document).ready(function() {
                         let div = $(input).parent().parent().parent();
         
                         var data = new FormData();
-                        $.each($('.video-form')[0].files, function(i, file) {
+                        console.log(input.files)
+                        $.each(input.files, function(i, file) {
                             data.append('file-' + i, file);
                         });
-        
+                        data.append('chapterID', chapterID);
+                        data.append('courseID', courseID);
+                        data.append('type', 'video');
                         $.ajax({
-        
-                            url: '/index',
+                            url: save_file_url,
                             data: data,
                             contentType: false,
                             processData: false,
@@ -376,6 +384,11 @@ $(document).ready(function() {
                             type: 'POST',
                             success: function(data) {
                                 console.log(data);
+                                div.append(`
+                                <video width="400" height="200" controls>
+                                <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>`);
                             },
                             xhr: function() {
                                 var xhr = new window.XMLHttpRequest();
@@ -396,12 +409,12 @@ $(document).ready(function() {
                                                 'display': 'none'
                                             });
         
-                                            div.append(`
-                                            <video width="400" height="200" controls>
-                                            <source src="../uploads/${input.files[0].name}" type="video/mp4">
-                                             Your browser does not support the video tag.
-                                          </video>
-                                      `);
+                                    //         div.append(`
+                                    //         <video width="400" height="200" controls>
+                                    //         <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
+                                    //          Your browser does not support the video tag.
+                                    //       </video>
+                                    //   `);
         
                                             $(div).hover(function() {
                                                 $(this).css("border", "1px solid red");
@@ -410,13 +423,13 @@ $(document).ready(function() {
                                             })
         
                                             $('.pic').resizable({
-                                                containment: $('.editor-canvas'),
+                                                containment: $('#tabs-for-downloads'),
                                                 grid: [20, 20],
                                                 autoHide: true,
                                                 minWidth: 150,
                                                 minHeight: 150
                                             });
-                                            console.log(file.name);
+                                            // console.log(file.name);
                                         }
         
                                     }
@@ -1056,20 +1069,20 @@ $(document).ready(function() {
             let position = { top, left };
             let html =
                 `<div class='video-div'>
-                        <div id="video-actions">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-upload" id=${id}></i>
+                    <div id="video-actions">
+                        <i class="fas fa-trash" id=${id}></i>
+                        <i class="fas fa-upload" id=${id}></i>
+                    </div>
+                    <div>
+                        <p id="video-drag">drag and drop video here...</p>
+                        <div id="progress-bar">
+                            <span id="progress-bar-fill"></span>
                         </div>
-                        <div>
-                            <p id="video-drag">drag and drop video here...</p>
-                            <div id="progress-bar">
-                                <span id="progress-bar-fill"></span>
-                            </div>
-                            <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                            <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
-                        </form>
-                        </div>
-                    </div>`
+                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
+                    </form>
+                    </div>
+                </div>`
 
             this.RemoveElement = function () {
                 return idss;
@@ -1078,17 +1091,17 @@ $(document).ready(function() {
                 // dom includes the html,css code with draggable property
 
                 let dom = $(html).css({
-                "position": "absolute",
-                "top": position.top,
-                "left": position.left
+                    "position": "absolute",
+                    "top": position.top,
+                    "left": position.left
                 }).draggable({
-                //Constraint   the draggable movement only within the canvas of the editor
-                containment: ".editor-canvas",
-                scroll: false,
-                cursor: "move",
-                snap: ".gridlines",
-                snapMode: 'inner',
-                cursorAt: { bottom: 0 }
+                    //Constraint   the draggable movement only within the canvas of the editor
+                    containment: "#tabs-for-download",
+                    scroll: false,
+                    cursor: "move",
+                    snap: ".gridlines",
+                    snapMode: 'inner',
+                    cursorAt: { bottom: 0 }
                 });
 
                 var a = document.getElementsByClassName("current")[0];
