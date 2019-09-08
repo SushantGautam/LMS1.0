@@ -1,6 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
-{#<link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">#}
+<!-- {#<link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">#} -->
 <div class="se-pre-con-ajax"></div>
 <form method="post" id="ajaxchapterinfoform">
     {% csrf_token %}
@@ -17,37 +17,25 @@
             </label>
             <div class="controls ">
                 <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
-                          cols="40">{{ object.Summary }}</textarea>
+                    cols="40">{{ object.Summary }}</textarea>
             </div>
         </div>
         <br>
     </div>
-    {#        <div class="col-md-12 col-sm-12 col-xs-12">#}
+    <!-- {#        <div class="col-md-12 col-sm-12 col-xs-12">#}
     {#            {{ form.Page_Num|as_crispy_field }}<br>#}
-    {#        </div>#}
+    {#        </div>#} -->
     <div class="col-md-12 col-sm-12 col-xs-12">
-{#        <label>#}
-{#            Status#}
-{#        </label><br>#}
-{#        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"#}
-{#                {% if object.Use_Flag == True %}#}
-{#               checked#}
-{#                {% else %}#}
-{#               &nbsp;#}
-{#                {% endif %}#}
-{#        ><br> <br>#}
-        {{ form.Use_Flag }}
+        <input id="id_Use_Flag" name="Use_Flag" value="true" type="hidden">
+        <!-- {{ form.Use_Flag }} -->
     </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.pk }}"
-               class="select form-control">
+            class="select form-control">
     </div>
 
-    {#    <div class="col-md-12 col-sm-12 col-xs-12">#}
-    {#        <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ Course_Code.id }}"#}
-    {#               class="select form-control">#}
-    {#    </div>#}
+
 
     <div class="col-md-12" align="center">
         <button class="btn btn-success" type="submit">Submit</button>
@@ -56,8 +44,10 @@
 </form>
 
 
-{#<script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>#}
+<!-- {#<script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>#} -->
 <script>
+    $(".se-pre-con-ajax").fadeOut("fast");
+
     $("#ajaxchapterinfoform").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.

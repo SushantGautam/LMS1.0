@@ -3,8 +3,41 @@
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
+<ul class="wizard_steps anchor">
+    <li>
+        <a href="#step-1" class="selected" isdone="1" rel="1">
+            <span class="step_no">1</span>
+            <span class="step_descr">Basic  Info
+                    
+                </span>
+        </a>
+    </li>
+    <li>
+        <a href="#step-2" class="disabled" isdone="1" rel="2">
+            <span class="step_no">2</span>
+            <span class="step_descr">Select  Quiz Type
+                    
+                </span>
+        </a>
+    </li>
+    <li>
+        <a href="#step-3" class="disabled" isdone="1" rel="3">
+            <span class="step_no">3</span>
+            <span class="step_descr">Add  Question
+                    
+                </span>
+        </a>
+    </li>     
+</ul> 
+<div class="col-md-12">
+        <div class="col-md-6"></div>
+        <div class="col-md-6 text-right">
+          
+                <h4>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h4>
+        </div>
+        
+</div>
 
-<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
 <form action="" method="post" id="quiz_form_1">{% csrf_token %}
 <table>
 {{ wizard.management_form }}
@@ -14,14 +47,82 @@
         {{ form|crispy }}
     {% endfor %}
 {% else %}
-    {{ wizard.form|crispy }}
+    <!-- {{ wizard.form|crispy }} --> 
+    <div class="form-group"> 
+        <div class="col-md-12"> 
+            <div class="col-md-6">
+                <label class="quiz-add-label"  for="">Title</label>
+                {{wizard.form.title}}              
+            </div>
+            <div class="col-md-6">
+                <label class="quiz-add-label"  for="">User Friendly Url</label>
+                {{wizard.form.url}} 
+            </div>                                            
+        </div> 
+    </div>
+        <div class="form-group"> 
+            <div class="col-md-12 questions-wrapper">
+                <div class="col-md-6">
+                    <label class="quiz-add-label"  for="">Description</label>                                                 
+                </div>
+                <div class="col-md-6 questions-only">
+                    <!-- <a class="btn qts-button" href="{% url 'mcquestion_create' %}" > Add MCQ question </a>    -->
+                </div> 
+                <div class="col-md-12">
+                    {{wizard.form.description}}
+                </div>                                               
+            </div>
+        </div>
+        <div class="form-group"> 
+            <div class="col-md-12"> 
+                <div class="col-md-6">
+                    <label class="quiz-add-label"  for="">Lecture Code</label>
+                    {{form.course_code}}
+                </div>
+                <div class="col-md-6">
+                    <label class="quiz-add-label"  for="">Timer</label>
+                    {{form.duration}} 
+                </div>        
+            </div> 
+            </div>
+              
 {% endif %}
 </table>
 {% if wizard.steps.prev %}
-<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">first step</button>
-<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">prev step</button>
+<div class="col-md-12 submitforquiz"> 
+        <div class="col-md-6">
+                
+
+        </div>
+        <div class="col-md-6 button-place">
+                <button name="wizard_goto_step" value="{{ wizard.steps.prev }}"   class="add-mcq">Previous</button>
+                
+
+        </div>
+           
+
+    </div>
+
 {% endif %}
-<input type="submit" value="Submt and Next"/>
+<div class="col-md-12 submitforquiz"> 
+    <div class="col-md-6">
+
+    </div>
+    <div class="col-md-6 text-right">
+            <button name="wizard_goto_step"  class="add-mcq">Next</button>
+        </div>
+</div>
+
+
+    
+           
+
+    
+  
+       
+
+
+
 </form>
 
 {% block customjss %}

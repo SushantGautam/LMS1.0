@@ -57,21 +57,21 @@
 
 <body class="{% block body_class %}nav-md {% endblock body_class %}">
 
-{% block body %}
+    {% block body %}
     <div class="se-pre-con"></div>
     <div class="container body">
         <div class="main_container">
 
             {% block sidebar %}
-                <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
-                    {% include "WebApp/theme/sidebar.html" %}
-                </div>
+            <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
+                {% include "WebApp/theme/sidebar.html" %}
+            </div>
             {% endblock sidebar %}
 
             {% block top_navigation %}
-                <div class="top_nav">
-                    {% include "WebApp/theme/top_navigation.html" %}
-                </div>
+            <div class="top_nav">
+                {% include "WebApp/theme/top_navigation.html" %}
+            </div>
             {% endblock top_navigation %}
 
 
@@ -88,15 +88,15 @@
                     {% endblock %}
                 </ol>
                 {% block content %}
-                    {#                     {{ content }} #}
+                {#                     {{ content }} #}
                 {% endblock content %}
 
 
             </div>
             {% block footer %}
-                <footer>
-                    {% include "WebApp/theme/footer.html" %}
-                </footer>
+            <footer>
+                {% include "WebApp/theme/footer.html" %}
+            </footer>
             {% endblock footer %}
         </div>
     </div>

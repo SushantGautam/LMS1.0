@@ -211,7 +211,7 @@
             <div class="panel panel-default">
                 <div class="title">
                     <a href="{% url 'courseinfo_list' %}">
-                        <h2 style="font-size: 23px ">Courses</h2>
+                        <h2 style="font-size: 23px ">&nbsp;Courses</h2>
                     </a>
 
                     <!-- <h5>Your recent courses</h5> -->
@@ -399,7 +399,7 @@
         wordContainer.style.lineHeight = config.lineHeight;
         /*    wordContainer.style.transform = "translateX(-50%) translateY(-50%)";
         wordContainer.appendChild(document.createTextNode(word));*/
-       
+
         wordLink.setAttribute(`href`, `/forum/search/(%3FP${word}.*)/`);
         wordLink.appendChild(document.createTextNode(word));
         wordContainer.appendChild(wordLink);

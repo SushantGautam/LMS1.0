@@ -32,6 +32,9 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
                     CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 from datetime import datetime
+from forum.models import Thread, Topic, Post, ForumAvatar, NodeGroup
+from forum.views import get_top_thread_keywords, NodeGroup, TopicView, ThreadView
+
 import json
 
 
@@ -276,6 +279,18 @@ class MemberInfoCreateView(CreateView):
     form_class = MemberInfoForm
 
 
+def MemberInfoActivate(request,pk):
+    try:
+        obj = MemberInfo.objects.get(pk=pk)
+        obj.Use_Flag=True
+        obj.save()
+    except:
+        messages.error(request,'Cannot perform the action. Please try again later')
+    
+    return redirect('memberinfo_list_inactive')
+
+
+
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
     success_url = reverse_lazy('user_profile')
@@ -336,9 +351,10 @@ class CourseInfoListView(ListView):
 
         query = self.request.GET.get('query')
         if query:
+            query = query.strip()
             qs = qs.filter(Course_Name__contains=query)
             if not len(qs):
-                messages.error(self.request, 'Search not found')
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
@@ -415,27 +431,18 @@ class ChapterInfoDetailView(DetailView):
 class CourseForum(ListView):
     model = Thread
     paginate_by = 20
-    template_name = 'courseinfo/Course_Forum.html'
+    template_name = 'course/Course_Forum.html'
     context_object_name = 'threads'
 
-    def get_queryset(self):
-        return Thread.objects.visible().filter(
-            topic__id=self.kwargs.get('course.pk')
-        ).select_related(
-            'user', 'topic'
-        ).prefetch_related(
-            'user__forum_avatar'
-        ).order_by(
-            *['order', get_thread_ordering(self.request)]
-        )
-
     def get_context_data(self, **kwargs):
-        context = super(ListView, self).get_context_data(**kwargs)
-        print(self.kwargs.get('pk'))
-        context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
-        context['title'] = context['panel_title'] = topic.title
-        context['show_order'] = True
+        context = super().get_context_data(**kwargs)
+        context['course'] = CourseInfo.objects.get(pk=self.kwargs.get('course'))
+        context['topic'] = Topic.objects.all()
+        context['thread'] = Thread.objects.all()
+        context['node_group'] = NodeGroup.objects.all()
         return context
+
+
 
 
 class ChapterInfoUpdateView(UpdateView):
@@ -797,17 +804,17 @@ def chapterpagebuilder(request, course, chapter):
 @csrf_exempt
 def save_file(request):
     if request.method == "POST":
-        # count = request.POST['count']
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
+        media_type = request.POST['type']
         path = ''
         # for x in range(int(count)):
         if request.FILES['file-0']:
-            image = request.FILES['file-0']
-            if (image.size/1024) > 500:
-                return JsonResponse(data = {"message":"File size exceeds 2MB"}, status=500)
+            media = request.FILES['file-0']
+            if media_type == 'pic':
+                if (media.size/1024) > 2048:
+                    return JsonResponse(data = {"message":"File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
-            image
             # following is commented because filesystemstorage auto create directories if not exist
             # if not os.path.exists(os.path.join(path, 'chapterBuilder')):
             #     os.makedirs(os.path.join(path, 'chapterBuilder'))
@@ -816,7 +823,7 @@ def save_file(request):
             # if not os.path.exists(path+'chapterBuilder/'+courseID+'/'+chapterID):
             #     os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID+'/'+chapterID))    
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-            filename = fs.save(image.name, image)
+            filename = fs.save(media.name, media)
         return JsonResponse(data={"message": "success"})
 
 
