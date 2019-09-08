@@ -1020,7 +1020,7 @@ table th {
 }
 .tab-content-no{
   display: none;
-  /* width:865px; */
+  width:820px;
   height:560px;
   border:2px solid whitesmoke;
   padding:10px;

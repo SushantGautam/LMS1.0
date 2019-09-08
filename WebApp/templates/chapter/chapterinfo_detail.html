@@ -170,21 +170,13 @@
                 <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
             </div>
 
-            <div class="modal-body">
-                <div class="col-md-1">
-                    <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
-                </div>
-                <div class="col-md-10" id="modal-container" style="position: relative">
+            
+            <div class="col-md-10" id="modal-container" style="position: relative">
 
-                </div>
-                <div class="col-md-1">
-                    <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i></button>
+            </div>
+            <div class="col-md-1">
+                <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i></button>
 
-                </div>
-
-                <div class="modal-body" id="modal-container" style="position: relative">
-
-                </div>
             </div>
 
         </div>
@@ -238,10 +230,10 @@
                     }
                     if(div == 'pic'){
                         $.each(div_value, function(css, css_value){
-                            // console.log(css_value.tops)
+                            console.log(css_value.tops)
                             src = css_value['background-image']
                             imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                            $('#page'+key+ '> .divholder').append(`
+                            $('#page'+key+ '> .modal-body').append(`
                                 <div style = "position: absolute; top: ${css_value.tops}; left: ${css_value.left}; width = 100%">
                                     <image src = ${imgsrc} />
                                 </div>
