@@ -32,6 +32,9 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
                     CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 from datetime import datetime
+from forum.models import Thread, Topic, Post, ForumAvatar, NodeGroup
+from forum.views import get_top_thread_keywords, NodeGroup, TopicView, ThreadView
+
 import json
 
 
@@ -415,27 +418,18 @@ class ChapterInfoDetailView(DetailView):
 class CourseForum(ListView):
     model = Thread
     paginate_by = 20
-    template_name = 'courseinfo/Course_Forum.html'
+    template_name = 'course/Course_Forum.html'
     context_object_name = 'threads'
 
-    def get_queryset(self):
-        return Thread.objects.visible().filter(
-            topic__id=self.kwargs.get('course.pk')
-        ).select_related(
-            'user', 'topic'
-        ).prefetch_related(
-            'user__forum_avatar'
-        ).order_by(
-            *['order', get_thread_ordering(self.request)]
-        )
-
     def get_context_data(self, **kwargs):
-        context = super(ListView, self).get_context_data(**kwargs)
-        print(self.kwargs.get('pk'))
-        context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
-        context['title'] = context['panel_title'] = topic.title
-        context['show_order'] = True
+        context = super().get_context_data(**kwargs)
+        context['course'] = CourseInfo.objects.get(pk=self.kwargs.get('course'))
+        context['topic'] = Topic.objects.all()
+        context['thread'] = Thread.objects.all()
+        context['node_group'] = NodeGroup.objects.all()
         return context
+
+
 
 
 class ChapterInfoUpdateView(UpdateView):
