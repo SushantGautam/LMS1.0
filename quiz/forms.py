@@ -9,6 +9,7 @@ from django_addanother.widgets import AddAnotherWidgetWrapper
 from quiz.models import Quiz, MCQuestion, TF_Question, SA_Question, Answer
 from django.forms import inlineformset_factory
 
+
 # class AnswerInline(admin.TabularInline):
 #     model = Answer
 
@@ -38,33 +39,31 @@ class QuizForm(forms.ModelForm):
     #             forms.SelectMultiple,
     #             reverse_lazy('mcquestion_create'),
     #         ))
-    
 
     # override __init__() to
     # remove "required" from question field
     # and hide friendly url for now????
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['mcquestion'].required = True
+        self.fields['mcquestion'].required = False
         self.fields['tfquestion'].required = False
-        self.fields['saquestion'].required = False 
-        self.fields['cent_code'].required = True
-        #self.fields['cent_code'].widget = forms.HiddenInput()
+        self.fields['saquestion'].required = False
+        self.fields['cent_code'].required = False
 
-        #self.fields['url'].required = False
-        #self.fields['url'].widget = forms.HiddenInput()
-        #last_quiz = Quiz.objects.last()
-        #if(last_quiz):
+        # self.fields['url'].required = False
+        # self.fields['url'].widget = forms.HiddenInput()
+        # last_quiz = Quiz.objects.last()
+        # if(last_quiz):
         #    self.fields['url'].initial = "quiz" + str(last_quiz.id)
         #    self.fields['title'].initial = "quiz" + str(last_quiz.id)
-        #else:
+        # else:
         #    self.fields['url'].initial = "quiz0"
         #    self.fields['title'].initial = "quiz0"
 
     class Meta:
         model = Quiz
         fields = '__all__'
-    
+
     # override clean() to
     # add custom validation such that atleast
     # one of the question must be present
@@ -103,6 +102,7 @@ class TFQuestionForm(forms.ModelForm):
     #     # label=_("Questions"),
     #     widget=FilteredSelectMultiple(verbose_name=_("Quizzes"), is_stacked=False))
 
+
 class SAQuestionForm(forms.ModelForm):
     class Meta:
         model = SA_Question
@@ -114,9 +114,36 @@ class SAQuestionForm(forms.ModelForm):
     #     # label=_("Questions"),
     #     widget=FilteredSelectMultiple(verbose_name=_("Quizzes"), is_stacked=False))
 
+
 class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = '__all__'
-    
-AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=['content', 'correct'], extra=1,)
+
+
+AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=['content', 'correct'], extra=1, )
+
+
+class QuizForm1(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['title', 'description', 'url', 'course_code', 'cent_code', 'duration']
+
+
+class QuizForm2(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['pre_test', 'post_test', 'chapter_code', 'answers_at_end',
+                  'exam_paper', 'single_attempt', 'random_order', 'pass_mark', 'success_text', 'fail_text', 'draft']
+
+
+class QuizForm3(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['mcquestion', 'tfquestion', 'saquestion']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['mcquestion'].required = False
+        self.fields['tfquestion'].required = False
+        self.fields['saquestion'].required = False

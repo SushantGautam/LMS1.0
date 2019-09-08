@@ -54,200 +54,26 @@
                     </ul>
                     <div class="quiz-questions"> 
                         <div id="step-1">
-                            <div class="privew1">
-                                <div class="form-group"> 
-                                    <div class="col-md-12"> 
-                                        <div class="col-md-6">
-                                            <label class="quiz-add-label"  for="">Title</label>
-                                            {{form.title}}              
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="quiz-add-label"  for="">User Friendly Url</label>
-                                            {{form.url}} 
-                                        </div>                                            
-                                    </div> 
-                                    <div class="form-group"> 
-                                        <div class="col-md-12 questions-wrapper">
-                                            <div class="col-md-6">
-                                                <label class="quiz-add-label"  for="">Description</label>                                                 
-                                            </div>
-                                            <div class="col-md-6 questions-only">
-                                                <!-- <a class="btn qts-button" href="{% url 'mcquestion_create' %}" > Add MCQ question </a>    -->
-                                            </div> 
-                                            <div class="col-md-12">
-                                                {{form.description}}
-                                            </div>                                               
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group"> 
-                                    <div class="col-md-12"> 
-                                        <div class="col-md-6">
-                                            <label class="quiz-add-label"  for="">Course Code</label>
-                                            {{form.course_code}}
-                                        </div>
-                                        <div class="col-md-6" style="display:None">
-                                            <label class="quiz-add-label"  for="">Center Code</label>
-                                            {{form.cent_code.as_hidden}}
-                                            {#{{ form.cent_code }}#}
-                                        </div>       
-                                    </div> 
-                                    </div>
-                                        <div class="form-group"> 
-                                            <div class="col-md-12"> 
-                                                <div class="col-md-6">
-                                                    <label class="quiz-add-label"  for="">Chapter</label>
-                                                    {{form.chapter_code}}
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="quiz-add-label"  for="">Timer</label>
-                                                    {{form.duration}} 
-                                                </div>           
-                                            </div>
-                                        </div>
-                                    </div> 
-                                </div>
-                                <div id="step-2">
-                                    <div class="privew1 "> 
-                                        
-                                       
+                            <div class="privew1" id="form1_ajax">
 
-                                        <div class="form-group  "> 
-                                                <div class="col-md-12"> 
-                                                        <span class="quiz-type-head">types of quiz</span>
-                                                    
-                                                </div>
-                                           
-                                                <div class="col-md-12 quiz-type-border ">                    
-                                                        <div class="col-md-4">                       
-                                                            {{form.pre_test}}
-                                                            <label class="quiz-add-label"  for="">Pre Test</label>
-                                                            <p>{{form.pre_test.help_text}}</p>
-                                                        </div>
-                                                        <div class="col-md-4">                   
-                                                            {{form.post_test}}
-                                                            <label class="quiz-add-label"  for="">Post Test</label>
-                                                            <p>{{form.post_test.help_text}}</p>
-                                                        </div>
-                                                       
-                                                        <div class="col-md-4">  
-                                                                {{form.answers_at_end}}  
-                                                                <label class="quiz-add-label"  for="">Answer at the end</label>
-                                                                <p> {{form.answers_at_end.help_text}}</p>
-                                                            </div>         
-                                                    </div>
-
-                                               
-                                           
-                                        </div>  
-                                           
-                                                <div class="form-group "> 
-                                                        <div class="col-md-12"> 
-                                                                <span class="quiz-type-head">quiz features</span>
-                                                            
-                                                        </div>
-                                                    <div class="col-md-12 quiz-type-border">  
-                                                            <div class="col-md-4"> 
-                                                                    {{form.random_order}}  
-                                                                    <label class="quiz-add-label"  for="">Random Order</label>
-                                                                    <p> {{form.random_order.help_text}} </p>
-                                                                </div>      
-                                                        
-                                                        <div class="col-md-4">                       
-                                                            {{form.exam_paper}}
-                                                            <label class="quiz-add-label"  for="">Exam Paper</label>
-                                                            <p>{{form.exam_paper.help_text}}</p>
-                                                        </div>
-                                                        <div class="col-md-4"> 
-                                                            {{form.single_attempt}}  
-                                                            <label class="quiz-add-label"  for="">Single Attempt</label>
-                                                            <p>{{form.single_attempt.help_text}}</p>
-                                                        </div>   
-                                                    </div>
-                                                </div>
-
-                                                            
-                                       
-                                        <div class="form-group">
-                                                <div class="col-md-12"> 
-                                                        <span class="quiz-type-head"> Save temporarily</span>
-                                                   
-                                                </div>
-                                                <div class="col-md-6">
-                                                        {{form.draft}}
-                                                        <label class="quiz-add-label"  for=""> Draft</label> <br>
-                                                        {{form.draft.help_text}}
-                                                </div>
-                                        </div>         
-                                    </div> 
-                                </div>
-                                <div id="step-3">
-                                    <div class="privew1">
-                                        <div class="form-group"> 
-                                            <div class="col-md-12 questions-wrapper">
-                                                <div class="col-md-6">
-                                                    <label class="quiz-add-label"  for="">Multiple Choice Question</label>
-                                                </div>
-                                                <div class="col-md-6 questions-only">
-                                                        <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
-                                                        <button type="button" class="btn qts-button" id="mcq_create_button" data-toggle="modal" data-target="#mcquestion_form_popup">Add MCQ question</button>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    {{form.mcquestion}}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group"> 
-                                            <div class="col-md-12 questions-wrapper">
-                                                <div class="col-md-6">
-                                                    <label class="quiz-add-label"  for="">True False Question</label>
-                                                </div>
-                                                <div class="col-md-6 questions-only">
-                                                    <a class="btn qts-button" href="{% url 'tfquestion_create' %}" > Add T/F question </a>
-                                                    <button type="button" class="btn btn-info btn-lg" id="tfq_create_button" data-toggle="modal" data-target="#tfquestion_form_popup">Add T/F question</button>
-
-                                                </div>
-                                                <div class="col-md-12">
-                                                    {{form.tfquestion}}  
-                                                </div>
-                                            </div>  
-                                        </div>
-                                        <div class="form-group"> 
-                                            <div class="col-md-12 questions-wrapper">
-                                                <div class="col-md-6">
-                                                    <label class="quiz-add-label"  for="">Short Type Question</label>
-                                                </div>
-                                                <div class="col-md-6 questions-only">
-                                                    <a class="btn qts-button" href="{% url 'saquestion_create' %}" > Add Short question </a>   
-                                                    <button type="button" class="btn btn-info btn-lg" id="saq_create_button" data-toggle="modal" data-target="#saquestion_form_popup">Add SA question</button>
-
-                                                </div>
-                                                <div class="col-md-12">
-                                                    {{form.saquestion}} 
-                                                </div>
-                                            </div>
-                                        </div> 
-                                        <div class="form-group"> 
-                                            <div class="col-md-12"> 
-                                                <div class="col-md-6"> 
-                                                  
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="quiz-admin-btn">
-                                                        <button id="" class="btn btn-primary " type="submit">Submit</button>
-                                                    </div>    
-                                                </div>                       
-                                            </div>   
-                                        </div>
-                                    </div> 
-                                </div>
                             </div>
-                        </div>       
+                        </div>
+                        <div id="step-2">
+                            <div class="privew1" id="form2_ajax">
+
+                            </div>
+                        </div>
+                        <div id="step-3">
+                            <div class="privew1" id="form3_ajax">
+
+                            </div>
+                        </div>
                     </div>
-                </div> <!--#wizard-->
-            </div><!--x_content-->
-        </div><!--col-md-12-->
-    </div><!--row-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     <div id="mcquestion_form_popup" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -299,7 +125,14 @@
     <script src=" {% static '/vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
     <script>
        $(document).ready(function(){
-            $("#id_cent_code").val('{{request.user.Center_Code.id}}');            
+            $("#id_cent_code").val('{{request.user.Center_Code.id}}');
+            $.ajax({
+                type: "GET",
+                url: "{% url 'quizfw' %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#form1_ajax").html(data);
+                }
+            });
         });
 
         $('#mcq_create_button').on('click', function () {
