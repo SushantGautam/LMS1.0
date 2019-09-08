@@ -26,33 +26,31 @@
         <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
         <!-- NProgress -->
         <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
-        <!-- bootstrap-daterangepicker -->
-        <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
-        <!-- iCheck -->
-        <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
-        <!-- bootstrap-progressbar -->
-        <link href="{% static 'vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}"
-              rel="stylesheet">
-        <!-- JQVMap -->
-        <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/>
-        <!-- custom tables-->
-        <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
-        <link href="{% static 'vendorsx/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
-              rel="stylesheet">
-        <link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
-              rel="stylesheet">
-        <link href="{% static 'vendorsx/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet">
+        <!-- Styling Checkbox as Switch -->
         <link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">
-
         <!-- Custom Theme Style -->
         <link href="{% static '/build/css/custom.css' %}" rel="stylesheet">
+        <!-- For Datatable Responsive -->
+        <link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
 
-        <link rel="icon" href="{% static 'images/icon.jpg' %}" type="image/x-icon"/>
-        {% block extrastyle %}{% endblock %}
-        {% block extrahead %}{% endblock %}
+        <!-- bootstrap-daterangepicker -->
+        <!-- <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet"> -->
+        <!-- iCheck -->
+        <!-- <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet"> -->
+        <!-- bootstrap-progressbar -->
+        <!-- <link href="{% static 'vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet"> -->
+        <!-- JQVMap -->
+        <!-- <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/> -->
+        <!-- custom tables-->
+        <!-- <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendorsx/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}" -->
+              <!-- rel="stylesheet"> -->
+        <!-- <link href="{% static 'vendorsx/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet"> -->
 
         {% block stylesheets %}{% endblock stylesheets %}
+
+        {% block extrahead %}{% endblock %}
 
     {% endblock head %}
 </head>
@@ -108,37 +106,42 @@
     <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
     <!-- Bootstrap -->
     <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-    <!-- FastClick -->
+    <!-- FastClick for mobile browser -->
     <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
     <!-- NProgress -->
     <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script>
-    <!-- bootstrap-progressbar -->
-    <script src="{% static 'vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script>
-    <!-- iCheck -->
-    <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script>
-    <!-- bootstrap-daterangepicker -->
-    <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
-    <script src="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
-    <!-- bootstrap-wysiwyg -->
-    <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
-    <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
-    <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script>
-    <!-- jQuery Tags Input -->
-    <script src="{% static 'vendorsx/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script>
     <!-- Switchery -->
     <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
-    <!-- Select2 -->
-    <script src="{% static 'vendorsx/select2/dist/js/select2.full.min.js' %}"></script>
-    <!-- Parsley -->
-    <script src="{% static 'vendorsx/parsleyjs/dist/parsley.min.js' %}"></script>
-    <!-- Autosize -->
-    <script src="{% static 'vendorsx/autosize/dist/autosize.min.js' %}"></script>
-    <!-- jQuery autocomplete -->
-    <script src="{% static 'vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script>
-    <!-- starrr -->
-    <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script>
+    <!-- Custom Theme Scripts -->
+    <script src=" {% static 'build/js/custom.js' %}"></script>
 
-    <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+
+    <!-- bootstrap-progressbar -->
+    <!-- <script src="{% static 'vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script> -->
+    <!-- iCheck -->
+    <!-- <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script> -->
+    <!-- bootstrap-daterangepicker -->
+    <!-- <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script> -->
+    <!-- <script src="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.js' %}"></script> -->
+    <!-- bootstrap-wysiwyg -->
+    <!-- <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
+    <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
+    <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script> -->
+    <!-- jQuery Tags Input -->
+    <!-- <script src="{% static 'vendorsx/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script> -->
+    
+    <!-- Select2 -->
+    <!-- <script src="{% static 'vendorsx/select2/dist/js/select2.full.min.js' %}"></script> -->
+    <!-- Parsley -->
+    <!-- <script src="{% static 'vendorsx/parsleyjs/dist/parsley.min.js' %}"></script> -->
+    <!-- Autosize -->
+    <!-- <script src="{% static 'vendorsx/autosize/dist/autosize.min.js' %}"></script> -->
+    <!-- jQuery autocomplete -->
+    <!-- <script src="{% static 'vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script> -->
+    <!-- starrr -->
+    <!-- <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script> -->
+
+    <!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
@@ -149,25 +152,18 @@
     <script src="{% static 'vendorsx/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
-    <script src="{% static 'vendorsx/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script> -->
 
 
-
-    <!-- Custom Theme Scripts -->
-
-    <script src="{% static 'vendorsx/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <!-- Fade out spinner image when the page is loaded -->
     <script>
         $(window).load(function () {
-            // Animate loader off screen
             $(".se-pre-con").fadeOut("fast");
-
         });
     </script>
 
-    {% block customjss %}
-
-    {% endblock %}
-    <script src=" {% static 'build/js/custom.js' %}"></script>
+    {% block customjss %}{% endblock %}
+   
 {% endblock body %}
 
 </body>
