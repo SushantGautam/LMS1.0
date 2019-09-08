@@ -1,0 +1,25 @@
+{% load static %}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+{% load crispy_forms_tags %}
+{{ wizard.form.media }}
+
+<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+<form action="{% url 'quizfw' %}" method="post" id="quiz_form_3">{% csrf_token %}
+<table>
+{{ wizard.management_form }}
+{% if wizard.form.forms %}
+    {{ wizard.form.management_form }}
+    {% for form in wizard.form.forms %}
+        {{ form|crispy }}
+    {% endfor %}
+{% else %}
+    {{ wizard.form|crispy }}
+{% endif %}
+</table>
+{% if wizard.steps.prev %}
+<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">first step</button>
+<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">prev step</button>
+{% endif %}
+<input type="submit" value="Submt"/>
+</form>

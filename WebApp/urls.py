@@ -68,6 +68,7 @@ urlpatterns += (
     # urls for MemberInfo
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
     path('memberinfo/inactive', views.MemberInfoListViewInactive.as_view(), name='memberinfo_list_inactive'),
+    path('memberinfo/activate/<int:pk>/', views.MemberInfoActivate, name='memberinfo_activate'),
     path('memberinfo/create/', views.MemberInfoCreateView.as_view(), name='memberinfo_create'),
     path('memberinfo/detail/<int:pk>/', views.MemberInfoDetailView.as_view(), name='memberinfo_detail'),
     path('memberinfo/update/<int:pk>/', views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
