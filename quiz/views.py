@@ -777,13 +777,10 @@ class QuizCreateWizard(SessionWizardView):
     def done(self, form_list, **kwargs):
         print('done done done')
         my_quiz_data = self.get_all_cleaned_data()
-        print(my_quiz_data)
-        my_quiz_form = QuizForm(my_quiz_data)
-
-        my_quiz_obj = my_quiz_form.save(commit=False)
-        print(my_quiz_obj.mcquestion.all())
-        # my_quiz_obj.cent_code = self.request.user.Center_Code
-        # my_quiz_obj.save()
+        my_quiz_form = QuizForm(my_quiz_data, instance=Quiz())
+        my_quiz_obj = my_quiz_form.save(commit=True)
+        my_quiz_obj.cent_code = self.request.user.Center_Code
+        my_quiz_obj.save()
         return redirect('quiz_list')
 
     def get_form(self, step=None, data=None, files=None):

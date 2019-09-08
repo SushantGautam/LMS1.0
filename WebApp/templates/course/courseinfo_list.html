@@ -27,7 +27,7 @@
         <i class="fa fa-search"></i>&nbsp;Search
       </button>
     </form>
-  </div>l̥
+  </div>
   {% endif %}
   <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
     <a class="btn btn-success" style="float: right;" href="
@@ -41,9 +41,7 @@
   <br /><br /><br />
 
   <div class="container" id="divID">
-    <div style="padding: 5px;">
-      {% include 'WebApp/theme/alerts.html' %}
-    </div>
+    {% include 'WebApp/theme/alerts.html' %}
     {% for object in object_list %}
     <div class="col-md-3 col-sm-6 col-xs-12" id="listCard">
       <div class="gridContentsList">

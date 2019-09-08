@@ -6123,6 +6123,12 @@ input[type=checkbox], input[type=radio] {
     color: white;
     border-radius: 5px;
 }
+.button-place{
+    text-align: right;
+}
+.submitforquiz{
+    margin: 20px 0;
+}
 
 .mcq-edit {
     margin-top: 10px;
@@ -6217,6 +6223,10 @@ input[type=checkbox], input[type=radio] {
     height: 100%;
     z-index: 9999;
     background: url('../../images/Spinner-1s-200px.svg') center no-repeat #fff;
+}
+#id_form3-mcquestion , #id_form3-tfquestion , #id_form3-saquestion  {
+    width: 100%!important
+
 }
 
 /*memberinfo list status buttons*/

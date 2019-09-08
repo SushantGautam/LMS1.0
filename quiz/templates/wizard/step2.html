@@ -3,8 +3,41 @@
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
+<ul class="wizard_steps anchor">
+    <li>
+        <a href="#step-1" class="done" isdone="1" rel="1">
+            <span class="step_no">1</span>
+            <span class="step_descr">Basic  Info
+                    
+                </span>
+        </a>
+    </li>
+    <li>
+        <a href="#step-2" class="selected" isdone="1" rel="2">
+            <span class="step_no">2</span>
+            <span class="step_descr">Select  Quiz Type
+                    
+                </span>
+        </a>
+    </li>
+    <li>
+        <a href="#step-3" class="disabled" isdone="0" rel="3">
+            <span class="step_no">3</span>
+            <span class="step_descr">Add  Question
+                    
+                </span>
+        </a>
+    </li>     
+</ul>
+<div class="col-md-12">
+        <div class="col-md-6"></div>
+        <div class="col-md-6 text-right">
+          
+                <h4>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h4>
+        </div>
+        
+</div>
 
-<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
 <form action="" method="post" id="quiz_form_2">{% csrf_token %}
 <table>
 {{ wizard.management_form }}
@@ -14,23 +47,112 @@
         {{ form|crispy }}
     {% endfor %}
 {% else %}
-    {{ wizard.form|crispy }}
+    <!-- {{ wizard.form|crispy }} -->
+    <div class="form-group  "> 
+            <div class="col-md-12"> 
+                    <span class="quiz-type-head">types of quiz</span>
+                
+            </div>
+       
+            <div class="col-md-12 quiz-type-border ">                    
+                    <div class="col-md-4">                       
+                        {{wizard.form.pre_test}}
+                        <label class="quiz-add-label"  for="">Pre Test</label>
+                        <p>{{form.pre_test.help_text}}</p>
+                    </div>
+                    <div class="col-md-4">                   
+                        {{wizard.form.post_test}}
+                        <label class="quiz-add-label"  for="">Post Test</label>
+                        <p>{{form.post_test.help_text}}</p>
+                    </div>
+                   
+                    <div class="col-md-4">  
+                            {{wizard.form.answers_at_end}}  
+                            <label class="quiz-add-label"  for="">Answer at the end</label>
+                            <p> {{form.answers_at_end.help_text}}</p>
+                        </div>         
+                </div>
+
+           
+       
+    </div>  
+       
+            <div class="form-group "> 
+                    <div class="col-md-12"> 
+                            <span class="quiz-type-head">quiz features</span>
+                        
+                    </div>
+                <div class="col-md-12 quiz-type-border">  
+                        <div class="col-md-4"> 
+                                {{wizard.form.random_order}}  
+                                <label class="quiz-add-label"  for="">Random Order</label>
+                                <p> {{form.random_order.help_text}} </p>
+                            </div>      
+                    
+                    <div class="col-md-4">                       
+                        {{wizard.form.exam_paper}}
+                        <label class="quiz-add-label"  for="">Exam Paper</label>
+                        <p>{{wizard.form.exam_paper.help_text}}</p>
+                    </div>
+                    <div class="col-md-4"> 
+                        {{wizard.form.single_attempt}}  
+                        <label class="quiz-add-label"  for="">Single Attempt</label>
+                        <p>{{wizard.form.single_attempt.help_text}}</p>
+                    </div>   
+                </div>
+            </div>
+
+                        
+   
+    <div class="form-group">
+            <div class="col-md-12"> 
+                    <span class="quiz-type-head"> Save temporarily</span>
+               
+            </div>
+            <div class="col-md-6">
+                    {{form.draft}}
+                    <label class="quiz-add-label"  for=""> Draft</label> <br>
+                    {{wizard.form.draft.help_text}}
+            </div>
+    </div> 
 {% endif %}
 </table>
 {% if wizard.steps.prev %}
-<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">first step</button>
-<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">prev step</button>
-    {{ wizard.steps.first }}
-    {{ wizard.steps.prev }}
+<!-- <div class="col-md-12 submitforquiz"> 
+        <div class="col-md-6">
+                
+
+        </div>
+        <div class="col-md-6 button-place">
+                <button name="wizard_goto_step" value="{{ wizard.steps.prev }}"   class="add-mcq">Previous</button>
+                
+
+        </div>
+           
+
+    </div> -->
 {% endif %}
-<input type="submit" value="Submt and Next"/>
+<div class="col-md-12 submitforquiz"> 
+        <div class="col-md-6">
+                
+
+        </div>
+        <div class="col-md-6 button-place">
+                <button name="wizard_goto_step" value="{{ wizard.steps.prev }}"   class="add-mcq">Previous</button>
+                <button class="add-mcq">Next</button>
+
+        </div>
+           
+
+    </div>
+
 </form>
 
 {% block customjss %}
 <script>
 
         $("#quiz_form_2").submit(function (e) {
-            console.log($(this).serialize());
+            console.log('inside step 1 script');
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
                 url: "{% url 'quizfw' %}", // URL to your view that serves new info
