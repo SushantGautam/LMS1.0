@@ -87,7 +87,7 @@ html, body {
 
 .table-responsive {
     /* padding:1em; */
-    overflow-x: hidden;!important;
+    overflow-x: hidden; 
 }
 
 .tableHeader {
@@ -816,6 +816,10 @@ table.no-margin .progress {
     padding-left: 10px
 }
 
+.membertable{
+    padding-right: 0px;
+    padding-left: 0px
+}
 .row {
     margin-right: -10px;
     margin-left: -10px
@@ -2679,7 +2683,8 @@ legend {
 
 .form-control-feedback.left {
     border-right: 1px solid #ccc;
-    left: 13px
+    left: 1px;
+    top: 20px;!important
 }
 
 .form-control-feedback.right {
@@ -2696,7 +2701,8 @@ legend {
 }
 
 .form-group {
-    margin-bottom: 10px
+    margin-bottom: 10px;
+    padding-right: 10px;
 }
 
 .validate {
@@ -6214,4 +6220,42 @@ input[type=checkbox], input[type=radio] {
 }
 
 /*memberinfo list status buttons*/
+.valign{
+    padding-top: 25px;
+}
 
+.circleProfile{
+    /* max-width: 300px;
+    max-height: 300px;
+     border-radius: 50%;
+      margin-top: 50px; margin-bottom: 50px;
+       */
+      display: inline-block;
+      position: relative;
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+      border-radius: 50%
+}
+
+.circleProfile img{
+    width: auto;
+    height: 100%;
+    margin-left: -60px;
+
+}
+.member-delete{
+    padding: 5px;
+    border-radius: 5px;
+    border-style:solid;
+    border-width: 2px;
+    border-color: black;
+    cursor:pointer;
+    /* color: red */
+   
+}
+
+.member-delete:hover{
+    background-color: red;
+    color:white
+}
