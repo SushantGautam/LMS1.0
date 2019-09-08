@@ -20,6 +20,7 @@
 {% if wizard.steps.prev %}
 <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">first step</button>
 <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">prev step</button>
+    {{ wizard.steps.first }}
 {% endif %}
-<input type="submit" value="Submt"/>
+<input type="submit" value="Submit"/>
 </form>

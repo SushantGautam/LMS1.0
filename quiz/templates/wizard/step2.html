@@ -20,6 +20,8 @@
 {% if wizard.steps.prev %}
 <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">first step</button>
 <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">prev step</button>
+    {{ wizard.steps.first }}
+    {{ wizard.steps.prev }}
 {% endif %}
 <input type="submit" value="Submt and Next"/>
 </form>
@@ -28,7 +30,7 @@
 <script>
 
         $("#quiz_form_2").submit(function (e) {
-            console.log('inside step 1 script');
+            console.log($(this).serialize());
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
                 url: "{% url 'quizfw' %}", // URL to your view that serves new info

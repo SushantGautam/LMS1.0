@@ -10,7 +10,7 @@ from django.views.generic import DetailView, ListView, TemplateView, FormView, C
 from django.urls import reverse, reverse_lazy
 from django.db import transaction
 
-from WebApp.models import CourseInfo
+from WebApp.models import CourseInfo, ChapterInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
 
@@ -779,7 +779,11 @@ class QuizCreateWizard(SessionWizardView):
         my_quiz_data = self.get_all_cleaned_data()
         print(my_quiz_data)
         my_quiz_form = QuizForm(my_quiz_data)
-        my_quiz_obj = my_quiz_form.save(commit=True)
+
+        my_quiz_obj = my_quiz_form.save(commit=False)
+        print(my_quiz_obj.mcquestion.all())
+        # my_quiz_obj.cent_code = self.request.user.Center_Code
+        # my_quiz_obj.save()
         return redirect('quiz_list')
 
     def get_form(self, step=None, data=None, files=None):
@@ -789,10 +793,18 @@ class QuizCreateWizard(SessionWizardView):
         if step is None:
             step = self.steps.current
 
-        if step == 'form3':
-            print(self.request.user.Center_Code)
+        if step == 'form1':
+            form.fields["course_code"].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+
+        if step == 'form2':
             step1_data = self.get_cleaned_data_for_step('form1')
-            print(step1_data['cent_code'])
-            form.fields["mcquestion"].queryset = MCQuestion.objects.filter(cent_code=self.request.user.Center_Code)
+            step1_course = step1_data['course_code']
+            form.fields["chapter_code"].queryset = ChapterInfo.objects.filter(Course_Code=step1_course)
+
+        if step == 'form3':
+            step1_data = self.get_cleaned_data_for_step('form1')
+            step2_data = self.get_cleaned_data_for_step('form2')
+            form.fields["mcquestion"].queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
+            print(step2_data)
 
         return form
