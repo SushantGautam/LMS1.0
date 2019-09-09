@@ -508,6 +508,9 @@ class Quiz(models.Model):
         if self.single_attempt is True:
             self.exam_paper = True
 
+        if self.pass_mark is None:
+            self.pass_mark = 0
+
         if self.pass_mark > 100:
             raise ValidationError('%s is above 100' % self.pass_mark)
 
