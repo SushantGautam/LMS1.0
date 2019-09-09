@@ -376,7 +376,7 @@ $(document).ready(function() {
                         data.append('courseID', courseID);
                         data.append('type', 'video');
                         $.ajax({
-                            url: save_file_url,
+                            url: save_video_url,
                             data: data,
                             contentType: false,
                             processData: false,
@@ -475,14 +475,14 @@ $(document).ready(function() {
                 } else {
                     var btn_id = parseInt(e.currentTarget.id) + 1
                     $('#' + btn_id).attr({
-                        "href": `${argument}`
+                        "href": `http://${argument}`
                     })
                 }
         
             });
         
             $('.btn').resizable({
-                containment: $('.editor-canvas'),
+                containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
                 minWidth: 50,
@@ -1117,8 +1117,8 @@ $(document).ready(function() {
         let id = (new Date).getTime();
         let position = { top, left };
         let html = `
-                        <div id="btn-div">
-                            <div id="options">
+                        <div class="btn-div">
+                            <div class="options">
                                 <i class="fas fa-trash" id=${id}></i>
                                 <i class="fas fa-link"   id=${id} ></i>
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
@@ -1136,7 +1136,7 @@ $(document).ready(function() {
             "left": position.left
             }).draggable({
             //Constrain the draggable movement only within the canvas of the editor
-            containment: ".editor-canvas",
+            containment: "#tabs-for-download",
             scroll: false,
             grid: [50, 20],
             cursor: "move",

@@ -256,5 +256,6 @@ urlpatterns += (
     path('viewchapter',
          views.chapterviewer, name='chapterviewer'),
     path('saveFile', views.save_file, name='saveFile'),
+    path('saveVideo', views.save_video, name='saveVideo'),
     path('saveJson', views.save_json, name='saveJson'),
 )
