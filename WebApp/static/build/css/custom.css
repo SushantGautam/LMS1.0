@@ -2683,8 +2683,8 @@ legend {
 
 .form-control-feedback.left {
     border-right: 1px solid #ccc;
-    left: 1px;
-    top: 20px;!important
+    left: 10px;
+    top: 20px!important;
 }
 
 .form-control-feedback.right {

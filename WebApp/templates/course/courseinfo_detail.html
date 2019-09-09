@@ -120,15 +120,7 @@
 
 
                 </div>
-                {#                {% if '/students' not in request.path %}#}
-                {#                    <div class="col-md-4 col-sm-12 col-xs-12 text-center" id="buttons">#}
-                {#                        <a class="btn-sm btn-success" href="{% if '/teachers' in request.path %}#}
-                {#                                                            {% url 'teacher_chapterinfo_create' %}#}
-                {#                                                        {% else %}#}
-                {#                                                            {% url 'chapterinfo_create' course=object.pk %}#}
-                {#                                                        {% endif %}">Create new Chapter</a>#}
-                {#                    </div>#}
-                {#                {% endif %}#}
+
                 {% if '/students' not in request.path %}
                 <div class="col-md-4 col-sm-4 col-xs-12 text-center" style="margin-top: 10px">
                     <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModal1"
@@ -138,14 +130,13 @@
                 </div>
                 {% endif %}
                 <div class="col-md-12 col-sm-12 xol-xs-12">
-                    {#                <hr class="header_hr" style="margin-bottom: 5px;margin-top: 5px;">#}
                     {% for o in chapters %}
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
                         <div class="col-md-8 col-sm-8 col-xs-12">
-                            <h5 style="padding-top: 3px; color: #000000"> Chapter No: {{ o.Chapter_No }}</h5>
-                            <h3>
+                            <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}</h5>
+                            <h4>
                                 <b style="color: #000000">{{ o.Chapter_Name }}</b>
-                            </h3>
+                            </h4>
                         </div>
                         <div class="col-md-4 col-sm-4 col-xs-12">
                             <a href="{% if '/students' in request.path %}
@@ -160,8 +151,8 @@
                             </a>
                         </div>
 
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; ">
-                            <hr style="margin-top: 5px; margin-bottom: 10px;">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <hr style="margin-top: 5px; margin-bottom: 5px;">
                             <p>{{ o.Summary }}</p>
                         </div>
                     </div>
