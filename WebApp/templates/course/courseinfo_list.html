@@ -49,7 +49,7 @@
           <a href="{% if '/students' in request.path %}
                                 {{ object.student_get_absolute_url }}
                             {% else %}
-                               {{ object.get_absolute_url }}
+                               {{ object.student_get_absolute_url }}
                             {% endif %}">
             <img id="courseListImage" class="card-img-top" src="
                             {% if object.Course_Cover_File %}
