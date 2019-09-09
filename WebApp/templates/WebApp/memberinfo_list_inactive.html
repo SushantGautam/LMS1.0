@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
+
+{% block extrastylesheet %}
+<link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item active" aria-current="page">Members</li>
 {% endblock %}
+
 {% block content %}
-
-
 <div class="memberDiv">
     <hr class="header_hr">
     <h2 class="tableHeader">List of Inactive Members</h2>
@@ -19,7 +24,7 @@
         <span style="float:right; margin:15px"><a href="{% url 'memberinfo_list' %}" style="color: white">View Active
                 Members</a></span>
     </nav>
-    <hr class="header_hr">
+    <hr class="header_hr"><br><br>
     <div class="col-md-6 text-danger">{% include 'WebApp/theme/alerts.html' %}</div>
     <!-- <div class="col-md-12 col-sm-12 col-xs-12">
         <nav id="navbar_parent" class="navbar navbar-dark">
@@ -99,6 +104,16 @@
 
 {% endblock %}
 {% block customjss %}
+<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 <script type="text/javascript">
     $(document).on('click', '.confirm-activate', function (event) {
         var id = event.target.id;

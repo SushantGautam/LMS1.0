@@ -11,7 +11,7 @@
     <h2 class="detailListHeader">Member Information</h2>
     <hr class="header_hr">
     <div class="col-md-8 col-sm-12 col-xs-12 text-center col-md-offset-2">
-        <div class=" circleProfile text-center">
+        <div class="circleProfile text-center">
             <img src="{% if object.Member_Avatar %}
                     {{ object.Member_Avatar.url }}
                 {% elif object.Member_Gender == '1' %}
@@ -105,15 +105,13 @@
                     {% if object.password %}
                     <tr>
                         <td>Password</td>
-                        <td>&nbsp;******** <a style="float: right" href="/change-password/{{ object.id }}/"> Change
-                                Password </a>
+                        <td>&nbsp;******** <a style="float: right" href="/change-password/{{ object.id }}/"><u> Change Password </u></a>
                         </td>
                     </tr>
                     {% elif not object.password %}
                     <tr>
                         <td>Password</td>
-                        <td><a style="float: middle" href="/change-password/{{ object.id }}/"> Add
-                                Password </a></td>
+                        <td><a style="float: middle" href="/change-password/{{ object.id }}/"><u> Add New Password </u></a></td>
                     </tr>
                     {% endif %}
                 </table>
