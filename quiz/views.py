@@ -15,6 +15,7 @@ from WebApp.models import CourseInfo, ChapterInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
 
+from django.shortcuts import render_to_response
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -768,6 +769,8 @@ TEMPLATES = {"form1": "wizard/step1.html",
              "form2": "wizard/step2.html",
              "form3": "wizard/step3.html"}
 
+from django.core.exceptions import ValidationError
+from django.http import HttpResponse
 
 class QuizCreateWizard(SessionWizardView):
     form_list = FORMS
@@ -787,7 +790,7 @@ class QuizCreateWizard(SessionWizardView):
         my_quiz.mcquestion.add(*mcq)
         my_quiz.tfquestion.add(*tfq)
         my_quiz.saquestion.add(*saq)
-        return redirect('quiz_list')
+        return render_to_response('wizard/success.html')
 
     def get_form(self, step=None, data=None, files=None):
         form = super().get_form(step, data, files)
@@ -797,8 +800,6 @@ class QuizCreateWizard(SessionWizardView):
             step = self.steps.current
 
         if step == 'form1':
-            print(form.is_valid())
-            print(form.errors)
             form.fields["course_code"].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
 
         if step == 'form2':
@@ -810,4 +811,7 @@ class QuizCreateWizard(SessionWizardView):
             step1_data = self.get_cleaned_data_for_step('form1')
             form.fields["mcquestion"].queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
 
+
         return form
+
+
