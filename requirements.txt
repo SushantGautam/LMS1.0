@@ -21,3 +21,4 @@ django-filter==2.2.0
 django-addanother==2.0.0
 textblob
 PyVimeo
+django-formtools

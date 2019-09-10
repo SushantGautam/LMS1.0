@@ -14,8 +14,8 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView, ListView
 from django.views import View
 
-from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo
-from survey.models import SurveyInfo, CategoryInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
+from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo
+from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo
 from datetime import datetime
 from quiz.models import Question
 from django.shortcuts import redirect
@@ -82,11 +82,12 @@ class MyCoursesListView(ListView):
     def get_queryset(self):
         qs = self.model.objects.all()
 
-        query = self.request.GET.get('query')
+        query = self.request.GET.get('mycoursequery')
         if query:
+            query=query.strip()
             qs = qs.filter(Course_Name__contains=query)
             if not len(qs):
-                messages.error(self.request, 'Search not found')
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
@@ -108,7 +109,21 @@ class MyAssignmentsListView(ListView):
 class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'student_module/courseinfo_list.html'
+    
+    paginate_by = 8
 
+
+    def get_queryset(self):
+        qs = self.model.objects.all()
+
+        query = self.request.GET.get('coursequery')
+        if query:
+            query = query.strip()
+            qs = qs.filter(Course_Name__contains=query)
+            if not len(qs):
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
+        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
+        return qs
 
 class CourseInfoDetailView(DetailView):
     model = CourseInfo

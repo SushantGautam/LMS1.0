@@ -9,11 +9,13 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView, FormView, CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
 from django.db import transaction
+from django.db import models
 
-from WebApp.models import CourseInfo
+from WebApp.models import CourseInfo, ChapterInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
 
+from django.shortcuts import render_to_response
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -767,6 +769,8 @@ TEMPLATES = {"form1": "wizard/step1.html",
              "form2": "wizard/step2.html",
              "form3": "wizard/step3.html"}
 
+from django.core.exceptions import ValidationError
+from django.http import HttpResponse
 
 class QuizCreateWizard(SessionWizardView):
     form_list = FORMS
@@ -775,12 +779,18 @@ class QuizCreateWizard(SessionWizardView):
         return [TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):
-        print('done done done')
-        my_quiz_data = self.get_all_cleaned_data()
-        print(my_quiz_data)
-        my_quiz_form = QuizForm(my_quiz_data)
-        my_quiz_obj = my_quiz_form.save(commit=True)
-        return redirect('quiz_list')
+        form_dict = self.get_all_cleaned_data()
+        my_quiz = Quiz()
+        mcq = form_dict.pop('mcquestion')
+        tfq = form_dict.pop('tfquestion')
+        saq = form_dict.pop('saquestion')
+        for k, v in form_dict.items():
+            setattr(my_quiz, k, v)
+        my_quiz.save()
+        my_quiz.mcquestion.add(*mcq)
+        my_quiz.tfquestion.add(*tfq)
+        my_quiz.saquestion.add(*saq)
+        return render_to_response('wizard/success.html')
 
     def get_form(self, step=None, data=None, files=None):
         form = super().get_form(step, data, files)
@@ -789,10 +799,19 @@ class QuizCreateWizard(SessionWizardView):
         if step is None:
             step = self.steps.current
 
-        if step == 'form3':
-            print(self.request.user.Center_Code)
+        if step == 'form1':
+            form.fields["course_code"].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+
+        if step == 'form2':
             step1_data = self.get_cleaned_data_for_step('form1')
-            print(step1_data['cent_code'])
-            form.fields["mcquestion"].queryset = MCQuestion.objects.filter(cent_code=self.request.user.Center_Code)
+            step1_course = step1_data['course_code']
+            form.fields["chapter_code"].queryset = ChapterInfo.objects.filter(Course_Code=step1_course)
+
+        if step == 'form3':
+            step1_data = self.get_cleaned_data_for_step('form1')
+            form.fields["mcquestion"].queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
+
 
         return form
+
+

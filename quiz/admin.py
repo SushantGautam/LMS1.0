@@ -95,8 +95,8 @@ class ProgressAdmin(admin.ModelAdmin):
 
 class MCQuestionAdmin(admin.ModelAdmin):
 
-    change_form_template = 'admin_add_form.html'
-    change_list_template = 'custom_list.html'
+    #change_form_template = 'admin_add_form.html'
+    #change_list_template = 'custom_list.html'
     list_display = ('content', 'course_code', )
     list_filter = ('course_code',)
     fields = ('content', 'figure', 'explanation', 'answer_order', 'cent_code')

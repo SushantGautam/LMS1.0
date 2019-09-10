@@ -33,6 +33,9 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
                     CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 from datetime import datetime
+from forum.models import Thread, Topic, Post, ForumAvatar, NodeGroup
+from forum.views import get_top_thread_keywords, NodeGroup, TopicView, ThreadView
+
 import json
 
 
@@ -277,6 +280,18 @@ class MemberInfoCreateView(CreateView):
     form_class = MemberInfoForm
 
 
+def MemberInfoActivate(request,pk):
+    try:
+        obj = MemberInfo.objects.get(pk=pk)
+        obj.Use_Flag=True
+        obj.save()
+    except:
+        messages.error(request,'Cannot perform the action. Please try again later')
+    
+    return redirect('memberinfo_list_inactive')
+
+
+
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
     success_url = reverse_lazy('user_profile')
@@ -337,9 +352,10 @@ class CourseInfoListView(ListView):
 
         query = self.request.GET.get('query')
         if query:
+            query = query.strip()
             qs = qs.filter(Course_Name__contains=query)
             if not len(qs):
-                messages.error(self.request, 'Search not found')
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
@@ -416,27 +432,18 @@ class ChapterInfoDetailView(DetailView):
 class CourseForum(ListView):
     model = Thread
     paginate_by = 20
-    template_name = 'courseinfo/Course_Forum.html'
+    template_name = 'course/Course_Forum.html'
     context_object_name = 'threads'
 
-    def get_queryset(self):
-        return Thread.objects.visible().filter(
-            topic__id=self.kwargs.get('course.pk')
-        ).select_related(
-            'user', 'topic'
-        ).prefetch_related(
-            'user__forum_avatar'
-        ).order_by(
-            *['order', get_thread_ordering(self.request)]
-        )
-
     def get_context_data(self, **kwargs):
-        context = super(ListView, self).get_context_data(**kwargs)
-        print(self.kwargs.get('pk'))
-        context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
-        context['title'] = context['panel_title'] = topic.title
-        context['show_order'] = True
+        context = super().get_context_data(**kwargs)
+        context['course'] = CourseInfo.objects.get(pk=self.kwargs.get('course'))
+        context['topic'] = Topic.objects.all()
+        context['thread'] = Thread.objects.all()
+        context['node_group'] = NodeGroup.objects.all()
         return context
+
+
 
 
 class ChapterInfoUpdateView(UpdateView):
@@ -778,7 +785,6 @@ def chapterviewer(request):
 def chapterpagebuilder(request, course, chapter):
     chapterlist = ChapterInfo.objects.filter(Course_Code = CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
-    print(chapterdetails)
     path = settings.MEDIA_ROOT
     data = None
     try:
