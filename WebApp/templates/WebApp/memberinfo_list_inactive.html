@@ -40,7 +40,7 @@
         <table class="table table-striped table-bordered bg-white nowrap">
             <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
-                    <td>ID</td>
+                    <td class="text-center">ID</td>
                     <td>Member ID</td>
                     <td>Name</td>
                     <!-- <td>Current Address</td> -->
@@ -56,7 +56,7 @@
             {% for object in object_list %}
             {% if object.id != request.user.id %}
             <tr>
-                <td style=" padding-top: 15px;">{{ forloop.counter }}</td>
+                <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
                 <td style=" padding-top: 15px;"><b><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></b>
                 </td>
 
