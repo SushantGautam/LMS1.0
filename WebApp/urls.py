@@ -69,6 +69,7 @@ urlpatterns += (
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
     path('memberinfo/inactive', views.MemberInfoListViewInactive.as_view(), name='memberinfo_list_inactive'),
     path('memberinfo/activate/<int:pk>/', views.MemberInfoActivate, name='memberinfo_activate'),
+    path('memberinfo/deactivate/<int:pk>/', views.MemberInfoDeactivate, name='memberinfo_deactivate'),
     path('memberinfo/create/', views.MemberInfoCreateView.as_view(), name='memberinfo_create'),
     path('memberinfo/detail/<int:pk>/', views.MemberInfoDetailView.as_view(), name='memberinfo_detail'),
     path('memberinfo/update/<int:pk>/', views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
@@ -115,16 +116,16 @@ urlpatterns += (
     # urls for QuestionInfo
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:assignment>/questioninfo/',
          views.QuestionInfoListView.as_view(),
-         name='questioninfo_list'),
+         name='webapp_questioninfo_list'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:assignment>/questioninfo/create/',
          views.QuestionInfoCreateView.as_view(),
-         name='questioninfo_create'),
+         name='webapp_questioninfo_create'),
     path(
         'courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:assignment>/questioninfo/detail/<int:pk>/',
-        views.QuestionInfoDetailView.as_view(), name='questioninfo_detail'),
+        views.QuestionInfoDetailView.as_view(), name='webapp_questioninfo_detail'),
     path(
         'courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:assignment>/questioninfo/update/<int:pk>/',
-        views.QuestionInfoUpdateView.as_view(), name='questioninfo_update'),
+        views.QuestionInfoUpdateView.as_view(), name='webapp_questioninfo_update'),
     path('questioninfo/create/ajax',
          views.QuestionInfoCreateViewAjax.as_view(), name='questioninfo_create_ajax'),
 

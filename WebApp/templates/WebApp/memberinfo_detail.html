@@ -24,7 +24,8 @@
         </div>
         <div class="text-center">
             <!-- <a class="btn btn-info" href="/change-password/{{ object.id }}/"> Change Password </a> -->
-            <h5><a style="float: right" href="{{ object.get_update_url }}"><u><b>Edit Member</b></u></a></h5>
+            <h5><a style="float: right;color: #2A3F54" href="{{ object.get_update_url }}"><u><b>Edit Member</b></u></a>
+            </h5>
 
         </div>
     </div>
@@ -81,6 +82,15 @@
                             {% else %}
                             Off
                             {% endif %}
+
+                            <!-- 
+                            <button class="btn btn-sm btn-danger confirm-deactivate" id="{{object.pk}}">
+                                Dectivate
+                            </button>
+                            <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}"
+                                id="deactivateForm-{{object.pk}}">
+                                {% csrf_token %}
+                            </form> -->
                         </td>
                     </tr>
                     <tr>
@@ -105,24 +115,28 @@
                     {% if object.password %}
                     <tr>
                         <td>Password</td>
-                        <td>&nbsp;******** <a style="float: right" href="/change-password/{{ object.id }}/"><u> Change Password </u></a>
+                        <td>&nbsp;******** <a style="float: right;color: #2A3F54"
+                                href="/change-password/{{ object.id }}/"><u> Change
+                                    Password </u></a>
                         </td>
                     </tr>
                     {% elif not object.password %}
                     <tr>
                         <td>Password</td>
-                        <td><a style="float: middle" href="/change-password/{{ object.id }}/"><u> Add New Password </u></a></td>
+                        <td><a style="float: middle" href="/change-password/{{ object.id }}/"><u> Add New Password
+                                </u></a></td>
                     </tr>
                     {% endif %}
                 </table>
             </b></h5>
         <div class="text-center">
             <div>
-                <a class="confirm-delete">
+                <a class="confirm-delete" style="color: #2A3F54">
                     <h5><b class=" member-delete">Delete Member</b></h5>
                 </a>
             </div>
-            <br><u> (Note: Instead of deleting a member you can deactivate him/her instead)</u>
+            <br>
+            <p style="color:#2A3F54"><u> (Note: Instead of deleting a member you can deactivate him/her instead)</u></p>
 
             <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form">
                 {% csrf_token %}
@@ -140,6 +154,16 @@
 
 {% block customjss %}
 <script>
+    $(document).on('click', '.confirm-deactivate', function (event) {
+        var id = event.target.id;
+        ans = confirm('Are you sure you want to deactivate this Member?');
+        if (ans == false) {
+            $(`#deactivateForm-${id}`).submit();
+        } else {
+            return false;
+        }
+    });
+
     $(document).on('click', '.confirm-delete', function () {
         ans = confirm('Are you sure you want to delete this Member?');
         if (ans == true) {

@@ -5026,6 +5026,17 @@ ul.notifications {
 
 }
 
+#truncate{
+    padding-left: 10px;
+    padding-right: 10px;
+    line-height: 1.5em;
+    height: 3em;
+    overflow-wrap:break-word; 
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+}
+
 /* CSS3 Checkbox */
 /*
 .checkbox-input { display:block;position:relative; }
@@ -6251,7 +6262,7 @@ input[type=checkbox], input[type=radio] {
 .circleProfile img{
     width: auto;
     height: 100%;
-    margin-left: -60px;
+    
 
 }
 .member-delete{

@@ -289,6 +289,17 @@ def MemberInfoActivate(request,pk):
     
     return redirect('memberinfo_list_inactive')
 
+def MemberInfoDeactivate(request,pk):
+    try:
+        obj = MemberInfo.objects.get(pk=pk)
+        obj.Use_Flag=False
+        obj.save()
+    except:
+        messages.error(request,'Cannot perform the action. Please try again later')
+    
+    return redirect('memberinfo_detail')
+
+
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):

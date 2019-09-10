@@ -45,7 +45,7 @@
   <div class="container" id="divID">
     {% include 'WebApp/theme/alerts.html' %}
     {% for object in object_list %}
-    <div class="col-md-3 col-sm-6 col-xs-12" id="listCard">
+    <div class="col-xl-2 col-md-3 col-sm-6 col-xs-12" id="listCard">
       <div class="gridContentsList">
         <div class="card-header">
           <a href="{% if '/students' in request.path %}
@@ -57,7 +57,7 @@
                             {% if object.Course_Cover_File %}
                                 /media/{{ object.Course_Cover_File }}
                             {% else %}
-                                {% static 'images/course.jpg' %}
+                                {% static '/images/course.jpg' %}
                             {% endif %}" alt="Card image cap" width="100%" height="180px" style="object-fit: cover" />
           </a>
         </div>
@@ -72,11 +72,18 @@
           <hr />
           <h5 class="lectureDescription" style="padding-bottom: 5px;">
             {% if object.Course_Description %}
-            <p style=" padding-left: 10px; line-height: 1.5em; height: 3em; overflow: hidden; white-space: normal;">
+            <p style="padding-left: 10px;
+            padding-right: 10px;
+            line-height: 1.5em;
+            height: 3em;
+            overflow-wrap:break-word; 
+            overflow: hidden;
+            white-space: normal;
+            text-overflow: ellipsis;">
               {{ object.Course_Description }}
             </p>
             {% else %}
-            <p style="padding-left: 10px;">
+            <p style=" padding-left: 10px;">
               No Description
             </p>
             {% endif %}
