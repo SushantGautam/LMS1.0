@@ -165,20 +165,27 @@
             <!-- <button id="prev-btn" class="btn btn-secondary">Previous</button>
             <button id="next-btn" class="btn btn-secondary">Next</button> -->
         </div>
-        <div class="modal-body">
+        <div class="modal-body custom-modal-body" style="height: 560px!important">
             <div class="col-md-1">
                 <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
             </div>
 
             
-            <div class="col-md-10" id="modal-container" style="position: relative">
+            <div class="col-md-10">
+                <div id="modal-container" style="position: relative">
 
+                </div>
             </div>
             <div class="col-md-1">
                 <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i></button>
 
             </div>
-
+            <div>
+                <!-- <object data="/media/chapterBuilder/1/1/pyqt5tutorial.pdf" type="application/pdf" width="100%" height="100%">
+                    alt : <a href="/media/chapterBuilder/1/1/pyqt5tutorial.pdf">test.pdf</a>
+                </object> -->
+                <!-- <iframe src="/media/chapterBuilder/1/1/pyqt5tutorial.pdf" style="width:100%;height:700px;"></iframe> -->
+            </div>
         </div>
     </div>
 </div>
@@ -204,15 +211,16 @@
 
     function loaddata(data){
         $('#chaptertitle').text(data.chaptertitle);
+        console.log(data);
+        $('#modal-container').empty();
+        // $('#modal-container').css('height', data.canvasheight, 'width', data.canvaswidth)
         $.each(data.pages, function(key, value){
             $.each(value, function(count){
 
                 // Create modal
                 $('#modal-container').append(`
-                <div id="page${key}" class="modal" role="dialog" style="display:none; position:absolute">
-                    <div class="modal-body" style="position:relative">
-                        
-                    </div>
+                <div id="page${key}" role="dialog" style="display:none; position:relative">
+                    
                 </div>
                 `)
 
@@ -221,8 +229,8 @@
                     if (div == 'textdiv') {
                         $.each(div_value, function (css, css_value) {
                             // css_string = JSON.stringify(css_value)
-                            $('#page' + key + ' > .modal-body').append(`
-                                <div style = "position: absolute; top: ${css_value.tops}; left: ${css_value.left};">
+                            $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left};">
                                     ${css_value.content}
                                 </div>
                             `);
@@ -230,12 +238,11 @@
                     }
                     if(div == 'pic'){
                         $.each(div_value, function(css, css_value){
-                            console.log(css_value.tops)
                             src = css_value['background-image']
                             imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                            $('#page'+key+ '> .modal-body').append(`
-                                <div style = "position: absolute; top: ${css_value.tops}; left: ${css_value.left}; width = 100%">
-                                    <image src = ${imgsrc} />
+                            $('#page'+key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}">
+                                    <image src = ${imgsrc} width=100% height=100%/>
                                 </div>
                             `);
                         });
