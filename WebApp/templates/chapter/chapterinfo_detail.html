@@ -247,6 +247,17 @@
                             `);
                         });
                     }
+
+                    if(div == 'btn-div'){
+                        $.each(div_value, function(css, css_value){
+                            // css_string = JSON.stringify(css_value)
+                            $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                    <a href = ${css_value.link} target="_blank"><button>Button</button</a>
+                                </div>
+                            `)
+                        });
+                    }
                 });
             });
         });

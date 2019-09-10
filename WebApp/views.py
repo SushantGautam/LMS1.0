@@ -776,7 +776,9 @@ def chapterviewer(request):
 
 
 def chapterpagebuilder(request, course, chapter):
-    chaptertitle = ChapterInfo.objects.get(id=chapter).Chapter_Name
+    chapterlist = ChapterInfo.objects.filter(Course_Code = CourseInfo.objects.get(id=course))
+    chapterdetails = chapterlist.get(id=chapter)
+    print(chapterdetails)
     path = settings.MEDIA_ROOT
     data = None
     try:
@@ -788,7 +790,8 @@ def chapterpagebuilder(request, course, chapter):
     context = {
         'course': course,
         'chapter': chapter,
-        'chaptertitle': chaptertitle,
+        'chapterdetails': chapterdetails,
+        'chapterlist': chapterlist,
         'file_path': path,
         'data': data
     }
