@@ -10,13 +10,14 @@
 <div class="outerdiv">
     <h2 class="detailListHeader">Member Information</h2>
     <hr class="header_hr">
+    <div class="col-md-6">{% include 'WebApp/theme/alerts.html' %}</div>
     <div class="col-md-8 col-sm-12 col-xs-12 text-center col-md-offset-2">
         <div class="circleProfile text-center">
             <img src="{% if object.Member_Avatar %}
                     {{ object.Member_Avatar.url }}
-                {% elif object.Member_Gender == '1' %}
+                {% elif object.Member_Gender == 'M' %}
                     {% static 'images/profile/male.jpg' %}
-                {% elif object.Member_Gender == '2' %}
+                {% elif object.Member_Gender == 'F' %}
                     {% static 'images/profile/female.png' %}
                 {% else %}
                     {% static 'images/profile/profile.png' %}
@@ -24,50 +25,52 @@
         </div>
         <div class="text-center">
             <!-- <a class="btn btn-info" href="/change-password/{{ object.id }}/"> Change Password </a> -->
-            <h5><a style="float: right;color: #2A3F54" href="{{ object.get_update_url }}"><u><b>Edit Member</b></u></a>
-            </h5>
-
+            <a class="member-edit" style="float: right;color: #2A3F54" href="{{ object.get_update_url }}"><b>Edit Member</b></a>
         </div>
     </div>
     <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
         <h5><b>
                 <table class="table table-striped table-bordered">
                     <tr>
-                        <td>Member ID</td>
-                        <td>{{ object.username }}</td>
+                        <td class="mediumblack">Member ID</td>
+                        <td>{{ object.Member_ID }} <small style="padding-left: 3em;"> Assigned by center </small></td>
+                    </tr>
+                    <tr>
+                        <td class="mediumblack">Username</td>
+                        <td>{{ object.username }} <small style="padding-left: 3em;"> Used for login </small></td>
                     </tr>
 
                     <tr>
-                        <td>First Name</td>
-                        <td>{{ object.first_name }}</td>
+                        <td class="mediumblack">Full Name</td>
+                        <td>{{ object.first_name }} {{ object.last_name }}</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td>Last Name</td>
                         <td>{{ object.last_name }}</td>
-                    </tr>
+                    </tr> -->
                     <tr>
-                        <td>Email</td>
+                        <td class="mediumblack">Email</td>
                         <td>{{ object.email }}</td>
                     </tr>
                     <tr>
-                        <td>Permanent Address</td>
+                        <td class="mediumblack">Permanent Address</td>
                         <td>{{ object.Member_Permanent_Address }}</td>
                     </tr>
                     <tr>
-                        <td>Temporary Address</td>
+                        <td class="mediumblack">Temporary Address</td>
                         <td>{{ object.Member_Temporary_Address }}</td>
                     </tr>
                     <tr>
-                        <td>BirthDate</td>
+                        <td class="mediumblack">BirthDate</td>
                         <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
                     </tr>
                     <tr>
-                        <td>Phone No.</td>
+                        <td class="mediumblack">Phone No.</td>
                         <td>{{ object.Member_Phone }}</td>
                     </tr>
 
                     <tr>
-                        <td>Gender</td>
+                        <td class="mediumblack">Gender</td>
                         <td>{% if object.Member_Gender == 'M' %}
                             Male
                             {% elif object.Member_Gender == 'F' %}
@@ -76,29 +79,29 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Status</td>
+                        <td class="mediumblack">Status</td>
                         <td>{% if  object.Use_Flag  == True %}
-                            On
-                            {% else %}
-                            Off
-                            {% endif %}
-
-                            <!-- 
-                            <button class="btn btn-sm btn-danger confirm-deactivate" id="{{object.pk}}">
-                                Dectivate
-                            </button>
-                            <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}"
-                                id="deactivateForm-{{object.pk}}">
+                            <span class="text-success">Active</span>
+                            <a style="float: right;color: #2A3F54;cursor:pointer" class="confirm-deactivate" id="{{object.id}}"><u> Deactivate </u></a>
+                            <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}" id="deactivateForm">
                                 {% csrf_token %}
-                            </form> -->
+                            </form>
+                            {% else %}
+                            <span class="text-danger">Blocked</span>
+                            <a style="float: right;color: #2A3F54;cursor:pointer" class="confirm-activate" id="{{object.id}}"><u> Activate </u></a>
+                            <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}" id="activateForm">
+                                {% csrf_token %}
+                                <input type="hidden" value='' name='url'>
+                            </form>
+                            {% endif %}
                         </td>
                     </tr>
                     <tr>
-                        <td>Register DateTime</td>
+                        <td class="mediumblack">Register DateTime</td>
                         <td>{{ object.date_joined|date:"m/d/Y" }}</td>
                     </tr>
                     <tr>
-                        <td>Member Type</td>
+                        <td class="mediumblack">Member Type</td>
                         <td>
                             {% if object.Is_CenterAdmin %}
                             &nbsp;Admin
@@ -114,7 +117,7 @@
                     </tr>
                     {% if object.password %}
                     <tr>
-                        <td>Password</td>
+                        <td class="mediumblack">Password</td>
                         <td>&nbsp;******** <a style="float: right;color: #2A3F54"
                                 href="/change-password/{{ object.id }}/"><u> Change
                                     Password </u></a>
@@ -122,31 +125,24 @@
                     </tr>
                     {% elif not object.password %}
                     <tr>
-                        <td>Password</td>
+                        <td class="mediumblack">Password</td>
                         <td><a style="float: middle" href="/change-password/{{ object.id }}/"><u> Add New Password
                                 </u></a></td>
                     </tr>
                     {% endif %}
                 </table>
             </b></h5>
-        <div class="text-center">
-            <div>
-                <a class="confirm-delete" style="color: #2A3F54">
-                    <h5><b class=" member-delete">Delete Member</b></h5>
-                </a>
+            <div class="text-center">
+                <a class="confirm-delete" style="color: #2A3F54;cursor:pointer">
+                    <b><u>Delete Member</u></b>
+                </a><small style="color:#2A3F54"><u> (Note: Instead of deleting a member you can deactivate him/her instead)</u></small>
+                <br><br>
+                <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form">
+                    {% csrf_token %}
+                    <input type="hidden">
+                </form>
             </div>
-            <br>
-            <p style="color:#2A3F54"><u> (Note: Instead of deleting a member you can deactivate him/her instead)</u></p>
-
-            <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form">
-                {% csrf_token %}
-                <input type="hidden">
-            </form>
         </div>
-    </div>
-
-    <br>
-
 </div>
 
 {% endblock %}
@@ -154,11 +150,22 @@
 
 {% block customjss %}
 <script>
+    setTimeout(function () {
+        $('#message').fadeOut('slow');
+    }, 3000);
+
     $(document).on('click', '.confirm-deactivate', function (event) {
-        var id = event.target.id;
         ans = confirm('Are you sure you want to deactivate this Member?');
-        if (ans == false) {
-            $(`#deactivateForm-${id}`).submit();
+        if (ans == true) {
+            $('#deactivateForm').submit();
+        } else {
+            return false;
+        }
+    });
+    $(document).on('click', '.confirm-activate', function (event) {
+        ans = confirm('Are you sure you want to activate this Member?');
+        if (ans == true) {
+            $('#activateForm').submit();
         } else {
             return false;
         }

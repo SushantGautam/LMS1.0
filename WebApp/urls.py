@@ -74,6 +74,7 @@ urlpatterns += (
     path('memberinfo/detail/<int:pk>/', views.MemberInfoDetailView.as_view(), name='memberinfo_detail'),
     path('memberinfo/update/<int:pk>/', views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
     path('memberinfo/delete/<int:pk>/', views.MemberInfoDeleteView.as_view(), name='memberinfo_delete'),
+    path('ajax/validate_username/', views.validate_username, name='validate_username'),
 )
 
 urlpatterns += (

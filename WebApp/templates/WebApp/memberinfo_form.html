@@ -4,6 +4,9 @@
 
 {% block breadcrumb %}
 <li class="breadcrumb-item" aria-current="page"><a href="{% url 'memberinfo_list' %}">Member</a></li>
+{% if object.username %}
+<li class="breadcrumb-item" aria-current="page"><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></li>
+{% endif %}
 <li class="breadcrumb-item active" aria-current="page">
     {% if '/memberinfo/create/' == request.path %}
     Create New Member
@@ -42,27 +45,28 @@
                 </a>
                 <div id="" class="" role="" aria-labelledby="headingOne">
                     <div class="panel-body">
+                            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                                    <label for="id_Member_ID" class="control-label ">
+                                        Member ID* <small> ( Provided by the Center ) </small>
+                                    </label>
+                                    <input type="text" value="{{ object.Member_ID }}" name="Member_ID" id="id_Member_ID"
+                                        required="required" class="form-control has-feedback-left" placeholder="Member Name">
+                                    <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
+                                </div>
                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
                             <label for="id_username" class="control-label ">
-                                Member ID
+                                Username* <small> ( Use to login, user can change it later-unique ) </small>
                             </label>
-                            <input type="text" value="{{ object.username }}" name="username" id="id_username"
-                                required="required" class="form-control has-feedback-left" placeholder="Member Name">
+                            <input type="text" value="{{ object.username }}" name="username" id="id_username" data-validate-username-url="{% url 'validate_username' %}"
+                                required="required" class="form-control has-feedback-left js-validate-username" placeholder="Member Name">
                             <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                            <label for="id_email" class="control-label ">
-                                Member Email
-                            </label>
-                            <input type="email" name="email" value="{{ object.email }}" id="id_email"
-                                required="required" class="form-control has-feedback-left" placeholder="Member Email">
-                            <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
+                            <span class="text-danger" id="error_username"></span>
                         </div>
 
 
                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
                             <label for="id_first_name" class="control-label ">
-                                First Name
+                                First Name*
                             </label>
                             <input type="text" value="{{ object.first_name }}" name="first_name" id="id_first_name"
                                 required="required" class="form-control has-feedback-left" placeholder="First Name">
@@ -72,12 +76,20 @@
 
                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback" id="div_id_password">
                             <label for="id_last_name" class="control-label ">
-                                Last Name
+                                Last Name*
                             </label>
                             <input type="text" value="{{ object.last_name }}" name="last_name" id="id_last_name"
                                 required="required" class="form-control has-feedback-left" placeholder="Last Name">
                             <span class="fa fa-lock form-control-feedback left" aria-hidden="true"></span>
                         </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                                <label for="id_email" class="control-label ">
+                                    Member Email*
+                                </label>
+                                <input type="email" name="email" value="{{ object.email }}" id="id_email"
+                                    required="required" class="form-control has-feedback-left" placeholder="Member Email">
+                                <span class="fa fa-envelope form-control-feedback left" aria-hidden="true"></span>
+                            </div>
 
 
                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
@@ -97,7 +109,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
                             <div class="col-md-12 col-sm-12 col-xs-12 form-group  has-feedback">
-                                <b>Member Type</b>
+                                <b>Member Type*</b>
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-12">
                                 {{ form.Is_Teacher }}<br>
@@ -108,6 +120,7 @@
                                 {{ form.Is_Student }}<br>
                                 <b>Student</b>
                             </div>
+                            <span class="text-danger" id="error_member_type"></span>
                         </div>
                         {% if 'create' in request.path %}
                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
@@ -225,10 +238,59 @@
 </div>
 {% include 'WebApp/theme/alerts.html' %}
 
+{% endblock %}
+
+{% block customjss %}
+<script>
+$('#FormID').submit( function(e){
+    
+    var scheck = $('#id_Is_Student').is(':checked');
+    var tcheck = $('#id_Is_Teacher').is(':checked');
+    if(scheck==false && tcheck==false){
+        e.preventDefault();
+        $('#error_member_type').html('Please select the type of user');
+    }else{
+        $('#error_member_type').html('');
+    }
+    if($(".js-validate-username").attr('data-error')=='true'){
+       e.preventDefault();
+    }
+});
+
+$(".js-validate-username").change(function () {
+    var username = $(this).val();
+    var edit_username = '{{ object.username }}';
+    var flag = 0;
+
+    if(edit_username){
+        if(username==edit_username){
+            $('#error_username').html('');
+            $(".js-validate-username").attr('data-error','false');
+            flag = 1;
+        }
+    }
+    
+    if(flag==0){
+        $.ajax({
+            url: '{% url "validate_username" %}',
+            data: {
+            'username': username
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.is_taken) {
+                    $('#error_username').html(data.error_message);
+                    $(".js-validate-username").attr('data-error','true');
+                }else{
+                    $('#error_username').html('');
+                    $(".js-validate-username").attr('data-error','false');
+                }
+            }
+        });
+    }
+
+  });
 
 
-<!-- <div class="out">
-
-    </div> -->
-
+</script>
 {% endblock %}

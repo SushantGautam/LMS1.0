@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block extrastylesheet %}
+{% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
 <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block breadcrumb %}
@@ -41,13 +42,13 @@
             <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
                     <td class="text-center">ID</td>
-                    <td class="text-center">Action</td>
                     <td>Member ID</td>
                     <td>Name</td>
                     <td>Current Address</td>
                     <td>Email</td>
                     <td>Phone</td>
                     <td>Gender</td>
+                    <td class="text-center">Action</td>
                     <td>Student</td>
                     <td>Teacher</td>
                     {#                    <td>Status</td>#}
@@ -57,10 +58,10 @@
             {% if object.id != request.user.id %}
             <tr>
                 <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
-                <td class="text-center"><a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
+                
                 </td>
 
-                <td style=" padding-top: 15px;"><b><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></b>
+                <td style=" padding-top: 15px;"><b><a href="{{ object.get_absolute_url }}">{{ object.Member_ID }}</a></b>
                 </td>
 
                 <td style=" padding-top: 15px;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
@@ -74,6 +75,7 @@
                     Female
                     {% endif %}
                 </td>
+                <td class="text-center"><a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
                 <td>{{ object.Is_Student }}</td>
                 <td>{{ object.Is_Teacher }}</td>
 
@@ -101,6 +103,7 @@
 
 <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+
 <script type="text/javascript">
     $("#all_button").css("color", "white");
     $("#student_button").css("color", "black");
