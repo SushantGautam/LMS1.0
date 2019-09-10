@@ -421,15 +421,18 @@
           <h3>Chapter Lists</h3>
 
           <div class="selection">
-            <select name="chapter-lists" id="">
-              <option value="Chapter-1">Please Select Chapter...</option>
-              <option value="Chapter-1">Chapter-2</option>
-              <option value="Chapter-1">Chapter-3</option>
-              <option value="Chapter-1">Chapter-4</option>
+            <select name="chapter-lists" id="chapterlist">
+              <option value="">Please Select Chapter...</option>
+              {% for chapter in chapterlist %}
+                <option value="{{chapter.id}}">
+                  {{chapter.Chapter_No}}. {{chapter.Chapter_Name}}
+                </option>
+              {% endfor %}
             </select>
-            <div class="chapter-description">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magnam, reiciendis id optio fuga sint
-                possimus? Officiis cumque quidem maxime tenetur.</p>
+            <div class="chapter-description" id="chapter-description">
+              <p>
+                {{chapterdetails.Summary}}
+              </p>
             </div>
           </div>
         </div>
@@ -470,16 +473,21 @@
 </div> -->
 
 
-  <script>
-    var data = `{{ data|safe }}`;
-    var courseID = '{{course}}';
-    var chapterID = '{{chapter}}';
-    var chaptertitle = '{{chaptertitle}}';
-    var save_file_url = "{% url 'saveFile' %}";
-    var load_file_url = "/media/chapterBuilder/"+courseID+"/"+chapterID;
-    var save_json_url = "{% url 'saveJson' %}";
-        
-  </script>
+<script>
+  var data = `{{ data|safe }}`;
+  var courseID = '{{course}}';
+  var chapterID = '{{chapter}}';
+  var chaptertitle = '{{chapterdetails.Chapter_Name}}';
+  var save_file_url = "{% url 'saveFile' %}";
+  var save_video_url = "{% url 'saveVideo' %}";
+  var load_file_url = "/media/chapterBuilder/"+courseID+"/"+chapterID;
+  var save_json_url = "{% url 'saveJson' %}";
+  
+  $('#chapterlist').change(function(){
+    let chapter = $('#chapterlist').val()
+    location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
+  });
+</script>
   <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>

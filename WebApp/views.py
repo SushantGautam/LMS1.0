@@ -19,6 +19,7 @@ from django.conf import settings
 from PIL import Image
 import os
 import json
+import vimeo # from PyVimeo for uploading videos to vimeo.com
 
 from forum.models import Thread
 from forum.views import get_top_thread_keywords
@@ -793,7 +794,8 @@ def chapterviewer(request):
 
 
 def chapterpagebuilder(request, course, chapter):
-    chaptertitle = ChapterInfo.objects.get(id=chapter).Chapter_Name
+    chapterlist = ChapterInfo.objects.filter(Course_Code = CourseInfo.objects.get(id=course))
+    chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
     data = None
     try:
@@ -805,7 +807,8 @@ def chapterpagebuilder(request, course, chapter):
     context = {
         'course': course,
         'chapter': chapter,
-        'chaptertitle': chaptertitle,
+        'chapterdetails': chapterdetails,
+        'chapterlist': chapterlist,
         'file_path': path,
         'data': data
     }
@@ -837,6 +840,46 @@ def save_file(request):
             filename = fs.save(media.name, media)
         return JsonResponse(data={"message": "success"})
 
+@csrf_exempt
+def save_video(request):
+    if request.method == "POST":
+        chapterID = request.POST['chapterID']
+        courseID = request.POST['courseID']
+        media_type = request.POST['type']
+        path = ''
+        # for x in range(int(count)):
+        if request.FILES['file-0']:
+            media = request.FILES['file-0']
+            if (media.size/1024) > (2048*1024): # checking if file size is greater than 2 GB
+                return JsonResponse(data = {"message":"File size exceeds 2GB"}, status=500)
+            
+        #video uploading to vimeo.com
+        v = vimeo.VimeoClient(
+            token='dbfc0990d17ec6bfe130c6896337b1c4',
+            key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
+            secret='+1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
+        )
+        try:
+            token = v.load_client_credentials('dbfc0990d17ec6bfe130c6896337b1c4')
+            print(token)
+        except Exception as e:
+            print(e)
+        # media = '{path to a video on the file system}'
+        uri = v.upload(media, data={
+        'name': 'Untitled',
+        'description': 'The description goes here.'
+        })
+
+        print('Your video URI is: %s' % (uri))
+
+        # response = v.get(uri + '?fields=transcode.status').json()
+        # print(response)
+        # if response['transcode']['status'] == 'complete':
+        #     print('Your video finished transcoding.')
+        # elif response['transcode']['status'] == 'in_progress':
+        #     print('Your video is still transcoding.')
+        # else:
+        #     print('Your video encountered an error during transcoding.')
 
 @csrf_exempt
 def save_json(request):
