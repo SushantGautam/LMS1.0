@@ -45,54 +45,38 @@ Course
                     </a>
                 </div>
                 <div class="card-body" id="cardInfo">
-                    <h2 class="card-title"><strong><a href="{% if '/teachers' in request.path %}
-                                        /teachers{{ courses.Course_Code.get_absolute_url }}
+                    <h2 class="card-title"><strong><a href="{% if '/students' in request.path %}
+                                        {{ courses.Course_Code.student_get_absolute_url }}
                                       {% else %}
                                         {{ courses.Course_Code.get_absolute_url }}
                                       {% endif %}">{{ courses.Course_Code.Course_Name }}</a></strong></h2>
 
-                    {#                        <p class="ratingIcons">#}
-                    {#                            <span class="fa fa-fw fa-star text-yellow-800"></span>#}
-                    {#                            <span class="fa fa-fw fa-star text-yellow-800"></span>#}
-                    {#                            <span class="fa fa-fw fa-star text-yellow-800"></span>#}
-                    {#                            <span class="fa fa-fw fa-star-o text-yellow-800"></span>#}
-                    {#                            <span class="fa fa-fw fa-star-o text-yellow-800"></span>#}
-                    {#                        </p>#}
 
                     <hr>
 
                     <h5 class="courseDescription" style="padding-bottom: 10px;">
                         {% if courses.Course_Code.Course_Description %}
-                        {{ courses.Course_Code.Course_Description }}
+                        <p style="padding-left: 10px;
+            padding-right: 10px;
+            line-height: 1.5em;
+            height: 3em;
+            overflow-wrap:break-word; 
+            overflow: hidden;
+            white-space: normal;
+            text-overflow: ellipsis;">
+                            {{ courses.Course_Code.Course_Description }}
+                        </p>
                         {% else %}
                         No Description
                         {% endif %}
                     </h5>
 
-
-                    {#                        <div class="row d-flex flex-row">#}
-                    {#                            <div class="col-md-3">#}
-                    {#                                            <span class="">#}
-                    {#                                                <img width="60px" id="avatar"#}
-                    {#                                                     src="{{ object.Teacher_Code.Member_Avatar.url }}">#}
-                    {#                                            </span>#}
-                    {#                            </div>#}
-                    {##}
-                    {#                            <div class="col-md-9 text-center">#}
-                    {##}
-                    {#                                <p>Instructor</p>#}
-                    {#                                <h5>{{ object.Teacher_Code }}</h5>#}
-                    {#                            </div>#}
-                    {#                        </div>#}
                 </div>
             </div>
         </div>
 
         {% endfor %}
     </div>
-    {#        {{ GroupName }}#}
-    {#        {{ Group.Inning_Name }}#}
-    {#        {{ courses.Course_Code }}#}
 
 
 </div>

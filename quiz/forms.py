@@ -147,3 +147,14 @@ class QuizForm3(forms.ModelForm):
         self.fields['mcquestion'].required = False
         self.fields['tfquestion'].required = False
         self.fields['saquestion'].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        mq = cleaned_data.get("mcquestion")
+        tq = cleaned_data.get("tfquestion")
+        eq = cleaned_data.get("saquestion")
+        if not (mq or tq or eq):
+            raise forms.ValidationError(
+                "Please Select Atleast One Question"
+            )
+        return cleaned_data
