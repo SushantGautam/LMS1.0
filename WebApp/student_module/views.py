@@ -17,7 +17,7 @@ from django.views import View
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo
 from datetime import datetime
-from quiz.models import Question
+from quiz.models import Question , Quiz
 from django.shortcuts import redirect
 
 
@@ -147,7 +147,8 @@ class ChapterInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
+        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk')) 
+        context['quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'))
         return context
 
 

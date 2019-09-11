@@ -49,7 +49,7 @@
           <a href="{% if '/students' in request.path %}
                                 {{ object.student_get_absolute_url }}
                             {% else %}
-                               {{ object.student_get_absolute_url }}
+                               {{ object.get_absolute_url }}
                             {% endif %}">
             <img id="courseListImage" class="card-img-top" src="
                             {% if object.Course_Cover_File %}
@@ -70,7 +70,7 @@
           <hr />
           <h5 class="lectureDescription" style="padding-bottom: 5px;">
             {% if object.Course_Description %}
-            <p style=" padding-left: 10px; line-height: 1.5em; height: 3em; overflow: hidden; white-space: normal;">
+            <p style=" line-height: 1.5em;max-lines: 2;height: 3em;  overflow: hidden; text-overflow: ellipsis;">
               {{ object.Course_Description }}
             </p>
             {% else %}

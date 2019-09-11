@@ -64,28 +64,68 @@
                     <tr>
                         <td>Pre Test Quiz</td>
                         <td>
-                            <div class="btn-group" id="status" data-toggle="buttons">
-                                <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                                    <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                                        checked="checked">ON</label>
-                                <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
-                                    <input type="radio" value="0"
-                                        name="multifeatured_module[module_id][status]">OFF</label>
-                            </div>
+                               {% if request.user.Is_Student %}
+
+                                  
+                                
+                                {% for quiz in quizes%}
+                                  
+                                    {% if quiz.pre_test is True %} 
+                                    <a href="{% url 'quiz_question' quiz_name=quiz.url %}" ><button>Play quiz</button></a>  
+                                    {% else %} 
+
+                                
+                                    {% endif %} 
+                                {% endfor %}
+                                {% endif %}
+                                
+                          
+                                <!-- {% if request.user.Is_CenterAdmin or request.user.Is_Teacher %} 
+                                {% for quiz in quizes%}
+                                 {% if quiz.pre_test is True  %} 
+                                    <div class="btn-group" id="status" data-toggle="buttons">
+                                            <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                                <input type="radio" value="1" name="multifeatured_module[module_id][status]"
+                                                    checked="checked">ON</label>
+                                            <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
+                                                <input type="radio" value="0"
+                                                    name="multifeatured_module[module_id][status]">OFF</label>
+                                        </div> 
+                                
+                            
+                                {% endif %} 
+                                {% endfor %}
+                          
+                            {% endif %}     -->
                         </td>
                     </tr>
                     <tr>
                         <td>Post Test Quiz</td>
                         <td>
-                            <div class="btn-group" id="status" data-toggle="buttons">
-                                <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                                    <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                                        checked="checked">ON</label>
-                                <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
-                                    <input type="radio" value="0"
-                                        name="multifeatured_module[module_id][status]">OFF</label>
-                            </div>
-                        </td>
+                           
+                                {% if request.user.Is_Student %}
+    
+                                      
+                                    
+                                    {% for quiz in quizes%}
+                                    {% if quiz.post_test is True %} 
+                                    <a href="{% url 'quiz_question' quiz_name=quiz.url %}" ><button>Play quiz</button></a>  
+                                    {% else %}
+                                    <p>no post quiz</p>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                <!-- {% if request.user.Is_CenterAdmin %} 
+                                <div class="btn-group" id="status" data-toggle="buttons">
+                                        <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                            <input type="radio" value="1" name="multifeatured_module[module_id][status]"
+                                                checked="checked">ON</label>
+                                        <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
+                                            <input type="radio" value="0"
+                                                name="multifeatured_module[module_id][status]">OFF</label>
+                                    </div> 
+                                {% endif %}        -->
+                            </td>
                     </tr>
                 </table>
             </div>
