@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block extrastylesheet %}
+{% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
 <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block breadcrumb %}
@@ -57,7 +58,7 @@
             {% if object.id != request.user.id %}
             <tr>
                 <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
-                <td style=" padding-top: 15px;"><b><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></b>
+                <td style=" padding-top: 15px;"><b><a href="{{ object.get_absolute_url }}">{{ object.Member_ID }}</a></b>
                 </td>
 
                 <td style=" padding-top: 15px;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
@@ -82,12 +83,13 @@
                 </td>
                 <td class="text-center">
 
-                    <button class="btn btn-sm btn-danger confirm-activate" id="{{object.pk}}">
+                    <button class="btn btn-sm btn-success confirm-activate" id="{{object.pk}}">
                         Activate
                     </button>
                     <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"
                         id="activateForm-{{object.pk}}">
                         {% csrf_token %}
+                        <input type="hidden" value='memberinfo_list_inactive' name='url'>
                     </form>
                 </td>
             </tr>
@@ -170,7 +172,7 @@
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
             table_main.columns().search('').draw();
-            table_main.column(7).search("True").draw();
+            table_main.column(4).search("True").draw();
 
 
         });
@@ -180,7 +182,7 @@
             $("#all_button").css("color", "black");
 
             table_main.columns().search('').draw();
-            table_main.column(8).search("True").draw();
+            table_main.column(5).search("True").draw();
 
         });
 

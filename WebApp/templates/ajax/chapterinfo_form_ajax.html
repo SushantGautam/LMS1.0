@@ -4,13 +4,13 @@
 <div class="se-pre-con-ajax"></div>
 <form method="post" id="ajaxchapterinfoform">
     {% csrf_token %}
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-3 col-sm-12 col-xs-12 text-center">
         {{ form.Chapter_No|as_crispy_field }}<br>
     </div>
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-9 col-sm-12 col-xs-12 text-center">
         {{ form.Chapter_Name|as_crispy_field }}<br>
     </div>
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         <div id="div_id_Summary" class="form-group">
             <label for="id_Summary" class="control-label ">
                 Summary
@@ -46,7 +46,7 @@
 
 <!-- {#<script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>#} -->
 <script>
-    $(".se-pre-con-ajax").fadeOut("fast");
+    // $(".se-pre-con-ajax").fadeOut("fast");
 
     $("#ajaxchapterinfoform").submit(function (e) {
 

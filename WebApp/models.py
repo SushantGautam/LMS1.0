@@ -93,7 +93,7 @@ class MemberInfo(AbstractUser):
     Register_Agent = CharField(max_length=500, blank=True, null=True)
     Updated_DateTime = DateTimeField(auto_now=True)
     Member_Memo = models.CharField(max_length=500, blank=True, null=True)
-    Member_Avatar = models.ImageField(upload_to="Member_images/", blank=True, null=True, default='Images/ubl_logo.jpg')
+    Member_Avatar = models.ImageField(upload_to="Member_images/", blank=True, null=True)
 
     Is_Teacher = models.BooleanField(default=False)
     Is_Student = models.BooleanField(default=False)
@@ -128,7 +128,7 @@ class MemberInfo(AbstractUser):
 class CourseInfo(models.Model):
     Course_Name = CharField(max_length=500, blank=True, null=True)
     Course_Description = TextField(blank=True, null=True)
-    Course_Cover_File = ImageField(upload_to="Course_images/", blank=True, null=True, default='Images/course.jpg')
+    Course_Cover_File = ImageField(upload_to="Course_images/", blank=True, null=True)
     Course_Level = IntegerField(blank=True, null=True)
     Course_Info = TextField(blank=True, null=True)
 
@@ -296,10 +296,10 @@ class QuestionInfo(models.Model):
         return u'%s' % self.pk
 
     def get_absolute_url(self):
-        return reverse('questioninfo_detail', args=(self.pk,))
+        return reverse('webapp_questioninfo_detail', args=(self.Assignment_Code.Course_Code.pk,self.Assignment_Code.Chapter_Code.pk,self.Assignment_Code.pk,self.pk))
 
     def get_update_url(self):
-        return reverse('questioninfo_update', args=(self.pk,))
+        return reverse('webapp_questioninfo_update', args=(self.Assignment_Code.Course_Code.pk,self.Assignment_Code.Chapter_Code.pk,self.Assignment_Code.pk,self.pk))
 
 
 class AssignAssignmentInfo(models.Model):
