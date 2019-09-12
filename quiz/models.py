@@ -376,10 +376,10 @@ class SA_Question(Question):
         verbose_name_plural = _("Short Answer style questions")
 
     def get_absolute_url(self):
-        return reverse('question_detail', args=(self.pk,))
+        return reverse('saquestion_detail', args=(self.pk,))
 
     def get_update_url(self):
-        return reverse('question_update', args=(self.pk,))
+        return reverse('saquestion_update', args=(self.pk,))
 
 
 
@@ -404,7 +404,7 @@ class Quiz(models.Model):
         verbose_name=_("user friendly url"), unique=True)
 
     course_code = models.ForeignKey(
-        CourseInfo, null=True, blank=True,
+        CourseInfo,
         verbose_name=_("Course"), on_delete=models.CASCADE)
 
     cent_code = models.ForeignKey(

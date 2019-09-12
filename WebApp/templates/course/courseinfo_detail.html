@@ -4,8 +4,8 @@
     aria-hidden="true" id="create_chapter_modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLabel">Create Chapter
+            <div class="modal-header text-center">
+                <h4 class="modal-title" id="exampleModalLabel"><b>Create Chapter</b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -24,7 +24,7 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <hr class="header_hr" style="margin-bottom: 5px;margin-top: 5px;">
-        <div class="col-md-6 col-xs-12">
+        <div class="col-md-6 col-sm-12 col-xs-12">
             <h3 align="center"><b>{{ object.Course_Name }}</b></h3>
             <br>
 
@@ -80,7 +80,6 @@
                 <tr>
                     <td>Status</td>
                     <td>
-                        {#                        {{ object.Use_Flag }}#}
                         {% if object.Use_Flag == True %}
                         Active
                         {% elif object.Use_Flag == False %}
@@ -89,11 +88,11 @@
                     </td>
                 </tr>
             </table>
-
-            <h4 align="center"><b>Course Description</b></h4>
-            <span style="margin-left: 10px"> {{ object.Course_Description }} </span>
-            <hr>
-
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h4 align="center"><b>Course Description</b></h4>
+                <p style="margin-left: 10px; overflow-wrap:break-word; "> {{ object.Course_Description }} </p>
+                <hr>
+            </div>
             <div class="quiz-counter" style="margin-left: 10px">
 
                 <div class="col-md-6 col-sm-6 col-xs-6">
@@ -166,11 +165,7 @@
 {% block customjss %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>
-    { #        {% if object.Course_Level %} # }
-    { #            var rating = parseInt({{ object.Course_Level }}); #}
-    { #        {% else %} # }
-    { #            var rating = 0; # }
-    { #        {% endif %} # }
+
     if (parseInt('{{object.Course_Level}}'))
         for (j = 0; j < parseInt('{{object.Course_Level}}'); j++) {
             $('#rating').append("&nbsp;<i class='fa fa-star' style='color:#f5ba00'></i>");

@@ -220,9 +220,9 @@ def change_password_others(request, pk):
             user.save()
 
             # update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
+            messages.success(request, 'Password is changed successfully!')
 
-            return redirect('user_profile')
+            return redirect('memberinfo_detail',pk=pk)
         else:
             messages.error(request, 'Please correct the error below.')
     else:
@@ -279,6 +279,14 @@ class MemberInfoCreateView(CreateView):
     model = MemberInfo
     form_class = MemberInfoForm
 
+def validate_username(request):
+    username = request.GET.get('username', None)
+    data = {
+        'is_taken': MemberInfo.objects.filter(username__iexact=username).exists()
+    }
+    if data['is_taken']:
+        data['error_message'] = 'A user with this username already exists.'
+    return JsonResponse(data)
 
 def MemberInfoActivate(request,pk):
     try:
@@ -287,8 +295,22 @@ def MemberInfoActivate(request,pk):
         obj.save()
     except:
         messages.error(request,'Cannot perform the action. Please try again later')
+
+    if(request.POST['url']):
+        return redirect(request.POST['url'])
+    else:    
+        return redirect('memberinfo_detail',pk=pk)
+
+def MemberInfoDeactivate(request,pk):
+    try:
+        obj = MemberInfo.objects.get(pk=pk)
+        obj.Use_Flag=False
+        obj.save()
+    except:
+        messages.error(request,'Cannot perform the action. Please try again later')
     
-    return redirect('memberinfo_list_inactive')
+    return redirect('memberinfo_detail',pk=pk)
+
 
 
 

@@ -1,138 +1,96 @@
 {% load static %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
 <ul class="wizard_steps anchor">
-    <li>
-        <a href="#step-1" class="done" isdone="1" rel="1">
-            <span class="step_no">1</span>
-            <span class="step_descr">Basic  Info</span>
-        </a>
-    </li>
-    <li>
-        <a href="#step-2" class="selected" isdone="1" rel="2">
-            <span class="step_no">2</span>
-            <span class="step_descr">Select  Quiz Type</span>
-        </a>
-    </li>
-    <li>
-        <a href="#step-3" class="disabled" isdone="0" rel="3">
-            <span class="step_no">3</span>
-            <span class="step_descr">Add  Question</span>
-        </a>
-    </li>     
+  <li>
+    <a href="#step-1" class="done" isdone="1" rel="1">
+      <span class="step_no">1</span>
+      <span class="step_descr">Basic  Info</span>
+    </a>
+  </li>
+  <li>
+    <a href="#step-2" class="selected" isdone="1" rel="2">
+      <span class="step_no">2</span>
+      <span class="step_descr">Select  Quiz Type</span>
+    </a>
+  </li>
+  <li>
+    <a href="#step-3" class="disabled" isdone="0" rel="3">
+      <span class="step_no">3</span>
+      <span class="step_descr">Add  Question</span>
+    </a>
+  </li>
 </ul>
 <div class="col-md-12">
-    <div class="col-md-6"></div>
-    <div class="col-md-6 text-right">
-        <h4>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h4>
-    </div>
+  <div class="col-md-6"></div>
+  <div class="col-md-6 text-right">
+    <h4>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h4>
+  </div>
 </div>
-
 <form action="" method="post" id="quiz_form_2">{% csrf_token %}
-    <table>
-        {{ wizard.management_form }}
-        {% if wizard.form.forms %}
-            {{ wizard.form.management_form }}
-            {% for form in wizard.form.forms %}
-                {{ form|crispy }}
-            {% endfor %}
-        {% else %}
-            <!-- {{ wizard.form|crispy }} -->
-            <div class="form-group  ">
-                <div class="col-md-12">
-                    <span class="quiz-type-head">types of quiz</span>
-                </div>
-                <div class="col-md-12 quiz-type-border ">
-                    <div class="col-md-4">
-                        {{wizard.form.pre_test}}
-                        <label class="quiz-add-label"  for="">Pre Test</label>
-                        <p>{{wizard.form.pre_test.help_text}}</p>
-                    </div>
-                    <div class="col-md-4">
-                        {{wizard.form.post_test}}
-                        <label class="quiz-add-label"  for="">Post Test</label>
-                        <p>{{wizard.form.post_test.help_text}}</p>
-                    </div>
-                    <div class="col-md-4">
-                        {{wizard.form.answers_at_end}}
-                        <label class="quiz-add-label"  for="">Answer at the end</label>
-                        <p> {{wizard.form.answers_at_end.help_text}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group ">
-                <div class="col-md-12">
-                    <span class="quiz-type-head">quiz features</span>
-                </div>
-                <div class="col-md-12 quiz-type-border">
-                    <div class="col-md-4">
-                        {{wizard.form.random_order}}
-                        <label class="quiz-add-label"  for="">Random Order</label>
-                        <p> {{wizard.form.random_order.help_text}} </p>
-                    </div>
-                    <div class="col-md-4">
-                        {{wizard.form.exam_paper}}
-                        <label class="quiz-add-label"  for="">Exam Paper</label>
-                        <p>{{wizard.form.exam_paper.help_text}}</p>
-                    </div>
-                    <div class="col-md-4">
-                        {{wizard.form.single_attempt}}
-                        <label class="quiz-add-label"  for="">Single Attempt</label>
-                        <p>{{wizard.form.single_attempt.help_text}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <span class="quiz-type-head"> Save temporarily</span>
-                </div>
-                <div class="col-md-6">
-                    {{form.draft}}
-                    <label class="quiz-add-label"  for=""> Draft</label> <br>
-                    {{wizard.form.draft.help_text}}
-                </div>
-            </div>
-        {% endif %}
-    </table>
-    <input type="hidden" id="wizard_goto_input">
-    <div class="col-md-12 submitforquiz">
-        <div class="col-md-6">
-        </div>
-        <div class="col-md-6 button-place">
-            <button id="step_2_prev" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="add-mcq">Previous</button>
-            <button class="add-mcq">Next</button>
-        </div>
+  {{ wizard.management_form }}
+  {{ wizard.form.non_field_errors }}
+  <div id="id_div_myform">
+    {{ wizard.form|crispy }}
+  </div>
+  <input type="hidden" id="wizard_goto_input">
+  <div class="col-md-12 submitforquiz">
+    <div class="col-md-6">
     </div>
+    <div class="col-md-6 button-place">
+      <button id="step_2_prev" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="add-mcq">Previous</button>
+      <button class="add-mcq">Next</button>
+    </div>
+  </div>
 </form>
-
 {% block customjss %}
-<script>
-    $("#quiz_form_2").submit(function (e) {
-        e.preventDefault();
-        if($("#step_2_prev").attr('clicked') == "true"){
-            $("#wizard_goto_input").attr("name", "wizard_goto_step");
-            $("#wizard_goto_input").attr("value", "{{ wizard.steps.prev }}");
-        }
+  <script>
+      $("#quiz_form_2").submit(function (e) {
+          e.preventDefault();
+          if ($("#step_2_prev").attr('clicked') == "true") {
+              $("#wizard_goto_input").attr("name", "wizard_goto_step");
+              $("#wizard_goto_input").attr("value", "{{ wizard.steps.prev }}");
+          }
 
-         // avoid to execute the actual submit of the form.
-        $.ajax({
-            url: "{% url 'quizfw' %}", // URL to your view that serves new info
-            data: $(this).serialize(),
-            type: $(this).attr('method'), // GET or POST
-            success: function (data) {
-                $("#form1_ajax").html(data);
-            },
-            error: function () {
-                console.log('Error in posting form');
-            }
-        });
-    });
+          // avoid to execute the actual submit of the form.
+          $.ajax({
+              url: "{% url 'quizfw' %}", // URL to your view that serves new info
+              data: $(this).serialize(),
+              type: $(this).attr('method'), // GET or POST
+              success: function (data) {
+                  $("#form1_ajax").html(data);
+              },
+              error: function () {
+                  console.log('Error in posting form');
+              }
+          });
+      });
 
-    $("#step_2_prev").click(function() {
-        console.log('button clicked');
-        $(this).attr("clicked", "true");
-    });
-</script>
+      $("#step_2_prev").click(function () {
+          console.log('button clicked');
+          $(this).attr("clicked", "true");
+      });
+
+      $('input[type="checkbox"]').on('change', function () {
+          if ($(this).is(":checked")) {
+              //do something
+          }
+      });
+
+      $('#id_div_myform label').addClass("quiz-add-label");
+      $('#div_id_form2-chapter_code').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
+      var row_2_sel = $('#div_id_form2-pre_test, #div_id_form2-post_test, #div_id_form2-answers_at_end');
+      row_2_sel.wrapAll("<div class=\"col-md-12\"></div>");
+      row_2_sel.wrap("<div class=\"col-md-4\"></div>");
+      var row_3_sel = $('#div_id_form2-random_order, #div_id_form2-single_attempt, #div_id_form2-draft');
+      row_3_sel.wrapAll("<div class=\"col-md-12\"></div>");
+      row_3_sel.wrap("<div class=\"col-md-4\"></div>");
+      var row_4_sel = $('#div_id_form2-exam_paper, #div_id_form2-duration, #div_id_form2-pass_mark');
+      row_4_sel.wrapAll("<div class=\"col-md-12\"></div>");
+      row_4_sel.wrap("<div class=\"col-md-4\"></div>");
+      $('#div_id_form2-success_text').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
+      $('#div_id_form2-fail_text').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
+  </script>
 {% endblock customjss %}

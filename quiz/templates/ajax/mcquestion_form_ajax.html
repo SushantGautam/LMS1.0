@@ -88,7 +88,7 @@
 			success: function (response) {
 				console.log(response['new_mcq_id']);
 				console.log(response['new_mcq_content']);
-				$('#id_mcquestion').prepend(
+				$('#id_form3-mcquestion').prepend(
 					`<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
 				$('#mcquestion_form_popup').modal('toggle');
 			},
@@ -97,5 +97,10 @@
 			}
 		});
 	});
+
+	$("#div_id_course_code").hide();
+	$("#id_course_code").val('{{ course_from_quiz }}');
+	$("#div_id_cent_code").hide();
+	$("#id_cent_code").val('{{ request.user.Center_Code.id }}');
 </script>
 {% endblock customjss %}

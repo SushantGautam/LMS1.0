@@ -3,8 +3,8 @@
     aria-hidden="true" id="create_assignment_modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLabel">Create Assignment
+            <div class="modal-header text-center">
+                <h4 class="modal-title" id="exampleModalLabel"><b>Create New Assignment</b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -22,33 +22,31 @@
                 <h2 class="detailListHeader">Chapter {{ object.Chapter_No }}
                     : {{ object.Chapter_Name }} </h2>
             </div>
-            <a class="btn-sm btn-success" href="#" id="course-viewer" data-toggle="modal"
-                data-target="#course-modal">Course
-                Viewer &nbsp;</a>
-
-            {% if '/students' not in request.path %}
             <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
+                <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
+                    data-target="#course-modal">Course Viewer &nbsp;</a>
+
+                {% if '/students' not in request.path %}
+                <a class="btn-sm btn-success"
+                    href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Course
+                    Builder &nbsp;</a>
                 <a class="btn-sm btn-primary" href="{% if '/teachers' in request.path %}
                 /teachers{{ object.get_update_url }}
             {% else %}
                 {{ object.get_update_url }}
             {% endif %}">Edit Chapter &nbsp;</a>
-                <a class="btn-sm btn-success"
-                    href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Course
-                    Builder &nbsp;</a>
+
                 <a class="btn-sm btn-danger" href="{{ object.get_delete_url }}">Delete Chapter</a>
+
+                {% endif %}
             </div>
-            {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12" id="tabs">
                 <table class="table">
                     <tr>
                         <td>Summary</td>
                         <td>{{ object.Summary }}</td>
                     </tr>
-                    {#                    <tr>#}
-                    {#                        <td>Page Number</td>#}
-                    {#                        <td>{{ object.Page_Num }}</td>#}
-                    {#                    </tr>#}
+
                     <tr>
                         <td>Status</td>
                         <td>{{ object.Use_Flag }}</td>
@@ -64,28 +62,68 @@
                     <tr>
                         <td>Pre Test Quiz</td>
                         <td>
-                            <div class="btn-group" id="status" data-toggle="buttons">
-                                <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                                    <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                                        checked="checked">ON</label>
-                                <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
-                                    <input type="radio" value="0"
-                                        name="multifeatured_module[module_id][status]">OFF</label>
-                            </div>
+                               {% if request.user.Is_Student %}
+
+                                  
+                                
+                                {% for quiz in quizes%}
+                                  
+                                    {% if quiz.pre_test is True %} 
+                                    <a href="{% url 'quiz_question' quiz_name=quiz.url %}" ><button>Play quiz</button></a>  
+                                    {% else %} 
+
+                                
+                                    {% endif %} 
+                                {% endfor %}
+                                {% endif %}
+                                
+                          
+                                <!-- {% if request.user.Is_CenterAdmin or request.user.Is_Teacher %} 
+                                {% for quiz in quizes%}
+                                 {% if quiz.pre_test is True  %} 
+                                    <div class="btn-group" id="status" data-toggle="buttons">
+                                            <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                                <input type="radio" value="1" name="multifeatured_module[module_id][status]"
+                                                    checked="checked">ON</label>
+                                            <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
+                                                <input type="radio" value="0"
+                                                    name="multifeatured_module[module_id][status]">OFF</label>
+                                        </div> 
+                                
+                            
+                                {% endif %} 
+                                {% endfor %}
+                          
+                            {% endif %}     -->
                         </td>
                     </tr>
                     <tr>
                         <td>Post Test Quiz</td>
                         <td>
-                            <div class="btn-group" id="status" data-toggle="buttons">
-                                <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                                    <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                                        checked="checked">ON</label>
-                                <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
-                                    <input type="radio" value="0"
-                                        name="multifeatured_module[module_id][status]">OFF</label>
-                            </div>
-                        </td>
+                           
+                                {% if request.user.Is_Student %}
+    
+                                      
+                                    
+                                    {% for quiz in quizes%}
+                                    {% if quiz.post_test is True %} 
+                                    <a href="{% url 'quiz_question' quiz_name=quiz.url %}" ><button>Play quiz</button></a>  
+                                    {% else %}
+                                    <p>no post quiz</p>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                <!-- {% if request.user.Is_CenterAdmin %} 
+                                <div class="btn-group" id="status" data-toggle="buttons">
+                                        <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                            <input type="radio" value="1" name="multifeatured_module[module_id][status]"
+                                                checked="checked">ON</label>
+                                        <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
+                                            <input type="radio" value="0"
+                                                name="multifeatured_module[module_id][status]">OFF</label>
+                                    </div> 
+                                {% endif %}        -->
+                            </td>
                     </tr>
                 </table>
             </div>
@@ -97,17 +135,9 @@
             <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                 <h2 class="detailListHeader">Assignments</h2>
             </div>
-            {#                        {% if '/students' not in request.path %}#}
-            {#                            <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">#}
-            {#                                <a class="btn-sm btn-success" href="{% if '/teachers' in request.path %}#}
-            {#                                    {% url 'teacher_assignmentinfo_create' %}#}
-            {#                                {% else %}#}
-            {#                                    {% url 'assignmentinfo_create' course=object.Course_Code.id chapter=object.pk %}#}
-            {#                                {% endif %}">Create new Assignment</a>#}
-            {#                            </div>#}
-            {#                        {% endif %}#}
+
             {% if '/students' not in request.path %}
-            <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
+            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                 <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModal1"
                     id="add-newassignment-btn">
                     Create New Assignment
@@ -314,6 +344,9 @@
             },
             error: function () {
                 console.log('Error in generating assignment create form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
             }
         });
     });

@@ -6,7 +6,7 @@
 
 
     <div class="navbar nav_title" style="border: 0;">
-        <a href="/" class="site_title"><img src="/static/images/logo.png" alt="..." id="ubl_logo"/>
+        <a href="/" class="site_title"><img src="/static/images/logo.png" alt="..." id="ubl_logo" />
             <span id="LMS">u-LMS 2019</span></a>
     </div>
 
@@ -16,8 +16,8 @@
 
     <div class="profile clearfix">
         {% if request.user.is_authenticated %}
-            <div class="profile_pic">
-                <img src="
+        <div class="profile_pic">
+            <img src="
                         {% if request.user.Member_Avatar %}
                             {{ request.user.Member_Avatar.url }}
                         {% elif request.user.Member_Gender == '1' %}
@@ -26,8 +26,7 @@
                             {% static 'images/profile/female.png' %}
                         {% else %}
                             {% static 'images/profile/profile.png' %}
-                        {% endif %}"
-                alt="..." class="img-circle profile_img" />
+                        {% endif %}" alt="..." class="img-circle profile_img" />
         </div>
 
         <div class="profile_info">
@@ -46,65 +45,65 @@
         <div class="menu_section">
             {% if user.is_authenticated %}
 
-                <h3>Admin Portal Home</h3>
+            <h3>Admin Portal Home</h3>
 
-                <hr>
+            <hr>
 
-                <ul class="nav side-menu">
-                    <li>
-                        <a href="/"><i class="fa fa-home"></i> Dashboard
-                        </a>
-
-
-                    </li>
-                    <li>
-                        <a href="{% url 'admin_calendar' %}"><i class="fa fa-calendar"></i> Calendar
-                        </a>
-                    </li>
-                    <li>
-                        <a><i class="fa fa-user"></i>Members<span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="{% url 'memberinfo_list' %}">Members List</a></li>
-                            <li>
-                                <a href="{% url 'memberinfo_create' %}">Create New Member</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a><i class="fa fa-book"></i> Courses
-                            <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="{% url 'courseinfo_list' %}">Course List</a></li>
-                            <li>
-                                <a href="{% url 'courseinfo_create' %}">Create New Course</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a ><i class="fa fa-question"></i> Quiz <span class="fa fa-chevron-down"></span>
-                        </a>
-                        <ul class="nav child_menu"> 
-                                <li><a href="{% url 'quiz_list' %}">Quiz List</a></li>
-                                <li><a href="{% url 'quiz_progress' %}">Progress Page</a></li>
-                                <li>
-                                    <a href="{% url 'quiz_marking' %}">Marking Page</a>
-                                </li>
-                            </ul>
-                    </li>
-                    <li>
-                        <a><i class="fa fa-list"></i> Session
-                            <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="{% url 'sessioninfo_list' %}">List of Sessions</a></li>
-                            <li><a href="{% url 'groupmapping_list' %}">Batch Registration</a></li>
-                            <li><a href="{% url 'inninggroup_list' %}">Assign Course to Teacher</a></li>
-                            <li><a href="{% url 'inninginfo_list' %}">Sessions Mapping</a></li>
-                        </ul>
-                    </li>
+            <ul class="nav side-menu">
+                <li>
+                    <a href="/"><i class="fa fa-home"></i> Dashboard
+                    </a>
 
 
+                </li>
+                <li>
+                    <a href="{% url 'admin_calendar' %}"><i class="fa fa-calendar"></i> Calendar
+                    </a>
+                </li>
+                <li>
+                    <a><i class="fa fa-user"></i>Members<span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="{% url 'memberinfo_list' %}">Members List</a></li>
+                        <li>
+                            <a href="{% url 'memberinfo_create' %}">Create New Member</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a><i class="fa fa-book"></i> Courses
+                        <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="{% url 'courseinfo_list' %}">Course List</a></li>
+                        <li>
+                            <a href="{% url 'courseinfo_create' %}">Create New Course</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a><i class="fa fa-question"></i> Quiz <span class="fa fa-chevron-down"></span>
+                    </a>
+                    <ul class="nav child_menu">
+                        <li><a href="{% url 'quiz_list' %}">Quiz List</a></li>
+                        <li><a href="{% url 'quiz_progress' %}">Progress Page</a></li>
+                        <li>
+                            <a href="{% url 'quiz_marking' %}">Marking Page</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a><i class="fa fa-list"></i> Session
+                        <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="{% url 'sessioninfo_list' %}">List of Sessions</a></li>
+                        <li><a href="{% url 'groupmapping_list' %}">Batch Registration</a></li>
+                        <li><a href="{% url 'inninggroup_list' %}">Assign Course to Teacher</a></li>
+                        <li><a href="{% url 'inninginfo_list' %}">Sessions Mapping</a></li>
+                    </ul>
+                </li>
 
-                </ul>
+
+
+            </ul>
             {% endif %}
 
             <hr>
