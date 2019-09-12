@@ -25,11 +25,22 @@
 
     <!-- List group -->
     <ul class="list-group thread-list">
-        
+
         {% for thread in threads %}
+
 
         <li class="list-group-item thread-entry">
             <div class="entry media">
+                <h6>
+                    <div class="pull-right">
+                        <span class=" btn btn-white text-light">
+                            {{ thread.pub_date | date:"d, M" }}</span>
+                        <br>
+                        <span class="btn btn-white">
+                            <i class="fa fa-eye"></i> {{ thread.view_count }}
+                        </span>
+                    </div>
+                </h6>
 
                 <a href="{% url 'forum:user_info' pk=thread.user.pk %}">
                     <img src="/media/{{ thread.user.Member_Avatar }}" alt=""
@@ -72,21 +83,10 @@
                                     <span class="meta meta-last_replied hidden-xs">|
                                         {% trans "Last Replied" %}: {{ thread.last_replied | naturaltime }}
                                     </span>
-                                    <br>
 
-                                    <br>
                                 </h5>
                             </div>
-                            <h6>
-                                <div class="right_content">
-                                    <span class=" btn btn-white text-light">
-                                        {{ thread.pub_date | date:"d, M" }}</span>
-                                    <br>
-                                    <span class="btn btn-white">
-                                        <i class="fa fa-eye"></i> {{ thread.view_count }}
-                                    </span>
-                                </div>
-                            </h6>
+
                         </p>
 
                         <div class="media-right media-middle">
@@ -95,8 +95,11 @@
 
 
                     </div>
+            </div>
         </li>
+
         {% endfor %}
+
     </ul>
 
 

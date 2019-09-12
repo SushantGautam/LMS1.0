@@ -25,7 +25,7 @@
 				console.log(response['new_tfq_content']);
 				$('#id_form3-tfquestion').prepend(
 					`<option value="${response['new_tfq_id']}" selected>${response['new_tfq_content']}</option>`);
-				$('#tfquestion_form_popup').modal('toggle');
+				$('#question_form_popup').modal('toggle');
 			},
 			error: function () {
 				console.log('Error in posting form');

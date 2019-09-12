@@ -15,6 +15,7 @@ from django.views.generic import DetailView, ListView, UpdateView, CreateView, D
 from django.views.generic.edit import FormView
 from django.core.paginator import Paginator
 from django.core.files.storage import FileSystemStorage
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from PIL import Image
 import os
@@ -451,20 +452,22 @@ class ChapterInfoDetailView(DetailView):
         return context
 
 
-class CourseForum(ListView):
-    model = Thread
-    paginate_by = 20
-    template_name = 'course/Course_Forum.html'
-    context_object_name = 'threads'
+def CourseForum(request, course):
+    course = CourseInfo.objects.get(pk=course)
+    course_forum = None
+    course_node_forum = None
+    try:
+        course_node_forum=NodeGroup.objects.get(title='Course')
+    except ObjectDoesNotExist:
+        NodeGroup.objects.create(title='Course',  description='Root node for course Forum').save()
+        course_node_forum=NodeGroup.objects.get(title='Course')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['course'] = CourseInfo.objects.get(pk=self.kwargs.get('course'))
-        context['topic'] = Topic.objects.all()
-        context['thread'] = Thread.objects.all()
-        context['node_group'] = NodeGroup.objects.all()
-        return context
-
+    try:
+        course_forum=Topic.objects.get(title=course.Course_Name)
+    except ObjectDoesNotExist:
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum).save()
+        course_forum=Topic.objects.get(title=course.Course_Name)
+    return redirect('forum:topic', pk=course_forum.pk)
 
 
 
