@@ -24,7 +24,7 @@
 				console.log(response['new_saq_content']);
 				$('#id_form3-saquestion').prepend(
 					`<option value="${response['new_saq_id']}" selected>${response['new_saq_content']}</option>`);
-				$('#saquestion_form_popup').modal('toggle');
+				$('#question_form_popup').modal('toggle');
 			},
 			error: function () {
 				console.log('Error in posting form');

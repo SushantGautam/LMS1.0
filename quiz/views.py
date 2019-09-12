@@ -799,10 +799,12 @@ class QuizCreateWizard(SessionWizardView):
         for k, v in form_dict.items():
             setattr(my_quiz, k, v)
         my_quiz.save()
+        my_quiz.url = str(my_quiz.title) + str(my_quiz.id)
+        my_quiz.save()
         my_quiz.mcquestion.add(*mcq)
         my_quiz.tfquestion.add(*tfq)
         my_quiz.saquestion.add(*saq)
-        return render_to_response('wizard/success.html')
+        return redirect('quiz_list')
 
     def get_form(self, step=None, data=None, files=None):
         form = super().get_form(step, data, files)

@@ -90,7 +90,8 @@
 				console.log(response['new_mcq_content']);
 				$('#id_form3-mcquestion').prepend(
 					`<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
-				$('#mcquestion_form_popup').modal('toggle');
+				$('#id_form3-mcquestion').change();
+				$('#question_form_popup').modal('toggle');
 			},
 			error: function () {
 				console.log('Error in posting form');
