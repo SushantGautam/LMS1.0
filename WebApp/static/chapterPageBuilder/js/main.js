@@ -437,50 +437,50 @@ $(document).ready(function() {
     }
 
     class PdfVideoLayout {
-    constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-                    <div class="pdfvideoContainer">
-                        <div class="pdf">
-                        PDF will be shown here...
+        constructor(top, left) {
+            let id = (new Date).getTime();
+            let position = { top, left };
+            let html = `
+                        <div class="pdfvideoContainer">
+                            <div class="pdf">
+                            PDF will be shown here...
+                            </div>
+
+                            <div class="videos-content">
+                            <div class='textdiv' >
+                            <div id="text-actions">
+                                <i class="fas fa-trash" id=${id}></i>
+                                <i class="fas fa-arrows-alt" id="draghere"></i>
+                            </div> 
+                            <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
+                        </div>
+                            </div>
                         </div>
 
-                        <div class="videos-content">
-                        <div class='textdiv' >
-                        <div id="text-actions">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-arrows-alt" id="draghere"></i>
-                        </div> 
-                        <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
-                    </div>
-                        </div>
-                    </div>
+            
+                    `;
+            this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": 20,
+                "left": 35
+            }).draggable({
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#editor",
+                scroll: false,
+                grid: [150, 75],
+                cursor: "move",
+                handle: '#draghanle'
+            });
 
-        
-                `;
-        this.renderDiagram = function () {
-        // dom includes the html,css code with draggable property
-        let dom = $(html).css({
-            "position": "absolute",
-            "top": 20,
-            "left": 35
-        }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#editor",
-            scroll: false,
-            grid: [150, 75],
-            cursor: "move",
-            handle: '#draghanle'
-        });
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom)
+            // canvas.append(dom);
+            // Making element Resizable
 
-        var a = document.getElementsByClassName("current")[0];
-        $('#' + a.id).append(dom)
-        // canvas.append(dom);
-        // Making element Resizable
-
-        };
-    }
+            };
+        }
 
     }
 
@@ -1480,7 +1480,6 @@ $(document).ready(function() {
         }
         $.each(data.pages, function(key, value){
             newpagefunction()   // add pages corresponding to the number of pages in json
-            console.log(key)
             $('.tabs-to-click > ul > li')[key-1].click()
             $.each(value, function(count){
                 // -------------------------------
