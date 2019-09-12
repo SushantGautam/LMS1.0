@@ -180,6 +180,50 @@ $(document).ready(function() {
         }
     }
 
+
+    // ====For PDF======
+    class PDF {
+        constructor(top, left) {
+        let id = (new Date).getTime();
+        let position = { top, left };
+        let html = `
+        <div class="pdfvideoContainer">
+            <div class="pdf">
+                    <div id="pdf-actions1">
+                    <i class="fas fa-trash" id=${id}></i>
+                    <i class="fas fa-upload" id=${id}></i>
+            </div>
+
+            <input type="file" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="imgupload" style="display:none" name="file[]" multiple="multiple" />
+
+        
+     </div>
+        
+                `;
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+            "position": "absolute",
+            "top": position.top,
+            "left": position.left
+            }).draggable({
+            //Constrain the draggable movement only within the canvas of the editor
+            containment: "#tabs-for-download",
+            scroll: false,
+            grid: [50, 20],
+            cursor: "move",
+            handle: '#draghanle'
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+            // canvas.append(dom);
+            // Making element Resizable
+
+        };
+        }
+    }
+
     // =====for grid system============
 
     class GridLayout {
@@ -1435,6 +1479,73 @@ $(document).ready(function() {
             //   }
             // }
         
+        }else if(ui.helper.hasClass('Pdf')){
+            const Pdf = new PDF();
+        
+            Pdf.renderDiagram();
+
+              // ==for pdf upload==
+
+              $('.pdf').hover(function() {
+                $('#pdf-actions1').css({
+                    'display': 'block'
+                });
+                $(this).css({
+                    'border': '1px solid grey'
+                })
+        
+            }, function() {
+                $('#pdf-actions1').css({
+                    'display': 'none'
+                });
+                $(this).css({
+                    // 'border': 'none'
+                })
+                // $('.pdf').css({
+                //     'border': 'none'
+                // })
+            })
+        
+            $('.fa-trash').click(function(e) {
+                $('#' + e.currentTarget.id).parent().parent().remove();
+            });
+
+
+            $(".fa-upload").click(function(e){
+                $('#imgupload').trigger('click');
+                
+                $('#imgupload').change(function(){    
+                    //on change event  
+                    formdata = new FormData();
+                    if($(this).prop('files').length > 0)
+                    {
+                        file =$(this).prop('files')[0];
+                        console.log(file);
+                        jQuery.ajax({
+                            url: save_file_url,
+                            type: "POST",
+                            data: formdata,
+                            processData: false,
+                            contentType: false,
+                            success: function (result) {
+                                 // if all is well
+                                 // play the audio file
+                                 console.log('done');
+                                div.css({
+                                    'background-image': 'url('+load_file_url+'/' + file.name + '")',
+                                    'background-repeat': 'no-repeat',
+                                    'background-size': 'contain',
+                                    'background-position': 'center',
+                                    'border': '0'
+                                });
+                            }
+                        });
+                    }
+                });
+              
+            });
+
+
         }
     }
 

@@ -20,7 +20,7 @@ from django.conf import settings
 from PIL import Image
 import os
 import json
-import vimeo # from PyVimeo for uploading videos to vimeo.com
+#import vimeo # from PyVimeo for uploading videos to vimeo.com
 
 from forum.models import Thread
 from forum.views import get_top_thread_keywords
