@@ -9,11 +9,13 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView, FormView, CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
 from django.db import transaction
+from django.db import models
 
 from WebApp.models import CourseInfo, ChapterInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
 
+from django.shortcuts import render_to_response
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -459,6 +461,7 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
             context['answers_formset'] = AnsFormset(self.request.POST)
         else:
             context['answers_formset'] = AnsFormset()
+            context['course_from_quiz'] = self.request.GET["course_from_quiz"]
         return context
 
     def form_valid(self, form):
@@ -621,6 +624,11 @@ class TFQuestionCreateView(AjaxableResponseMixin, CreateView):
         new_tfq['new_tfq_content'] = self.object.content
         return JsonResponse(new_tfq)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.GET:
+            context['course_from_quiz'] = self.request.GET["course_from_quiz"]
+        return context
 
 class TFQuestionCreateFromQuiz(CreateView):
     model = TF_Question
@@ -698,6 +706,11 @@ class SAQuestionCreateView(AjaxableResponseMixin, CreateView):
         new_saq['new_Saq_content'] = self.object.content
         return JsonResponse(new_saq)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.GET:
+            context['course_from_quiz'] = self.request.GET["course_from_quiz"]
+        return context
 
 class SAQuestionCreateFromQuiz(CreateView):
     model = SA_Question
@@ -767,6 +780,9 @@ TEMPLATES = {"form1": "wizard/step1.html",
              "form2": "wizard/step2.html",
              "form3": "wizard/step3.html"}
 
+from django.core.exceptions import ValidationError
+from django.http import HttpResponse
+
 
 class QuizCreateWizard(SessionWizardView):
     form_list = FORMS
@@ -775,12 +791,19 @@ class QuizCreateWizard(SessionWizardView):
         return [TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):
-        print('done done done')
-        my_quiz_data = self.get_all_cleaned_data()
-        my_quiz_form = QuizForm(my_quiz_data, instance=Quiz())
-        my_quiz_obj = my_quiz_form.save(commit=True)
-        my_quiz_obj.cent_code = self.request.user.Center_Code
-        my_quiz_obj.save()
+        form_dict = self.get_all_cleaned_data()
+        my_quiz = Quiz()
+        mcq = form_dict.pop('mcquestion')
+        tfq = form_dict.pop('tfquestion')
+        saq = form_dict.pop('saquestion')
+        for k, v in form_dict.items():
+            setattr(my_quiz, k, v)
+        my_quiz.save()
+        my_quiz.url = str(my_quiz.title) + str(my_quiz.id)
+        my_quiz.save()
+        my_quiz.mcquestion.add(*mcq)
+        my_quiz.tfquestion.add(*tfq)
+        my_quiz.saquestion.add(*saq)
         return redirect('quiz_list')
 
     def get_form(self, step=None, data=None, files=None):
@@ -800,8 +823,15 @@ class QuizCreateWizard(SessionWizardView):
 
         if step == 'form3':
             step1_data = self.get_cleaned_data_for_step('form1')
-            step2_data = self.get_cleaned_data_for_step('form2')
             form.fields["mcquestion"].queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
-            print(step2_data)
 
         return form
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form=form, **kwargs)
+        if self.steps.current == 'form3':
+            step1_data = self.get_cleaned_data_for_step('form1')
+            step1_course = step1_data['course_code']
+            context.update({'course_from_quiz': step1_course})
+        return context
+

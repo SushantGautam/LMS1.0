@@ -376,10 +376,10 @@ class SA_Question(Question):
         verbose_name_plural = _("Short Answer style questions")
 
     def get_absolute_url(self):
-        return reverse('question_detail', args=(self.pk,))
+        return reverse('saquestion_detail', args=(self.pk,))
 
     def get_update_url(self):
-        return reverse('question_update', args=(self.pk,))
+        return reverse('saquestion_update', args=(self.pk,))
 
 
 
@@ -399,19 +399,20 @@ class Quiz(models.Model):
         blank=True, help_text=_("a description of the quiz"))
 
     url = models.SlugField(
-        max_length=60, blank=False,
+        max_length=60, blank=True, null=True,
         help_text=_("a user friendly url"),
-        verbose_name=_("user friendly url"), unique=True)
+        verbose_name=_("user friendly url"))
 
     course_code = models.ForeignKey(
-        CourseInfo, null=True, blank=True,
+        CourseInfo,
         verbose_name=_("Course"), on_delete=models.CASCADE)
 
     cent_code = models.ForeignKey(
         CenterInfo, null=True, blank=True,
         verbose_name=_("Center Code"), on_delete=models.CASCADE)
 
-    duration = models.DurationField(
+    duration = models.IntegerField(
+        null=True, blank=True,
         help_text=_("Time limit for quiz"),
         verbose_name=_("Time limit for quiz"))
 
@@ -432,12 +433,6 @@ class Quiz(models.Model):
     chapter_code = models.ForeignKey(
         ChapterInfo, null=True, blank=True,
         verbose_name=_("Chapter"), on_delete=models.CASCADE)
-    duration = models.DurationField(null=False,
-                                             blank=False,
-                                             default='00:05:00',
-                                             verbose_name=_('Time limit for quiz'),
-                                             help_text=_('[DD] [HH:[MM:]]ss[.uuuuuu] format')
-                                             )
 
     def duration_HHmm(self):
         sec = self.duration.total_seconds()
@@ -500,13 +495,16 @@ class Quiz(models.Model):
         return reverse('quiz_update', args=(self.pk,))
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        self.url = re.sub('\s+', '-', self.url).lower()
-
-        self.url = ''.join(letter for letter in self.url if
-                           letter.isalnum() or letter == '-')
+        # self.url = re.sub('\s+', '-', self.url).lower()
+        #
+        # self.url = ''.join(letter for letter in self.url if
+        #                    letter.isalnum() or letter == '-')
 
         if self.single_attempt is True:
             self.exam_paper = True
+
+        if self.pass_mark is None:
+            self.pass_mark = 0
 
         if self.pass_mark > 100:
             raise ValidationError('%s is above 100' % self.pass_mark)

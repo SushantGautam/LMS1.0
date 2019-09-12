@@ -20,6 +20,7 @@ from django.conf import settings
 from PIL import Image
 import os
 import json
+import vimeo # from PyVimeo for uploading videos to vimeo.com
 
 from forum.models import Thread
 from forum.views import get_top_thread_keywords
@@ -220,9 +221,9 @@ def change_password_others(request, pk):
             user.save()
 
             # update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
+            messages.success(request, 'Password is changed successfully!')
 
-            return redirect('user_profile')
+            return redirect('memberinfo_detail',pk=pk)
         else:
             messages.error(request, 'Please correct the error below.')
     else:
@@ -279,6 +280,14 @@ class MemberInfoCreateView(CreateView):
     model = MemberInfo
     form_class = MemberInfoForm
 
+def validate_username(request):
+    username = request.GET.get('username', None)
+    data = {
+        'is_taken': MemberInfo.objects.filter(username__iexact=username).exists()
+    }
+    if data['is_taken']:
+        data['error_message'] = 'A user with this username already exists.'
+    return JsonResponse(data)
 
 def MemberInfoActivate(request,pk):
     try:
@@ -287,8 +296,22 @@ def MemberInfoActivate(request,pk):
         obj.save()
     except:
         messages.error(request,'Cannot perform the action. Please try again later')
+
+    if(request.POST['url']):
+        return redirect(request.POST['url'])
+    else:    
+        return redirect('memberinfo_detail',pk=pk)
+
+def MemberInfoDeactivate(request,pk):
+    try:
+        obj = MemberInfo.objects.get(pk=pk)
+        obj.Use_Flag=False
+        obj.save()
+    except:
+        messages.error(request,'Cannot perform the action. Please try again later')
     
-    return redirect('memberinfo_list_inactive')
+    return redirect('memberinfo_detail',pk=pk)
+
 
 
 
@@ -785,9 +808,10 @@ def chapterviewer(request):
 
 
 def chapterpagebuilder(request, course, chapter):
-    chaptertitle = ChapterInfo.objects.get(id=chapter).Chapter_Name
+    chapterlist = ChapterInfo.objects.filter(Course_Code = CourseInfo.objects.get(id=course))
+    chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
-    data = None
+    data = {"":""}
     try:
         with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
                 chapter) + '.txt') as json_file:
@@ -797,7 +821,8 @@ def chapterpagebuilder(request, course, chapter):
     context = {
         'course': course,
         'chapter': chapter,
-        'chaptertitle': chaptertitle,
+        'chapterdetails': chapterdetails,
+        'chapterlist': chapterlist,
         'file_path': path,
         'data': data
     }
@@ -829,6 +854,46 @@ def save_file(request):
             filename = fs.save(media.name, media)
         return JsonResponse(data={"message": "success"})
 
+@csrf_exempt
+def save_video(request):
+    if request.method == "POST":
+        chapterID = request.POST['chapterID']
+        courseID = request.POST['courseID']
+        media_type = request.POST['type']
+        path = ''
+        # for x in range(int(count)):
+        if request.FILES['file-0']:
+            media = request.FILES['file-0']
+            if (media.size/1024) > (2048*1024): # checking if file size is greater than 2 GB
+                return JsonResponse(data = {"message":"File size exceeds 2GB"}, status=500)
+            
+        #video uploading to vimeo.com
+        v = vimeo.VimeoClient(
+            token='dbfc0990d17ec6bfe130c6896337b1c4',
+            key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
+            secret='+1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
+        )
+        try:
+            token = v.load_client_credentials('dbfc0990d17ec6bfe130c6896337b1c4')
+            print(token)
+        except Exception as e:
+            print(e)
+        # media = '{path to a video on the file system}'
+        uri = v.upload(media, data={
+        'name': 'Untitled',
+        'description': 'The description goes here.'
+        })
+
+        print('Your video URI is: %s' % (uri))
+
+        # response = v.get(uri + '?fields=transcode.status').json()
+        # print(response)
+        # if response['transcode']['status'] == 'complete':
+        #     print('Your video finished transcoding.')
+        # elif response['transcode']['status'] == 'in_progress':
+        #     print('Your video is still transcoding.')
+        # else:
+        #     print('Your video encountered an error during transcoding.')
 
 @csrf_exempt
 def save_json(request):
@@ -837,6 +902,7 @@ def save_json(request):
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
+        
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)
 

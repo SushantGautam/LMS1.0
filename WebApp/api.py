@@ -1,8 +1,12 @@
 from rest_framework import viewsets, permissions
+from rest_framework import generics, status
+from rest_framework.response import Response
 
 from . import models
 from . import serializers
 
+from django.conf import settings
+import json
 
 class CenterInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the CenterInfo class"""
@@ -106,3 +110,23 @@ class MessageInfoViewSet(viewsets.ModelViewSet):
     queryset = models.MessageInfo.objects.all()
     serializer_class = serializers.MessageInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class ChapterContent(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, chapterID):
+        if models.ChapterInfo.objects.filter(id=chapterID).exists():
+            chapterobj = models.ChapterInfo.objects.get(id=chapterID)
+        else:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={'data':'Chapter does not exist'})
+        courseID = chapterobj.Course_Code.id
+
+        path = settings.MEDIA_ROOT
+        courseID = chapterobj.Course_Code.id
+        try:
+            with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
+                    chapterID) + '.txt') as json_file:
+                data = json.load(json_file)
+        except Exception as e:
+            return Response(status=status.HTTP_404_NOT_FOUND, data={'data':'Chapter File does not exist'})
+        return Response(status=status.HTTP_200_OK, data={'data':data})
