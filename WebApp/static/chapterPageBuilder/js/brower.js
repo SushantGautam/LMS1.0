@@ -43,13 +43,6 @@ $("#SaveBtn").on("click",function(e){
     let height;
     let content;
     $.each( obj, function( i, value ) {
-      tops=$(this).css("top");
-      left=$(this).css("left");
-      width=$(this).css("width");
-      height=$(this).css("height");
-      content=$(this).text();
-
-      console.log(value.classList);
       if(value.classList.contains('textdiv')){
         textdiv.push(
           {
@@ -57,7 +50,7 @@ $("#SaveBtn").on("click",function(e){
             'left': $(this).css("left"),
             'width': $(this).css("width"),
             'height': $(this).css("height"),
-            'content': $(this).text()
+            'content': $(this).children('.messageText').html()
           }
         );
       }

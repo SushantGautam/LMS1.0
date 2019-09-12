@@ -25,6 +25,7 @@ router.register(r'questioninfo', api.QuestionInfoViewSet)
 urlpatterns = (
     # urls for Django Rest Framework API
     path('api/v1/', include(router.urls)),
+    path('api/v1/chaptercontent/<int:chapterID>', api.ChapterContent.as_view(), name='chaptercontent'),
     url(r'^$', views.start, name='start'),
     url(r'^login/$', views.login, {'template_name': 'registration/login.html',
                                    'redirect_authenticated_user': True}, name='login'),
