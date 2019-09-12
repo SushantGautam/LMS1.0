@@ -7,40 +7,30 @@
     <li>
         <a href="#step-1" class="done" isdone="1" rel="1">
             <span class="step_no">1</span>
-            <span class="step_descr">Basic  Info
-                    
-                </span>
+            <span class="step_descr">Basic  Info</span>
         </a>
     </li>
     <li>
         <a href="#step-2" class="done" isdone="1" rel="2">
             <span class="step_no">2</span>
-            <span class="step_descr">Select  Quiz Type
-                    
-                </span>
-
+            <span class="step_descr">Select  Quiz Type</span>
         </a>
     </li>
     <li>
         <a href="#step-3" class="selected" isdone="1" rel="3">
             <span class="step_no">3</span>
-            <span class="step_descr">Add  Question
-                    
-                </span>
+            <span class="step_descr">Add  Question</span>
         </a>
     </li>     
 </ul>
 <div class="col-md-12">
         <div class="col-md-6"></div>
         <div class="col-md-6 text-right">
-          
-                <h4>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h4>
+            <h4>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h4>
         </div>
-        
 </div>
 
 <form action="{% url 'quizfw' %}" method="post" id="quiz_form_3">{% csrf_token %}
-<table>
 {{ wizard.management_form }}
 {% if wizard.form.forms %}
     {{ wizard.form.management_form }}
@@ -48,19 +38,21 @@
         {{ form|crispy }}
     {% endfor %}
 {% else %}
-<div class="form-group"> 
-        <div class="col-md-12 questions-wrapper">
-            <div class="col-md-6">
-                <label class="quiz-add-label"  for="">Multiple Choice Question</label>
-            </div>
-            <div class="col-md-6 questions-only">
-                    <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
-                    <button type="button" class="btn qts-button" id="mcq_create_button" data-toggle="modal" data-target="#mcquestion_form_popup">Add MCQ question</button>
-            </div>
-            <div class="col-md-12">
-                {{wizard.form.mcquestion}}
-            </div>
+<div class="form-group">
+    {{ wizard.form.non_field_errors }}
+    <div class="col-md-12 questions-wrapper">
+        <div class="col-md-6">
+            <label class="quiz-add-label"  for="">Multiple Choice Question</label>
         </div>
+        <div class="col-md-6 questions-only">
+            <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
+            <button type="button" class="btn qts-button" id="mcq_create_button" data-toggle="modal" data-target="#mcquestion_form_popup">Add MCQ question</button>
+        </div>
+        <div class="col-md-12">
+            {{wizard.form.mcquestion}}
+            {{wizard.form.mcquestion.errors}}
+        </div>
+    </div>
     </div>
     <div class="form-group"> 
         <div class="col-md-12 questions-wrapper">
@@ -74,6 +66,7 @@
             </div>
             <div class="col-md-12">
                 {{wizard.form.tfquestion}}
+                {{wizard.form.tfquestion.errors}}
             </div>
         </div>  
     </div>
@@ -89,11 +82,11 @@
             </div>
             <div class="col-md-12">
                 {{wizard.form.saquestion}}
+                {{wizard.form.saquestion.errors}}
             </div>
         </div>
     </div> 
 {% endif %}
-</table>
 <input type="hidden" id="wizard_goto_input">
 <div class="col-md-12 submitforquiz"> 
     <div class="col-md-4"></div>
@@ -141,7 +134,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Create TFQ</h4>
+                    <h4 class="modal-title">Create SAQ</h4>
                 </div>
                 <div class="modal-body" id="saquestion_form_ajax">
                 </div>
@@ -155,6 +148,7 @@
          console.log('hello')
          $.ajax({
              type: "GET",
+             data:{'course_from_quiz':'{{ course_from_quiz.id }}'},
              url: "{% url 'mcquestion_create' %}",  // URL to your view that serves new info
              success: function (data) {
                  $("#mcquestion_form_ajax").html(data);
@@ -164,6 +158,7 @@
      $('#tfq_create_button').on('click', function () {
          $.ajax({
              type: "GET",
+             data:{'course_from_quiz':'{{ course_from_quiz.id }}'},
              url: "{% url 'tfquestion_create' %}",  // URL to your view that serves new info
              success: function (data) {
                  $("#tfquestion_form_ajax").html(data);
@@ -173,6 +168,7 @@
      $('#saq_create_button').on('click', function () {
          $.ajax({
              type: "GET",
+             data:{'course_from_quiz':'{{ course_from_quiz.id }}'},
              url: "{% url 'saquestion_create' %}",  // URL to your view that serves new info
              success: function (data) {
                  $("#saquestion_form_ajax").html(data);
