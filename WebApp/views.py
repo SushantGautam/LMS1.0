@@ -786,7 +786,7 @@ def chapterpagebuilder(request, course, chapter):
     chapterlist = ChapterInfo.objects.filter(Course_Code = CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
-    data = None
+    data = {"":""}
     try:
         with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
                 chapter) + '.txt') as json_file:
@@ -877,6 +877,7 @@ def save_json(request):
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
+        
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)
 

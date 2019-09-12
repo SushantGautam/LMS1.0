@@ -1,38 +1,533 @@
 $(document).ready(function() {
 
-    function display(){
-        $('#chaptertitle').text(chaptertitle);
-        $.each(data.pages, function(key, value){
-            $.each(value, function(count){
-                
-                // -------------------------------
-                $.each(value[count], function(div,div_value){
-                    if(div == 'textdiv'){
-                        $.each(div_value, function(css, css_value){
-                            css_string = JSON.stringify(css_value)
-                            $('#tab'+key).append(`
-                                <div class="textdiv ui-draggable" style = "position: absolute; top: ${css_value.tops}; left: ${css_value.left}; border: 1px solid grey;">
-                                    ${css_value.content} 
-                                </div>
-                            `);
-                            
-                        });
-                    }
-                    if(div == 'pic'){
-                        $.each(div_value, function(css, css_value){
-                            css_string = JSON.stringify(css_value)
-                            $('#tab'+key).append(`
-                                <div style = ${css_string}>
-                                </div>
-                            `);
-                        });
-                    }
+    // ==================For TextBoxx================================
+
+    class Textbox {
+        constructor(top, left, message="Type Something Here...") {
+            let id = (new Date).getTime();
+            let position = {
+                top, left
+            };
+            let html = `<div class='textdiv' >
+                     <div id="text-actions" class = "text-actions">
+                         <i class="fas fa-trash" id=${id}></i>
+                         <i class="fas fa-arrows-alt" id="draghere" class="draghere"></i>
+                     </div> 
+                     <div id="editor" class="messageText" contenteditable> ${message}</div>
+                  </div>
+                  `;
+            this.renderDiagram = function() {
+                // dom includes the html,css code with draggable property
+                let dom = $(html).css({
+                    "position": "absolute",
+                    "top": position.top,
+                    "left": position.left
+                }).draggable({
+                    //Constrain the draggable movement only within the canvas of the editor
+                    containment: "#tabs-for-download",  // dragging beyond this <div> will not be possible
+                    scroll: false,
+                    grid: [50, 20],
+                    cursor: "move",
+                    handle: '#draghere'
                 });
-            });
-            
-        });
+
+                var a = document.getElementsByClassName("current")[0];
+                $('#' + a.id).append(dom);
+                // $(".editor-canvas").append(dom);
+                // Making element Resizable
+
+            };
+        }
     }
-    display();
+
+    // ===========================FOR PICTURE=====================================
+
+    class picture {
+        constructor(top, left, pic=null) {
+            let id = (new Date).getTime();
+            let position = { top, left };
+            let html =
+            `<div class='pic' style='background-image:${pic}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0'>
+                <div id="pic-actions">
+                    <i class="fas fa-trash" id=${id}></i>
+                    <i class="fas fa-upload" id=${id}></i>
+                </div>
+                <div>
+                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
+                </form>
+                <p id="picture-drag">drag and drop files here...</p>
+                </div>
+            </div>`
+
+            this.RemoveElement = function () {
+                return idss;
+            }
+            this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left
+            }).draggable({
+                //Constraint   the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: { bottom: 0 }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            // console.log(a);
+            // console.log($('#' + a.id));
+            $('#' + a.id).append(dom);
+            // canvas.append(dom);
+            };
+        }
+    }
+    
+     // ====================================For Video==============================
+
+    class video {
+        constructor(top, left) {
+            let id = (new Date).getTime();
+            let position = { top, left };
+            let html =
+                `<div class='video-div'>
+                    <div id="video-actions">
+                        <i class="fas fa-trash" id=${id}></i>
+                        <i class="fas fa-upload" id=${id}></i>
+                    </div>
+                    <div>
+                        <p id="video-drag">drag and drop video here...</p>
+                        <div id="progress-bar">
+                            <span id="progress-bar-fill"></span>
+                        </div>
+                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
+                    </form>
+                    </div>
+                </div>`
+
+            this.RemoveElement = function () {
+                return idss;
+            }
+            this.renderDiagram = function () {
+                // dom includes the html,css code with draggable property
+
+                let dom = $(html).css({
+                    "position": "absolute",
+                    "top": position.top,
+                    "left": position.left
+                }).draggable({
+                    //Constraint   the draggable movement only within the canvas of the editor
+                    containment: "#tabs-for-download",
+                    scroll: false,
+                    cursor: "move",
+                    snap: ".gridlines",
+                    snapMode: 'inner',
+                    cursorAt: { bottom: 0 }
+                });
+
+                var a = document.getElementsByClassName("current")[0];
+                $('#' + a.id).append(dom)
+            };
+        }
+    }
+
+    // =====================For Button==============================
+
+    class Button {
+        constructor(top, left) {
+        let id = (new Date).getTime();
+        let position = { top, left };
+        let html = `
+                        <div class="btn-div">
+                            <div class="options">
+                                <i class="fas fa-trash" id=${id}></i>
+                                <i class="fas fa-link"   id=${id} ></i>
+                                <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            
+                            </div> 
+                            <a class="btn" id=${id + 1}  target="_blank"  >Submit</a>
+                        </div>
+        
+                `;
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+            "position": "absolute",
+            "top": position.top,
+            "left": position.left
+            }).draggable({
+            //Constrain the draggable movement only within the canvas of the editor
+            containment: "#tabs-for-download",
+            scroll: false,
+            grid: [50, 20],
+            cursor: "move",
+            handle: '#draghanle'
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+            // canvas.append(dom);
+            // Making element Resizable
+
+        };
+        }
+    }
+
+    // =====for grid system============
+
+    class GridLayout {
+        constructor(top, left) {
+        let id = (new Date).getTime();
+        let position = { top, left };
+        let html = `
+                        <div class="grid-container">
+                            <div class="grid-header" > 
+                            <div class='video-div'>
+                            <div id="video-actions">
+                                <i class="fas fa-trash" id=${id}></i>
+                                <i class="fas fa-upload" id=${id}></i>
+                            </div>
+                            <div>
+                                <p id="video-drag">drag and drop video here...</p>
+                                <div id="progress-bar">
+                                    <span id="progress-bar-fill"></span>
+                                </div>
+                                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                                <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
+                            </form>
+                            </div>
+                        </div>
+                            </div>
+                            <div class="grid-body" >
+                            <div class='textdiv' >
+                                <div id="text-actions">
+                                    <i class="fas fa-trash" id=${id}></i>
+                                    <i class="fas fa-arrows-alt" id="draghere"></i>
+                                </div> 
+                                <div id="editor" class="messageText" contenteditable> 
+                                    Type Something...
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+        
+                `;
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+            "position": "absolute",
+            "top": 10,
+            "left": 7,
+            "padding": 16
+            }).draggable({
+            //Constrain the draggable movement only within the canvas of the editor
+            containment: "#editor",
+            scroll: false,
+            grid: [150, 75],
+            cursor: "move",
+            handle: '#draghanle'
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom)
+            // canvas.append(dom);
+            // Making element Resizable
+
+        };
+        }
+    }
+
+
+    // ===============for GridLayout1=====================
+
+    class GridLayout1 {
+        constructor(top, left) {
+        let id = (new Date).getTime();
+        let position = { top, left };
+        let html = `<div class="grid-container-1">
+                            <div class="grid-section-left-1">
+                            <div class='pic'>
+                            <div id="pic-actions">
+                                <i class="fas fa-trash" id=${id}></i>
+                                <i class="fas fa-upload" id=${id}></i>
+                            </div>
+                            <div>
+                                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                                <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
+                            </form>
+                            <p id="picture-drag">drag and drop files here...</p>
+                            </div>
+                        </div>
+                            </div>
+                            <div class="grid-section-right-1">
+                            <div class='textdiv' >
+                                <div id="text-actions">
+                                    <i class="fas fa-trash" id=${id}></i>
+                                    <i class="fas fa-arrows-alt" id="draghere"></i>
+                                </div> 
+                                <div id="editor" class="messageText" contenteditable> 
+                                    Type Something...
+                                </div>
+                            </div>
+                            </div>
+                        
+                        </div>`;
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+            "position": "absolute",
+            "top": 20,
+            "left": 7,
+            "padding": 0
+            }).draggable({
+            //Constrain the draggable movement only within the canvas of the editor
+            containment: "#editor",
+            scroll: false,
+            grid: [150, 75],
+            cursor: "move",
+            handle: '#draghanle'
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+            //  canvas.append(dom);
+            // Making element Resizable
+
+        };
+        }
+    }
+
+    // =============================for title-slide========================================
+
+    class TitleSlide {
+        constructor(top, left) {
+        let id = (new Date).getTime();
+        let position = { top, left };
+        let html = `
+                        <div class="title-slide-container">
+                        <div class="title-slide-head">
+                            <div class="title-slide-left">
+                            <div class='pic'>
+                            <div id="pic-actions">
+                                <i class="fas fa-trash" id=${id}></i>
+                                <i class="fas fa-upload" id=${id}></i>
+                            </div>
+                            <div>
+                                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                                <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
+                                </form>
+                                <p id="picture-drag">drag and drop files here...</p>
+                            </div>
+                        </div>
+                            </div>
+                            <div class="title-slide-right">
+                            <div class='pic'>
+                    <div id="pic-actions">
+                        <i class="fas fa-trash" id=${id}></i>
+                        <i class="fas fa-upload" id=${id}></i>
+                    </div>
+                    <div>
+                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
+                        </form>
+                        <p id="picture-drag">drag and drop files here...</p>
+                    </div>
+                </div>
+                            </div>
+                        </div>
+
+                        <div class="title-slide-bottom">
+                        <div class='textdiv' >
+                        <div id="text-actions">
+                            <i class="fas fa-trash" id=${id}></i>
+                            <i class="fas fa-arrows-alt" id="draghere"></i>
+                        </div> 
+                        <div id="editor" class="messageText" contenteditable> 
+                            Type Something...
+                        </div>
+                    </div>
+                        </div>
+                        </div>
+
+        
+                `;
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+            "position": "absolute",
+            "top": 20,
+            "left": 25
+            }).draggable({
+            //Constrain the draggable movement only within the canvas of the editor
+            containment: "#editor",
+            scroll: false,
+            grid: [150, 75],
+            cursor: "move",
+            handle: '#draghanle'
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+            //  canvas.append(dom);
+            // Making element Resizable
+
+        };
+        }
+    }
+
+    // =========================title-content===============================
+
+
+    class TitleContent {
+    constructor(top, left) {
+        let id = (new Date).getTime();
+        let position = { top, left };
+        let html = `
+            <div class="title-content">
+                <div class="title-content-heading">
+                    <div class='textdiv' >
+                        <div id="text-actions">
+                            <i class="fas fa-trash" id=${id}></i>
+                            <i class="fas fa-arrows-alt" id="draghere"></i>
+                        </div> 
+                    <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
+                    </div>
+                    </div>
+                
+                <div class="title-content-info">
+                    <div class='textdiv' >
+                    <div id="text-actions">
+                        <i class="fas fa-trash" id=${id}></i>
+                        <i class="fas fa-arrows-alt" id="draghere"></i>
+                    </div> 
+                    <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
+                </div>
+                </div>
+            </div>
+                `;
+        this.renderDiagram = function () {
+        // dom includes the html,css code with draggable property
+        let dom = $(html).css({
+            "position": "absolute",
+            "top": 20,
+            "left": 35
+        }).draggable({
+            //Constrain the draggable movement only within the canvas of the editor
+            containment: "#editor",
+            scroll: false,
+            grid: [150, 75],
+            cursor: "move",
+            handle: '#draghandle'
+        });
+
+        var a = document.getElementsByClassName("current")[0];
+        $('#' + a.id).append(dom)
+        // canvas.append(dom);
+        // Making element Resizable
+
+        };
+    }
+    }
+
+    class PdfVideoLayout {
+    constructor(top, left) {
+        let id = (new Date).getTime();
+        let position = { top, left };
+        let html = `
+                    <div class="pdfvideoContainer">
+                        <div class="pdf">
+                        PDF will be shown here...
+                        </div>
+
+                        <div class="videos-content">
+                        <div class='textdiv' >
+                        <div id="text-actions">
+                            <i class="fas fa-trash" id=${id}></i>
+                            <i class="fas fa-arrows-alt" id="draghere"></i>
+                        </div> 
+                        <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
+                    </div>
+                        </div>
+                    </div>
+
+        
+                `;
+        this.renderDiagram = function () {
+        // dom includes the html,css code with draggable property
+        let dom = $(html).css({
+            "position": "absolute",
+            "top": 20,
+            "left": 35
+        }).draggable({
+            //Constrain the draggable movement only within the canvas of the editor
+            containment: "#editor",
+            scroll: false,
+            grid: [150, 75],
+            cursor: "move",
+            handle: '#draghanle'
+        });
+
+        var a = document.getElementsByClassName("current")[0];
+        $('#' + a.id).append(dom)
+        // canvas.append(dom);
+        // Making element Resizable
+
+        };
+    }
+
+    }
+
+    // =====================For Tables==============================
+
+    class Tables {
+        constructor(top, left) {
+        let id = (new Date).getTime();
+        let position = { top, left };
+        let html = `
+                        <div id="btn-div">
+                            <div id="options">
+                            <i class="fas fa-trash" id=${id}></i>
+                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            </div> 
+                        
+                        <div  class="tableDiv" id="${id + 1}">
+
+                        </div>
+                            
+                        </div>
+    
+                `;
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+            "position": "absolute",
+            "top": position.top,
+            "left": position.left
+            }).draggable({
+            //Constrain the draggable movement only within the canvas of the editor
+            containment: ".editor-canvas",
+            scroll: false,
+            grid: [50, 20],
+            cursor: "move",
+            handle: '#draghanle'
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom)
+            //canvas.append(dom);
+            // Making element Resizable
+
+        };
+        }
+    }
+// ====================== End of initializing elements ========================
     
     // title click function
     $(".tlimit").on("click", function() {
@@ -950,6 +1445,10 @@ $(document).ready(function() {
     });
 
     $("#add-page-btn").on("click", function() {
+        newpagefunction();
+    });
+    
+    function newpagefunction(){
         var num_tabs = $(".tabs-to-click ul li").length + 1;
 
         $(".tabs-to-click ul").append(
@@ -970,554 +1469,110 @@ $(document).ready(function() {
                 dropfunction(event,ui);
             }
         });
-    });
-
-    // ==================For TextBoxx================================
-
-    class Textbox {
-        constructor(top, left) {
-            let id = (new Date).getTime();
-            let position = {
-                top, left
-            };
-            let html = `<div class='textdiv' >
-                     <div id="text-actions" class = "text-actions">
-                         <i class="fas fa-trash" id=${id}></i>
-                         <i class="fas fa-arrows-alt" id="draghere" class="draghere"></i>
-                     </div> 
-                     <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
-                  </div>
-                  `;
-            this.renderDiagram = function() {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left
-                }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",  // dragging beyond this <div> will not be possible
-                    scroll: false,
-                    grid: [50, 20],
-                    cursor: "move",
-                    handle: '#draghere'
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom);
-                // $(".editor-canvas").append(dom);
-                // Making element Resizable
-
-            };
-        }
     }
 
-    // ===========================FOR PICTURE=====================================
-
-    class picture {
-        constructor(top, left) {
-            let id = (new Date).getTime();
-            let position = { top, left };
-            let html =
-            `<div class='pic'>
-                <div id="pic-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                </div>
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
-                </form>
-                <p id="picture-drag">drag and drop files here...</p>
-                </div>
-            </div>`
-
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-
-            let dom = $(html).css({
-                "position": "absolute",
-                "top": position.top,
-                "left": position.left
-            }).draggable({
-                //Constraint   the draggable movement only within the canvas of the editor
-                containment: "#tabs-for-download",
-                scroll: false,
-                cursor: "move",
-                snap: ".gridlines",
-                snapMode: 'inner',
-                cursorAt: { bottom: 0 }
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            // console.log(a);
-            // console.log($('#' + a.id));
-            $('#' + a.id).append(dom);
-            // canvas.append(dom);
-            };
+    function display(){
+        $('#chaptertitle').text(chaptertitle);
+        $('#tabs-for-download').empty();    // empty current canvas 
+        $('.tabs-to-click > ul > li:first').remove()
+        if(data.pages == undefined){
+            $('#add-page-btn').click()
         }
+        $.each(data.pages, function(key, value){
+            newpagefunction()   // add pages corresponding to the number of pages in json
+            console.log(key)
+            $('.tabs-to-click > ul > li')[key-1].click()
+            $.each(value, function(count){
+                // -------------------------------
+                $.each(value[count], function(div,div_value){
+                    if(div == 'textdiv'){
+                        $.each(div_value, function(css, css_value){
+                            css_string = JSON.stringify(css_value)
+
+                            const textBox = new Textbox(css_value.tops,
+                                css_value.left, css_value.content);
+                        
+                            textBox.renderDiagram();
+
+                            $('.fa-trash').click(function(e) {
+                                $('#' + e.currentTarget.id).parent().parent().remove();
+                            });
+                        
+                            $('.messageText').resizable({
+                                containment: $('#tabs-for-download'),
+                                grid: [20, 20],
+                                autoHide: true,
+                                minWidth: 75,
+                                minHeight: 25
+                            });
+                        });
+                    }
+                    if(div == 'pic'){
+                        $.each(div_value, function(css, css_value){
+                            css_string = JSON.stringify(css_value)
+                            const Pic = new picture(
+                                css_value.tops,
+                                css_value.left,
+                                css_value['background-image']);
+                            Pic.renderDiagram();
+
+                            $('.fa-upload').click(function(e) {
+                                trigger = parseInt(e.target.id) + 1;
+                                $('#' + trigger).trigger('click');
+                            });
+                        
+                            $('.fa-trash').click(function(e) {
+                                $('#' + e.currentTarget.id).parent().parent().remove();
+                            });
+                        });
+                    }
+
+                    if(div == 'btn-div'){
+                        $.each(div_value, function(css, css_value){
+                            css_string = JSON.stringify(css_value)
+                            const btns = new Button(css_value.tops,
+                                css_value.left);
+                    
+                            btns.renderDiagram();
+                        
+                            const div1 = $('i').parent();
+                        
+                            $('.fa-trash').click(function(e) {
+                                $('#' + e.currentTarget.id).parent().parent().remove();
+                                //  alert('btn clickd')
+                            });
+                        
+                            $('.fa-link').bind("click", function(e) {
+                                let argument = prompt("Enter a Link here...");
+                                if (argument == null || argument == "") {
+                                    return console.log("cancled pressed")
+                                } else {
+                                    var btn_id = parseInt(e.currentTarget.id) + 1
+                                    $('#' + btn_id).attr({
+                                        "href": `http://${argument}`
+                                    })
+                                }
+                        
+                            });
+                        
+                            $('.btn').resizable({
+                                containment: $('#tabs-for-download'),
+                                grid: [20, 20],
+                                autoHide: true,
+                                minWidth: 50,
+                                minHeight: 30,
+                            });
+                            
+                        });
+                    }
+                });
+            });
+        });
+        $('.tabs-to-click > ul > li')[0].click()
     }
     
-     // ====================================For Video==============================
-
-    class video {
-        constructor(top, left) {
-            let id = (new Date).getTime();
-            let position = { top, left };
-            let html =
-                `<div class='video-div'>
-                    <div id="video-actions">
-                        <i class="fas fa-trash" id=${id}></i>
-                        <i class="fas fa-upload" id=${id}></i>
-                    </div>
-                    <div>
-                        <p id="video-drag">drag and drop video here...</p>
-                        <div id="progress-bar">
-                            <span id="progress-bar-fill"></span>
-                        </div>
-                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
-                    </form>
-                    </div>
-                </div>`
-
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left
-                }).draggable({
-                    //Constraint   the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    snap: ".gridlines",
-                    snapMode: 'inner',
-                    cursorAt: { bottom: 0 }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom)
-            };
-        }
-    }
-
-    // =====================For Button==============================
-
-    class Button {
-        constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-                        <div class="btn-div">
-                            <div class="options">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-link"   id=${id} ></i>
-                                <i class="fas fa-arrows-alt" id="draghanle"></i>
-                            
-                            </div> 
-                            <a class="btn" id=${id + 1}  target="_blank"  >Submit</a>
-                        </div>
-        
-                `;
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": position.top,
-            "left": position.left
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#tabs-for-download",
-            scroll: false,
-            grid: [50, 20],
-            cursor: "move",
-            handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom);
-            // canvas.append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
-
-    // =====for grid system============
-
-    class GridLayout {
-        constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-                        <div class="grid-container">
-                            <div class="grid-header" > 
-                            <div class='video-div'>
-                            <div id="video-actions">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-upload" id=${id}></i>
-                            </div>
-                            <div>
-                                <p id="video-drag">drag and drop video here...</p>
-                                <div id="progress-bar">
-                                    <span id="progress-bar-fill"></span>
-                                </div>
-                                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                                <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
-                            </form>
-                            </div>
-                        </div>
-                            </div>
-                            <div class="grid-body" >
-                            <div class='textdiv' >
-                                <div id="text-actions">
-                                    <i class="fas fa-trash" id=${id}></i>
-                                    <i class="fas fa-arrows-alt" id="draghere"></i>
-                                </div> 
-                                <div id="editor" class="messageText" contenteditable> 
-                                    Type Something...
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-        
-                `;
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": 10,
-            "left": 7,
-            "padding": 16
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#editor",
-            scroll: false,
-            grid: [150, 75],
-            cursor: "move",
-            handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom)
-            // canvas.append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
-
-
-    // ===============for GridLayout1=====================
-
-    class GridLayout1 {
-        constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `<div class="grid-container-1">
-                            <div class="grid-section-left-1">
-                            <div class='pic'>
-                            <div id="pic-actions">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-upload" id=${id}></i>
-                            </div>
-                            <div>
-                                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                                <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
-                            </form>
-                            <p id="picture-drag">drag and drop files here...</p>
-                            </div>
-                        </div>
-                            </div>
-                            <div class="grid-section-right-1">
-                            <div class='textdiv' >
-                                <div id="text-actions">
-                                    <i class="fas fa-trash" id=${id}></i>
-                                    <i class="fas fa-arrows-alt" id="draghere"></i>
-                                </div> 
-                                <div id="editor" class="messageText" contenteditable> 
-                                    Type Something...
-                                </div>
-                            </div>
-                            </div>
-                        
-                        </div>`;
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": 20,
-            "left": 7,
-            "padding": 0
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#editor",
-            scroll: false,
-            grid: [150, 75],
-            cursor: "move",
-            handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom);
-            //  canvas.append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
-
-    // =============================for title-slide========================================
-
-    class TitleSlide {
-        constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-                        <div class="title-slide-container">
-                        <div class="title-slide-head">
-                            <div class="title-slide-left">
-                            <div class='pic'>
-                            <div id="pic-actions">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-upload" id=${id}></i>
-                            </div>
-                            <div>
-                                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                                <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
-                                </form>
-                                <p id="picture-drag">drag and drop files here...</p>
-                            </div>
-                        </div>
-                            </div>
-                            <div class="title-slide-right">
-                            <div class='pic'>
-                    <div id="pic-actions">
-                        <i class="fas fa-trash" id=${id}></i>
-                        <i class="fas fa-upload" id=${id}></i>
-                    </div>
-                    <div>
-                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
-                        </form>
-                        <p id="picture-drag">drag and drop files here...</p>
-                    </div>
-                </div>
-                            </div>
-                        </div>
-
-                        <div class="title-slide-bottom">
-                        <div class='textdiv' >
-                        <div id="text-actions">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-arrows-alt" id="draghere"></i>
-                        </div> 
-                        <div id="editor" class="messageText" contenteditable> 
-                            Type Something...
-                        </div>
-                    </div>
-                        </div>
-                        </div>
-
-        
-                `;
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": 20,
-            "left": 25
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#editor",
-            scroll: false,
-            grid: [150, 75],
-            cursor: "move",
-            handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom);
-            //  canvas.append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
-
-    // =========================title-content===============================
-
-
-    class TitleContent {
-    constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-            <div class="title-content">
-                <div class="title-content-heading">
-                    <div class='textdiv' >
-                        <div id="text-actions">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-arrows-alt" id="draghere"></i>
-                        </div> 
-                    <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
-                    </div>
-                    </div>
-                
-                <div class="title-content-info">
-                    <div class='textdiv' >
-                    <div id="text-actions">
-                        <i class="fas fa-trash" id=${id}></i>
-                        <i class="fas fa-arrows-alt" id="draghere"></i>
-                    </div> 
-                    <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
-                </div>
-                </div>
-            </div>
-                `;
-        this.renderDiagram = function () {
-        // dom includes the html,css code with draggable property
-        let dom = $(html).css({
-            "position": "absolute",
-            "top": 20,
-            "left": 35
-        }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#editor",
-            scroll: false,
-            grid: [150, 75],
-            cursor: "move",
-            handle: '#draghandle'
-        });
-
-        var a = document.getElementsByClassName("current")[0];
-        $('#' + a.id).append(dom)
-        // canvas.append(dom);
-        // Making element Resizable
-
-        };
-    }
-    }
-
-    class PdfVideoLayout {
-    constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-                    <div class="pdfvideoContainer">
-                        <div class="pdf">
-                        PDF will be shown here...
-                        </div>
-
-                        <div class="videos-content">
-                        <div class='textdiv' >
-                        <div id="text-actions">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-arrows-alt" id="draghere"></i>
-                        </div> 
-                        <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
-                    </div>
-                        </div>
-                    </div>
-
-        
-                `;
-        this.renderDiagram = function () {
-        // dom includes the html,css code with draggable property
-        let dom = $(html).css({
-            "position": "absolute",
-            "top": 20,
-            "left": 35
-        }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#editor",
-            scroll: false,
-            grid: [150, 75],
-            cursor: "move",
-            handle: '#draghanle'
-        });
-
-        var a = document.getElementsByClassName("current")[0];
-        $('#' + a.id).append(dom)
-        // canvas.append(dom);
-        // Making element Resizable
-
-        };
-    }
-
-    }
-
-    // =====================For Tables==============================
-
-    class Tables {
-        constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-                        <div id="btn-div">
-                            <div id="options">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-arrows-alt" id="draghanle"></i>
-                            </div> 
-                        
-                        <div  class="tableDiv" id="${id + 1}">
-
-                        </div>
-                            
-                        </div>
-    
-                `;
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": position.top,
-            "left": position.left
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: ".editor-canvas",
-            scroll: false,
-            grid: [50, 20],
-            cursor: "move",
-            handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom)
-            //canvas.append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
+    display();
 });
-
-function openTab(evt, tab_no) {
-
-    tabcontent = document.getElementsByClassName("tab-content-no");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-        tabcontent[i].className = tabcontent[i].className.replace("current", "");
-    }
-    tablinks = document.getElementsByClassName("tabs-link");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace("current", "");
-    }
-
-    document.getElementById(tab_no).style.display = "block";
-    document.getElementById(tab_no).className += " current";
-    evt.currentTarget.className += " current";
-
-}
 
 var colorList = ['000000', '993300', '333300', '003300', '003366', '000066', '333399', '333333',
     '660000', 'FF6633', '666633', '336633', '336666', '0066FF', '666699', '666666', 'CC3333', 'FF9933', '99CC33', '669966', '66CCCC', '3366FF', '663366', '999999', 'CC66FF', 'FFCC33', 'FFFF66', '99FF66', '99CCCC', '66CCFF', '993366', 'CCCCCC', 'FF99CC', 'FFCC99', 'FFFF99', 'CCffCC', 'CCFFff', '99CCFF', 'CC99FF', 'FFFFFF'
@@ -1722,3 +1777,20 @@ $('#submit').click(function(e) {
     let content = $("#editor").html().trim();
     alert("VALUE SUBMITTED: \n" + content);
 });
+
+function openTab(evt, tab_no) {
+    tabcontent = document.getElementsByClassName("tab-content-no");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+        tabcontent[i].className = tabcontent[i].className.replace("current", "");
+    }
+    tablinks = document.getElementsByClassName("tabs-link");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace("current", "");
+    }
+
+    document.getElementById(tab_no).style.display = "block";
+    document.getElementById(tab_no).className += " current";
+    evt.currentTarget.className += " current";
+
+}
