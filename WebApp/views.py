@@ -899,12 +899,18 @@ def save_video(request):
 def save_json(request):
     if request.method == "POST":
         jsondata = json.loads(request.POST['json'])
+        htmldata = json.loads(request.POST['htmlfile'])
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
         
+        #for saving json data for viewing purposes
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)
+
+        #for saving all html data of page for API purposes
+        with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + 'html.txt', 'w') as outfile:
+            json.dump(htmldata, outfile, indent=4)
 
         chapterObj = ChapterInfo.objects.get(id = chapterID)
         chapterObj.Page_Num = int(jsondata['numberofpages'])
