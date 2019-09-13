@@ -66,7 +66,7 @@ class SessionInfoForm(forms.ModelForm):
 
 
 class GroupMappingForm(forms.ModelForm):
-    Students = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.filter(Is_Student=True,Use_Flag=True),required=True,
+    Students = forms.ModelMultipleChoiceField(queryset=None,required=True,
                                               widget=FilteredSelectMultiple("Students", is_stacked=False))
 
     class Media:
@@ -76,10 +76,15 @@ class GroupMappingForm(forms.ModelForm):
     class Meta:
         model = GroupMapping
         fields = '__all__'
+    # To filter out only active students of that center
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(GroupMappingForm, self).__init__(*args, **kwargs)
+        self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True,Use_Flag=True,Center_Code=self.request.user.Center_Code)
 
 
 class InningGroupForm(forms.ModelForm):
-    Teacher_Code = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.filter(Is_Teacher=True,Use_Flag=True),required=True,
+    Teacher_Code = forms.ModelMultipleChoiceField(queryset=None,required=True,
                                                   widget=FilteredSelectMultiple("Teachers", is_stacked=False))
 
     class Media:
@@ -89,10 +94,15 @@ class InningGroupForm(forms.ModelForm):
     class Meta:
         model = InningGroup
         fields = '__all__'
+    # To filter out only active teachers of that center
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(InningGroupForm, self).__init__(*args, **kwargs)
+        self.fields['Teacher_Code'].queryset = MemberInfo.objects.filter(Is_Teacher=True,Use_Flag=True,Center_Code=self.request.user.Center_Code)
 
 
 class InningInfoForm(forms.ModelForm):
-    Course_Group = forms.ModelMultipleChoiceField(queryset=InningGroup.objects.filter(Use_Flag=True),required=True,
+    Course_Group = forms.ModelMultipleChoiceField(queryset=None,required=True,
                                                   widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
     class Media:
@@ -102,6 +112,11 @@ class InningInfoForm(forms.ModelForm):
     class Meta:
         model = InningInfo
         fields = '__all__'
+    # To filter out only active course group of that center
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(InningInfoForm, self).__init__(*args, **kwargs)
+        self.fields['Course_Group'].queryset = InningGroup.objects.filter(Use_Flag=True,Center_Code=self.request.user.Center_Code)
 
 # AssignmentInfoForms
 class AssignmentInfoForm(forms.ModelForm):

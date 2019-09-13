@@ -518,6 +518,9 @@ class GroupMappingCreateViewPopup(CreateView):
 
 class SessionInfoListView(ListView):
     model = SessionInfo
+    # Send data only related to the center
+    def get_queryset(self):
+        return SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class SessionInfoCreateView(CreateView):
@@ -553,6 +556,11 @@ class InningInfoCreateView(CreateView):
     model = InningInfo
     form_class = InningInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 class InningInfoDetailView(DetailView):
     model = InningInfo
 
@@ -561,20 +569,39 @@ class InningInfoUpdateView(UpdateView):
     model = InningInfo
     form_class = InningInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+    
+
 
 class InningGroupListView(ListView):
     model = InningGroup
+    # Send data only related to the center
+    def get_queryset(self):
+        return InningGroup.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class InningGroupCreateView(CreateView):
     model = InningGroup
     form_class = InningGroupForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class InningGroupCreateAjax(AjaxableResponseMixin, CreateView):
     model = InningGroup
     form_class = InningGroupForm
     template_name = 'ajax/inninggroup_form_ajax.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupCreateAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
@@ -591,21 +618,38 @@ class InningGroupUpdateView(UpdateView):
     model = InningGroup
     form_class = InningGroupForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
     template_name = 'ajax/groupcreate_form_ajax.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupCreateSessionAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class GroupMappingListView(ListView):
     model = GroupMapping
+    # Send data only related to the center
+    def get_queryset(self):
+        return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 class GroupMappingDetailView(DetailView):
     model = GroupMapping
@@ -614,6 +658,11 @@ class GroupMappingDetailView(DetailView):
 class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
+
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 # AssignmentInfoViews
