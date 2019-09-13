@@ -95,12 +95,8 @@ urlpatterns += (
          name='chapterinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/edit/', views.ChapterInfoUpdateView.as_view(),
          name='chapterinfo_update'),
-<<<<<<< HEAD
     path('courseinfo/<int:course>/forum/', views.CourseForum.as_view(), name='Course_Forum'), 
     path('change_quiz_test/', views.Changestate.as_view(), name='change_quiz_test'),
-=======
-    path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'),
->>>>>>> 9022a7dad30f56a720a9ab122b8808c602a9cd57
 )
 
 
