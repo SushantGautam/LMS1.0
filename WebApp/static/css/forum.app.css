@@ -48559,7 +48559,7 @@ fieldset[disabled] .owl-preview .owl-controls .owl-nav > div {
   margin-left:-10px;
 }
 
-.profile_pic_forum img{
+/* .profile_pic_forum img{
   width:35px;
   height:35px;
   border-radius:60px;
@@ -48572,7 +48572,20 @@ fieldset[disabled] .owl-preview .owl-controls .owl-nav > div {
   
     margin: 2px 14px 0px 0px !important;
 
+} */
+
+.img-circle.profile_img_forum {
+  
+  background: #fff;
+ 
+  z-index: 1000;
+  position: inherit;
+  
+  border: 1px solid rgba(52, 73, 94, 0.44);
+  padding: 4px;
 }
+
+
 .reply-content-detail{
   color: #616770;;
   font-size: 15px;
@@ -48865,4 +48878,17 @@ font-weight: bold;
 .username-link{
   color: black;
   font-weight: bold;
+}
+
+
+.reply_count{
+  margin-right: 55px;
+}
+
+.user_type{
+  margin-left: 47px;
+}
+
+.UserName{
+  margin-right: 55px;
 }
