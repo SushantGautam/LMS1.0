@@ -386,7 +386,7 @@ class CourseInfoListView(ListView):
 class CourseInfoCreateView(CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
-
+    
 
 class CourseInfoDetailView(DetailView):
     model = CourseInfo

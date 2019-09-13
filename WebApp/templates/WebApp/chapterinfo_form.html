@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'courseinfo_list' %}">Course</a></li>
-    <li class="breadcrumb-item"><a href="{{ Course_Code.get_absolute_url }}">{{ Course_Code }}</a></li>
-
-    <li class="breadcrumb-item active" aria-current="page">
-        {% if '/create/' in request.path %}
-            Create New Chapter
-        {% else %}
-            Edit Chapter
-        {% endif %}
-    </li>
+<li class="breadcrumb-item"><a href="{% url 'courseinfo_list' %}">Course</a></li>
+<li class="breadcrumb-item"><a href="{{ Course_Code.get_absolute_url }}">{{ Course_Code }}</a></li>
+<li class="breadcrumb-item"><a href="{{ object.get_absolute_url }}">{{ object.Chapter_Name }}</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+    {% if '/create/' in request.path %}
+    Create New Chapter
+    {% else %}
+    Edit Chapter
+    {% endif %}
+</li>
 {% endblock %}
 
 {% block content %}
-    {% include 'chapter/chapterinfo_form.html' %}
+{% include 'chapter/chapterinfo_form.html' %}
 {% endblock content %}
-

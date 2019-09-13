@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, FormView
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, MemberInfo
 from survey.models import SurveyInfo
 from quiz.models import Question , Quiz
@@ -71,6 +71,7 @@ class CourseInfoCreateView(CreateView):
     form_class = CourseInfoForm
     template_name = 'teacher_module/courseinfo_form.html'
 
+    success_url = reverse_lazy('teacher_courseinfo_list')
 
 class CourseInfoDetailView(DetailView):
     model = CourseInfo
@@ -88,12 +89,22 @@ class CourseInfoUpdateView(UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
     template_name = 'teacher_module/courseinfo_form.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        return context
+
+    success_url = reverse_lazy('teacher_courseinfo_list')
 
 
 class ChapterInfoListView(ListView):
     model = ChapterInfo
     template_name = 'teacher_module/chapterinfo_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        return context
 
 class ChapterInfoCreateView(CreateView):
     model = ChapterInfo
@@ -120,6 +131,10 @@ class ChapterInfoUpdateView(UpdateView):
     form_class = ChapterInfoForm
     template_name = 'teacher_module/chapterinfo_form.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        return context
 
 class AssignmentInfoDetailView(DetailView):
     model = AssignmentInfo
@@ -132,6 +147,19 @@ class AssignmentInfoDetailView(DetailView):
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
+
+class AssignmentInfoUpdateView(UpdateView):
+    model = AssignmentInfo
+    form_class = AssignmentInfoForm
+    template_name = 'teacher_module/assignmentinfo_form.html'
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        return context
+
 
 class MyAssignmentsListView(ListView):
     model = AssignmentInfo

@@ -42,7 +42,12 @@
         <br>
         {% if '/students' not in request.path %}
         <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-            <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Assignment</a>
+            <a class="btn btn-primary" href="{% if '/teachers' in request.path %}
+                /teachers{{ object.get_update_url }}
+                        {% else %}
+                            {{ object.get_update_url }}
+                        {% endif %}">
+                Edit Assignment</a>
             <a class="btn btn-danger" href="{{ object.get_delete_url }}">Delete Assignment</a>
         </div>
         {% endif %}
@@ -161,7 +166,7 @@
                                 <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                     Cancel
                                 </button>
-
+                                <button type="submit" class="btn btn-success">Submit</button>
                             </div>
                             {% endif %}
                         </form>
