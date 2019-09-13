@@ -1,25 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumb %}
-    {#    <li class="breadcrumb-item"><a href="{% url 'assignmentinfo_list'  %}">Assignment</a></li>#}
-    <li class="breadcrumb-item"><a href="{% url 'courseinfo_list' %}">Course</a></li>
-    <li class="breadcrumb-item"><a href="{{ object.Course_Code.get_absolute_url }}">{{ object.Course_Code }}</a></li>
-    <li class="breadcrumb-item"><a href="{{ object.Chapter_Code.get_absolute_url }}">{{ object.Chapter_Code }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Topic }}</li>
+<li class="breadcrumb-item"><a href="{% url 'courseinfo_list' %}">Course</a></li>
+<li class="breadcrumb-item"><a href="{{ object.Course_Code.get_absolute_url }}">{{ object.Course_Code }}</a></li>
+<li class="breadcrumb-item"><a href="{{ object.Chapter_Code.get_absolute_url }}">{{ object.Chapter_Code }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Topic }}</li>
 {% endblock %}
 {% block content %}
-    {% include 'assignment/assignmentinfo_detail.html' %}
+{% include 'assignment/assignmentinfo_detail.html' %}
 
-    {#    <div class="col-md-6 col-sm-12 col-xs-12 text-center" id="buttons" style="text-align: center">#}
-    {#        <h2 class="detailListHeader">Questions</h2>#}
-    {#        <a class="btn-sm btn-success" href="#}
-    {#                        {% url 'questioninfo_create' course=object.Course_Code.id chapter=Chapter_No.id assignment=object.pk %}#}
-    {#                   ">Create Question</a>#}
-    {#        <hr class="header_hr">#}
-    {#        <br>#}
-    {##}
-    {##}
-    {#    </div>#}
 
 
 {% endblock %}

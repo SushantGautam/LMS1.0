@@ -187,19 +187,22 @@ $(document).ready(function() {
         let id = (new Date).getTime();
         let position = { top, left };
         let html = `
-        <div class="pdfvideoContainer">
-            <div class="pdf">
-                    <div id="pdf-actions1">
+            <div class='pdf'>
+                <div id="pdf-actions1">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
+                </div>
+                <div>
+                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                    <input type='file' accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
+                </form>
+                <p id="pdf-drag" placeholder="drag and drop files here..."></p>
+                </div>
             </div>
-
-            <input type="file" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="imgupload" style="display:none" name="file[]" multiple="multiple" />
-
-        
-     </div>
-        
-                `;
+        `;
+        this.RemoveElement = function () {
+            return idss;
+        }
         this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
             let dom = $(html).css({
@@ -207,12 +210,14 @@ $(document).ready(function() {
             "top": position.top,
             "left": position.left
             }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#tabs-for-download",
-            scroll: false,
-            grid: [50, 20],
-            cursor: "move",
-            handle: '#draghanle'
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                grid: [50, 20],
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: { bottom: 0 }
             });
 
             var a = document.getElementsByClassName("current")[0];
@@ -736,7 +741,6 @@ $(document).ready(function() {
                         $.each(input.files, function(i, file) {
                             // console.log(Math.round((file.size / 1024))) // get image size
                             data.append('file-' + i, file);
-                            // count++;
                         });
                         // data.append('count', count);
                         data.append('type', 'pic');
@@ -1480,72 +1484,152 @@ $(document).ready(function() {
             // }
         
         }else if(ui.helper.hasClass('Pdf')){
-            const Pdf = new PDF();
+            const Pdf = new PDF(
+                ui.helper.position().top,
+                ui.helper.position().left - sidebarWidth);
         
             Pdf.renderDiagram();
 
               // ==for pdf upload==
-
-              $('.pdf').hover(function() {
-                $('#pdf-actions1').css({
-                    'display': 'block'
-                });
-                $(this).css({
-                    'border': '1px solid grey'
-                })
-        
-            }, function() {
-                $('#pdf-actions1').css({
-                    'display': 'none'
-                });
-                $(this).css({
-                    // 'border': 'none'
-                })
-                // $('.pdf').css({
-                //     'border': 'none'
-                // })
-            })
+            $('.fa-upload').click(function(e) {
+                trigger = parseInt(e.target.id) + 1;
+                $('#' + trigger).trigger('click');
+            });
         
             $('.fa-trash').click(function(e) {
                 $('#' + e.currentTarget.id).parent().parent().remove();
             });
 
+            $('.pdf').on('dragover', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                //   $(this).css('border',"2px solid #39F")
+            })
 
-            $(".fa-upload").click(function(e){
-                $('#imgupload').trigger('click');
-                
-                $('#imgupload').change(function(){    
-                    //on change event  
-                    formdata = new FormData();
-                    if($(this).prop('files').length > 0)
-                    {
-                        file =$(this).prop('files')[0];
-                        console.log(file);
-                        jQuery.ajax({
-                            url: save_file_url,
-                            type: "POST",
-                            data: formdata,
-                            processData: false,
-                            contentType: false,
-                            success: function (result) {
-                                 // if all is well
-                                 // play the audio file
-                                 console.log('done');
-                                div.css({
-                                    'background-image': 'url('+load_file_url+'/' + file.name + '")',
-                                    'background-repeat': 'no-repeat',
-                                    'background-size': 'contain',
-                                    'background-position': 'center',
-                                    'border': '0'
-                                });
-                            }
-                        });
-                    }
-                });
-              
+            $('.pdf').on('drop', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                const files = e.originalEvent.dataTransfer.files;
+                var file = files[0];
+                upload(file);
             });
 
+            function upload(file) {
+                const data = new FormData();
+                data.append("file-0", file);
+                data.append('chapterID', chapterID);
+                data.append('courseID', courseID);
+                data.append('type', 'pic');
+                $.ajax({
+                    url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST',
+                    success: function(data) {
+                        div.css({
+                            'background-image': 'url('+load_file_url+'/' + file.name + ')',
+                            'background-repeat': 'no-repeat',
+                            'background-size': 'contain',
+                            'background-position': 'center',
+                            'border': '0'
+                        });
+                    },
+                    error: function(data, status, errorThrown) {
+                        alert(data.responseJSON.message);
+                    }
+                });
+                let div = $('#picture-drag').parent().parent();
+                $('#picture-drag').css({
+                    'display': 'none'
+                });
 
+                $(div).hover(function() {
+                    $(this).css("border", "1px solid red");
+                }, function() {
+                    $(this).css("border", '0')
+                })
+
+                $('.pdf').resizable({
+                    containment: $('.editor-canvas'),
+                    grid: [20, 20],
+                    autoHide: true,
+                    minWidth: 150,
+                    minHeight: 150
+                });
+
+            }
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        let div = $(input).parent().parent().parent();
+                        var data = new FormData();
+                        // var count = 0
+                        // console.log(input.files);
+                        $.each(input.files, function(i, file) {
+                            // console.log(Math.round((file.size / 1024))) // get image size
+                            data.append('file-' + i, file);
+                        });
+                        // data.append('count', count);
+                        data.append('type', 'pic');
+                        data.append('chapterID', chapterID);
+                        data.append('courseID', courseID);
+                        // console.log("imageuploadfromhere")
+                        $.ajax({
+                            url: save_file_url,
+                            data: data,
+                            contentType: false,
+                            processData: false,
+                            enctype: 'multipart/form-data',
+                            method: 'POST',
+                            type: 'POST',
+                            success: function(data) {
+                                // console.log(data);
+                                div.css({
+                                  'background-image': 'url('+load_file_url+'/'+input.files[0].name+')',
+                                  'background-repeat': 'no-repeat',
+                                  'background-size': 'contain',
+                                  'background-position': 'center',
+                                  'border': '0'
+                                });
+                                div.append(`
+                                    <object data="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}" type="application/pdf" width="100%" height="100%">
+                                        alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
+                                    </object>
+                                `);
+                            },
+                            error: function(data, status, errorThrown) {
+                                alert(data.responseJSON.message);
+                            }
+                        });
+
+                        $('#picture-drag').css({
+                            'display': 'none'
+                        })
+                        
+                        $(div).hover(function() {
+                            $(this).css("border", "1px solid red");
+                        }, function() {
+                            $(this).css("border", '0')
+                        })
+
+                        $('.pdf').resizable({
+                            containment: $('.editor-canvas'),
+                            grid: [20, 20],
+                            autoHide: true,
+                            minWidth: 150,
+                            minHeight: 150
+                        });
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(".pdfInp").change(function(e) {
+                readURL(this);
+            });
         }
     }
 

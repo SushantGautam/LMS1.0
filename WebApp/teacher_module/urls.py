@@ -17,7 +17,7 @@ urlpatterns += (
          name='teacher_courseinfo_create'),
     path('courseinfo/detail/<int:pk>/', views.CourseInfoDetailView.as_view(),
          name='teacher_courseinfo_detail'),
-    path('courseinfo/update/<int:pk>/', views.CourseInfoUpdateView.as_view(),
+    path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(),
          name='teacher_courseinfo_update'),
 )
 
@@ -31,7 +31,7 @@ urlpatterns += (
          name='teacher_chapterinfo_build'),
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/', views.ChapterInfoDetailView.as_view(),
          name='teacher_chapterinfo_detail'),
-    path('courseinfo/<int:course>/chapterinfo/update/<int:pk>/', views.ChapterInfoUpdateView.as_view(),
+    path('courseinfo/<int:course>/chapterinfo/<int:pk>/edit/', views.ChapterInfoUpdateView.as_view(),
          name='teacher_chapterinfo_update'),
 )
 
@@ -40,7 +40,9 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:pk>/',
     views.AssignmentInfoDetailView.as_view(),
         name='teacher_assignmentinfo_detail'),
-    path('myassignments/',views.MyAssignmentsListView.as_view(), name='teacher_myassignmentinfo_list')
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
+         views.AssignmentInfoUpdateView.as_view(), name='teacher_assignmentinfo_update'),
+    path('myassignments/',views.MyAssignmentsListView.as_view(), name='teacher_myassignmentinfo_list'),
 )
 
 urlpatterns += (
