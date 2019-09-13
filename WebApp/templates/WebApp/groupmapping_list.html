@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block extrastylesheet %}
+{% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
 <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Batch Registration</li>
+    <li class="breadcrumb-item active" aria-current="page">Student Group</li>
 {% endblock %}
 {% block content %}
     <div class="groupmappingListClass">
 
         <hr class="header_hr">
-        <h2 class="tableHeader">List of Batch</h2>
+        <h2 class="tableHeader">Registered Student Groups</h2>
         <hr class="header_hr">
         <div class="btn-createnew">
-            <a class="btn btn-success" href="{% url 'groupmapping_create' %}">Create New Batch</a>
+            <a class="btn btn-success" href="{% url 'groupmapping_create' %}">Create New Group</a>
         </div>
         <br><br><br>
         <div class="table-responsive">
@@ -25,7 +26,7 @@
                 <tr>
                     <td>ID</td>
                     <td>Group Name</td>
-                    <td>Register Agent</td>
+                    <td>No. of Student Enrolled</td>
                     <td>Use Flag</td>
 {#                    <td>Students</td>#}
                 </tr>
@@ -34,7 +35,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><b><a href="{{ object.get_absolute_url }}">{{ object.GroupMapping_Name }}</a></b></td>
-                        <td>{{ object.Register_Agent }}</td>
+                        <td>{{ object.Students.count }}</td>
                         <td>{{ object.Use_Flag }}</td>
 {#                        <td>{{ object.memberinfo_id }}</td>#}
 

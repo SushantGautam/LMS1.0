@@ -2,6 +2,8 @@
 {% load crispy_forms_tags %}
 <div class="se-pre-con-ajax"></div>
 
+<small class="text-info">Please make sure that the name is not defined, before creating a new one.</small><br>
+<small>View Detail about Session Name List <b><a href="{% url 'sessioninfo_list' %}">here</a></b></small><br><br>
 <form method="post" id="ajaxsessionform">
     {% csrf_token %}
 
@@ -14,17 +16,13 @@
                 Description
             </label>
             <div class="controls ">
-                <textarea name="Description" cols="40" id="id_Description" rows="1"
+                <textarea name="Description" cols="40" id="id_Description" rows="6"
                     class="textarea form-control"></textarea>
             </div>
         </div>
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <label>
-            Status
-        </label><br>
-        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
-            &nbsp; {% else %} checked {% endif %}><br> <br>
+        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
     </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">

@@ -1,16 +1,16 @@
-{% extends "base.html" %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
 
 {% block title %}
 | Course Form
 {% endblock %}
-
 {% block breadcrumb %}
-<li class="breadcrumb-item" aria-current="page"><a href="{% url 'courseinfo_list' %}">Course</a></li>
-<li class="breadcrumb-item" aria-current="page"><a href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a>
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_courseinfo_list' %}">Course</a></li>
+<li class="breadcrumb-item" aria-current="page"><a
+        href="{{ object.teacher_get_absolute_url }}">{{ object.Course_Name }}</a>
 </li>
 <li class="breadcrumb-item active" aria-current="page">
-    {% if 'create' in request.path %}
+    {% if '/create/' in request.path %}
     Create New Course
     {% else %}
     Edit Course Info
@@ -18,10 +18,13 @@
 </li>
 
 {% endblock %}
+
 {% block content %}
 {% include 'course/courseinfo_form.html' %}
 {% endblock content %}
+
 {% block customjss %}
+
 
 <script src="{% static 'vendorsx/jquery-star-rating/simple-rating.js' %}"></script>
 <script>

@@ -2,18 +2,19 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block extrastylesheet %}
+{% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
 <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Teacher Allocation</li>
+    <li class="breadcrumb-item active" aria-current="page">Course Allocation</li>
 {% endblock %}
 {% block content %}
     <div class="inninggroupListClass">
         <hr class="header_hr">
-        <h2 class="tableHeader">List of Teacher Allocation</h2>
+        <h2 class="tableHeader">Allocated Course to teacher</h2>
         <br>
         <h3 class="text-center"><b>
             <a href="#" onclick="return show('cardView','tableView');">Card View</a> &nbsp; &nbsp; &nbsp;
@@ -24,7 +25,7 @@
 
         <div class="table-responsive" id="tableView">
             <div class="btn-createnew">
-                <a class="btn btn-success" href="{% url 'inninggroup_create' %}">Allocate Teacher to Course</a>
+                <a class="btn btn-success" href="{% url 'inninggroup_create' %}">Add New Course Allocation</a>
             </div>
             <br><br><br>
             <table class="table table-striped table-bordered bg-white nowrap">
@@ -34,7 +35,7 @@
                     <td>Session</td>
                     {#                    <td>Teacher Code</td>#}
                     <td>Course Code</td>
-                    <td>Register Agent</td>
+                    <td>No. of Teachers</td>
 
 
                     <td>Use Flag</td>
@@ -47,7 +48,7 @@
                         {#                        <td>{{ object.Teacher_Code }}</td>#}
                         <td>{{ object.Course_Code }}</td>
 
-                        <td>{{ object.Register_Agent }}</td>
+                        <td>{{ object.Teacher_Code.count }}</td>
                         <td>{{ object.Use_Flag }}</td>
                     </tr>
                 {% endfor %}
@@ -77,7 +78,9 @@
                                 <h2 class="card-title"><strong>Session : &nbsp;<a
                                         href="{{ object.get_absolute_url }}">{{ object.InningGroup_Name }}</a></strong>
                                 </h2>
-                                <h4 class="card-title">Course : &nbsp;{{ object.Course_Code }}</h4>
+                                <h4 class="card-title"><b>Teachers: </b></h4>
+                                {% for teachers in object.Teacher_Code.all %}<span class="card-title">{{ teachers }}<br></span>{% endfor %}
+                                <h4 class="card-title"><b>Course : </b>&nbsp;{{ object.Course_Code }}</h4>
                             </div>
 
                         </div>

@@ -153,6 +153,9 @@ class CourseInfo(models.Model):
     def student_get_absolute_url(self):
         return reverse('student_courseinfo_detail', args=(self.pk,))
 
+    def teacher_get_absolute_url(self):
+        return reverse('teacher_courseinfo_detail', args=(self.pk,))
+
     def get_absolute_url(self):
         return reverse('courseinfo_detail', args=(self.pk,))
 
@@ -188,6 +191,9 @@ class ChapterInfo(models.Model):
 
     def student_get_absolute_url(self):
         return reverse('student_chapterinfo_detail', args=(self.Course_Code.id, self.pk,))
+
+    def teacher_get_absolute_url(self):
+        return reverse('teacher_chapterinfo_detail', args=(self.Course_Code.id, self.pk,))
 
     def get_absolute_url(self):
         return reverse('chapterinfo_detail', args=(self.Course_Code.id, self.pk,))
@@ -251,6 +257,9 @@ class AssignmentInfo(models.Model):
 
     def student_get_absolute_url(self):
         return reverse('student_assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
+
+    def teacher_get_absolute_url(self):
+        return reverse('teacher_assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
     def get_absolute_url(self):
         return reverse('assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
@@ -370,7 +379,7 @@ class AssignAnswerInfo(models.Model):
         return reverse('assignanswerinfo_update', args=(self.pk,))
 
 class SessionInfo(models.Model):
-    Session_Name = CharField(max_length=500, blank=True, null=True)
+    Session_Name = CharField(max_length=200)
     Description = TextField(blank=True, null=True)
     Use_Flag = BooleanField(default=True)
 
@@ -397,7 +406,7 @@ class SessionInfo(models.Model):
 
 class GroupMapping(models.Model):
     # Fields
-    GroupMapping_Name = CharField(max_length=500, blank=True, null=True)
+    GroupMapping_Name = CharField(max_length=200)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -431,7 +440,7 @@ class GroupMapping(models.Model):
 
 class InningGroup(models.Model):
    
-    InningGroup_Name = CharField(max_length=500, blank=True, null=True)
+    InningGroup_Name = CharField(max_length=200)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -470,8 +479,8 @@ class InningGroup(models.Model):
 
 class InningInfo(models.Model):
 
-    Start_Date = DateTimeField(auto_now=False, auto_now_add=False)
-    End_Date = DateTimeField(auto_now=False, auto_now_add=False)
+    Start_Date = DateTimeField()
+    End_Date = DateTimeField()
 
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
