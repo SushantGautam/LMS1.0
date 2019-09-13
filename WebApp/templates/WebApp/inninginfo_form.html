@@ -8,12 +8,12 @@
 
 {% endblock stylesheets %}
 {% block breadcrumb %}
-<li class="breadcrumb-item" aria-current="page"><a href="{% url 'inninginfo_list' %}">Session Mapping</a></li>
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'inninginfo_list' %}">Session</a></li>
 <li class="breadcrumb-item active" aria-current="page">
     {% if '/inninginfo/create/' == request.path %}
-    Create New Session Mapping
+    Create New Session
     {% else %}
-    Edit Session Mapping
+    Edit Session
     {% endif %}
 </li>
 {% endblock %}
@@ -21,9 +21,9 @@
 <div class="headerDiv">
     <h2 class="infoFormHeader">
         {% if '/inninginfo/create/' == request.path %}
-        Create New Session Mapping
+        Create New Session
         {% else %}
-        Edit Session Mapping
+        Edit Session
         {% endif %}
     </h2>
     <hr class="header_hr">
@@ -35,7 +35,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLabel">Create Session
+                <h4 class="modal-title" id="exampleModalLabel">Add New Session Name
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -51,7 +51,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content box2">
             <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLabel">Create Group
+                <h4 class="modal-title" id="exampleModalLabel">Create Students Group
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -73,7 +73,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content box3">
             <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLabel">Create Teacher Allocation
+                <h4 class="modal-title" id="exampleModalLabel">Assign Course to Teachers
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -98,8 +98,8 @@
             <li>
                 <a href="#step-1" class="selected" isdone="1" rel="1">
                     <span class="step_no">1</span>
-                    <span class="step_descr">Choose Session
-                        <br><small>Session Name<br>and Group</small>
+                    <span class="step_descr">Choose Session Name
+                        <br><small>Predefined Session <br> Name</small>
                     </span>
                 </a>
             </li>
@@ -107,21 +107,21 @@
                 <a href="#step-2" class="disabled" isdone="0" rel="2">
                     <span class="step_no">2</span>
                     <span class="step_descr">Choose Interval
-                        <br><small>Session Name<br>and Group</small>
+                        <br><small>Start Date and<br>End Date</small>
                     </span> </a>
             </li>
             <li>
                 <a href="#step-3" class="disabled" isdone="0" rel="3">
                     <span class="step_no">3</span>
                     <span class="step_descr">Choose Student
-                        <br><small>Session Name<br>and Group</small>
+                        <br><small>Student Batch</small>
                     </span> </a>
             </li>
             <li>
                 <a href="#step-4" class="disabled" isdone="0" rel="4">
                     <span class="step_no">4</span>
                     <span class="step_descr">Choose Courses
-                        <br><small>Session Name<br>and Group</small>
+                        <br><small>Course with Teacher</small>
                     </span> </a>
             </li>
 
@@ -129,26 +129,36 @@
         <div class="form-wrapper" style="width: 100%!important; ">
 
             <div class="stepContainer">
-                <div id="step-1" style="display: block;">
+                <div id="step-1" style="display: block;height: 25em;">
                     <div class="col-md-6 col-sm-9 col-xs-7 col-md-offset-3 text-center">
                         <h2 class="StepTitle">Select Session Name</h2>
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             {{ form.Inning_Name|as_crispy_field }}
                         </div>
-
+                        <span class="text-info">These session name are already predefined by University.<br>
+                            Only if the session name is not defined previously you can create New.</span><br><br><br>
+                            <div>
+                            <span class="button-info" style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More Info...</span>
+                            <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">INFO: Session is the interval for which the particular Courses(Subjects) are taught and finished within it. It is the breakdown of a program.
+                                For Ex: A Computer Engineering Bachelor Course can be divided into 8 Semester here each Semester can be named as Session Name, 
+                                If it was taught yearwise then each year can be named as Session Name.
+                                So Session represents the breakdown of a particular study, where certain Courses are taught. 
+                            </p>
+                            </div>
                     </div>
                     <div class="col-md-2 col-sm-3 col-xs-5" style="margin-top: 53px">
                         <h1>
                             <button type="button" class="btn btn-primary" data-toggle="modal"
                                 data-target="#exampleModal1" id="add-newsession-btn">
-                                + Create New Session
+                                + Add New Session Name
                             </button>
                         </h1>
                     </div>
                 </div>
-                <div id="step-2" style="display: none; ">
+                
+                <div id="step-2" style="display: none;">
                     <div class="col-md-6 col-sm-12 col-md-offset-3 text-center">
-                        <h2 class="StepTitle">Start and End Dates for Session</h2>
+                        <h2 class="StepTitle">Select the duration of the Session</h2>
                         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                             <div id="div_id_Start_Date" class="form-group">
                                 <label for="id_Start_Date" class="control-label">
@@ -174,12 +184,19 @@
                         </div>
                     </div>
                 </div>
-                <div id="step-3" style="display: none; ">
+                <div id="step-3" style="display: none;height: 25em; ">
                     <div class="col-md-6 col-sm-9 col-xs-7 col-md-offset-3 text-center">
                         <h2 class="StepTitle">Choose Student Group for this Session</h2>
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             {{ form.Groups|as_crispy_field }}
+                        </div>
+                        <div style="padding-top: 6em">
+                            <span class="button-info" style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More Info...</span>
+                            <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
+                                INFO: Please select the student group you have created for this session. The student group will consists all the students enrolled in this session.
+                                You can see it in detail in student group page. Please make sure you have already created the batch or you can also create it from here.
+                            </p>
                         </div>
                     </div>
                     <div class="col-md-2 col-sm-3 col-xs-5" style="margin-top: 53px">
@@ -188,33 +205,39 @@
                                 data-target="#exampleModal2" id="add-newgroup-btn">
                                 + Create New Group
                             </button>
-                        </h1>
+                        </h1>    
                     </div>
+                    
                 </div>
                 <div id="step-4" style="display: none;">
                     <div class="col-md-6 col-sm-9 col-xs-7 col-md-offset-3 text-center">
 
                         <h2 class="StepTitle">
 
-                            Select Group for Session<br><br>
-                            or<br>
-                            <button type="button" class="btn" id="add-inninggroup-btn" data-toggle="modal"
-                                data-target="#exampleModal3" style="background-color: transparent">
-                                <h4><u>Create New Teacher Allocation</u></h4>
+                            <b> Select Courses for Session </b>
+                            <button type="button" class="btn btn-primary" id="add-inninggroup-btn" data-toggle="modal"
+                                data-target="#exampleModal3" style="margin-left:10em">
+                                + Assign New Course
                             </button>
                         </h2>
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             {{ form.Course_Group }}
                         </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                            <label>
-                                Status &nbsp;
-                            </label>
-                            <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                                {% if object.Use_Flag == False %} &nbsp; {% else %} checked {% endif %}><br> <br>
+                        *You can select multiple courses by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on MAC.
+                        <div class="text-left" style="padding-top: 2em">
+                                <span class="button-info" style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More Info...</span>
+                                <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
+                                    INFO: Please select the courses that are included in this session. You can assign multiple courses,
+                                     here the courses are mapped with teachers who taught them in this session, multiple teachers can be associated with the same
+                                     course for particular session. Teacher allocation can be diffenent among same course in different session so a convient name can
+                                     be given to it. EX: For Math course taught in computer can be named as MATH COMP. and same course can be taught by different teachers
+                                     in electonics and named as MATH ELEX. It is just a grouping of a course and differnt teachers associated with it.
+                                </p>
+                            </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                            <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
                         </div>
-
 
                         <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
                             <input type="hidden" name="Center_Code" id="id_Center_Code"
@@ -317,9 +340,14 @@
 {% block customjss %}
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script>
+    
     $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')
     });
+    
+    $(".button-info").click(function(){
+        $("p.info-text").toggle();
+      });
 
     $('#add-newsession-btn').on('click', function () {
         $('#create_session_modal_body').empty();

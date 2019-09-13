@@ -370,7 +370,7 @@ class AssignAnswerInfo(models.Model):
         return reverse('assignanswerinfo_update', args=(self.pk,))
 
 class SessionInfo(models.Model):
-    Session_Name = CharField(max_length=500, blank=True, null=True)
+    Session_Name = CharField(max_length=200)
     Description = TextField(blank=True, null=True)
     Use_Flag = BooleanField(default=True)
 
@@ -397,7 +397,7 @@ class SessionInfo(models.Model):
 
 class GroupMapping(models.Model):
     # Fields
-    GroupMapping_Name = CharField(max_length=500, blank=True, null=True)
+    GroupMapping_Name = CharField(max_length=200)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -431,7 +431,7 @@ class GroupMapping(models.Model):
 
 class InningGroup(models.Model):
    
-    InningGroup_Name = CharField(max_length=500, blank=True, null=True)
+    InningGroup_Name = CharField(max_length=200)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -470,8 +470,8 @@ class InningGroup(models.Model):
 
 class InningInfo(models.Model):
 
-    Start_Date = DateTimeField(auto_now=False, auto_now_add=False)
-    End_Date = DateTimeField(auto_now=False, auto_now_add=False)
+    Start_Date = DateTimeField()
+    End_Date = DateTimeField()
 
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
