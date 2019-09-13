@@ -99,7 +99,7 @@ class InningGroupForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super(InningGroupForm, self).__init__(*args, **kwargs)
         self.fields['Teacher_Code'].queryset = MemberInfo.objects.filter(Is_Teacher=True,Use_Flag=True,Center_Code=self.request.user.Center_Code)
-
+        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
 
 class InningInfoForm(forms.ModelForm):
     Course_Group = forms.ModelMultipleChoiceField(queryset=None,required=True,
@@ -117,6 +117,8 @@ class InningInfoForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super(InningInfoForm, self).__init__(*args, **kwargs)
         self.fields['Course_Group'].queryset = InningGroup.objects.filter(Use_Flag=True,Center_Code=self.request.user.Center_Code)
+        self.fields['Inning_Name'].queryset = SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
+        self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
 
 # AssignmentInfoForms
 class AssignmentInfoForm(forms.ModelForm):
