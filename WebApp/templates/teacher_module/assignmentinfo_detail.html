@@ -1,0 +1,15 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_courseinfo_list' %}">My Courses</a></li>
+<li class="breadcrumb-item"><a href="{{ object.Course_Code.teacher_get_absolute_url }}">{{ object.Course_Code }}</a>
+</li>
+<li class="breadcrumb-item"><a href="{{ object.Chapter_Code.teacher_get_absolute_url }}">{{ object.Chapter_Code }}</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Topic }}</li>
+{% endblock %}
+{% block content %}
+
+{% include 'assignment/assignmentinfo_detail.html' %}
+
+{% endblock content %}
