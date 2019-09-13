@@ -1,0 +1,23 @@
+test:
+  type: deploy
+  before_script:
+   - "pip install -r requirements.txt"
+  cache: ~
+  coverage: /^TOTAL.*\s+(\d+\%)$/
+  image: "python:3.6"
+  script:
+   - "echo \"Running unit tests…\""
+   - "python manage.py migrate --noinput"
+   - "coverage run --source='.' manage.py test"
+   - "coverage report"
+
+production:
+  type: deploy
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=lms-nsdev --api-key=a201737c-1888-4a15-b5b6-f79c53978c85
+  only:
+    - master
+
