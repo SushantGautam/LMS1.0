@@ -11,7 +11,7 @@
 <li class="breadcrumb-item" aria-current="page"><a href="{% url 'inninginfo_list' %}">Session</a></li>
 <li class="breadcrumb-item active" aria-current="page">
     {% if '/inninginfo/create/' == request.path %}
-    Create New Session
+    Register New Session
     {% else %}
     Edit Session
     {% endif %}
@@ -21,7 +21,7 @@
 <div class="headerDiv">
     <h2 class="infoFormHeader">
         {% if '/inninginfo/create/' == request.path %}
-        Create New Session
+        Register New Session
         {% else %}
         Edit Session
         {% endif %}

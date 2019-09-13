@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session Mapping</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Inning_Name }}</li>
 {% endblock %}
 {% block content %}
     <div class="outerdiv">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-9 col-sm-12 col-xs-12 text-center">
-                <h2 class="detailListHeader">Session Mapping Information</h2></div>
+                <h2 class="detailListHeader">Session Detail Info</h2></div>
             <div class="col-md-3 col-sm-12 col-xs-12 text-center" id="buttons">
-                <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session Mapping</a>
-                <a class="btn-sm btn-danger" href="{{ object.get_delete_url }}">Delete Session Mapping</a>
+                <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
+                <a class="btn-sm btn-danger" href="{{ object.get_delete_url }}">Delete Session</a>
             </div>
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -42,15 +42,9 @@
                             <td>{{ object.End_Date }}</td>
                         </tr>
 
-                        {#<tr><td>reg_date</td><td>{{ object.reg_date }}</td></tr>#}
-                        {#<tr><td>reg_time</td><td>{{ object.reg_time }}</td></tr>#}
-
-
                         <tr>
                             <td>Courses</td>
-                            {#                    <td>{{ object.GroupMapping }}</td>#}
-                            <td> {% for groups in object.Course_Group.all %}{{ groups }}<br>{% endfor %}</td>
-
+                            <td> {% for groups in object.Course_Group.all %} {{ groups }}<br>{% endfor %}</td>
                         </tr>
 
                         <tr>
@@ -79,10 +73,10 @@
                         <table class="table table-bordered table-striped">
 
                             <tr>
-                                <td><h4><b>{{ object.Groups }} Members</b></h4></td>
+                                <td><h4><b>{{ object.Groups }} Members ( {{ object.Groups.Students.count }} Students)</b></h4></td>
                             </tr>
                             <tr>
-                                <td>{% for students in object.Groups.Students.all %}{{ students }}<br>{% endfor %}</td>
+                                <td>{% for students in object.Groups.Students.all %}{{ forloop.counter }}. {{ students }}<br>{% endfor %}</td>
                             </tr>
 
                         </table>

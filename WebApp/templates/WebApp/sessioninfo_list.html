@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block extrastylesheet %}
+{% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
 <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Sessions</li>
+    <li class="breadcrumb-item active" aria-current="page">Session Name</li>
 {% endblock %}
 {% block content %}
     <div class="groupmappingListClass">
 
         <hr class="header_hr">
-        <h2 class="tableHeader">List of Sessions</h2>
+        <h2 class="tableHeader">List of Session Names</h2>
         <hr class="header_hr">
         <div class="btn-createnew">
-            <a class="btn btn-success" href="{% url 'sessioninfo_create' %}">Create New Session</a>
+            <a class="btn btn-success" href="{% url 'sessioninfo_create' %}">Create New Session Name</a>
         </div>
         <br><br><br>
         <div class="table-responsive">
@@ -27,8 +28,6 @@
                     <td>Session Name</td>
                     <td>Description</td>
                     <td>Status</td>
-                    <td>Center COde</td>
-                    {#<td>Students</td>#}
                 </tr>
                 </thead>
                 {% for object in object_list %}
@@ -37,10 +36,6 @@
                         <td><b><a href="{{ object.get_absolute_url }}">{{ object.Session_Name }}</a></b></td>
                         <td>{{ object.Description }}</td>
                         <td>{{ object.Use_Flag }}</td>
-                        <td>{{ object.Center_Code }}</td>
-
-                        {#                        <td>{{ object.memberinfo_id }}</td>#}
-
                     </tr>
                 {% endfor %}
             </table>

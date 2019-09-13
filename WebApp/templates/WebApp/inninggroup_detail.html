@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'inninggroup_list' %}">Teacher Allocation</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.InningGroup_Name }}</li>
 {% endblock %}
 {% block content %}
 
     <div class="outerdiv">
 
-        <h2 class="detailListHeader">Teacher Allocation Information</h2>
+        <h2 class="detailListHeader">Course Allocation Information</h2>
         <hr class="header_hr">
         <br>
         <div class="col-md-6 col-sm-12 col-xs-12 col-md-offset-3">

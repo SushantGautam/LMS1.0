@@ -94,10 +94,11 @@
                     <a><i class="fa fa-list"></i> Session
                         <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="{% url 'sessioninfo_list' %}">List of Sessions</a></li>
-                        <li><a href="{% url 'groupmapping_list' %}">Batch Registration</a></li>
-                        <li><a href="{% url 'inninggroup_list' %}">Assign Course to Teacher</a></li>
-                        <li><a href="{% url 'inninginfo_list' %}">Sessions Mapping</a></li>
+                        <li><a href="{% url 'inninginfo_list' %}">Session List</a></li>
+                        <li><a href="{% url 'inninginfo_create' %}">Register New Session</a></li>
+                        <li><a href="{% url 'sessioninfo_list' %}">Session Name</a></li>
+                        <li><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
+                        <li><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
                     </ul>
                 </li>
 
@@ -114,7 +115,8 @@
                         <li><a href="{% url 'forum:index' %}">Home</a></li>
                         {% if request.user.is_authenticated %}
                         <li><a href="{% url 'forum:user_info' request.user.pk %}">profile</a></li>
-                        {% endif %} {% for nodegroup in node_groups %}
+                        {% endif %}
+                        {% for nodegroup in node_groups %}
                         <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
                         {% endfor %}
 
