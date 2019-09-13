@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load forum_tags %}
+{% load static %}
 
 
 {% block breadcrumb %}
@@ -37,8 +38,17 @@
                     <p>
                         <h2>
                             <div class="content_reply">
-                                <img src="/media/{{ reply.user.Member_Avatar }}" alt=""
-                                    class="image avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default ">
+                                <img src="
+                                    {% if request.user.Member_Avatar %}
+                                        {{ request.user.Member_Avatar.url }}
+                                    {% elif request.user.Member_Gender == 'M' %}
+                                        {% static 'images/profile/male.jpg' %}
+                                    {% elif request.user.Member_Gender == 'F' %}
+                                        {% static 'images/profile/female.png' %}
+                                    {% else %}
+                                        {% static 'images/profile/profile.png' %}
+                                    {% endif %}" alt="..."
+                                    class="image avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
 
                             </div>
                             <div class="reply_title">

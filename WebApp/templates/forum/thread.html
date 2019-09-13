@@ -3,6 +3,7 @@
 {% load forum_tags %}
 {% load humanize %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block breadcrumb %}
 
@@ -104,7 +105,17 @@
 
                                 posted by <a href="{% url 'forum:user_info' pk=thread.user.pk %}"
                                     class="link-text-color">
-                                    <img src="/media/{{ thread.user.Member_Avatar }}" class="img-circle width-20">
+                                    <img src="
+                                                                            {% if request.user.Member_Avatar %}
+                                                                                {{ request.user.Member_Avatar.url }}
+                                                                            {% elif request.user.Member_Gender == 'M' %}
+                                                                                {% static 'images/profile/male.jpg' %}
+                                                                            {% elif request.user.Member_Gender == 'F' %}
+                                                                                {% static 'images/profile/female.png' %}
+                                                                            {% else %}
+                                                                                {% static 'images/profile/profile.png' %}
+                                                                            {% endif %}" alt="..."
+                                        class="img-circle width-20" />
                                     {{ thread.user.username }}</a>
                                 <span>{{ thread.pub_date }}</span>
                                 |
@@ -127,9 +138,9 @@
                                 <hr>
                                 <h2 class="thread_replies">
                                     <i class="fa fa-comments-o"></i>
-                                    Answers {% if thread.reply_count %}
-                                    {% blocktrans count reply_count=thread.reply_count %}{{ reply_count }} Reply
-                                    {% plural %}({{ reply_count }}) {% endblocktrans %} {% endif %}</h2>
+                                    {% if thread.reply_count %}
+                                    {% blocktrans count reply_count=thread.reply_count %}({{ reply_count }}) Answer
+                                    {% plural %}({{ reply_count }})Answers {% endblocktrans %} {% endif %}</h2>
                                 <hr>
 
                                 {% for post in posts %}
@@ -141,9 +152,24 @@
 
                                         <div class="">
                                             <div class="reply-content">
-                                                <img src="/media/{{ post.user.Member_Avatar }}" alt="..." />
-                                                <a href="{% url 'forum:user_info' post.user_id %}"
-                                                    class="username-link">{{ post.user }}</a>
+
+                                                <div class="profile_pic">
+                                                    <img src="
+                                                                            {% if request.user.Member_Avatar %}
+                                                                                {{ request.user.Member_Avatar.url }}
+                                                                            {% elif request.user.Member_Gender == 'M' %}
+                                                                                {% static 'images/profile/male.jpg' %}
+                                                                            {% elif request.user.Member_Gender == 'F' %}
+                                                                                {% static 'images/profile/female.png' %}
+                                                                            {% else %}
+                                                                                {% static 'images/profile/profile.png' %}
+                                                                            {% endif %}" alt="..."
+                                                        class="img-circle profile_img_forum" />
+                                                    <a href="{% url 'forum:user_info' post.user_id %}"
+                                                        class="username-link">{{ post.user }}</a>
+
+                                                </div>
+
 
                                             </div>
                                             <div class="thread_date">

@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load forum_tags %}
-
+{% load static %}
 
 
 {% block breadcrumb %}
@@ -31,8 +31,17 @@
         {% for thread in threads %}
         <li class="list-group-item thread-entry">
             <div class="entry media"><a href="{% url 'forum:user_info' pk=thread.user.pk %}">
-                    <img src="/media/{{ thread.user.Member_Avatar }}" alt=""
-                        class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default ">
+                    <img src="
+                                                                            {% if request.user.Member_Avatar %}
+                                                                                {{ request.user.Member_Avatar.url }}
+                                                                            {% elif request.user.Member_Gender == 'M' %}
+                                                                                {% static 'images/profile/male.jpg' %}
+                                                                            {% elif request.user.Member_Gender == 'F' %}
+                                                                                {% static 'images/profile/female.png' %}
+                                                                            {% else %}
+                                                                                {% static 'images/profile/profile.png' %}
+                                                                            {% endif %}" alt="..." alt=""
+                        class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
                 </a>
                 <h2 class="thread_title">
                     <div class="media-body media-middle"> &nbsp;
@@ -89,8 +98,17 @@
                                 <div id="reply_{{ reply.thread.pk }}_{{ reply.pk }}">
                                     <li class="list-group-item reply-entry reply-entry-content">
                                         <a href="{% url 'forum:user_info' pk=reply.user.pk %}">
-                                            <img src="/media/{{ reply.user.Member_Avatar }}" alt=""
-                                                class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default ">
+                                            <img src="
+                                                {% if request.user.Member_Avatar %}
+                                                    {{ request.user.Member_Avatar.url }}
+                                                {% elif request.user.Member_Gender == 'M' %}
+                                                    {% static 'images/profile/male.jpg' %}
+                                                {% elif request.user.Member_Gender == 'F' %}
+                                                    {% static 'images/profile/female.png' %}
+                                                {% else %}
+                                                    {% static 'images/profile/profile.png' %}
+                                                {% endif %}" alt=""
+                                                class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
                                         </a>
                                         <h5>
                                             <div class="thread_name">
@@ -149,8 +167,17 @@
                     <p>
                         <h2>
                             <div class="content_reply">
-                                <img src="/media/{{ reply.user.Member_Avatar }}" alt=""
-                                    class="image avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default ">
+                                <img src="
+                                    {% if request.user.Member_Avatar %}
+                                        {{ request.user.Member_Avatar.url }}
+                                    {% elif request.user.Member_Gender == 'M' %}
+                                        {% static 'images/profile/male.jpg' %}
+                                    {% elif request.user.Member_Gender == 'F' %}
+                                        {% static 'images/profile/female.png' %}
+                                    {% else %}
+                                        {% static 'images/profile/profile.png' %}
+                                    {% endif %}" alt="..."
+                                    class="image avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
 
                             </div>
                             <div class="reply_title">

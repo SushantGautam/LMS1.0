@@ -20,8 +20,8 @@ from django.conf import settings
 from PIL import Image
 import os
 import json
-#import vimeo # from PyVimeo for uploading videos to vimeo.com
-
+# import vimeo # from PyVimeo for uploading videos to vimeo.com
+from quiz.models import Quiz
 from forum.models import Thread
 from forum.views import get_top_thread_keywords
 from survey.models import SurveyInfo
@@ -38,6 +38,21 @@ from forum.models import Thread, Topic, Post, ForumAvatar, NodeGroup
 from forum.views import get_top_thread_keywords, NodeGroup, TopicView, ThreadView
 
 import json
+from django.views import View
+
+class Changestate(View): 
+    def post(self, request): 
+        quizid = self.request.POST["quiz_id"] 
+        my_quiz = Quiz.objects.get(id=quizid)
+        pre_test = self.request.POST.get("pre-test-radio", None)
+        if(pre_test is not None):
+            my_quiz.pre_test = pre_test
+        post_test = self.request.POST.get("post-test-radio", None)
+        if(post_test is not None):
+            my_quiz.post_test = post_test
+        
+        my_quiz.save()
+        return JsonResponse({'message':'success'}, status=200)
 
 
 class AjaxableResponseMixin:
@@ -449,6 +464,8 @@ class ChapterInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
+        context['quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'))
+
         return context
 
 
@@ -910,12 +927,18 @@ def save_video(request):
 def save_json(request):
     if request.method == "POST":
         jsondata = json.loads(request.POST['json'])
+        htmldata = json.loads(request.POST['htmlfile'])
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
         
+        #for saving json data for viewing purposes
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)
+
+        #for saving all html data of page for API purposes
+        with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + 'html.txt', 'w') as outfile:
+            json.dump(htmldata, outfile, indent=4)
 
         chapterObj = ChapterInfo.objects.get(id = chapterID)
         chapterObj.Page_Num = int(jsondata['numberofpages'])
