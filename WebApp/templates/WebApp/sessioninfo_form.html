@@ -7,12 +7,13 @@
     {#    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>#}
 {% endblock stylesheets %}
 {% block breadcrumb %}
-    {#    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>#}
-    {#    <li class="breadcrumb-item"><a href="{% url 'inninginfo_detail' Inning_Name.id %}">{{ Inning_Name }}</a></li>#}
-
-    <li class="breadcrumb-item"><a href="{% url 'sessioninfo_list' %}">Sessions</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'sessioninfo_list' %}">Session Name</a></li>
     <li class="breadcrumb-item active" aria-current="page">
-        Create Session
+        {% if '/sessioninfo/create/' == request.path %}
+        Create New Session Name
+        {% else %}
+        Edit Session Name
+        {% endif %}
     </li>
 {% endblock %}
 {% block content %}
@@ -20,7 +21,11 @@
 
     <div class="headerDiv">
         <h2 class="infoFormHeader">
-            Create New Session
+            {% if '/sessioninfo/create/' == request.path %}
+            Create New Session Name
+            {% else %}
+            Edit Session Name
+            {% endif %}
         </h2>
         <hr class="header_hr">
     </div>
@@ -37,23 +42,30 @@
                         Description
                     </label>
                     <div class="controls ">
-                        <textarea name="Description" cols="40" id="id_Description" rows="1"
+                        <textarea name="Description" cols="40" id="id_Description" rows="5"
                                   class="textarea form-control"></textarea>
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                <label>
-                    Status
-                </label><br>
-                <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                        {% if object.Use_Flag == False %}
-                       &nbsp;
-                        {% else %}
-                       checked
-                        {% endif %}
-                ><br> <br>
-            </div>
+            
+                {% if '/sessioninfo/create/' == request.path %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                    </div>
+                {% else %}
+                <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                    <label>
+                        Status
+                    </label><br>
+                    <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
+                            {% if object.Use_Flag == False %}
+                        &nbsp;
+                            {% else %}
+                        checked
+                            {% endif %}
+                    ><br> <br></div>   
+                {% endif %}
+                
 
             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                 <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"

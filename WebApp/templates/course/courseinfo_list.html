@@ -6,11 +6,11 @@
   <h2 class="tableHeader">List of Courses</h2>
 
   <hr class="header_hr" />
-  {% if 'students' not in request.path %}
+  {% if 'teachers' in request.path %}
   <div class="col-md-8 col-sm-6 col-xs-12">
     <form method="get" action="">
       <div class="col-md-4">
-        <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
+        <input type="text" name="teacher_coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
           class="form-control" />
       </div>
       <button class="btn btn-default" type="submit">
@@ -23,6 +23,18 @@
     <form method="get" action="">
       <div class="col-md-4">
         <input type="text" name="coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
+          class="form-control" />
+      </div>
+      <button class="btn btn-default" type="submit">
+        <i class="fa fa-search"></i>&nbsp;Search
+      </button>
+    </form>
+  </div>
+  {% else %}
+  <div class="col-md-8 col-sm-6 col-xs-12">
+    <form method="get" action="">
+      <div class="col-md-4">
+        <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
           class="form-control" />
       </div>
       <button class="btn btn-default" type="submit">
@@ -50,6 +62,8 @@
         <div class="card-header">
           <a href="{% if '/students' in request.path %}
                                 {{ object.student_get_absolute_url }}
+                            {% elif '/teachers' in request.path %}
+                                {{ object.teacher_get_absolute_url }}
                             {% else %}
                                {{ object.get_absolute_url }}
                             {% endif %}">
@@ -72,6 +86,10 @@
           <hr />
           <h5 class="lectureDescription" style="padding-bottom: 5px;">
             {% if object.Course_Description %}
+<<<<<<< HEAD
+=======
+            <!-- <p style=" line-height: 1.5em;max-lines: 2;height: 3em;  overflow: hidden; text-overflow: ellipsis;"> -->
+>>>>>>> 9022a7dad30f56a720a9ab122b8808c602a9cd57
             <p style="padding-left: 10px;
             padding-right: 10px;
             line-height: 1.5em;

@@ -3,14 +3,9 @@
 {% load crispy_forms_tags %}
 {% block stylesheets %}
     {{ form.media }}
-    {#    <script type="text/javascript" src="/static/admin/js/jquery.min.js"></script>#}
-    {#    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>#}
 {% endblock stylesheets %}
 {% block breadcrumb %}
-    {#    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>#}
-    {#    <li class="breadcrumb-item"><a href="{% url 'inninginfo_detail' Inning_Name.id %}">{{ Inning_Name }}</a></li>#}
-
-    <li class="breadcrumb-item"><a href="{% url 'groupmapping_list' %}">Batch Registration</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
     <li class="breadcrumb-item active" aria-current="page">
         Assign Student
     </li>
@@ -20,32 +15,37 @@
 
     <div class="headerDiv">
         <h2 class="infoFormHeader">
-            Assign Student to Batch
+            Assign Students to Group
         </h2>
         <hr class="header_hr">
     </div>
-    <div class="col-md-6 col-md-offset-3 text-center" style="margin-top: 3%">
+    <div class="col-md-7 col-md-offset-2 text-center" style="margin-top: 3%">
         <form method="post" id="FormID">
             {% csrf_token %}
 
             <div class="col-md-12 col-sm-12 col-xs-12">
                 {{ form.GroupMapping_Name|as_crispy_field }}
             </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                <label>
-                    Status
-                </label><br>
-                <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                        {% if object.Use_Flag == False %}
-                       &nbsp;
-                        {% else %}
-                       checked
-                        {% endif %}
-                ><br> <br>
-            </div>
             <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                 {{ form.Students }}
             </div>
+            {% if '/groupmapping/create/' == request.path %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                    </div>
+                {% else %}
+                <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                    <label>
+                        Status
+                    </label><br>
+                    <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
+                            {% if object.Use_Flag == False %}
+                        &nbsp;
+                            {% else %}
+                        checked
+                            {% endif %}
+                    ><br> <br></div>   
+                {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                 <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
                        class="select form-control">

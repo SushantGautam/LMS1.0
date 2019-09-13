@@ -3,7 +3,8 @@
 
 <div class="left_col scroll-view">
     <div class="navbar nav_title" style="border: 0;">
-        <a href="{% url 'teacher_home' %}" class="site_title"><img src="/static/images/logo.png" alt="..." id="ubl_logo" />
+        <a href="{% url 'teacher_home' %}" class="site_title"><img src="/static/images/logo.png" alt="..."
+                id="ubl_logo" />
             <span id="LMS">u-LMS 2019</span></a>
     </div>
     <div class="clearfix"></div>
@@ -22,8 +23,7 @@
                             {% static 'images/profile/female.png' %}
                         {% else %}
                             {% static 'images/profile/profile.png' %}
-                        {% endif %}"
-                alt="..." class="img-circle profile_img" />
+                        {% endif %}" alt="..." class="img-circle profile_img" />
         </div>
 
         <div class="profile_info">
@@ -74,12 +74,7 @@
                         <li><a href="#">Create New Assignment</a></li>
                     </ul>
                 </li>
-                <li><a><i class="fa fa-list-ol"></i> Chapters <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="{% url 'teacher_chapterinfo_list' %}">Chapter List</a></li>
-                        <li><a href="{% url 'teacher_chapterinfo_create' %}">Insert New Chapter</a></li>
-                    </ul>
-                </li>
+
                 <li><a href="#"><i class="fa fa-question"></i> Questions </a>
 
                 </li>

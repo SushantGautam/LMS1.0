@@ -180,7 +180,7 @@
                 <span>Tables</span>
               </div>
 
-              <div class="draggable builder tables draggable-style">
+              <div class="draggable builder Pdf draggable-style">
 
 
                 <img src="{% static 'chapterPageBuilder/css/images/tables.svg' %}" alt="tables are here..." width="100px" class="svg-icon-table">
@@ -474,7 +474,7 @@
 
 
 <script>
-  var data = `{{ data|safe }}`;
+  var data = {{ data|safe }};
   var courseID = '{{course}}';
   var chapterID = '{{chapter}}';
   var chaptertitle = '{{chapterdetails.Chapter_Name}}';

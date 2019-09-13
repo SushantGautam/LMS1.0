@@ -213,6 +213,8 @@
                 <div class="col-md-4 col-sm-4 col-xs-4">
                     <a href="{% if '/students' in request.path %}
                                 {{ o.student_get_absolute_url }}
+                            {% elif '/teachers' in request.path %}
+                                {{ o.teacher_get_absolute_url }}
                             {% else %}
                                {{ o.get_absolute_url }}
                             {% endif %}">
@@ -245,30 +247,31 @@
                 <h4 class="modal-title">
                     <span id="chaptertitle">
                         <!-- Chapter title goes here -->
-                    </span></h4>
-                <!-- <button id="prev-btn" class="btn btn-secondary">Previous</button>
-            <button id="next-btn" class="btn btn-secondary">Next</button> -->
-        </div>
-        <div class="modal-body custom-modal-body" style="height: 560px!important">
-            <div class="col-md-1">
-                <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
+                    </span>
+                </h4>
+                Page <span id="currentpage"></span> of <span id="totalpages"></span>
             </div>
+            <div class="modal-body custom-modal-body" style="height: 560px!important">
+                <div class="col-md-1">
+                    <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
+                </div>
 
-            
-            <div class="col-md-10">
-                <div id="modal-container" style="position: relative">
+
+                <div class="col-md-10">
+                    <div id="modal-container" style="position: relative">
+
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i></button>
 
                 </div>
-            </div>
-            <div class="col-md-1">
-                <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i></button>
-
-            </div>
-            <div>
-                <!-- <object data="/media/chapterBuilder/1/1/pyqt5tutorial.pdf" type="application/pdf" width="100%" height="100%">
+                <div>
+                    <!-- <object data="/media/chapterBuilder/1/1/pyqt5tutorial.pdf" type="application/pdf" width="100%" height="100%">
                     alt : <a href="/media/chapterBuilder/1/1/pyqt5tutorial.pdf">test.pdf</a>
                 </object> -->
-                <!-- <iframe src="/media/chapterBuilder/1/1/pyqt5tutorial.pdf" style="width:100%;height:700px;"></iframe> -->
+                    <!-- <iframe src="/media/chapterBuilder/1/1/pyqt5tutorial.pdf" style="width:100%;height:700px;"></iframe> -->
+                </div>
             </div>
         </div>
     </div>
@@ -324,81 +327,88 @@
                 console.log('Error in getting chapters')
             }
         });
-    });
 
-    function loaddata(data) {
-        $('#chaptertitle').text(data.chaptertitle);
-        $('#modal-container').empty();
-        // $('#modal-container').css('height', data.canvasheight, 'width', data.canvaswidth)
-        $.each(data.pages, function(key, value){
-            $.each(value, function(count){
-
-                // Create modal
-                $('#modal-container').append(`
-                <div id="page${key}" role="dialog" style="display:none; position:relative">
-                    
-                </div>
+        function loaddata(data) {
+            $('#chaptertitle').text(data.chaptertitle);
+            $('#totalpages').text(data.numberofpages);
+            $('#currentpage').text(1);
+            $('#modal-container').empty();
+            // $('#modal-container').css('height', data.canvasheight, 'width', data.canvaswidth)
+            $.each(data.pages, function (key, value) {
+                $.each(value, function (count) {
+                    // Create modal
+                    $('#modal-container').append(`
+                    <div id="page${key}" role="dialog" style="display:none; position:relative">
+                        
+                    </div>
                 `)
-
-                // -------------------------------
-                $.each(value[count], function (div, div_value) {
-                    if (div == 'textdiv') {
-                        $.each(div_value, function (css, css_value) {
-                            // css_string = JSON.stringify(css_value)
-                            $('#page' + key).append(`
+                    // -------------------------------
+                    $.each(value[count], function (div, div_value) {
+                        if (div == 'textdiv') {
+                            $.each(div_value, function (css, css_value) {
+                                // css_string = JSON.stringify(css_value)
+                                $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left};">
                                     ${css_value.content}
                                 </div>
                             `);
-                        });
-                    }
-                    if(div == 'pic'){
-                        $.each(div_value, function(css, css_value){
-                            src = css_value['background-image']
-                            imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                            $('#page'+key).append(`
+                            });
+                        }
+                        if (div == 'pic') {
+                            $.each(div_value, function (css, css_value) {
+                                src = css_value['background-image']
+                                imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
+                                $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}">
                                     <image src = ${imgsrc} width=100% height=100%/>
                                 </div>
                             `);
-                        });
-                    }
+                            });
+                        }
 
-                    if(div == 'btn-div'){
-                        $.each(div_value, function(css, css_value){
-                            // css_string = JSON.stringify(css_value)
-                            $('#page' + key).append(`
+                        if (div == 'btn-div') {
+                            $.each(div_value, function (css, css_value) {
+                                // css_string = JSON.stringify(css_value)
+                                $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <a href = ${css_value.link} target="_blank"><button>Button</button</a>
                                 </div>
                             `)
-                        });
-                    }
+                            });
+                        }
+                    });
                 });
             });
-        });
-        $('#page1').css('display', 'block');
+            $('#page1').css('display', 'block');
 
-        // $("#modal-content").append(htmlContent);
-    }
-
-    $('#next-btn').click(function () {
-        $("#modal-container > div ").each(function () {
-            if ($(this).css("display") == "block") {
-                res = this.id.match(/[0-9]+/);
-            }
-        });
-        if (res < $("#modal-container > div ").length) {
-            $('#page' + res).css("display", "none");
-            res++;
-            $('#page' + res).css("display", "block")
+            // $("#modal-content").append(htmlContent);
         }
-    });
-    $('#prev-btn').click(function () {
-        $("#modal-container > div ").each(function () {
-            if ($(this).css("display") == "block") {
-                res = this.id.match(/[0-9]+/);
+
+        $('#next-btn').click(function () {
+            $("#modal-container > div ").each(function () {
+                if ($(this).css("display") == "block") {
+                    res = this.id.match(/[0-9]+/);
+                }
+            });
+            if (res < $("#modal-container > div ").length) {
+                $('#page' + res).css("display", "none");
+                res++;
+                $('#page' + res).css("display", "block")
             }
+            $('#currentpage').text(res);
+        });
+        $('#prev-btn').click(function () {
+            $("#modal-container > div ").each(function () {
+                if ($(this).css("display") == "block") {
+                    res = this.id.match(/[0-9]+/);
+                }
+            });
+            if ((res - 1) > 0) {
+                $('#page' + res).css("display", "none");
+                res--;
+                $('#page' + res).css("display", "block")
+            }
+            $('#currentpage').text(res);
         });
         if ((res - 1) > 0) {
             $('#page' + res).css("display", "none");
@@ -422,21 +432,21 @@
                class="select form-control">
             <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
                class="select form-control">`
-        )
+            )
 
-        $.ajax({
-            type: "GET",
-            url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
-            success: function (response) {
-                $('#create_assignment_modal_body').append(response);
-            },
-            error: function () {
-                console.log('Error in generating assignment create form')
-            },
-            complete: function () {
-                $(".se-pre-con-ajax").fadeOut("fast");
-            }
+            $.ajax({
+                type: "GET",
+                url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+                success: function (response) {
+                    $('#create_assignment_modal_body').append(response);
+                },
+                error: function () {
+                    console.log('Error in generating assignment create form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
         });
-    });
-</script>
-{% endblock %}
+    </script>
+    {% endblock %}

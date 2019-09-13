@@ -7,6 +7,7 @@ from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup
                     CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, USER_ROLES
 
 
+
 class UserRegisterForm(UserCreationForm):
     # Member_Role = forms.MultipleChoiceField(choices=USER_ROLES, widget=forms.CheckboxSelectMultiple())
 
@@ -65,7 +66,7 @@ class SessionInfoForm(forms.ModelForm):
 
 
 class GroupMappingForm(forms.ModelForm):
-    Students = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.filter(Is_Student=True),
+    Students = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.filter(Is_Student=True,Use_Flag=True),required=True,
                                               widget=FilteredSelectMultiple("Students", is_stacked=False))
 
     class Media:
@@ -78,8 +79,8 @@ class GroupMappingForm(forms.ModelForm):
 
 
 class InningGroupForm(forms.ModelForm):
-    Teacher_Code = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.filter(Is_Teacher=True),
-                                                  widget=FilteredSelectMultiple("Students", is_stacked=False))
+    Teacher_Code = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.filter(Is_Teacher=True,Use_Flag=True),required=True,
+                                                  widget=FilteredSelectMultiple("Teachers", is_stacked=False))
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
@@ -91,8 +92,8 @@ class InningGroupForm(forms.ModelForm):
 
 
 class InningInfoForm(forms.ModelForm):
-    Course_Group = forms.ModelMultipleChoiceField(queryset=InningGroup.objects.all(),
-                                                  widget=FilteredSelectMultiple("Groups", is_stacked=False))
+    Course_Group = forms.ModelMultipleChoiceField(queryset=InningGroup.objects.filter(Use_Flag=True),required=True,
+                                                  widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }

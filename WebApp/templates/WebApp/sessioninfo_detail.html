@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'sessioninfo_list' %}">Sessions</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'sessioninfo_list' %}">Session Name</a></li>
     {#    <li class="breadcrumb-item"><a href="{% url 'inninginfo_detail' object.Inning_Code.id %}">{{ object.Inning_Code }}</a></li>#}
     <li class="breadcrumb-item active" aria-current="page">{{ object.Session_Name }}</li>
 {% endblock %}
@@ -48,8 +48,8 @@
             </h5>
             <br>
             <div class="text-center">
-                <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
-                <a class="btn btn-danger" href="{{ object.get_delete_url }}">Delete Session</a>
+                <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Session Name</a>
+                <a class="btn btn-danger" href="{{ object.get_delete_url }}">Delete Session Name</a>
             </div>
         </div>
     </div>

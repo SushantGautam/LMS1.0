@@ -8,6 +8,17 @@ body{
 
 }
 
+.pdf {
+  height: 250px;
+  width: 50%;
+  border:1px solid #000; 
+ }
+ 
+ .pdf #pdf-actions1{
+   background:#ddd;
+ }
+ 
+
 .navbar{
   margin-top:0px;
   margin-bottom: 0px !important;

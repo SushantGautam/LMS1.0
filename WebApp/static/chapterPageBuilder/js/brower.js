@@ -31,10 +31,12 @@ $("#SaveBtn").on("click",function(e){
   
   pages = {}
   var numberofpages = 0
+  htmlfile = {};
   $('.pagenumber').each(function(key,value){
     textdiv = [];
     picdiv = [];
-    buttondiv = []
+    buttondiv = [];
+    pdf = [];
     numberofpages++;
     const obj=$("#tab"+parseInt(key+1)).children();
     let tops;
@@ -42,22 +44,21 @@ $("#SaveBtn").on("click",function(e){
     let width;
     let height;
     let content;
+    htmlfile[(key+1)] = ($("#tab"+parseInt(key+1)).html());
+    
     $.each( obj, function( i, value ) {
-      tops=$(this).css("top");
-      left=$(this).css("left");
-      width=$(this).css("width");
-      height=$(this).css("height");
-      content=$(this).text();
-
-      console.log(value.classList);
       if(value.classList.contains('textdiv')){
+        console.log($(this).css("width"),$(this).css("height"))
+        var clone = $(this).children('.messageText').clone();
+        clone.find('div').remove();
+        var content_html = clone.html();
         textdiv.push(
           {
             'tops': $(this).css("top"),
             'left': $(this).css("left"),
             'width': $(this).css("width"),
             'height': $(this).css("height"),
-            'content': $(this).text()
+            'content': content_html
           }
         );
       }
@@ -83,9 +84,21 @@ $("#SaveBtn").on("click",function(e){
           }
         );
       }
+      if(value.classList.contains('pdf')){
+        pdf.push(
+          {
+            'tops': $(this).css("top"),
+            'left': $(this).css("left"),
+            'width': $(this).css("width"),
+            'height': $(this).css("height"),
+            'link': $(this),
+          }
+        );
+      }
     });
     pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv}]
   });
+  console.log();
   data = {
     'numberofpages': numberofpages, 
     'chaptertitle': $('#chaptertitle').text(),
@@ -99,6 +112,7 @@ $("#SaveBtn").on("click",function(e){
       type: 'post',
       data: {
         'json': json,
+        'htmlfile': JSON.stringify(htmlfile),
         'chapterID': chapterID,
         'courseID': courseID
       },
@@ -128,5 +142,3 @@ $("#loadBtn").on("click",function(){
 });
 
 });
-  
-

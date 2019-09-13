@@ -127,14 +127,15 @@ AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=[
 class QuizForm1(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['title', 'description', 'url', 'course_code', 'duration']
+        fields = ['title', 'course_code', 'description']
 
 
 class QuizForm2(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['pre_test', 'post_test', 'chapter_code', 'answers_at_end',
-                  'exam_paper', 'single_attempt', 'random_order', 'pass_mark', 'success_text', 'fail_text', 'draft']
+        fields = ['chapter_code', 'pre_test', 'post_test', 'answers_at_end', 'random_order',
+                  'single_attempt', 'draft', 'exam_paper', 'duration',
+                  'pass_mark', 'success_text', 'fail_text']
 
 
 class QuizForm3(forms.ModelForm):

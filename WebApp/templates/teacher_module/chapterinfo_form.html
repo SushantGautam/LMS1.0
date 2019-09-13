@@ -1,17 +1,20 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_chapterinfo_list' %}">Chapters</a></li>
-    <li class="breadcrumb-item active" aria-current="page">
-        {% if '/chapterinfo/create/' == request.path %}
-            Create New Chapter
-        {% else %}
-            Edit Chapter Info
-        {% endif %}
-    </li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_courseinfo_list' %}">Courses</a></li>
+<li class="breadcrumb-item"><a href="{{ object.Course_Code.teacher_get_absolute_url }}">{{ object.Course_Code }}</a>
+</li>
+<li class="breadcrumb-item"><a href="{{ object.teacher_get_absolute_url }}">{{ object.Chapter_Name }}</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+    {% if '/chapterinfo/create/' == request.path %}
+    Create New Chapter
+    {% else %}
+    Edit Chapter Info
+    {% endif %}
+</li>
 {% endblock %}
 
 {% block content %}
-    {% include 'chapter/chapterinfo_form.html' %}
+{% include 'chapter/chapterinfo_form.html' %}
 {% endblock content %}
-
