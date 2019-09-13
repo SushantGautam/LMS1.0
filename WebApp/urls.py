@@ -84,7 +84,7 @@ urlpatterns += (
     path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(), name='courseinfo_detail'),
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
 )
-
+     
 urlpatterns += (
     # urls for ChapterInfo
     path('chapterinfo/create/ajax', views.ChapterInfoCreateViewAjax.as_view(), name='chapterinfo_create_ajax'),
@@ -94,7 +94,8 @@ urlpatterns += (
          name='chapterinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/edit/', views.ChapterInfoUpdateView.as_view(),
          name='chapterinfo_update'),
-    path('courseinfo/<int:course>/forum/', views.CourseForum.as_view(), name='Course_Forum'),
+    path('courseinfo/<int:course>/forum/', views.CourseForum.as_view(), name='Course_Forum'), 
+    path('change_quiz_test/', views.Changestate.as_view(), name='change_quiz_test'),
 )
 
 
