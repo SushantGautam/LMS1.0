@@ -519,6 +519,17 @@ class SessionInfoUpdateView(UpdateView):
 
 class InningInfoListView(ListView):
     model = InningInfo
+    template_name = 'WebApp/inninginfo_list.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now())
+
+class InningInfoListViewInactive(ListView):
+    model = InningInfo
+    template_name = 'WebApp/inninginfo_list_inactive.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__lte=datetime.now())
 
 
 class InningInfoCreateView(CreateView):

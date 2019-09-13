@@ -137,14 +137,21 @@
                         </div>
                         <span class="text-info">These session name are already predefined by University.<br>
                             Only if the session name is not defined previously you can create New.</span><br><br><br>
-                            <div>
-                            <span class="button-info" style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More Info...</span>
-                            <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">INFO: Session is the interval for which the particular Courses(Subjects) are taught and finished within it. It is the breakdown of a program.
-                                For Ex: A Computer Engineering Bachelor Course can be divided into 8 Semester here each Semester can be named as Session Name, 
+                        <div>
+                            <span class="button-info"
+                                style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More
+                                Info...</span>
+                            <p class="info-text"
+                                style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">INFO: Session is
+                                the interval for which the particular Courses(Subjects) are taught and finished within
+                                it. It is the breakdown of a program.
+                                For Ex: A Computer Engineering Bachelor Course can be divided into 8 Semester here each
+                                Semester can be named as Session Name,
                                 If it was taught yearwise then each year can be named as Session Name.
-                                So Session represents the breakdown of a particular study, where certain Courses are taught. 
+                                So Session represents the breakdown of a particular study, where certain Courses are
+                                taught.
                             </p>
-                            </div>
+                        </div>
                     </div>
                     <div class="col-md-2 col-sm-3 col-xs-5" style="margin-top: 53px">
                         <h1>
@@ -155,7 +162,7 @@
                         </h1>
                     </div>
                 </div>
-                
+
                 <div id="step-2" style="display: none;">
                     <div class="col-md-6 col-sm-12 col-md-offset-3 text-center">
                         <h2 class="StepTitle">Select the duration of the Session</h2>
@@ -191,11 +198,16 @@
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             {{ form.Groups|as_crispy_field }}
                         </div>
-                        <div style="padding-top: 6em">
-                            <span class="button-info" style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More Info...</span>
-                            <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
-                                INFO: Please select the student group you have created for this session. The student group will consists all the students enrolled in this session.
-                                You can see it in detail in student group page. Please make sure you have already created the batch or you can also create it from here.
+                        <div style="padding-top: 7em">
+                            <span class="button-info"
+                                style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More
+                                Info...</span>
+                            <p class="info-text"
+                                style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
+                                INFO: Please select the student group you have created for this session. The student
+                                group will consists all the students enrolled in this session.
+                                You can see it in detail in student group page. Please make sure you have already
+                                created the batch or you can also create it from here.
                             </p>
                         </div>
                     </div>
@@ -205,9 +217,9 @@
                                 data-target="#exampleModal2" id="add-newgroup-btn">
                                 + Create New Group
                             </button>
-                        </h1>    
+                        </h1>
                     </div>
-                    
+
                 </div>
                 <div id="step-4" style="display: none;">
                     <div class="col-md-6 col-sm-9 col-xs-7 col-md-offset-3 text-center">
@@ -224,17 +236,26 @@
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             {{ form.Course_Group }}
                         </div>
-                        *You can select multiple courses by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on MAC.
-                        <div class="text-left" style="padding-top: 2em">
-                                <span class="button-info" style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More Info...</span>
-                                <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
-                                    INFO: Please select the courses that are included in this session. You can assign multiple courses,
-                                     here the courses are mapped with teachers who taught them in this session, multiple teachers can be associated with the same
-                                     course for particular session. Teacher allocation can be diffenent among same course in different session so a convient name can
-                                     be given to it. EX: For Math course taught in computer can be named as MATH COMP. and same course can be taught by different teachers
-                                     in electonics and named as MATH ELEX. It is just a grouping of a course and differnt teachers associated with it.
-                                </p>
-                            </div>
+                        *You can select multiple courses by holding <code> ctrl</code> key on Windows and
+                        <code> Command⌘</code> key on MAC.
+                        <div class="text-center" style="padding-top: 2em">
+                            <span class="button-info"
+                                style="cursor:pointer;padding:0.4em;background:rgb(7, 180, 180);color:white">Read More
+                                Info...</span>
+                            <p class="info-text"
+                                style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
+                                INFO: Please select the courses that are included in this session. You can assign
+                                multiple courses,
+                                here the courses are mapped with teachers who taught them in this session, multiple
+                                teachers can be associated with the same
+                                course for particular session. Teacher allocation can be diffenent among same course in
+                                different session so a convient name can
+                                be given to it. EX: For Math course taught in computer can be named as MATH COMP. and
+                                same course can be taught by different teachers
+                                in electonics and named as MATH ELEX. It is just a grouping of a course and differnt
+                                teachers associated with it.
+                            </p>
+                        </div>
                         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                             <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
                         </div>
@@ -258,96 +279,19 @@
         </div>
     </div>
 </form>
-<!-- 
-{#    <form method="post" id="FormID">#}
-{#        {% csrf_token %}#}
-{#        <div class="col-md-6 col-sm-6 col-xs-12">#}
-{#            {{ form.Inning_Name|as_crispy_field }}#}
-{#        </div>#}
-{#        <div class="col-md-6 col-sm-12 col-xs-12">#}
-{#            {{ form.Groups|as_crispy_field }}#}
-{#        </div>#}
-{#            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}
-{#                <div id="div_id_Inning_Name" class="form-group">#}
-{#                    <label for="id_Inning_Name" class="control-label ">#}
-{#                        Session Name#}
-{#                    </label>#}
-{#                    <div class="controls ">#}
-{#                        <input value="{{ object.Inning_Name }}" type="text" name="Inning_Name" id="id_Inning_Name"#}
-{#                               maxlength="500"#}
-{#                               class="textinput textInput form-control">#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}
-{#            <div id="div_id_Start_Date" class="form-group">#}
-{#                <label for="id_Start_Date" class="control-label requiredField">#}
-{#                    Start Date</span>#}
-{#                </label>#}
-{#                <div class="controls ">#}
-{#                    <input value="{{ object.Start_Date|date:"Y-m-d" }}" type="date" name="Start_Date" required=""#}
-{#                           id="id_Start_Date"#}
-{#                           class="datetimeinput form-control">#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{##}
-{#        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}
-{#            <div id="div_id_End_Date" class="form-group">#}
-{#                <label for="id_End_Date" class="control-label  requiredField">#}
-{#                    End Date</span>#}
-{#                </label>#}
-{#                <div class="controls ">#}
-{#                    <input value="{{ object.End_Date|date:"Y-m-d" }}" type="date" name="End_Date" required=""#}
-{#                           id="id_End_Date" class="datetimeinput form-control">#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{##}
-{##}
-{#        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback text-center">#}
-{#            <label>#}
-{#                Status#}
-{#            </label><br>#}
-{#            <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"#}
-{#                    {% if object.Use_Flag == False %}#}
-{#                   &nbsp;#}
-{#                    {% else %}#}
-{#                   checked#}
-{#                    {% endif %}#}
-{#            ><br> <br>#}
-{#        </div>#}
-{##}
-{#        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">#}
-{#            {{ form.Course_Group }}#}
-{#        </div>#}
-{##}
-{##}
-{#        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}
-{#            <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"#}
-{#                   class="select form-control">#}
-{#        </div>#}
-{#        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}
-{#            <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"#}
-{#                   class="select form-control">#}
-{#        </div>#}
-{##}
-{#        <div class="submitButton  col-md-12">#}
-{#            <button class="btn btn-success" type="submit">Submit</button>#}
-{#        </div>#}
-{#    </form>#} -->
+
 {% endblock %}
 {% block customjss %}
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script>
-    
+
     $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')
     });
-    
-    $(".button-info").click(function(){
+
+    $(".button-info").click(function () {
         $("p.info-text").toggle();
-      });
+    });
 
     $('#add-newsession-btn').on('click', function () {
         $('#create_session_modal_body').empty();
