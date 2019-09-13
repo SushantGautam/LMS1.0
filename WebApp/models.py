@@ -153,6 +153,9 @@ class CourseInfo(models.Model):
     def student_get_absolute_url(self):
         return reverse('student_courseinfo_detail', args=(self.pk,))
 
+    def teacher_get_absolute_url(self):
+        return reverse('teacher_courseinfo_detail', args=(self.pk,))
+
     def get_absolute_url(self):
         return reverse('courseinfo_detail', args=(self.pk,))
 
@@ -188,6 +191,9 @@ class ChapterInfo(models.Model):
 
     def student_get_absolute_url(self):
         return reverse('student_chapterinfo_detail', args=(self.Course_Code.id, self.pk,))
+
+    def teacher_get_absolute_url(self):
+        return reverse('teacher_chapterinfo_detail', args=(self.Course_Code.id, self.pk,))
 
     def get_absolute_url(self):
         return reverse('chapterinfo_detail', args=(self.Course_Code.id, self.pk,))
@@ -251,6 +257,9 @@ class AssignmentInfo(models.Model):
 
     def student_get_absolute_url(self):
         return reverse('student_assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
+
+    def teacher_get_absolute_url(self):
+        return reverse('teacher_assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
     def get_absolute_url(self):
         return reverse('assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))

@@ -23,17 +23,24 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for ChapterInfo
-    path('chapterinfo/', views.ChapterInfoListView.as_view(),
+    path('courseinfo/<int:course>/chapterinfo/', views.ChapterInfoListView.as_view(),
          name='teacher_chapterinfo_list'),
-    path('chapterinfo/create/', views.ChapterInfoCreateView.as_view(),
+    path('courseinfo/<int:course>/chapterinfo/create/', views.ChapterInfoCreateView.as_view(),
          name='teacher_chapterinfo_create'),
     path('chapterinfo/build/', views.ChapterInfoBuildView,
          name='teacher_chapterinfo_build'),
-
-    path('chapterinfo/detail/<int:pk>/', views.ChapterInfoDetailView.as_view(),
+    path('courseinfo/<int:course>/chapterinfo/<int:pk>/', views.ChapterInfoDetailView.as_view(),
          name='teacher_chapterinfo_detail'),
-    path('chapterinfo/update/<int:pk>/', views.ChapterInfoUpdateView.as_view(),
+    path('courseinfo/<int:course>/chapterinfo/update/<int:pk>/', views.ChapterInfoUpdateView.as_view(),
          name='teacher_chapterinfo_update'),
+)
+
+urlpatterns += (
+    # urls for AssignmentInfo
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:pk>/',
+    views.AssignmentInfoDetailView.as_view(),
+        name='teacher_assignmentinfo_detail'),
+    path('myassignments/',views.MyAssignmentsListView.as_view(), name='teacher_myassignmentinfo_list')
 )
 
 urlpatterns += (

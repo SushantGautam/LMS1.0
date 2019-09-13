@@ -140,6 +140,8 @@
                         <div class="col-md-4 col-sm-4 col-xs-12">
                             <a href="{% if '/students' in request.path %}
                                 {{ o.student_get_absolute_url }}
+                            {% elif '/teachers' in request.path %}
+                                {{ o.teacher_get_absolute_url }}
                             {% else %}
                                {{ o.get_absolute_url }}
                             {% endif %}">
