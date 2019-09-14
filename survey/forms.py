@@ -10,6 +10,8 @@ class CategoryInfoForm(forms.ModelForm):
 
 
 class SurveyInfoForm(forms.ModelForm):
+    Start_Date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
+    End_Date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
     class Meta:
         model = SurveyInfo
         fields = '__all__'
@@ -137,7 +139,7 @@ QuestionInfoFormset = inlineformset_factory(
 QuestionAnsInfoFormset = inlineformset_factory(
     SurveyInfo,
     QuestionInfo, 
-    formset = BaseQuestionAnsInfoFormset,
+    form = QuestionInfoForm,
     fields=('Question_Name', 'Question_Type'),
     extra=1,
     )

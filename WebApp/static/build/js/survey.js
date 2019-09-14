@@ -1,40 +1,4 @@
-
 $(document).ready(function categoryAddButton(categoryName) {
-    console.log(categoryName)
-    $(".General").on("click", function () {
-        $("#chooseSession").hide();
-        $("#chooseCourse").hide();
-        $(".sessionLabel").hide();
-        $(".courseLabel").hide();
-        $(".systemLabel").hide();
-    });
-
-    $(".System").on("click", function () {
-        $("#chooseSession").hide();
-        $("#chooseCourse").hide();
-        $(".generalLabel").hide();
-        $(".sessionLabel").hide();
-        $(".courseLabel").hide();
-        $(".systemLabel").show();
-    });
-
-    $(".Session").on("click", function () {
-        $("#chooseSession").show();
-        $("#chooseCourse").hide();
-        $(".generalLabel").hide();
-        $(".sessionLabel").show();
-        $(".courseLabel").hide();
-        $(".systemLabel").hide();
-    });
-    $(".Course").on("click", function () {
-        $("#chooseSession").show();
-        $("#chooseCourse").show();
-        $(".generalLabel").hide();
-        $(".sessionLabel").hide();
-        $(".courseLabel").show();
-        $(".systemLabel").hide();
-    });
-
     // .................................................................................
     $(".mcq_question").on("click", function () {
         $("#mcq_que").show(100);
@@ -45,6 +9,18 @@ $(document).ready(function categoryAddButton(categoryName) {
         $("#short_que").show(100);
         $("#mcq_que").hide();
     });
+});
+
+// -----------------------------ACTIVE AND EPIRE -------------------------------------
+$("#ActiveButton").on("click", function () {
+    $(".active_survey").show(300);
+    //$(this).css('color', 'white');
+    $(".expire_survey").hide();
+});
+$("#ExpireButton").on("click", function () {
+    $(".expire_survey").show(300);
+    // $(this).css('color', 'white');
+    $(".active_survey").hide();
 });
 
 function Myfunctionbtn(event, obj) {

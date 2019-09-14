@@ -45,11 +45,10 @@ urlpatterns += (
 
     path('surveyinfo/<int:category>/', views.surveyinfo_category,
          name='surveyinfo_category'),
-     
-
      path('surveyinfo_ajax/', views.SurveyInfo_ajax.as_view(),
          name='surveyinfo_ajax'),
-
+     path('surveyFilterCategory/', views.surveyFilterCategory.as_view(),
+          name='surveyFilterCategory'),
 )
 
 urlpatterns += (

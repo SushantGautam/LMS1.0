@@ -25,30 +25,6 @@
 
     <div class="container" id="mainSurveyPage">
 
-        <div class="row">
-            <div class="col-md-8 col-xs-12">
-                <div class="btn-group" id="status" data-toggle="buttons">
-                    <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                        <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                            checked="checked">Active</label>
-                    <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-                        <input type="radio" value="0" name="multifeatured_module[module_id][status]">Expire</label>
-                </div>
-            </div>
-            <form class="col-md-4 col-xs-12" id="searchBarSurvey">
-
-                <div role="search" action="/forum/search/" id="surveySearch">
-                    <input type="text" id="keywordInput" name="keyword" placeholder="Type to search">
-                    <div class=" pull-right searchButton">
-                        <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i
-                                class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-
-            </form>
-        </div>
-        <div class="hR"></div>
 
         <div class="container">
             <div class="row">
@@ -62,8 +38,8 @@
                                     <div id="card_category">
 
                                         <h5 class="card-text active" style="justify-content: flex-start;">
-                                            <a href="#" style=" padding-left: 15px;"><i class="fa fa-bar-chart"
-                                                    id="categoryIcons"></i>All
+                                            <a href="#" style=" padding-left: 15px;" class="category-name" id="0"><i
+                                                    class="fa fa-bar-chart" id="categoryIcons"></i>All
                                                 survey</a>
                                         </h5>
                                         {% for category in categories %}
@@ -72,7 +48,8 @@
                                                     class="fa fa-{{ category.Category_Icon}}" id="categoryIcons"></i>
                                                 {{ category.Category_Name }}
                                             </a><button class=" {{ category.Category_Name }}  btn btn-success"
-                                                id="category_Add_Button" data-popup-open="popup-1">Add</button>
+                                                id="category_Add_Button{{ category.id }}"
+                                                data-popup-open="popup-1">Add</button>
                                         </h5>
 
                                         {% endfor %}
@@ -90,20 +67,6 @@
                                                 <div class="x_panel">
                                                     <div class="x_content">
                                                         <br>
-                                                        <div class="form-group">
-                                                            <label class="control-label " id="categoryTitle"
-                                                                for="first-name">Category :
-                                                                <span class="generalLabel">General</span>
-                                                                <span class="sessionLabel"
-                                                                    style="display:none;">Session</span>
-                                                                <span class="courseLabel"
-                                                                    style="display:none;">Course</span>
-                                                                <span class="systemLabel"
-                                                                    style="display:none;">System</span>
-                                                            </label>
-
-                                                        </div>
-
                                                         <div id="surveyForm">
 
                                                         </div>
@@ -121,6 +84,33 @@
 
                     <div class="col-md-10 col-sm-10 col-xs-12" style="z-index: 0;">
                         <div id="rowCards">
+
+                            <div class="row">
+                                <div class="col-md-4 col-xs-12">
+                                    <div class="btn-group" id="status" data-toggle="buttons">
+                                        <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                            <input type="radio" value="1" name="multifeatured_module[module_id][status]"
+                                                checked="checked">Active</label>
+                                        <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
+                                            <input type="radio" value="0"
+                                                name="multifeatured_module[module_id][status]">Expire</label>
+                                    </div>
+                                </div>
+                                <form class="col-md-8 col-xs-12" id="searchBarSurvey">
+
+                                    <div role="search" action="/forum/search/" id="surveySearch">
+                                        <input type="text" id="keywordInput" name="keyword"
+                                            placeholder="Type to search">
+                                        <div class=" pull-right searchButton">
+                                            <button type="submit" id="navSearchBtn" class="btn btn-inverse"
+                                                data-hover-z="1"><i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="hR"></div>
                             <!-- ......................................Active section........................................ -->
                             <div class="active_survey ">
                                 {% for object in object_list %}
@@ -349,19 +339,39 @@
 
     {% block customjss %}
 
-
+    {% for category in categories %}
     <script>
-        $('#category_Add_Button').on('click', function () {
+        console.log('{{category.Category_Name}}');
+        $('#category_Add_Button{{ category.id }}').on('click', function () {
 
             $.ajax({
                 type: "GET",
+                data: { 'categoryId': '{{category.id}}' },
                 url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
                 success: function (data) {
                     $("#surveyForm").html(data);
                 }
             });
         });
+    </script>
+
+    {% endfor %}
+
+    <script>
+
         // categoryAddButton({{ categoryName }});
 
+        $('.category-name').on('click', function () {
+            var categoryId = this.id;
+            $.ajax({
+                type: "GET",
+                data: { 'categoryId': categoryId },
+                url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#rowCards").html(data);
+                    console.log(data)
+                }
+            });
+        });
     </script>
     {% endblock %}

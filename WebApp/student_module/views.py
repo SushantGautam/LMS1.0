@@ -19,7 +19,12 @@ from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, An
 from datetime import datetime
 from quiz.models import Question , Quiz
 from django.shortcuts import redirect
-from django.http import JsonResponse
+
+from django.http import JsonResponse, HttpResponse
+import json
+from django.core import serializers
+from django.forms.models import model_to_dict
+
 
 datetime_now = datetime.now()
 
@@ -230,6 +235,21 @@ class questions_student_detail(DetailView):
 
         return context
 
+class questions_student_detail_history(DetailView):
+    model = SurveyInfo
+    template_name = 'student_module/questions_student_detail_history.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+
+        return context
+
+
 class ParticipateSurvey(View):
 
     def post(self, request, *args, **kwargs):
@@ -253,6 +273,24 @@ class ParticipateSurvey(View):
         return redirect('questions_student')
 
 
+class surveyFilterCategory_student(ListView):
+    model = SurveyInfo
+    template_name = 'student_module/questions_student_listView.html'
+
+    def get_queryset(self):
+        # print(self.request.GET['categoryId'])
+        # print(SurveyInfo.objects.filter(Category_Code = self.request.GET['categoryId']))
+        if self.request.GET['categoryId'] == '0':
+
+            return SurveyInfo.objects.all()
+            # filter(Center_Code = self.request.user.Center_Code)
+        else:
+            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now()
+        return context
 
 # def polls_student(request):
 #     return render(request, 'student_module/polls_student.html')
