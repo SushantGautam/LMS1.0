@@ -5,6 +5,7 @@ rmdir /s /q survey\migrations
 
 del db.sqlite3
 
+pip install -r requirements.txt
 python manage.py makemigrations WebApp forum quiz survey
 
 python manage.py migrate
