@@ -85,7 +85,7 @@ urlpatterns += (
     path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(), name='courseinfo_detail'),
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
 )
-
+     
 urlpatterns += (
     # urls for ChapterInfo
     path('chapterinfo/create/ajax', views.ChapterInfoCreateViewAjax.as_view(), name='chapterinfo_create_ajax'),
@@ -96,6 +96,8 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/edit/', views.ChapterInfoUpdateView.as_view(),
          name='chapterinfo_update'),
     path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'),
+
+    path('change_quiz_test/', views.Changestate.as_view(), name='change_quiz_test'),
 )
 
 
@@ -185,6 +187,7 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for InningInfo
+    path('inninginfo/inactive', views.InningInfoListViewInactive.as_view(), name='inninginfo_list_inactive'),
     path('inninginfo/', views.InningInfoListView.as_view(), name='inninginfo_list'),
     path('inninginfo/create/', views.InningInfoCreateView.as_view(),
          name='inninginfo_create'),

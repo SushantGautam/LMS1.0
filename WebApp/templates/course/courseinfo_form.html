@@ -81,6 +81,10 @@
         <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
             &nbsp; {% else %} checked {% endif %}><br> <br>
     </div>
+    {% else %}
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+        </div>
     {% endif %}
 
     {#    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}

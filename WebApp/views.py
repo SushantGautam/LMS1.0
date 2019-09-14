@@ -20,8 +20,8 @@ from django.conf import settings
 from PIL import Image
 import os
 import json
-#import vimeo # from PyVimeo for uploading videos to vimeo.com
-
+# import vimeo # from PyVimeo for uploading videos to vimeo.com
+from quiz.models import Quiz
 from forum.models import Thread
 from forum.views import get_top_thread_keywords
 from survey.models import SurveyInfo
@@ -38,6 +38,21 @@ from forum.models import Thread, Topic, Post, ForumAvatar, NodeGroup
 from forum.views import get_top_thread_keywords, NodeGroup, TopicView, ThreadView
 
 import json
+from django.views import View
+
+class Changestate(View): 
+    def post(self, request): 
+        quizid = self.request.POST["quiz_id"] 
+        my_quiz = Quiz.objects.get(id=quizid)
+        pre_test = self.request.POST.get("pre-test-radio", None)
+        if(pre_test is not None):
+            my_quiz.pre_test = pre_test
+        post_test = self.request.POST.get("post-test-radio", None)
+        if(post_test is not None):
+            my_quiz.post_test = post_test
+        
+        my_quiz.save()
+        return JsonResponse({'message':'success'}, status=200)
 
 
 class AjaxableResponseMixin:
@@ -449,6 +464,8 @@ class ChapterInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
+        context['quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'))
+
         return context
 
 
@@ -501,6 +518,9 @@ class GroupMappingCreateViewPopup(CreateView):
 
 class SessionInfoListView(ListView):
     model = SessionInfo
+    # Send data only related to the center
+    def get_queryset(self):
+        return SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class SessionInfoCreateView(CreateView):
@@ -519,11 +539,27 @@ class SessionInfoUpdateView(UpdateView):
 
 class InningInfoListView(ListView):
     model = InningInfo
+    template_name = 'WebApp/inninginfo_list.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now())
+
+class InningInfoListViewInactive(ListView):
+    model = InningInfo
+    template_name = 'WebApp/inninginfo_list_inactive.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__lte=datetime.now())
 
 
 class InningInfoCreateView(CreateView):
     model = InningInfo
     form_class = InningInfoForm
+
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 class InningInfoDetailView(DetailView):
     model = InningInfo
@@ -533,20 +569,39 @@ class InningInfoUpdateView(UpdateView):
     model = InningInfo
     form_class = InningInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+    
+
 
 class InningGroupListView(ListView):
     model = InningGroup
+    # Send data only related to the center
+    def get_queryset(self):
+        return InningGroup.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class InningGroupCreateView(CreateView):
     model = InningGroup
     form_class = InningGroupForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class InningGroupCreateAjax(AjaxableResponseMixin, CreateView):
     model = InningGroup
     form_class = InningGroupForm
     template_name = 'ajax/inninggroup_form_ajax.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupCreateAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
@@ -563,21 +618,38 @@ class InningGroupUpdateView(UpdateView):
     model = InningGroup
     form_class = InningGroupForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
     template_name = 'ajax/groupcreate_form_ajax.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupCreateSessionAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class GroupMappingListView(ListView):
     model = GroupMapping
+    # Send data only related to the center
+    def get_queryset(self):
+        return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 class GroupMappingDetailView(DetailView):
     model = GroupMapping
@@ -586,6 +658,11 @@ class GroupMappingDetailView(DetailView):
 class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
+
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 # AssignmentInfoViews

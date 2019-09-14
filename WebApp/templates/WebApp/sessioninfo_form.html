@@ -38,13 +38,14 @@
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div id="div_id_Description" class="form-group">
-                    <label for="id_Description" class="control-label ">
+                    {{ form.Description|as_crispy_field }}
+                     <!-- <label for="id_Description" class="control-label ">
                         Description
-                    </label>
-                    <div class="controls ">
+                    </label> -->
+                    <!-- <div class="controls ">
                         <textarea name="Description" cols="40" id="id_Description" rows="5"
                                   class="textarea form-control"></textarea>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             

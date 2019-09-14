@@ -55,6 +55,17 @@ urlpatterns += (
 )
 
 urlpatterns += (
+    # urls for AssignAnswerInfo
+    path('assignanswerinfo/create', views.submitAnswer.as_view(),
+         name='assignanswerinfo_create_ajax'),
+    # path('questioninfo/<int:questioncode>/assignanswerinfo/create/', views.AssignAnswerInfoCreateView.as_view(),
+    #      name='assignanswerinfo_create'),
+    # path('questioninfo/<int:questioncode>/assignanswerinfo/detail/<int:pk>/',
+    #      views.AssignAnswerInfoDetailView.as_view(), name='assignanswerinfo_detail'),
+    # path('questioninfo/<int:questioncode>/assignanswerinfo/update/<int:pk>/',
+    #      views.AssignAnswerInfoUpdateView.as_view(), name='assignanswerinfo_update'),
+)
+urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView),
          name='student_user_profile'),
