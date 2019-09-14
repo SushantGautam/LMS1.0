@@ -23,4 +23,5 @@ django-formtools
 selenium
 pytest
 pytest-django
+pytest-cov
 django-model-utils==3.2.0
