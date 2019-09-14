@@ -183,8 +183,9 @@ $(document).ready(function() {
 
     // ====For PDF======
     class PDF {
-        constructor(top, left) {
+        constructor(top, left, link=null) {
         let id = (new Date).getTime();
+        console.log(link)
         let position = { top, left };
         let html = `
             <div class='pdf'>
@@ -197,6 +198,9 @@ $(document).ready(function() {
                     <input type='file' accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
                 </form>
                 <p id="pdf-drag" placeholder="drag and drop files here..."></p>
+                <object data="${link}" type="application/pdf" width="100%" height="100%">
+                    alt : <a href="${link}"></a>
+                </object>
                 </div>
             </div>
         `;
@@ -1757,6 +1761,26 @@ $(document).ready(function() {
                                 minHeight: 30,
                             });
                             
+                        });
+                    }
+
+                    if(div == 'pdf'){
+                        $.each(div_value, function(css, css_value){
+                            css_string = JSON.stringify(css_value)
+                            const pdf = new PDF(
+                                css_value.tops,
+                                css_value.left,
+                                css_value['link']);
+                            pdf.renderDiagram();
+
+                            $('.fa-upload').click(function(e) {
+                                trigger = parseInt(e.target.id) + 1;
+                                $('#' + trigger).trigger('click');
+                            });
+                        
+                            $('.fa-trash').click(function(e) {
+                                $('#' + e.currentTarget.id).parent().parent().remove();
+                            });
                         });
                     }
                 });
