@@ -1,59 +1,60 @@
 {% load static %}
 {% load crispy_forms_tags %}
+<div class="se-pre-con-ajax"></div>
+
+<small>Choose meaningful name and View Details on Assigned Courses Name List <b><a href="{% url 'inninggroup_list' %}">here</a></b></small>
+<br><br>
 
 <form method="post" id="ajaxgroupforms">
     {% csrf_token %}
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-6 col-sm-6 col-xs-6">
         {{ form.InningGroup_Name|as_crispy_field }}
     </div>
 
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-6 col-sm-6 col-xs-6">
         {{ form.Course_Code|as_crispy_field }}
     </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <label>
-            Status
-        </label><br>
-        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                {% if object.Use_Flag == False %}
-                &nbsp;
-                {% else %}
-                checked
-                {% endif %}
-        ><br> <br>
-    </div>
+    <br>
     <div class="col-md-12 col-sm-12 col-xs-12">
         {{ form.Teacher_Code }}
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
-                class="select form-control">
+               class="select form-control">
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
-                class="select form-control">
+               class="select form-control">
     </div>
+    *You can select multiple teachers by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
+    MAC.
+    <br><br>
     <div class="submitButton col-md-12">
         <button class="btn btn-success" type="submit">Submit</button>
         <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
     </div>
 </form>
-
+<script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
 <script>
-    $("#ajaxgroupforms").submit(function(e) {
+
+    $("#ajaxgroupforms").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
+        $('#id_Teacher_Code_to option').prop('selected', true);
         $.ajax({
             url: "{% url 'inninggroup_create_ajax' %}",  // URL to your view that serves new info
             data: $(this).serialize(), // get the form data
             type: $(this).attr('method'), // GET or POST
-            success: function(response) {
-                var id_InningGroup_Name =$('#id_InningGroup_Name').val();
+            success: function (response) {
+                var id_InningGroup_Name = $('#id_InningGroup_Name').val();
                 $(".close-btn").click();
                 $('#id_Course_Group_to').append(`
-                    <option value="`+response.pk+`" title="`+id_InningGroup_Name+`" selected>`+id_InningGroup_Name+`</option>
+                    <option value="` + response.pk + `" title="` + id_InningGroup_Name + `" selected>` + id_InningGroup_Name + `</option>
                 `);
             },
-            error: function(){
+            error: function () {
                 console.log('Error in posting group create form')
             }
         });
