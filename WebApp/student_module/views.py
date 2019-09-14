@@ -162,9 +162,21 @@ class AssignmentInfoDetailView(DetailView):
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['Answers'] = []
+        AnsweredQuestion = set()
+        Question = set()
+
         for question in context['Questions']:
             Answer = AssignAnswerInfo.objects.filter(Student_Code=self.request.user.pk,Question_Code=question.id)
             context['Answers']+= Answer
+            Question.add(question.id)
+        # print (context['Answers'])
+        for answers in context['Answers']:
+            # print (answers.Question_Code.id)
+            AnsweredQuestion.add(answers.Question_Code.id)
+        # print(Question)
+        # print(context['AnsweredQuestion'])
+        context['notAnswered'] = Question - AnsweredQuestion
+        print(context['notAnswered'])
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 

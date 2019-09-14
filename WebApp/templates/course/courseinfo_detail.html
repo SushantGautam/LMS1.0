@@ -51,10 +51,10 @@
                 {% if '/students' not in request.path %}
                 <div class="col-md-3 col-sm-12 col-xs-12" style="margin-top: 10px;">
                     <a href="{% if '/teachers' in request.path %}
-                /teachers{{ object.get_update_url }}
+                    /teachers{{ object.get_update_url }}
                         {% else %}
                             {{ object.get_update_url }}
-                        {% endif %}">Edit Course</a>
+                        {% endif %}"><b><u>Edit Course</u></b></a>
                 </div>
                 {% endif %}
             </div>
@@ -121,7 +121,7 @@
                 </div>
 
                 {% if '/students' not in request.path %}
-                <div class="col-md-4 col-sm-4 col-xs-12 text-center" style="margin-top: 10px">
+                <div class="col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
                     <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModal1"
                         id="add-newchapter-btn">
                         Create New Chapter

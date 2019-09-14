@@ -54,6 +54,7 @@
                 <li><a><i class="fa fa-book"></i> Courses <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="{% url 'teacher_courseinfo_list' %}">Course List</a></li>
+                        <li><a href="{% url 'teacher_mycourses_list' %}">My Courses</a></li>
                         <li><a href="{% url 'teacher_courseinfo_create' %}">Create New Course</a></li>
 
                     </ul>
@@ -70,14 +71,11 @@
 
                 <li><a><i class="fa fa-edit"></i> Assignments <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="#">Assignment List</a></li>
+                        <li><a href="{% url 'teacher_myassignmentinfo_list' %}">My Assignments</a></li>
                         <li><a href="#">Create New Assignment</a></li>
                     </ul>
                 </li>
 
-                <li><a href="#"><i class="fa fa-question"></i> Questions </a>
-
-                </li>
 
                 {% endif %}
                 <li><a><i class="fa fa-user"></i>Forum<span class="fa fa-chevron-down"></span></a>
