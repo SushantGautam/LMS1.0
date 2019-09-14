@@ -17,30 +17,7 @@ Polls
 <div class="clearfix"></div>
 <div class="container" id="mainSurveyPage">
 
-    <div class="row">
-        <div class="col-md-8 col-xs-12">
-            <div class="btn-group" id="status" data-toggle="buttons">
-                <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                    <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                        checked="checked">Active</label>
-                <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-                    <input type="radio" value="0" name="multifeatured_module[module_id][status]">History</label>
-            </div>
-        </div>
-        <form class="col-md-4 col-xs-12" id="searchBarSurvey">
 
-            <div role="search" action="/forum/search/" id="surveySearch">
-                <input type="text" id="keywordInput" name="keyword" placeholder="Type to search">
-                <div class=" pull-right searchButton">
-                    <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i
-                            class="fa fa-search"></i>
-                    </button>
-                </div>
-            </div>
-
-        </form>
-    </div>
-    <div class="hR"></div>
 
     <div class="container">
         <div class="row">
@@ -53,9 +30,9 @@ Polls
                                 <hr>
                                 <div id="card_category">
 
-                                    <h5 class="card-text active" style="justify-content: flex-start;">
-                                        <a href="#" style=" padding-left: 15px;"><i class="fa fa-bar-chart"
-                                                id="categoryIcons"></i>All
+                                    <h5 class=" card-text active">
+                                        <a href="#" class="category-name" id="0">
+                                            <i class="fa fa-bar-chart" id=""></i>&nbsp All
                                             survey</a>
                                     </h5>
                                     {% for category in categories %}
@@ -113,6 +90,32 @@ Polls
 
                 <div class="col-md-10 col-sm-10 col-xs-12" style="z-index: 0;">
                     <div id="rowCards">
+
+                        <div class="row">
+                            <div class="col-md-4 col-xs-12">
+                                <div class="btn-group" id="status" data-toggle="buttons">
+                                    <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                        <input type="radio" value="1" name="multifeatured_module[module_id][status]"
+                                            checked="checked">Active</label>
+                                    <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
+                                        <input type="radio" value="0"
+                                            name="multifeatured_module[module_id][status]">History</label>
+                                </div>
+                            </div>
+                            <form class="col-md-8 col-xs-12" id="searchBarSurvey">
+
+                                <div role="search" action="/forum/search/" id="surveySearch">
+                                    <input type="text" id="keywordInput" name="keyword" placeholder="Type to search">
+                                    <div class=" pull-right searchButton">
+                                        <button type="submit" id="navSearchBtn" class="btn btn-inverse"
+                                            data-hover-z="1"><i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="hR"></div>
                         <!-- ......................................Active section........................................ -->
                         <div class="active_survey ">
                             {% for object in object_list %}
@@ -148,55 +151,54 @@ Polls
                         <!-- ......................................Expire section.................................... -->
                         <div class="expire_survey " style="display: none;">
                             {% for object in object_list %}
-                            {% if object.End_Date < currentDate %} <div class="  ">
-                                <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">
-                                    <div class="card">
-                                        <a href=" {% url 'surveyinfo_detail' object.pk %}">
-                                            <div class="card-body">
-                                                <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong>
-                                                </h2>
-                                                <hr>
-                                                <ul class="card_labels">
-                                                    <li><label>Questions: {{ object.questions_count }} </label></li>
-                                                    <li><label>Start date: {{ object.Start_Date }}</label></li>
-                                                    <li><label>End date: {{ object.End_Date }}</label></li>
-                                                </ul>
-                                            </div>
-                                        </a>
-                                    </div>
+                            {% if object.End_Date < currentDate %}
+                            <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">
+                                <div class="card">
+                                    <a href=" {% url 'questions_student_detail_history' object.pk %}">
+                                        <div class="card-body">
+                                            <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong>
+                                            </h2>
+                                            <hr>
+                                            <ul class="card_labels">
+                                                <li><label>Questions: {{ object.questions_count }} </label></li>
+                                                <li><label>Start date: {{ object.Start_Date }}</label></li>
+                                                <li><label>End date: {{ object.End_Date }}</label></li>
+                                            </ul>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
+
                             {% endif %}
                             {% endfor %}
-
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
     </div>
 
+</div>
+
+{% endblock %}
 
 
+{% block javascripts %}
+<script>
 
-    {% endblock %}
-
-    {% block customjss %}
-
-
-    <script>
-        $('#category_Add_Button').on('click', function () {
-
-            $.ajax({
-                type: "GET",
-                url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
-                success: function (data) {
-                    $("#surveyForm").html(data);
-                }
-            });
+    $('.category-name').on('click', function () {
+        var categoryId = this.id;
+        $.ajax({
+            type: "GET",
+            data: { 'categoryId': categoryId },
+            url: "{% url 'surveyFilterCategory_student' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#rowCards").html(data);
+                console.log(data)
+            }
         });
+    });
 
-    </script>
-    {% endblock %}
+</script>
+{% endblock %}

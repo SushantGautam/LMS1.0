@@ -386,8 +386,7 @@ class CourseInfoListView(ListView):
     paginate_by = 8
 
     def get_queryset(self):
-        qs = self.model.objects.all()
-
+        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
