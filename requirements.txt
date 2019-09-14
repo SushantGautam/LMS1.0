@@ -24,5 +24,4 @@ selenium
 pytest
 pytest-django
 pytest-cov
-pytest-ordering
 django-model-utils==3.2.0

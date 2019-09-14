@@ -9,7 +9,6 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 
-@pytest.mark.order1
 class TestSuperUserCreate():
   def setup_method(self, method):
     self.driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
