@@ -158,7 +158,7 @@ def start(request):
             thread = Thread.objects.order_by('-pub_date')[:5]
             wordCloud = Thread.objects.all()
             thread_keywords = get_top_thread_keywords(request, 10)
-            course = CourseInfo.objects.order_by('-Register_DateTime')[:4]
+            course = CourseInfo.objects.order_by('-Register_DateTime')[:10]
             coursecount = CourseInfo.objects.count()
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count

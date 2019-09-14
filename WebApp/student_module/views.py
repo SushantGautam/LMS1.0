@@ -175,14 +175,6 @@ class submitAnswer(View):
     def post(self, request, *args, **kwargs):
         Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
-        # Obj.Assignment_File = request.POST["Assignment_File"]
-        # Obj.Question_Description = request.POST["Question_Description"]
-        # Obj.Answer_Type = request.POST["Answer_Type"]
-        # Obj.Question_Media_File = request.POST["Question_Media_File"]
-        # if request.POST["Use_Flag"] == 'true':
-        #     Obj.Use_Flag = True
-        # else:
-        #     Obj.Use_Flag = False
         Obj.Student_Code = MemberInfo.objects.get(pk=request.POST["Student_Code"])
         Obj.Question_Code = QuestionInfo.objects.get(pk=request.POST["Question_Code"])
         print(Obj.Student_Code)
