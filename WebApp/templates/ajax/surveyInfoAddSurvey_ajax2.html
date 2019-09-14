@@ -286,6 +286,19 @@
         $("#div_id_Course_Code").hide();
     }
 
+    $("#div_id_questioninfo-0-Question_Type").hide();
+    $("#id_questioninfo-0-Question_Type").val("MCQ");
+
+    $("#div_id_questionansinfo-0-Question_Type").hide();
+    $("#id_questionansinfo-0-Question_Type").val("SAQ");
+
+    $("#div_id_questioninfo-__prefix__-Question_Type").hide();
+    $("#id_questioninfo-__prefix__-Question_Type option[value=SAQ]").removeAttr("selected");
+    $("#id_questioninfo-__prefix__-Question_Type option[value=MCQ]").attr("selected", "selected");
+
+    $("#div_id_questionansinfo-__prefix__-Question_Type").hide();
+    $("#id_questionansinfo-__prefix__-Question_Type option[value=MCQ]").removeAttr("selected");
+    $("#id_questionansinfo-__prefix__-Question_Type option[value=SAQ]").attr("selected", "selected");
 
 
     // ......................................HIDING THE FORM................................................

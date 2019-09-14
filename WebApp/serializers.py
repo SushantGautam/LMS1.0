@@ -111,7 +111,7 @@ class AssignAnswerInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AssignAnswerInfo
         fields = (
-            'pk', 'Assignment_Score', 'Assignment_Code', 'Question_Code',
+            'pk', 'Assignment_Score', 'Question_Code',
             'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Assignment_Answer', 'Student_Code'
         )
 
