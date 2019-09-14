@@ -17,6 +17,12 @@ html, body {
     bottom: 0;
     width: 100%;
     height: 2.5rem; /* Footer height */
+    background: #fff;
+    margin-bottom: 15px;
+    display: block
+}
+#footerText{
+    margin-bottom: 20px;
 }
 
 .omb-login {
@@ -1120,12 +1126,6 @@ a:hover, a:focus {
     padding: 4px 6px
 }
 
-footer {
-
-    background: #fff;
-    padding: 15px 20px;
-    display: block
-}
 
 .nav-sm footer {
     margin-left: 70px

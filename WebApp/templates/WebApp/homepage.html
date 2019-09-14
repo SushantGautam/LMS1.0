@@ -62,33 +62,159 @@
 
     </div>
     <hr>
-    <div class="row">
-        <div class="col-xs-12 col-lg-4">
-            <div class="panel panel-default">
-                <div class="row title">
-                    <div class="col-md-12 forumDiv">
-                        <h3><a href="{% url 'forum:index' %}"><span class="forum">FORUM</span><span
-                                    class="thread">{{ threadcount }}</span></a></h3>
-                        <h5></h5>
+
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="row title">
+                <div class="col-md-12 forumDiv">
+                    <h3><a href="{% url 'forum:index' %}"><span class="forum">FORUM</span><span
+                                class="thread">{{ threadcount }}</span></a></h3>
+                    <h5></h5>
+                </div>
+            </div>
+            <ul class="list-group relative paper-shadow" data-hover-z="0.5" data-animated="">
+
+                {% for object in thread %}
+                <li class="list-group-item ">
+                    <div class="media-body">
+                        <B><span class="forum"><a
+                                    href="{{ object.get_absolute_url }}">{{ object.title }}</a></span><span
+                                class="thread">{{ object.pub_date|naturaltime }}</span></B>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <!-- <div class="clearfix"></div> -->
+        </div>
+    </div>
+
+
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="title">
+                <a href="{% url 'courseinfo_list' %}">
+                    <h2 style="font-size: 23px ">&nbsp;<b>Courses</b> </h2>
+                </a>
+                <!-- <h5>Your recent courses</h5> -->
+            </div>
+            <ul class="list-group">
+                {% for object in course %}
+
+                <li class="list-group-item ">
+                    <div class="media-body">
+                        <B style="font-size: 14px"><a
+                                href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></B>
+                    </div>
+                </li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
+    </div>
+    <!-- <div class="col-lg-4" id='calendar'></div> -->
+    <!-- <div class="col-lg-4 col-xs-12">
+            <div class="fc-view-container " style="">
+                <div class="fc-view fc-listMonth-view fc-list-view fc-widget-content" style="">
+                    <div class="fc-scroller" style="overflow: hidden auto; height: 317px;">
+                        <table class="fc-list-table">
+                            <tbody>
+                                <tr class="fc-list-heading" data-date="2019-07-01">
+                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                            1,
+                                            2019</span><span class="fc-list-heading-alt">Monday</span></td>
+                                </tr>
+                                <tr class="fc-list-item">
+                                    <td class="fc-list-item-time fc-widget-content">12:00am</td>
+                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                    </td>
+                                    <td class="fc-list-item-title fc-widget-content"><a>All Day Event</a></td>
+                                </tr>
+                                <tr class="fc-list-heading" data-date="2019-07-07">
+                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                            7,
+                                            2019</span><span class="fc-list-heading-alt">Sunday</span></td>
+                                </tr>
+                                <tr class="fc-list-item">
+                                    <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
+                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                    </td>
+                                    <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
+                                </tr>
+                                <tr class="fc-list-heading" data-date="2019-07-08">
+                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                            8,
+                                            2019</span><span class="fc-list-heading-alt">Monday</span></td>
+                                </tr>
+                                <tr class="fc-list-item">
+                                    <td class="fc-list-item-time fc-widget-content">all-day</td>
+                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                    </td>
+                                    <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
+                                </tr>
+                                <tr class="fc-list-heading" data-date="2019-07-09">
+                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                            9,
+                                            2019</span><span class="fc-list-heading-alt">Tuesday</span></td>
+                                </tr>
+                                <tr class="fc-list-item">
+                                    <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
+                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                    </td>
+                                    <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
+                                </tr>
+                                <tr class="fc-list-heading" data-date="2019-07-12">
+                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                            12,
+                                            2019</span><span class="fc-list-heading-alt">Friday</span></td>
+                                </tr>
+                                <tr class="fc-list-item">
+                                    <td class="fc-list-item-time fc-widget-content">10:30am</td>
+                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                    </td>
+                                    <td class="fc-list-item-title fc-widget-content"><a>Meeting</a></td>
+                                </tr>
+                                <tr class="fc-list-heading" data-date="2019-07-13">
+                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                            13,
+                                            2019</span><span class="fc-list-heading-alt">Saturday</span></td>
+                                </tr>
+                                <tr class="fc-list-item">
+                                    <td class="fc-list-item-time fc-widget-content">7:00pm - 10:30pm</td>
+                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                    </td>
+                                    <td class="fc-list-item-title fc-widget-content"><a>Birthday Party</a></td>
+                                </tr>
+                                <tr class="fc-list-heading" data-date="2019-07-26">
+                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                            26,
+                                            2019</span><span class="fc-list-heading-alt">Friday</span></td>
+                                </tr>
+                                <tr class="fc-list-item">
+                                    <td class="fc-list-item-time fc-widget-content">12:00pm</td>
+                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                    </td>
+                                    <td class="fc-list-item-title fc-widget-content"><a>Lunch</a></td>
+                                </tr>
+                                <tr class="fc-list-heading" data-date="2019-07-28">
+                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                            28,
+                                            2019</span><span class="fc-list-heading-alt">Sunday</span></td>
+                                </tr>
+                                <tr class="fc-list-item fc-has-url">
+                                    <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
+                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                    </td>
+                                    <td class="fc-list-item-title fc-widget-content"><a href="http://google.com/">Click
+                                            for Google</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <ul class="list-group relative paper-shadow" data-hover-z="0.5" data-animated="">
-
-                    {% for object in thread %}
-                    <li class="list-group-item ">
-                        <div class="media-body">
-                            <B><span class="forum"><a
-                                        href="{{ object.get_absolute_url }}">{{ object.title }}</a></span><span
-                                    class="thread">{{ object.pub_date|naturaltime }}</span></B>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <!-- <div class="clearfix"></div> -->
             </div>
-        </div>
-
-        <div class="containerMessage col-lg-4 panel panel-default" id="adminMessageContainer">
+        </div> -->
+    <!-- <div class="containerMessage col-lg-4 panel panel-default" id="adminMessageContainer">
 
             <div class="discussions" style="display: block;">
                 <div class="search-header">
@@ -206,138 +332,11 @@
 
                 </ul>
             </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="panel panel-default">
-                <div class="title">
-                    <a href="{% url 'courseinfo_list' %}">
-                        <h2 style="font-size: 23px ">&nbsp;Courses</h2>
-                    </a>
-
-                    <!-- <h5>Your recent courses</h5> -->
-                </div>
-                <ul class="list-group">
-                    {% for object in course %}
-
-                    <li class="list-group-item ">
-                        <div class="media-body">
-                            <B style="font-size: 14px"><a
-                                    href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></B>
-                        </div>
-                    </li>
-                    {% endfor %}
-
-                </ul>
-
-            </div>
-        </div>
-        <!-- <div class="col-lg-4" id='calendar'></div> -->
-        <div class="col-lg-4 col-xs-12">
-            <div class="fc-view-container " style="">
-                <div class="fc-view fc-listMonth-view fc-list-view fc-widget-content" style="">
-                    <div class="fc-scroller" style="overflow: hidden auto; height: 317px;">
-                        <table class="fc-list-table">
-                            <tbody>
-                                <tr class="fc-list-heading" data-date="2019-07-01">
-                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                            1,
-                                            2019</span><span class="fc-list-heading-alt">Monday</span></td>
-                                </tr>
-                                <tr class="fc-list-item">
-                                    <td class="fc-list-item-time fc-widget-content">12:00am</td>
-                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                    </td>
-                                    <td class="fc-list-item-title fc-widget-content"><a>All Day Event</a></td>
-                                </tr>
-                                <tr class="fc-list-heading" data-date="2019-07-07">
-                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                            7,
-                                            2019</span><span class="fc-list-heading-alt">Sunday</span></td>
-                                </tr>
-                                <tr class="fc-list-item">
-                                    <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
-                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                    </td>
-                                    <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
-                                </tr>
-                                <tr class="fc-list-heading" data-date="2019-07-08">
-                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                            8,
-                                            2019</span><span class="fc-list-heading-alt">Monday</span></td>
-                                </tr>
-                                <tr class="fc-list-item">
-                                    <td class="fc-list-item-time fc-widget-content">all-day</td>
-                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                    </td>
-                                    <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
-                                </tr>
-                                <tr class="fc-list-heading" data-date="2019-07-09">
-                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                            9,
-                                            2019</span><span class="fc-list-heading-alt">Tuesday</span></td>
-                                </tr>
-                                <tr class="fc-list-item">
-                                    <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
-                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                    </td>
-                                    <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
-                                </tr>
-                                <tr class="fc-list-heading" data-date="2019-07-12">
-                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                            12,
-                                            2019</span><span class="fc-list-heading-alt">Friday</span></td>
-                                </tr>
-                                <tr class="fc-list-item">
-                                    <td class="fc-list-item-time fc-widget-content">10:30am</td>
-                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                    </td>
-                                    <td class="fc-list-item-title fc-widget-content"><a>Meeting</a></td>
-                                </tr>
-                                <tr class="fc-list-heading" data-date="2019-07-13">
-                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                            13,
-                                            2019</span><span class="fc-list-heading-alt">Saturday</span></td>
-                                </tr>
-                                <tr class="fc-list-item">
-                                    <td class="fc-list-item-time fc-widget-content">7:00pm - 10:30pm</td>
-                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                    </td>
-                                    <td class="fc-list-item-title fc-widget-content"><a>Birthday Party</a></td>
-                                </tr>
-                                <tr class="fc-list-heading" data-date="2019-07-26">
-                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                            26,
-                                            2019</span><span class="fc-list-heading-alt">Friday</span></td>
-                                </tr>
-                                <tr class="fc-list-item">
-                                    <td class="fc-list-item-time fc-widget-content">12:00pm</td>
-                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                    </td>
-                                    <td class="fc-list-item-title fc-widget-content"><a>Lunch</a></td>
-                                </tr>
-                                <tr class="fc-list-heading" data-date="2019-07-28">
-                                    <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                            28,
-                                            2019</span><span class="fc-list-heading-alt">Sunday</span></td>
-                                </tr>
-                                <tr class="fc-list-item fc-has-url">
-                                    <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
-                                    <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                    </td>
-                                    <td class="fc-list-item-title fc-widget-content"><a href="http://google.com/">Click
-                                            for Google</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </div> -->
 
 
 
-    <div class="col-md-4 " id="word-cloud"></div>
+    <!-- <div class="col-md-4 " id="word-cloud"></div> -->
 
 
 
@@ -346,7 +345,7 @@
 
 {% endblock %}
 {% block customjss %}
-<script>
+<!-- <script>
     var config = {
         trace: true,
         spiralResolution: 1, //Lower = better resolution
@@ -506,5 +505,5 @@
         //     }
         // })();
 
-</script>
+</script> -->
 {% endblock %}
