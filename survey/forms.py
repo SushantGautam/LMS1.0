@@ -1,6 +1,6 @@
 from django import forms
+
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
-from WebApp.models import MemberInfo, CenterInfo
 
 
 class CategoryInfoForm(forms.ModelForm):
@@ -14,7 +14,8 @@ class SurveyInfoForm(forms.ModelForm):
     End_Date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
     class Meta:
         model = SurveyInfo
-        fields = '__all__'
+        fields = ['Survey_Title', 'Center_Code', 'Category_Code',
+                  'Session_Code', 'Course_Code', 'Added_By']
 
 
 class QuestionInfoForm(forms.ModelForm):
@@ -43,7 +44,6 @@ class AnswerInfoForm(forms.ModelForm):
 #fields=('Question_Name', 'Question_Type', 'Survey_Code'))
 
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
-from django.forms import modelformset_factory, BaseModelFormSet
 
 OptionInfoFormset = inlineformset_factory(
     QuestionInfo,
