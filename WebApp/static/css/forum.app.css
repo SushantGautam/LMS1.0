@@ -58587,3 +58587,15 @@ a:hover {
 .UserName {
     margin-right: 55px;
 }
+
+.reply_username{
+    margin-top: 38px;
+    margin-left: -49px;
+    padding-top: 5px;
+    padding-right: 5px;
+    font-size: 14px;
+}
+
+.message_date p.date[
+    
+]

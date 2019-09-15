@@ -178,8 +178,10 @@
                                         {% static 'images/profile/profile.png' %}
                                     {% endif %}" alt="..."
                                     class="image avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
+                                <div class="pull-left reply_username"> {{ reply.user.username }}</div>
 
                             </div>
+
                             <div class="reply_title">
                                 <a href="{% url 'forum:thread' pk=reply.thread.pk %}"
                                     class="entry-link">{{ reply.thread.title }}</a>
@@ -190,17 +192,14 @@
                     </p>
 
                     <div class="message_date">
-                        <h3 class="date text-info">{{ reply.pub_date|date:"d, M" }}</h3>
-
-                        <p class="month">{{ reply.pub_date|date:"Y" }}</p>
+                        <p class="date">{{ reply.pub_date|date:"d M, Y" }}</p>
+                        <p class="month">{{ reply.pub_date|date:"H:i  A" }}<p>
                     </div>
 
 
                     <div class="content_render">
-                        <h4 class="heading"> {{ reply.user.username }} </h4>
+                        <h4 class="">{{ reply.content_rendered | safe }}</h4>
 
-                        <blockquote class="message"> {{ reply.content_rendered | safe }} </blockquote>
-                        <p>{{ reply.pub_date |date:"H:i A" }}</p>
                     </div>
                     {% endfor %}
                 </li>

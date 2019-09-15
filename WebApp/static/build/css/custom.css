@@ -3547,7 +3547,8 @@ ul.messages li img.image, img.image {
 
 ul.messages li .message_date {
     float: right;
-    text-align: right
+    text-align: right;
+    margin-block-start: -38px;
 }
 
 ul.messages li .message_wrapper {
