@@ -501,7 +501,7 @@ $(document).ready(function() {
         const Pic = new picture(
             top,
             left,
-            "",
+            pic,
             width,height);
         Pic.renderDiagram();
     
@@ -1209,41 +1209,15 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
 
-                            const textBox = new Textbox(css_value.tops,
-                                css_value.left, css_value.content);
-                        
-                            textBox.renderDiagram();
-
-                            $('.fa-trash').click(function(e) {
-                                $('#' + e.currentTarget.id).parent().parent().remove();
-                            });
-                        
-                            $('.messageText').resizable({
-                                containment: $('#tabs-for-download'),
-                                grid: [20, 20],
-                                autoHide: true,
-                                minWidth: 75,
-                                minHeight: 25
-                            });
+                            TextboxFunction(css_value.tops,
+                            css_value.left,css_value.height,css_value.width,css_value.content);
                         });
                     }
                     if(div == 'pic'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
-                            const Pic = new picture(
-                                css_value.tops,
-                                css_value.left,
-                                css_value['background-image']);
-                            Pic.renderDiagram();
-
-                            $('.fa-upload').click(function(e) {
-                                trigger = parseInt(e.target.id) + 1;
-                                $('#' + trigger).trigger('click');
-                            });
-                        
-                            $('.fa-trash').click(function(e) {
-                                $('#' + e.currentTarget.id).parent().parent().remove();
-                            });
+                            PictureFunction(css_value.tops,
+                                css_value.left,css_value['background-image'],css_value.height,css_value.width);
                         });
                     }
 
@@ -1289,20 +1263,11 @@ $(document).ready(function() {
                     if(div == 'pdf'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
-                            const pdf = new PDF(
+                            PDFFunction(
                                 css_value.tops,
                                 css_value.left,
-                                css_value['link']);
-                            pdf.renderDiagram();
-
-                            $('.fa-upload').click(function(e) {
-                                trigger = parseInt(e.target.id) + 1;
-                                $('#' + trigger).trigger('click');
-                            });
-                        
-                            $('.fa-trash').click(function(e) {
-                                $('#' + e.currentTarget.id).parent().parent().remove();
-                            });
+                                css_value['link'],
+                                css_value.height,css_value.width);
                         });
                     }
                 });
