@@ -97,9 +97,9 @@ $(document).ready(function() {
      // ====================================For Video==============================
 
     class video {
-        constructor(top, left) {
+        constructor(top, left, link=null, height=null, width=null) {
             let id = (new Date).getTime();
-            let position = { top, left };
+            let position = { top, left, height, width };
             let html =
                 `<div class='video-div'>
                     <div id="video-actions">
@@ -126,7 +126,9 @@ $(document).ready(function() {
                 let dom = $(html).css({
                     "position": "absolute",
                     "top": position.top,
-                    "left": position.left
+                    "left": position.left,
+                    "height": position.height,
+                    "width": position.width
                 }).draggable({
                     //Constraint   the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
@@ -489,6 +491,7 @@ $(document).ready(function() {
                 containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
+                height: height,
                 minWidth: 75,
                 minHeight: 25
             });
@@ -819,8 +822,8 @@ $(document).ready(function() {
         });
     }
 
-    function VideoFunction(top=null, left=null, height=null, width=null){
-        const Videos = new video(top, left);
+    function VideoFunction(top=null, left=null, link=null, height=null, width=null){
+        const Videos = new video(top, left, link, height, width);
         Videos.renderDiagram();
     
         $('.fa-upload').click(function(e) {
@@ -1015,6 +1018,7 @@ $(document).ready(function() {
     
         });
     }
+
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
             TextboxFunction(ui.helper.position().top - toolbarheight,
@@ -1029,7 +1033,7 @@ $(document).ready(function() {
         } else if (ui.helper.hasClass('buttons')) {
             ButtonFuction(ui.helper.position().top - toolbarheight,
                 ui.helper.position().left - sidebarWidth);
-        } else if (ui.helper.hasClass('grid')) {
+        } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
                 top = 0,
                 left = 0,
@@ -1039,237 +1043,67 @@ $(document).ready(function() {
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
-                top="50%",
+                top="52%",
                 left=0,
-                height="50%", width="100%"
+                height="45%", width="100%"
             );
-        } else if (ui.helper.hasClass('grid-1')) {
-            const grids = new GridLayout1();
-            grids.renderDiagram();
-        
-            $('.fa-upload').click(function(e) {
-                trigger = parseInt(e.target.id) + 1;
-                $('#' + trigger).trigger('click');
-            });
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.pic').on('dragover', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                //   $(this).css('border',"2px solid #39F")
-            })
-        
-            $('.pic').on('drop', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                const files = e.originalEvent.dataTransfer.files;
-                var file = files[0];
-                upload(file);
-        
-            });
-        
-            function upload(file) {
-                const data = new FormData();
-                data.append("fileName", file);
-                $.ajax({
-                    url: '/index',
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    method: 'POST',
-                    type: 'POST',
-                    success: function(data) {
-                        console.log(data);
-                    }
-        
-                });
-                let div = $('#picture-drag').parent().parent();
-                $('#picture-drag').css({
-                    'display': 'none'
-                })
-                div.css({
-                    'background-image': 'url("../uploads/' + file.name + '")',
-                    'background-repeat': 'no-repeat',
-                    'background-size': 'contain',
-                    'background-position': 'center',
-                    'border': '0'
-                });
-        
-                $(div).hover(function() {
-                    $(this).css("border", "1px solid red");
-                }, function() {
-                    $(this).css("border", '0')
-                })
-        
-                $('.pic').resizable({
-                    containment: $('.editor-canvas'),
-                    grid: [20, 20],
-                    autoHide: true,
-                    minWidth: 150,
-                    minHeight: 150
-                });
-        
-            }
-        
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        let div = $(input).parent().parent().parent();
-                        // console.log(div);
-                        var data = new FormData();
-                        $.each($('.imgInp')[0].files, function(i, file) {
-                            data.append('file-' + i, file);
-                        });
-                        console.log(data);
-                        $.ajax({
-                            url: '/index',
-                            data: data,
-                            contentType: false,
-                            processData: false,
-                            method: 'POST',
-                            type: 'POST',
-                            success: function(data) {
-                                console.log(data);
-                            }
-        
-                        });
-        
-                        $('#picture-drag').css({
-                            'display': 'none'
-                        })
-        
-                        div.css({
-                            'background-image': 'url("../uploads/' + input.files[0].name + '")',
-                            'background-repeat': 'no-repeat',
-                            'background-size': 'contain',
-                            'background-position': 'center',
-                            'border': '0'
-                        });
-                        $(div).hover(function() {
-                            $(this).css("border", "1px solid red");
-                        }, function() {
-                            $(this).css("border", '0')
-                        })
-        
-                        $('.pic').resizable({
-                            containment: $('.editor-canvas'),
-                            grid: [20, 20],
-                            autoHide: true,
-                            minWidth: 150,
-                            minHeight: 150
-                        });
-                    }
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-        
-            $(".imgInp").change(function(e) {
-                readURL(this);
-        
-            });
-        
+        } else if (ui.helper.hasClass('grid')) {
+            VideoFunction(
+                top = 0,
+                left = 0,
+                "",
+                height="50%",width = "100%");
+            
+            
             // ===============for textbox inside grid-1============
-        
-            $('.textdiv').hover(function() {
-                $('#text-actions').css({
-                    'display': 'block'
-                });
-                $(this).css({
-                    'border': '1px solid grey'
-                })
-        
-            }, function() {
-                $('#text-actions').css({
-                    'display': 'none'
-                });
-                $(this).css({
-                    'border': 'none'
-                })
-                $('.messageText').css({
-                    'border': 'none'
-                })
-            })
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.messageText').resizable({
-                containment: $('.editor-canvas'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 250,
-                minHeight: 250
-            });
-        
+            TextboxFunction(
+                top="52%",
+                left=0,
+                height="45%", width="100%"
+            );
         } else if (ui.helper.hasClass('title-slide')) {
-            const title = new TitleSlide();
-            title.renderDiagram();
-        
-            // ===for text in title slide===
-        
-            $('.textdiv').hover(function() {
-                $('#text-actions').css({
-                    'display': 'block'
-                });
-                $(this).css({
-                    'border': '1px solid grey'
-                })
-        
-            }, function() {
-                $('#text-actions').css({
-                    'display': 'none'
-                });
-                $(this).css({
-                    'border': 'none'
-                })
-                $('.messageText').css({
-                    'border': 'none'
-                })
-            })
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.messageText').resizable({
-                containment: $('.editor-canvas'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 250,
-                minHeight: 250
-            });
-        
+            PictureFunction(
+                top = 0,
+                left = "0%",
+                "",
+                width = "50%", height="60%");
+            PictureFunction(
+                top = 0,
+                left = "50%",
+                "",
+                width = "50%", height="60%");
+            TextboxFunction(
+                top="62%",
+                left=0,
+                height="35%", width="100%",
+                message="Your Content Here"
+            );
         } else if (ui.helper.hasClass('title-content-details')) {
             TextboxFunction(
                 top="0%",
                 left=0,
                 height="10%", width="100%",
-                message="First"
+                message="Your Title Here"
             );
             TextboxFunction(
-                top="10%",
+                top="13%",
                 left=0,
-                height="90%", width="100%",
-                message="second"
+                height="84%", width="100%",
+                message="Your Content Here"
             );
         } else if (ui.helper.hasClass('pdf-text')) {
             PDFFunction(
-                top = 0,
+                top = "0%",
                 left = 0,
                 link="",
-                height = "50%", width="100%");
+                height = "60%", width="100%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
-                top="50%",
+                top="62%",
                 left=0,
-                height="50%", width="100%"
+                height="35%", width="100%"
             );
         
         } else if (ui.helper.hasClass('tables')) {
@@ -1320,6 +1154,9 @@ $(document).ready(function() {
             PDFFunction(ui.helper.position().top - toolbarheight,
             ui.helper.position().left - sidebarWidth);
         }
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+        });
     }
 
     $(".editor-canvas").droppable({
