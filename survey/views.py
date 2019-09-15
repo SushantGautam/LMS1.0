@@ -166,18 +166,27 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(self.kwargs["survey_id"])
+        obj_instance = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
         if self.request.POST:
             context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST,
-                                                                  instance=self.object,
+                                                                  queryset=QuestionInfo.objects.filter(
+                                                                      Question_Type="MCQ"),
+                                                                  instance=obj_instance,
                                                                   prefix='questioninfo')  # MCQ
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
-                                                                        instance=self.object,
+                                                                        queryset=QuestionInfo.objects.filter(
+                                                                            Question_Type="SAQ"),
+                                                                        instance=obj_instance,
                                                                         prefix='questionansinfo')  # SAQ
         else:
-            obj_instance = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
             context['questioninfo_formset'] = QuestionInfoFormset(instance=obj_instance,
+                                                                  queryset=QuestionInfo.objects.filter(
+                                                                      Question_Type="MCQ"),
                                                                   prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(instance=obj_instance,
+                                                                        queryset=QuestionInfo.objects.filter(
+                                                                            Question_Type="SAQ"),
                                                                         prefix='questionansinfo')
             context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
         return context
@@ -201,6 +210,9 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
                 print('qna is invalid')
                 print(qna.errors)
         return vform
+
+    #def get_initial(self):
+
 
 
 class SurveyInfoDetailView(DetailView):
