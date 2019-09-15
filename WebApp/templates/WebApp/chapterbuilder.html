@@ -227,7 +227,7 @@
               </div>
 
 
-              <div class="draggable  layout title-content-details">
+              <div class="draggable layout pdf-text">
 
 
                 <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}" alt="like this"  >
@@ -398,12 +398,10 @@
                 </div> -->
 
                 <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
-                  <p id="tab1" class="tab-content-no   droppable editor-canvas current "></p>
-
+                  <div class="editor-canvas" id="element-container">
+                    <p id="tab1" class="tab-content-no   droppable editor-canvas current "></p>
+                  </div>
                 </div>
-
-
-
               </div>
             </div>
           </div>
@@ -483,6 +481,7 @@
   var load_file_url = "/media/chapterBuilder/"+courseID+"/"+chapterID;
   var save_json_url = "{% url 'saveJson' %}";
   
+  $('#chapterlist').val(chapterID);
   $('#chapterlist').change(function(){
     let chapter = $('#chapterlist').val()
     location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')

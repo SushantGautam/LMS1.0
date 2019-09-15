@@ -869,6 +869,17 @@ class MessageInfoUpdateView(UpdateView):
 
 # chapter builder code starts from here
 
+def make_directory_if_not_exists(courseID, chapterID):
+    path = settings.MEDIA_ROOT
+    # following is commented because filesystemstorage auto create directories if not exist
+    if not os.path.exists(os.path.join(path, 'chapterBuilder')):
+        os.makedirs(os.path.join(path, 'chapterBuilder'))
+    if not os.path.exists(path+'/chapterBuilder/'+courseID):
+        print(path+'/chapterBuilder/'+courseID)
+        os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID))
+    if not os.path.exists(path+'/chapterBuilder/'+courseID+'/'+chapterID):
+        os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID+'/'+chapterID))
+
 def chapterviewer(request):
     if request.method == "GET":
         path = settings.MEDIA_ROOT
@@ -981,6 +992,9 @@ def save_json(request):
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
         
+        #creates directory structure if not exists
+        make_directory_if_not_exists(courseID, chapterID)
+
         #for saving json data for viewing purposes
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)
