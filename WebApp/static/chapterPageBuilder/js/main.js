@@ -49,6 +49,10 @@ $(document).ready(function() {
         constructor(top, left, pic=null, width=null, height=null) {
             let id = (new Date).getTime();
             let position = { top, left, width, height };
+            let message = "";
+            if(pic == null){
+                message = "Drag and drop images here..."
+            }
             let html =
             `<div class='pic' style='background-image:${pic}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0'>
                 <div id="pic-actions">
@@ -57,9 +61,9 @@ $(document).ready(function() {
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
+                    <input type='file' accept="image/*" name="userImage" style="display:none" id=${id + 1} class="imgInp" />
                 </form>
-                <p id="picture-drag">drag and drop files here...</p>
+                <p id="picture-drag">${message}</p>
                 </div>
             </div>`
 
@@ -148,9 +152,9 @@ $(document).ready(function() {
     // =====================For Button==============================
 
     class Button {
-        constructor(top, left) {
+        constructor(top, left, link=null, height=null, width=null) {
         let id = (new Date).getTime();
-        let position = { top, left };
+        let position = { top, left, height, width };
         let html = `
                         <div class="btn-div">
                             <div class="options">
@@ -159,7 +163,7 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" id=${id + 1}  target="_blank"  >Submit</a>
+                            <a class="btn" href = ${link} id=${id + 1}  target="_blank"  >Submit</a>
                         </div>
         
                 `;
@@ -168,7 +172,9 @@ $(document).ready(function() {
             let dom = $(html).css({
             "position": "absolute",
             "top": position.top,
-            "left": position.left
+            "left": position.left,
+            "height": position.height,
+            "width": position.width,
             }).draggable({
             //Constrain the draggable movement only within the canvas of the editor
             containment: "#tabs-for-download",
@@ -211,7 +217,7 @@ $(document).ready(function() {
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
+                    <input type='file' accept="application/pdf"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
                     </form>
                     <p id="pdf-drag" placeholder="drag and drop files here..."></p>
                 ${pdfobj}
@@ -542,6 +548,7 @@ $(document).ready(function() {
                 method: 'POST',
                 type: 'POST',
                 success: function(data) {
+                    div.find('p').text("");
                     div.css({
                         'background-image': 'url('+load_file_url+'/' + file.name + ')',
                         'background-repeat': 'no-repeat',
@@ -603,7 +610,8 @@ $(document).ready(function() {
                         method: 'POST',
                         type: 'POST',
                         success: function(data) {
-                            // console.log(data);
+                            console.log(div)
+                            div.find('p').text("");
                             div.css({
                               'background-image': 'url('+load_file_url+'/'+input.files[0].name+')',
                               'background-repeat': 'no-repeat',
@@ -645,8 +653,8 @@ $(document).ready(function() {
         });
     }
 
-    function ButtonFuction(top=null, left=null, height=null, width=null){
-        const btns = new Button(top, left);
+    function ButtonFuction(top=null, left=null, link=null, height=null, width=null){
+        const btns = new Button(top, left, link, height, width);
         
         btns.renderDiagram();
     
@@ -1224,39 +1232,11 @@ $(document).ready(function() {
                     if(div == 'btn-div'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
-                            const btns = new Button(css_value.tops,
-                                css_value.left);
-                    
-                            btns.renderDiagram();
-                        
-                            const div1 = $('i').parent();
-                        
-                            $('.fa-trash').click(function(e) {
-                                $('#' + e.currentTarget.id).parent().parent().remove();
-                                //  alert('btn clickd')
-                            });
-                        
-                            $('.fa-link').bind("click", function(e) {
-                                let argument = prompt("Enter a Link here...");
-                                if (argument == null || argument == "") {
-                                    return console.log("cancled pressed")
-                                } else {
-                                    var btn_id = parseInt(e.currentTarget.id) + 1
-                                    $('#' + btn_id).attr({
-                                        "href": `http://${argument}`
-                                    })
-                                }
-                        
-                            });
-                        
-                            $('.btn').resizable({
-                                containment: $('#tabs-for-download'),
-                                grid: [20, 20],
-                                autoHide: true,
-                                minWidth: 50,
-                                minHeight: 30,
-                            });
                             
+                            ButtonFuction(css_value.tops,
+                                css_value.left, 
+                                css_value.link,
+                                css_value.height, css_value.width);
                         });
                     }
 
