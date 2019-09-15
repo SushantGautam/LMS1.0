@@ -19,7 +19,12 @@ from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, An
 from datetime import datetime
 from quiz.models import Question , Quiz
 from django.shortcuts import redirect
-from django.http import JsonResponse
+
+from django.http import JsonResponse, HttpResponse
+import json
+from django.core import serializers
+from django.forms.models import model_to_dict
+
 
 datetime_now = datetime.now()
 
@@ -162,9 +167,21 @@ class AssignmentInfoDetailView(DetailView):
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['Answers'] = []
+        AnsweredQuestion = set()
+        Question = set()
+
         for question in context['Questions']:
             Answer = AssignAnswerInfo.objects.filter(Student_Code=self.request.user.pk,Question_Code=question.id)
             context['Answers']+= Answer
+            Question.add(question.id)
+        # print (context['Answers'])
+        for answers in context['Answers']:
+            # print (answers.Question_Code.id)
+            AnsweredQuestion.add(answers.Question_Code.id)
+        # print(Question)
+        # print(context['AnsweredQuestion'])
+        context['notAnswered'] = Question - AnsweredQuestion
+        print(context['notAnswered'])
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
@@ -175,14 +192,6 @@ class submitAnswer(View):
     def post(self, request, *args, **kwargs):
         Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
-        # Obj.Assignment_File = request.POST["Assignment_File"]
-        # Obj.Question_Description = request.POST["Question_Description"]
-        # Obj.Answer_Type = request.POST["Answer_Type"]
-        # Obj.Question_Media_File = request.POST["Question_Media_File"]
-        # if request.POST["Use_Flag"] == 'true':
-        #     Obj.Use_Flag = True
-        # else:
-        #     Obj.Use_Flag = False
         Obj.Student_Code = MemberInfo.objects.get(pk=request.POST["Student_Code"])
         Obj.Question_Code = QuestionInfo.objects.get(pk=request.POST["Question_Code"])
         print(Obj.Student_Code)
@@ -238,6 +247,21 @@ class questions_student_detail(DetailView):
 
         return context
 
+class questions_student_detail_history(DetailView):
+    model = SurveyInfo
+    template_name = 'student_module/questions_student_detail_history.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+
+        return context
+
+
 class ParticipateSurvey(View):
 
     def post(self, request, *args, **kwargs):
@@ -261,6 +285,24 @@ class ParticipateSurvey(View):
         return redirect('questions_student')
 
 
+class surveyFilterCategory_student(ListView):
+    model = SurveyInfo
+    template_name = 'student_module/questions_student_listView.html'
+
+    def get_queryset(self):
+        # print(self.request.GET['categoryId'])
+        # print(SurveyInfo.objects.filter(Category_Code = self.request.GET['categoryId']))
+        if self.request.GET['categoryId'] == '0':
+
+            return SurveyInfo.objects.all()
+            # filter(Center_Code = self.request.user.Center_Code)
+        else:
+            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now()
+        return context
 
 # def polls_student(request):
 #     return render(request, 'student_module/polls_student.html')

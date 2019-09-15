@@ -2,7 +2,8 @@
 {% load crispy_forms_tags %}
 <div class="se-pre-con-ajax"></div>
 
-<small>Choose meaningful name and View Details on Students Group List <b><a href="{% url 'groupmapping_list' %}">here</a></b></small><br><br>
+<small>Choose meaningful name and View Details on Students Group List <b><a
+        href="{% url 'groupmapping_list' %}">here</a></b></small><br><br>
 
 <form method="post" id="ajaxgroupform">
     {% csrf_token %}
@@ -18,13 +19,14 @@
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
-            class="select form-control">
+               class="select form-control">
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
-            class="select form-control">
+               class="select form-control">
     </div>
-    *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on MAC.
+    *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
+    MAC.
     <br><br>
     <div class="submitButton col-md-12">
         <button class="btn btn-success" type="submit" id="submit_ajax">Submit</button>
