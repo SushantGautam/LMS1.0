@@ -58,10 +58,11 @@
             {% if object.id != request.user.id %}
             <tr>
                 <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
-                
+
                 </td>
 
-                <td style=" padding-top: 15px;"><b><a href="{{ object.get_absolute_url }}">{{ object.Member_ID }}</a></b>
+                <td style=" padding-top: 15px;"><b><a
+                            href="{{ object.get_absolute_url }}">{{ object.Member_ID }}</a></b>
                 </td>
 
                 <td style=" padding-top: 15px;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>

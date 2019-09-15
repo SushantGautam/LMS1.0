@@ -1,43 +1,16 @@
+{% extends "WebApp/theme/sidebar.html" %}
 {% load static %}
-<div class="left_col">
-    <div class="navbar nav_title" style="border: 0;">
-        <a href="{% url 'student_home' %}" class="site_title"><img src="/static/images/logo.png" alt="..."
-                id="ubl_logo" />
-            <span id="LMS">u-LMS 2019</span></a>
-    </div>
-    <div class="clearfix"></div>
-    <!-- menu profile quick info -->
-    <div class="profile clearfix">
-        {% if request.user.is_authenticated %}
-        <div class="profile_pic">
-            <img src="
-                        {% if request.user.Member_Avatar %}
-                            /media/{{ request.user.Member_Avatar }}
-                        {% elif request.user.Member_Gender == '1' %}
-                            {% static 'images/profile/male.jpg' %}
-                        {% elif request.user.Member_Gender == '2' %}
-                            {% static 'images/profile/female.png' %}
-                        {% else %}
-                            {% static 'images/profile/profile.png' %}
-                        {% endif %}" alt="..." class="img-circle profile_img" />
-        </div>
 
-        <div class="profile_info">
 
-            <span>Welcome,</span>
-            <h2>{{ request.user.username }}</h2>
-        </div>
-        {% endif %}
-    </div>
-    <!-- /menu profile quick info -->
 
-    <br />
+
+{% block sidebar %}
 
     <!-- sidebar menu -->
     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
         <div class="menu_section">
             <h3>Student Portal Home</h3>
-            <hr />
+            <hr/>
             <ul class="nav side-menu">
                 <li><a href=" {% url 'student_home' %}"><i class="fa fa-home"></i> Dashboard </a>
                 </li>
@@ -56,7 +29,7 @@
                     <ul class="nav child_menu">
                         <li><a href="{% url 'forum:index' %}">Home</a></li>
                         {% for nodegroup in node_groups %}
-                        <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
+                            <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
@@ -73,21 +46,4 @@
     </div>
     <!-- /sidebar menu -->
 
-    {% comment %}
-    <!-- /menu footer buttons -->
-    <div class="sidebar-footer hidden-small">
-        <a data-toggle="tooltip" data-placement="top" title="Settings">
-            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="Lock">
-            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
-            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-        </a>
-    </div>
-    <!-- /menu footer buttons --> {% endcomment %}
-</div>
+{% endblock %}

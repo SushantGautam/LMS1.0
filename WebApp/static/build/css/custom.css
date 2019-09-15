@@ -24,7 +24,10 @@ html, body {
 #footerText{
     margin-bottom: 20px;
 }
-
+.teacher_mycourses{
+    padding-top: 10px;
+    padding-left: 0px!important;
+}
 .omb-login {
     margin: 40%;
 }

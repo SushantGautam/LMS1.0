@@ -1,8 +1,35 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
 {% block content %}
-<!-- Welcome to Teacher Page. -->
+<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+    <h1><b>
+            Welcome to Teacher Module
+        </b></h1>
+</div>
+<marquee bgcolor='grey'>
+    <h3 style="color: white"><b>Overview</b></h3>
+</marquee>
+<div class="teacher_mycourses col-md-6 col-sm-12 col-xs-12">
+    <div class="panel panel-default">
+        <div class="title text-center">
+            <h3 style="margin-left: 10px"><span><b>Courses</b> - List of my Courses </span></h3>
 
-<p>teacher page</p>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item ">
+                <h5>
+                    {% for object in MyCourses %}
+                    <b> {{object.Course_Code}}</b>
+                    <a href="{{ object.Course_Code.teacher_get_absolute_url }}">
+                        <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                        ">CONTINUE <i class="fa fa-arrow-right"></i>
+                        </button>
+                    </a>
+                    {% endfor %}
+                </h5>
+            </li>
+        </ul>
+    </div>
+</div>
 
 {% endblock %}

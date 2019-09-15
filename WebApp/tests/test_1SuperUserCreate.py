@@ -9,15 +9,15 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 
-class TestSuperUserCreate():
+class Test1SuperUserCreate():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
+    self.driver = webdriver.Chrome()
     self.vars = {}
-  
+
   def teardown_method(self, method):
     self.driver.quit()
-  
-  def test_superUserCreate(self):
+
+  def test_1SuperUserCreate(self):
     self.driver.get("http://127.0.0.1:8000/admin/login/?next=/admin/")
     self.driver.find_element(By.ID, "id_username").send_keys("nsdevil")
     self.driver.find_element(By.ID, "id_password").send_keys("nsdevil")
@@ -44,6 +44,5 @@ class TestSuperUserCreate():
     self.driver.find_element(By.CSS_SELECTOR, ".field-Is_Student .vCheckboxLabel").click()
     self.driver.find_element(By.CSS_SELECTOR, ".field-Is_Teacher .vCheckboxLabel").click()
     self.driver.find_element(By.NAME, "_save").click()
-    self.driver.find_element(By.CSS_SELECTOR, "#user-tools > a:nth-child(2)").click()
-    assert self.driver.find_element(By.CSS_SELECTOR, ".menu_section > h3").text == "ADMIN PORTAL HOME"
-  
+    assert self.driver.title == "Select member info to change | Django site admin"
+
