@@ -85,7 +85,6 @@ $("#SaveBtn").on("click",function(e){
         );
       }
       if(value.classList.contains('pdf')){
-        console.log($(this).children('object').attr('data'));
         pdf.push(
           {
             'tops': $(this).css("top"),

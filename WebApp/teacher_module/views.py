@@ -31,11 +31,21 @@ def start(request):
         sessions = []
         if mycourse:
             for course in mycourse:
-                session = InningInfo.objects.filter(Groups__id=course.id,End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(Course_Group=course.id,End_Date__gt=datetime_now)
                 sessions += session
+        courseID=[]
+        for groups in mycourse:
+            courseID.append(groups.Course_Code.id)
+     
+        activeassignments = []   
+        for course in courseID:
+            activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
+        
+        return render(request, "teacher_module/homepage.html",{'MyCourses':mycourse,'Session':sessions,'activeAssignments':activeassignments})
 
-    return render(request, "teacher_module/homepage.html",{'MyCourses':mycourse,'Session':sessions})
-
+  
+       
+     
 
 def Dashboard(request):
     return render(request, 'teacher_module/homepage.html', )
@@ -223,9 +233,13 @@ class MyAssignmentsListView(ListView):
         for groups in context['Group']:
             courseID.append(groups.Course_Code.id)
         context['assignments'] = []
+        context['expiredassignments'] = []
+        context['activeassignments'] = []
         for course in courseID:
             context['assignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course)
-      
+            context['expiredassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__lt=datetime_now)
+            context['activeassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
+
         return context
 
 def ProfileView(request):
