@@ -35,13 +35,19 @@ def start(request):
                 session = InningInfo.objects.filter(Groups__id=batch.id,End_Date__gt=datetime_now)
                 sessions += session
         courses = set()
+        activeassignments = []   
         if sessions:
             for session in sessions:
                 course = session.Course_Group.all()
                 courses.update(course)
-
+        
+            for course in courses:
+                activeassignments += AssignmentInfo.objects.filter(Assignment_Deadline__gte=datetime_now)
+        print(batches)
+        print(sessions)
+        
         return render(request, 'student_module/dashboard.html',
-                      {'GroupName': batches, 'Group': sessions, 'Course': courses})
+                      {'GroupName': batches, 'Group': sessions, 'Course': courses,'activeAssignments':activeassignments})
 
 def quiz(request):
     return render(request, 'student_module/quiz.html')
@@ -96,13 +102,19 @@ class MyCoursesListView(ListView):
 class MyAssignmentsListView(ListView):
     model = AssignmentInfo
     template_name = 'student_module/myassignments_list.html'
-
+  
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
-        context['GroupName'] = GroupMapping.objects.get(Students__id=self.request.user.id)
-        context['Group'] = InningInfo.objects.get(Groups__id=context['GroupName'].id)
-        context['Course'] = context['Group'].Course_Group.all()
+        context['GroupName'] = []
+        context['GroupName'] += GroupMapping.objects.filter(Students__id=self.request.user.id)
+              
+        context['Group'] = []
+        for group in context['GroupName']:
+            context['Group'] += InningInfo.objects.filter(Groups__id=group.id)
+        context['Course'] = []
+        for course in context['Group']:
+            context['Course'] = course.Course_Group.all()
 
         return context
 
