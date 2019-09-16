@@ -161,6 +161,13 @@
             $(".se-pre-con").fadeOut("fast");
         });
     </script>
+    <script>
+            $('#feedbackbtn').click(function(){
+                $('.w3-container').html(`<iframe style="height: 90vh; width: 100%" 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSfKpfYtiFs5YLnIMALd3rxUa2q1cgYTuM7owdcmGiNhAyhy3w/viewform?embedded=true"
+                frameborder="0px"></iframe>`);
+            })
+    </script>
 
     {% block customjss %}{% endblock %}
 
