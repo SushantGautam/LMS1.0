@@ -71,7 +71,7 @@
   .right-sidebar-content {
 
     position: relative;
-    top: 80px;
+    /* top: 80px; */
     bottom: 20;
     color: #444;
     overflow-y: scroll;
@@ -282,7 +282,7 @@
       <div class="  col-sm-8  col-md-7col-lg-8 col-xl-8 canvas">
 
         <div id="navbar-title">
-          <a href="{% url 'chapterinfo_detail' course chapter %}"><i class="fa fa-2x fa-arrow-left"></i></a>
+          <a href="{% url 'chapterinfo_detail' course chapter %}"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i></a>
           <h2 class="tlimit" contenteditable="false" id="chaptertitle">
             Add Title....
           </h2>
@@ -445,7 +445,7 @@
           </div>
           <div class="right-sidebar">
             <div class="right-sidebar-content">
-              <i id="add-page-btn" class="fas fa-plus-square fas-5x"></i>
+              <i id="add-page-btn" class="fas fa-plus-square"></i>
               <div class="img1 showSingle" target="1">
                 <div class="tabs-to-click">
                   <ul>

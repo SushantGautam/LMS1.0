@@ -101,12 +101,12 @@
                     {% for question in object.questioninfo.all %}
                         {% for option in question.optioninfo.all %}
                             <div class="surveyResults">
-                                <strong>Option A</strong>
+                                <strong>Option {{ forloop.counter }}</strong>
                                 <div class="progress">
                                     <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
                                          aria-valuemin="0"
                                          aria-valuemax="100" style="width: {{ option.get_option_percentage }}%">
-                                        <span class>'{{ option.get_option_percentage }}'% </span>
+                                        <span class>{{ option.get_option_percentage }}% </span>
                                     </div>
                                 </div>
                             </div>

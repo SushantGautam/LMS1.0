@@ -145,15 +145,12 @@ class OptionInfo(models.Model):
 
     def get_option_percentage(self):
         total_option = self.Question_Code.answerinfo.all().count()
-        print("option" + str(total_option))
         selected_option = self.Question_Code.answerinfo.all().filter(Answer_Value=self.id).count()
 
-        print("zlkxcjvlk" + str(selected_option))
         if total_option != 0:
             option_percentage = (selected_option * 100) / total_option
-            print("yoyoyo" + str(option_percentage))
         else:
-            option_percentage = 0;
+            option_percentage = 0
         return option_percentage
 
 
