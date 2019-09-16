@@ -402,13 +402,13 @@
                                     
                                 </div>
                                 <script>
-  var options = {
-    url: "https://vimeo.com/280815263",
-    width: "${css_value.width}",
-    height: "${css_value.height}"
-  };
+                                var options = {
+                                    url: "${css_value.link}",
+                                    width: "${css_value.width}",
+                                    height: "${css_value.height}"
+                                };
 
-  var videoPlayer = new Vimeo.Player('${css_value.link}', options);
+                                var videoPlayer = new Vimeo.Player('${css_value.link}', options);
                             `)
                             });
                         }
