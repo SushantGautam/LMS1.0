@@ -3,7 +3,7 @@ $(document).ready(function() {
     // ==================For TextBoxx================================
 
     class Textbox {
-        constructor(top=0, left=0, height=null ,width = null,message="Type Something Here...") {
+        constructor(top=0, left=0, height=null ,width = null, message="Type Something Here...") {
             console.log(top, left,height,width)
             let id = (new Date).getTime();
             let position = {
@@ -104,6 +104,20 @@ $(document).ready(function() {
         constructor(top, left, link=null, height=null, width=null) {
             let id = (new Date).getTime();
             let position = { top, left, height, width };
+            let videoobj;
+            let message = ""
+            if(link!=null){
+                videoobj = `
+                <video width="100%" height="90%" controls>
+                    <source src="${link}" type="video/mp4">
+                    <source src="${link}" type="video/ogg">
+                    Your browser does not support the video tag.
+                </video>
+                `
+            }else{
+                message = "drag and drop video here...";
+                videoobj = "";
+            }
             let html =
                 `<div class='video-div'>
                     <div id="video-actions">
@@ -111,13 +125,14 @@ $(document).ready(function() {
                         <i class="fas fa-upload" id=${id}></i>
                     </div>
                     <div>
-                        <p id="video-drag">drag and drop video here...</p>
+                        <p id="video-drag">${message}</p>
                         <div id="progress-bar">
                             <span id="progress-bar-fill"></span>
                         </div>
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                         <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
                         </form>
+                        ${videoobj}
                     </div>
                 </div>`
 
@@ -468,7 +483,7 @@ $(document).ready(function() {
         }
     });
 
-    function TextboxFunction(top=null, left=null, height=null, width=null, message=null){
+    function TextboxFunction(top=null, left=null, height=null, width=null, message="Type Something Here..."){
         const textBox = new Textbox(top, left, height, width, message);
         
             textBox.renderDiagram();
@@ -514,10 +529,6 @@ $(document).ready(function() {
         $('.fa-upload').click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
-        });
-    
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
         });
     
         $('.pic').on('dragover', function(e) {
@@ -659,11 +670,6 @@ $(document).ready(function() {
         btns.renderDiagram();
     
         const div1 = $('i').parent();
-    
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
-        });
     
         $('.fa-link').bind("click", function(e) {
             let argument = prompt("Enter a Link here...");
@@ -1267,7 +1273,7 @@ $(document).ready(function() {
                     if(div == 'video'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
-                            PDFFunction(
+                            VideoFunction(
                                 css_value.tops,
                                 css_value.left,
                                 css_value['link'],
