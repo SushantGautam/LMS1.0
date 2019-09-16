@@ -163,7 +163,7 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" href = ${link} id=${id + 1}  target="_blank"  >Submit</a>
+                            <a class="btn" href = ${link} id=${id + 1}  target="_blank" contentEditable="true" >Submit</a>
                         </div>
         
                 `;
@@ -664,6 +664,12 @@ $(document).ready(function() {
             $('#' + e.currentTarget.id).parent().parent().remove();
             //  alert('btn clickd')
         });
+
+        // $(".options").hover(function(){
+        //     $('.options').css({
+        //         'display':'block'
+        //     }) 
+        // })
     
         $('.fa-link').bind("click", function(e) {
             let argument = prompt("Enter a Link here...");
@@ -1044,30 +1050,30 @@ $(document).ready(function() {
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
                 top = 0,
-                left = 0,
+                left = 150,
                 "",
-                width = "100%", height="50%");
+                width = "30%", height="45%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
-                top="52%",
-                left=0,
-                height="45%", width="100%"
+                top="50%",
+                left=150,
+                height="45%", width='50% '
             );
         } else if (ui.helper.hasClass('grid')) {
             VideoFunction(
                 top = 0,
                 left = 0,
                 "",
-                height="50%",width = "100%");
+                height="50%",width = "50%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="52%",
                 left=0,
-                height="45%", width="100%"
+                height="45%", width="50%"
             );
         } else if (ui.helper.hasClass('title-slide')) {
             PictureFunction(
@@ -1090,13 +1096,13 @@ $(document).ready(function() {
             TextboxFunction(
                 top="0%",
                 left=0,
-                height="10%", width="100%",
+                height="10%", width="50%",
                 message="Your Title Here"
             );
             TextboxFunction(
                 top="13%",
                 left=0,
-                height="84%", width="100%",
+                height="84%", width="50%",
                 message="Your Content Here"
             );
         } else if (ui.helper.hasClass('pdf-text')) {
