@@ -322,7 +322,7 @@ form {
 }
 .questionLists .card {
   padding: 16px;
-  height: 200px;
+    height: auto;
 }
 
 .questionLists .card:hover {
