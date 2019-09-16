@@ -37,6 +37,7 @@ $("#SaveBtn").on("click",function(e){
     picdiv = [];
     buttondiv = [];
     pdf = [];
+    video = [];
     numberofpages++;
     const obj=$("#tab"+parseInt(key+1)).children();
     let tops;
@@ -47,6 +48,7 @@ $("#SaveBtn").on("click",function(e){
     htmlfile[(key+1)] = ($("#tab"+parseInt(key+1)).html());
     
     $.each( obj, function( i, value ) {
+      console.log(value.classList)
       if(value.classList.contains('textdiv')){
         console.log($(this).css("width"),$(this).css("height"))
         var clone = $(this).children('.messageText').clone();
@@ -95,8 +97,22 @@ $("#SaveBtn").on("click",function(e){
           }
         );
       }
+      if(value.classList.contains('video-div')){
+        console.log(value)
+        link = $(this).find('source').attr('src');
+        video.push(
+          {
+            'tops': $(this).css("top"),
+            'left': $(this).css("left"),
+            'width': $(this).css("width"),
+            'height': $(this).css("height"),
+            'link': link
+          }
+        );
+      }
     });
-    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf}]
+    
+    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video}]
   });
   data = {
     'numberofpages': numberofpages, 

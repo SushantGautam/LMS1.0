@@ -116,8 +116,8 @@ $(document).ready(function() {
                             <span id="progress-bar-fill"></span>
                         </div>
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
-                    </form>
+                        <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
+                        </form>
                     </div>
                 </div>`
 
@@ -848,7 +848,7 @@ $(document).ready(function() {
             e.stopPropagation();
             e.preventDefault();
             $(this).resizable({
-                containment: $('.editor-canvas'),
+                containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
                 minWidth: 150,
@@ -868,7 +868,9 @@ $(document).ready(function() {
             var data = new FormData();
     
             data.append("FileName", file);
-    
+            data.append('chapterID', chapterID);
+            data.append('courseID', courseID);
+            data.append('type', 'video');
             $.ajax({
                 xhr: function() {
                     var xhr = new window.XMLHttpRequest();
@@ -917,7 +919,7 @@ $(document).ready(function() {
     
                     return xhr;
                 },
-                url: '/index',
+                url: save_video_url,
                 data: data,
                 contentType: false,
                 processData: false,
@@ -954,9 +956,9 @@ $(document).ready(function() {
                         method: 'POST',
                         type: 'POST',
                         success: function(data) {
-                            console.log(data);
+                            div.empty();
                             div.append(`
-                            <video width="400" height="200" controls>
+                            <video width="100%" height="90%" controls id=${data.link}>
                             <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>`);
@@ -1002,7 +1004,6 @@ $(document).ready(function() {
                                         });
                                         // console.log(file.name);
                                     }
-    
                                 }
                             }, false);
     
@@ -1026,6 +1027,18 @@ $(document).ready(function() {
     
         });
     }
+
+    // function PlayVimeo(link, div){
+    //     var options = {
+    //     url: link,
+    //     };
+    
+    //     var videoPlayer = new Vimeo.Player(div, options);
+    
+    //     videoPlayer.on('play', function() {
+    //     console.log('Played the video');
+    //     });
+    // }
 
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
@@ -1241,6 +1254,17 @@ $(document).ready(function() {
                     }
 
                     if(div == 'pdf'){
+                        $.each(div_value, function(css, css_value){
+                            css_string = JSON.stringify(css_value)
+                            PDFFunction(
+                                css_value.tops,
+                                css_value.left,
+                                css_value['link'],
+                                css_value.height,css_value.width);
+                        });
+                    }
+
+                    if(div == 'video'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PDFFunction(
