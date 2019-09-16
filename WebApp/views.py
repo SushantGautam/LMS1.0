@@ -20,7 +20,7 @@ from django.conf import settings
 from PIL import Image
 import os
 import json
-# import vimeo # from PyVimeo for uploading videos to vimeo.com
+import vimeo # from PyVimeo for uploading videos to vimeo.com
 import uuid #for generating random identifiers
 from quiz.models import Quiz
 from forum.models import Thread
@@ -954,22 +954,21 @@ def save_video(request):
         filename = fs.save(media.name, media)
         print(filename)
         # #video uploading to vimeo.com
-        # v = vimeo.VimeoClient(
-        #     token='7a954bb83b66a50a95efc2d1cfdd484a',
-        #     key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
-        #     secret='+1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
-        # )
+        v = vimeo.VimeoClient(
+            token='7a954bb83b66a50a95efc2d1cfdd484a',
+            key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
+            secret='+1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
+        )
 
-        # # media = '{path to a video on the file system}'
+        # media = '{path to a video on the file system}'
 
-        # uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
-        #     'name': "media",
-        # })
+        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
+            'name': "media",
+        })
 
-        # print(uri)
-
-        # response = v.get(uri + '?fields=link').json()
-        return JsonResponse({'message': 'success'})
+        response = v.get(uri + '?fields=link').json()
+        print(response)
+        return JsonResponse(response)
 
 @csrf_exempt
 def save_json(request):

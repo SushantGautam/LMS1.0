@@ -99,7 +99,7 @@ $("#SaveBtn").on("click",function(e){
       }
       if(value.classList.contains('video-div')){
         console.log(value)
-        link = $(this).find('source').attr('src');
+        link = $(this).find('video').attr('id');
         video.push(
           {
             'tops': $(this).css("top"),

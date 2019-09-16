@@ -107,13 +107,26 @@ $(document).ready(function() {
             let videoobj;
             let message = ""
             if(link!=null){
-                videoobj = `
-                <video width="100%" height="90%" controls>
-                    <source src="${link}" type="video/mp4">
-                    <source src="${link}" type="video/ogg">
-                    Your browser does not support the video tag.
-                </video>
-                `
+                // videoobj = `
+                // <video width="100%" height="90%" controls>
+                //     <source src="${link}" type="video/mp4">
+                //     <source src="${link}" type="video/ogg">
+                //     Your browser does not support the video tag.
+                // </video>
+                // `
+                videoobj = `<div id='${link}'><div><script>
+                var options = {
+                    url: '${link}',
+                    width: "${width}",
+                    height: "${height}"
+                };
+              
+                var videoPlayer = new Vimeo.Player('${link}', options);
+              
+                videoPlayer.on('play', function() {
+                  console.log('Played the video');
+                });
+              </script>`
             }else{
                 message = "drag and drop video here...";
                 videoobj = "";
@@ -962,12 +975,27 @@ $(document).ready(function() {
                         method: 'POST',
                         type: 'POST',
                         success: function(data) {
+                            console.log(data.link)
                             div.empty();
                             div.append(`
                             <video width="100%" height="90%" controls id=${data.link}>
                             <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>`);
+                            // div.append(`
+                            // <source src="${data.link}" type="video/mp4">
+                            //    Your browser does not support the video tag.
+                            // </video>
+                            // var options = {
+                            //     url: data.link,
+                            // };
+                        
+                            // var videoPlayer = new Vimeo.Player(div, options);
+                        
+                            // videoPlayer.on('play', function() {
+                            // console.log('Played the video');
+                            // });
+                            // `);
                         },
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();
@@ -1033,18 +1061,6 @@ $(document).ready(function() {
     
         });
     }
-
-    // function PlayVimeo(link, div){
-    //     var options = {
-    //     url: link,
-    //     };
-    
-    //     var videoPlayer = new Vimeo.Player(div, options);
-    
-    //     videoPlayer.on('play', function() {
-    //     console.log('Played the video');
-    //     });
-    // }
 
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
