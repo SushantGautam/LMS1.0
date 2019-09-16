@@ -158,8 +158,8 @@ def start(request):
             thread = Thread.objects.order_by('-pub_date')[:5]
             wordCloud = Thread.objects.all()
             thread_keywords = get_top_thread_keywords(request, 10)
-            course = CourseInfo.objects.order_by('-Register_DateTime')[:4]
-            coursecount = CourseInfo.objects.count()
+            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by('-Register_DateTime')[:10]
+            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
@@ -386,8 +386,7 @@ class CourseInfoListView(ListView):
     paginate_by = 8
 
     def get_queryset(self):
-        qs = self.model.objects.all()
-
+        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
@@ -518,6 +517,9 @@ class GroupMappingCreateViewPopup(CreateView):
 
 class SessionInfoListView(ListView):
     model = SessionInfo
+    # Send data only related to the center
+    def get_queryset(self):
+        return SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class SessionInfoCreateView(CreateView):
@@ -536,11 +538,27 @@ class SessionInfoUpdateView(UpdateView):
 
 class InningInfoListView(ListView):
     model = InningInfo
+    template_name = 'WebApp/inninginfo_list.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now())
+
+class InningInfoListViewInactive(ListView):
+    model = InningInfo
+    template_name = 'WebApp/inninginfo_list_inactive.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__lte=datetime.now())
 
 
 class InningInfoCreateView(CreateView):
     model = InningInfo
     form_class = InningInfoForm
+
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 class InningInfoDetailView(DetailView):
     model = InningInfo
@@ -550,20 +568,39 @@ class InningInfoUpdateView(UpdateView):
     model = InningInfo
     form_class = InningInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+    
+
 
 class InningGroupListView(ListView):
     model = InningGroup
+    # Send data only related to the center
+    def get_queryset(self):
+        return InningGroup.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class InningGroupCreateView(CreateView):
     model = InningGroup
     form_class = InningGroupForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class InningGroupCreateAjax(AjaxableResponseMixin, CreateView):
     model = InningGroup
     form_class = InningGroupForm
     template_name = 'ajax/inninggroup_form_ajax.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupCreateAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
@@ -580,21 +617,38 @@ class InningGroupUpdateView(UpdateView):
     model = InningGroup
     form_class = InningGroupForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
     template_name = 'ajax/groupcreate_form_ajax.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupCreateSessionAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class GroupMappingListView(ListView):
     model = GroupMapping
+    # Send data only related to the center
+    def get_queryset(self):
+        return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 class GroupMappingDetailView(DetailView):
     model = GroupMapping
@@ -603,6 +657,11 @@ class GroupMappingDetailView(DetailView):
 class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
+
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 # AssignmentInfoViews
@@ -809,6 +868,17 @@ class MessageInfoUpdateView(UpdateView):
 
 # chapter builder code starts from here
 
+def make_directory_if_not_exists(courseID, chapterID):
+    path = settings.MEDIA_ROOT
+    # following is commented because filesystemstorage auto create directories if not exist
+    if not os.path.exists(os.path.join(path, 'chapterBuilder')):
+        os.makedirs(os.path.join(path, 'chapterBuilder'))
+    if not os.path.exists(path+'/chapterBuilder/'+courseID):
+        print(path+'/chapterBuilder/'+courseID)
+        os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID))
+    if not os.path.exists(path+'/chapterBuilder/'+courseID+'/'+chapterID):
+        os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID+'/'+chapterID))
+
 def chapterviewer(request):
     if request.method == "GET":
         path = settings.MEDIA_ROOT
@@ -921,6 +991,9 @@ def save_json(request):
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
         
+        #creates directory structure if not exists
+        make_directory_if_not_exists(courseID, chapterID)
+
         #for saving json data for viewing purposes
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)

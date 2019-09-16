@@ -7,7 +7,11 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
     <li class="breadcrumb-item active" aria-current="page">
-        Assign Student
+        {% if '/groupmapping/create/' == request.path %}
+        Create Student Group
+        {% else %}
+        Edit Student Group
+        {% endif %}
     </li>
 {% endblock %}
 {% block content %}
@@ -15,7 +19,11 @@
 
     <div class="headerDiv">
         <h2 class="infoFormHeader">
-            Assign Students to Group
+            {% if '/groupmapping/create/' == request.path %}
+                Create New Student Group
+            {% else %}
+                Edit Student Group
+            {% endif %}
         </h2>
         <hr class="header_hr">
     </div>

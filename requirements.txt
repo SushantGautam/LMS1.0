@@ -21,5 +21,7 @@ django-addanother==2.0.0
 textblob
 django-formtools
 selenium
-unittest2
+pytest
+pytest-django
+pytest-cov
 django-model-utils==3.2.0

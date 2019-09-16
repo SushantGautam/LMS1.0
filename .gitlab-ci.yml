@@ -1,5 +1,5 @@
 test:
-  type: deploy
+  type: test
   before_script:
    - "pip install -r requirements.txt"
   cache: ~

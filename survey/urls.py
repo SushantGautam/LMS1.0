@@ -40,16 +40,21 @@ urlpatterns += (
     path('surveyinfo/update/<int:pk>/',
          views.SurveyInfoUpdateView.as_view(), name='surveyinfo_update'),
 
-     # path('surveyinfo/detail', views.get_survey_info,
-     #     name='get_survey_info'),
+    # path('surveyinfo/detail', views.get_survey_info,
+    #     name='get_survey_info'),
 
     path('surveyinfo/<int:category>/', views.surveyinfo_category,
          name='surveyinfo_category'),
-     
-
-     path('surveyinfo_ajax/', views.SurveyInfo_ajax.as_view(),
+    path('surveyinfo_ajax/', views.SurveyInfo_ajax.as_view(),
          name='surveyinfo_ajax'),
+    # path('liveProgressResult/', views.liveProgressResult.as_view(),
+    #          name='liveProgressResult'),
 
+    path('surveyinforetake_ajax/<int:survey_id>/', views.SurveyInfoRetake_ajax.as_view(),
+         name='surveyinfo_retake_ajax'),
+
+    path('surveyFilterCategory/', views.surveyFilterCategory.as_view(),
+         name='surveyFilterCategory'),
 )
 
 urlpatterns += (

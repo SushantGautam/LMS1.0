@@ -1,8 +1,90 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
 {% block content %}
-<!-- Welcome to Teacher Page. -->
+<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+    <h1><b>
+            Welcome to Teacher Portal
+        </b></h1>
+</div>
+<div class="col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
+    <h3 style="color: white"><b>Overview</b></h3>
+</div>
 
-<p>teacher page</p>
+
+<div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
+    <div class="panel panel-default">
+        <div class="title text-center">
+            <h3 style="margin-left: 10px"><span>List of my Sessions </span></h3>
+        </div>
+        <ul class="list-group">
+            {% for object in Session %}
+            <li class="list-group-item ">
+                <h5>
+
+
+                    <b> {{object.Session_Name}}</b>
+                    <a href="{{ object.Session_Name.teacher_get_absolute_url }}">
+                        <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                        ">CONTINUE <i class="fa fa-arrow-right"></i>
+                        </button>
+                    </a>
+
+                </h5>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
+    <div class="panel panel-default">
+        <div class="title text-center">
+            <h3 style="margin-left: 10px"><span><b>Courses</b> - <a href="{% url 'teacher_mycourses_list' %}">List
+                        of my
+                        Courses </a></span></h3>
+
+        </div>
+        <ul class="list-group">
+            {% for object in MyCourses %}
+            <li class="list-group-item ">
+                <h5>
+                    <b> {{object.Course_Code}}</b>
+                    <a href="{{ object.Course_Code.teacher_get_absolute_url }}">
+                        <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                        ">CONTINUE <i class="fa fa-arrow-right"></i>
+                        </button>
+                    </a>
+
+                </h5>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
+    <div class="panel panel-default">
+        <div class="title text-center">
+            <h3 style="margin-left: 10px"><span><a href="{% url 'teacher_myassignmentinfo_list' %}"><b>List of my
+                            Assignments</b></a>
+                </span></h3>
+        </div>
+        <ul class="list-group">
+            {% for object in activeAssignments %}
+            <li class="list-group-item ">
+                <h5>
+                    <b> {{object.Assignment_Topic}}</b>
+                    <h5 style="margin-bottom: 0;">
+                        <a href="{{ object.teacher_get_absolute_url }}">
+                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                        ">CONTINUE <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </h5>
+                </h5>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 
 {% endblock %}

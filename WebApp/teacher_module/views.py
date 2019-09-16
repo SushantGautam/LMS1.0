@@ -12,22 +12,78 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, FormView
 
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, MemberInfo
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, MemberInfo, InningGroup
 from survey.models import SurveyInfo
 from quiz.models import Question , Quiz
-
+from datetime import datetime
+datetime_now = datetime.now()
 
 def start(request):
     """Start page with a documentation.
     """
     # return render(request,"start.html")
 
-    return render(request, "teacher_module/homepage.html")
+    if request.user.Is_Teacher: 
+        mycourse = InningGroup.objects.filter(Teacher_Code=request.user.id, Center_Code=request.user.Center_Code)
+        sessions = []
+        if mycourse:
+            for course in mycourse:
+                session = InningInfo.objects.filter(Course_Group=course.id,End_Date__gt=datetime_now)
+                sessions += session
+        courseID=[]
+        for groups in mycourse:
+            courseID.append(groups.Course_Code.id)
+     
+        activeassignments = []   
+        for course in courseID:
+            activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
+        
+        return render(request, "teacher_module/homepage.html",{'MyCourses':mycourse,'Session':sessions,'activeAssignments':activeassignments})
 
+  
+       
+     
 
 def Dashboard(request):
     return render(request, 'teacher_module/homepage.html', )
 
+class MyCourseListView(ListView):
+    model = CourseInfo
+    template_name = 'teacher_module/mycourses.html'
+
+    paginate_by = 8
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['courses'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id, Center_Code=self.request.user.Center_Code)
+
+        sessions = []
+        if context['courses']:
+            for course in context['courses']: 
+                # Filtering out only active sessions
+                session = InningInfo.objects.filter(Groups__id=course.id,End_Date__gt=datetime_now)
+                sessions += session
+        context['sessions'] = sessions
+        # courses = set()
+        # if context['sessions']:
+        #     for session in context['sessions']:
+        #         course = session.Course_Group.all()
+        #         courses.update(course)
+        # context['Course'] = courses
+
+        return context
+
+    def get_queryset(self):
+        qsearch = self.model.objects.all()
+
+        query = self.request.GET.get('teacher_mycoursequery')
+        if query:
+            query=query.strip()
+            qsearch = qsearch.filter(Course_Name__contains=query)
+            if not len(qsearch):
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
+        qsearch = qsearch.order_by("-id")  # you don't need this if you set up your ordering on the model
+        return qsearch
 
 class CourseInfoListView(ListView):
     model = CourseInfo
@@ -71,7 +127,9 @@ class CourseInfoCreateView(CreateView):
     form_class = CourseInfoForm
     template_name = 'teacher_module/courseinfo_form.html'
 
-    success_url = reverse_lazy('teacher_courseinfo_list')
+    # success_url = reverse_lazy('teacher_courseinfo_list')
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('teacher_courseinfo_detail', kwargs = {'pk': self.object.pk})
 
 class CourseInfoDetailView(DetailView):
     model = CourseInfo
@@ -89,13 +147,12 @@ class CourseInfoUpdateView(UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
     template_name = 'teacher_module/courseinfo_form.html'
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        return context
-
-    success_url = reverse_lazy('teacher_courseinfo_list')
-
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+    #     return context
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('teacher_courseinfo_detail', kwargs = {'pk': self.object.pk})
 
 class ChapterInfoListView(ListView):
     model = ChapterInfo
@@ -110,7 +167,7 @@ class ChapterInfoCreateView(CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
     template_name = 'teacher_module/chapterinfo_form.html'
-
+    
 
 class ChapterInfoDetailView(DetailView):
     model = ChapterInfo
@@ -163,14 +220,22 @@ class AssignmentInfoUpdateView(UpdateView):
 
 class MyAssignmentsListView(ListView):
     model = AssignmentInfo
-    template_name = 'teacher_module/myassignments_list.html'
+    template_name = 'teacher_module/myassignments.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
-        context['GroupName'] = GroupMapping.objects.get(Students__id=self.request.user.id)
-        context['Group'] = InningInfo.objects.get(Groups__id=context['GroupName'].id)
-        context['Course'] = context['Group'].Course_Group.all()
+        context['Group'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
+        courseID=[]
+        for groups in context['Group']:
+            courseID.append(groups.Course_Code.id)
+        context['assignments'] = []
+        context['expiredassignments'] = []
+        context['activeassignments'] = []
+        for course in courseID:
+            context['assignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course)
+            context['expiredassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__lt=datetime_now)
+            context['activeassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
 
         return context
 

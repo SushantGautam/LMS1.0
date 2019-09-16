@@ -1,0 +1,89 @@
+{% load static %}
+
+{% block stylesheets %}
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+<div class="row">
+    <div class="col-md-4 col-xs-12">
+        <div class="btn-group" id="status" data-toggle="buttons">
+            <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                <input type="radio" value="1" name="multifeatured_module[module_id][status]"
+                    checked="checked">Active</label>
+            <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
+                <input type="radio" value="0" name="multifeatured_module[module_id][status]">History</label>
+        </div>
+    </div>
+    <div class="col-md-8 col-xs-12" id="searchBarSurvey">
+
+        <div role="search" action="/forum/search/" id="surveySearch">
+            <input type="text" id="keywordInput" name="keyword" placeholder="Type to search">
+            <div class=" pull-right searchButton">
+                <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i
+                        class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="hR"></div>
+<!-- ......................................Active section........................................ -->
+<div class="active_survey ">
+    {% for object in object_list %}
+    {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' %}
+    <div class="questionLists col-xs-12 col-sm-6 col-md-3 " id=" {{ object.id }}">
+        <div class="card">
+            <a href=" {% url 'questions_student_detail' object.pk %}">
+                <div class="card-body">
+                    <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong></h2>
+                    <hr>
+                    <ul class="card_labels">
+                        <li><label>Questions: {{ object.questions_count }}</label></li>
+                        <li><label>Start date: {{ object.Start_Date }}</label></li>
+                        <li><label>End date: {{ object.End_Date }}</label></li>
+                    </ul>
+                    <!-- <h5 class="card-text text-justify">
+                                    
+                                        <div class="pollButtons">
+                                            <button type="button" class="btn btn-info">View</button>
+                                        </div>
+                                    
+                                </h5> -->
+                </div>
+            </a>
+        </div>
+    </div>
+
+    {% endif %}
+    {% endfor %}
+</div>
+<!-- ......................................Expire section.................................... -->
+<div class="expire_survey " style="display: none;">
+    {% for object in object_list %}
+    {% if object.End_Date|date:'y m d' < currentDate|date:'y m d' %}
+    <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">
+        <div class="card">
+            <a href=" {% url 'surveyinfo_detail' object.pk %}">
+                <div class="card-body">
+                    <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong>
+                    </h2>
+                    <hr>
+                    <ul class="card_labels">
+                        <li><label>Questions: {{ object.questions_count }} </label></li>
+                        <li><label>Start date: {{ object.Start_Date }}</label></li>
+                        <li><label>End date: {{ object.End_Date }}</label></li>
+                    </ul>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+</div>
+
+{% block javascripts %}
+<script src=" {% static 'build/js/survey.js' %}"></script>
+{% endblock %}

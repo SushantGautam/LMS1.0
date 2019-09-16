@@ -81,7 +81,7 @@ urlpatterns += (
 urlpatterns += (
     # urls for CourseInfo
     path('courseinfo/', views.CourseInfoListView.as_view(), name='courseinfo_list'),
-    path('courseinfo/create /', views.CourseInfoCreateView.as_view(), name='courseinfo_create'),
+    path('courseinfo/create/', views.CourseInfoCreateView.as_view(), name='courseinfo_create'),
     path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(), name='courseinfo_detail'),
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
 )
@@ -186,6 +186,7 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for InningInfo
+    path('inninginfo/inactive', views.InningInfoListViewInactive.as_view(), name='inninginfo_list_inactive'),
     path('inninginfo/', views.InningInfoListView.as_view(), name='inninginfo_list'),
     path('inninginfo/create/', views.InningInfoCreateView.as_view(),
          name='inninginfo_create'),

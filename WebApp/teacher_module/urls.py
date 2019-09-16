@@ -13,6 +13,8 @@ urlpatterns += (
     # urls for CourseInfo
     path('courseinfo/', views.CourseInfoListView.as_view(),
          name='teacher_courseinfo_list'),
+     path('courseinfo/mycourses', views.MyCourseListView.as_view(),
+         name='teacher_mycourses_list'),
     path('courseinfo/create/', views.CourseInfoCreateView.as_view(),
          name='teacher_courseinfo_create'),
     path('courseinfo/detail/<int:pk>/', views.CourseInfoDetailView.as_view(),

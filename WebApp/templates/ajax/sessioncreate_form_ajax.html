@@ -17,7 +17,7 @@
             </label>
             <div class="controls ">
                 <textarea name="Description" cols="40" id="id_Description" rows="6"
-                    class="textarea form-control"></textarea>
+                          class="textarea form-control"></textarea>
             </div>
         </div>
     </div>
@@ -27,7 +27,7 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
-            class="select form-control">
+               class="select form-control">
     </div>
 
     <div class="submitButton">
@@ -48,7 +48,7 @@
                 var id_Session_Name = $('#id_Session_Name').val();
                 $(".close-btn").click();
                 $('#id_Inning_Name').append(`
-                    <option value="`+ response.pk + `" selected>` + id_Session_Name + `</option>
+                    <option value="` + response.pk + `" selected>` + id_Session_Name + `</option>
                 `);
             },
             error: function () {

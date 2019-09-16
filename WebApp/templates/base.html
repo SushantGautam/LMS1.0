@@ -6,50 +6,50 @@
 <head>
     {% block head %}
 
-        {% block meta %}
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-            <!-- Meta, title, CSS, favicons, etc. -->
-            <meta charset="utf-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-        {% endblock meta %}
+    {% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% endblock meta %}
 
-        <title>LMS {% block title %}{% endblock %}</title>
+    <title>LMS {% block title %}{% endblock %}</title>
 
-        <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
 
-        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
 
-        <!-- Bootstrap -->
-        <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-        <!-- Font Awesome -->
-        <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-        <!-- NProgress -->
-        <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
-        <!-- Styling Checkbox as Switch -->
-        <link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">
-        <!-- Custom Theme Style -->
-        <link href="{% static '/build/css/custom.css' %}" rel="stylesheet">
-        
-        <!-- bootstrap-daterangepicker -->
-        <!-- <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet"> -->
-        <!-- iCheck -->
-        <!-- <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet"> -->
-        <!-- bootstrap-progressbar -->
-        <!-- <link href="{% static 'vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet"> -->
-        <!-- JQVMap -->
-        <!-- <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/> -->
-        <!-- custom tables-->
-        <!-- <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
+    <!-- Styling Checkbox as Switch -->
+    <link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="{% static '/build/css/custom.css' %}" rel="stylesheet">
+
+    <!-- bootstrap-daterangepicker -->
+    <!-- <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet"> -->
+    <!-- iCheck -->
+    <!-- <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet"> -->
+    <!-- bootstrap-progressbar -->
+    <!-- <link href="{% static 'vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet"> -->
+    <!-- JQVMap -->
+    <!-- <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/> -->
+    <!-- custom tables-->
+    <!-- <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
             <link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
         <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
         <link href="{% static 'vendorsx/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}" -->
-              <!-- rel="stylesheet"> -->
-        <!-- <link href="{% static 'vendorsx/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet"> -->
+    <!-- rel="stylesheet"> -->
+    <!-- <link href="{% static 'vendorsx/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet"> -->
 
-        {% block stylesheets %}{% endblock stylesheets %}
+    {% block stylesheets %}{% endblock stylesheets %}
 
-        {% block extrahead %}{% endblock %}
+    {% block extrahead %}{% endblock %}
 
     {% endblock head %}
 </head>
@@ -92,12 +92,13 @@
 
 
             </div>
-            {% block footer %}
-            <footer>
-                {% include "WebApp/theme/footer.html" %}
-            </footer>
-            {% endblock footer %}
+
         </div>
+        {% block footer %}
+
+        {% include "WebApp/theme/footer.html" %}
+
+        {% endblock footer %}
     </div>
 
 
@@ -128,7 +129,7 @@
     <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script> -->
     <!-- jQuery Tags Input -->
     <!-- <script src="{% static 'vendorsx/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script> -->
-    
+
     <!-- Select2 -->
     <!-- <script src="{% static 'vendorsx/select2/dist/js/select2.full.min.js' %}"></script> -->
     <!-- Parsley -->
@@ -162,8 +163,8 @@
     </script>
 
     {% block customjss %}{% endblock %}
-   
-{% endblock body %}
+
+    {% endblock %}
 
 </body>
 

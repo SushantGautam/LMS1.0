@@ -55,6 +55,17 @@ urlpatterns += (
 )
 
 urlpatterns += (
+    # urls for AssignAnswerInfo
+    path('assignanswerinfo/create', views.submitAnswer.as_view(),
+         name='assignanswerinfo_create_ajax'),
+    # path('questioninfo/<int:questioncode>/assignanswerinfo/create/', views.AssignAnswerInfoCreateView.as_view(),
+    #      name='assignanswerinfo_create'),
+    # path('questioninfo/<int:questioncode>/assignanswerinfo/detail/<int:pk>/',
+    #      views.AssignAnswerInfoDetailView.as_view(), name='assignanswerinfo_detail'),
+    # path('questioninfo/<int:questioncode>/assignanswerinfo/update/<int:pk>/',
+    #      views.AssignAnswerInfoUpdateView.as_view(), name='assignanswerinfo_update'),
+)
+urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView),
          name='student_user_profile'),
@@ -70,14 +81,18 @@ urlpatterns += (
     path('questions_student_detail/detail/<int:pk>/',
          views.questions_student_detail.as_view(), name='questions_student_detail'),
 
-     # path('surveyinfo/detail', views.get_survey_info,
-     #     name='get_survey_info'),
+    path('questions_student_detail_history/detail/<int:pk>/',
+         views.questions_student_detail_history.as_view(), name='questions_student_detail_history'),
 
     path('surveyinfo_ajax/', surveyViews.SurveyInfo_ajax.as_view(),
-        name='surveyinfo_ajax'),
-    
+         name='surveyinfo_ajax'),
+
     path('ParticipateSurvey/', views.ParticipateSurvey.as_view(),
-        name='ParticipateSurvey'),
+         name='ParticipateSurvey'),
+
+    path('surveyFilterCategory_student/', views.surveyFilterCategory_student.as_view(),
+         name='surveyFilterCategory_student'),
+
 )
 
 # urlpatterns += (

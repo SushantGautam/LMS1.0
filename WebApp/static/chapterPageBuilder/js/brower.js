@@ -91,14 +91,13 @@ $("#SaveBtn").on("click",function(e){
             'left': $(this).css("left"),
             'width': $(this).css("width"),
             'height': $(this).css("height"),
-            'link': $(this),
+            'link': $(this).children('object').attr('data'),
           }
         );
       }
     });
-    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv}]
+    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf}]
   });
-  console.log();
   data = {
     'numberofpages': numberofpages, 
     'chaptertitle': $('#chaptertitle').text(),
