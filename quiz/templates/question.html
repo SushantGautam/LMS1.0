@@ -41,12 +41,23 @@
 <br />
 
 {% if question %}
+{% if quiz.exam_paper %}
+		<div class="col-md-12 ">
+			<div class="pie degree" id="quiz-timer" data-timer="{{quiz.duration}}">
+				<span class="block-timer"></span>
+					<span id="time"></span>
+					<!-- <span id="time1">0</span> -->
+		</div>
+		</div>
+{% endif %}
 
 {% if progress %}
 <div style="float: right;">
 {% trans "Question" %} {{ progress.0|add:1 }} {% trans "of" %} {{ progress.1 }}
 </div>
 {% endif %}
+
+
 
 <p>
   <small class="muted"><strong> 
@@ -56,6 +67,7 @@
 		</small>
   <strong>{{ question.category }}</strong>
 </p>
+
 
 
 
