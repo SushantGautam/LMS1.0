@@ -16,6 +16,9 @@ from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, Ass
 from survey.models import SurveyInfo
 from quiz.models import Question , Quiz
 from datetime import datetime
+from forum.models import NodeGroup, Thread, Topic
+from forum.views import get_top_thread_keywords
+from .forms import ThreadForm
 datetime_now = datetime.now()
 
 def start(request):
@@ -245,3 +248,53 @@ def question_teachers(request):
 
 def polls_teachers(request):
     return render(request, 'teacher_module/polls_teachers.html')
+
+
+
+# ___________________________________________________FORUM____________________________________
+class Index(ListView):
+    model = Thread
+    template_name = 'teacher_module/forum/forumIndex.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        nodegroups = NodeGroup.objects.all()
+        threadqueryset = Thread.objects.none()
+        for ng in nodegroups:
+            topics = Topic.objects.filter(node_group=ng.pk)
+            for topic in topics:
+                threads = Thread.objects.visible().filter(
+                    topic=topic.pk).order_by('pub_date')[:4]
+                threadqueryset |= threads
+
+        return threadqueryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['panel_title'] = ('New Threads')
+        context['title'] = ('Index')
+        context['topics'] = Topic.objects.all()
+        context['show_order'] = True
+        context['get_top_thread_keywords'] = get_top_thread_keywords(
+            self.request, 10)
+        return context
+
+
+def create_thread(request, topic_pk=None, nodegroup_pk=None):
+    topic = None
+    node_group = NodeGroup.objects.all()
+    fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
+    if topic_pk:
+        topic = Topic.objects.get(pk=topic_pk)
+    topics = Topic.objects.filter(node_group=nodegroup_pk)
+    if request.method == 'POST':
+        form = ThreadForm(request.POST, user=request.user)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
+    else:
+        form = ThreadForm()
+
+    return render(request, 'teacher_module/forum/create_thread.html',
+                  {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
+                   'fixed_nodegroup': fixed_nodegroup, 'topics': topics})

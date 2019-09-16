@@ -13,7 +13,7 @@ urlpatterns += (
     # urls for CourseInfo
     path('courseinfo/', views.CourseInfoListView.as_view(),
          name='teacher_courseinfo_list'),
-     path('courseinfo/mycourses', views.MyCourseListView.as_view(),
+    path('courseinfo/mycourses', views.MyCourseListView.as_view(),
          name='teacher_mycourses_list'),
     path('courseinfo/create/', views.CourseInfoCreateView.as_view(),
          name='teacher_courseinfo_create'),
@@ -40,11 +40,12 @@ urlpatterns += (
 urlpatterns += (
     # urls for AssignmentInfo
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:pk>/',
-    views.AssignmentInfoDetailView.as_view(),
-        name='teacher_assignmentinfo_detail'),
+         views.AssignmentInfoDetailView.as_view(),
+         name='teacher_assignmentinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='teacher_assignmentinfo_update'),
-    path('myassignments/',views.MyAssignmentsListView.as_view(), name='teacher_myassignmentinfo_list'),
+    path('myassignments/', views.MyAssignmentsListView.as_view(),
+         name='teacher_myassignmentinfo_list'),
 )
 
 urlpatterns += (
@@ -66,4 +67,9 @@ urlpatterns += (
 
 urlpatterns += (
     path('polls_teachers/', views.polls_teachers, name="polls_teachers"),
+)
+
+urlpatterns += (
+    path('forum/', views.Index.as_view(), name="teacher_forum"),
+    path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
 )
