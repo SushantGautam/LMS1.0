@@ -7,24 +7,20 @@
 #     # return render(request,"start.html")
 #     return render(request, "student_module/homepage.html")
 
-from django.contrib import messages
-from django.shortcuts import render, get_object_or_404
+from datetime import datetime
 
+from django.contrib import messages
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+from django.views import View
 # Create your views here.
 from django.views.generic import DetailView, ListView
-from django.views import View
 
-from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, AssignAnswerInfo
-from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo
-from datetime import datetime
-from quiz.models import Question , Quiz
-from django.shortcuts import redirect
-
-from django.http import JsonResponse, HttpResponse
-import json
-from django.core import serializers
-from django.forms.models import model_to_dict
-
+from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, \
+    AssignAnswerInfo
+from quiz.models import Question, Quiz
+from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 
 datetime_now = datetime.now()
 
@@ -251,8 +247,7 @@ class questions_student_detail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['questions'] = QuestionInfo.objects.filter(
-            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+        context['questions'] = QuestionInfo.objects.filter(Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
@@ -277,7 +272,7 @@ class questions_student_detail_history(DetailView):
 class ParticipateSurvey(View):
 
     def post(self, request, *args, **kwargs):
-        surveyId =  request.POST["surveyInfoId"]
+        surveyId = request.POST["surveyInfoId"]
         userId = self.request.user.id
         # print(request.POST)
         submitSurvey = SubmitSurvey()
@@ -316,15 +311,3 @@ class surveyFilterCategory_student(ListView):
         context['currentDate'] = datetime.now()
         return context
 
-# def polls_student(request):
-#     return render(request, 'student_module/polls_student.html')
-
-
-# def polls_student_view(request):
-#     return render(request, 'student_module/polls_student_view.html')
-
-
-# class PollsCreateView(CreateView):
-#     model = Polls
-#     template_name = "TEMPLATE_NAME"
-# )

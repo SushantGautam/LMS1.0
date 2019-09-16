@@ -4,7 +4,7 @@
 
     <!-- menu profile quick info -->
 
-{%  block navbar %}
+    {%  block navbar %}
     <div class="navbar nav_title" style="border: 0;">
         <a href="/" class="site_title"><img src="/static/images/logo.png" alt="..." id="ubl_logo" />
             <span id="LMS">u-LMS 2019</span></a>
@@ -12,9 +12,9 @@
 
     <div class="clearfix"></div>
 
-{% endblock %}
+    {% endblock %}
     <!-- menu profile quick info -->
-{%  block quickmenu %}
+    {%  block quickmenu %}
     <div class="profile clearfix">
         {% if request.user.is_authenticated %}
         <div class="profile_pic">
@@ -40,10 +40,10 @@
     <!-- /menu profile quick info -->
 
     <br />
-{%  endblock %}
+    {%  endblock %}
 
     <!-- sidebar menu -->
-{% block sidebar %}
+    {% block sidebar %}
     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
         <div class="menu_section">
             {% if user.is_authenticated %}
@@ -119,9 +119,7 @@
                         {% if request.user.is_authenticated %}
                         <li><a href="{% url 'forum:user_info' request.user.pk %}">profile</a></li>
                         {% endif %}
-                        {% for nodegroup in node_groups %}
-                        <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
-                        {% endfor %}
+
 
                     </ul>
                 </li>
@@ -137,34 +135,35 @@
         </div>
 
     </div>
-{%  endblock %}
+    {%  endblock %}
     <!-- /sidebar menu -->
 
     <!-- /menu footer buttons -->
-{%  block footer %}
-      <div class="sidebar-footer hidden-small">
+    {%  block footer %}
+    <div class="sidebar-footer hidden-small">
 
 
 
-            <a data-toggle="tooltip" data-placement="top" title="FullScreen" onclick="toggleFullScreen()">
-                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-            </a>
+        <a data-toggle="tooltip" data-placement="top" title="FullScreen" onclick="toggleFullScreen()">
+            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+        </a>
 
-            <a data-toggle="tooltip" data-placement="top" title="Profile" href="/profile">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-            </a>
+        <a data-toggle="tooltip" data-placement="top" title="Profile" href="/profile">
+            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+        </a>
 
-            <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App" href="http://ulms.me/media/app/lms-app.apk">
-                <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
-            </a>
-            <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout">
-                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-            </a>
-        </div>
+        <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App"
+            href="http://ulms.me/media/app/lms-app.apk">
+            <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+        </a>
+        <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout">
+            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+        </a>
+    </div>
 
     <!-- /menu footer buttons -->
 
-        <script type="text/javascript">
+    <script type="text/javascript">
         function toggleFullScreen() {
             if ((document.fullScreenElement && document.fullScreenElement !== null) ||
                 (!document.mozFullScreen && !document.webkitIsFullScreen)) {
@@ -189,5 +188,5 @@
     </script>
 
 
-{% endblock %}
+    {% endblock %}
 </div>

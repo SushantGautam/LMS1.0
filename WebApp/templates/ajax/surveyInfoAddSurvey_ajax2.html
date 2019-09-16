@@ -182,25 +182,6 @@
         copyEmptyQuestion('#emptyQnInfoForm', 'div.qninfo_dynamic_append', 'questioninfo', 'optioninfo');
     });
 
-    // function copyEmptyQuestion(selector, append_after, type) {
-    //     var questionId = $('#id_' + type + '-TOTAL_FORMS').val();
-    //     var str1 = String(type + '-' + questionId);
-    //     var str3 = String('add_more_op_' + questionId);
-    //     var str4 = String('optionContainer_' + questionId);
-    //     var r1 = new RegExp(type + '\-__prefix__', 'g');
-    //     var r3 = new RegExp('add_more_op_id', 'g');
-    //     var r4 = new RegExp('optionContainer_id', 'g');
-
-
-    //     $(append_after).append($(selector).html().replace(r1, str1).replace(r3, str3).replace(r4, str4));
-    //     questionId++;
-    //     $('#id_' + type + '-TOTAL_FORMS').val(questionId);
-    // }
-
-    // $('#add_more_qn').click(function () {
-    //     copyEmptyQuestion('#emptyQnInfoForm', 'div.qninfo_dynamic_append', 'questioninfo', 'optioninfo');
-    // });
-
     function addOption(event, questionId, selector, append_after, type, type2) {
         event.preventDefault();
         var optionId = $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val();

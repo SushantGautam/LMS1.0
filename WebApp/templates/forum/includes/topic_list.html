@@ -74,7 +74,12 @@
                 <tr role="row" class="odd">
                     <td class="sorting_1">
                         <div class="icon-block half img-circle bg-grey-300">
+                            {% if list.0.topic_icon %}
                             <i class="fa fa-{{ list.0.topic_icon }}"></i>
+                            {% else %}
+                            <i class="fa fa-book"></i>
+                            {% endif %}
+
                         </div>
                     </td>
                     <td><a href="{% url 'forum:topic' pk=list.0.pk %}">{{ list.0 }}</a>
