@@ -137,10 +137,10 @@
                             <ul class="list-comment reply-lists">
                                 <hr>
                                 <h2 class="thread_replies">
-                                    <i class="fa fa-comments-o"></i>
                                     {% if thread.reply_count %}
-                                    {% blocktrans count reply_count=thread.reply_count %}({{ reply_count }}) Answer
-                                    {% plural %}({{ reply_count }})Answers {% endblocktrans %} {% endif %}</h2>
+                                    <i class="fa fa-comments-o"></i>
+                                    {% blocktrans count reply_count=thread.reply_count %}({{ reply_count }}) Reply
+                                    {% plural %}({{ reply_count }})Replies {% endblocktrans %} {% endif %}</h2>
                                 <hr>
 
                                 {% for post in posts %}

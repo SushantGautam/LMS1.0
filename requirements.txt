@@ -25,3 +25,4 @@ pytest
 pytest-django
 pytest-cov
 django-model-utils==3.2.0
+pyvimeo

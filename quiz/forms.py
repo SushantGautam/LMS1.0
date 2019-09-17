@@ -48,7 +48,7 @@ class QuizForm(forms.ModelForm):
         self.fields['mcquestion'].required = False
         self.fields['tfquestion'].required = False
         self.fields['saquestion'].required = False
-        self.fields['cent_code'].required = False
+        # self.fields['cent_code'].required = False
 
         # self.fields['url'].required = False
         # self.fields['url'].widget = forms.HiddenInput()

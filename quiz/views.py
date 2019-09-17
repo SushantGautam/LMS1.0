@@ -74,7 +74,7 @@ class QuizListView(ListView):
 
     def get_queryset(self):
         queryset = super(QuizListView, self).get_queryset()
-        return queryset.filter(draft=False)
+        return queryset.filter(draft=False, cent_code=self.request.user.Center_Code)
 
 
 class QuizUpdateView(UpdateView):
@@ -800,6 +800,7 @@ class QuizCreateWizard(SessionWizardView):
             setattr(my_quiz, k, v)
         my_quiz.save()
         my_quiz.url = str(my_quiz.title) + str(my_quiz.id)
+        my_quiz.cent_code = self.request.user.Center_Code
         my_quiz.save()
         my_quiz.mcquestion.add(*mcq)
         my_quiz.tfquestion.add(*tfq)

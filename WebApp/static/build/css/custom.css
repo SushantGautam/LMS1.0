@@ -3558,7 +3558,8 @@ ul.messages li img.image, img.image {
 
 ul.messages li .message_date {
     float: right;
-    text-align: right
+    text-align: right;
+    margin-block-start: -38px;
 }
 
 ul.messages li .message_wrapper {
@@ -5793,7 +5794,9 @@ article {
 
 }
 
-.quiz-listing {
+.quiz-listing { 
+    font-size: 14px;
+    font-weight: bold;
 
 }
 
@@ -5877,6 +5880,50 @@ article {
 
 /* STOP */
 /* QUIZZES UI */
+.mcq-list-details , .tfq-list-details , .saq-list-details{
+    border: 1px solid #ccc; 
+    padding: 5px 0 ; 
+
+}
+.correct-list{ 
+    border: 1px solid #ccc;
+
+}
+.mcq-correct{
+    padding:2px 4px; 
+    background: green; 
+    color: white;
+}
+.button-color-only{
+    padding: 3px 14px; 
+    border:none;
+    color: black;
+    cursor: pointer;
+}
+.button-color-only1{
+    padding: 3px 14px; 
+    border:none;
+    color: black;
+    cursor: pointer;
+    background: #ccc; 
+   
+}
+.button-color-only1:hover{
+    padding: 3px 14px; 
+    border:none;
+    color: white;
+    cursor: pointer;
+    background:  #007fbe; 
+      
+  }
+.button-color-only:hover{
+  background-color: #007fbe; 
+  color: white;
+  border: none;
+  padding: 3px 14px;
+    
+}
+
 .quiz-breadcrumb {
     margin-top: 70px
 }
@@ -6095,13 +6142,36 @@ input[type=checkbox], input[type=radio] {
 }
 
 /* quiz results css */
+.mcqlist-container{ 
+    
+    
+}
 .exam-results {
     text-transform: uppercase;
     color: white;
     background-color: #007fbe;
     padding: 5px 10px;
-    margin-bottom: 20px
+    margin-bottom: 20px;
+} 
+.add-mcq-details{
+    padding: 1px 5px; 
+    background-color: white; 
+    color: #007fbe;
 }
+.add-mcq-details:hover{
+    padding: 1px 5px; 
+    background-color:  #007fbe; 
+    color: white;
+}
+.exam-results p {
+    color: white;
+    margin: 0px !important;
+}
+
+.quiz-question-list{
+    
+}
+
 
 .exam-results1 {
     text-transform: uppercase;

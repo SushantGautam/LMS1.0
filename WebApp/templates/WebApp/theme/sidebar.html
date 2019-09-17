@@ -119,9 +119,7 @@
                         {% if request.user.is_authenticated %}
                         <li><a href="{% url 'forum:user_info' request.user.pk %}">profile</a></li>
                         {% endif %}
-                        {% for nodegroup in node_groups %}
-                        <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
-                        {% endfor %}
+
 
                     </ul>
                 </li>
