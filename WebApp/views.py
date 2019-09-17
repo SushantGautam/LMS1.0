@@ -892,6 +892,7 @@ def chapterviewer(request):
                 data = json.load(json_file)
         except Exception as e:
             print(e)
+            data=""
         return JsonResponse({'data': data})
 
 

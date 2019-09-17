@@ -238,11 +238,11 @@
 {# Modal for chapter view #}
 
 <!-- Modal -->
-<div id="course-modal" class="modal fade" role="dialog">
-    <div class="modal-lg modal-dialog">
+<div id="course-modal" class="modal fade custom-course-modal" role="dialog" style="padding-right: 0px !important;">
+    <div class="modal-dialog" style="width: 100%; height: 100%; margin: 0px!important">
 
         <!-- Modal content-->
-        <div class="modal-content">
+        <div class="modal-content" style="height: 100%;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">
@@ -252,9 +252,11 @@
                 </h4>
                 Page <span id="currentpage"></span> of <span id="totalpages"></span>
             </div>
-            <div class="modal-body custom-modal-body" style="height: 560px!important">
-                <div style="float: left">
-                    <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
+            <div class="modal-body custom-modal-body">
+                <div class="button-position" style="position: relative">
+                    <div class = "prev-btn" style="float: left; position: absolute; top: 50px; left: 0px">
+                        <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
+                    </div>
                 </div>
 
 

@@ -25,6 +25,8 @@ $(document).ready(function() {
                     "left": position.left,
                     "height": position.height,
                     "width": position.width,
+                    "border": "2px dashed #000 !important"
+
                 }).draggable({
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",  // dragging beyond this <div> will not be possible
@@ -496,7 +498,7 @@ $(document).ready(function() {
         }
     });
 
-    function TextboxFunction(top=null, left=null, height=null, width=null, message="Type Something Here..."){
+    function TextboxFunction(top=null, left=null, height="10%", width="20%", message="Type Something Here..."){
         const textBox = new Textbox(top, left, height, width, message);
         
             textBox.renderDiagram();
@@ -521,11 +523,10 @@ $(document).ready(function() {
                 })
             });
         
-            $('.messageText').resizable({
+            $('.textdiv').resizable({
                 containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
-                height: height,
                 minWidth: 75,
                 minHeight: 25
             });
@@ -1065,7 +1066,7 @@ $(document).ready(function() {
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
             TextboxFunction(ui.helper.position().top - toolbarheight,
-            ui.helper.position().left - sidebarWidth);
+            ui.helper.position().left - sidebarWidth, "10%", "25%");
         } else if (ui.helper.hasClass('picture')) {
             PictureFunction(ui.helper.position().top - toolbarheight,
             ui.helper.position().left - sidebarWidth);

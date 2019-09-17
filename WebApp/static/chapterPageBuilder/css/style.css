@@ -247,7 +247,6 @@ svg{
   height:100%;
   padding:10px;
   resize: none;
-  border: 2px dashed #000 !important;
 }
 
 /* .textdiv:hover{
@@ -1160,4 +1159,10 @@ table th {
   align-items: center;
    
 }
+/* Chapter Viewer Details 17th Sept 2019 */
 
+#course-modal .modal{
+  padding-left: 15px !important;
+}
+
+/* -------------------------------------------------------------- */
