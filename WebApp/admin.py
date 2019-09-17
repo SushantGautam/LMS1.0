@@ -146,7 +146,7 @@ class InningGroupAdminForm(forms.ModelForm):
 
 class InningGroupAdmin(admin.ModelAdmin):
     form = InningGroupAdminForm
-    list_display = ['InningGroup_Name', 'Course_Code', 'Center_Code', 'Use_Flag', 'Register_DateTime',
+    list_display = ['Course_Code', 'Center_Code', 'Use_Flag', 'Register_DateTime',
                     'Updated_DateTime', 'Register_Agent']
     # readonly_fields = ['teacher_code', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent']
 

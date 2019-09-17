@@ -440,7 +440,7 @@ class GroupMapping(models.Model):
 
 class InningGroup(models.Model):
    
-    InningGroup_Name = CharField(max_length=200)
+    # InningGroup_Name = CharField(max_length=200)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -465,7 +465,7 @@ class InningGroup(models.Model):
         ordering = ('-pk',)
 
     def __str__(self):
-        return self.InningGroup_Name
+        return self.Course_Code.Course_Name
 
     def __unicode__(self):
         return u'%s' % self.pk

@@ -1,17 +1,14 @@
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.models import ContentType
-from django.core.files.storage import FileSystemStorage
 from django.db import models as models
-from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, \
-     ImageField, DateField, Count
+from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, BooleanField, \
+    ImageField
 from django.urls import reverse
-from django.utils.translation import gettext as _
+
 from WebApp.models import MemberInfo, InningInfo, CourseInfo, CenterInfo
 
 
 class CategoryInfo(models.Model):
-
     Category_Name = CharField(max_length=100, blank=True, null=True)
     Category_Icon = CharField(max_length=50, blank=True, null=True)
 
@@ -32,33 +29,34 @@ class CategoryInfo(models.Model):
 
 
 class SurveyInfo(models.Model):
-
     Survey_Title = CharField(max_length=500)
-    Start_Date = DateField(auto_now=False, auto_now_add=False, null=True)
-    End_Date = DateField(auto_now=False, auto_now_add=False, null=True)
+    Start_Date = DateTimeField(auto_now=False, auto_now_add=False, null=True)
+    End_Date = DateTimeField(auto_now=False, auto_now_add=False, null=True)
     Survey_Cover = ImageField(upload_to="Survey_Covers/", blank=True, null=True)
     Use_Flag = BooleanField(default=True)
-    Retaken_From = IntegerField(blank=True, null=True, help_text="Store id of previous survey from which it was retaken")
-    Version_No = IntegerField(default=1,help_text="To maintain the versioning of the survey")
+    Retaken_From = IntegerField(blank=True, null=True,
+                                help_text="Store id of previous survey from which it was retaken")
+    Version_No = IntegerField(default=1, help_text="To maintain the versioning of the survey")
     Created_Date = DateTimeField(auto_now_add=True)
     Updated_Date = DateTimeField(auto_now=True)
+    Survey_Live = BooleanField(default=False, blank=True, null=True)
 
     Center_Code = ForeignKey(
         'WebApp.CenterInfo',
         related_name="surveyinfo", on_delete=models.DO_NOTHING
     )
-    
+
     Category_Code = ForeignKey(
         'CategoryInfo',
         related_name="surveyinfo", on_delete=models.DO_NOTHING
     )
 
     Session_Code = ForeignKey(
-        'WebApp.InningInfo',
+        'WebApp.InningInfo', blank=True,
         related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
     )
     Course_Code = ForeignKey(
-        'WebApp.CourseInfo',
+        'WebApp.CourseInfo', blank=True,
         related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
     )
 
@@ -73,7 +71,7 @@ class SurveyInfo(models.Model):
     def __unicode__(self):
         return u'%s' % self.pk
 
-    def __str__(self):      
+    def __str__(self):
         return self.Survey_Title
 
     def questions_count(self):
@@ -87,7 +85,6 @@ class SurveyInfo(models.Model):
 
 
 class QuestionInfo(models.Model):
-
     QUESTION_TYPE_CHOICES = [
         ('SAQ', 'Short Answer'),
         ('MCQ', 'Multiple Choice'),
@@ -124,7 +121,6 @@ class QuestionInfo(models.Model):
 
 
 class OptionInfo(models.Model):
-
     Option_Name = CharField(max_length=500)
     Vote_Count = IntegerField(default=0)
     Question_Code = ForeignKey(
@@ -147,9 +143,18 @@ class OptionInfo(models.Model):
     def get_update_url(self):
         return reverse('optioninfo_update', args=(self.pk,))
 
+    def get_option_percentage(self):
+        total_option = self.Question_Code.answerinfo.all().count()
+        selected_option = self.Question_Code.answerinfo.all().filter(Answer_Value=self.id).count()
+
+        if total_option != 0:
+            option_percentage = (selected_option * 100) / total_option
+        else:
+            option_percentage = 0
+        return option_percentage
+
 
 class SubmitSurvey(models.Model):
-
     Created_Date = DateTimeField(auto_now_add=True)
     Survey_Code = ForeignKey(
         'SurveyInfo',
@@ -174,7 +179,6 @@ class SubmitSurvey(models.Model):
 
 
 class AnswerInfo(models.Model):
-
     Answer_Value = CharField(max_length=500, blank=True, null=True)
     Question_Code = ForeignKey(
         'QuestionInfo',
@@ -182,7 +186,7 @@ class AnswerInfo(models.Model):
     )
     Submit_Code = ForeignKey(
         'SubmitSurvey',
-        related_name="answerinfo", on_delete=models.CASCADE, 
+        related_name="answerinfo", on_delete=models.CASCADE,
         null=True,
     )
 
@@ -197,4 +201,3 @@ class AnswerInfo(models.Model):
 
     def get_update_url(self):
         return reverse('answerinfo_update', args=(self.pk,))
-

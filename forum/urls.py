@@ -48,7 +48,7 @@ urlpatterns = [
     path(r't/create/', views.create_thread, name='create_thread'),
     path(r't/create/(?P<nodegroup_pk>\d+)/',
          views.create_thread, name='create_thread'),
-    path(r't/create/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
+    path(r' t/create/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
          views.create_thread, name='create_thread'),
     path(r'topic/create/', views.create_topic, name='create_topic'),
     path(r'topic/create/(?P<nodegroup_pk>\d+)',

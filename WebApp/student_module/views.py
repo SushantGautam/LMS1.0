@@ -7,19 +7,37 @@
 #     # return render(request,"start.html")
 #     return render(request, "student_module/homepage.html")
 
-from django.contrib import messages
-from django.shortcuts import render, get_object_or_404
+from datetime import datetime
 
+from django.contrib import messages
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+from django.views import View
 # Create your views here.
 from django.views.generic import DetailView, ListView
-from django.views import View
-
+from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, AssignAnswerInfo
-from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo
+from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from datetime import datetime
 from quiz.models import Question , Quiz
 from django.shortcuts import redirect
-from django.http import JsonResponse
+from django.views.generic.edit import FormView
+from django.http import JsonResponse, HttpResponse
+import json
+from django.core import serializers
+from django.forms.models import model_to_dict
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.urls import reverse_lazy
+from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext as _
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.debug import sensitive_post_parameters
+
+
+
 
 datetime_now = datetime.now()
 
@@ -34,13 +52,45 @@ def start(request):
                 session = InningInfo.objects.filter(Groups__id=batch.id,End_Date__gt=datetime_now)
                 sessions += session
         courses = set()
+        activeassignments = []   
         if sessions:
             for session in sessions:
                 course = session.Course_Group.all()
                 courses.update(course)
-
+        
+            for course in courses:
+                activeassignments += AssignmentInfo.objects.filter(Assignment_Deadline__gte=datetime_now)
+ 
+        
         return render(request, 'student_module/dashboard.html',
-                      {'GroupName': batches, 'Group': sessions, 'Course': courses})
+                      {'GroupName': batches, 'Group': sessions, 'Course': courses,'activeAssignments':activeassignments})
+
+class PasswordChangeView(PasswordContextMixin, FormView):
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('student_user_profile')
+    title = _('Password change')
+
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(csrf_protect)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        # Updating the password logs out all other sessions for the user
+        # except the current one.
+        update_session_auth_hash(self.request, form.user)
+
+        messages.success(self.request,
+                         'Your password was successfully updated! You can login with your new credentials')
+
+        return super().form_valid(form)
 
 def quiz(request):
     return render(request, 'student_module/quiz.html')
@@ -95,13 +145,19 @@ class MyCoursesListView(ListView):
 class MyAssignmentsListView(ListView):
     model = AssignmentInfo
     template_name = 'student_module/myassignments_list.html'
-
+  
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
-        context['GroupName'] = GroupMapping.objects.get(Students__id=self.request.user.id)
-        context['Group'] = InningInfo.objects.get(Groups__id=context['GroupName'].id)
-        context['Course'] = context['Group'].Course_Group.all()
+        context['GroupName'] = []
+        context['GroupName'] += GroupMapping.objects.filter(Students__id=self.request.user.id)
+              
+        context['Group'] = []
+        for group in context['GroupName']:
+            context['Group'] += InningInfo.objects.filter(Groups__id=group.id)
+        context['Course'] = []
+        for course in context['Group']:
+            context['Course'] = course.Course_Group.all()
 
         return context
 
@@ -162,9 +218,21 @@ class AssignmentInfoDetailView(DetailView):
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['Answers'] = []
+        AnsweredQuestion = set()
+        Question = set()
+
         for question in context['Questions']:
             Answer = AssignAnswerInfo.objects.filter(Student_Code=self.request.user.pk,Question_Code=question.id)
             context['Answers']+= Answer
+            Question.add(question.id)
+        # print (context['Answers'])
+        for answers in context['Answers']:
+            # print (answers.Question_Code.id)
+            AnsweredQuestion.add(answers.Question_Code.id)
+        # print(Question)
+        # print(context['AnsweredQuestion'])
+        context['notAnswered'] = Question - AnsweredQuestion
+        print(context['notAnswered'])
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
@@ -175,14 +243,6 @@ class submitAnswer(View):
     def post(self, request, *args, **kwargs):
         Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
-        # Obj.Assignment_File = request.POST["Assignment_File"]
-        # Obj.Question_Description = request.POST["Question_Description"]
-        # Obj.Answer_Type = request.POST["Answer_Type"]
-        # Obj.Question_Media_File = request.POST["Question_Media_File"]
-        # if request.POST["Use_Flag"] == 'true':
-        #     Obj.Use_Flag = True
-        # else:
-        #     Obj.Use_Flag = False
         Obj.Student_Code = MemberInfo.objects.get(pk=request.POST["Student_Code"])
         Obj.Question_Code = QuestionInfo.objects.get(pk=request.POST["Question_Code"])
         print(Obj.Student_Code)
@@ -230,6 +290,19 @@ class questions_student_detail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['questions'] = QuestionInfo.objects.filter(Survey_Code=self.kwargs.get('pk')).order_by('pk')
+
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+
+        return context
+
+class questions_student_detail_history(DetailView):
+    model = SurveyInfo
+    template_name = 'student_module/questions_student_detail_history.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
@@ -238,10 +311,11 @@ class questions_student_detail(DetailView):
 
         return context
 
+
 class ParticipateSurvey(View):
 
     def post(self, request, *args, **kwargs):
-        surveyId =  request.POST["surveyInfoId"]
+        surveyId = request.POST["surveyInfoId"]
         userId = self.request.user.id
         # print(request.POST)
         submitSurvey = SubmitSurvey()
@@ -261,16 +335,22 @@ class ParticipateSurvey(View):
         return redirect('questions_student')
 
 
+class surveyFilterCategory_student(ListView):
+    model = SurveyInfo
+    template_name = 'student_module/questions_student_listView.html'
 
-# def polls_student(request):
-#     return render(request, 'student_module/polls_student.html')
+    def get_queryset(self):
+        # print(self.request.GET['categoryId'])
+        # print(SurveyInfo.objects.filter(Category_Code = self.request.GET['categoryId']))
+        if self.request.GET['categoryId'] == '0':
 
+            return SurveyInfo.objects.all()
+            # filter(Center_Code = self.request.user.Center_Code)
+        else:
+            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
 
-# def polls_student_view(request):
-#     return render(request, 'student_module/polls_student_view.html')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now()
+        return context
 
-
-# class PollsCreateView(CreateView):
-#     model = Polls
-#     template_name = "TEMPLATE_NAME"
-# )

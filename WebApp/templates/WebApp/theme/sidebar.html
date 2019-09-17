@@ -4,7 +4,7 @@
 
     <!-- menu profile quick info -->
 
-
+    {%  block navbar %}
     <div class="navbar nav_title" style="border: 0;">
         <a href="/" class="site_title"><img src="/static/images/logo.png" alt="..." id="ubl_logo" />
             <span id="LMS">u-LMS 2019</span></a>
@@ -12,8 +12,9 @@
 
     <div class="clearfix"></div>
 
+    {% endblock %}
     <!-- menu profile quick info -->
-
+    {%  block quickmenu %}
     <div class="profile clearfix">
         {% if request.user.is_authenticated %}
         <div class="profile_pic">
@@ -39,8 +40,10 @@
     <!-- /menu profile quick info -->
 
     <br />
+    {%  endblock %}
 
     <!-- sidebar menu -->
+    {% block sidebar %}
     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
         <div class="menu_section">
             {% if user.is_authenticated %}
@@ -56,10 +59,10 @@
 
 
                 </li>
-                <li>
+                <!-- <li>
                     <a href="{% url 'admin_calendar' %}"><i class="fa fa-calendar"></i> Calendar
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a><i class="fa fa-user"></i>Members<span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
@@ -96,9 +99,11 @@
                     <ul class="nav child_menu">
                         <li><a href="{% url 'inninginfo_list' %}">Session List</a></li>
                         <li><a href="{% url 'inninginfo_create' %}">Register New Session</a></li>
-                        <li><a href="{% url 'sessioninfo_list' %}">Session Name</a></li>
-                        <li><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
-                        <li><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
+                        <!-- <li><a href="{% url 'sessioninfo_list' %}">Session Name</a></li> -->
+                        <!-- #TODO remove thios -->
+
+                        <!-- <li><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
+                        <li><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li> -->
                     </ul>
                 </li>
 
@@ -116,17 +121,15 @@
                         {% if request.user.is_authenticated %}
                         <li><a href="{% url 'forum:user_info' request.user.pk %}">profile</a></li>
                         {% endif %}
-                        {% for nodegroup in node_groups %}
-                        <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
-                        {% endfor %}
+
 
                     </ul>
                 </li>
 
-                <li>
+                <!-- <li>
                     <a href="{% url 'messageinfo_list' %}">
                         <i class="fa fa-envelope" id="messageSidebar"></i>Message</a>
-                </li>
+                </li> -->
                 <li>
                     <a href=" {% url 'surveyinfo_list' %}"><i class="fa fa-bar-chart"></i>Survey</a>
                 </li>
@@ -134,22 +137,58 @@
         </div>
 
     </div>
+    {%  endblock %}
     <!-- /sidebar menu -->
 
     <!-- /menu footer buttons -->
+    {%  block footer %}
     <div class="sidebar-footer hidden-small">
-        <a data-toggle="tooltip" data-placement="top" title="Settings">
-            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+
+
+
+        <a data-toggle="tooltip" data-placement="top" title="FullScreen" onclick="toggleFullScreen()">
             <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
         </a>
-        <a data-toggle="tooltip" data-placement="top" title="Lock">
-            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+
+        <a data-toggle="tooltip" data-placement="top" title="Profile" href="/profile">
+            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
         </a>
-        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+
+        <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App"
+            href="http://ulms.me/media/app/lms-app.apk">
+            <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+        </a>
+        <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout">
             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
         </a>
     </div>
+
     <!-- /menu footer buttons -->
+
+    <script type="text/javascript">
+        function toggleFullScreen() {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+                if (document.documentElement.requestFullScreen) {
+                    document.documentElement.requestFullScreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullScreen) {
+                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
+            }
+        }
+
+    </script>
+
+
+    {% endblock %}
 </div>

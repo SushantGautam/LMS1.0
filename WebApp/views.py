@@ -1,46 +1,40 @@
+import json
+import os
+from datetime import datetime
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
-from django.http import HttpResponse, JsonResponse, Http404
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
-from django.views import generic
+from django.views import View
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
+from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView
 from django.views.generic.edit import FormView
-from django.core.paginator import Paginator
-from django.core.files.storage import FileSystemStorage
-from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
-from PIL import Image
-import os
-import json
+
+from forum.models import Thread, Topic
+from forum.views import get_top_thread_keywords, NodeGroup
+from quiz.models import Question
 # import vimeo # from PyVimeo for uploading videos to vimeo.com
 from quiz.models import Quiz
-from forum.models import Thread
-from forum.views import get_top_thread_keywords
 from survey.models import SurveyInfo
-from quiz.models import Question
-
-from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm,\
-                   AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
-                   AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm
-
+from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
+    AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
+    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-                    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
-from datetime import datetime
-from forum.models import Thread, Topic, Post, ForumAvatar, NodeGroup
-from forum.views import get_top_thread_keywords, NodeGroup, TopicView, ThreadView
+    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
-import json
-from django.views import View
 
-class Changestate(View): 
+class Changestate(View):
     def post(self, request): 
         quizid = self.request.POST["quiz_id"] 
         my_quiz = Quiz.objects.get(id=quizid)
@@ -158,8 +152,8 @@ def start(request):
             thread = Thread.objects.order_by('-pub_date')[:5]
             wordCloud = Thread.objects.all()
             thread_keywords = get_top_thread_keywords(request, 10)
-            course = CourseInfo.objects.order_by('-Register_DateTime')[:4]
-            coursecount = CourseInfo.objects.count()
+            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by('-Register_DateTime')[:10]
+            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code,Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
@@ -386,8 +380,7 @@ class CourseInfoListView(ListView):
     paginate_by = 8
 
     def get_queryset(self):
-        qs = self.model.objects.all()
-
+        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
@@ -518,6 +511,9 @@ class GroupMappingCreateViewPopup(CreateView):
 
 class SessionInfoListView(ListView):
     model = SessionInfo
+    # Send data only related to the center
+    def get_queryset(self):
+        return SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class SessionInfoCreateView(CreateView):
@@ -553,6 +549,11 @@ class InningInfoCreateView(CreateView):
     model = InningInfo
     form_class = InningInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 class InningInfoDetailView(DetailView):
     model = InningInfo
 
@@ -561,20 +562,39 @@ class InningInfoUpdateView(UpdateView):
     model = InningInfo
     form_class = InningInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+    
+
 
 class InningGroupListView(ListView):
     model = InningGroup
+    # Send data only related to the center
+    def get_queryset(self):
+        return InningGroup.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class InningGroupCreateView(CreateView):
     model = InningGroup
     form_class = InningGroupForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class InningGroupCreateAjax(AjaxableResponseMixin, CreateView):
     model = InningGroup
     form_class = InningGroupForm
     template_name = 'ajax/inninggroup_form_ajax.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupCreateAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
@@ -591,21 +611,38 @@ class InningGroupUpdateView(UpdateView):
     model = InningGroup
     form_class = InningGroupForm
 
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
     template_name = 'ajax/groupcreate_form_ajax.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupCreateSessionAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class GroupMappingListView(ListView):
     model = GroupMapping
+    # Send data only related to the center
+    def get_queryset(self):
+        return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
 
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 class GroupMappingDetailView(DetailView):
     model = GroupMapping
@@ -614,6 +651,11 @@ class GroupMappingDetailView(DetailView):
 class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
+
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 # AssignmentInfoViews
@@ -820,6 +862,17 @@ class MessageInfoUpdateView(UpdateView):
 
 # chapter builder code starts from here
 
+def make_directory_if_not_exists(courseID, chapterID):
+    path = settings.MEDIA_ROOT
+    # following is commented because filesystemstorage auto create directories if not exist
+    if not os.path.exists(os.path.join(path, 'chapterBuilder')):
+        os.makedirs(os.path.join(path, 'chapterBuilder'))
+    if not os.path.exists(path+'/chapterBuilder/'+courseID):
+        print(path+'/chapterBuilder/'+courseID)
+        os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID))
+    if not os.path.exists(path+'/chapterBuilder/'+courseID+'/'+chapterID):
+        os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID+'/'+chapterID))
+
 def chapterviewer(request):
     if request.method == "GET":
         path = settings.MEDIA_ROOT
@@ -871,13 +924,7 @@ def save_file(request):
                 if (media.size/1024) > 2048:
                     return JsonResponse(data = {"message":"File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
-            # following is commented because filesystemstorage auto create directories if not exist
-            # if not os.path.exists(os.path.join(path, 'chapterBuilder')):
-            #     os.makedirs(os.path.join(path, 'chapterBuilder'))
-            # if not os.path.exists(path+'chapterBuilder/'+courseID):
-            #     os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID))
-            # if not os.path.exists(path+'chapterBuilder/'+courseID+'/'+chapterID):
-            #     os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID+'/'+chapterID))    
+               
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(media.name, media)
         return JsonResponse(data={"message": "success"})
@@ -889,39 +936,32 @@ def save_video(request):
         courseID = request.POST['courseID']
         media_type = request.POST['type']
         path = ''
-        # for x in range(int(count)):
         if request.FILES['file-0']:
             media = request.FILES['file-0']
             if (media.size/1024) > (2048*1024): # checking if file size is greater than 2 GB
                 return JsonResponse(data = {"message":"File size exceeds 2GB"}, status=500)
-            
-        #video uploading to vimeo.com
+        
+        path = settings.MEDIA_ROOT
+               
+        fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+        filename = fs.save(media.name, media)
+        print(filename)
+        # #video uploading to vimeo.com
         v = vimeo.VimeoClient(
-            token='dbfc0990d17ec6bfe130c6896337b1c4',
+            token='7a954bb83b66a50a95efc2d1cfdd484a',
             key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
             secret='+1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
         )
-        try:
-            token = v.load_client_credentials('dbfc0990d17ec6bfe130c6896337b1c4')
-            print(token)
-        except Exception as e:
-            print(e)
+
         # media = '{path to a video on the file system}'
-        uri = v.upload(media, data={
-        'name': 'Untitled',
-        'description': 'The description goes here.'
+
+        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
+            'name': "media",
         })
 
-        print('Your video URI is: %s' % (uri))
-
-        # response = v.get(uri + '?fields=transcode.status').json()
-        # print(response)
-        # if response['transcode']['status'] == 'complete':
-        #     print('Your video finished transcoding.')
-        # elif response['transcode']['status'] == 'in_progress':
-        #     print('Your video is still transcoding.')
-        # else:
-        #     print('Your video encountered an error during transcoding.')
+        response = v.get(uri + '?fields=link').json()
+        print(response)
+        return JsonResponse(response)
 
 @csrf_exempt
 def save_json(request):
@@ -932,6 +972,9 @@ def save_json(request):
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
         
+        #creates directory structure if not exists
+        make_directory_if_not_exists(courseID, chapterID)
+
         #for saving json data for viewing purposes
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)

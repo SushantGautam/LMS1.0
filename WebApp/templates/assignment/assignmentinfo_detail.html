@@ -1,16 +1,22 @@
 {% load static %}
 
 <div class="outerdiv">
-
-
     <div class="col-md-6 col-sm-12 col-xs-12">
         <h2 class="detailListHeader">Assignment Information</h2>
         <hr class="header_hr">
-
+        {% if '/students' not in request.path %}
+        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+            <a style="float: right" href="{% if '/teachers' in request.path %}
+                /teachers{{ object.get_update_url }}
+                        {% else %}
+                            {{ object.get_update_url }}
+                        {% endif %}">
+                <b><u>Edit Assignment</u></b></a>
+        </div>
+        {% endif %}
         <div class="col-md-12 col-sm-12 col-xs-12">
             <h5><b>
                     <table class="table table-striped table-bordered">
-
                         <tr>
                             <td>Assignment Topic</td>
                             <td>{{ object.Assignment_Topic }}</td>
@@ -35,25 +41,20 @@
                             <td>Status</td>
                             <td>{{ object.Use_Flag }}</td>
                         </tr>
-
                     </table>
-                </b></h5>
+                </b>
+            </h5>
         </div>
         <br>
         {% if '/students' not in request.path %}
-        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-            <a class="btn btn-primary" href="{% if '/teachers' in request.path %}
-                /teachers{{ object.get_update_url }}
-                        {% else %}
-                            {{ object.get_update_url }}
-                        {% endif %}">
-                Edit Assignment</a>
-            <a class="btn btn-danger" href="{{ object.get_delete_url }}">Delete Assignment</a>
+        <div class="text-center">
+            <h4><a href="{% url 'teacher_assignment_answers' object.pk %}">View Assignment Submissions</a></h4>
         </div>
         {% endif %}
+
     </div>
-    <div class="col-md-6 col-sm-12 col-xs-12 ">
-        <div class="col-md-8 col-sm-8 col-xs-12 text-center">
+    <div class=" col-md-6 col-sm-12 col-xs-12 ">
+        <div class=" col-md-8 col-sm-8 col-xs-12 text-center">
             <h2 class="subHeader">Questions</h2>
         </div>
 
@@ -65,10 +66,10 @@
             </button>
         </div>
         {% endif %}
-        <div class="col-md-12">
+        <div class="col-md-12" style="padding-right: 0;">
             {% for questions in Questions %}
 
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
+            <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;padding-right: 0;">
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <h5 style="padding-top: 3px; color: #000000"> Q: {{ forloop.counter }}
 
@@ -77,44 +78,41 @@
                         <b style="color: #000000">{{ questions.Question_Title }}</b>
                     </h5>
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="col-md-4 col-sm-4 col-xs-12" style="padding-right: 0;">
                     {% if '/students' in request.path %}
                     <button class="answerButton" type="button" id="{{ questions.pk }}" style="width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                        margin-top: 25px;margin-left: 50px;">ANSWER <i class="fa fa-arrow-right"></i>
+                                        margin-top: 25px;margin-left: 40px;">ANSWER <i class="fa fa-arrow-right"></i>
                     </button>
                     {% endif %}
                     <a class="moreButton" id="{{ questions.pk }}"><i class="fa fa-chevron-down"
                             style="padding-top:30px; float:right;cursor: pointer;" id="moreArrow{{ questions.pk }}"></i>
                     </a>
-                    <!-- <a id="lessButton{{ questions.pk }}"><i class="fa fa-chevron-up"
-                            style="padding-top:30px; float:right;cursor: pointer;display: none;"
-                            id="lessArrow{{ questions.pk }}"></i>
-                    </a> -->
+
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12" id="questionContent{{ questions.pk }}"
                     style="display: none;">
                     {% if  questions.Question_Score %}
-                    <div class=" col-md-3 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-4 col-sm-12 col-xs-12" style="padding-left:0;">
                         Question Score :
                     </div>
-                    <div class=" col-md-9 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
                         <b style="color: #000000">{{ questions.Question_Score }}</b>
                     </div>
                     {% endif %}
                     {% if  questions.Question_Description %}
-                    <div class=" col-md-3 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-4 col-sm-12 col-xs-12" style="padding-left:0;">
                         Question Description :
                     </div>
-                    <div class=" col-md-9 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
                         <b style="color: #000000">{{ questions.Question_Description }}</b>
                     </div>
                     {% endif %}
                     {% if questions.Answer_Type %}
-                    <div class="col-md-3 col-sm-12 col-xs-12" style="padding-left:0; padding-bottom: 10px;">
+                    <div class="col-md-4 col-sm-12 col-xs-12" style="padding-left:0; padding-bottom: 10px;">
                         Answer Type :
 
                     </div>
-                    <div class=" col-md-9 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
                         <b style="color: #000000">
                             {% if questions.Answer_Type == 'S' %}
                             Short Answer
@@ -125,21 +123,70 @@
                 </div>
                 <div class="x_panel" id="answerContent{{ questions.pk }}" style="display: none">
                     <div class="x_content">
+                        {% for answer in Answers %}
                         {% if questions.id == answer.Question_Code.id  %}
-                        {{answer.Assignment_Answer}}
-                        {% elif questions.id != answer.Question_Code.id  %}
-                        <form method="post" id="answerForm" data-parsley-validate=""
-                            class="form-horizontal form-label-left" novalidate="">
+                        <p style="margin: 0;color:#000000;">{{answer.Assignment_Answer}}</p>
+                        {% endif %}
+                        {% endfor %}
+                        {% if not Answers %}
+                        <form method="post" id="{{ questions.id }}" data-parsley-validate=""
+                            class="form-horizontal form-label-left submitAnswer" novalidate=""
+                            data-id="{{ questions.id }}">
                             {% csrf_token %}
                             {% if questions.Answer_Type == 'S' %}
                             <div class="form-group">
                                 <textarea class="form-control rounded-0" rows="5" cols="100" name="Assignment_Answer"
-                                    id="id_Assignment_Answer" placeholder="Enter your Answer"
-                                    required>{{ answer.Assignment_Answer}}</textarea>
+                                    id="id_Assignment_Answer{{questions.id}}" placeholder="Enter your Answer"
+                                    required></textarea>
                                 <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
-                                    id="id_Student_Code">
+                                    id="id_Student_Code{{questions.id}}">
                                 <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                    id="id_Question_Code">
+                                    id="id_Question_Code{{questions.id}}">
+
+                            </div>
+                            <div class="form-group text-center">
+                                <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+                                Cancel
+                            </button> -->
+                                <button class="btn btn-primary" type="reset">Reset</button>
+                                <button type="submit" class="btn btn-success submitAnswer"
+                                    id="answer{{questions.id}}">Submit</button>
+                            </div>
+                            {% elif questions.Answer_Type == 'F' %}
+
+                            <div class="form-group">
+                                <input type="file" name="Assignment_File" id="id_Assignment_File{{questions.id}}"
+                                    required />
+                                <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
+                                    id="id_Student_Code{{questions.id}}">
+                                <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                    id="id_Question_Code{{questions.id}}">
+                            </div>
+                            <div class="form-group text-center">
+                                <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn btn-success submitAnswer"
+                                    id="answer{{questions.id}}">Submit</button>
+                            </div>
+                            {% endif %}
+                        </form>
+                        {% else %}
+                        {% for answer in notAnswered %}
+                        {% if  questions.id == answer  %}
+                        <form method="post" id="{{ questions.id }}" data-parsley-validate=""
+                            class="form-horizontal form-label-left submitAnswer" novalidate=""
+                            data-id="{{ questions.id }}">
+                            {% csrf_token %}
+                            {% if questions.Answer_Type == 'S' %}
+                            <div class="form-group">
+                                <textarea class="form-control rounded-0" rows="5" cols="100" name="Assignment_Answer"
+                                    id="id_Assignment_Answer{{questions.id}}" placeholder="Enter your Answer"
+                                    required></textarea>
+                                <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
+                                    id="id_Student_Code{{questions.id}}">
+                                <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                    id="id_Question_Code{{questions.id}}">
 
                             </div>
                             <div class="form-group text-center">
@@ -153,11 +200,12 @@
                             {% elif questions.Answer_Type == 'F' %}
 
                             <div class="form-group">
-                                <input type="file" name="Assignment_File" id="id_Assignment_File" required />
+                                <input type="file" name="Assignment_File" id="id_Assignment_File{{questions.id}}"
+                                    required />
                                 <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
-                                    id="id_Student_Code">
+                                    id="id_Student_Code{{questions.id}}">
                                 <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                    id="id_Question_Code">
+                                    id="id_Question_Code{{questions.id}}">
                             </div>
                             <div class="form-group text-center">
                                 <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
@@ -168,6 +216,8 @@
                             </div>
                             {% endif %}
                         </form>
+                        {% endif %}
+                        {% endfor %}
                         {% endif %}
                     </div>
                 </div>
@@ -223,16 +273,18 @@
             }
         });
     });
-    $("#answerForm").submit(function (e) {
+    $(".submitAnswer").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
+        console.log(this.id)
+
         $.ajax({
             url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
-                "Assignment_Answer": $('#id_Assignment_Answer').val(),
+                "Assignment_Answer": $(`#id_Assignment_Answer${this.id}`).val(),
                 // "Assignment_File": $('#id_Assignment_File').val(),
-                "Question_Code": $('#id_Question_Code').val(),
-                "Student_Code": $('#id_Student_Code').val()
+                "Question_Code": $(`#id_Question_Code${this.id}`).val(),
+                "Student_Code": $(`#id_Student_Code${this.id}`).val(),
                 // "Student_Code": $('#id_Use_Flag').is(":checked"),
             },
             // get the form data
@@ -247,20 +299,7 @@
         });
     });
 </script>
-<!-- <script>
-    document.querySelector("#moreButton{{ questions.pk }}").addEventListener('click', showContent);
-    document.querySelector("#lessButton{{ questions.pk }}").addEventListener('click', hideContent);
-    function showContent() {
-        document.querySelector('#questionContent{{ questions.pk }}').style.display = "inline-block";
-        document.querySelector('#lessArrow{{ questions.pk }}').style.display = "inline-block";
-        document.querySelector('#moreArrow{{ questions.pk }}').style.display = "none";
-    }
-    function hideContent() {
-        document.querySelector('#questionContent{{ questions.pk }}').style.display = "none";
-        document.querySelector('#moreArrow{{ questions.pk }}').style.display = "inline-block";
-        document.querySelector('#lessArrow{{ questions.pk }}').style.display = "none";
-    }
-</script> -->
+
 <script>
     $(".answerButton").click(function () {
         $(`#answerContent${this.id}`).toggle();

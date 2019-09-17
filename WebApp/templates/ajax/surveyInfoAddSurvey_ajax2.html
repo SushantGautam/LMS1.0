@@ -3,6 +3,13 @@
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% load crispy_forms_tags %}
 
+<div class="form-group">
+
+    <label class="control-label " id="categoryTitle" for="first-name">Category :
+        <span class="Label">{{ categoryObject.Category_Name }}</span>
+    </label>
+
+</div>
 
 <div class="stepwizard">
     <div class="stepwizard-row setup-panel">
@@ -60,12 +67,12 @@
                                         {{ questioninfo_form.nested.management_form }}
                                         {{ questioninfo_form.nested.non_form_errors }}
 
-                                        <div class='opinfo_dynamic'>
-                                            {% for option_form in questioninfo_form.nested.forms %}
-
-                                            {{ option_form|crispy }}
-
-                                            {% endfor %}
+                                            <div class='opinfo_dynamic' style="margin-left:40px;">
+                                                {#                                            {% for option_form in questioninfo_form.nested.forms %}#}
+                                                {##}
+                                                {#                                            {{ option_form|crispy }}#}
+                                                {##}
+                                                {#                                            {% endfor %}#}
                                         </div>
 
                                         <button id="abc${questionId}"
@@ -83,24 +90,13 @@
                                 <div class="queContainer">
                                     {{ questionansinfo_formset.management_form }}
                                     {{ questionansinfo_formset.non_form_errors }}
-
-                                    {% for questionansinfo_form in questionansinfo_formset.forms %}
-                                    {{ questionansinfo_form|crispy }}
-
-                                    {% if questionansinfo_form.nested %}
-                                    {{ questionansinfo_form.nested.management_form }}
-                                    {{ questionansinfo_form.nested.non_form_errors }}
-
-                                    {% for answer_form in questionansinfo_form.nested.forms %}
-                                    {{ answer_form|crispy }}
-                                    {% endfor %}
-
-                                    {% endif %}
-
-                                    {% endfor %}
-
+                                    <div class='qnansinfo_dynamic_append'>
+                                        {% for questionansinfo_form in questionansinfo_formset.forms %}
+                                        {{ questionansinfo_form|crispy }}
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                                <!-- <input class="add-mcq" type="button" value="Add Question" id="add_more_qn"> -->
+                                <input class="add-mcq" type="button" value="Add Question" id="add_more_sa_qn">
                             </div>
                         </div>
                     </div>
@@ -126,17 +122,22 @@
 
 <div style="display:none">
     <div id="emptyQnInfoForm">
+        <hr>
+        </br>
         {{ questioninfo_formset.empty_form|crispy }}
         {{ questioninfo_formset.empty_form.nested.management_form }}
         {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-        {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}
+        {#        {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
 
-        <div id="optionContainer_id">
+        <div id="optionContainer_id" style="margin-left: 40px;">
 
         </div>
     </div>
     <div id="emptyOpInfoForm">
         {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}
+    </div>
+    <div id="emptyQnAnsInfoForm">
+        {{ questionansinfo_formset.empty_form|crispy }}
     </div>
 </div>
 
@@ -183,25 +184,6 @@
         copyEmptyQuestion('#emptyQnInfoForm', 'div.qninfo_dynamic_append', 'questioninfo', 'optioninfo');
     });
 
-    // function copyEmptyQuestion(selector, append_after, type) {
-    //     var questionId = $('#id_' + type + '-TOTAL_FORMS').val();
-    //     var str1 = String(type + '-' + questionId);
-    //     var str3 = String('add_more_op_' + questionId);
-    //     var str4 = String('optionContainer_' + questionId);
-    //     var r1 = new RegExp(type + '\-__prefix__', 'g');
-    //     var r3 = new RegExp('add_more_op_id', 'g');
-    //     var r4 = new RegExp('optionContainer_id', 'g');
-
-
-    //     $(append_after).append($(selector).html().replace(r1, str1).replace(r3, str3).replace(r4, str4));
-    //     questionId++;
-    //     $('#id_' + type + '-TOTAL_FORMS').val(questionId);
-    // }
-
-    // $('#add_more_qn').click(function () {
-    //     copyEmptyQuestion('#emptyQnInfoForm', 'div.qninfo_dynamic_append', 'questioninfo', 'optioninfo');
-    // });
-
     function addOption(event, questionId, selector, append_after, type, type2) {
         event.preventDefault();
         var optionId = $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val();
@@ -216,6 +198,93 @@
         optionId++;
         $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
     }
+
+    function copyEmptyShortAnsQuestion(selector, append_after, type) {
+        var questionId = $('#id_' + type + '-TOTAL_FORMS').val();
+        var str1 = String(type + '-' + questionId);
+        var r1 = new RegExp(type + '\-__prefix__', 'g');
+
+        $(append_after).append($(selector).html().replace(r1, str1));
+        questionId++;
+        $('#id_' + type + '-TOTAL_FORMS').val(questionId);
+    }
+
+    $('#add_more_sa_qn').click(function () {
+        copyEmptyShortAnsQuestion('#emptyQnAnsInfoForm', 'div.qnansinfo_dynamic_append', 'questionansinfo');
+    });
+
+    // ......................................HIDING THE FORM................................................
+
+    var categoryName = "{{ categoryObject.Category_Name }}".toLowerCase();
+    if (categoryName == 'general') {
+        console.log(categoryName)
+        $("#div_id_Survey_Cover").hide();
+        $("#div_id_Use_Flag").hide();
+        $("#div_id_Center_Code").hide();
+        $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+        $("#div_id_Session_Code").hide();
+        $("#div_id_Added_By").hide();
+        $("#id_Added_By").val("{{request.user.id}}");
+        $("#div_id_Category_Code").hide();
+        $("#id_Category_Code").val("{{categoryObject.id}}");
+        $("#div_id_Course_Code").hide();
+    }
+    else if (categoryName == 'session') {
+        console.log(categoryName)
+        $("#div_id_Survey_Cover").hide();
+        $("#div_id_Use_Flag").hide();
+        $("#div_id_Center_Code").hide();
+        $("#id_Center_Code").val("{{  request.user.Center_Code.id }}");
+        $("#div_id_Session_Code").show();
+        $("#div_id_Added_By").hide();
+        $("#id_Added_By").val("{{request.user.id}}");
+        $("#div_id_Category_Code").hide();
+        $("#id_Category_Code").val("{{categoryObject.id}}");
+        $("#div_id_Course_Code").hide();
+    }
+    else if (categoryName == 'course') {
+        console.log(categoryName)
+        $("#div_id_Survey_Cover").hide();
+        $("#div_id_Use_Flag").hide();
+        $("#div_id_Center_Code").hide();
+        $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+        $("#div_id_Session_Code").show();
+        $("#div_id_Added_By").hide();
+        $("#id_Added_By").val("{{request.user.id}}");
+        $("#div_id_Category_Code").hide();
+        $("#id_Category_Code").val("{{categoryObject.id}}");
+        $("#div_id_Course_Code").show();
+    }
+    else if (categoryName == 'system') {
+        console.log(categoryName)
+        $("#div_id_Survey_Cover").hide();
+        $("#div_id_Use_Flag").hide();
+        $("#div_id_Center_Code").hide();
+        $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+        $("#div_id_Session_Code").hide();
+        $("#div_id_Added_By").hide();
+        $("#id_Added_By").val("{{request.user.id}}");
+        $("#div_id_Category_Code").hide();
+        $("#id_Category_Code").val("{{categoryObject.id}}");
+        $("#div_id_Course_Code").hide();
+    }
+
+    $("#div_id_questioninfo-0-Question_Type").hide();
+    $("#id_questioninfo-0-Question_Type").val("MCQ");
+
+    $("#div_id_questionansinfo-0-Question_Type").hide();
+    $("#id_questionansinfo-0-Question_Type").val("SAQ");
+
+    $("#div_id_questioninfo-__prefix__-Question_Type").hide();
+    $("#id_questioninfo-__prefix__-Question_Type option[value=SAQ]").removeAttr("selected");
+    $("#id_questioninfo-__prefix__-Question_Type option[value=MCQ]").attr("selected", "selected");
+
+    $("#div_id_questionansinfo-__prefix__-Question_Type").hide();
+    $("#id_questionansinfo-__prefix__-Question_Type option[value=MCQ]").removeAttr("selected");
+    $("#id_questionansinfo-__prefix__-Question_Type option[value=SAQ]").attr("selected", "selected");
+
+
+    // ......................................HIDING THE FORM................................................
 
 </script>
 {% endblock customjss %}

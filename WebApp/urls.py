@@ -81,7 +81,7 @@ urlpatterns += (
 urlpatterns += (
     # urls for CourseInfo
     path('courseinfo/', views.CourseInfoListView.as_view(), name='courseinfo_list'),
-    path('courseinfo/create /', views.CourseInfoCreateView.as_view(), name='courseinfo_create'),
+    path('courseinfo/create/', views.CourseInfoCreateView.as_view(), name='courseinfo_create'),
     path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(), name='courseinfo_detail'),
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
 )
@@ -95,8 +95,7 @@ urlpatterns += (
          name='chapterinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/edit/', views.ChapterInfoUpdateView.as_view(),
          name='chapterinfo_update'),
-    path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'),
-
+    path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'), 
     path('change_quiz_test/', views.Changestate.as_view(), name='change_quiz_test'),
 )
 
@@ -266,3 +265,5 @@ urlpatterns += (
     path('saveVideo', views.save_video, name='saveVideo'),
     path('saveJson', views.save_json, name='saveJson'),
 )
+
+
