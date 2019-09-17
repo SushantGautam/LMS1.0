@@ -20,7 +20,12 @@
 
         <h2 class="topic_header">
             <div class="icon-block half img-circle bg-grey-300">
+                {% if topic.topic_icon %}
                 <i class="fa fa-{{ topic.topic_icon }}"></i>
+                {% else %}
+                <i class="fa fa-book"></i>
+                {% endif %}
+
             </div> {{ panel_title }}
         </h2>
         <div class="topic_des">

@@ -1,12 +1,10 @@
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.models import ContentType
-from django.core.files.storage import FileSystemStorage
 from django.db import models as models
-from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, \
-    ImageField, DateField, Count
+from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, BooleanField, \
+    ImageField
 from django.urls import reverse
-from django.utils.translation import gettext as _
+
 from WebApp.models import MemberInfo, InningInfo, CourseInfo, CenterInfo
 
 
@@ -32,8 +30,8 @@ class CategoryInfo(models.Model):
 
 class SurveyInfo(models.Model):
     Survey_Title = CharField(max_length=500)
-    Start_Date = DateField(auto_now=False, auto_now_add=False, null=True)
-    End_Date = DateField(auto_now=False, auto_now_add=False, null=True)
+    Start_Date = DateTimeField(auto_now=False, auto_now_add=False, null=True)
+    End_Date = DateTimeField(auto_now=False, auto_now_add=False, null=True)
     Survey_Cover = ImageField(upload_to="Survey_Covers/", blank=True, null=True)
     Use_Flag = BooleanField(default=True)
     Retaken_From = IntegerField(blank=True, null=True,
@@ -41,6 +39,7 @@ class SurveyInfo(models.Model):
     Version_No = IntegerField(default=1, help_text="To maintain the versioning of the survey")
     Created_Date = DateTimeField(auto_now_add=True)
     Updated_Date = DateTimeField(auto_now=True)
+    Survey_Live = BooleanField(default=False)
 
     Center_Code = ForeignKey(
         'WebApp.CenterInfo',
@@ -143,6 +142,16 @@ class OptionInfo(models.Model):
 
     def get_update_url(self):
         return reverse('optioninfo_update', args=(self.pk,))
+
+    def get_option_percentage(self):
+        total_option = self.Question_Code.answerinfo.all().count()
+        selected_option = self.Question_Code.answerinfo.all().filter(Answer_Value=self.id).count()
+
+        if total_option != 0:
+            option_percentage = (selected_option * 100) / total_option
+        else:
+            option_percentage = 0
+        return option_percentage
 
 
 class SubmitSurvey(models.Model):

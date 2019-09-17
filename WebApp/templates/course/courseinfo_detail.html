@@ -45,7 +45,7 @@
 
                 <div class="col-lg-3" style="font-size: 15px;">
                     <h5 align="center"><i class="fa fa-comment-o"></i>
-                        <a href="{% url 'Course_Forum' object.pk %}">FORUM</a>
+                        <a target="_blank" href="{% url 'Course_Forum' object.pk %}">FORUM</a>
                     </h5>
                 </div>
                 {% if '/students' not in request.path %}
