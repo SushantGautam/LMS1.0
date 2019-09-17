@@ -181,7 +181,7 @@ class SubmitSurvey(models.Model):
 class AnswerInfo(models.Model):
     Answer_Value = CharField(max_length=500, blank=True, null=True)
     Question_Code = ForeignKey(
-        'QuestionInfo',
+        'QuestionInfo   ',
         related_name="answerinfo", on_delete=models.CASCADE
     )
     Submit_Code = ForeignKey(
