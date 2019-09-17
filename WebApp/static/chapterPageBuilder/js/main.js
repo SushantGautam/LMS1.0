@@ -597,13 +597,9 @@ $(document).ready(function() {
                 $(this).css("border", '0')
             })
 
-            $('.pic').resizable({
-                containment: $('.editor-canvas'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
+           
+
+            
 
         }
 
@@ -684,20 +680,6 @@ $(document).ready(function() {
     
         const div1 = $('i').parent();
     
-<<<<<<< HEAD
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
-        });
-
-        // $(".options").hover(function(){
-        //     $('.options').css({
-        //         'display':'block'
-        //     }) 
-        // })
-    
-=======
->>>>>>> 2d95110c4a4fd11675199f53657975df1b08b701
         $('.fa-link').bind("click", function(e) {
             let argument = prompt("Enter a Link here...");
             if (argument == null || argument == "") {
@@ -727,6 +709,14 @@ $(document).ready(function() {
         );
     
         Pdf.renderDiagram();
+
+        $('.pdf').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+          
+        });
+        
 
           // ==for pdf upload==
         $('.fa-upload').click(function(e) {
@@ -772,29 +762,44 @@ $(document).ready(function() {
                             alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
                         </object>
                     `);
+
                 },
                 error: function(data, status, errorThrown) {
                     alert(data.responseJSON.message);
                 }
             });
-            let div = $('#picture-drag').parent().parent();
-            $('#picture-drag').css({
+            let div = $('#pdf-actions1').parent();
+            console.log(div);
+            $('#pdf-actions1').css({
                 'display': 'none'
             });
 
             $(div).hover(function() {
-                $(this).css("border", "1px solid red");
+                $(this).css(
+                    {
+                        "border": "1px solid red",
+
+                });
+               
+
+              
             }, function() {
                 $(this).css("border", '0')
-            })
+            });
+
 
             $('.pdf').resizable({
-                containment: $('.editor-canvas'),
+                containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
+                minWidth:500,
+                minHeight:500
+
+
+            
+        })
+
+           
 
         }
 
@@ -1109,26 +1114,26 @@ $(document).ready(function() {
                 top = 0,
                 left = 0,
                 "",
-                height="50%",width = "50%");
+                height="50%",width = "100%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="52%",
                 left=0,
-                height="45%", width="50%"
+                height="45%", width="100%"
             );
         } else if (ui.helper.hasClass('title-slide')) {
             PictureFunction(
                 top = 0,
                 left = "0%",
                 "",
-                width = "50%", height="60%");
+                width = "100%", height="60%");
             PictureFunction(
                 top = 0,
                 left = "50%",
                 "",
-                width = "50%", height="60%");
+                width = "100%", height="60%");
             TextboxFunction(
                 top="62%",
                 left=0,
