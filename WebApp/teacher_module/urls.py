@@ -4,6 +4,7 @@ from django.urls import path
 
 from WebApp.teacher_module import views
 from WebApp.teacher_module.views import CourseInfoListView
+from quiz import views as quiz_views
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -66,4 +67,64 @@ urlpatterns += (
 
 urlpatterns += (
     path('polls_teachers/', views.polls_teachers, name="polls_teachers"),
+)
+
+urlpatterns += (
+    # urls for Quiz
+    path('quiz/', views.QuizListView.as_view(),
+         name='teacher_quiz_list'),
+    path('quiz/create/', views.QuizCreateView.as_view(),
+         name='teacher_quiz_create'),
+    path('quiz/detail/<int:pk>/', views.QuizDetailView.as_view(),
+         name='teacher_quiz_detail'),
+    path('quiz/edit/<int:pk>/', views.QuizUpdateView.as_view(),
+         name='teacher_quiz_update'),
+    path('detail/<slug>', views.QuizDetailView.as_view(), name='teacher_quiz_detail_s'),
+
+    path('mcquestion/', views.MCQuestionListView.as_view(),
+         name='teacher_mcquestion_list'),
+    path('mcquestion/create/', views.MCQuestionCreateView.as_view(),
+         name='teacher_mcquestion_create'),
+    path('mcquestion/create/<int:quiz_id>/', views.MCQuestionCreateFromQuiz.as_view(),
+         name='teacher_mcquestion_create_from_quiz'),
+    path('mcquestion/update/<int:pk>', views.MCQuestionUpdateView.as_view(),
+         name='teacher_mcquestion_update'),
+    path('mcquestion/update/<int:pk>/<int:quiz_id>', views.MCQuestionUpdateFromQuiz.as_view(),
+         name='teacher_mcquestion_update_from_quiz'),
+    path('mcquestion/detail/<int:pk>/', views.MCQuestionDetailView.as_view(),
+         name='teacher_mcquestion_detail'),
+    path('mcquestion/delete/<int:pk>/', views.MCQuestionDeleteView,
+         name='teacher_mcquestion_delete'),
+
+    path('tfquestion/', views.TFQuestionListView.as_view(),
+         name='teacher_tfquestion_list'),
+    path('tfquestion/create/', views.TFQuestionCreateView.as_view(),
+         name='teacher_tfquestion_create'),
+    path('tfquestion/create/<int:quiz_id>/', views.TFQuestionCreateFromQuiz.as_view(),
+         name='teacher_tfquestion_create_from_quiz'),
+    path('tfquestion/update/<int:pk>', views.TFQuestionUpdateView.as_view(),
+         name='teacher_tfquestion_update'),
+    path('tfquestion/update/<int:pk>/<int:quiz_id>', views.TFQuestionUpdateFromQuiz.as_view(),
+         name='teacher_tfquestion_update_from_quiz'),
+    path('tfquestion/detail/<int:pk>/', views.TFQuestionDetailView.as_view(),
+         name='teacher_tfquestion_detail'),
+    path('tfquestion/delete/<int:pk>/', views.TFQuestionDeleteView,
+         name='teacher_tfquestion_delete'),
+
+    path('saquestion/', views.SAQuestionListView.as_view(),
+         name='teacher_saquestion_list'),
+    path('saquestion/create/', views.SAQuestionCreateView.as_view(),
+         name='teacher_saquestion_create'),
+    path('saquestion/create/<int:quiz_id>/', views.SAQuestionCreateFromQuiz.as_view(),
+         name='teacher_saquestion_create_from_quiz'),
+    path('saquestion/update/<int:pk>', views.SAQuestionUpdateView.as_view(),
+         name='teacher_saquestion_update'),
+    path('saquestion/update/<int:pk>/<int:quiz_id>', views.SAQuestionUpdateFromQuiz.as_view(),
+         name='teacher_saquestion_update_from_quiz'),
+    path('saquestion/detail/<int:pk>/', views.SAQuestionDetailView.as_view(),
+         name='teacher_saquestion_detail'),
+    path('saquestion/delete/<int:pk>/', views.SAQuestionDeleteView,
+         name='teacher_saquestion_delete'),
+
+    path('quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
 )

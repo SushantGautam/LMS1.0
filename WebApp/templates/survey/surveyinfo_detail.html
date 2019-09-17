@@ -183,7 +183,7 @@
           $.ajax({
               type: "GET",
               data: {'categoryId': "{{ object.Category_Code.id }}"},
-              url: "{% url 'surveyinfo_retake_ajax' survey_id=object.id %}",  // URL to your view that serves new info
+              url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#surveyFormRetake").html(data);
               }
