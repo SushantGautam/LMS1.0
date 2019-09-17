@@ -22,9 +22,11 @@ from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Que
 from datetime import datetime
 from forum.models import NodeGroup, Thread, Topic
 from forum.views import get_top_thread_keywords
-from .forms import ThreadForm
+from .misc import get_query
+from .forms import ThreadForm, TopicForm
+from django.conf import settings
 datetime_now = datetime.now()
-
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from formtools.wizard.views import SessionWizardView
 from quiz.forms import QuizForm1, QuizForm2, QuizForm3
 
@@ -831,7 +833,7 @@ class QuizCreateWizard(SessionWizardView):
 # ___________________________________________________FORUM____________________________________
 class Index(ListView):
     model = Thread
-    template_name = 'teacher_module/forum/forumIndex.html'
+    template_name = 'teacher_module/teacher_forum/forumIndex.html'
     context_object_name = 'threads'
 
     def get_queryset(self):
@@ -872,6 +874,74 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     else:
         form = ThreadForm()
 
-    return render(request, 'teacher_module/forum/create_thread.html',
+    return render(request, 'teacher_module/teacher_forum/create_thread.html',
                   {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
+
+
+
+
+def create_topic(request, nodegroup_pk=None):
+    node_group = NodeGroup.objects.filter(pk=nodegroup_pk)
+    if request.method == 'POST':
+        form = TopicForm(request.POST, user=request.user)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('forum:topic', kwargs={'pk': t.pk}))
+    else:
+        form = TopicForm()
+
+    return render(request, 'teacher_module/teacher_forum/create_topic.html',
+                  {'form': form, 'title': ('Create Topic'), 'node_group': node_group})
+
+
+def get_default_ordering():
+    return getattr(
+        settings,
+        "forum_DEFAULT_THREAD_ORDERING",
+        "-last_replied"
+    )
+
+
+def get_thread_ordering(request):
+    query_order = request.GET.get("order", "")
+    if query_order in ["-last_replied", "last_replied", "pub_date", "-pub_date"]:
+        return query_order
+    return get_default_ordering()
+
+
+class SearchView(ListView):
+    model = Thread
+    paginate_by = 20
+    template_name = 'teacher_module/teacher_forum/search.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        keywords = self.kwargs.get('keyword')
+        query = get_query(keywords, ['title'])
+        return Thread.objects.visible().filter(
+            query
+        ).select_related(
+            'user', 'topic'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by(
+            get_thread_ordering(self.request)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['title'] = context['panel_title'] = (
+            'Search: ') + self.kwargs.get('keyword')
+        context['show_order'] = True
+        return context
+
+def search_redirect(request):
+    if request.method == 'GET':
+        keyword = request.GET.get('keyword')
+        return HttpResponseRedirect(reverse('teacher_search', kwargs={'keyword': keyword}))
+    else:
+        return HttpResponseForbidden('Post you cannot')
+
+
+
