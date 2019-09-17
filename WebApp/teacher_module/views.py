@@ -12,7 +12,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, FormView
 
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, MemberInfo, InningGroup
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, MemberInfo, InningGroup, AssignAnswerInfo
 from survey.models import SurveyInfo
 from quiz.models import Question , Quiz
 from datetime import datetime
@@ -199,9 +199,24 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
+        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),Register_Agent=self.request.user.id)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+        return context
+
+class AssignmentAnswers(ListView):
+    model = AssignAnswerInfo
+    template_name = 'teacher_module/assignment_answers.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        questions = QuestionInfo.objects.filter(Assignment_Code = self.kwargs['pk'],Register_Agent=self.request.user.id)
+        context['questions'] = questions
+        context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
+       
+        # context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 

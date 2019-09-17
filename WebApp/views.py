@@ -159,7 +159,7 @@ def start(request):
             wordCloud = Thread.objects.all()
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by('-Register_DateTime')[:10]
-            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code).count
+            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code,Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
