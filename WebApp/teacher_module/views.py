@@ -20,6 +20,9 @@ from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.models import SurveyInfo
 from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
 from datetime import datetime
+from forum.models import NodeGroup, Thread, Topic
+from forum.views import get_top_thread_keywords
+from .forms import ThreadForm
 datetime_now = datetime.now()
 
 from formtools.wizard.views import SessionWizardView
@@ -44,10 +47,20 @@ def start(request):
         sessions = []
         if mycourse:
             for course in mycourse:
-                session = InningInfo.objects.filter(Groups__id=course.id,End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(Course_Group=course.id,End_Date__gt=datetime_now)
                 sessions += session
+        courseID=[]
+        for groups in mycourse:
+            courseID.append(groups.Course_Code.id)
 
-    return render(request, "teacher_module/homepage.html",{'MyCourses':mycourse,'Session':sessions})
+        activeassignments = []
+        for course in courseID:
+            activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
+
+        return render(request, "teacher_module/homepage.html",{'MyCourses':mycourse,'Session':sessions,'activeAssignments':activeassignments})
+
+
+
 
 
 def Dashboard(request):
@@ -236,9 +249,13 @@ class MyAssignmentsListView(ListView):
         for groups in context['Group']:
             courseID.append(groups.Course_Code.id)
         context['assignments'] = []
+        context['expiredassignments'] = []
+        context['activeassignments'] = []
         for course in courseID:
             context['assignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course)
-      
+            context['expiredassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__lt=datetime_now)
+            context['activeassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
+
         return context
 
 def ProfileView(request):
@@ -808,3 +825,53 @@ class QuizCreateWizard(SessionWizardView):
             step1_course = step1_data['course_code']
             context.update({'course_from_quiz': step1_course})
         return context
+
+
+
+# ___________________________________________________FORUM____________________________________
+class Index(ListView):
+    model = Thread
+    template_name = 'teacher_module/forum/forumIndex.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        nodegroups = NodeGroup.objects.all()
+        threadqueryset = Thread.objects.none()
+        for ng in nodegroups:
+            topics = Topic.objects.filter(node_group=ng.pk)
+            for topic in topics:
+                threads = Thread.objects.visible().filter(
+                    topic=topic.pk).order_by('pub_date')[:4]
+                threadqueryset |= threads
+
+        return threadqueryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['panel_title'] = ('New Threads')
+        context['title'] = ('Index')
+        context['topics'] = Topic.objects.all()
+        context['show_order'] = True
+        context['get_top_thread_keywords'] = get_top_thread_keywords(
+            self.request, 10)
+        return context
+
+
+def create_thread(request, topic_pk=None, nodegroup_pk=None):
+    topic = None
+    node_group = NodeGroup.objects.all()
+    fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
+    if topic_pk:
+        topic = Topic.objects.get(pk=topic_pk)
+    topics = Topic.objects.filter(node_group=nodegroup_pk)
+    if request.method == 'POST':
+        form = ThreadForm(request.POST, user=request.user)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
+    else:
+        form = ThreadForm()
+
+    return render(request, 'teacher_module/forum/create_thread.html',
+                  {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
+                   'fixed_nodegroup': fixed_nodegroup, 'topics': topics})

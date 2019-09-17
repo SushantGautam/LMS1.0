@@ -181,7 +181,6 @@
     $('#surveyform').submit(function (e) {
         // e.preventDefault();
         var canSubmit = true;
-        console.log('bitch')
         {% for x in object.submitsurvey.all %}
         console.log('{{x.id}}');
         console.log('{{ x.Student_Code.id }}');
@@ -190,7 +189,7 @@
         canSubmit = false;
         {% endif %}
         {% endfor %}
-        console.log(canSubmit)
+        console.log(canSubmit);
         if (canSubmit) {
             $.ajax({
                 type: $(this).attr('method'),

@@ -23,7 +23,11 @@
         <h2>&nbsp; Course &nbsp; - &nbsp;<a
                 href="{{ group.Course_Code.teacher_get_absolute_url }}"><b>{{ group.Course_Code }}</b></a>
         </h2>
+        {% if not assignments %}
+        <h5> &nbsp; <b style="color: brown">&nbsp;No assignments</b></h5>
+        {% endif %}
         {% for assignment in assignments %}
+
         {% if assignment.Course_Code == group.Course_Code %}
         <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
@@ -57,8 +61,10 @@
         <h2>&nbsp; Course &nbsp; - &nbsp;<a
                 href="{{ group.Course_Code.teacher_get_absolute_url }}"><b>{{ group.Course_Code }}</b></a>
         </h2>
-        {% for assignment in assignments %}
-        {% if not assignment.Assignment_Deadline|date:'r' > currentDate|date:'r' %}
+        {% if not activeassignments %}
+        <h5> &nbsp; <b style="color: brown">&nbsp;No active assignments</b></h5>
+        {% endif %}
+        {% for assignment in activeassignments %}
 
         {% if assignment.Course_Code == group.Course_Code %}
         <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
@@ -79,7 +85,7 @@
         </div>
 
         {% endif %}
-        {% endif %}
+
         {% endfor %}
         {% endif %}
         {% endfor %}
@@ -94,8 +100,10 @@
         <h2>&nbsp; Course &nbsp; - &nbsp;<a
                 href="{{ group.Course_Code.teacher_get_absolute_url }}"><b>{{ group.Course_Code }}</b></a>
         </h2>
-        {% for assignment in assignments %}
-        {% if assignment.Assignment_Deadline|date:'r' > currentDate|date:'r' %}
+        {% if not expiredassignments %}
+        <h5> &nbsp; <b style="color: brown">&nbsp;No expired assignments</b></h5>
+        {% endif %}
+        {% for assignment in expiredassignments %}
 
         {% if assignment.Course_Code == group.Course_Code %}
         <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
@@ -114,8 +122,6 @@
                 <p>Submission Deadline - {{ assignment.Assignment_Deadline }}</p>
             </div>
         </div>
-
-        {% endif %}
         {% endif %}
         {% endfor %}
         {% endif %}

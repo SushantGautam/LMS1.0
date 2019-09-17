@@ -71,7 +71,7 @@
   .right-sidebar-content {
 
     position: relative;
-    top: 80px;
+    /* top: 80px; */
     bottom: 20;
     color: #444;
     overflow-y: scroll;
@@ -227,7 +227,7 @@
               </div>
 
 
-              <div class="draggable  layout title-content-details">
+              <div class="draggable layout pdf-text">
 
 
                 <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}" alt="like this"  >
@@ -282,7 +282,8 @@
       <div class="  col-sm-8  col-md-7col-lg-8 col-xl-8 canvas">
 
         <div id="navbar-title">
-          <h2 class="tlimit" contenteditable="true" id="chaptertitle">
+          <a href="{% url 'chapterinfo_detail' course chapter %}"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i></a>
+          <h2 class="tlimit" contenteditable="false" id="chaptertitle">
             Add Title....
           </h2>
   
@@ -398,12 +399,10 @@
                 </div> -->
 
                 <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
-                  <p id="tab1" class="tab-content-no   droppable editor-canvas current "></p>
-
+                  <div class="editor-canvas" id="element-container">
+                    <p id="tab1" class="tab-content-no   droppable editor-canvas current "></p>
+                  </div>
                 </div>
-
-
-
               </div>
             </div>
           </div>
@@ -446,7 +445,7 @@
           </div>
           <div class="right-sidebar">
             <div class="right-sidebar-content">
-              <i id="add-page-btn" class="fas fa-plus-square fas-5x"></i>
+              <i id="add-page-btn" class="fas fa-plus-square"></i>
               <div class="img1 showSingle" target="1">
                 <div class="tabs-to-click">
                   <ul>
@@ -483,11 +482,14 @@
   var load_file_url = "/media/chapterBuilder/"+courseID+"/"+chapterID;
   var save_json_url = "{% url 'saveJson' %}";
   
+  $('#chapterlist').val(chapterID);
   $('#chapterlist').change(function(){
     let chapter = $('#chapterlist').val()
     location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
   });
 </script>
+  <script src="https://player.vimeo.com/api/player.js"></script>
+
   <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>

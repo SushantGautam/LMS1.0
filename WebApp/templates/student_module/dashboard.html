@@ -1,266 +1,112 @@
 {% extends "student_module/base.html" %}
 {% block title %}
-    Dashboard
+Dashboard
 {% endblock %}
 {% block content %}
+<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+    <h1><b>
+            Welcome to Student Portal
+        </b></h1>
+</div>
+<div class="col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
+    <h3 style="color: white"><b>Overview</b></h3>
+</div>
 
-    <div class="page_section">
-        <h1><b>Overview</b></h1>
-    </div>
+<div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
     <div class="panel panel-default">
-        <div class="media v-middle ">
-            <div class="media-left">
-                <div class="bg-green text-white">
-                    <div class="panel-body">
-                        <i class="fa fa-credit-card fa-fw fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="media-body media-middle">
-                Notification pannel <span class="text-body-2"></span>
-            </div>
-            <div class="media-right media-padding media-middle">
-                <a class="btn btn-white paper-shadow relative" data-z="0.5" data-hover-z="1" data-animated=""
-                   href="#">
-                    Next
-                </a>
-            </div>
+        <div class="title text-center">
+            <h3 style="margin-left: 10px"><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
+                        of my Courses </a></span></h3>
         </div>
+        <ul class="list-group">
+            {% for object in Course %}
+            <li class="list-group-item ">
+                <h5>
+
+                    <b> {{object.Course_Code}}</b>
+                    <a href="{{ object.Course_Code.student_get_absolute_url }}">
+                        <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                        ">CONTINUE <i class="fa fa-arrow-right"></i>
+                        </button>
+                    </a>
+
+                </h5>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
-    <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-12">
-            <div class="row">
-                <div class="col-xs-12 col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="title">
-                            <h3>Courses </h3>
-                            <h5>Your recent courses</h5>
-                        </div>
-                        <ul class="list-group">
-                            {% for object in Course %}
-                                <li class="list-group-item ">
-                                    <b>{{ object.Course_Code.Course_Name }}</b>
-                                    <a href="{{ object.Course_Code.student_get_absolute_url }}">
-                                        <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                        </button>
-                                    </a>
-
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        {#                        <div class="clearfix"></div>#}
-                    </div>
-                </div>
-
-
-                <div class=" col-xs-12 col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="row title">
-                            <div class="col-md-12">
-                                <h3>Quizzes </h3>
-                                <h5>Your recent performance</h5>
-                            </div>
-                        </div>
-                        <ul class="list-group ">
-                            <li class="list-group-item ">
-                                <div class="media-body">
-                                    <h4 class="text-subhead margin-none">
-                                        <a href="app-take-quiz.html" class="list-group-link">Title of quiz goes
-                                            here?</a>
-                                    </h4>
-                                    <div class="">
-                                        <span class="text-light">Course:</span>
-                                        <a href="#" style="color:#42a5f5">Basics of HTML</a>
-                                    </div>
-                                </div>
-                                <div class="media-right media-middle text-center">
-                                    <div class="text-display-1">5.8</div>
-                                    <span class="text-light">Good</span>
-                                </div>
-                            </li>
-                            <li class="list-group-item ">
-                                <div class="media-body">
-                                    <h4 class="text-subhead margin-none">
-                                        <a href="app-take-quiz.html" class="list-group-link">Title of quiz goes
-                                            here?</a>
-                                    </h4>
-                                    <div class="">
-                                        <span class="text-light">Course:</span>
-                                        <a href="#" style="color:#42a5f5">Basics of HTML</a>
-                                    </div>
-                                </div>
-                                <div class="media-right media-middle text-center">
-                                    <div class="text-display-1">5.8</div>
-                                    <span class="text-light">Good</span>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="media-body">
-                                    <h4 class="text-subhead margin-none">
-                                        <a href="app-take-quiz.html" class="list-group-link">Title of quiz goes
-                                            here?</a>
-                                    </h4>
-                                    <div class="">
-                                        <span class="text-light">Course:</span>
-                                        <a href="#" style="color:#42a5f5">Basics of HTML</a>
-                                    </div>
-                                </div>
-                                <div class="media-right media-middle text-center">
-                                    <div class="text-display-1">5.8</div>
-                                    <span class="text-light">Good</span>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-
-
-            </div>
+</div>
+<div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
+    <div class="panel panel-default">
+        <div class="title text-center">
+            <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a href="{% url 'student_mycourses_list' %}">List
+                        of Active Assignments </a></span></h3>
         </div>
+        <ul class="list-group">
+            {% for object in activeAssignments %}
+            <li class="list-group-item ">
 
-        <div class="col-lg-6 col-md-6 col-sm-12">
-            <div class="row">
-                <div class="col-xs-12 col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="row title">
-                            <div class="col-md-12">
-                                <h3>FORUM </h3>
-                                <h5></h5>
-                            </div>
-                        </div>
-                        <ul class="list-group relative paper-shadow" data-hover-z="0.5" data-animated="">
-                            <li class="list-group-item paper-shadow">
-                                <div class="media v-middle">
-                                    <div class="media-left">
-                                        <a href="#">
-                                            <img src="../static/images/user.png" alt="person"
-                                                 class="img-circle width-40">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <a href="app-forum-thread.html" class="text-subhead link-text-color">Can
-                                            someone help me with AngularJS?</a>
-                                        <div class="text-light">
-                                            Topic: <a href="app-forum-category.html">AngularJS</a> &nbsp; By: <a
-                                                href="#">Adrian Demian</a>
-                                        </div>
-                                    </div>
-                                    <div class="media-right">
-                                        <div class="width-60 text-right">
-                                            <span class="text-caption text-light">1 hr ago</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item paper-shadow">
-                                <div class="media v-middle">
-                                    <div class="media-left">
-                                        <a href="#">
-                                            <img src="../static/images/user.png" alt="person"
-                                                 class="img-circle width-40">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <a href="app-forum-thread.html" class="text-subhead link-text-color">Can
-                                            someone help me with AngularJS?</a>
-                                        <div class="text-light">
-                                            Topic: <a href="app-forum-category.html">AngularJS</a> &nbsp; By: <a
-                                                href="#">Adrian Demian</a>
-                                        </div>
-                                    </div>
-                                    <div class="media-right">
-                                        <div class="width-60 text-right">
-                                            <span class="text-caption text-light">2 hrs ago</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item paper-shadow">
-                                <div class="media v-middle">
-                                    <div class="media-left">
-                                        <a href="#">
-                                            <img src="../static/images/user.png" alt="person"
-                                                 class="img-circle width-40">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <a href="app-forum-thread.html" class="text-subhead link-text-color">Can
-                                            someone help me with AngularJS?</a>
-                                        <div class="text-light">
-                                            Topic: <a href="app-forum-category.html">AngularJS</a> &nbsp; By: <a
-                                                href="#">Adrian Demian</a>
-                                        </div>
-                                    </div>
-                                    <div class="media-right">
-                                        <div class="width-60 text-right">
-                                            <span class="text-caption text-light">3 hr ago</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item paper-shadow">
-                                <div class="media v-middle">
-                                    <div class="media-left">
-                                        <a href="#">
-                                            <img src="../static/images/user.png" alt="person"
-                                                 class="img-circle width-40">
-                                        </a>
-                                    </div>
-                                    <div class="media-body">
-                                        <a href="app-forum-thread.html" class="text-subhead link-text-color">Can
-                                            someone help me with AngularJS?</a>
-                                        <div class="text-light">
-                                            Topic: <a href="app-forum-category.html">AngularJS</a> &nbsp; By: <a
-                                                href="#">Adrian Demian</a>
-                                        </div>
-                                    </div>
-                                    <div class="media-right">
-                                        <div class="width-60 text-right">
-                                            <span class="text-caption text-light">4 hr ago</span>
-                                        </div>
-                                    </div>
-                                </div>
+                <h5>
+                    <b> {{object.Assignment_Topic}}</b>
+                    <h5 style="margin-bottom: 0;">
+                        <a href="{{ object.student_get_absolute_url }}">
+                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                            ">CONTINUE <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </h5>
+                </h5>
 
-                            </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="row title">
-                            <div class="col-md-12">
-                                <h3>Rewards</h3>
-                                <h5>Your latest achievements</h5>
-                            </div>
-                        </div>
-
-
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-lg-12 ">
-                    <div class="panel panel-default">
-                        <div class="row title">
-                            <div class="col-md-12">
-                                <h3>Certificates</h3>
-                                <h5></h5>
-                            </div>
-                        </div>
-
-
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
+</div>
+<div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
+    <div class="panel panel-default">
+        <div class="title text-center">
+            <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
+        </div>
+        <ul class="list-group">
+            {% if GroupName %}
+            {% for object in GroupName %}
+
+            <li class="list-group-item ">
+                <h5>
+                    Group &nbsp; : <b style="float: right">{{object.GroupMapping_Name}}</b>
+                    <!-- <h5 style="margin-bottom: 0;">
+                            <a href="{{ object.student_get_absolute_url }}">
+                                <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                </button>
+                            </a>
+                        </h5> -->
+                </h5>
+            </li>
+            {% endfor %}
+            {% endif %}
+
+            {% if Group %}
+            {% for object in Group %}
+
+            <li class="list-group-item ">
+                <h5>
+                    Session &nbsp; : <b style="float: right">{{object.Inning_Name}}</b>
+                    <!-- <h5 style="margin-bottom: 0;">
+                            <a href="{{ object.student_get_absolute_url }}">
+                                <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                </button>
+                            </a>
+                        </h5> -->
+                </h5>
+            </li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
 
 
 
-{% endblock %} 
+{% endblock %}

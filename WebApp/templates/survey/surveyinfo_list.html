@@ -8,23 +8,10 @@
   <li class="breadcrumb-item active" aria-current="page">Survey</li>
 {% endblock %}
 {% block content %}
-  <!-- <table class="table">
-      <tr>
-          <td>ID</td>
-          <td>Link</td>
-          <td>Survey_Title</td>
-          <td>Start_Date</td>
-          <td>End_Date</td>
-          <td>Survey_Cover</td>
-          <td>Use_Flag</td>
-      </tr> -->
-  <!-- </table><a class="btn btn-primary" href="{% url 'surveyinfo_create' %}">Create new SurveyInfo</a> -->
-
 
   <div class="clearfix">
 
   <div class="container" id="mainSurveyPage">
-
 
     <div class="container">
       <div class="row">
@@ -98,6 +85,13 @@
                              name="multifeatured_module[module_id][status]">Expire</label>
                   </div>
                 </div>
+                  {#                  <div class="col-md-2 col-xs-12">#}
+                  {#                    <button class="btn btn-success" id="live">Live Survey</button>#}
+                  {##}
+                  {#                      <div class="pollButtons">#}
+                  {#                          <button type="button" class="btn btn-info" id="live" data-popup-open="popup-1">Live Survey</button>#}
+                  {#                      </div>#}
+                  {#                  </div>#}
                 <form class="col-md-8 col-xs-12" id="searchBarSurvey">
 
                   <div role="search" action="/forum/search/" id="surveySearch">
@@ -376,5 +370,17 @@
               }
           });
       });
+
+      {#$('#live').on('click', function () {#}
+      {#    $.ajax({#}
+      {#        type: "GET",#}
+      {#        data: {'categoryId': 'live'},#}
+      {#        url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info#}
+      {#        success: function (data) {#}
+      {#            $("#rowCards").html(data);#}
+      {#            console.log(data)#}
+      {#        }#}
+      {#    });#}
+      {# });#}
   </script>
 {% endblock %}

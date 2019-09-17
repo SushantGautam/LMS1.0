@@ -10,12 +10,20 @@ class CategoryInfoForm(forms.ModelForm):
 
 
 class SurveyInfoForm(forms.ModelForm):
-    Start_Date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
-    End_Date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
+    Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
+    End_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
     class Meta:
         model = SurveyInfo
-        fields = ['Survey_Title', 'Center_Code', 'Category_Code',
+        fields = ['Survey_Title', 'Center_Code', 'Category_Code', 'Start_Date', 'End_Date',
                   'Session_Code', 'Course_Code', 'Added_By']
+
+    # def __init__(self, *args, **kwargs):
+    #     Id = kwargs["categoryId"]
+    #     if Id == 'live':
+    #         self.fields['End_Date'].widget = widgets.AdminTimeWidget()
+    #     else:
+    #         self.fields['Start_Date'].widget = widgets.AdminDateWidget()
+    #         self.fields['End_Date'].widget = widgets.AdminDateWidget()
 
 
 class QuestionInfoForm(forms.ModelForm):

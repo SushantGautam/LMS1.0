@@ -1,14 +1,14 @@
 from django.forms import model_to_dict
 from django.shortcuts import render, redirect
-from django.views.generic import DetailView, ListView, UpdateView, CreateView
-from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
-from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
-    QuestionInfoFormset, QuestionAnsInfoFormset, BaseQuestionInfoFormset
 from datetime import datetime
 
-from django.http import JsonResponse
-
 from django.db import transaction
+from django.http import JsonResponse
+from django.views.generic import DetailView, ListView, UpdateView, CreateView
+
+from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
+    QuestionInfoFormset, QuestionAnsInfoFormset, BaseQuestionInfoFormset
+from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 from datetime import datetime
 
 from django.db import transaction
@@ -72,7 +72,6 @@ class SurveyInfoListView(ListView):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now().date()
         context['categories'] = CategoryInfo.objects.all()
-
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
@@ -366,12 +365,17 @@ class SurveyInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
-
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
-
         return context
 
+
+# class liveProgressResult(AjaxableResponseMixin, View):
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#
+#         return render(request, template_name, context=None
 
 class SurveyInfoUpdateView(UpdateView):
     model = SurveyInfo

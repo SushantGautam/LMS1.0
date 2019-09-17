@@ -3,12 +3,13 @@ $(document).ready(function() {
     // ==================For TextBoxx================================
 
     class Textbox {
-        constructor(top, left, message="Type Something Here...") {
+        constructor(top=0, left=0, height=null ,width = null, message="Type Something Here...") {
+            console.log(top, left,height,width)
             let id = (new Date).getTime();
             let position = {
-                top, left
+                top, left, height, width
             };
-            let html = `<div class='textdiv' >
+            let html = `<div class='textdiv'>
                      <div id="text-actions" class = "text-actions">
                          <i class="fas fa-trash" id=${id}></i>
                          <i class="fas fa-arrows-alt" id="draghere" class="draghere"></i>
@@ -21,7 +22,9 @@ $(document).ready(function() {
                 let dom = $(html).css({
                     "position": "absolute",
                     "top": position.top,
-                    "left": position.left
+                    "left": position.left,
+                    "height": position.height,
+                    "width": position.width,
                 }).draggable({
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",  // dragging beyond this <div> will not be possible
@@ -43,9 +46,13 @@ $(document).ready(function() {
     // ===========================FOR PICTURE=====================================
 
     class picture {
-        constructor(top, left, pic=null) {
+        constructor(top, left, pic=null, width=null, height=null) {
             let id = (new Date).getTime();
-            let position = { top, left };
+            let position = { top, left, width, height };
+            let message = "";
+            if(pic == null){
+                message = "Drag and drop images here..."
+            }
             let html =
             `<div class='pic' style='background-image:${pic}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0'>
                 <div id="pic-actions">
@@ -54,9 +61,9 @@ $(document).ready(function() {
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
+                    <input type='file' accept="image/*" name="userImage" style="display:none" id=${id + 1} class="imgInp" />
                 </form>
-                <p id="picture-drag">drag and drop files here...</p>
+                <p id="picture-drag">${message}</p>
                 </div>
             </div>`
 
@@ -65,11 +72,13 @@ $(document).ready(function() {
             }
             this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
-
+                
             let dom = $(html).css({
                 "position": "absolute",
                 "top": position.top,
-                "left": position.left
+                "left": position.left,
+                "width": position.width,
+                "height": position.height
             }).draggable({
                 //Constraint   the draggable movement only within the canvas of the editor
                 containment: "#tabs-for-download",
@@ -92,9 +101,36 @@ $(document).ready(function() {
      // ====================================For Video==============================
 
     class video {
-        constructor(top, left) {
+        constructor(top, left, link=null, height=null, width=null) {
             let id = (new Date).getTime();
-            let position = { top, left };
+            let position = { top, left, height, width };
+            let videoobj;
+            let message = ""
+            if(link!=null){
+                // videoobj = `
+                // <video width="100%" height="90%" controls>
+                //     <source src="${link}" type="video/mp4">
+                //     <source src="${link}" type="video/ogg">
+                //     Your browser does not support the video tag.
+                // </video>
+                // `
+                videoobj = `<div id='${link}'><div><script>
+                var options = {
+                    url: '${link}',
+                    width: "${width}",
+                    height: "${height}"
+                };
+              
+                var videoPlayer = new Vimeo.Player('${link}', options);
+              
+                videoPlayer.on('play', function() {
+                  console.log('Played the video');
+                });
+              </script>`
+            }else{
+                message = "drag and drop video here...";
+                videoobj = "";
+            }
             let html =
                 `<div class='video-div'>
                     <div id="video-actions">
@@ -102,13 +138,14 @@ $(document).ready(function() {
                         <i class="fas fa-upload" id=${id}></i>
                     </div>
                     <div>
-                        <p id="video-drag">drag and drop video here...</p>
+                        <p id="video-drag">${message}</p>
                         <div id="progress-bar">
                             <span id="progress-bar-fill"></span>
                         </div>
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
-                    </form>
+                        <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
+                        </form>
+                        ${videoobj}
                     </div>
                 </div>`
 
@@ -121,7 +158,9 @@ $(document).ready(function() {
                 let dom = $(html).css({
                     "position": "absolute",
                     "top": position.top,
-                    "left": position.left
+                    "left": position.left,
+                    "height": position.height,
+                    "width": position.width
                 }).draggable({
                     //Constraint   the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
@@ -141,9 +180,9 @@ $(document).ready(function() {
     // =====================For Button==============================
 
     class Button {
-        constructor(top, left) {
+        constructor(top, left, link=null, height=null, width=null) {
         let id = (new Date).getTime();
-        let position = { top, left };
+        let position = { top, left, height, width };
         let html = `
                         <div class="btn-div">
                             <div class="options">
@@ -152,7 +191,7 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" id=${id + 1}  target="_blank"  >Submit</a>
+                            <a class="btn" href = ${link} id=${id + 1}  target="_blank"  >Submit</a>
                         </div>
         
                 `;
@@ -161,7 +200,9 @@ $(document).ready(function() {
             let dom = $(html).css({
             "position": "absolute",
             "top": position.top,
-            "left": position.left
+            "left": position.left,
+            "height": position.height,
+            "width": position.width,
             }).draggable({
             //Constrain the draggable movement only within the canvas of the editor
             containment: "#tabs-for-download",
@@ -183,10 +224,19 @@ $(document).ready(function() {
 
     // ====For PDF======
     class PDF {
-        constructor(top, left, link=null) {
+        constructor(top, left, link=null, height=null, width=null) {
         let id = (new Date).getTime();
-        console.log(link)
-        let position = { top, left };
+        var pdfobj;
+        let position = { top, left, height, width };
+        if(link!=null){
+            pdfobj = `
+                <object data="${link}" type="application/pdf" width="100%" height="100%">
+                    alt : <a href="${link}"></a>
+                </object>
+            `
+        }else{
+            pdfobj = "";
+        }
         let html = `
             <div class='pdf'>
                 <div id="pdf-actions1">
@@ -195,12 +245,10 @@ $(document).ready(function() {
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
-                </form>
-                <p id="pdf-drag" placeholder="drag and drop files here..."></p>
-                <object data="${link}" type="application/pdf" width="100%" height="100%">
-                    alt : <a href="${link}"></a>
-                </object>
+                    <input type='file' accept="application/pdf"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
+                    </form>
+                    <p id="pdf-drag" placeholder="drag and drop files here..."></p>
+                ${pdfobj}
                 </div>
             </div>
         `;
@@ -212,7 +260,9 @@ $(document).ready(function() {
             let dom = $(html).css({
             "position": "absolute",
             "top": position.top,
-            "left": position.left
+            "left": position.left,
+            "height": position.height,
+            "width": position.width
             }).draggable({
                 //Constrain the draggable movement only within the canvas of the editor
                 containment: "#tabs-for-download",
@@ -227,130 +277,6 @@ $(document).ready(function() {
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
-
-    // =====for grid system============
-
-    class GridLayout {
-        constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-                        <div class="grid-container">
-                            <div class="grid-header" > 
-                            <div class='video-div'>
-                            <div id="video-actions">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-upload" id=${id}></i>
-                            </div>
-                            <div>
-                                <p id="video-drag">drag and drop video here...</p>
-                                <div id="progress-bar">
-                                    <span id="progress-bar-fill"></span>
-                                </div>
-                                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                                <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
-                            </form>
-                            </div>
-                        </div>
-                            </div>
-                            <div class="grid-body" >
-                            <div class='textdiv' >
-                                <div id="text-actions">
-                                    <i class="fas fa-trash" id=${id}></i>
-                                    <i class="fas fa-arrows-alt" id="draghere"></i>
-                                </div> 
-                                <div id="editor" class="messageText" contenteditable> 
-                                    Type Something...
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-        
-                `;
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": 10,
-            "left": 7,
-            "padding": 16
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#editor",
-            scroll: false,
-            grid: [150, 75],
-            cursor: "move",
-            handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom)
-            // canvas.append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
-
-
-    // ===============for GridLayout1=====================
-
-    class GridLayout1 {
-        constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `<div class="grid-container-1">
-                            <div class="grid-section-left-1">
-                            <div class='pic'>
-                            <div id="pic-actions">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-upload" id=${id}></i>
-                            </div>
-                            <div>
-                                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                                <input type='file' name="userImage" style="display:none" id=${id + 1} class="imgInp" />
-                            </form>
-                            <p id="picture-drag">drag and drop files here...</p>
-                            </div>
-                        </div>
-                            </div>
-                            <div class="grid-section-right-1">
-                            <div class='textdiv' >
-                                <div id="text-actions">
-                                    <i class="fas fa-trash" id=${id}></i>
-                                    <i class="fas fa-arrows-alt" id="draghere"></i>
-                                </div> 
-                                <div id="editor" class="messageText" contenteditable> 
-                                    Type Something...
-                                </div>
-                            </div>
-                            </div>
-                        
-                        </div>`;
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": 20,
-            "left": 7,
-            "padding": 0
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#editor",
-            scroll: false,
-            grid: [150, 75],
-            cursor: "move",
-            handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom);
-            //  canvas.append(dom);
             // Making element Resizable
 
         };
@@ -489,54 +415,6 @@ $(document).ready(function() {
     }
     }
 
-    class PdfVideoLayout {
-        constructor(top, left) {
-            let id = (new Date).getTime();
-            let position = { top, left };
-            let html = `
-                        <div class="pdfvideoContainer">
-                            <div class="pdf">
-                            PDF will be shown here...
-                            </div>
-
-                            <div class="videos-content">
-                            <div class='textdiv' >
-                            <div id="text-actions">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-arrows-alt" id="draghere"></i>
-                            </div> 
-                            <div id="editor" class="messageText" contenteditable> Type Something Here....</div>
-                        </div>
-                            </div>
-                        </div>
-
-            
-                    `;
-            this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-                "position": "absolute",
-                "top": 20,
-                "left": 35
-            }).draggable({
-                //Constrain the draggable movement only within the canvas of the editor
-                containment: "#editor",
-                scroll: false,
-                grid: [150, 75],
-                cursor: "move",
-                handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom)
-            // canvas.append(dom);
-            // Making element Resizable
-
-            };
-        }
-
-    }
-
     // =====================For Tables==============================
 
     class Tables {
@@ -606,7 +484,7 @@ $(document).ready(function() {
     });
 
     let sidebarWidth = $(".sidebar").width(); // get width of sidebar
-
+    let toolbarheight = $('.editor-toolbar').height();
     // Making sidebar tools draggable
     $(".draggable").draggable({
         helper: "clone",
@@ -618,10 +496,8 @@ $(document).ready(function() {
         }
     });
 
-    function dropfunction(event, ui) {
-        if (ui.helper.hasClass('textbox')) {
-            const textBox = new Textbox(ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
+    function TextboxFunction(top=null, left=null, height=null, width=null, message="Type Something Here..."){
+        const textBox = new Textbox(top, left, height, width, message);
         
             textBox.renderDiagram();
         
@@ -643,805 +519,635 @@ $(document).ready(function() {
                 $('.messageText').css({
                     'border': 'none'
                 })
-            })
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
             });
         
             $('.messageText').resizable({
                 containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
+                height: height,
                 minWidth: 75,
                 minHeight: 25
             });
-        } else if (ui.helper.hasClass('picture')) {
-            const Pic = new picture(
-                ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
-            Pic.renderDiagram();
-        
-            $('.fa-upload').click(function(e) {
-                trigger = parseInt(e.target.id) + 1;
-                $('#' + trigger).trigger('click');
-            });
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.pic').on('dragover', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                //   $(this).css('border',"2px solid #39F")
-            })
-        
-            $('.pic').on('drop', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                const files = e.originalEvent.dataTransfer.files;
-                var file = files[0];
-                upload(file);
-            });
-        
-            function upload(file) {
-                const data = new FormData();
-                data.append("file-0", file);
-                data.append('chapterID', chapterID);
-                data.append('courseID', courseID);
-                data.append('type', 'pic');
-                $.ajax({
-                    url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    method: 'POST',
-                    type: 'POST',
-                    success: function(data) {
-                        div.css({
-                            'background-image': 'url('+load_file_url+'/' + file.name + ')',
-                            'background-repeat': 'no-repeat',
-                            'background-size': 'contain',
-                            'background-position': 'center',
-                            'border': '0'
-                        });
-                    },
-                    error: function(data, status, errorThrown) {
-                        alert(data.responseJSON.message);
-                    }
-                });
-                let div = $('#picture-drag').parent().parent();
-                $('#picture-drag').css({
-                    'display': 'none'
-                })
-                
+    }
 
-                $(div).hover(function() {
-                    $(this).css("border", "1px solid red");
-                }, function() {
-                    $(this).css("border", '0')
-                })
-
-                $('.pic').resizable({
-                    containment: $('.editor-canvas'),
-                    grid: [20, 20],
-                    autoHide: true,
-                    minWidth: 150,
-                    minHeight: 150
-                });
-
-            }
-
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        let div = $(input).parent().parent().parent();
-                        // console.log(div);
-                        var data = new FormData();
-                        // var count = 0
-                        // console.log(input.files);
-                        $.each(input.files, function(i, file) {
-                            // console.log(Math.round((file.size / 1024))) // get image size
-                            data.append('file-' + i, file);
-                        });
-                        // data.append('count', count);
-                        data.append('type', 'pic');
-                        data.append('chapterID', chapterID);
-                        data.append('courseID', courseID);
-                        // console.log("imageuploadfromhere")
-                        $.ajax({
-                            url: save_file_url,
-                            data: data,
-                            contentType: false,
-                            processData: false,
-                            enctype: 'multipart/form-data',
-                            method: 'POST',
-                            type: 'POST',
-                            success: function(data) {
-                                // console.log(data);
-                                div.css({
-                                  'background-image': 'url('+load_file_url+'/'+input.files[0].name+')',
-                                  'background-repeat': 'no-repeat',
-                                  'background-size': 'contain',
-                                  'background-position': 'center',
-                                  'border': '0'
-                                });
-                            },
-                            error: function(data, status, errorThrown) {
-                                alert(data.responseJSON.message);
-                            }
-                        });
-
-                        $('#picture-drag').css({
-                            'display': 'none'
-                        })
-                        
-                        $(div).hover(function() {
-                            $(this).css("border", "1px solid red");
-                        }, function() {
-                            $(this).css("border", '0')
-                        })
-
-                        $('.pic').resizable({
-                            containment: $('.editor-canvas'),
-                            grid: [20, 20],
-                            autoHide: true,
-                            minWidth: 150,
-                            minHeight: 150
-                        });
-                    }
-                    reader.readAsDataURL(input.files[0]);
+    function PictureFunction(top=null, left=null, pic = null, width=null, height=null){
+        const Pic = new picture(
+            top,
+            left,
+            pic,
+            width,height);
+        Pic.renderDiagram();
+    
+        $('.fa-upload').click(function(e) {
+            trigger = parseInt(e.target.id) + 1;
+            $('#' + trigger).trigger('click');
+        });
+    
+        $('.pic').on('dragover', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            //   $(this).css('border',"2px solid #39F")
+        })
+    
+        $('.pic').on('drop', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const files = e.originalEvent.dataTransfer.files;
+            var file = files[0];
+            upload(file);
+        });
+    
+        function upload(file) {
+            const data = new FormData();
+            data.append("file-0", file);
+            data.append('chapterID', chapterID);
+            data.append('courseID', courseID);
+            data.append('type', 'pic');
+            $.ajax({
+                url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+                data: data,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                success: function(data) {
+                    div.find('p').text("");
+                    div.css({
+                        'background-image': 'url('+load_file_url+'/' + file.name + ')',
+                        'background-repeat': 'no-repeat',
+                        'background-size': 'contain',
+                        'background-position': 'center',
+                        'border': '0'
+                    });
+                },
+                error: function(data, status, errorThrown) {
+                    alert(data.responseJSON.message);
                 }
-            }
-
-            $(".imgInp").change(function(e) {
-                readURL(this);
-
             });
-            //object of video component
-        } else if (ui.helper.hasClass('video')) {
-            const Videos = new video(ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
-            Videos.renderDiagram();
-        
-            $('.fa-upload').click(function(e) {
-                trigger = parseInt(e.target.id) + 1;
-                $('#' + trigger).trigger('click');
-            });
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.video-div').on('dragover', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
+            let div = $('#picture-drag').parent().parent();
+            $('#picture-drag').css({
+                'display': 'none'
             })
-        
-            $('.video-div').on('drop', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                $(this).resizable({
-                    containment: $('.editor-canvas'),
-                    grid: [20, 20],
-                    autoHide: true,
-                    minWidth: 150,
-                    minHeight: 150
-                });
-        
-                $(this).css({
-                    'padding': '5px'
-                })
-        
-                const files = e.originalEvent.dataTransfer.files;
-                var file = files[0];
-                upload(file);
+            
+
+            $(div).hover(function() {
+                $(this).css("border", "1px solid red");
+            }, function() {
+                $(this).css("border", '0')
+            })
+
+            $('.pic').resizable({
+                containment: $('.editor-canvas'),
+                grid: [20, 20],
+                autoHide: true,
+                minWidth: 150,
+                minHeight: 150
             });
-        
-            function upload(file) {
-                var data = new FormData();
-        
-                data.append("FileName", file);
-        
-                $.ajax({
-                    xhr: function() {
-                        var xhr = new window.XMLHttpRequest();
-        
-                        xhr.upload.addEventListener("progress", function(evt) {
-                            $('#progress-bar').css("display", "block");
-        
-                            if (evt.lengthComputable) {
-                                var percentComplete = evt.loaded / evt.total;
-                                percentComplete = parseInt(percentComplete * 100);
-                                console.log(percentComplete);
-                                $('#progress-bar-fill').css('width', percentComplete + '%');
-        
-                                if (percentComplete === 100) {
-                                    $('#progress-bar').css("display", "none");
-                                    let div = $('#video-drag').parent().parent();
-                                    $('#video-drag').css({
-                                        'display': 'none'
-                                    });
-        
-                                    div.append(`
-                                            <video width="400" height="200" controls>
-                                            <source src="../uploads/${file.name}" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    `);
-        
-                                    $(div).hover(function() {
-                                        $(this).css("border", "1px solid red");
-                                    }, function() {
-                                        $(this).css("border", '0')
-                                    })
-        
-                                    $('.pic').resizable({
-                                        containment: $('.editor-canvas'),
-                                        grid: [20, 20],
-                                        autoHide: true,
-                                        minWidth: 150,
-                                        minHeight: 150
-                                    });
-                                    console.log(file.name);
-                                }
-        
-                            }
-                        }, false);
-        
-                        return xhr;
-                    },
-                    url: '/index',
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    method: 'POST',
-                    type: 'POST',
-                    success: function(data) {
-                        console.log(data);
-                    }
-        
-                });
-        
-            }
-        
-            function readURL(input) {
-        
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        let div = $(input).parent().parent().parent();
-        
-                        var data = new FormData();
-                        console.log(input.files)
-                        $.each(input.files, function(i, file) {
-                            data.append('file-' + i, file);
-                        });
-                        data.append('chapterID', chapterID);
-                        data.append('courseID', courseID);
-                        data.append('type', 'video');
-                        $.ajax({
-                            url: save_video_url,
-                            data: data,
-                            contentType: false,
-                            processData: false,
-                            method: 'POST',
-                            type: 'POST',
-                            success: function(data) {
-                                console.log(data);
-                                div.append(`
-                                <video width="400" height="200" controls>
-                                <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>`);
-                            },
-                            xhr: function() {
-                                var xhr = new window.XMLHttpRequest();
-        
-                                xhr.upload.addEventListener("progress", function(evt) {
-                                    $('#progress-bar').css("display", "block");
-        
-                                    if (evt.lengthComputable) {
-                                        var percentComplete = evt.loaded / evt.total;
-                                        percentComplete = parseInt(percentComplete * 100);
-                                        console.log(percentComplete);
-                                        $('#progress-bar-fill').css('width', percentComplete + '%');
-        
-                                        if (percentComplete === 100) {
-                                            $('#progress-bar').css("display", "none");
-                                            let div = $('#video-drag').parent().parent();
-                                            $('#video-drag').css({
-                                                'display': 'none'
-                                            });
-        
-                                    //         div.append(`
-                                    //         <video width="400" height="200" controls>
-                                    //         <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
-                                    //          Your browser does not support the video tag.
-                                    //       </video>
-                                    //   `);
-        
-                                            $(div).hover(function() {
-                                                $(this).css("border", "1px solid red");
-                                            }, function() {
-                                                $(this).css("border", '0')
-                                            })
-        
-                                            $('.pic').resizable({
-                                                containment: $('#tabs-for-downloads'),
-                                                grid: [20, 20],
-                                                autoHide: true,
-                                                minWidth: 150,
-                                                minHeight: 150
-                                            });
-                                            // console.log(file.name);
-                                        }
-        
-                                    }
-                                }, false);
-        
-                                return xhr;
-                            }
-        
-                        });
-        
-                        $('#video-drag').css({
-                            'display': 'none'
-                        });
-        
-                    }
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-        
-            $(".video-form").change(function(e) {
-        
-                readURL(this);
-        
-            });
-        
-        } else if (ui.helper.hasClass('buttons')) {
-            const btns = new Button(ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
-        
-            btns.renderDiagram();
-        
-            const div1 = $('i').parent();
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-                //  alert('btn clickd')
-            });
-        
-            $('.fa-link').bind("click", function(e) {
-                let argument = prompt("Enter a Link here...");
-                if (argument == null || argument == "") {
-                    return console.log("cancled pressed")
-                } else {
-                    var btn_id = parseInt(e.currentTarget.id) + 1
-                    $('#' + btn_id).attr({
-                        "href": `http://${argument}`
+
+        }
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    let div = $(input).parent().parent().parent();
+                    // console.log(div);
+                    var data = new FormData();
+                    // var count = 0
+                    // console.log(input.files);
+                    $.each(input.files, function(i, file) {
+                        // console.log(Math.round((file.size / 1024))) // get image size
+                        data.append('file-' + i, file);
+                    });
+                    // data.append('count', count);
+                    data.append('type', 'pic');
+                    data.append('chapterID', chapterID);
+                    data.append('courseID', courseID);
+                    // console.log("imageuploadfromhere")
+                    $.ajax({
+                        url: save_file_url,
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        enctype: 'multipart/form-data',
+                        method: 'POST',
+                        type: 'POST',
+                        success: function(data) {
+                            console.log(div)
+                            div.find('p').text("");
+                            div.css({
+                              'background-image': 'url('+load_file_url+'/'+input.files[0].name+')',
+                              'background-repeat': 'no-repeat',
+                              'background-size': 'contain',
+                              'background-position': 'center',
+                              'border': '0'
+                            });
+                        },
+                        error: function(data, status, errorThrown) {
+                            alert(data.responseJSON.message);
+                        }
+                    });
+
+                    $('#picture-drag').css({
+                        'display': 'none'
                     })
+                    
+                    $(div).hover(function() {
+                        $(this).css("border", "1px solid red");
+                    }, function() {
+                        $(this).css("border", '0')
+                    })
+
+                    $('.pic').resizable({
+                        containment: $('.editor-canvas'),
+                        grid: [20, 20],
+                        autoHide: true,
+                        minWidth: 150,
+                        minHeight: 150
+                    });
                 }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(".imgInp").change(function(e) {
+            readURL(this);
+
+        });
+    }
+
+    function ButtonFuction(top=null, left=null, link=null, height=null, width=null){
+        const btns = new Button(top, left, link, height, width);
         
+        btns.renderDiagram();
+    
+        const div1 = $('i').parent();
+    
+        $('.fa-link').bind("click", function(e) {
+            let argument = prompt("Enter a Link here...");
+            if (argument == null || argument == "") {
+                return console.log("cancled pressed")
+            } else {
+                var btn_id = parseInt(e.currentTarget.id) + 1
+                $('#' + btn_id).attr({
+                    "href": `http://${argument}`
+                })
+            }
+    
+        });
+    
+        $('.btn').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 50,
+            minHeight: 30,
+        }); 
+    }
+    
+    function PDFFunction(top=null, left=null, link=null, height=null, width=null){
+        const Pdf = new PDF(
+            top,
+            left, link, height, width   
+        );
+    
+        Pdf.renderDiagram();
+
+          // ==for pdf upload==
+        $('.fa-upload').click(function(e) {
+            trigger = parseInt(e.target.id) + 1;
+            $('#' + trigger).trigger('click');
+        });
+    
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+        });
+
+        $('.pdf').on('dragover', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            //   $(this).css('border',"2px solid #39F")
+        })
+
+        $('.pdf').on('drop', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const files = e.originalEvent.dataTransfer.files;
+            var file = files[0];
+            upload(file);
+        });
+
+        function upload(file) {
+            const data = new FormData();
+            data.append("file-0", file);
+            data.append('chapterID', chapterID);
+            data.append('courseID', courseID);
+            data.append('type', 'pic');
+            $.ajax({
+                url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+                data: data,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                success: function(data) {
+                    div.empty();
+                    div.append(`
+                        <object data="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}" type="application/pdf" width="100%" height="100%">
+                            alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
+                        </object>
+                    `);
+                },
+                error: function(data, status, errorThrown) {
+                    alert(data.responseJSON.message);
+                }
             });
-        
-            $('.btn').resizable({
+            let div = $('#picture-drag').parent().parent();
+            $('#picture-drag').css({
+                'display': 'none'
+            });
+
+            $(div).hover(function() {
+                $(this).css("border", "1px solid red");
+            }, function() {
+                $(this).css("border", '0')
+            })
+
+            $('.pdf').resizable({
+                containment: $('.editor-canvas'),
+                grid: [20, 20],
+                autoHide: true,
+                minWidth: 150,
+                minHeight: 150
+            });
+
+        }
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    let div = $(input).parent().parent().parent();
+                    var data = new FormData();
+                    // var count = 0
+                    // console.log(input.files);
+                    $.each(input.files, function(i, file) {
+                        // console.log(Math.round((file.size / 1024))) // get image size
+                        data.append('file-' + i, file);
+                    });
+                    // data.append('count', count);
+                    data.append('type', 'pdf');
+                    data.append('chapterID', chapterID);
+                    data.append('courseID', courseID);
+                    // console.log("imageuploadfromhere")
+                    $.ajax({
+                        url: save_file_url,
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        enctype: 'multipart/form-data',
+                        method: 'POST',
+                        type: 'POST',
+                        success: function(data) {
+                            // console.log(data);
+                            div.empty();
+                            div.append(`
+                                <object data="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}" type="application/pdf" width="100%" height="100%">
+                                    alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
+                                </object>
+                            `);
+                        },
+                        error: function(data, status, errorThrown) {
+                            alert(data.responseJSON.message);
+                        }
+                    });
+
+                    $('#picture-drag').css({
+                        'display': 'none'
+                    })
+                    
+                    $(div).hover(function() {
+                        $(this).css("border", "1px solid red");
+                    }, function() {
+                        $(this).css("border", '0')
+                    })
+
+                    $('.pdf').resizable({
+                        containment: $('.editor-canvas'),
+                        grid: [20, 20],
+                        autoHide: true,
+                        minWidth: 150,
+                        minHeight: 150
+                    });
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $(".pdfInp").change(function(e) {
+            readURL(this);
+        });
+    }
+
+    function VideoFunction(top=null, left=null, link=null, height=null, width=null){
+        const Videos = new video(top, left, link, height, width);
+        Videos.renderDiagram();
+    
+        $('.fa-upload').click(function(e) {
+            trigger = parseInt(e.target.id) + 1;
+            $('#' + trigger).trigger('click');
+        });
+    
+        $('.video-div').on('dragover', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        })
+    
+        $('.video-div').on('drop', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            $(this).resizable({
                 containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
-                minWidth: 50,
-                minHeight: 30,
+                minWidth: 150,
+                minHeight: 150
             });
-        
-        } else if (ui.helper.hasClass('grid')) {
-            const grids = new GridLayout();
-            grids.renderDiagram();
-        
-            // ===for picture inside first grid====
-        
-            $('.fa-upload').click(function(e) {
-                trigger = parseInt(e.target.id) + 1;
-                $('#' + trigger).trigger('click');
-            });
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.pic').on('dragover', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                //   $(this).css('border',"2px solid #39F")
+    
+            $(this).css({
+                'padding': '5px'
             })
-        
-            $('.pic').on('drop', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                const files = e.originalEvent.dataTransfer.files;
-                var file = files[0];
-                upload(file);
-        
-            });
-        
-            function upload(file) {
-                const data = new FormData();
-                data.append("fileName", file);
-                $.ajax({
-                    url: '/index',
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    method: 'POST',
-                    type: 'POST',
-                    success: function(data) {
-                        console.log(data);
-                    }
-        
-                });
-                let div = $('#picture-drag').parent().parent();
-                $('#picture-drag').css({
-                    'display': 'none'
-                })
-                div.css({
-                    'background-image': 'url("../uploads/' + file.name + '")',
-                    'background-repeat': 'no-repeat',
-                    'background-size': 'contain',
-                    'background-position': 'center',
-                    'border': '0'
-                });
-        
-                $(div).hover(function() {
-                    $(this).css("border", "1px solid red");
-                }, function() {
-                    $(this).css("border", '0')
-                })
-        
-                $('.pic').resizable({
-                    containment: $('.editor-canvas'),
-                    grid: [20, 20],
-                    autoHide: true,
-                    minWidth: 150,
-                    minHeight: 150
-                });
-        
-            }
-        
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        let div = $(input).parent().parent().parent();
-                        // console.log(div);
-                        var data = new FormData();
-                        $.each($('.imgInp')[0].files, function(i, file) {
-                            data.append('file-' + i, file);
-                        });
-                        console.log(data);
-                        $.ajax({
-                            url: '/index',
-                            data: data,
-                            contentType: false,
-                            processData: false,
-                            method: 'POST',
-                            type: 'POST',
-                            success: function(data) {
-                                console.log(data);
+    
+            const files = e.originalEvent.dataTransfer.files;
+            var file = files[0];
+            upload(file);
+        });
+    
+        function upload(file) {
+            var data = new FormData();
+    
+            data.append("FileName", file);
+            data.append('chapterID', chapterID);
+            data.append('courseID', courseID);
+            data.append('type', 'video');
+            $.ajax({
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
+    
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        $('#progress-bar').css("display", "block");
+    
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+                            console.log(percentComplete);
+                            $('#progress-bar-fill').css('width', percentComplete + '%');
+    
+                            if (percentComplete === 100) {
+                                $('#progress-bar').css("display", "none");
+                                let div = $('#video-drag').parent().parent();
+                                $('#video-drag').css({
+                                    'display': 'none'
+                                });
+    
+                                div.append(`
+                                        <video width="400" height="200" controls>
+                                        <source src="../uploads/${file.name}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                `);
+    
+                                $(div).hover(function() {
+                                    $(this).css("border", "1px solid red");
+                                }, function() {
+                                    $(this).css("border", '0')
+                                })
+    
+                                $('.pic').resizable({
+                                    containment: $('.editor-canvas'),
+                                    grid: [20, 20],
+                                    autoHide: true,
+                                    minWidth: 150,
+                                    minHeight: 150
+                                });
+                                console.log(file.name);
                             }
-        
-                        });
-        
-                        $('#picture-drag').css({
-                            'display': 'none'
-                        })
-        
-                        div.css({
-                            'background-image': 'url("../uploads/' + input.files[0].name + '")',
-                            'background-repeat': 'no-repeat',
-                            'background-size': 'contain',
-                            'background-position': 'center',
-                            'border': '0'
-                        });
-                        $(div).hover(function() {
-                            $(this).css("border", "1px solid red");
-                        }, function() {
-                            $(this).css("border", '0')
-                        })
-        
-                        $('.pic').resizable({
-                            containment: $('.editor-canvas'),
-                            grid: [20, 20],
-                            autoHide: true,
-                            minWidth: 150,
-                            minHeight: 150
-                        });
-                    }
-                    reader.readAsDataURL(input.files[0]);
+    
+                        }
+                    }, false);
+    
+                    return xhr;
+                },
+                url: save_video_url,
+                data: data,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                success: function(data) {
+                    console.log(data);
                 }
+    
+            });
+    
+        }
+    
+        function readURL(input) {
+    
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    let div = $(input).parent().parent().parent();
+    
+                    var data = new FormData();
+                    console.log(input.files)
+                    $.each(input.files, function(i, file) {
+                        data.append('file-' + i, file);
+                    });
+                    data.append('chapterID', chapterID);
+                    data.append('courseID', courseID);
+                    data.append('type', 'video');
+                    $.ajax({
+                        url: save_video_url,
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        method: 'POST',
+                        type: 'POST',
+                        success: function(data) {
+                            console.log(data.link)
+                            div.empty();
+                            div.append(`
+                            <video width="100%" height="90%" controls id=${data.link}>
+                            <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>`);
+                            // div.append(`
+                            // <source src="${data.link}" type="video/mp4">
+                            //    Your browser does not support the video tag.
+                            // </video>
+                            // var options = {
+                            //     url: data.link,
+                            // };
+                        
+                            // var videoPlayer = new Vimeo.Player(div, options);
+                        
+                            // videoPlayer.on('play', function() {
+                            // console.log('Played the video');
+                            // });
+                            // `);
+                        },
+                        xhr: function() {
+                            var xhr = new window.XMLHttpRequest();
+    
+                            xhr.upload.addEventListener("progress", function(evt) {
+                                $('#progress-bar').css("display", "block");
+    
+                                if (evt.lengthComputable) {
+                                    var percentComplete = evt.loaded / evt.total;
+                                    percentComplete = parseInt(percentComplete * 100);
+                                    console.log(percentComplete);
+                                    $('#progress-bar-fill').css('width', percentComplete + '%');
+    
+                                    if (percentComplete === 100) {
+                                        $('#progress-bar').css("display", "none");
+                                        let div = $('#video-drag').parent().parent();
+                                        $('#video-drag').css({
+                                            'display': 'none'
+                                        });
+    
+                                //         div.append(`
+                                //         <video width="400" height="200" controls>
+                                //         <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
+                                //          Your browser does not support the video tag.
+                                //       </video>
+                                //   `);
+    
+                                        $(div).hover(function() {
+                                            $(this).css("border", "1px solid red");
+                                        }, function() {
+                                            $(this).css("border", '0')
+                                        })
+    
+                                        $('.pic').resizable({
+                                            containment: $('#tabs-for-download'),
+                                            grid: [20, 20],
+                                            autoHide: true,
+                                            minWidth: 150,
+                                            minHeight: 150
+                                        });
+                                        // console.log(file.name);
+                                    }
+                                }
+                            }, false);
+    
+                            return xhr;
+                        }
+    
+                    });
+    
+                    $('#video-drag').css({
+                        'display': 'none'
+                    });
+    
+                }
+                reader.readAsDataURL(input.files[0]);
             }
-        
-            $(".imgInp").change(function(e) {
-                readURL(this);
-        
-            });
-        
-            // ===============for textbox inside grid-1============
-        
-            $('.textdiv').hover(function() {
-                $('#text-actions').css({
-                    'display': 'block'
-                });
-                $(this).css({
-                    'border': '1px solid grey'
-                })
-        
-            }, function() {
-                $('#text-actions').css({
-                    'display': 'none'
-                });
-                $(this).css({
-                    'border': 'none'
-                })
-                $('.messageText').css({
-                    'border': 'none'
-                })
-            })
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.messageText').resizable({
-                containment: $('.editor-canvas'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 250,
-                minHeight: 250
-            });
-        
+        }
+    
+        $(".video-form").change(function(e) {
+    
+            readURL(this);
+    
+        });
+    }
+
+    function dropfunction(event, ui) {
+        if (ui.helper.hasClass('textbox')) {
+            TextboxFunction(ui.helper.position().top - toolbarheight,
+            ui.helper.position().left - sidebarWidth);
+        } else if (ui.helper.hasClass('picture')) {
+            PictureFunction(ui.helper.position().top - toolbarheight,
+            ui.helper.position().left - sidebarWidth);
+            //object of video component
+        } else if (ui.helper.hasClass('video')) {
+            VideoFunction(ui.helper.position().top - toolbarheight,
+                ui.helper.position().left - sidebarWidth);
+        } else if (ui.helper.hasClass('buttons')) {
+            ButtonFuction(ui.helper.position().top - toolbarheight,
+                ui.helper.position().left - sidebarWidth);
         } else if (ui.helper.hasClass('grid-1')) {
-            const grids = new GridLayout1();
-            grids.renderDiagram();
-        
-            $('.fa-upload').click(function(e) {
-                trigger = parseInt(e.target.id) + 1;
-                $('#' + trigger).trigger('click');
-            });
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.pic').on('dragover', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                //   $(this).css('border',"2px solid #39F")
-            })
-        
-            $('.pic').on('drop', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                const files = e.originalEvent.dataTransfer.files;
-                var file = files[0];
-                upload(file);
-        
-            });
-        
-            function upload(file) {
-                const data = new FormData();
-                data.append("fileName", file);
-                $.ajax({
-                    url: '/index',
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    method: 'POST',
-                    type: 'POST',
-                    success: function(data) {
-                        console.log(data);
-                    }
-        
-                });
-                let div = $('#picture-drag').parent().parent();
-                $('#picture-drag').css({
-                    'display': 'none'
-                })
-                div.css({
-                    'background-image': 'url("../uploads/' + file.name + '")',
-                    'background-repeat': 'no-repeat',
-                    'background-size': 'contain',
-                    'background-position': 'center',
-                    'border': '0'
-                });
-        
-                $(div).hover(function() {
-                    $(this).css("border", "1px solid red");
-                }, function() {
-                    $(this).css("border", '0')
-                })
-        
-                $('.pic').resizable({
-                    containment: $('.editor-canvas'),
-                    grid: [20, 20],
-                    autoHide: true,
-                    minWidth: 150,
-                    minHeight: 150
-                });
-        
-            }
-        
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        let div = $(input).parent().parent().parent();
-                        // console.log(div);
-                        var data = new FormData();
-                        $.each($('.imgInp')[0].files, function(i, file) {
-                            data.append('file-' + i, file);
-                        });
-                        console.log(data);
-                        $.ajax({
-                            url: '/index',
-                            data: data,
-                            contentType: false,
-                            processData: false,
-                            method: 'POST',
-                            type: 'POST',
-                            success: function(data) {
-                                console.log(data);
-                            }
-        
-                        });
-        
-                        $('#picture-drag').css({
-                            'display': 'none'
-                        })
-        
-                        div.css({
-                            'background-image': 'url("../uploads/' + input.files[0].name + '")',
-                            'background-repeat': 'no-repeat',
-                            'background-size': 'contain',
-                            'background-position': 'center',
-                            'border': '0'
-                        });
-                        $(div).hover(function() {
-                            $(this).css("border", "1px solid red");
-                        }, function() {
-                            $(this).css("border", '0')
-                        })
-        
-                        $('.pic').resizable({
-                            containment: $('.editor-canvas'),
-                            grid: [20, 20],
-                            autoHide: true,
-                            minWidth: 150,
-                            minHeight: 150
-                        });
-                    }
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-        
-            $(".imgInp").change(function(e) {
-                readURL(this);
-        
-            });
-        
+            PictureFunction(
+                top = 0,
+                left = 0,
+                "",
+                width = "100%", height="50%");
+            
+            
             // ===============for textbox inside grid-1============
-        
-            $('.textdiv').hover(function() {
-                $('#text-actions').css({
-                    'display': 'block'
-                });
-                $(this).css({
-                    'border': '1px solid grey'
-                })
-        
-            }, function() {
-                $('#text-actions').css({
-                    'display': 'none'
-                });
-                $(this).css({
-                    'border': 'none'
-                })
-                $('.messageText').css({
-                    'border': 'none'
-                })
-            })
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.messageText').resizable({
-                containment: $('.editor-canvas'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 250,
-                minHeight: 250
-            });
-        
+            TextboxFunction(
+                top="52%",
+                left=0,
+                height="45%", width="100%"
+            );
+        } else if (ui.helper.hasClass('grid')) {
+            VideoFunction(
+                top = 0,
+                left = 0,
+                "",
+                height="50%",width = "100%");
+            
+            
+            // ===============for textbox inside grid-1============
+            TextboxFunction(
+                top="52%",
+                left=0,
+                height="45%", width="100%"
+            );
         } else if (ui.helper.hasClass('title-slide')) {
-            const title = new TitleSlide();
-            title.renderDiagram();
-        
-            // ===for text in title slide===
-        
-            $('.textdiv').hover(function() {
-                $('#text-actions').css({
-                    'display': 'block'
-                });
-                $(this).css({
-                    'border': '1px solid grey'
-                })
-        
-            }, function() {
-                $('#text-actions').css({
-                    'display': 'none'
-                });
-                $(this).css({
-                    'border': 'none'
-                })
-                $('.messageText').css({
-                    'border': 'none'
-                })
-            })
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.messageText').resizable({
-                containment: $('.editor-canvas'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 250,
-                minHeight: 250
-            });
-        
+            PictureFunction(
+                top = 0,
+                left = "0%",
+                "",
+                width = "50%", height="60%");
+            PictureFunction(
+                top = 0,
+                left = "50%",
+                "",
+                width = "50%", height="60%");
+            TextboxFunction(
+                top="62%",
+                left=0,
+                height="35%", width="100%",
+                message="Your Content Here"
+            );
         } else if (ui.helper.hasClass('title-content-details')) {
-            const titlecontent = new TitleContent();
-            titlecontent.renderDiagram();
-            // ==for text in title-content-details==
-        
-            $('.textdiv').hover(function() {
-                $('#text-actions').css({
-                    'display': 'block'
-                });
-                $(this).css({
-                    'border': '1px solid grey'
-                })
-        
-            }, function() {
-                $('#text-actions').css({
-                    'display': 'none'
-                });
-                $(this).css({
-                    'border': 'none'
-                })
-                $('.messageText').css({
-                    'border': 'none'
-                })
-            })
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-        
-            $('.messageText').resizable({
-                containment: $('.editor-canvas'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 250,
-                minHeight: 250
-            });
-        
-        } else if (ui.helper.hasClass('pdfVideo')) {
-            const pdfVideolayout = new PdfVideoLayout();
-            pdfVideolayout.renderDiagram();
+            TextboxFunction(
+                top="0%",
+                left=0,
+                height="10%", width="100%",
+                message="Your Title Here"
+            );
+            TextboxFunction(
+                top="13%",
+                left=0,
+                height="84%", width="100%",
+                message="Your Content Here"
+            );
+        } else if (ui.helper.hasClass('pdf-text')) {
+            PDFFunction(
+                top = "0%",
+                left = 0,
+                link="",
+                height = "60%", width="100%");
+            
+            
+            // ===============for textbox inside grid-1============
+            TextboxFunction(
+                top="62%",
+                left=0,
+                height="35%", width="100%"
+            );
         
         } else if (ui.helper.hasClass('tables')) {
             const tables = new Tables();
@@ -1488,153 +1194,12 @@ $(document).ready(function() {
             // }
         
         }else if(ui.helper.hasClass('Pdf')){
-            const Pdf = new PDF(
-                ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
-        
-            Pdf.renderDiagram();
-
-              // ==for pdf upload==
-            $('.fa-upload').click(function(e) {
-                trigger = parseInt(e.target.id) + 1;
-                $('#' + trigger).trigger('click');
-            });
-        
-            $('.fa-trash').click(function(e) {
-                $('#' + e.currentTarget.id).parent().parent().remove();
-            });
-
-            $('.pdf').on('dragover', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                //   $(this).css('border',"2px solid #39F")
-            })
-
-            $('.pdf').on('drop', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                const files = e.originalEvent.dataTransfer.files;
-                var file = files[0];
-                upload(file);
-            });
-
-            function upload(file) {
-                const data = new FormData();
-                data.append("file-0", file);
-                data.append('chapterID', chapterID);
-                data.append('courseID', courseID);
-                data.append('type', 'pic');
-                $.ajax({
-                    url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    method: 'POST',
-                    type: 'POST',
-                    success: function(data) {
-                        div.css({
-                            'background-image': 'url('+load_file_url+'/' + file.name + ')',
-                            'background-repeat': 'no-repeat',
-                            'background-size': 'contain',
-                            'background-position': 'center',
-                            'border': '0'
-                        });
-                    },
-                    error: function(data, status, errorThrown) {
-                        alert(data.responseJSON.message);
-                    }
-                });
-                let div = $('#picture-drag').parent().parent();
-                $('#picture-drag').css({
-                    'display': 'none'
-                });
-
-                $(div).hover(function() {
-                    $(this).css("border", "1px solid red");
-                }, function() {
-                    $(this).css("border", '0')
-                })
-
-                $('.pdf').resizable({
-                    containment: $('.editor-canvas'),
-                    grid: [20, 20],
-                    autoHide: true,
-                    minWidth: 150,
-                    minHeight: 150
-                });
-
-            }
-
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        let div = $(input).parent().parent().parent();
-                        var data = new FormData();
-                        // var count = 0
-                        // console.log(input.files);
-                        $.each(input.files, function(i, file) {
-                            // console.log(Math.round((file.size / 1024))) // get image size
-                            data.append('file-' + i, file);
-                        });
-                        // data.append('count', count);
-                        data.append('type', 'pic');
-                        data.append('chapterID', chapterID);
-                        data.append('courseID', courseID);
-                        // console.log("imageuploadfromhere")
-                        $.ajax({
-                            url: save_file_url,
-                            data: data,
-                            contentType: false,
-                            processData: false,
-                            enctype: 'multipart/form-data',
-                            method: 'POST',
-                            type: 'POST',
-                            success: function(data) {
-                                // console.log(data);
-                                div.css({
-                                  'background-image': 'url('+load_file_url+'/'+input.files[0].name+')',
-                                  'background-repeat': 'no-repeat',
-                                  'background-size': 'contain',
-                                  'background-position': 'center',
-                                  'border': '0'
-                                });
-                                div.append(`
-                                    <object data="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}" type="application/pdf" width="100%" height="100%">
-                                        alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
-                                    </object>
-                                `);
-                            },
-                            error: function(data, status, errorThrown) {
-                                alert(data.responseJSON.message);
-                            }
-                        });
-
-                        $('#picture-drag').css({
-                            'display': 'none'
-                        })
-                        
-                        $(div).hover(function() {
-                            $(this).css("border", "1px solid red");
-                        }, function() {
-                            $(this).css("border", '0')
-                        })
-
-                        $('.pdf').resizable({
-                            containment: $('.editor-canvas'),
-                            grid: [20, 20],
-                            autoHide: true,
-                            minWidth: 150,
-                            minHeight: 150
-                        });
-                    }
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-            $(".pdfInp").change(function(e) {
-                readURL(this);
-            });
+            PDFFunction(ui.helper.position().top - toolbarheight,
+            ui.helper.position().left - sidebarWidth);
         }
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+        });
     }
 
     $(".editor-canvas").droppable({
@@ -1687,100 +1252,48 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
 
-                            const textBox = new Textbox(css_value.tops,
-                                css_value.left, css_value.content);
-                        
-                            textBox.renderDiagram();
-
-                            $('.fa-trash').click(function(e) {
-                                $('#' + e.currentTarget.id).parent().parent().remove();
-                            });
-                        
-                            $('.messageText').resizable({
-                                containment: $('#tabs-for-download'),
-                                grid: [20, 20],
-                                autoHide: true,
-                                minWidth: 75,
-                                minHeight: 25
-                            });
+                            TextboxFunction(css_value.tops,
+                            css_value.left,css_value.height,css_value.width,css_value.content);
                         });
                     }
                     if(div == 'pic'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
-                            const Pic = new picture(
-                                css_value.tops,
-                                css_value.left,
-                                css_value['background-image']);
-                            Pic.renderDiagram();
-
-                            $('.fa-upload').click(function(e) {
-                                trigger = parseInt(e.target.id) + 1;
-                                $('#' + trigger).trigger('click');
-                            });
-                        
-                            $('.fa-trash').click(function(e) {
-                                $('#' + e.currentTarget.id).parent().parent().remove();
-                            });
+                            PictureFunction(css_value.tops,
+                                css_value.left,css_value['background-image'],css_value.height,css_value.width);
                         });
                     }
 
                     if(div == 'btn-div'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
-                            const btns = new Button(css_value.tops,
-                                css_value.left);
-                    
-                            btns.renderDiagram();
-                        
-                            const div1 = $('i').parent();
-                        
-                            $('.fa-trash').click(function(e) {
-                                $('#' + e.currentTarget.id).parent().parent().remove();
-                                //  alert('btn clickd')
-                            });
-                        
-                            $('.fa-link').bind("click", function(e) {
-                                let argument = prompt("Enter a Link here...");
-                                if (argument == null || argument == "") {
-                                    return console.log("cancled pressed")
-                                } else {
-                                    var btn_id = parseInt(e.currentTarget.id) + 1
-                                    $('#' + btn_id).attr({
-                                        "href": `http://${argument}`
-                                    })
-                                }
-                        
-                            });
-                        
-                            $('.btn').resizable({
-                                containment: $('#tabs-for-download'),
-                                grid: [20, 20],
-                                autoHide: true,
-                                minWidth: 50,
-                                minHeight: 30,
-                            });
                             
+                            ButtonFuction(css_value.tops,
+                                css_value.left, 
+                                css_value.link,
+                                css_value.height, css_value.width);
                         });
                     }
 
                     if(div == 'pdf'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
-                            const pdf = new PDF(
+                            PDFFunction(
                                 css_value.tops,
                                 css_value.left,
-                                css_value['link']);
-                            pdf.renderDiagram();
+                                css_value['link'],
+                                css_value.height,css_value.width);
+                        });
+                    }
 
-                            $('.fa-upload').click(function(e) {
-                                trigger = parseInt(e.target.id) + 1;
-                                $('#' + trigger).trigger('click');
-                            });
-                        
-                            $('.fa-trash').click(function(e) {
-                                $('#' + e.currentTarget.id).parent().parent().remove();
-                            });
+                    if(div == 'video'){
+                        $.each(div_value, function(css, css_value){
+                            css_string = JSON.stringify(css_value)
+                            VideoFunction(
+                                css_value.tops,
+                                css_value.left,
+                                css_value['link'],
+                                css_value.height,css_value.width);
                         });
                     }
                 });

@@ -6,61 +6,61 @@
 
 {% block sidebar %}
 
-    <!-- sidebar menu -->
-    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-        <div class="menu_section">
+<!-- sidebar menu -->
+<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+  <div class="menu_section">
 
-            <h3>Teacher Portal Home</h3>
-            <hr>
+    <h3>Teacher Portal Home</h3>
+    <hr>
 
-            <ul class="nav side-menu">
-                {% if user.is_authenticated %}
-                <li>
-                    <a href="{% url 'teacher_home' %}"><i class="fa fa-home"></i> Dashboard
-                    </a>
-                </li>
+    <ul class="nav side-menu">
+      {% if user.is_authenticated %}
+      <li>
+        <a href="{% url 'teacher_home' %}"><i class="fa fa-home"></i> Dashboard
+        </a>
+      </li>
 
-                <li><a><i class="fa fa-book"></i> Courses <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="{% url 'teacher_courseinfo_list' %}">Course List</a></li>
-                        <li><a href="{% url 'teacher_mycourses_list' %}">My Courses</a></li>
-                        <li><a href="{% url 'teacher_courseinfo_create' %}">Create New Course</a></li>
+      <li><a><i class="fa fa-book"></i> Courses <span class="fa fa-chevron-down"></span></a>
+        <ul class="nav child_menu">
+          <li><a href="{% url 'teacher_courseinfo_list' %}">Course List</a></li>
+          <li><a href="{% url 'teacher_mycourses_list' %}">My Courses</a></li>
+          <li><a href="{% url 'teacher_courseinfo_create' %}">Create New Course</a></li>
 
-                    </ul>
-                </li>
+        </ul>
+      </li>
 
-                <li><a><i class="fa fa-question"></i> Quiz <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="{% url 'teacher_quiz_list' %}">Quiz List</a></li>
-                        <li><a href="{% url 'teacher_quizfw' %}">Create New Quiz</a></li>
-
-
-                    </ul>
-                </li>
-
-                <li><a><i class="fa fa-edit"></i> Assignments <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="{% url 'teacher_myassignmentinfo_list' %}">My Assignments</a></li>
-                        <li><a href="#">Create New Assignment</a></li>
-                    </ul>
-                </li>
+      <li><a><i class="fa fa-question"></i> Quiz <span class="fa fa-chevron-down"></span></a>
+        <ul class="nav child_menu">
+          <li><a href="{% url 'teacher_quiz_list' %}">Quiz List</a></li>
+          <li><a href="{% url 'teacher_quizfw' %}">Create New Quiz</a></li>
 
 
-                {% endif %}
-                <li><a><i class="fa fa-user"></i>Forum<span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="#">Home</a></li>
+        </ul>
+      </li>
+
+      <li><a><i class="fa fa-edit"></i> Assignments <span class="fa fa-chevron-down"></span></a>
+        <ul class="nav child_menu">
+          <li><a href="{% url 'teacher_myassignmentinfo_list' %}">My Assignments</a></li>
+          <li><a href="#">Create New Assignment</a></li>
+        </ul>
+      </li>
 
 
-                    </ul>
-                </li>
-                <li>
-                    <a href=" {% url 'question_teachers' %}"><i class="fa fa-bar-chart"></i>Survey</a>
-                </li>
-            </ul>
+      {% endif %}
+      <li><a><i class="fa fa-user"></i>Forum<span class="fa fa-chevron-down"></span></a>
+        <ul class="nav child_menu">
+          <li><a href="{% url 'teacher_forum' %}">Home</a></li>
 
-        </div>
-        <!-- <div class="menu_section">
+
+        </ul>
+      </li>
+      <li>
+        <a href=" {% url 'question_teachers' %}"><i class="fa fa-bar-chart"></i>Survey</a>
+      </li>
+    </ul>
+
+  </div>
+  <!-- <div class="menu_section">
           <h3>Live On</h3>
           <ul class="nav side-menu">
             <li><a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
@@ -103,6 +103,6 @@
                   class="label label-success pull-right">Coming Soon</span></a></li>
           </ul>
         </div> -->
-    </div>
-    <!-- /sidebar menu -->
+</div>
+<!-- /sidebar menu -->
 {% endblock %}
