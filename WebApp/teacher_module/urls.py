@@ -73,6 +73,11 @@ urlpatterns += (
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="teacher_forum"),
     path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
+    path('forum/create_topic', views.create_topic, name="teacher_create_topic"),
+    path('forum/search/(?P<keyword>.*)',
+         views.SearchView.as_view(), name='teacher_search'),
+    path('forum/search/', views.search_redirect,
+         name='teacher_search_redirect'),
 )
 
 urlpatterns += (
@@ -85,7 +90,8 @@ urlpatterns += (
          name='teacher_quiz_detail'),
     path('quiz/edit/<int:pk>/', views.QuizUpdateView.as_view(),
          name='teacher_quiz_update'),
-    path('detail/<slug>', views.QuizDetailView.as_view(), name='teacher_quiz_detail_s'),
+    path('detail/<slug>', views.QuizDetailView.as_view(),
+         name='teacher_quiz_detail_s'),
 
     path('mcquestion/', views.MCQuestionListView.as_view(),
          name='teacher_mcquestion_list'),
