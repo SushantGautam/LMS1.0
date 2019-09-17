@@ -32,7 +32,7 @@ from quiz.models import Progress
 
 from django.urls import reverse
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
@@ -769,9 +769,9 @@ FORMS = [("form1", QuizForm1),
          ("form2", QuizForm2),
          ("form3", QuizForm3)]
 
-TEMPLATES = {"form1": "wizard/step1.html",
-             "form2": "wizard/step2.html",
-             "form3": "wizard/step3.html"}
+TEMPLATES = {"form1": "wizard_teacher/step1.html",
+             "form2": "wizard_teacher/step2.html",
+             "form3": "wizard_teacher/step3.html"}
 
 
 class QuizCreateWizard(SessionWizardView):
