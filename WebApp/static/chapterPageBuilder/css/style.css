@@ -4,8 +4,7 @@ html{
 
 body{
   height:100%;
-  overflow: hidden;
-
+ 
 }
 
 .pdf {
@@ -125,6 +124,7 @@ body{
 .draggable-style {
   background: #fff;
   box-shadow: 2px 0px 2px #666;
+ 
   min-width: 160px;
   margin-top: 1em;
   text-align: center;
@@ -267,7 +267,7 @@ svg{
 .pic{
    width:400px;
    height:200px;
-   border:3px dashed #ddd;
+   border:3px dashed #ddd !important;
    display: flex;
    flex-flow: column wrap;
    align-items: center;
@@ -549,25 +549,19 @@ svg{
 .btn:link{
   color:white;
 }
-#options{
+.options{
   
     width:100px;
     background:#CCC;
     margin:5px;
     display: none;
-  
-  
-}
-#btn-div:hover #options{
-  opacity: 0.8;
-  display: flex;
-  flex-flow:row wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  
 }
 
-#btn-div:hover{
+.btn-div:hover .options{
+  display: block;
+}
+
+.btn-div:hover{
   border:1px solid #ddd;
 }
 
@@ -575,184 +569,6 @@ svg{
 
 
 
-
-
-
-
-/* ==================================GRID===================================== */
-.grid-container{
-  min-width:100%;
-  max-height: 504px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding:10px;
-  /* margin-top: 70px;
-   */
-  
-}
-
-.grid-header{
-  min-width: 100%;
-  resize: vertical; 
-  min-height:250px;
-  padding:10px;
-}
-
-.grid-header .video-div{
-  width: 100%;
-  max-height:250px;
-  
-
-}
-.grid-body{
-  min-width: 100%;
-  min-height:250px;
-  margin-top:10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-   padding:5px;
-   
-   resize: none;
-
-}
-
-.grid-body .textdiv{
-  width:100%;
-  margin-bottom: 10px;
-}
-
-.grid-body .textdiv .messageText{
-  max-width: 100%;
- height: 250px;
-  border:2px dashed #ddd !important;
-}
-
-
-
-
-/* =========================For GridLayout-1================================= */
-
-.grid-container-1{
- width:100%;
-  min-height: 500px;
-  
-
-  
-}
-
-.grid-section-left-1{
- width:97%;
- min-height: 250px;
- padding:10px;
-
-
-}
-
-.grid-section-left-1 .video-div{
-  width: 100%;
-  max-height:250px;
-  
-
-}
-
-
-.grid-section-right-1{
-  width:97%;
-  min-height: 250px;
-   padding:10px;
-
-}
-.grid-section-right-1 .textdiv{
-  width:100%;
-  margin-bottom: 10px;
-}
-
-.grid-section-right-1 .textdiv .messageText{
-  max-width: 100%;
- height: 250px;
-  border:2px dashed #ddd !important;
-}
-
-
-/* ================for title-slide====================== */
-.title-slide-container{
-  width:100%;
-  
-}
-
-.title-slide-head{
-  display: flex;
-  justify-content:space-between;
-  height: 250px;
- 
-
-}
-
-.title-slide-left{
-  width: 45%;
-  height: 250px;
-
-}
-
-.title-slide-right{
-  width: 45%;
-  height: 250px;
-  
-}
-
-
-.title-slide-bottom{
-  width:100%;
-  height: 250px;
-}
-
-.title-slide-bottom .textdiv{
-  width:100%;
-  margin-bottom: 10px;
-}
-
-.title-slide-bottom .textdiv .messageText{
-  max-width: 100%;
- height: 250px;
-  border:2px dashed #ddd !important;
-}
-
-
-
-/* ===================================For title-content=============================== */
-.title-content{
-  width:100%;
-  height:504px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start
-
-}
-
-.title-content .title-content-heading{
-  width:90%;
-  height:50px;
-  padding:10px;
-  border:1px dashed #000;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-
-.title-content .title-content-info{
-  width:90%;
-  height:400px;
-  margin-top:30px;
-  padding:10px;
-  border:1px dashed #000;
-
-}
 
 
 /* =================tabs position=================== */
@@ -1064,6 +880,11 @@ table th {
   display: block;
   background:#fff;
 }
+
+
+/* =============grid-1============ */
+
+
 
 /* ================for Media Tabs====================== */
 /* Style the tab */

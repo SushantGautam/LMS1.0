@@ -98,7 +98,6 @@
 
                 <div class="bs-chart-container" id="progressResult" style="width: 80%;">
                   <h4>Results:</h4>
-                    {% for question in object.questioninfo.all %}
                         {% for option in question.optioninfo.all %}
                             <div class="surveyResults">
                                 <strong>Option {{ forloop.counter }}</strong>
@@ -111,7 +110,6 @@
                                 </div>
                             </div>
                         {% endfor %}
-                    {% endfor %}
                 </div>
 
               </div>
@@ -124,7 +122,7 @@
                     <strong>{{ question.Question_Name }}</strong>
                   </h2>
                   <h5>
-                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}
+                      {#                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}#}
                   </h5>
                 </div>
                 <div style="
@@ -162,7 +160,7 @@
           $.ajax({
               type: "GET",
               data: {'categoryId': "{{ object.Category_Code.id }}"},
-              url: "{% url 'surveyinfo_retake_ajax' survey_id=object.id %}",  // URL to your view that serves new info
+              url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#surveyFormRetake").html(data);
               }

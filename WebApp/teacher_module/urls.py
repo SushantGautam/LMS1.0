@@ -1,9 +1,7 @@
-from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.teacher_module import views
-from WebApp.teacher_module.views import CourseInfoListView
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -44,8 +42,8 @@ urlpatterns += (
          name='teacher_assignmentinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='teacher_assignmentinfo_update'),
-    path('myassignments/', views.MyAssignmentsListView.as_view(),
-         name='teacher_myassignmentinfo_list'),
+    path('myassignments/',views.MyAssignmentsListView.as_view(), name='teacher_myassignmentinfo_list'),
+    path('assignment_answers/<int:pk>',views.AssignmentAnswers.as_view(), name='teacher_assignment_answers'),
 )
 
 urlpatterns += (
@@ -62,14 +60,85 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    path('question_teachers/', views.question_teachers, name="question_teachers"),
-)
-
-urlpatterns += (
-    path('polls_teachers/', views.polls_teachers, name="polls_teachers"),
+    path('question_teachers/', views.SurveyInfoListView.as_view(), name="question_teachers"),
+    # path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
+    #          name='surveyinfo_create'),
+    path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
+    path('polls_teachers/detail/<int:pk>/',
+         views.TeacherSurveyInfoDetailView.as_view(), name='polls_teachers'),
+    path('teacherSurveyFilterCategory/', views.teacherSurveyFilterCategory.as_view(),
+         name='teacherSurveyFilterCategory'),
+    path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
+         name='TeacherSurveyInfo_ajax'),
 )
 
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="teacher_forum"),
     path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
+    path('forum/create_topic', views.create_topic, name="teacher_create_topic"),
+    path('forum/search/(?P<keyword>.*)',
+         views.SearchView.as_view(), name='teacher_search'),
+    path('forum/search/', views.search_redirect,
+         name='teacher_search_redirect'),
+)
+
+urlpatterns += (
+    # urls for Quiz
+    path('quiz/', views.QuizListView.as_view(),
+         name='teacher_quiz_list'),
+    path('quiz/create/', views.QuizCreateView.as_view(),
+         name='teacher_quiz_create'),
+    path('quiz/detail/<int:pk>/', views.QuizDetailView.as_view(),
+         name='teacher_quiz_detail'),
+    path('quiz/edit/<int:pk>/', views.QuizUpdateView.as_view(),
+         name='teacher_quiz_update'),
+    path('detail/<slug>', views.QuizDetailView.as_view(),
+         name='teacher_quiz_detail_s'),
+
+    path('mcquestion/', views.MCQuestionListView.as_view(),
+         name='teacher_mcquestion_list'),
+    path('mcquestion/create/', views.MCQuestionCreateView.as_view(),
+         name='teacher_mcquestion_create'),
+    path('mcquestion/create/<int:quiz_id>/', views.MCQuestionCreateFromQuiz.as_view(),
+         name='teacher_mcquestion_create_from_quiz'),
+    path('mcquestion/update/<int:pk>', views.MCQuestionUpdateView.as_view(),
+         name='teacher_mcquestion_update'),
+    path('mcquestion/update/<int:pk>/<int:quiz_id>', views.MCQuestionUpdateFromQuiz.as_view(),
+         name='teacher_mcquestion_update_from_quiz'),
+    path('mcquestion/detail/<int:pk>/', views.MCQuestionDetailView.as_view(),
+         name='teacher_mcquestion_detail'),
+    path('mcquestion/delete/<int:pk>/', views.MCQuestionDeleteView,
+         name='teacher_mcquestion_delete'),
+
+    path('tfquestion/', views.TFQuestionListView.as_view(),
+         name='teacher_tfquestion_list'),
+    path('tfquestion/create/', views.TFQuestionCreateView.as_view(),
+         name='teacher_tfquestion_create'),
+    path('tfquestion/create/<int:quiz_id>/', views.TFQuestionCreateFromQuiz.as_view(),
+         name='teacher_tfquestion_create_from_quiz'),
+    path('tfquestion/update/<int:pk>', views.TFQuestionUpdateView.as_view(),
+         name='teacher_tfquestion_update'),
+    path('tfquestion/update/<int:pk>/<int:quiz_id>', views.TFQuestionUpdateFromQuiz.as_view(),
+         name='teacher_tfquestion_update_from_quiz'),
+    path('tfquestion/detail/<int:pk>/', views.TFQuestionDetailView.as_view(),
+         name='teacher_tfquestion_detail'),
+    path('tfquestion/delete/<int:pk>/', views.TFQuestionDeleteView,
+         name='teacher_tfquestion_delete'),
+
+    path('saquestion/', views.SAQuestionListView.as_view(),
+         name='teacher_saquestion_list'),
+    path('saquestion/create/', views.SAQuestionCreateView.as_view(),
+         name='teacher_saquestion_create'),
+    path('saquestion/create/<int:quiz_id>/', views.SAQuestionCreateFromQuiz.as_view(),
+         name='teacher_saquestion_create_from_quiz'),
+    path('saquestion/update/<int:pk>', views.SAQuestionUpdateView.as_view(),
+         name='teacher_saquestion_update'),
+    path('saquestion/update/<int:pk>/<int:quiz_id>', views.SAQuestionUpdateFromQuiz.as_view(),
+         name='teacher_saquestion_update_from_quiz'),
+    path('saquestion/detail/<int:pk>/', views.SAQuestionDetailView.as_view(),
+         name='teacher_saquestion_detail'),
+    path('saquestion/delete/<int:pk>/', views.SAQuestionDeleteView,
+         name='teacher_saquestion_delete'),
+
+    path('quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
 )

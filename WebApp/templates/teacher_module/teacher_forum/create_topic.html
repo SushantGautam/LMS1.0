@@ -4,8 +4,8 @@
 
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
-<li class="breadcrumb-item active"><a href="{% url 'forum:create_topic' %}"> Create SubCategory</a>
+<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
+<li class="breadcrumb-item active"><a href="{% url 'teacher_create_topic' %}"> Create SubCategory</a>
 </li>
 
 {% endblock %}
@@ -15,7 +15,7 @@
 <div class="panel panel-default paper-shadow" data-z="2">
     <div class="panel-body">
 
-        <form method="post" action="{% url 'forum:create_topic' %}">
+        <form method="post" action="{% url 'teacher_create_topic' %}">
             {% csrf_token %}
 
             <div class="x-title">

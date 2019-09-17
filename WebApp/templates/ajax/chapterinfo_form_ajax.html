@@ -17,7 +17,7 @@
             </label>
             <div class="controls ">
                 <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
-                          cols="40">{{ object.Summary }}</textarea>
+                    cols="40">{{ object.Summary }}</textarea>
             </div>
         </div>
         <br>
@@ -26,12 +26,12 @@
     {#            {{ form.Page_Num|as_crispy_field }}<br>#}
     {#        </div>#} -->
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <input id="id_Use_Flag" name="Use_Flag" value="true" type="hidden">
+        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
     </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.pk }}"
-               class="select form-control">
+            class="select form-control">
     </div>
 
 
@@ -50,6 +50,7 @@
     $("#ajaxchapterinfoform").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
+        console.log($('#id_Use_Flag').val())
         $.ajax({
             url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
@@ -66,6 +67,7 @@
             // get the form data
             type: $(this).attr('method'), // GET or POST
             success: function (response) {
+
                 console.log('Success')
                 location.reload()
             },

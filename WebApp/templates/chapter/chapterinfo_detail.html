@@ -35,6 +35,7 @@
 
                 {% endif %}
             </div>
+            {% if '/students' not in request.path %}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <a style="float: right;margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
         /teachers{{ object.get_update_url }}
@@ -42,6 +43,7 @@
         {{ object.get_update_url }}
     {% endif %}"><b><u>Edit Chapter</u></b></a>
             </div>
+            {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12" id="tabs">
                 <table class="table">
                     <tr>
