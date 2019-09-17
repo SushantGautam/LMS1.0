@@ -1,10 +1,7 @@
-from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.teacher_module import views
-from WebApp.teacher_module.views import CourseInfoListView
-from quiz import views as quiz_views
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -63,11 +60,16 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    path('question_teachers/', views.question_teachers, name="question_teachers"),
-)
-
-urlpatterns += (
-    path('polls_teachers/', views.polls_teachers, name="polls_teachers"),
+    path('question_teachers/', views.SurveyInfoListView.as_view(), name="question_teachers"),
+    # path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
+    #          name='surveyinfo_create'),
+    path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
+    path('polls_teachers/detail/<int:pk>/',
+         views.TeacherSurveyInfoDetailView.as_view(), name='polls_teachers'),
+    path('teacherSurveyFilterCategory/', views.teacherSurveyFilterCategory.as_view(),
+         name='teacherSurveyFilterCategory'),
+    path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
+         name='TeacherSurveyInfo_ajax'),
 )
 
 urlpatterns += (

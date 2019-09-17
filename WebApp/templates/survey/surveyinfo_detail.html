@@ -98,7 +98,6 @@
 
                 <div class="bs-chart-container" id="progressResult" style="width: 80%;">
                   <h4>Results:</h4>
-                    {% for question in object.questioninfo.all %}
                         {% for option in question.optioninfo.all %}
                             <div class="surveyResults">
                                 <strong>Option {{ forloop.counter }}</strong>
@@ -111,7 +110,6 @@
                                 </div>
                             </div>
                         {% endfor %}
-                    {% endfor %}
                 </div>
 
               </div>
@@ -124,7 +122,7 @@
                     <strong>{{ question.Question_Name }}</strong>
                   </h2>
                   <h5>
-                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}
+                      {#                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}#}
                   </h5>
                 </div>
                 <div style="

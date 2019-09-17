@@ -1,23 +1,20 @@
-from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.views import PasswordContextMixin
 # from django.core.checks import messages
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, FormView, TemplateView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
 from django_addanother.views import CreatePopupMixin
 
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, MemberInfo, InningGroup, AssignAnswerInfo
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
 from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
-from survey.models import SurveyInfo
+from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
+from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
+
 from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
 from datetime import datetime
 from forum.models import NodeGroup, Thread, Topic
@@ -25,6 +22,32 @@ from forum.views import get_top_thread_keywords
 from .misc import get_query
 from .forms import ThreadForm, TopicForm
 from django.conf import settings
+from survey.views import AjaxableResponseMixin
+from .forms import ThreadForm
+from datetime import datetime
+
+# from django.core.checks import messages
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
+from django_addanother.views import CreatePopupMixin
+
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup
+from forum.models import NodeGroup, Thread, Topic
+from forum.views import get_top_thread_keywords
+from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
+from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
+from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
+from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
+from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
+from survey.views import AjaxableResponseMixin
+from .forms import ThreadForm
+
 datetime_now = datetime.now()
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from formtools.wizard.views import SessionWizardView
@@ -36,8 +59,6 @@ from django.urls import reverse
 
 from django.http import JsonResponse, HttpResponseRedirect
 
-from django.core.exceptions import ValidationError
-from django.http import HttpResponse
 
 def start(request):
     """Start page with a documentation.
@@ -229,13 +250,13 @@ class AssignmentInfoDetailView(DetailView):
 class AssignmentAnswers(ListView):
     model = AssignAnswerInfo
     template_name = 'teacher_module/assignment_answers.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         questions = QuestionInfo.objects.filter(Assignment_Code = self.kwargs['pk'],Register_Agent=self.request.user.id)
         context['questions'] = questions
         context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
-       
+
         # context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
@@ -289,8 +310,69 @@ def makequery(request):
     })
 
 
-def question_teachers(request):
-    return render(request, 'teacher_module/question_teachers.html')
+# def question_teachers(request):
+#     return render(request, 'teacher_module/question_teachers.html')
+
+class SurveyInfoListView(ListView):
+    model = SurveyInfo
+    template_name = 'teacher_module/question_teachers.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now().date()
+        context['categories'] = CategoryInfo.objects.all()
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+
+        # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
+
+        # context['surveyForm'] = {'categoryName': list(categoryName)}
+        # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
+        # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
+
+        return context
+
+
+class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
+    model = SurveyInfo
+    form_class = SurveyInfoForm
+    template_name = 'teacher_module/teacherSurveyInfo_ajax.html'
+    success_url = reverse_lazy('question_teachers')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
+                                                                        prefix='questionansinfo')  # SAQ
+        else:
+            context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
+            context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+        return context
+
+    def form_valid(self, form):
+        vform = super().form_valid(form)
+        context = self.get_context_data()
+        qn = context['questioninfo_formset']
+        qna = context['questionansinfo_formset']
+        with transaction.atomic():
+            if qn.is_valid():
+                qn.instance = self.object
+                qn.save()
+            else:
+                print(qn.errors)
+                print('qn is invalid')
+            if qna.is_valid():
+                qna.instance = self.object
+                qna.save()
+            else:
+                print('qna is invalid')
+                print(qna.errors)
+        return vform
 
 
 def polls_teachers(request):
@@ -892,6 +974,35 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     return render(request, 'teacher_module/teacher_forum/create_thread.html',
                   {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
+
+
+class teacherSurveyFilterCategory(ListView):
+    model = SurveyInfo
+    template_name = 'teacher_module/teacher_surveyFiltered.html'
+
+    def get_queryset(self):
+        if self.request.GET['categoryId'] == '0':
+            return SurveyInfo.objects.all()
+        else:
+            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now()
+        return context
+
+
+class TeacherSurveyInfoDetailView(DetailView):
+    model = SurveyInfo
+    template_name = 'teacher_module/polls_teachers.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+        return context
 
 
 

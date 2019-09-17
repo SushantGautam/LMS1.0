@@ -39,7 +39,7 @@ class SurveyInfo(models.Model):
     Version_No = IntegerField(default=1, help_text="To maintain the versioning of the survey")
     Created_Date = DateTimeField(auto_now_add=True)
     Updated_Date = DateTimeField(auto_now=True)
-    Survey_Live = BooleanField(default=False)
+    Survey_Live = BooleanField(default=False, blank=True, null=True)
 
     Center_Code = ForeignKey(
         'WebApp.CenterInfo',
