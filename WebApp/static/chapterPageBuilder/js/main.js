@@ -185,6 +185,10 @@ $(document).ready(function() {
         constructor(top, left, link=null, height=null, width=null) {
         let id = (new Date).getTime();
         let position = { top, left, height, width };
+        let button_link = ""
+        if(link != null){
+            button_link = 'href = '+ link
+        }
         let html = `
                         <div class="btn-div">
                             <div class="options">
@@ -193,7 +197,7 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" href = ${link} id=${id + 1}  target="_blank"  >Submit</a>
+                            <a class="btn" ${button_link} id=${id + 1}  target="_blank"  >Submit</a>
                         </div>
         
                 `;
