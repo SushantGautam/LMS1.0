@@ -70,9 +70,9 @@
             <div class="card">
                 {% block widget_before %}{% endblock %}
                 {% if request.user.is_authenticated %}
-                {% include 'forum/widgets/authenticated_user_panel.html' %}
+                {% include 'teacher_module/teacher_forum/widgets/authenticated_user_panel.html' %}
                 {% else %}
-                {% include 'forum/widgets/visitor_user_panel.html' %}
+                {% include 'teacher_module/teacher_forum/widgets/visitor_user_panel.html' %}
                 {% endif %}
 
                 {% block widget_after %}{% endblock %}
@@ -96,7 +96,7 @@
                             active
                         {% endif %}
                     {% endif %}">
-                        <a href="{% url 'forum:nodegroup' nodegroup.pk %}" id="{{ nodegroup.pk }}"
+                        <a href="{% url 'teacher_nodegroup' nodegroup.pk %}" id="{{ nodegroup.pk }}"
                             class="node_group_list">
                             {{ nodegroup.title }}</a>
                     </li>
