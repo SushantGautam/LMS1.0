@@ -5,7 +5,13 @@
 
 {% block title %} {{ quiz.title }} {% endblock %}
 {% block description %} {{ quiz.title }} - {{ quiz.description }} {% endblock %}
+{% block breadcrumb %} 
+<!-- <li class="breadcrumb-item"><a href="{% url 'student_chapterinfo_detail' course=quiz.course_code.pk pk=quiz.chapter_code.pk %}">Chapter</a></li> -->
+                
+ 
 
+<li class="breadcrumb-item active" aria-current="page">{{quiz.title}}</li>
+{% endblock %} 
 {% block content %}
 
 {% if previous.answers %}
