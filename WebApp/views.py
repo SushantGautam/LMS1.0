@@ -956,7 +956,7 @@ def save_video(request):
 
         # media = '{path to a video on the file system}'
 
-        uri = v.upload('/LMS',path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
+        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
             'name': media.name,
         })
 
