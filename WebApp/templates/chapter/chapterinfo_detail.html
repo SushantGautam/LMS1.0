@@ -322,6 +322,25 @@
                 }
             });
         });
+    
+        $(document).keydown(function(e){
+            if(e.keyCode == '39'){
+                $('#next-btn').click();
+            }
+            if(e.keyCode == '37'){
+                $('#prev-btn').click();
+            }
+            //UP
+            if (e.keyCode == '38') {
+                $('.modal-body').animate({ scrollTop: 0 }, 100);
+                return false;
+            }
+            //DOWN
+            if (e.keyCode == '40') {
+                $('.modal-body').animate({ scrollTop: $(document).height() }, 100);
+                return false;
+            }
+        });
     });
 
     $('#course-viewer').click(function () {
