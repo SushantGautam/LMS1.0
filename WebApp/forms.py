@@ -1,11 +1,10 @@
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
-from django.forms import ModelForm, TextInput
+from django.forms import SelectDateWidget
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-                    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, USER_ROLES
-
+    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
 
 
 class UserRegisterForm(UserCreationForm):
@@ -13,18 +12,22 @@ class UserRegisterForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = MemberInfo
-        fields = ('username', 'email', 'Member_Gender', 'Center_Code', 'Is_Student', 'Is_Teacher','Use_Flag')
+        fields = ('username', 'email', 'Member_Gender', 'Center_Code', 'Is_Student', 'Is_Teacher', 'Use_Flag')
 
 
 class UserUpdateForm(forms.ModelForm):
-    role = forms.MultipleChoiceField(choices=USER_ROLES, )
+    # role = forms.MultipleChoiceField(choices=USER_ROLES, )
+
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget)
 
     class Meta:
         model = MemberInfo
-        fields = ('username', 'email')
-        widgets = {
-            'role': forms.CheckboxSelectMultiple,
-        }
+        fields = ('username', 'email', 'first_name', 'last_name', 'Member_Gender', 'Member_Permanent_Address',
+                  'Member_Temporary_Address', 'Member_BirthDate',
+                  'Member_Phone',)
+        # widgets = {
+        #     'role': forms.CheckboxSelectMultiple,
+        # }
 
 
 class UserUpdateFormForAdmin(forms.ModelForm):
@@ -66,7 +69,7 @@ class SessionInfoForm(forms.ModelForm):
 
 
 class GroupMappingForm(forms.ModelForm):
-    Students = forms.ModelMultipleChoiceField(queryset=None,required=True,
+    Students = forms.ModelMultipleChoiceField(queryset=None, required=True,
                                               widget=FilteredSelectMultiple("Students", is_stacked=False))
 
     class Media:
@@ -76,15 +79,17 @@ class GroupMappingForm(forms.ModelForm):
     class Meta:
         model = GroupMapping
         fields = '__all__'
+
     # To filter out only active students of that center
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(GroupMappingForm, self).__init__(*args, **kwargs)
-        self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True,Use_Flag=True,Center_Code=self.request.user.Center_Code)
+        self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True, Use_Flag=True,
+                                                                     Center_Code=self.request.user.Center_Code)
 
 
 class InningGroupForm(forms.ModelForm):
-    Teacher_Code = forms.ModelMultipleChoiceField(queryset=None,required=True,
+    Teacher_Code = forms.ModelMultipleChoiceField(queryset=None, required=True,
                                                   widget=FilteredSelectMultiple("Teachers", is_stacked=False))
 
     class Media:
@@ -94,15 +99,19 @@ class InningGroupForm(forms.ModelForm):
     class Meta:
         model = InningGroup
         fields = '__all__'
+
     # To filter out only active teachers of that center
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(InningGroupForm, self).__init__(*args, **kwargs)
-        self.fields['Teacher_Code'].queryset = MemberInfo.objects.filter(Is_Teacher=True,Use_Flag=True,Center_Code=self.request.user.Center_Code)
-        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
+        self.fields['Teacher_Code'].queryset = MemberInfo.objects.filter(Is_Teacher=True, Use_Flag=True,
+                                                                         Center_Code=self.request.user.Center_Code)
+        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                        Use_Flag=True)
+
 
 class InningInfoForm(forms.ModelForm):
-    Course_Group = forms.ModelMultipleChoiceField(queryset=None,required=True,
+    Course_Group = forms.ModelMultipleChoiceField(queryset=None, required=True,
                                                   widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
     class Media:
@@ -112,13 +121,18 @@ class InningInfoForm(forms.ModelForm):
     class Meta:
         model = InningInfo
         fields = '__all__'
+
     # To filter out only active course group of that center
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(InningInfoForm, self).__init__(*args, **kwargs)
-        self.fields['Course_Group'].queryset = InningGroup.objects.filter(Use_Flag=True,Center_Code=self.request.user.Center_Code)
-        self.fields['Inning_Name'].queryset = SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
-        self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
+        self.fields['Course_Group'].queryset = InningGroup.objects.filter(Use_Flag=True,
+                                                                          Center_Code=self.request.user.Center_Code)
+        self.fields['Inning_Name'].queryset = SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                         Use_Flag=True)
+        self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                     Use_Flag=True)
+
 
 # AssignmentInfoForms
 class AssignmentInfoForm(forms.ModelForm):
@@ -156,8 +170,3 @@ class ChangeOthersPasswordForm(forms.Form):
         "type": "password"
     }
     password = forms.CharField(widget=forms.TextInput(attrs=attrs))
-
-
-
-
-
