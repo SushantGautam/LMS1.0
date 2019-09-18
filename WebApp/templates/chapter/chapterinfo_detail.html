@@ -244,9 +244,13 @@
     <div class="modal-dialog" style="width: 80%">
 
         <!-- Modal content-->
-        <div class="modal-content">
+        <div id='hijo' class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <a data-toggle="tooltip" data-placement="right" title="" onclick="toggleFullScreen()"
+                   data-original-title="FullScreen" style="float:right;padding-right: 20px;">
+                    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                </a>
                 <h4 class="modal-title">
                     <span id="chaptertitle">
                         <!-- Chapter title goes here -->
@@ -254,11 +258,9 @@
                 </h4>
                 Page <span id="currentpage"></span> of <span id="totalpages"></span>
 
-                <a data-toggle="tooltip" data-placement="right" title="" onclick="toggleFullScreen()" data-original-title="FullScreen" style="float:right">
-                    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-               </a>
+
             </div>
-            <div class="modal-body">
+            <div id='hijox' class="modal-body" style="overflow-y: hidden!important;">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-1">
