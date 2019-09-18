@@ -22,7 +22,8 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = MemberInfo
-        fields = ('username', 'email', 'first_name', 'last_name', 'Member_Gender', 'Member_Permanent_Address',
+        fields = (
+        'username', 'email', 'Member_Avatar', 'first_name', 'last_name', 'Member_Gender', 'Member_Permanent_Address',
                   'Member_Temporary_Address', 'Member_BirthDate',
                   'Member_Phone',)
         # widgets = {
