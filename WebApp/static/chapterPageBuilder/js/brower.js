@@ -49,7 +49,6 @@ $("#SaveBtn").on("click",function(e){
     
     $.each( obj, function( i, value ) {
       if(value.classList.contains('textdiv')){
-        console.log($(this).css("width"),$(this).css("height"))
         var clone = $(this).children('.messageText').clone();
         clone.find('div').remove();
         var content_html = clone.html();

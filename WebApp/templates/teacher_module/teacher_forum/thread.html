@@ -8,11 +8,11 @@
 {% block breadcrumb %}
 
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
 <li class="breadcrumb-item">
-    <a href="{% url 'forum:nodegroup' pk=thread.topic.node_group.pk %}">{{ thread.topic.node_group.title }}</a>
+    <a href="{% url 'teacher_nodegroup' pk=thread.topic.node_group.pk %}">{{ thread.topic.node_group.title }}</a>
 </li>
-<li class="breadcrumb-item active"><a href="{% url 'forum:topic' pk=thread.topic.pk %}">{{ thread.topic.title }}</a>
+<li class="breadcrumb-item active"><a href="{% url 'teacher_topic' pk=thread.topic.pk %}">{{ thread.topic.title }}</a>
 </li>
 
 {% endblock %}
@@ -32,7 +32,7 @@
 
 
                 {% if request.user == thread.user %}
-                <a href="{% url 'forum:edit_thread' pk=thread.pk %}"><span class="btn btn-sm btn-primary"><i
+                <a href="{% url 'forum:edit_thread' pk=thread.pk %}"><span class="btn btn-xs btn-primary"><i
                             class="fa fa-edit"></i> {% trans 'Edit' %} </span></a>
                 {% endif %}
 
@@ -86,7 +86,7 @@
                 <li>
                     <div class="block">
                         <div class="tags">
-                            <a href="{% url 'forum:topic' pk=thread.topic.pk %}" class="tag">
+                            <a href="{% url 'teacher_topic' pk=thread.topic.pk %}" class="tag">
                                 <span>{{ thread.topic.title }}</span>
                             </a>
 
@@ -103,8 +103,7 @@
 
 
 
-                                posted by <a href="{% url 'forum:user_info' pk=thread.user.pk %}"
-                                    class="link-text-color">
+                                posted by <a href="{% url 'teacher_info' pk=thread.user.pk %}" class="link-text-color">
                                     <img src="
                                                                             {% if request.user.Member_Avatar %}
                                                                                 {{ request.user.Member_Avatar.url }}
@@ -165,7 +164,7 @@
                                                                                 {% static 'images/profile/profile.png' %}
                                                                             {% endif %}" alt="..."
                                                         class="img-circle profile_img_forum" />
-                                                    <a href="{% url 'forum:user_info' post.user_id %}"
+                                                    <a href="{% url 'teacher_info' post.user_id %}"
                                                         class="username-link">{{ post.user }}</a>
 
                                                 </div>
@@ -373,10 +372,6 @@
 
 
 {% endblock %}
-
-{#{% block widget_after %}#}
-{#    {% include 'forum/widgets/topic_info.html' %}#}
-{#{% endblock %}#}
 
 {% block footer_ext %}
 <script>
