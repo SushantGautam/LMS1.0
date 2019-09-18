@@ -18,7 +18,7 @@ from django.views import View
 from django.views.generic import DetailView, ListView
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, AssignAnswerInfo
-from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
+from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo
 from survey.models import QuestionInfo as SurveyQuestionInfo
 from datetime import datetime
 from quiz.models import Question , Quiz
