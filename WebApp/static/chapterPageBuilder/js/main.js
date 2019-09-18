@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+    $('#loadingDiv').hide();
     // ==================For TextBoxx================================
 
     class Textbox {
@@ -576,8 +576,17 @@ $(document).ready(function() {
                 processData: false,
                 method: 'POST',
                 type: 'POST',
+                beforeSend: function() {
+                    div.append(`<div class="loader" id="loadingDiv"></div>`)
+                    $('#loadingDiv').show();
+                }, 
+                error: function(errorThrown){
+                    alert("Failed to upload PDF")
+                    div.find('#loadingDiv').remove();
+                },
                 success: function(data) {
                     div.find('p').text("");
+                    div.find('#loadingDiv').remove();
                     div.css({
                         'background-image': 'url('+load_file_url+'/' + file.name + ')',
                         'background-repeat': 'no-repeat',
@@ -638,8 +647,17 @@ $(document).ready(function() {
                         enctype: 'multipart/form-data',
                         method: 'POST',
                         type: 'POST',
+                        beforeSend: function() {
+                            div.append(`<div class="loader" id="loadingDiv"></div>`)
+                            $('#loadingDiv').show();
+                        }, 
+                        error: function(errorThrown){
+                            alert("Failed to upload PDF")
+                            div.find('#loadingDiv').remove();
+                        },
                         success: function(data) {
                             console.log(div)
+                            div.find('#loadingDiv').remove();
                             div.find('p').text("");
                             div.css({
                               'background-image': 'url('+load_file_url+'/'+input.files[0].name+')',
@@ -767,6 +785,14 @@ $(document).ready(function() {
                 processData: false,
                 method: 'POST',
                 type: 'POST',
+                beforeSend: function() {
+                    div.append(`<div class="loader" id="loadingDiv"></div>`)
+                    $('#loadingDiv').show();
+                }, 
+                error: function(errorThrown){
+                    alert("Failed to upload PDF")
+                    div.find('#loadingDiv').remove();
+                },
                 success: function(data) {
                     div.empty();
                     div.append(`
@@ -825,8 +851,17 @@ $(document).ready(function() {
                         enctype: 'multipart/form-data',
                         method: 'POST',
                         type: 'POST',
+                        beforeSend: function() {
+                            div.append(`<div class="loader" id="loadingDiv"></div>`)
+                            $('#loadingDiv').show();
+                        }, 
+                        error: function(errorThrown){
+                            alert("Failed to upload PDF")
+                            div.find('#loadingDiv').remove();
+                        },                     
                         success: function(data) {
                             // console.log(data);
+                            div.find('#loadingDiv').remove();
                             div.empty();
                             div.append(`
                                 <object data="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}" type="application/pdf" width="100%" height="100%">
@@ -868,7 +903,10 @@ $(document).ready(function() {
     function VideoFunction(top=null, left=null, link=null, height=null, width=null){
         const Videos = new video(top, left, link, height, width);
         Videos.renderDiagram();
-    
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+            //  alert('btn clickd')
+        });
         $('.fa-upload').click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
@@ -990,7 +1028,16 @@ $(document).ready(function() {
                         processData: false,
                         method: 'POST',
                         type: 'POST',
+                        beforeSend: function() {
+                            div.append(`<div class="loader" id="loadingDiv"></div>`)
+                            $('#loadingDiv').show();
+                        }, 
+                        error: function(errorThrown){
+                            alert("Failed to upload Video")
+                            div.find('#loadingDiv').remove();
+                        },                     
                         success: function(data) {
+                            div.find('.loadingDiv').remove();
                             console.log(data.link)
                             div.empty();
                             div.append(`
