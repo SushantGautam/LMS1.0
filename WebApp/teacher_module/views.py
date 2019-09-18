@@ -34,13 +34,7 @@ from quiz.forms import QuizForm1, QuizForm2, QuizForm3
 
 from quiz.models import Progress
 
-<<<<<<< HEAD
 from django.http import JsonResponse
-=======
-from django.urls import reverse
-
-from django.http import JsonResponse, HttpResponseRedirect
->>>>>>> 415e3e46687f53634a4e92c4f0fa137a53141e83
 
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
