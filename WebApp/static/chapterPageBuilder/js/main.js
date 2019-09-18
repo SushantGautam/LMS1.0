@@ -139,15 +139,22 @@ $(document).ready(function() {
                     </div>
                     <div>
                         <p id="video-drag">${message}</p>
-                        <div id="progress-bar">
-                            <span id="progress-bar-fill"></span>
-                        </div>
+                        
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                         <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
                         </form>
-                        ${videoobj}
+      
+                        <div class="progress">
+                            <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                                ${videoobj}
                     </div>
                 </div>`
+
+            //     <div id="progress-bar">
+            //     <span id="progress-bar-fill"></span>
+            // </div>
+
 
             this.RemoveElement = function () {
                 return idss;
@@ -191,10 +198,12 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" href = ${link} id=${id + 1}  target="_blank" contentEditable="true" >Submit</a>
+                            <p class="btn"  id=${id + 1}  target="_blank"  >Submit</p>
                         </div>
         
                 `;
+
+                // href = ${link}
         this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
             let dom = $(html).css({
@@ -677,6 +686,12 @@ $(document).ready(function() {
         const btns = new Button(top, left, link, height, width);
         
         btns.renderDiagram();
+
+        $('.btn').attr('contentEditable', true);
+
+        $('.btn').on('click',function(){
+            alert('say me more!!')
+        })
     
         const div1 = $('i').parent();
     
@@ -788,15 +803,20 @@ $(document).ready(function() {
             });
 
 
-            $('.pdf').resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth:500,
-                minHeight:500
+        //     $('.pdf').resizable({
+        //         containment: $('#tabs-for-download'),
+        //         grid: [20, 20],
+        //         autoHide: true,
+        //         minWidth:500,
+        //         minHeight:500
 
 
             
+        // })
+
+
+        $('.pdf').css({
+            'resize':' both'
         })
 
            
@@ -853,7 +873,7 @@ $(document).ready(function() {
                     })
 
                     $('.pdf').resizable({
-                        containment: $('.editor-canvas'),
+                        containment: $('#tabs-for-download'),
                         grid: [20, 20],
                         autoHide: true,
                         minWidth: 150,
@@ -875,6 +895,14 @@ $(document).ready(function() {
         $('.fa-upload').click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
+        });
+
+        $('.video-div').resizable({
+            containment: $('.editor-canvas'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
         });
     
         $('.video-div').on('dragover', function(e) {
@@ -920,10 +948,11 @@ $(document).ready(function() {
                             var percentComplete = evt.loaded / evt.total;
                             percentComplete = parseInt(percentComplete * 100);
                             console.log(percentComplete);
-                            $('#progress-bar-fill').css('width', percentComplete + '%');
-    
+                            // $('#progress-bar-fill').css('width', percentComplete + '%');
+                                $("#progress-bar").attr('aria-valuenow',percentComplete).css('width',percentComplete+'%').text(percentComplete+'%');
+
                             if (percentComplete === 100) {
-                                $('#progress-bar').css("display", "none");
+                                // $('#progress-bar').css("display", "none");
                                 let div = $('#video-drag').parent().parent();
                                 $('#video-drag').css({
                                     'display': 'none'
@@ -942,7 +971,7 @@ $(document).ready(function() {
                                     $(this).css("border", '0')
                                 })
     
-                                $('.pic').resizable({
+                                $('.video-div').resizable({
                                     containment: $('.editor-canvas'),
                                     grid: [20, 20],
                                     autoHide: true,
@@ -1048,7 +1077,7 @@ $(document).ready(function() {
                                             $(this).css("border", '0')
                                         })
     
-                                        $('.pic').resizable({
+                                        $('.video-div').resizable({
                                             containment: $('#tabs-for-download'),
                                             grid: [20, 20],
                                             autoHide: true,
