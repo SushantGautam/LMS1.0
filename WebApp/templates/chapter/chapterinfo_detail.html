@@ -110,13 +110,14 @@
                     {% else %}
                         <tr>
                             <td>
-                                Pre Test Quiz
+                                Pre Test Quiz - <a target="_blank" href="/quiz">Add new</a>
                             </td>
                             <td>
                                 {% for quiz in quizes %}
                                     {% if quiz.pre_test is True %}
                                         <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons">
                                             {% csrf_token %}
+                                            <a target="_blank" href="/quiz/detail/2">{{ quiz.title }} </a>
                                             <div class="btn-group" id="status" data-toggle="buttons">
                                                 <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
                                                     <input type="radio" value="1" name="pre-test-radio"
@@ -148,13 +149,14 @@
                         </tr>
                         <tr>
                             <td>
-                                Post Test Quiz
+                                Post Test Quiz- <a target="_blank" href="/quiz">Add new</a>
                             </td>
                             <td>
                                 {% for quiz in quizes %}
                                     {% if quiz.post_test is True %}
                                         <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons1">
                                             {% csrf_token %}
+                                            <a quiz.title href="/quiz/detail/2">{{ quiz.title }} </a>
                                             <div class="btn-group" id="status2" data-toggle="buttons">
                                                 <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
                                                     <input type="radio" value="1" name="post-test-radio"

@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime
 
+import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -24,7 +25,6 @@ from django.views.generic.edit import FormView
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Question
-import vimeo # from PyVimeo for uploading videos to vimeo.com
 from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
@@ -402,8 +402,8 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
-        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk')).count()
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk')).count()
+        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
+        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
 
         return context
 
