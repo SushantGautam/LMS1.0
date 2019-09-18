@@ -19,6 +19,7 @@ from django.views.generic import DetailView, ListView
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, AssignAnswerInfo
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
+from survey.models import QuestionInfo as SurveyQuestionInfo
 from datetime import datetime
 from quiz.models import Question , Quiz
 from django.shortcuts import redirect
@@ -268,10 +269,10 @@ class questions_student(ListView):
         context['currentDate'] = datetime.now().date()
         context['categories'] = CategoryInfo.objects.all()
 
-        context['questions'] = QuestionInfo.objects.filter(
+        context['questions'] = SurveyQuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
-        context['options'] = OptionInfo.objects.all()
+        context['options'] = SurveyQuestionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
 
         
@@ -290,7 +291,7 @@ class questions_student_detail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['questions'] = QuestionInfo.objects.filter(Survey_Code=self.kwargs.get('pk')).order_by('pk')
+        context['questions'] = SurveyQuestionInfo.objects.filter(Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
@@ -303,7 +304,7 @@ class questions_student_detail_history(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['questions'] = QuestionInfo.objects.filter(
+        context['questions'] = SurveyQuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
         context['options'] = OptionInfo.objects.all()
@@ -323,7 +324,7 @@ class ParticipateSurvey(View):
         submitSurvey.Student_Code = MemberInfo.objects.get(id = userId)
         submitSurvey.save()
 
-        for question in QuestionInfo.objects.filter(Survey_Code = surveyId):
+        for question in SurveyQuestionInfo.objects.filter(Survey_Code = surveyId):
 
             optionId = request.POST[str(question.id)]
             answerObject = AnswerInfo()
