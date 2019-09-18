@@ -32,7 +32,7 @@
 
 
                 {% if request.user == thread.user %}
-                <a href="{% url 'forum:edit_thread' pk=thread.pk %}"><span class="btn btn-sm btn-primary"><i
+                <a href="{% url 'forum:edit_thread' pk=thread.pk %}"><span class="btn btn-xs btn-primary"><i
                             class="fa fa-edit"></i> {% trans 'Edit' %} </span></a>
                 {% endif %}
 
@@ -242,7 +242,7 @@
                             </ul>
 
                             <br>
-                            {% if request.user.is_authenticated %}
+
                             <div class="x_panel">
                                 <div class="x_title">
                                     <h2 style="font-weight: bold">Post Reply
@@ -357,7 +357,7 @@
                                         class="btn btn-sm btn-primary" id="submitButton"></div>
                             </div>
                             </form>
-                            {% endif %}
+
 
                         </div>
                     </div>
@@ -542,7 +542,7 @@
             // alert("data entry success" + Session_Code + " " + Course_Code);
         }
     }).done(function (server_data) {
-        console.log(server_data)
+        console.log(server_data);
         location.reload();
     }).fail(function (res) {
         console.log(res);
