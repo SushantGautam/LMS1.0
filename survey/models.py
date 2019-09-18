@@ -81,10 +81,7 @@ class SurveyInfo(models.Model):
         return reverse('surveyinfo_detail', args=(self.pk,))
 
     def get_update_url(self):
-        return reverse('surveyinfo_retake_ajax', args=(self.pk,))
-
-    def get_create_url(self):
-        return reverse('surveyinfo_ajax', args=(self.pk,))
+        return reverse('surveyinfo_update', args=(self.pk,))
 
 
 class QuestionInfo(models.Model):

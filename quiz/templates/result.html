@@ -5,26 +5,6 @@
 
 {% block title %} {{ quiz.title}} {% endblock %}
 {% block description %} {% trans "Exam Results for" %} {{ quiz.title }} {% endblock %}
-{% block breadcrumb %} 
-
-{% endblock %} 
-{% block top_navigation %}
-
-{% endblock top_navigation %}   
-      
-{% block sidebar %}
-
-<style> 
-.nav-md .container.body .right_col {
-    padding: 10px 20px 0;
-    margin-left: 0px!important;
-}
-.breadcrumb{
-	display: none;
-}
-</style>
-
-{% endblock sidebar %}
 
 {% block content %}
 
@@ -63,10 +43,6 @@
             <i class="fa fa-angle-right "></i>
           {% trans "You answered" %} <strong> {{ score }}</strong> {% trans "questions correctly out of" %} <strong>{{ max_score }}</strong>, {% trans "giving you" %} &nbsp;<strong>{{ percent }}</strong> {% trans "percent correct" %}
         </p>
-        {% if quiz.exam_paper is False %}
-        <p ><a class="try-again-button" href="{% url 'student_chapterinfo_detail' course=quiz.course_code.pk pk=quiz.chapter_code.pk %}">Try Again</a></p>
-        {% endif %}
-
     </div>
 
 	

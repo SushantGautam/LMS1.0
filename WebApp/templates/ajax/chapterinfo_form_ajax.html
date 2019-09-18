@@ -5,27 +5,7 @@
 <form method="post" id="ajaxchapterinfoform">
     {% csrf_token %}
     <div class="col-md-3 col-sm-12 col-xs-12 text-center">
-
-
-        <div id="div_id_Chapter_No" class="form-group">
-
-            <label for="id_Chapter_No" class="control-label ">
-                Chapter No
-            </label>
-
-
-            <div class="controls ">
-                <input type="number" name="Chapter_No" class="numberinput form-control" id="id_Chapter_No">
-
-            </div>
-            <script>
-                document.getElementById('id_Chapter_No').value = nextchapter + 1;
-            </script>
-
-        </div>
-
-
-        <br>
+        {{ form.Chapter_No|as_crispy_field }}<br>
     </div>
     <div class="col-md-9 col-sm-12 col-xs-12 text-center">
         {{ form.Chapter_Name|as_crispy_field }}<br>
@@ -37,7 +17,7 @@
             </label>
             <div class="controls ">
                 <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
-                          cols="40">{{ object.Summary }}</textarea>
+                    cols="40">{{ object.Summary }}</textarea>
             </div>
         </div>
         <br>
@@ -51,8 +31,9 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.pk }}"
-               class="select form-control">
+            class="select form-control">
     </div>
+
 
 
     <div class="col-md-12" align="center">

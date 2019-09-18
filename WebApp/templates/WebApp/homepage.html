@@ -67,12 +67,13 @@
         <div class="panel panel-default">
             <div class="row title">
                 <div class="col-md-12 forumDiv">
-                    <h3><a href="{% url 'forum:index' %}"><span class="forum">&nbsp; FORUM</span><span
+                    <h3><a href="{% url 'forum:index' %}"><span class="forum">FORUM</span><span
                                 class="thread">{{ threadcount }}</span></a></h3>
                     <h5></h5>
                 </div>
             </div>
             <ul class="list-group relative paper-shadow" data-hover-z="0.5" data-animated="">
+
                 {% for object in thread %}
                 <li class="list-group-item ">
                     <div class="media-body">
@@ -334,16 +335,14 @@
         </div> -->
 
 
-    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-        <div class="panel panel-default">
-            <div class="title">
-                <h2 style="font-size: 20px ">&nbsp;<b>Forum Word Cloud</b> </h2>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                <div class="col-md-12" id="word-cloud" style="padding-top:15em;"></div>
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="title">
+                    <h2 style="font-size: 20px ">&nbsp;<b>Word Cloud - Forum</b> </h2>
+                </div>
+                <div class="col-md-4 " id="word-cloud" style="padding-top:10em"></div>
             </div>
         </div>
-    </div>
 
 
 </div>

@@ -2,18 +2,18 @@
 
 {% block content %}
 
-    <div class="container-fluid">
-        <div>
-            <hr class="header_hr">
-            <h2 class="detailListHeader">User Profile</h2>
-            <hr class="header_hr">
-        </div>
-        <div class="panel">
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-4 col-xs-12 boxShadow" id="avatarDiv">
-                        <div class="profile-container" id="profile-container" style="margin-top: 15px;">
-                            <img id="profileImage" class="img-circle" src="
+<div class="container-fluid">
+    <div>
+        <hr class="header_hr">
+        <h2 class="detailListHeader">User Profile</h2>
+        <hr class="header_hr">
+    </div>
+    <div class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4 col-xs-12 boxShadow" id="avatarDiv">
+                    <div class="profile-container" id="profile-container" style="margin-top: 15px;">
+                        <img id="profileImage" class="img-circle" src="
                                     {% if request.user.Member_Avatar %}
                                         /media/{{ request.user.Member_Avatar }}
                                     {% elif request.user.Member_Gender == 'M' %}
@@ -22,266 +22,261 @@
                                         {% static 'images/profile/female.png' %}
                                     {% else %}
                                         {% static 'images/profile/profile.png' %}
-                                    {% endif %}" alt="user" width="50%" height="50%"/>
-                            <div class="middle">
-                                <a href="/editprofile">
-                                    <div class="text" style="margin-top: -70px;">Change Picture</div>
-                                </a>
-                            </div>
+                                    {% endif %}" alt="user" width="50%" height="50%" />
+                        <div class="middle">
+                            <div class="text" style="margin-top: -70px;">Change Picture</div>
                         </div>
-                        <br>
-                        <h3>{{ user.username }}</h3>
-                        <h4>
-                            <ul class="list-unstyled ">
-
-                                <li>
-                                    {% if request.user.Is_CenterAdmin %}
-                                        <i class="fa fa-user"></i> Admin &nbsp;
-                                    {% endif %}
-                                    {% if request.user.Is_Student %}
-                                        <i class="fa fa-user"></i> Student &nbsp;
-                                    {% endif %}
-                                    {% if request.user.Is_Teacher %}
-                                        <i class="fa fa-user"></i>Teacher
-                                    {% endif %}
-                                    <br>
-                                </li>
-                                <li>
-                                    {% if request.user.Member_Gender == '1' %}
-                                        <i class="fa fa-male"></i>&nbsp; Male
-
-                                    {% elif request.user.Member_Gender == '2' %}
-                                        <i class="fa fa-female"></i>&nbsp; Female
-
-                                    {% endif %}
-                                    <br>
-                                </li>
-                                {% if request.user.Member_Permanent_Address %}
-                                    <li>
-                                        <i class="fa fa-map-marker "></i>
-                                        &nbsp;&nbsp;{{ request.user.Member_Permanent_Address }}
-                                        <br>
-
-                                    </li>
-                                {% endif %}
-                                {% if request.user.email %}
-                                    <li>
-                                        <i class="fa fa-envelope-o"></i> {{ request.user.email }}
-                                    </li>
-                                    <br>
-                                {% endif %}
-                                {% if request.user.Member_Phone %}
-                                    <li>
-                                        <i class="fa fa-phone"></i>&nbsp; {{ request.user.Member_Phone }}
-                                    </li>
-                                    <br>
-                                {% endif %}
-                                {% if request.user.Member_BirthDate %}
-                                    <li>
-                                        <i class="fa fa-calendar"></i>&nbsp; {{ request.user.Member_BirthDate }}
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </h4>
                     </div>
                     <br>
-                    <br>
-                    <br>
+                    <h3>{{ user.username }}</h3>
+                    <h4>
+                        <ul class="list-unstyled ">
+
+                            <li>
+                                {% if request.user.Is_CenterAdmin %}
+                                <i class="fa fa-user"></i> Admin &nbsp;
+                                {% endif %}
+                                {% if request.user.Is_Student %}
+                                <i class="fa fa-user"></i> Student &nbsp;
+                                {% endif %}
+                                {% if request.user.Is_Teacher %}
+                                <i class="fa fa-user"></i>Teacher
+                                {% endif %}
+                                <br>
+                            </li>
+                            <li>
+                                {% if request.user.Member_Gender == '1' %}
+                                <i class="fa fa-male"></i>&nbsp; Male
+
+                                {% elif request.user.Member_Gender == '2' %}
+                                <i class="fa fa-female"></i>&nbsp; Female
+
+                                {% endif %}
+                                <br>
+                            </li>
+                            {% if request.user.Member_Permanent_Address %}
+                            <li>
+                                <i class="fa fa-map-marker "></i>
+                                &nbsp;&nbsp;{{ request.user.Member_Permanent_Address }}
+                                <br>
+
+                            </li>
+                            {% endif %}
+                            {% if request.user.email %}
+                            <li>
+                                <i class="fa fa-envelope-o"></i> {{ request.user.email }}
+                            </li>
+                            <br>
+                            {% endif %}
+                            {% if request.user.Member_Phone %}
+                            <li>
+                                <i class="fa fa-phone"></i>&nbsp; {{ request.user.Member_Phone }}
+                            </li>
+                            <br>
+                            {% endif %}
+                            {% if request.user.Member_BirthDate %}
+                            <li>
+                                <i class="fa fa-calendar"></i>&nbsp; {{ request.user.Member_BirthDate }}
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </h4>
+                </div>
+                <br>
+                <br>
+                <br>
 
 
-                    <div class="col-md-8 col-xs-12 text-center">
-                        <a href="/editprofile">
+                <div class="col-md-8 col-xs-12 text-center">
+                    <div class="btn btn-success" id="editButton">
+                        <h2>Edit Profile</h2>
+                    </div>
 
-                            <div class="btn btn-success" id="editButton">
-                                <h2>Edit Profile</h2>
-                            </div>
-                        </a>
-                        <div class="x_panel" id="editContent" style="display: none">
-                            <div class="x_content">
-                                <form method="post" id="profileForm" data-parsley-validate=""
-                                      class="form-horizontal form-label-left" novalidate="">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">UserName
-                                        </label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <label><input type="text" id="Username" value="{{ user.username }}"
-                                                          class="form-control col-md-7 col-xs-12" required></label>
-                                        </div>
+                    <div class="x_panel" id="editContent" style="display: none">
+                        <div class="x_content">
+                            <form method="post" id="profileForm" data-parsley-validate=""
+                                class="form-horizontal form-label-left" novalidate="">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">UserName
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <label><input type="text" id="Username" value="{{ user.username }}"
+                                                class="form-control col-md-7 col-xs-12" required></label>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Permanent
-                                            Address
-                                        </label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <label><input type="text" id="Address"
-                                                          value="{{ user.Member_Permanent_Address }}"
-                                                          class="form-control col-md-7 col-xs-12"></label>
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Permanent
+                                        Address
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <label><input type="text" id="Address"
+                                                value="{{ user.Member_Permanent_Address }}"
+                                                class="form-control col-md-7 col-xs-12"></label>
                                     </div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Email
-                                        </label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <label><input type="email" id="Email" value="{{ user.email }}"
-                                                          class="form-control col-md-7 col-xs-12"></label>
-                                        </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Email
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <label><input type="email" id="Email" value="{{ user.email }}"
+                                                class="form-control col-md-7 col-xs-12"></label>
                                     </div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Phone
-                                        </label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <label><input type="tel" id="Phone" value="{{ user.Member_Phone }}"
-                                                          class="form-control col-md-7 col-xs-12"></label>
-                                        </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Phone
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <label><input type="tel" id="Phone" value="{{ user.Member_Phone }}"
+                                                class="form-control col-md-7 col-xs-12"></label>
                                     </div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Gender</label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <div id="gender" class="btn-group" data-toggle="buttons">
-                                                <label class="btn {% if user.Member_Gender == '1' %}
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Gender</label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div id="gender" class="btn-group" data-toggle="buttons">
+                                            <label class="btn {% if user.Member_Gender == '1' %}
                                                                     btn-primary
                                                                   {% else %}
                                                                     btn-default
                                                                   {% endif %}" data-toggle-class="btn-primary"
-                                                       data-toggle-passive-class="btn-default">
-                                                    <input type="radio" name="gender" value="male"
-                                                           data-parsley-multiple="gender"> &nbsp; Male &nbsp;
-                                                </label>
-                                                <label class="btn {% if user.Member_Gender == '2' %}
+                                                data-toggle-passive-class="btn-default">
+                                                <input type="radio" name="gender" value="male"
+                                                    data-parsley-multiple="gender"> &nbsp; Male &nbsp;
+                                            </label>
+                                            <label class="btn {% if user.Member_Gender == '2' %}
                                                                     btn-primary
                                                                 {% else %}
                                                                     btn-default
                                                                 {% endif %}" data-toggle-class="btn-primary"
-                                                       data-toggle-passive-class="btn-default">
-                                                    <input type="radio" name="gender" value="female"
-                                                           data-parsley-multiple="gender"> Female
-                                                </label>
-                                            </div>
+                                                data-toggle-passive-class="btn-default">
+                                                <input type="radio" name="gender" value="female"
+                                                    data-parsley-multiple="gender"> Female
+                                            </label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Date Of Birth
-                                        </label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input id="birthday" value="{{ user.Member_BirthDate }}"
-                                                   class="form-control col-md-7 col-xs-12" type="date">
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Date Of Birth
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input id="birthday" value="{{ user.Member_BirthDate }}"
+                                            class="form-control col-md-7 col-xs-12" type="date">
                                     </div>
-                                    <div class="ln_solid"></div>
-                                    <div class="form-group">
-                                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                            <button class="btn btn-primary" type="button" id="cancelButton">Cancel
-                                            </button>
-                                            <button class="btn btn-primary" type="reset">Reset</button>
-                                            <button type="submit" class="btn btn-success">Submit</button>
-                                        </div>
+                                </div>
+                                <div class="ln_solid"></div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                        <button class="btn btn-primary" type="button" id="cancelButton">Cancel
+                                        </button>
+                                        <button class="btn btn-primary" type="reset">Reset</button>
+                                        <button type="submit" class="btn btn-success">Submit</button>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
-                        <br>
-                        <br>
-                        <br>
-                        <div class="btn btn-default">
-                            <a href="{% url 'student_change_password' %}">
-                                <h2>Change Password</h2>
-                            </a>
-                        </div>
-
                     </div>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="btn btn-default">
+                        <a href="{% url 'student_change_password' %}">
+                            <h2>Change Password</h2>
+                        </a>
+                    </div>
+
                 </div>
             </div>
-
         </div>
+
     </div>
+</div>
 
-    <input id="imageUpload" type="file" name="profile_photo" placeholder="Photo" required="" capture>
-
-
-    {#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>#}
-    <script>
-        document.querySelector("#cancelButton").addEventListener('click', cancelEdit);
-        {#document.querySelector("#editButton").addEventListener('click', editProfile);#}
+<input id="imageUpload" type="file" name="profile_photo" placeholder="Photo" required="" capture>
 
 
-        function editProfile() {
-            document.querySelector('#editContent').style.display = "inline-block";
+{#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>#}
+<script>
+    document.querySelector("#cancelButton").addEventListener('click', cancelEdit);
+    document.querySelector("#editButton").addEventListener('click', editProfile);
+
+
+    function editProfile() {
+        document.querySelector('#editContent').style.display = "inline-block";
+    }
+
+    function cancelEdit() {
+        document.querySelector('#editContent').style.display = "none";
+    }
+
+    $("#profileImage").click(function (e) {
+        $("#imageUpload").click();
+    });
+
+    function fasterPreview(uploader) {
+        if (uploader.files && uploader.files[0]) {
+            $('#profileImage').attr('src',
+                window.URL.createObjectURL(uploader.files[0]));
         }
+    }
 
-        function cancelEdit() {
-            document.querySelector('#editContent').style.display = "none";
-        }
+    $("#imageUpload").change(function () {
+        fasterPreview(this);
+    });
+</script>
+<style>
+    .middle {
 
-        $("#profileImage").click(function (e) {
-            $("#imageUpload").click();
-        });
+        color: #000000;
 
-        function fasterPreview(uploader) {
-            if (uploader.files && uploader.files[0]) {
-                $('#profileImage').attr('src',
-                    window.URL.createObjectURL(uploader.files[0]));
-            }
-        }
+    }
 
-        $("#imageUpload").change(function () {
-            fasterPreview(this);
-        });
-    </script>
-    <style>
-        .middle {
+    .profile-container:hover .img-circle {
+        opacity: 0.3;
+        box-shadow: 0 0 5px #fff;
 
-            color: #000000;
-
-        }
-
-        .profile-container:hover .img-circle {
-            opacity: 0.3;
-            box-shadow: 0 0 5px #fff;
-
-        {
-            #filter: grayscale(100%)
-        ;
+            {
+            #filter: grayscale(100%);
             #
         }
 
-        }
+    }
 
-        .profile-container:hover .middle {
-            opacity: 1;
+    .profile-container:hover .middle {
+        opacity: 1;
 
-        }
+    }
 
 
-        #imageUpload {
-            display: none;
-        }
+    #imageUpload {
+        display: none;
+    }
 
-        #profileImage {
-            cursor: pointer;
-        }
+    #profileImage {
+        cursor: pointer;
+    }
 
-        #profile-container {
+    #profile-container {
 
-            width: 150px;
-            height: 150px;
-            overflow: hidden;
-            -webkit-border-radius: 50%;
-            -moz-border-radius: 50%;
-            -ms-border-radius: 50%;
-            -o-border-radius: 50%;
-            border-radius: 50%;
-        }
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        -ms-border-radius: 50%;
+        -o-border-radius: 50%;
+        border-radius: 50%;
+    }
 
-        #profile-container img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover
-        }
-    </style>
+    #profile-container img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover
+    }
+</style>
 
 
 {% endblock %}
