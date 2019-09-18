@@ -28,6 +28,11 @@ urlpatterns += (
     path('calendar/', views.calendar, name="students_calendar"),
 
 )
+urlpatterns += (
+    path('change-password/', views.PasswordChangeView.as_view(
+        template_name='student_module/change_password_student.html'), name='student_change_password'),
+
+)
 
 urlpatterns += (
     # urls for CourseInfo

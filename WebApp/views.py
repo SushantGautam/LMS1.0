@@ -1,47 +1,40 @@
+import json
+import os
+from datetime import datetime
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
-from django.http import HttpResponse, JsonResponse, Http404
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
-from django.views import generic
+from django.views import View
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
+from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView
 from django.views.generic.edit import FormView
-from django.core.paginator import Paginator
-from django.core.files.storage import FileSystemStorage
-from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
-from PIL import Image
-import os
-import json
-import vimeo # from PyVimeo for uploading videos to vimeo.com
-import uuid #for generating random identifiers
-from quiz.models import Quiz
-from forum.models import Thread
-from forum.views import get_top_thread_keywords
-from survey.models import SurveyInfo
+
+from forum.models import Thread, Topic
+from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Question
-
-from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm,\
-                   AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
-                   AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm
-
+import vimeo # from PyVimeo for uploading videos to vimeo.com
+from quiz.models import Quiz
+from survey.models import SurveyInfo
+from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
+    AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
+    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-                    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
-from datetime import datetime
-from forum.models import Thread, Topic, Post, ForumAvatar, NodeGroup
-from forum.views import get_top_thread_keywords, NodeGroup, TopicView, ThreadView
+    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
-import json
-from django.views import View
 
-class Changestate(View): 
+class Changestate(View):
     def post(self, request): 
         quizid = self.request.POST["quiz_id"] 
         my_quiz = Quiz.objects.get(id=quizid)
@@ -160,7 +153,7 @@ def start(request):
             wordCloud = Thread.objects.all()
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by('-Register_DateTime')[:10]
-            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code).count
+            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code,Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
@@ -892,6 +885,7 @@ def chapterviewer(request):
                 data = json.load(json_file)
         except Exception as e:
             print(e)
+            data=""
         return JsonResponse({'data': data})
 
 

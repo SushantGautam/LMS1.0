@@ -57,6 +57,7 @@ OptionInfoFormset = inlineformset_factory(
     QuestionInfo,
     OptionInfo,
     fields=('Option_Name',),
+    can_delete=False,
     extra=1,
 )
 
@@ -142,7 +143,8 @@ QuestionInfoFormset = inlineformset_factory(
     formset = BaseQuestionInfoFormset,
     fields=('Question_Name', 'Question_Type'),
     extra=1,
-    )
+    can_delete=False,
+)
 
 QuestionAnsInfoFormset = inlineformset_factory(
     SurveyInfo,
@@ -150,4 +152,5 @@ QuestionAnsInfoFormset = inlineformset_factory(
     form = QuestionInfoForm,
     fields=('Question_Name', 'Question_Type'),
     extra=1,
-    )
+    can_delete=False,
+)
