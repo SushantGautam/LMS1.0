@@ -157,6 +157,11 @@
                             <p>{{ o.Summary }}</p>
                         </div>
                     </div>
+                <script>
+                    var nextchapter= {{ o.Chapter_No }};
+                </script>
+
+                    <!-- //= {{ o.Chapter_No }} +1; -->
                     {% endfor %}
                 </div>
             </div>
@@ -165,6 +170,9 @@
 </div>
 
 {% block customjss %}
+<script>
+
+</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>
 
