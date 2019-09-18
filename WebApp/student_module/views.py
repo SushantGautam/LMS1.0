@@ -10,34 +10,27 @@
 from datetime import datetime
 
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import PasswordContextMixin
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
 # Create your views here.
 from django.views.generic import DetailView, ListView
-from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
-from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, AssignAnswerInfo
-from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
-from datetime import datetime
-from quiz.models import Question , Quiz
-from django.shortcuts import redirect
 from django.views.generic.edit import FormView
-from django.http import JsonResponse, HttpResponse
-import json
-from django.core import serializers
-from django.forms.models import model_to_dict
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.urls import reverse_lazy
-from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from django.utils.translation import gettext as _
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from django.views.decorators.debug import sensitive_post_parameters
 
-
-
+from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, \
+    AssignAnswerInfo
+from quiz.models import Question, Quiz
+from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 
 datetime_now = datetime.now()
 
@@ -188,8 +181,8 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
-        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk')).count()
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk')).count()
+        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
+        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
         return context
 
 

@@ -1,46 +1,24 @@
-from django.contrib.auth.decorators import login_required
 # from django.core.checks import messages
-from django.contrib import messages
-from django.db import transaction
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse
-from django.utils.decorators import method_decorator
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
-from django_addanother.views import CreatePopupMixin
-from django.db import models
-from django.contrib.auth import get_user_model
-
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo
-from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
-from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
-from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
-from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
-
-from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
 from datetime import datetime
-from forum.models import NodeGroup, Thread, Topic, Post
-from forum.views import get_top_thread_keywords
-from .misc import get_query
-from .forms import ThreadForm, TopicForm, ReplyForm
+
 from django.conf import settings
-from survey.views import AjaxableResponseMixin
-from .forms import ThreadForm
-from datetime import datetime
-
 # from django.core.checks import messages
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
 from django_addanother.views import CreatePopupMixin
 
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from WebApp.models import AssignAnswerInfo
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup
 from forum.models import NodeGroup, Thread, Topic
+from forum.models import Post
 from forum.views import get_top_thread_keywords
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
 from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
@@ -49,6 +27,8 @@ from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFor
 from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
 from survey.views import AjaxableResponseMixin
 from .forms import ThreadForm
+from .forms import TopicForm, ReplyForm
+from .misc import get_query
 
 datetime_now = datetime.now()
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -183,8 +163,8 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
-        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk')).count()
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk')).count()
+        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
+        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
         return context
 
 

@@ -93,24 +93,53 @@
                 <p style="margin-left: 10px; overflow-wrap:break-word; "> {{ object.Course_Description }} </p>
                 <hr>
             </div>
-            <div class="quiz-counter" style="margin-left: 10px">
-
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <p class="quiz-counter">Number of Survey</p>
-                </div>
-                <div class=" counter col-md-6 col-sm-6 col-xs-6  text-right">
-                    <h4>{{ surveycount }}</h4>
-                </div>
 
 
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <p class="quiz-counter">Number of Quiz</p>
-                </div>
-                <div class=" counter col-md-6 col-sm-6 col-xs-6 text-right">
-                    <h4>{{ quizcount }}</h4>
-                </div>
+            {#            <div class="quiz-counter" style="margin-left: 10px">#}
+            {##}
+            {#                <div class="col-md-6 col-sm-6 col-xs-6">#}
+            {#                    <p class="quiz-counter">Number of Survey</p>#}
+            {#                </div>#}
+            {#                <div class=" counter col-md-6 col-sm-6 col-xs-6  text-right">#}
+            {#                    <h4>{{ surveycount.count }}</h4>#}
+            {#                </div>#}
+            {##}
+            {##}
+            {#                <div class="col-md-6 col-sm-6 col-xs-6">#}
+            {#                    <p class="quiz-counter">Number of Quiz</p>#}
+            {#                </div>#}
+            {#                <div class=" counter col-md-6 col-sm-6 col-xs-6 text-right">#}
+            {#                    <h4>{{ quizcount.count }}</h4>#}
+            {#                </div>#}
+            {#            </div>#}
 
+
+            <p>
+                <a class="btn btn-primary" data-toggle="collapse" href="#quizcollapse" role="button"
+                   aria-expanded="false" aria-controls="quizcollapse">
+                    {{ quizcount.count }} Quizes
+                </a>
+
+            </p>
+
+            <br>
+
+            <p>
+                <a class="btn btn-primary" data-toggle="collapse" href="#surveycollapse" role="button"
+                   aria-expanded="false" aria-controls="surveycollapse">
+                    {{ surveycount.count }} Surveys
+                </a>
+
+            </p>
+            {#            <div class="collapse" id="surveycollapse">#}
+            <div class="card card-body">
+                {% for each in surveycount %}
+                    <a href="/survey/surveyinfo/detail/{{ each.pk }}"> {{ each.Survey_Title }}</a>
+                {% endfor %}
+                {#                </div>#}
             </div>
+
+
         </div>
         <div class="col-md-6 col-sm-12 xol-xs-12">
             <div class="col-md-12 col-sm-12 xol-xs-12">
