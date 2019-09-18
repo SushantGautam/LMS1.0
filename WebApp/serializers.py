@@ -64,7 +64,7 @@ class InningGroupSerializer(serializers.ModelSerializer):
         model = models.InningGroup
         fields = (
             'pk', 'Teacher_Code', 'Course_Code', 'Use_Flag', 'Register_DateTime',
-            'Updated_DateTime', 'Register_Agent', 'InningGroup_Name', 'Center_Code'
+            'Updated_DateTime', 'Register_Agent', 'Center_Code'
         )
 
 

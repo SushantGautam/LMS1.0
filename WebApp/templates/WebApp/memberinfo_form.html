@@ -47,10 +47,10 @@
                     <div class="panel-body">
                             <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
                                     <label for="id_Member_ID" class="control-label ">
-                                        Member ID* <small> ( Provided by the Center ) </small>
+                                        Member Registration Code* <small> ( Provided by the Center ) </small>
                                     </label>
                                     <input type="text" value="{{ object.Member_ID }}" name="Member_ID" id="id_Member_ID"
-                                        required="required" class="form-control has-feedback-left" placeholder="Member Name">
+                                        required="required" class="form-control has-feedback-left" placeholder="Member Registration Code">
                                     <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
                                 </div>
                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
@@ -58,7 +58,7 @@
                                 Username* <small> ( Use to login, user can change it later-unique ) </small>
                             </label>
                             <input type="text" value="{{ object.username }}" name="username" id="id_username" data-validate-username-url="{% url 'validate_username' %}"
-                                required="required" class="form-control has-feedback-left js-validate-username" placeholder="Member Name">
+                                required="required" class="form-control has-feedback-left js-validate-username" placeholder="User Name">
                             <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
                             <span class="text-danger" id="error_username"></span>
                         </div>

@@ -14,7 +14,7 @@
 {% block content %}
 <div class="inninggroupListClass">
     <hr class="header_hr">
-    <h2 class="tableHeader">Allocated Course to teacher</h2>
+    <h2 class="tableHeader">Teacher-Course Allocation</h2>
 
     <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
             <a id="cardButton" style="cursor: pointer">Card View</a> &nbsp;
@@ -33,24 +33,27 @@
             <thead class="thead-light bg-primary">
                 <tr>
                     <td>ID</td>
-                    <td>Session</td>
                     {#                    <td>Teacher Code</td>#}
                     <td>Course Code</td>
                     <td>No. of Teachers</td>
-
-
-                    <td>Use Flag</td>
+                    <td>Teachers</td>
+                    <td>Status</td>
                 </tr>
             </thead>
             {% for object in object_list %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td><b><a href="{{ object.get_absolute_url }}">{{ object.InningGroup_Name }}</a></b></td>
-                {#                        <td>{{ object.Teacher_Code }}</td>#}
-                <td>{{ object.Course_Code }}</td>
 
+                {#                        <td>{{ object.Teacher_Code }}</td>#}
+                <td><b><a href="{{ object.get_absolute_url }}">{{ object.Course_Code }}</a></b></td>
                 <td>{{ object.Teacher_Code.count }}</td>
-                <td>{{ object.Use_Flag }}</td>
+                <td> {% for teachers in object.Teacher_Code.all %}{{ teachers }}<br>{% endfor %}</td>
+                <td>{% if  object.Use_Flag == True %}
+                    Active
+                    {% else %}
+                    Inactive
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -66,17 +69,16 @@
 
             <div class="col-md-4 col-sm-6 col-xs-12 card-body" id="listCard">
                 <div class="card-header" style="background: white">
-                    <h5 class="card-title"><strong>Session : &nbsp;<a
-                                href="{{ object.get_absolute_url }}">{{ object.InningGroup_Name }}</a></strong>
-                    </h5>
-                    <h5 class="card-title"><b>Teachers: </b></h5>
+                    <h5 class="card-title"> <strong> Session : &nbsp;<a
+                                href="{{ object.get_absolute_url }}">{{ object.Course_Code }}</a></strong></h5>
+
+                    <!-- <h5 class="card-title">
+                    </h5> -->
+                    <h5 class="card-title"><b>Teachers: {{ object.Teacher_Code.count }} </b></h5>
                     {% for teachers in object.Teacher_Code.all %}<span
                         class="card-title">{{ teachers }}<br></span>{% endfor %}
-                    <h5 class="card-title"><b>Course : </b>&nbsp;{{ object.Course_Code }}</h5>
                 </div>
-
             </div>
-
             {% endfor %}
         </div>
     </div>

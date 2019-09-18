@@ -1,11 +1,36 @@
 {% extends "base.html" %}
 {% load i18n%}
-
+{% load static %}
 {% load quiz_tags %}
 
 {% block title %} {{ quiz.title }} {% endblock %}
 {% block description %} {{ quiz.title }} - {{ quiz.description }} {% endblock %}
+{% block breadcrumb %} 
 
+{% block top_navigation %}
+
+{% endblock top_navigation %}   
+      
+{% block sidebar %}
+
+<style> 
+.nav-md .container.body .right_col {
+    padding: 10px 20px 0;
+    margin-left: 0px!important;
+}
+.breadcrumb{
+	display: none;
+}
+</style>
+
+{% endblock sidebar %}
+
+
+
+
+
+
+{% endblock %} 
 {% block content %}
 
 {% if previous.answers %}
@@ -151,3 +176,9 @@
 
 
 {% endblock %}
+
+{% block footer %}
+
+
+
+{% endblock footer %}

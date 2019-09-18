@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ object.Inning_Name }}</li>
+<li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Inning_Name }}</li>
 {% endblock %}
 {% block content %}
-    <div class="outerdiv">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="col-md-9 col-sm-12 col-xs-12 text-center">
-                <h2 class="detailListHeader">Session Detail Info</h2></div>
-            <div class="col-md-3 col-sm-12 col-xs-12 text-center" id="buttons">
-                <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
-                <a class="btn-sm btn-danger" href="{{ object.get_delete_url }}">Delete Session</a>
-            </div>
+<div class="outerdiv">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-9 col-sm-12 col-xs-12 text-center">
+            <h2 class="detailListHeader">Session Detail</h2>
         </div>
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <hr class="header_hr">
-            <br>
-            <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
-                <h5><b>
+        <div class="col-md-3 col-sm-12 col-xs-12 text-center" id="buttons">
+            <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
+            <a class="btn-sm btn-danger" href="{{ object.get_delete_url }}">Delete Session</a>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <hr class="header_hr">
+        <br>
+        <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
+            <h5><b>
                     <table class="table table-bordered table-striped">
                         <tr>
                             <td>Center Code</td>
@@ -55,66 +56,77 @@
                             <td>Status</td>
                             <td>{% if object.Use_Flag == True %}
                                 Active
-                            {% else %}
+                                {% else %}
                                 Inactive
-                            {% endif %}</td>
+                                {% endif %}</td>
                         </tr>
-                        {#<tr><td>udt_time</td><td>{{ object.udt_time }}</td></tr>#}
-                        {#<tr><td>udt_agent</td><td>{{ object.udt_agent }}</td></tr>#}
+
                     </table>
 
                 </b></h5>
-            </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 text-center">
-                <h5>
-                    <b>
-
-                        <h3><b>List of Students</b></h3>
-                        <table class="table table-bordered table-striped">
-
-                            <tr>
-                                <td><h4><b>{{ object.Groups }} Members ( {{ object.Groups.Students.count }} Students)</b></h4></td>
-                            </tr>
-                            <tr>
-                                <td>{% for students in object.Groups.Students.all %}{{ forloop.counter }}. {{ students }}<br>{% endfor %}</td>
-                            </tr>
-
-                        </table>
-                    </b>
-                </h5>
-            </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 text-center">
-                <h5>
-                    <b>
-                        <h3><b>List of Teachers</b></h3>
-                        <table class="table table-bordered table-striped">
-
-                            <tr>
-                                <td><h4><b>Courses</b></h4></td>
-                                <td><h4><b>Teachers</b></h4></td>
-                            </tr>
-
-                            {% for groups in object.Course_Group.all %}
-
-                                <tr>
-                                    <td>{{ groups }}</td>
-                                    <td>{% for teachers in groups.Teacher_Code.all %}{{ teachers }}<br>{% endfor %}
-                                    </td>
-                                </tr>
-
-                            {% endfor %}
-                        </table>
-                    </b>
-                </h5>
-            </div>
         </div>
-        <br>
-        {#        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top: 30px;">#}
-        {#            <a class="btn-lg btn-primary" href="{% url 'groupmapping_create' %}">Assign Student</a>#}
-        {#            &nbsp;&nbsp;&nbsp;#}
-        {#            <a class="btn-lg btn-primary" href="{% url 'inninggroup_create' %}">Assign Course</a>#}
-        {#        </div>#}
+        <div class="col-md-5 col-sm-12 col-xs-12 text-center">
+            <h5>
+                <b>
+
+                    <h3><b>List of Students</b></h3>
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <td>
+                                <h4><b>{{ object.Groups }} Students &nbsp; ( {{ object.Groups.Students.count }}
+                                        )</b>
+                                    <span style="font-size: 15px;float:right;"> <a
+                                            href="{{ object.Groups.get_update_url }}"><u>Edit</bu>
+                                        </a></span>
+                                </h4>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{% for students in object.Groups.Students.all %}{{ forloop.counter }}.
+                                &nbsp; {{ students }}<br>{% endfor %}</td>
+                        </tr>
+
+                    </table>
+                </b>
+            </h5>
+        </div>
+        <div class="col-md-7 col-sm-12 col-xs-12 text-center">
+            <h5>
+                <b>
+                    <h3><b>List of Teachers</b></h3>
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <td>
+                                <h4><b>Courses</b></h4>
+                            </td>
+                            <td>
+                                <h4><b>Teachers</b></h4>
+                            </td>
+                        </tr>
+                        {% for groups in object.Course_Group.all %}
+                        <tr>
+
+                            <td> <a style="float: left" href="{{ groups.get_update_url }}"><i
+                                        class="fa fa-edit"></i></a><a
+                                    href="{{ groups.get_absolute_url }}">{{ groups }}</a></td>
+                            <td>{% for teachers in groups.Teacher_Code.all %}
+                                {{ teachers }}<br>{% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </b>
+            </h5>
+        </div>
     </div>
+    <br>
+    <!-- <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top: 30px;">
+        <a class="btn-lg btn-sm btn-primary" href="{% url 'groupmapping_create' %}">Assign Student</a>
+        &nbsp;&nbsp;&nbsp;
+        <a class="btn-lg btn-sm btn-primary" href="{% url 'inninggroup_create' %}">Assign Course</a>
+    </div> -->
+</div>
 
 
 {% endblock %}

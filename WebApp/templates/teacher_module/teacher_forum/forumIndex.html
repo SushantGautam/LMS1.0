@@ -7,7 +7,7 @@
 
 {% block breadcrumb %}
 
-<li class="active"><a href="{% url 'forum:index' %}">Forum</a></li>
+<li class="active"><a href="{% url 'teacher_forum' %}">Forum</a></li>
 
 {% endblock %}
 
@@ -51,7 +51,7 @@
             <div class="media v-middle">
                 <div class="media-body">
                     <h6 class="text-headline margin-none">
-                        <a href="{% url 'forum:nodegroup' nodegroup.pk %}" class="">{{ nodegroup.title }}</a>
+                        <a href="{% url 'teacher_nodegroup' nodegroup.pk %}" class="">{{ nodegroup.title }}</a>
                     </h6>
                 </div>
 
@@ -76,24 +76,24 @@
 
                 <div class="media-body">
                     <h4 class="text-subhead margin-none thread_title">
-                        <a href="{% url 'forum:thread' pk=thread.pk %}" class="link-text-color">{{ thread.title }}</a>
+                        <a href="{% url 'teacher_thread' pk=thread.pk %}" class="link-text-color">{{ thread.title }}</a>
                     </h4>
 
 
                     <div class="text-light text-caption">
                         Category:
-                        <a href="{% url 'forum:nodegroup' thread.topic.node_group.pk %}"
+                        <a href="{% url 'teacher_nodegroup' thread.topic.node_group.pk %}"
                             class="link-text">{{ thread.topic.node_group.title }}</a>
                         |
 
                         Sub Category:
-                        <a href="{% url 'forum:topic' pk=thread.topic.pk %}"
+                        <a href="{% url 'teacher_topic' pk=thread.topic.pk %}"
                             class="link-text">{{ thread.topic.title }}</a>
 
 
                         <br>
                         posted by
-                        <a href="{% url 'forum:user_info' pk=thread.user.pk %}" class="link-text">
+                        <a href="{% url 'teacher_info' pk=thread.user.pk %}" class="link-text">
                             <img src="
                                 {% if request.user.Member_Avatar %}
                                     {{ request.user.Member_Avatar.url }}
@@ -116,7 +116,7 @@
 
 
                 <div class="media-right">
-                    <a href="{% url 'forum:thread' pk=thread.pk %}" class="btn btn-white text-light"><i
+                    <a href="{% url 'teacher_thread' pk=thread.pk %}" class="btn btn-white text-light"><i
                             class="fa fa-comments fa-fw"></i>
                         {{ thread.reply_count }}</a>
 
