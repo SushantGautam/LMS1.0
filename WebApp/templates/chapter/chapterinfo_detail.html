@@ -143,9 +143,10 @@
                                 {% if quiz.pre_test is True %}
                                     <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons">
                                         {% csrf_token %}
+                                         <b><a  href="/quiz/detail/{{ quiz.id }}" target="_blank" />{{ quiz.title }}</b>
                                         <div class="btn-group" id="status" data-toggle="buttons">
                                             <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                                                <input type="radio" value="1" name="pre-test-radio"
+                                               <input type="radio" value="1" name="pre-test-radio"
                                                        id="id_pre-test-radio"
                                                        checked="checked">ON</label>
                                             <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
@@ -156,6 +157,7 @@
                                 {% else %}
                                     <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons">
                                         {% csrf_token %}
+                                         <b><a  href="/quiz/detail/{{ quiz.id }}" target="_blank" />{{ quiz.title }}</b>
                                         <div class="btn-group" id="status" data-toggle="buttons">
                                             <label class="btn btn-default btn-on-3 btn-sm " id="ActiveButton">
                                                 <input type="radio" value="1" name="pre-test-radio"
@@ -177,10 +179,11 @@
                             Post Test Quiz
                         </td>
                         <td>
-                            {% for quiz in quizes %}
+                                {% for quiz in quizes %}
                                 {% if quiz.post_test is True %}
                                     <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons1">
                                         {% csrf_token %}
+                                         <b><a  href="/quiz/detail/{{ quiz.id }}" target="_blank" />{{ quiz.title }}</b>
                                         <div class="btn-group" id="status2" data-toggle="buttons">
                                             <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
                                                 <input type="radio" value="1" name="post-test-radio"
@@ -192,6 +195,7 @@
 
                                     </form>
                                 {% else %}
+                                     <b><a  href="/quiz/detail/{{ quiz.id }}" target="_blank" />{{ quiz.title }}</b>
                                     <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons1">
                                         {% csrf_token %}
                                         <div class="btn-group" id="status2" data-toggle="buttons">
