@@ -79,7 +79,7 @@
                                             <button>Play quiz</button>
                                         </a>
                                     {% else %}
-                                        <p>No pre quiz</p>
+                                        {#                                        <p>No pre quiz</p>#}
 
                                     {% endif %}
                                 {% endfor %}
@@ -101,7 +101,7 @@
                                                 <button>Play quiz</button>
                                             </a>
                                         {% else %}
-                                            <p>no post quiz</p>
+                                            {#                                            <p>no post quiz</p>#}
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
@@ -236,6 +236,7 @@
                         <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
                     </div>
                 </div>
+                var
             {% endfor %}
         </div>
     </div>
@@ -362,6 +363,7 @@
                 success: function (response) {
                     // $("#model-content").append(response.data.numberofpages);
                     loaddata(response.data)
+                    $('#id_Chapter_No').text(lastchapter + 1)
                 },
                 error: function () {
                     console.log('Error in getting chapters')
