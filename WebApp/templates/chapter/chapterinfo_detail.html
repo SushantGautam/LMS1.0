@@ -1,4 +1,6 @@
 {% load static %}
+<script src="https://player.vimeo.com/api/player.js"></script>
+
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true" id="create_assignment_modal">
     <div class="modal-dialog" role="document">
@@ -33,6 +35,7 @@
 
                 {% endif %}
             </div>
+            {% if '/students' not in request.path %}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <a style="float: right;margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
         /teachers{{ object.get_update_url }}
@@ -40,6 +43,7 @@
         {{ object.get_update_url }}
     {% endif %}"><b><u>Edit Chapter</u></b></a>
             </div>
+            {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12" id="tabs">
                 <table class="table">
                     <tr>
@@ -265,11 +269,11 @@
 {# Modal for chapter view #}
 
 <!-- Modal -->
-<div id="course-modal" class="modal fade" role="dialog">
-    <div class="modal-lg modal-dialog">
+<div id="course-modal" class="modal fade custom-course-modal" role="dialog" style="padding-right: 0px !important;">
+    <div class="modal-dialog" style="width: 100%; height: 100%; margin: 0px!important">
 
         <!-- Modal content-->
-        <div class="modal-content">
+        <div class="modal-content" style="height: 100%;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">
@@ -279,9 +283,11 @@
                 </h4>
                 Page <span id="currentpage"></span> of <span id="totalpages"></span>
             </div>
-            <div class="modal-body custom-modal-body" style="height: 560px!important">
-                <div style="float: left">
-                    <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
+            <div class="modal-body custom-modal-body">
+                <div class="button-position" style="position: relative">
+                    <div class = "prev-btn" style="float: left; position: absolute; top: 50px; left: 0px">
+                        <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
+                    </div>
                 </div>
 
 
@@ -390,9 +396,13 @@
 
                         if (div == 'btn-div') {
                             $.each(div_value, function (css, css_value) {
+                                link = "";
+                                if(css_value.hasOwnProperty('link')){
+                                    link = "href = " + css_value.link;
+                                }
                                 $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <a href = ${css_value.link} target="_blank"><button>Button</button</a>
+                                    <a ${link} target="_blank"><button>Button</button</a>
                                 </div>
                             `)
                             });
@@ -409,6 +419,36 @@
                             `)
                             });
                         }
+                        // if (div == 'video') {
+                        //     $.each(div_value, function (css, css_value) {
+                        //         $('#page' + key).append(`
+                        //         <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                        //             <video width="100%" height="100%" controls>
+                        //                 <source src="${css_value.link}" type="video/mp4">
+                        //                 <source src="${css_value.link}" type="video/ogg">
+                        //                 Your browser does not support the video tag.
+                        //             </video>
+                        //         </div>
+                        //     `)
+                        //     });
+                        // }
+                        if (div == 'video') {
+                            $.each(div_value, function (css, css_value) {
+                                $('#page' + key).append(`
+                                <div id = '${css_value.link}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                    
+                                </div>
+                                <script>
+                                var options = {
+                                    url: "${css_value.link}",
+                                    width: "${css_value.width}",
+                                    height: "${css_value.height}"
+                                };
+
+                                var videoPlayer = new Vimeo.Player('${css_value.link}', options);
+                            `)
+                            });
+                        }
                     });
                 });
             });
@@ -416,6 +456,10 @@
 
             // $("#modal-content").append(htmlContent);
         }
+
+        $("#course-modal").on("hidden.bs.modal", function () {
+            $("#modal-container").empty()
+        });
 
         $('#next-btn').click(function () {
             $("#modal-container > div ").each(function () {
@@ -443,11 +487,6 @@
             }
             $('#currentpage').text(res);
         });
-        if ((res - 1) > 0) {
-            $('#page' + res).css("display", "none");
-            res--;
-            $('#page' + res).css("display", "block")
-        }
     });
 </script>
 

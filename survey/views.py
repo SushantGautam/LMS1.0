@@ -1,3 +1,5 @@
+from django.forms import model_to_dict
+from django.shortcuts import render, redirect
 from datetime import datetime
 
 from django.db import transaction
@@ -5,7 +7,7 @@ from django.http import JsonResponse
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
-    QuestionInfoFormset, QuestionAnsInfoFormset
+    QuestionInfoFormset, QuestionAnsInfoFormset, BaseQuestionInfoFormset
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 from datetime import datetime
 
@@ -23,6 +25,7 @@ class AjaxableResponseMixin:
     Mixin to add AJAX support to a form.
     Must be used with an object-based FormView (e.g. CreateView)
     """
+
     def form_invalid(self, form):
         response = super().form_invalid(form)
         if self.request.is_ajax():
@@ -42,6 +45,7 @@ class AjaxableResponseMixin:
             return JsonResponse(data)
         else:
             return response
+
 
 class CategoryInfoListView(ListView):
     model = CategoryInfo
@@ -73,11 +77,48 @@ class SurveyInfoListView(ListView):
 
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
+
+        # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
+
+        # context['surveyForm'] = {'categoryName': list(categoryName)}
+        # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
+        # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
+
         return context
+
+    # def post(self, request):
+    #     obj = SurveyInfo()
+    #     if request.method == "POST":
+    #         obj.Survey_Title = request.POST['Survey_Title']
+    #         obj.Start_Date = request.POST['Start_Date']
+    #         obj.End_Date = request.POST['End_Date']
+    #         obj.Session_Code = InningInfo.objects.get(pk = request.POST['Session_Code'])
+    #         obj.Course_Code = CourseInfo.objects.get(pk = request.POST['Course_Code'])
+    #         obj.save()
+    #         print(obj.id)
+    #     return redirect('surveyinfo_detail', obj.id)
+
+
+# def get_context_data(self, **kwargs):
+#     categoryName = CategoryInfo.objects.filter(code__startswith='a').values_list('Category_Name')
+#     return JsonResponse({'categoryName': list(categoryName)})
+
+# def get_survey_info(request):
+#     id = request.GET.get('id', None)
+#     # questions = QuestionInfo.objects.filter(
+#     #     Survey_Code=id).order_by('pk')
+#     options = OptionInfo.objects.all()
+#     data = {'options':options}
+#     print(data)
+#     #submit = SubmitSurvey.objects.all()
+#     # context = 'asdasdasdasd'
+#     return JsonResponse(data)
+
 
 class SurveyInfoCreateView(CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
+
 
 # class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
 #     model = SurveyInfo
@@ -90,16 +131,17 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs) 
+        context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo') #MCQ
-            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST, prefix='questionansinfo') #SAQ
+            context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
+                                                                        prefix='questionansinfo')  # SAQ
         else:
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
             context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
         return context
-    
+
     def form_valid(self, form):
         vform = super().form_valid(form)
         context = self.get_context_data()
@@ -121,40 +163,169 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return vform
 
 
-class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
+
+
+# class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
+#     model = SurveyInfo
+#     form_class = SurveyInfoForm
+#     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#
+#         obj_instance = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
+#         # obj_instance.pk = None
+#         # obj_instance.save()
+#         if self.request.POST:
+#             context['questioninfo_formset'] = QuestionInfoFormset(
+#                 self.request.POST,
+#                 prefix='questioninfo'
+#             )  # MCQ
+#             context['questionansinfo_formset'] = QuestionAnsInfoFormset(
+#                 self.request.POST,
+#                 prefix='questionansinfo'
+#             )  # SAQ
+#         else:
+#             my_mcq_initial = [my_dict for my_dict in obj_instance.questioninfo.all().filter(Question_Type='MCQ').values()]
+#             my_saq_initial = [my_dict for my_dict in obj_instance.questioninfo.all().filter(Question_Type='SAQ').values()]
+#
+#             my_survey = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
+#             new_survey = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
+#             new_survey.id = None
+#             new_survey.save()
+#             related_mcqs = my_survey.questioninfo.all().filter(Question_Type='MCQ')
+#
+#
+#             SaqFormSet = inlineformset_factory(
+#                 SurveyInfo,
+#                 QuestionInfo,
+#                 extra=len(my_saq_initial),
+#                 fields=('Question_Name', 'Question_Type'),
+#             )
+#             McqFormSet = inlineformset_factory(
+#                 SurveyInfo,
+#                 QuestionInfo,
+#                 formset = BaseQuestionInfoFormset,
+#                 extra=len(my_mcq_initial),
+#                 fields=('Question_Name', 'Question_Type'),
+#             )
+#             context['questioninfo_formset'] = QuestionInfoFormset(
+#                 instance=obj_instance,
+#                 queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
+#                 prefix='questioninfo'
+#             )  # MCQ
+#             context['questionansinfo_formset'] = QuestionAnsInfoFormset(
+#                 instance=obj_instance,
+#                 queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
+#                 prefix='questionansinfo'
+#             )  # SAQ
+#             context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+#         return context
+#
+#     def form_valid(self, form):
+#         vform = super().form_valid(form)
+#         context = self.get_context_data()
+#         qn = context['questioninfo_formset']
+#         qna = context['questionansinfo_formset']
+#         with transaction.atomic():
+#             if qn.is_valid():
+#                 qn.instance = self.object
+#                 qn.save()
+#             else:
+#                 print(qn.errors)
+#                 print('qn is invalid')
+#             if qna.is_valid():
+#                 qna.instance = self.object
+#                 qna.save()
+#             else:
+#                 print('qna is invalid')
+#                 print(qna.errors)
+#         obj_instance = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
+#         self.object.Retaken_From = obj_instance.id
+#         self.object.Version_No = obj_instance.Version_No + 1
+#         self.object.save()
+#         return vform
+#
+#     def get_initial(self):
+#         obj_instance = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
+#         return model_to_dict(obj_instance,
+#                              fields=['Survey_Title', 'Start_Date',
+#                                      'End_Date', 'Center_Code',
+#                                      'Category_Code', 'Session_code',
+#                                      'Added_By']
+#                              )
+
+
+class SurveyInfoRetake_ajax(AjaxableResponseMixin, UpdateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
+    # def get_object(self, queryset=None):
+    #     oso = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
+    #     nso = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
+    #     nso.id = None
+    #     nso.save()
+    #     for mcq in oso.questioninfo.all().filter(Question_Type='MCQ'):
+    #         omcq_id = mcq.id
+    #         mcq.id = None
+    #         mcq.Survey_Code = nso
+    #         mcq.save()
+    #         omcq = QuestionInfo.objects.get(id=omcq_id)
+    #         for ops in omcq.optioninfo.all():
+    #             ops.id = None
+    #             ops.Question_Code = mcq
+    #             ops.save()
+    #     for saq in oso.questioninfo.all().filter(Question_Type='SAQ'):
+    #         osaq_id = saq.id
+    #         saq.id = None
+    #         saq.Survey_Code = nso
+    #         saq.save()
+    #     print("oooooooooooooooooooooooooooooosdfasdfasdfasdfasdfooooooooooooooooooooooooooo")
+    #     print(nso.id)
+    #     return nso
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(self.kwargs["survey_id"])
-        obj_instance = SurveyInfo.objects.get(id=self.kwargs["survey_id"])
+        print("oooooooooooooooooooooooooooooosdfasdfasdfasdfasdfooooooooooooooooooooooooooo")
+        print(self.object.id)
         if self.request.POST:
-            context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST,
-                                                                  queryset=QuestionInfo.objects.filter(
-                                                                      Question_Type="MCQ"),
-                                                                  instance=obj_instance,
-                                                                  prefix='questioninfo')  # MCQ
-            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
-                                                                        queryset=QuestionInfo.objects.filter(
-                                                                            Question_Type="SAQ"),
-                                                                        instance=obj_instance,
-                                                                        prefix='questionansinfo')  # SAQ
+            context['questioninfo_formset'] = QuestionInfoFormset(
+                self.request.POST,
+                instance=self.object,
+                queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
+                prefix='questioninfo'
+            )  # MCQ
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(
+                self.request.POST,
+                instance=self.object,
+                queryset=QuestionInfo.objects.filter(Question_Type='SAQ'),
+                prefix='questionansinfo'
+            )  # SAQ
         else:
-            context['questioninfo_formset'] = QuestionInfoFormset(instance=obj_instance,
-                                                                  queryset=QuestionInfo.objects.filter(
-                                                                      Question_Type="MCQ"),
-                                                                  prefix='questioninfo')
-            context['questionansinfo_formset'] = QuestionAnsInfoFormset(instance=obj_instance,
-                                                                        queryset=QuestionInfo.objects.filter(
-                                                                            Question_Type="SAQ"),
-                                                                        prefix='questionansinfo')
+            context['questioninfo_formset'] = QuestionInfoFormset(
+                instance=self.object,
+                queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
+                prefix='questioninfo'
+            )  # MCQ
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(
+                instance=self.object,
+                queryset=QuestionInfo.objects.filter(Question_Type='SAQ'),
+                prefix='questionansinfo'
+            )  # SAQ
             context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
         return context
 
     def form_valid(self, form):
-        vform = super().form_valid(form)
+        print("inside validation")
+        print(self.object.id)
+        #vform = super().form_valid(form)
+
+        if form.is_valid():
+            self.object = form.save(commit="False")
+            print(self.object.id)
+
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -171,7 +342,21 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
             else:
                 print('qna is invalid')
                 print(qna.errors)
-        return vform
+        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
+        self.object.Retaken_From = obj_instance.id
+        self.object.Version_No = obj_instance.Version_No + 1
+        self.object.save()
+        return redirect('surveyinfo_list')
+
+    def get_initial(self):
+        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
+        return model_to_dict(obj_instance,
+                             fields=['Survey_Title', 'Start_Date',
+                                     'End_Date', 'Center_Code',
+                                     'Category_Code', 'Session_code',
+                                     'Added_By']
+                             )
+
 
 class SurveyInfoDetailView(DetailView):
     model = SurveyInfo
@@ -273,15 +458,16 @@ class AnswerInfoUpdateView(UpdateView):
     model = AnswerInfo
     form_class = AnswerInfoForm
 
+
 class surveyFilterCategory(ListView):
     model = SurveyInfo
-    template_name = 'survey/surveyinfo_expireView.html' 
+    template_name = 'survey/surveyinfo_expireView.html'
 
     def get_queryset(self):
         if self.request.GET['categoryId'] == '0':
             return SurveyInfo.objects.all()
         else:
-            return SurveyInfo.objects.filter(Category_Code = self.request.GET['categoryId'])
+            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

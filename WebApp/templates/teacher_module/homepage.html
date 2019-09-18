@@ -14,16 +14,16 @@
 <div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
     <div class="panel panel-default">
         <div class="title text-center">
-            <h3 style="margin-left: 10px"><span>List of my Sessions </span></h3>
+            <h3 style="margin-left: 10px"><span>List of my Classes </span></h3>
         </div>
         <ul class="list-group">
-            {% for object in Session %}
+            {% for object in MyCourses %}
             <li class="list-group-item ">
                 <h5>
 
 
-                    <b> {{object.Session_Name}}</b>
-                    <a href="{{ object.Session_Name.teacher_get_absolute_url }}">
+                    <b> {{object.InningGroup_Name}}</b>
+                    <a href="{{ object.InningGroup_Name.teacher_get_absolute_url }}">
                         <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                         ">CONTINUE <i class="fa fa-arrow-right"></i>
                         </button>

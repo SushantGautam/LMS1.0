@@ -37,6 +37,7 @@ $("#SaveBtn").on("click",function(e){
     picdiv = [];
     buttondiv = [];
     pdf = [];
+    video = [];
     numberofpages++;
     const obj=$("#tab"+parseInt(key+1)).children();
     let tops;
@@ -95,8 +96,22 @@ $("#SaveBtn").on("click",function(e){
           }
         );
       }
+      if(value.classList.contains('video-div')){
+        console.log(value)
+        link = $(this).find('video').attr('id');
+        video.push(
+          {
+            'tops': $(this).css("top"),
+            'left': $(this).css("left"),
+            'width': $(this).css("width"),
+            'height': $(this).css("height"),
+            'link': link
+          }
+        );
+      }
     });
-    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf}]
+    
+    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video}]
   });
   data = {
     'numberofpages': numberofpages, 

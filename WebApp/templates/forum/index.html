@@ -26,13 +26,13 @@
 
                 </div>
                 {% if request.user.is_authenticated %}
-                {% if not request.user.Is_Student %}
+
                 <div class="media-right">
                     <a class="btn btn-white btn-flat" href="{% url 'forum:create_topic' %}"><i
                             class="fa fa-fw fa-plus"></i> Sub Category
                     </a>
                 </div>
-                {% endif %}
+
                 <div class="media-right">
                     <a class="btn btn-white btn-flat" href="{% url 'forum:create_thread' %}"><i
                             class="fa fa-fw fa-plus"></i>
@@ -68,7 +68,11 @@
             <li class="list-group-item media v-middle">
                 <div class="media-left">
                     <div class="icon-block half img-circle bg-grey-300">
+                        {% if thread.topic.topic_icon %}
                         <i class="fa fa-{{ thread.topic.topic_icon }}"></i>
+                        {% else %}
+                        <i class="fa fa-book"></i>
+                        {% endif %}
                     </div>
                 </div>
 

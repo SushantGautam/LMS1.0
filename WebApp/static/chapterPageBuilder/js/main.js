@@ -3,7 +3,7 @@ $(document).ready(function() {
     // ==================For TextBoxx================================
 
     class Textbox {
-        constructor(top=0, left=0, height=null ,width = null,message="Type Something Here...") {
+        constructor(top=0, left=0, height=null ,width = null, message="Type Something Here...") {
             console.log(top, left,height,width)
             let id = (new Date).getTime();
             let position = {
@@ -25,6 +25,8 @@ $(document).ready(function() {
                     "left": position.left,
                     "height": position.height,
                     "width": position.width,
+                    "border": "2px dashed #000 !important"
+
                 }).draggable({
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",  // dragging beyond this <div> will not be possible
@@ -104,6 +106,33 @@ $(document).ready(function() {
         constructor(top, left, link=null, height=null, width=null) {
             let id = (new Date).getTime();
             let position = { top, left, height, width };
+            let videoobj;
+            let message = ""
+            if(link!=null){
+                // videoobj = `
+                // <video width="100%" height="90%" controls>
+                //     <source src="${link}" type="video/mp4">
+                //     <source src="${link}" type="video/ogg">
+                //     Your browser does not support the video tag.
+                // </video>
+                // `
+                videoobj = `<div id='${link}'><div><script>
+                var options = {
+                    url: '${link}',
+                    width: "${width}",
+                    height: "${height}"
+                };
+              
+                var videoPlayer = new Vimeo.Player('${link}', options);
+              
+                videoPlayer.on('play', function() {
+                  console.log('Played the video');
+                });
+              </script>`
+            }else{
+                message = "drag and drop video here...";
+                videoobj = "";
+            }
             let html =
                 `<div class='video-div'>
                     <div id="video-actions">
@@ -111,13 +140,14 @@ $(document).ready(function() {
                         <i class="fas fa-upload" id=${id}></i>
                     </div>
                     <div>
-                        <p id="video-drag">drag and drop video here...</p>
+                        <p id="video-drag">${message}</p>
                         <div id="progress-bar">
                             <span id="progress-bar-fill"></span>
                         </div>
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="video-form" />
-                    </form>
+                        <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
+                        </form>
+                        ${videoobj}
                     </div>
                 </div>`
 
@@ -155,6 +185,10 @@ $(document).ready(function() {
         constructor(top, left, link=null, height=null, width=null) {
         let id = (new Date).getTime();
         let position = { top, left, height, width };
+        let button_link = ""
+        if(link != null){
+            button_link = 'href = '+ link
+        }
         let html = `
                         <div class="btn-div">
                             <div class="options">
@@ -163,7 +197,7 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" href = ${link} id=${id + 1}  target="_blank"  >Submit</a>
+                            <a class="btn" ${button_link} id=${id + 1}  target="_blank"  >Submit</a>
                         </div>
         
                 `;
@@ -468,7 +502,7 @@ $(document).ready(function() {
         }
     });
 
-    function TextboxFunction(top=null, left=null, height=null, width=null, message=null){
+    function TextboxFunction(top=null, left=null, height="10%", width="20%", message="Type Something Here..."){
         const textBox = new Textbox(top, left, height, width, message);
         
             textBox.renderDiagram();
@@ -493,11 +527,10 @@ $(document).ready(function() {
                 })
             });
         
-            $('.messageText').resizable({
+            $('.textdiv').resizable({
                 containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
-                height: height,
                 minWidth: 75,
                 minHeight: 25
             });
@@ -514,10 +547,6 @@ $(document).ready(function() {
         $('.fa-upload').click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
-        });
-    
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
         });
     
         $('.pic').on('dragover', function(e) {
@@ -664,6 +693,12 @@ $(document).ready(function() {
             $('#' + e.currentTarget.id).parent().parent().remove();
             //  alert('btn clickd')
         });
+
+        // $(".options").hover(function(){
+        //     $('.options').css({
+        //         'display':'block'
+        //     }) 
+        // })
     
         $('.fa-link').bind("click", function(e) {
             let argument = prompt("Enter a Link here...");
@@ -848,7 +883,7 @@ $(document).ready(function() {
             e.stopPropagation();
             e.preventDefault();
             $(this).resizable({
-                containment: $('.editor-canvas'),
+                containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
                 minWidth: 150,
@@ -868,7 +903,9 @@ $(document).ready(function() {
             var data = new FormData();
     
             data.append("FileName", file);
-    
+            data.append('chapterID', chapterID);
+            data.append('courseID', courseID);
+            data.append('type', 'video');
             $.ajax({
                 xhr: function() {
                     var xhr = new window.XMLHttpRequest();
@@ -917,7 +954,7 @@ $(document).ready(function() {
     
                     return xhr;
                 },
-                url: '/index',
+                url: save_video_url,
                 data: data,
                 contentType: false,
                 processData: false,
@@ -954,12 +991,27 @@ $(document).ready(function() {
                         method: 'POST',
                         type: 'POST',
                         success: function(data) {
-                            console.log(data);
+                            console.log(data.link)
+                            div.empty();
                             div.append(`
-                            <video width="400" height="200" controls>
+                            <video width="100%" height="90%" controls id=${data.link}>
                             <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>`);
+                            // div.append(`
+                            // <source src="${data.link}" type="video/mp4">
+                            //    Your browser does not support the video tag.
+                            // </video>
+                            // var options = {
+                            //     url: data.link,
+                            // };
+                        
+                            // var videoPlayer = new Vimeo.Player(div, options);
+                        
+                            // videoPlayer.on('play', function() {
+                            // console.log('Played the video');
+                            // });
+                            // `);
                         },
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();
@@ -1002,7 +1054,6 @@ $(document).ready(function() {
                                         });
                                         // console.log(file.name);
                                     }
-    
                                 }
                             }, false);
     
@@ -1030,7 +1081,7 @@ $(document).ready(function() {
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
             TextboxFunction(ui.helper.position().top - toolbarheight,
-            ui.helper.position().left - sidebarWidth);
+            ui.helper.position().left - sidebarWidth, "10%", "25%");
         } else if (ui.helper.hasClass('picture')) {
             PictureFunction(ui.helper.position().top - toolbarheight,
             ui.helper.position().left - sidebarWidth);
@@ -1044,30 +1095,30 @@ $(document).ready(function() {
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
                 top = 0,
-                left = 0,
+                left = 150,
                 "",
-                width = "100%", height="50%");
+                width = "30%", height="45%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
-                top="52%",
-                left=0,
-                height="45%", width="100%"
+                top="50%",
+                left=150,
+                height="45%", width='50% '
             );
         } else if (ui.helper.hasClass('grid')) {
             VideoFunction(
                 top = 0,
                 left = 0,
                 "",
-                height="50%",width = "100%");
+                height="50%",width = "50%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="52%",
                 left=0,
-                height="45%", width="100%"
+                height="45%", width="50%"
             );
         } else if (ui.helper.hasClass('title-slide')) {
             PictureFunction(
@@ -1090,13 +1141,13 @@ $(document).ready(function() {
             TextboxFunction(
                 top="0%",
                 left=0,
-                height="10%", width="100%",
+                height="10%", width="50%",
                 message="Your Title Here"
             );
             TextboxFunction(
                 top="13%",
                 left=0,
-                height="84%", width="100%",
+                height="84%", width="50%",
                 message="Your Content Here"
             );
         } else if (ui.helper.hasClass('pdf-text')) {
@@ -1244,6 +1295,17 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PDFFunction(
+                                css_value.tops,
+                                css_value.left,
+                                css_value['link'],
+                                css_value.height,css_value.width);
+                        });
+                    }
+
+                    if(div == 'video'){
+                        $.each(div_value, function(css, css_value){
+                            css_string = JSON.stringify(css_value)
+                            VideoFunction(
                                 css_value.tops,
                                 css_value.left,
                                 css_value['link'],

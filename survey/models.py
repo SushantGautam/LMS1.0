@@ -39,7 +39,7 @@ class SurveyInfo(models.Model):
     Version_No = IntegerField(default=1, help_text="To maintain the versioning of the survey")
     Created_Date = DateTimeField(auto_now_add=True)
     Updated_Date = DateTimeField(auto_now=True)
-    Survey_Live = BooleanField(default=False)
+    Survey_Live = BooleanField(default=False, blank=True, null=True)
 
     Center_Code = ForeignKey(
         'WebApp.CenterInfo',
@@ -145,15 +145,12 @@ class OptionInfo(models.Model):
 
     def get_option_percentage(self):
         total_option = self.Question_Code.answerinfo.all().count()
-        print("option" + str(total_option))
         selected_option = self.Question_Code.answerinfo.all().filter(Answer_Value=self.id).count()
 
-        print("zlkxcjvlk" + str(selected_option))
         if total_option != 0:
             option_percentage = (selected_option * 100) / total_option
-            print("yoyoyo" + str(option_percentage))
         else:
-            option_percentage = 0;
+            option_percentage = 0
         return option_percentage
 
 

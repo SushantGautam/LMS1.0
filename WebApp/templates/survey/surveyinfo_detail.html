@@ -98,20 +98,18 @@
 
                 <div class="bs-chart-container" id="progressResult" style="width: 80%;">
                   <h4>Results:</h4>
-                    {% for question in object.questioninfo.all %}
                         {% for option in question.optioninfo.all %}
                             <div class="surveyResults">
-                                <strong>Option A</strong>
+                                <strong>Option {{ forloop.counter }}</strong>
                                 <div class="progress">
                                     <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
                                          aria-valuemin="0"
                                          aria-valuemax="100" style="width: {{ option.get_option_percentage }}%">
-                                        <span class>'{{ option.get_option_percentage }}'% </span>
+                                        <span class>{{ option.get_option_percentage }}% </span>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
-                    {% endfor %}
                 </div>
 
               </div>
@@ -124,7 +122,7 @@
                     <strong>{{ question.Question_Name }}</strong>
                   </h2>
                   <h5>
-                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}
+                      {#                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}#}
                   </h5>
                 </div>
                 <div style="
@@ -162,7 +160,7 @@
           $.ajax({
               type: "GET",
               data: {'categoryId': "{{ object.Category_Code.id }}"},
-              url: "{% url 'surveyinfo_retake_ajax' survey_id=object.id %}",  // URL to your view that serves new info
+              url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#surveyFormRetake").html(data);
               }

@@ -356,6 +356,19 @@
 
   <script>
 
+      $(document).ready(function () {
+
+          $.ajax({
+              type: "GET",
+              data: {'categoryId': 0},
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#rowCards").html(data);
+                  console.log(data)
+              }
+          });
+      });
+
       // categoryAddButton({{ categoryName }});
 
       $('.category-name').on('click', function () {

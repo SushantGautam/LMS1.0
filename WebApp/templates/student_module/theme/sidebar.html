@@ -6,44 +6,43 @@
 
 {% block sidebar %}
 
-    <!-- sidebar menu -->
-    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-        <div class="menu_section">
-            <h3>Student Portal Home</h3>
-            <hr/>
-            <ul class="nav side-menu">
-                <li><a href=" {% url 'student_home' %}"><i class="fa fa-home"></i> Dashboard </a>
-                </li>
-                <li><a href=" {% url 'students_calendar' %}"><i class="fa fa-calendar"></i> Calendar </a>
-                </li>
-                <li><a><i class="fa fa-edit"></i> Course <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="{% url 'student_courseinfo_list' %}">Courses list</a></li>
-                        <li><a href="{% url 'student_mycourses_list' %}">My Courses</a></li>
-                        <li><a href="{% url 'student_myassignmentinfo_list' %}">My Assignments</a></li>
-                        <li><a href="#">Take Courses</a></li>
-                        <li><a href="{% url 'students_quiz' %}">Quiz</a></li>
-                    </ul>
-                </li>
-                <li><a><i class="fa fa-desktop"></i> Forum <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="{% url 'forum:index' %}">Home</a></li>
-                        {% for nodegroup in node_groups %}
-                            <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </li>
-                <li><a><i class="fa fa-table"></i> Account <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="tables.html">Edit Profiles</a></li>
-                        <li><a href="tables_dynamic.html">Settings</a></li>
-                    </ul>
-                </li>
-                <li><a href=" {% url 'questions_student' %}"><i class="fa fa-bar-chart"></i>Survey</a></li>
-            </ul>
-        </div>
-
+<!-- sidebar menu -->
+<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+        <h3>Student Portal Home</h3>
+        <hr />
+        <ul class="nav side-menu">
+            <li><a href=" {% url 'student_home' %}"><i class="fa fa-home"></i> Dashboard </a>
+            </li>
+            <li><a href=" {% url 'students_calendar' %}"><i class="fa fa-calendar"></i> Calendar </a>
+            </li>
+            <li><a><i class="fa fa-edit"></i> Course <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="{% url 'student_courseinfo_list' %}">Courses list</a></li>
+                    <li><a href="{% url 'student_mycourses_list' %}">My Courses</a></li>
+                    <li><a href="{% url 'student_myassignmentinfo_list' %}">My Assignments</a></li>
+                    <li><a href="{% url 'students_quiz' %}">Quiz</a></li>
+                </ul>
+            </li>
+            <li><a><i class="fa fa-desktop"></i> Forum <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="{% url 'forum:index' %}">Home</a></li>
+                    {% for nodegroup in node_groups %}
+                    <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li><a><i class="fa fa-user"></i> Profile <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="tables.html">Edit Profiles</a></li>
+                    <li><a href="tables_dynamic.html">Settings</a></li>
+                </ul>
+            </li>
+            <li><a href=" {% url 'questions_student' %}"><i class="fa fa-bar-chart"></i>Survey</a></li>
+        </ul>
     </div>
-    <!-- /sidebar menu -->
+
+</div>
+<!-- /sidebar menu -->
 
 {% endblock %}

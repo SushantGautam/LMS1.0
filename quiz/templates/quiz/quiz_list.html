@@ -2,12 +2,9 @@
 {% load i18n %}
 {% block title %}{% trans "All Quizzes" %}{% endblock %}
 
-{% block breadcrumb %} 
+{% block breadcrumb %}
 <li class="breadcrumb-item active" aria-current="page">QUIZ</li>
-                
- 
-
-{% endblock %} 
+{% endblock %}
 
 {% block content %}
 
@@ -18,7 +15,7 @@
 			<div class="col-md-6">
 					<h2>{% trans "List of quizzes"  %}</h2>
 			</div>
-			<div class="col-md-6  icon-for-quiz text-right"> 
+			<div class="col-md-6  icon-for-quiz text-right">
 					<a class="icon-quiz-list" href="{% url 'quizfw' %}">
 							<i class="fa fa-plus fa-2x"></i>
 					</a>
