@@ -6110,6 +6110,9 @@ input[type=checkbox], input[type=radio] {
 
 /* ends */
 /* FORM QUIZ */
+.custom-modal{
+    padding-right: 0px!important;
+}
 .quiz-admin-btn {
     margin-top: 10px
 }
@@ -6142,9 +6145,11 @@ input[type=checkbox], input[type=radio] {
 }
 
 /* quiz results css */
-.mcqlist-container{ 
-    
-    
+
+.try-again-button{
+    padding: 4px; 
+    background-color: #007fbe;
+    color: white
 }
 .exam-results {
     text-transform: uppercase;
@@ -6218,6 +6223,7 @@ input[type=checkbox], input[type=radio] {
     color: white;
     border-radius: 5px;
 }
+
 .button-place{
     text-align: right;
 }
