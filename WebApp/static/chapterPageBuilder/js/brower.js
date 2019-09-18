@@ -48,7 +48,6 @@ $("#SaveBtn").on("click",function(e){
     htmlfile[(key+1)] = ($("#tab"+parseInt(key+1)).html());
     
     $.each( obj, function( i, value ) {
-      console.log(value.classList)
       if(value.classList.contains('textdiv')){
         console.log($(this).css("width"),$(this).css("height"))
         var clone = $(this).children('.messageText').clone();
