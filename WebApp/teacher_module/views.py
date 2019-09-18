@@ -1,30 +1,55 @@
-from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.views import PasswordContextMixin
 # from django.core.checks import messages
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
+from django_addanother.views import CreatePopupMixin
+from django.db import models
+from django.contrib.auth import get_user_model
+
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo
+from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
+from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
+from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
+from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
+
+from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
+from datetime import datetime
+from forum.models import NodeGroup, Thread, Topic, Post
+from forum.views import get_top_thread_keywords
+from .misc import get_query
+from .forms import ThreadForm, TopicForm, ReplyForm
+from django.conf import settings
+from survey.views import AjaxableResponseMixin
+from .forms import ThreadForm
+from datetime import datetime
+
+# from django.core.checks import messages
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, FormView, TemplateView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
 from django_addanother.views import CreatePopupMixin
 
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, MemberInfo, InningGroup
-from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
-from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
-from survey.models import SurveyInfo
-from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
-from datetime import datetime
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup
 from forum.models import NodeGroup, Thread, Topic
 from forum.views import get_top_thread_keywords
-from .misc import get_query
-from .forms import ThreadForm, TopicForm
-from django.conf import settings
+from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
+from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
+from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
+from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
+from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
+from survey.views import AjaxableResponseMixin
+from .forms import ThreadForm
+
 datetime_now = datetime.now()
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from formtools.wizard.views import SessionWizardView
@@ -32,12 +57,11 @@ from quiz.forms import QuizForm1, QuizForm2, QuizForm3
 
 from quiz.models import Progress
 
-from django.urls import reverse
-
 from django.http import JsonResponse
 
-from django.core.exceptions import ValidationError
-from django.http import HttpResponse
+
+
+User = get_user_model()
 
 def start(request):
     """Start page with a documentation.
@@ -220,9 +244,24 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
+        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),Register_Agent=self.request.user.id)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+        return context
+
+class AssignmentAnswers(ListView):
+    model = AssignAnswerInfo
+    template_name = 'teacher_module/assignment_answers.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        questions = QuestionInfo.objects.filter(Assignment_Code = self.kwargs['pk'],Register_Agent=self.request.user.id)
+        context['questions'] = questions
+        context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
+
+        # context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
@@ -274,8 +313,69 @@ def makequery(request):
     })
 
 
-def question_teachers(request):
-    return render(request, 'teacher_module/question_teachers.html')
+# def question_teachers(request):
+#     return render(request, 'teacher_module/question_teachers.html')
+
+class SurveyInfoListView(ListView):
+    model = SurveyInfo
+    template_name = 'teacher_module/question_teachers.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now().date()
+        context['categories'] = CategoryInfo.objects.all()
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+
+        # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
+
+        # context['surveyForm'] = {'categoryName': list(categoryName)}
+        # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
+        # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
+
+        return context
+
+
+class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
+    model = SurveyInfo
+    form_class = SurveyInfoForm
+    template_name = 'teacher_module/teacherSurveyInfo_ajax.html'
+    success_url = reverse_lazy('question_teachers')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
+                                                                        prefix='questionansinfo')  # SAQ
+        else:
+            context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
+            context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+        return context
+
+    def form_valid(self, form):
+        vform = super().form_valid(form)
+        context = self.get_context_data()
+        qn = context['questioninfo_formset']
+        qna = context['questionansinfo_formset']
+        with transaction.atomic():
+            if qn.is_valid():
+                qn.instance = self.object
+                qn.save()
+            else:
+                print(qn.errors)
+                print('qn is invalid')
+            if qna.is_valid():
+                qna.instance = self.object
+                qna.save()
+            else:
+                print('qna is invalid')
+                print(qna.errors)
+        return vform
 
 
 def polls_teachers(request):
@@ -771,9 +871,9 @@ FORMS = [("form1", QuizForm1),
          ("form2", QuizForm2),
          ("form3", QuizForm3)]
 
-TEMPLATES = {"form1": "wizard/step1.html",
-             "form2": "wizard/step2.html",
-             "form3": "wizard/step3.html"}
+TEMPLATES = {"form1": "wizard_teacher/step1.html",
+             "form2": "wizard_teacher/step2.html",
+             "form3": "wizard_teacher/step3.html"}
 
 
 class QuizCreateWizard(SessionWizardView):
@@ -870,13 +970,42 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
         form = ThreadForm(request.POST, user=request.user)
         if form.is_valid():
             t = form.save()
-            return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
+            return HttpResponseRedirect(reverse('teacher_thread', kwargs={'pk': t.pk}))
     else:
         form = ThreadForm()
 
     return render(request, 'teacher_module/teacher_forum/create_thread.html',
                   {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
+
+
+class teacherSurveyFilterCategory(ListView):
+    model = SurveyInfo
+    template_name = 'teacher_module/teacher_surveyFiltered.html'
+
+    def get_queryset(self):
+        if self.request.GET['categoryId'] == '0':
+            return SurveyInfo.objects.all()
+        else:
+            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now()
+        return context
+
+
+class TeacherSurveyInfoDetailView(DetailView):
+    model = SurveyInfo
+    template_name = 'teacher_module/polls_teachers.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+        return context
 
 
 
@@ -887,7 +1016,7 @@ def create_topic(request, nodegroup_pk=None):
         form = TopicForm(request.POST, user=request.user)
         if form.is_valid():
             t = form.save()
-            return HttpResponseRedirect(reverse('forum:topic', kwargs={'pk': t.pk}))
+            return HttpResponseRedirect(reverse('teacher_topic', kwargs={'pk': t.pk}))
     else:
         form = TopicForm()
 
@@ -942,6 +1071,170 @@ def search_redirect(request):
         return HttpResponseRedirect(reverse('teacher_search', kwargs={'keyword': keyword}))
     else:
         return HttpResponseForbidden('Post you cannot')
+
+
+class NodeGroupView(ListView):
+    model = Topic
+    template_name = 'teacher_module/teacher_forum/nodegroup.html'
+    context_object_name = 'topics'
+
+    def get_queryset(self):
+        return Topic.objects.filter(
+            node_group__id=self.kwargs.get('pk')
+        ).select_related(
+            'user', 'node_group'
+        ).prefetch_related(
+            'user__forum_avatar'
+        )
+
+    def get_context_data(self, **kwargs):
+        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk'))
+        latest_threads = []
+        for topic in topics:
+            reply_count = 0
+            try:
+                thread = Thread.objects.filter(
+                    topic=topic.pk).order_by('pub_date')[0]
+                reply_count = Thread.objects.filter(topic=topic.pk).aggregate(
+                    Sum('reply_count'))['reply_count__sum']
+            except:
+                thread = None
+            latest_threads.append([topic, thread, reply_count])
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['node_group'] = nodegroup = NodeGroup.objects.get(
+            pk=self.kwargs.get('pk'))
+        context['title'] = context['panel_title'] = nodegroup.title
+        context['show_order'] = True
+        context['latest_thread_for_topics'] = latest_threads
+        return context
+
+
+class ThreadView(ListView):
+    model = Post
+    paginate_by = 15
+    template_name = 'teacher_module/teacher_forum/thread.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Post.objects.filter(
+            thread_id=self.kwargs.get('pk')
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date')
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        current = Thread.objects.get(pk=self.kwargs.get('pk'))
+        current.increase_view_count()
+        context['thread'] = current
+        context['title'] = context['thread'].title
+        context['topic'] = context['thread'].topic
+        context['form'] = ReplyForm()
+        return context
+
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        current = Thread.objects.visible().get(pk=self.kwargs.get('pk'))
+        if current.closed:
+            return HttpResponseForbidden("Thread closed")
+        thread_id = self.kwargs.get('pk')
+        form = ReplyForm(
+            request.POST,
+            user=request.user,
+            thread_id=thread_id
+        )
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(
+                reverse('teacher_thread', kwargs={'pk': thread_id})
+            )
+
+
+class TopicView(ListView):
+    model = Thread
+    paginate_by = 20
+    template_name = 'teacher_module/teacher_forum/topic.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        return Thread.objects.visible().filter(
+            topic__id=self.kwargs.get('pk')
+        ).select_related(
+            'user', 'topic'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by(
+            *['order', get_thread_ordering(self.request)]
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        print(self.kwargs.get('pk'))
+        context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
+        context['title'] = context['panel_title'] = topic.title
+        context['show_order'] = True
+        return context
+
+
+def user_info(request, pk):
+    u = User.objects.get(pk=pk)
+    return render(request, 'teacher_module/teacher_forum/user_info.html', {
+        'title': u.username,
+        'user': u,
+        'threads': u.threads.visible().select_related('topic')[:10],
+        'replies': u.posts.visible().select_related('thread', 'user').order_by('-pub_date')[:30],
+    })
+
+
+class UserPosts(ListView):
+    model = Post
+    paginate_by = 15
+    template_name = 'teacher_module/teacher_forum/user_replies.html'
+    context_object_name = 'replies'
+
+    def get_queryset(self):
+        return Post.objects.visible().filter(
+            user_id=self.kwargs.get('pk')
+        ).select_related(
+            'user', 'thread'
+        ).prefetch_related(
+            'user__forum_avatar'
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['user'] = User.objects.get(pk=self.kwargs.get('pk'))
+        context['panel_title'] = context['title'] = context['user'].username
+        return context
+
+class UserThreads(ListView):
+    model = Post
+    paginate_by = 15
+    template_name = 'teacher_module/teacher_forum/user_threads.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        return Thread.objects.visible().filter(
+            user_id=self.kwargs.get('pk')
+        ).select_related(
+            'user', 'topic'
+        ).prefetch_related(
+            'user__forum_avatar'
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['user'] = User.objects.get(pk=self.kwargs.get('pk'))
+        context['panel_title'] = context['title'] = context['user'].username
+        return context
+
+
+
+
+
+
 
 
 

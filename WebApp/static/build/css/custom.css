@@ -81,6 +81,11 @@ html, body {
     color: #009999;
 }
 
+.pageHeader {
+    text-align: center;
+    font-weight: bold;
+    color: #009999;
+}
 .subHeader {
     /*text-align: center;*/
     font-size: 2em;
@@ -92,7 +97,13 @@ html, body {
     border-color: #c2d6d6;
 
 }
-
+table {
+    counter-reset: tableCount;     
+}
+.counterCell:before {              
+    content: counter(tableCount); 
+    counter-increment: tableCount; 
+}
 
 .table-responsive {
     /* padding:1em; */
@@ -295,7 +306,7 @@ html, body {
     min-height: 100%;
     width: 70px;
     padding: 0;
-    z-index: 1;
+    z-index: 999;
     position: fixed;
 
 }
@@ -6099,6 +6110,9 @@ input[type=checkbox], input[type=radio] {
 
 /* ends */
 /* FORM QUIZ */
+.custom-modal{
+    padding-right: 0px!important;
+}
 .quiz-admin-btn {
     margin-top: 10px
 }
@@ -6131,9 +6145,11 @@ input[type=checkbox], input[type=radio] {
 }
 
 /* quiz results css */
-.mcqlist-container{ 
-    
-    
+
+.try-again-button{
+    padding: 4px; 
+    background-color: #007fbe;
+    color: white
 }
 .exam-results {
     text-transform: uppercase;
@@ -6207,6 +6223,7 @@ input[type=checkbox], input[type=radio] {
     color: white;
     border-radius: 5px;
 }
+
 .button-place{
     text-align: right;
 }

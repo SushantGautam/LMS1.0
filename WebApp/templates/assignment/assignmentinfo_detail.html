@@ -46,10 +46,15 @@
             </h5>
         </div>
         <br>
+        {% if '/students' not in request.path %}
+        <div class="text-center">
+            <h4><a href="{% url 'teacher_assignment_answers' object.pk %}">View Assignment Submissions</a></h4>
+        </div>
+        {% endif %}
 
     </div>
-    <div class="col-md-6 col-sm-12 col-xs-12 ">
-        <div class="col-md-8 col-sm-8 col-xs-12 text-center">
+    <div class=" col-md-6 col-sm-12 col-xs-12 ">
+        <div class=" col-md-8 col-sm-8 col-xs-12 text-center">
             <h2 class="subHeader">Questions</h2>
         </div>
 
@@ -61,10 +66,10 @@
             </button>
         </div>
         {% endif %}
-        <div class="col-md-12">
+        <div class="col-md-12" style="padding-right: 0;">
             {% for questions in Questions %}
 
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
+            <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;padding-right: 0;">
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <h5 style="padding-top: 3px; color: #000000"> Q: {{ forloop.counter }}
 
@@ -73,44 +78,41 @@
                         <b style="color: #000000">{{ questions.Question_Title }}</b>
                     </h5>
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="col-md-4 col-sm-4 col-xs-12" style="padding-right: 0;">
                     {% if '/students' in request.path %}
                     <button class="answerButton" type="button" id="{{ questions.pk }}" style="width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                        margin-top: 25px;margin-left: 50px;">ANSWER <i class="fa fa-arrow-right"></i>
+                                        margin-top: 25px;margin-left: 40px;">ANSWER <i class="fa fa-arrow-right"></i>
                     </button>
                     {% endif %}
                     <a class="moreButton" id="{{ questions.pk }}"><i class="fa fa-chevron-down"
                             style="padding-top:30px; float:right;cursor: pointer;" id="moreArrow{{ questions.pk }}"></i>
                     </a>
-                    <!-- <a id="lessButton{{ questions.pk }}"><i class="fa fa-chevron-up"
-                            style="padding-top:30px; float:right;cursor: pointer;display: none;"
-                            id="lessArrow{{ questions.pk }}"></i>
-                    </a> -->
+
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12" id="questionContent{{ questions.pk }}"
                     style="display: none;">
                     {% if  questions.Question_Score %}
-                    <div class=" col-md-3 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-4 col-sm-12 col-xs-12" style="padding-left:0;">
                         Question Score :
                     </div>
-                    <div class=" col-md-9 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
                         <b style="color: #000000">{{ questions.Question_Score }}</b>
                     </div>
                     {% endif %}
                     {% if  questions.Question_Description %}
-                    <div class=" col-md-3 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-4 col-sm-12 col-xs-12" style="padding-left:0;">
                         Question Description :
                     </div>
-                    <div class=" col-md-9 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
                         <b style="color: #000000">{{ questions.Question_Description }}</b>
                     </div>
                     {% endif %}
                     {% if questions.Answer_Type %}
-                    <div class="col-md-3 col-sm-12 col-xs-12" style="padding-left:0; padding-bottom: 10px;">
+                    <div class="col-md-4 col-sm-12 col-xs-12" style="padding-left:0; padding-bottom: 10px;">
                         Answer Type :
 
                     </div>
-                    <div class=" col-md-9 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
                         <b style="color: #000000">
                             {% if questions.Answer_Type == 'S' %}
                             Short Answer
@@ -123,7 +125,7 @@
                     <div class="x_content">
                         {% for answer in Answers %}
                         {% if questions.id == answer.Question_Code.id  %}
-                        <p>{{answer.Assignment_Answer}}</p>
+                        <p style="margin: 0;color:#000000;">{{answer.Assignment_Answer}}</p>
                         {% endif %}
                         {% endfor %}
                         {% if not Answers %}

@@ -2,74 +2,73 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block stylesheets %}
-    {{ form.media }}
+{{ form.media }}
 
 {% endblock stylesheets %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
-    <li class="breadcrumb-item active" aria-current="page">
-        {% if '/inninggroup/create/' == request.path %}
-            Allocate Teacher to Course
-        {% else %}
-            Edit Course Allocation
-        {% endif %}
-    </li>
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
+<li class="breadcrumb-item active" aria-current="page">
+    {% if '/inninggroup/create/' == request.path %}
+    Allocate Teacher to Course
+    {% else %}
+    Edit Course Allocation
+    {% endif %}
+</li>
 {% endblock %}
 {% block content %}
-    <div class="headerDiv">
-        <h2 class="infoFormHeader">
-            {% if '/inninggroup/create/' == request.path %}
-                Allocate Teacher to Course
-            {% else %}
-                Edit Course Allocation
-            {% endif %}
-        </h2>
-        <hr class="header_hr">
-    </div>
-    <div class="col-md-7 col-md-offset-2 col-sm-offset-1 text-center" style="margin-top: 3%">
+<div class="headerDiv">
+    <h2 class="infoFormHeader">
+        {% if '/inninggroup/create/' == request.path %}
+        Allocate Teacher to Course
+        {% else %}
+        Edit Course Allocation
+        {% endif %}
+    </h2>
+    <hr class="header_hr">
+</div>
+<div class="col-md-7 col-md-offset-2 col-sm-offset-1 text-center" style="margin-top: 3%">
 
-        <form method="post" id="FormID">
-            {% csrf_token %}
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                {{ form.InningGroup_Name|as_crispy_field }}
-            </div>
+    <form method="post" id="FormID">
+        {% csrf_token %}
+        <!-- <div class="col-md-12 col-sm-12 col-xs-12">
+            <input type="hidden" name="InningGroup_Name" id="id_InningGroup_Name" value="{{ Course_Code }}"
+                class="select form-control">
+        </div> -->
 
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                {{ form.Course_Code|as_crispy_field }}
-            </div>
-            
-            {% if '/inninggroup/create/' == request.path %}
-                <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                    <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
-                </div>
-            {% else %}
-            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                <label>
-                    Status
-                </label><br>
-                <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                        {% if object.Use_Flag == False %}
-                    &nbsp;
-                        {% else %}
-                    checked
-                        {% endif %}
-                ><br> <br></div>   
-            {% endif %}
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                {{ form.Teacher_Code }}
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
-                       class="select form-control">
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
-                       class="select form-control">
-            </div>
-            *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on MAC.<br><br>
-            <div class="submitButton col-md-12">
-                <button class="btn btn-success" type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            {{ form.Course_Code|as_crispy_field }}
+        </div>
+
+        {% if '/inninggroup/create/' == request.path %}
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+        </div>
+        {% else %}
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            <label>
+                Status
+            </label><br>
+            <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
+                &nbsp; {% else %} checked {% endif %}><br> <br></div>
+        {% endif %}
+        <div class="col-md-12 col-sm-12 col-xs-12">
+
+            {{ form.Teacher_Code }}
+
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
+                class="select form-control">
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+            <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
+                class="select form-control">
+        </div>
+        *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
+        MAC.<br><br>
+        <div class="submitButton col-md-12">
+            <button class="btn btn-success" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
 {% endblock %}

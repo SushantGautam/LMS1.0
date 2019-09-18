@@ -183,20 +183,33 @@ Polls
 
 
 {% block javascripts %}
-<script>
+    <script>
 
-    $('.category-name').on('click', function () {
-        var categoryId = this.id;
-        $.ajax({
-            type: "GET",
-            data: { 'categoryId': categoryId },
-            url: "{% url 'surveyFilterCategory_student' %}",  // URL to your view that serves new info
-            success: function (data) {
-                $("#rowCards").html(data);
-                console.log(data)
-            }
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "GET",
+                data: {'categoryId': 0},
+                url: "{% url 'surveyFilterCategory_student' %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#rowCards").html(data);
+                    console.log(data)
+                }
+            });
         });
-    });
 
-</script>
+
+        $('.category-name').on('click', function () {
+            var categoryId = this.id;
+            $.ajax({
+                type: "GET",
+                data: {'categoryId': categoryId},
+                url: "{% url 'surveyFilterCategory_student' %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#rowCards").html(data);
+                    console.log(data)
+                }
+            });
+        });
+    </script>
 {% endblock %}

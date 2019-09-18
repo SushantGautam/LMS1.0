@@ -7,10 +7,10 @@
 
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
 
 <li class="breadcrumb-item active">
-    <a href="{% url 'forum:user_info' pk=user.pk %}">Profile</a>
+    <a href="{% url 'teacher_info' pk=user.pk %}">Profile</a>
 </li>
 
 
@@ -30,7 +30,7 @@
     <ul class="list-group thread-list">
         {% for thread in threads %}
         <li class="list-group-item thread-entry">
-            <div class="entry media"><a href="{% url 'forum:user_info' pk=thread.user.pk %}">
+            <div class="entry media"><a href="{% url 'teacher_info' pk=thread.user.pk %}">
                     <img src="
                                                                             {% if request.user.Member_Avatar %}
                                                                                 {{ request.user.Member_Avatar.url }}
@@ -45,7 +45,7 @@
                 </a>
                 <h2 class="thread_title">
                     <div class="media-body media-middle"> &nbsp;
-                        <a href="{% url 'forum:thread' pk=thread.pk %}" class="entry-link">
+                        <a href="{% url 'teacher_thread' pk=thread.pk %}" class="entry-link">
                             {{ thread.title }}
                         </a>
 
@@ -53,7 +53,7 @@
                             <h5>
                                 <p class="topic-meta">
                                     &nbsp; Topic:
-                                    <a href="{% url 'forum:topic' thread.topic.pk %}">
+                                    <a href="{% url 'teacher_topic' thread.topic.pk %}">
                                         <span class="link-color">
                                             {{ thread.topic.title }}
                                         </span>
@@ -97,7 +97,7 @@
 
                                 <div id="reply_{{ reply.thread.pk }}_{{ reply.pk }}">
                                     <li class="list-group-item reply-entry reply-entry-content">
-                                        <a href="{% url 'forum:user_info' pk=reply.user.pk %}">
+                                        <a href="{% url 'teacher_info' pk=reply.user.pk %}">
                                             <img src="
                                                 {% if request.user.Member_Avatar %}
                                                     {{ request.user.Member_Avatar.url }}
@@ -183,7 +183,7 @@
                             </div>
 
                             <div class="reply_title">
-                                <a href="{% url 'forum:thread' pk=reply.thread.pk %}"
+                                <a href="{% url 'teacher_thread' pk=reply.thread.pk %}"
                                     class="entry-link">{{ reply.thread.title }}</a>
                             </div>
 
@@ -216,11 +216,11 @@
     <li class="list-group-item topic-entry">
         <div class="entry media">
             <div class="media-body media-middle">topic:
-                <a href="{% url 'forum:topic' pk=topic.pk %}" class="entry-link">
+                <a href="{% url 'teacher_topic' pk=topic.pk %}" class="entry-link">
                     {{ topic.title }}
                 </a>
                 <p class="entry-meta">node group:
-                    <a href="{% url 'forum:nodegroup' topic.node_group.pk %}">
+                    <a href="{% url 'teacher_nodegroup' topic.node_group.pk %}">
                         <span class="label label-default meta-node">
                             {{ topic.node_group.title }}
                         </span>

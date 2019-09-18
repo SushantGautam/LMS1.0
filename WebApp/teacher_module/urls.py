@@ -1,10 +1,7 @@
-from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.teacher_module import views
-from WebApp.teacher_module.views import CourseInfoListView
-from quiz import views as quiz_views
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -45,8 +42,8 @@ urlpatterns += (
          name='teacher_assignmentinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='teacher_assignmentinfo_update'),
-    path('myassignments/', views.MyAssignmentsListView.as_view(),
-         name='teacher_myassignmentinfo_list'),
+    path('myassignments/',views.MyAssignmentsListView.as_view(), name='teacher_myassignmentinfo_list'),
+    path('assignment_answers/<int:pk>',views.AssignmentAnswers.as_view(), name='teacher_assignment_answers'),
 )
 
 urlpatterns += (
@@ -63,21 +60,46 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    path('question_teachers/', views.question_teachers, name="question_teachers"),
-)
-
-urlpatterns += (
-    path('polls_teachers/', views.polls_teachers, name="polls_teachers"),
+    path('question_teachers/', views.SurveyInfoListView.as_view(), name="question_teachers"),
+    # path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
+    #          name='surveyinfo_create'),
+    path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
+    path('polls_teachers/detail/<int:pk>/',
+         views.TeacherSurveyInfoDetailView.as_view(), name='polls_teachers'),
+    path('teacherSurveyFilterCategory/', views.teacherSurveyFilterCategory.as_view(),
+         name='teacherSurveyFilterCategory'),
+    path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
+         name='TeacherSurveyInfo_ajax'),
 )
 
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="teacher_forum"),
     path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
+         views.create_thread, name='teacher_forum_create'),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
+         views.create_thread, name='teacher_forum_create'),
+
+
+
+
+    path('forum/create_topic/(?P<nodegroup_pk>\d+)/',
+         views.create_topic, name='teacher_create_topic'),
+
     path('forum/create_topic', views.create_topic, name="teacher_create_topic"),
     path('forum/search/(?P<keyword>.*)',
          views.SearchView.as_view(), name='teacher_search'),
     path('forum/search/', views.search_redirect,
          name='teacher_search_redirect'),
+    path('forum/nodegroup/<int:pk>/',
+         views.NodeGroupView.as_view(), name='teacher_nodegroup'),
+    path('forum/thread/<int:pk>/',
+         views.ThreadView.as_view(), name='teacher_thread'),
+    path('forum/topic/<int:pk>/', views.TopicView.as_view(), name='teacher_topic'),
+    path('forum/info/<int:pk>/', views.user_info, name='teacher_info'),
+    path('forum/posts/<int:pk>/', views.UserPosts.as_view(), name='teacher_posts'),
+    path('forum/threads/<int:pk>/',
+         views.UserThreads.as_view(), name='teacher_threads'),
 )
 
 urlpatterns += (

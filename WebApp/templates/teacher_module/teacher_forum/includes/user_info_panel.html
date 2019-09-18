@@ -1,0 +1,15 @@
+{% load forum_tags %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="profile_pic">
+                <img src="/media/{{ user.Member_Avatar }}" alt="..." class="img-circle profile_img"
+                    style="height:60px;width:60px;" />
+            </div>
+            <div class="col-xs-9 col-sm-10">
+                <p>{{ user.username }}</p>
+                <p>UID: {{ user.pk }}</p>
+            </div>
+        </div>
+    </div>
+</div>

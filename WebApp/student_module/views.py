@@ -16,11 +16,29 @@ from django.shortcuts import render, get_object_or_404
 from django.views import View
 # Create your views here.
 from django.views.generic import DetailView, ListView
+from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
+from WebApp.models import CourseInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, AssignAnswerInfo
+from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo
+from survey.models import QuestionInfo as SurveyQuestionInfo
+from datetime import datetime
+from quiz.models import Question , Quiz
+from django.shortcuts import redirect
+from django.views.generic.edit import FormView
+from django.http import JsonResponse, HttpResponse
+import json
+from django.core import serializers
+from django.forms.models import model_to_dict
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.urls import reverse_lazy
+from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext as _
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.debug import sensitive_post_parameters
 
-from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, \
-    AssignAnswerInfo
-from quiz.models import Question, Quiz
-from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
+
+
 
 datetime_now = datetime.now()
 
@@ -43,11 +61,37 @@ def start(request):
         
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(Assignment_Deadline__gte=datetime_now)
-        print(batches)
-        print(sessions)
+ 
         
         return render(request, 'student_module/dashboard.html',
                       {'GroupName': batches, 'Group': sessions, 'Course': courses,'activeAssignments':activeassignments})
+
+class PasswordChangeView(PasswordContextMixin, FormView):
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('student_user_profile')
+    title = _('Password change')
+
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(csrf_protect)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        # Updating the password logs out all other sessions for the user
+        # except the current one.
+        update_session_auth_hash(self.request, form.user)
+
+        messages.success(self.request,
+                         'Your password was successfully updated! You can login with your new credentials')
+
+        return super().form_valid(form)
 
 def quiz(request):
     return render(request, 'student_module/quiz.html')
@@ -225,10 +269,10 @@ class questions_student(ListView):
         context['currentDate'] = datetime.now().date()
         context['categories'] = CategoryInfo.objects.all()
 
-        context['questions'] = QuestionInfo.objects.filter(
+        context['questions'] = SurveyQuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
-        context['options'] = OptionInfo.objects.all()
+        context['options'] = SurveyQuestionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
 
         
@@ -247,7 +291,7 @@ class questions_student_detail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['questions'] = QuestionInfo.objects.filter(Survey_Code=self.kwargs.get('pk')).order_by('pk')
+        context['questions'] = SurveyQuestionInfo.objects.filter(Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
@@ -260,7 +304,7 @@ class questions_student_detail_history(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['questions'] = QuestionInfo.objects.filter(
+        context['questions'] = SurveyQuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
         context['options'] = OptionInfo.objects.all()
@@ -280,7 +324,7 @@ class ParticipateSurvey(View):
         submitSurvey.Student_Code = MemberInfo.objects.get(id = userId)
         submitSurvey.save()
 
-        for question in QuestionInfo.objects.filter(Survey_Code = surveyId):
+        for question in SurveyQuestionInfo.objects.filter(Survey_Code = surveyId):
 
             optionId = request.POST[str(question.id)]
             answerObject = AnswerInfo()

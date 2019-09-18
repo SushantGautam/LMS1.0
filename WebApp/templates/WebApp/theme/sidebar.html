@@ -59,10 +59,10 @@
 
 
                 </li>
-                <li>
+                <!-- <li>
                     <a href="{% url 'admin_calendar' %}"><i class="fa fa-calendar"></i> Calendar
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a><i class="fa fa-user"></i>Members<span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
@@ -98,10 +98,15 @@
                         <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="{% url 'inninginfo_list' %}">Session List</a></li>
-                        <li><a href="{% url 'inninginfo_create' %}">Register New Session</a></li>
-                        <li><a href="{% url 'sessioninfo_list' %}">Session Name</a></li>
                         <li><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
-                        <li><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
+
+                        <li><a href="{% url 'inninggroup_list' %}">Teacher-Course Allocation</a></li>
+                        <!-- <li><a href="{% url 'inninginfo_create' %}">Register New Session</a></li> -->
+                        <!-- <li><a href="{% url 'sessioninfo_list' %}">Session Name</a></li> -->
+                        <!-- #TODO remove thios -->
+
+                        <!-- <li><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
+                        <li><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li> -->
                     </ul>
                 </li>
 
@@ -124,10 +129,10 @@
                     </ul>
                 </li>
 
-                <li>
+                <!-- <li>
                     <a href="{% url 'messageinfo_list' %}">
                         <i class="fa fa-envelope" id="messageSidebar"></i>Message</a>
-                </li>
+                </li> -->
                 <li>
                     <a href=" {% url 'surveyinfo_list' %}"><i class="fa fa-bar-chart"></i>Survey</a>
                 </li>
