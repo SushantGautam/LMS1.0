@@ -6,12 +6,25 @@
 {% block title %} {{ quiz.title}} {% endblock %}
 {% block description %} {% trans "Exam Results for" %} {{ quiz.title }} {% endblock %}
 {% block breadcrumb %} 
-<li class="breadcrumb-item"><a href="{% url 'student_chapterinfo_detail' course=quiz.course_code.pk pk=quiz.chapter_code.pk %}">Chapter</a></li>
-                
- 
 
-<li class="breadcrumb-item active" aria-current="page">{{quiz.title}}</li>
 {% endblock %} 
+{% block top_navigation %}
+
+{% endblock top_navigation %}   
+      
+{% block sidebar %}
+
+<style> 
+.nav-md .container.body .right_col {
+    padding: 10px 20px 0;
+    margin-left: 0px!important;
+}
+.breadcrumb{
+	display: none;
+}
+</style>
+
+{% endblock sidebar %}
 
 {% block content %}
 

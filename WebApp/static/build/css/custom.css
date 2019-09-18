@@ -6110,6 +6110,9 @@ input[type=checkbox], input[type=radio] {
 
 /* ends */
 /* FORM QUIZ */
+.custom-modal{
+    padding-right: 0px!important;
+}
 .quiz-admin-btn {
     margin-top: 10px
 }

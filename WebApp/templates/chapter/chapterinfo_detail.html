@@ -2,7 +2,7 @@
 <script src="https://player.vimeo.com/api/player.js"></script>
 
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" id="create_assignment_modal">
+     aria-hidden="true" id="create_assignment_modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
@@ -26,23 +26,24 @@
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
                 <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
-                    data-target="#course-modal">Course Viewer &nbsp;</a>
+                   data-target="#course-modal">Course Viewer &nbsp;</a>
 
                 {% if '/students' not in request.path %}
-                <a class="btn-sm btn-success"
-                    href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Course
-                    Builder &nbsp;</a>
+                    <a class="btn-sm btn-success"
+                       href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Course
+                        Builder &nbsp;</a>
 
                 {% endif %}
             </div>
             {% if '/students' not in request.path %}
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <a style="float: right;margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <a style="float: right;margin-top:5px;margin-right: 15px;"
+                       href="{% if '/teachers' in request.path %}
         /teachers{{ object.get_update_url }}
     {% else %}
         {{ object.get_update_url }}
     {% endif %}"><b><u>Edit Chapter</u></b></a>
-            </div>
+                </div>
             {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12" id="tabs">
                 <table class="table">
@@ -63,111 +64,110 @@
                         <td>Course Code</td>
                         <td>{{ object.Course_Code }}</td>
                     </tr>
+                </table>
 
-                    {% if 'students' in request.path %}
+                {% if 'students' in request.path %}
+                Pre Test Quiz
+                <table class="table">
+                    <thead>
+                    <td>Quiz TITLE</td>
+                    <td>PLAY</td>
+                    </thead>
+
+                    {% for quiz in quizes %}
+
+                        {% if quiz.pre_test is True and quiz.draft is False %}
+                            <tr>
+                                <td>quiz title</td>
+                                <td>
+                                    <button id="feedbackbtn-quiz" type="button" class="btn btn-info "
+                                            data-toggle="modal" data-target="#myModal">Play Quiz
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                        {% else %}
+                            <tr>
+                                <td>No pre quiz</td>
+                                <td></td>
+                            </tr>
+
+                        {% endif %}
+                    {% endfor %}
+
                     <tr>
+                </table>
 
-                        <td>Pre Test Quiz</td>
-                        <td>
+                </table>
 
+                    Post Quiz
+                    <table class="table">
+                        <thead>
+                        <td>Quiz TITLE</td>
+                        <td>PLAY</td>
+                        </thead>
 
+                        {% for quiz in quizes %}
 
-
-                            {% for quiz in quizes%}
-
-                            {% if quiz.pre_test is True and quiz.draft is False%}
-                            <a href="{% url 'quiz_question' quiz_name=quiz.url %}"><button>Play quiz</button></a>
-                          
-                            {% else %}
-                            <p>No pre quiz</p>
-
-                            {% endif %}
-                            {% endfor %}
-
-
-
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Post Test Quiz</td>
-                        <td>
-
-                            {% if request.user.Is_Student %}
-
-                            <!-- {% url 'quiz_question' quiz_name=quiz.url %} -->
-
-                            {% for quiz in quizes%}
                             {% if quiz.post_test is True and quiz.draft is False %}
-                            <a href=""><button>Play quiz</button></a> 
-                            <div class="container">
-                                <h2>Modal Example</h2>
-                                <!-- Trigger the modal with a button -->
-                                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-                              
-                                <!-- Modal -->
-                                <div class="modal fade" id="myModal" role="dialog">
-                                  <div class="modal-dialog">
-                                  
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">Modal Header</h4>
-                                      </div>
-                                      <div class="modal-body">
-                                        <p>Some text in the modal.</p>
-                                      </div>
-                                      <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                      </div>
-                                    </div>
-                                    
-                                  </div>
-                                </div>
-                                
-                              </div>
-                              
+                                <tr>
+                                    <td>quiz title</td>
+                                    <td>
+                                        <button id="feedbackbtn-quiz" type="button" class="btn btn-info "
+                                                data-toggle="modal" data-target="#myModal">Play Quiz
+                                        </button>
+                                    </td>
+                                </tr>
+
+
                             {% else %}
-                            <p>no post quiz</p>
+                                <tr>
+                                    <td>No pre quiz</td>
+                                    <td></td>
+                                </tr>
+
                             {% endif %}
-                            {% endfor %}
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% else %}
+                        {% endfor %}
+
+                        <tr>
+                    </table>
+                {% else %}
+                    <table>
                     <tr>
                         <td>
                             Pre Test Quiz
                         </td>
                         <td>
                             {% for quiz in quizes %}
-                            {% if quiz.pre_test is True%}
-                            <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons">
-                                {% csrf_token %}
-                                <div class="btn-group" id="status" data-toggle="buttons">
-                                    <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                                        <input type="radio" value="1" name="pre-test-radio" id="id_pre-test-radio"
-                                            checked="checked">ON</label>
-                                    <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
-                                        <input type="radio" value="0" name="pre-test-radio">OFF</label>
-                                </div>
-                                <input type="hidden" name="quiz_id" value="{{quiz.id}}">
-                            </form>
-                            {% else %}
-                            <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons">
-                                {% csrf_token %}
-                                <div class="btn-group" id="status" data-toggle="buttons">
-                                    <label class="btn btn-default btn-on-3 btn-sm " id="ActiveButton">
-                                        <input type="radio" value="1" name="pre-test-radio"
-                                            id="id_pre-test-radio">ON</label>
-                                    <label class="btn btn-default btn-off-3 btn-sm active" id="ExpireButton">
-                                        <input type="radio" value="0" name="pre-test-radio"
-                                            checked="checked">OFF</label>
-                                </div>
-                                <input type="hidden" name="quiz_id" value="{{quiz.id}}">
-                            </form>
-                            {% endif %}
+
+                                {% if quiz.pre_test is True %}
+                                    <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons">
+                                        {% csrf_token %}
+                                        <div class="btn-group" id="status" data-toggle="buttons">
+                                            <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                                <input type="radio" value="1" name="pre-test-radio"
+                                                       id="id_pre-test-radio"
+                                                       checked="checked">ON</label>
+                                            <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
+                                                <input type="radio" value="0" name="pre-test-radio">OFF</label>
+                                        </div>
+                                        <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons">
+                                        {% csrf_token %}
+                                        <div class="btn-group" id="status" data-toggle="buttons">
+                                            <label class="btn btn-default btn-on-3 btn-sm " id="ActiveButton">
+                                                <input type="radio" value="1" name="pre-test-radio"
+                                                       id="id_pre-test-radio">ON</label>
+                                            <label class="btn btn-default btn-off-3 btn-sm active" id="ExpireButton">
+                                                <input type="radio" value="0" name="pre-test-radio"
+                                                       checked="checked">OFF</label>
+                                        </div>
+                                        <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
+                                    </form>
+                                {% endif %}
 
                             {% endfor %}
                         </td>
@@ -178,40 +178,40 @@
                         </td>
                         <td>
                             {% for quiz in quizes %}
-                            {% if quiz.post_test is True%}
-                            <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons1">
-                                {% csrf_token %}
-                                <div class="btn-group" id="status2" data-toggle="buttons">
-                                    <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                                        <input type="radio" value="1" name="post-test-radio"
-                                            checked="checked">ON</label>
-                                    <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
-                                        <input type="radio" value="0" name="post-test-radio">OFF</label>
-                                </div>
-                                <input type="hidden" name="quiz_id" value="{{quiz.id}}">
+                                {% if quiz.post_test is True %}
+                                    <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons1">
+                                        {% csrf_token %}
+                                        <div class="btn-group" id="status2" data-toggle="buttons">
+                                            <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                                <input type="radio" value="1" name="post-test-radio"
+                                                       checked="checked">ON</label>
+                                            <label class="btn btn-default btn-off-3 btn-sm" id="ExpireButton">
+                                                <input type="radio" value="0" name="post-test-radio">OFF</label>
+                                        </div>
+                                        <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
 
-                            </form>
-                            {% else %}
-                            <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons1">
-                                {% csrf_token %}
-                                <div class="btn-group" id="status2" data-toggle="buttons">
-                                    <label class="btn btn-default btn-on-3 btn-sm " id="ActiveButton">
-                                        <input type="radio" value="1" name="post-test-radio">ON</label>
-                                    <label class="btn btn-default btn-off-3 btn-sm active" id="ExpireButton">
-                                        <input type="radio" value="0" name="post-test-radio"
-                                            checked="checked">OFF</label>
-                                </div>
-                                <input type="hidden" name="quiz_id" value="{{quiz.id}}">
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="{% url 'change_quiz_test' %}" id="radio-buttons1">
+                                        {% csrf_token %}
+                                        <div class="btn-group" id="status2" data-toggle="buttons">
+                                            <label class="btn btn-default btn-on-3 btn-sm " id="ActiveButton">
+                                                <input type="radio" value="1" name="post-test-radio">ON</label>
+                                            <label class="btn btn-default btn-off-3 btn-sm active" id="ExpireButton">
+                                                <input type="radio" value="0" name="post-test-radio"
+                                                       checked="checked">OFF</label>
+                                        </div>
+                                        <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
 
-                            </form>
-                            {% endif %}
+                                    </form>
+                                {% endif %}
                             {% endfor %}
 
                         </td>
                     </tr>
 
 
-                    {% endif %}
+                {% endif %}
                 </table>
             </div>
         </div>
@@ -224,43 +224,43 @@
             </div>
 
             {% if '/students' not in request.path %}
-            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModal1"
-                    id="add-newassignment-btn">
-                    Create New Assignment
-                </button>
-            </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                    <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModal1"
+                            id="add-newassignment-btn">
+                        Create New Assignment
+                    </button>
+                </div>
             {% endif %}
         </div>
         <div class="col-md-12">
             <hr class="header_hr">
             {% for o in assignments %}
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
-                <div class="col-md-8 col-sm-8 col-xs-8">
-                    <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
-                    <h5>
-                        <b style="color: #000000">{{ o.Assignment_Topic }}</b>
-                    </h5>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-4">
-                    <a href="{% if '/students' in request.path %}
+                <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
+                    <div class="col-md-8 col-sm-8 col-xs-8">
+                        <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
+                        <h5>
+                            <b style="color: #000000">{{ o.Assignment_Topic }}</b>
+                        </h5>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                        <a href="{% if '/students' in request.path %}
                                 {{ o.student_get_absolute_url }}
                             {% elif '/teachers' in request.path %}
                                 {{ o.teacher_get_absolute_url }}
                             {% else %}
                                {{ o.get_absolute_url }}
                             {% endif %}">
-                        <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                            <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                 margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
-                        </button>
-                    </a>
-                </div>
+                            </button>
+                        </a>
+                    </div>
 
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <hr style="margin-top: 1px; margin-bottom: 10px;">
-                    <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <hr style="margin-top: 1px; margin-bottom: 10px;">
+                        <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
+                    </div>
                 </div>
-            </div>
             {% endfor %}
         </div>
     </div>
@@ -285,7 +285,7 @@
             </div>
             <div class="modal-body custom-modal-body">
                 <div class="button-position" style="position: relative">
-                    <div class = "prev-btn" style="float: left; position: absolute; top: 50px; left: 0px">
+                    <div class="prev-btn" style="float: left; position: absolute; top: 50px; left: 0px">
                         <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
                     </div>
                 </div>
@@ -304,137 +304,178 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade custom-modal" id="myModal" role="dialog">
+    <div class="modal-dialog"
+         style="margin:0px!important; width:100%!important; padding:0px!important;height:100%!important">
+
+
+        <!-- Modal content-->
+        <div class="modal-content" style="height:100%">
+            <div class="modal-header">
+                <div class="col-md-12">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <a data-toggle="tooltip" data-placement="right" title="" onclick="toggleFullScreen()"
+                       data-original-title="FullScreen" style="float:right ; padding-right:20px">
+                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                    </a>
+
+                </div>
+
+                <h4 class="modal-title ">Quiz </h4>
+
+            </div>
+            <div class="modal-body" id="quizmodal">
+                <p>Some text in the modal.</p>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
 {% block customjss %}
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    {% for quiz in quizes %}
+        <script>
+            $('#feedbackbtn-quiz').click(function () {
+                $('#quizmodal').html(`<iframe style="height: 90vh; width: 100%"
+        src="/quiz/{{ quiz.url }}/take/"
+        frameborder="0px"></iframe>`);
+            })
+        </script>
+    {% endfor %}
+    <script>
 
-<script>
-
-    $(document).ready(function () {
-        $('#radio-buttons').change(function () {
-            console.log($('#radio-buttons input[name=pre-test-radio]:checked').val());
-            $.ajax({
-                url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
-                data: $(this).serialize(), // get the form data
-                type: $(this).attr('method'), // GET or POST
-                success: function (response) {
-                    console.log('posted form');
-                },
-                error: function () {
-                    console.log('Error in posting form');
-                }
+        $(document).ready(function () {
+            $('#radio-buttons').change(function () {
+                console.log($('#radio-buttons input[name=pre-test-radio]:checked').val());
+                $.ajax({
+                    url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
+                    data: $(this).serialize(), // get the form data
+                    type: $(this).attr('method'), // GET or POST
+                    success: function (response) {
+                        console.log('posted form');
+                    },
+                    error: function () {
+                        console.log('Error in posting form');
+                    }
+                });
+            });
+            $('#radio-buttons1').change(function () {
+                console.log($('#radio-buttons1 input[name=post-test-radio]:checked').val());
+                $.ajax({
+                    url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
+                    data: $(this).serialize(), // get the form data
+                    type: $(this).attr('method'), // GET or POST
+                    success: function (response) {
+                        console.log('posted form');
+                    },
+                    error: function () {
+                        console.log('Error in posting form');
+                    }
+                });
             });
         });
-        $('#radio-buttons1').change(function () {
-            console.log($('#radio-buttons1 input[name=post-test-radio]:checked').val());
+
+        $('#course-viewer').click(function () {
             $.ajax({
-                url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
-                data: $(this).serialize(), // get the form data
-                type: $(this).attr('method'), // GET or POST
+                type: "GET",
+                url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
+                data: {
+                    'chapterID': '{{ object.id }}'
+                },
                 success: function (response) {
-                    console.log('posted form');
+                    // $("#model-content").append(response.data.numberofpages);
+                    loaddata(response.data)
                 },
                 error: function () {
-                    console.log('Error in posting form');
+                    console.log('Error in getting chapters')
                 }
             });
-        });
-    });
 
-    $('#course-viewer').click(function () {
-        $.ajax({
-            type: "GET",
-            url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
-            data: {
-                'chapterID': '{{ object.id }}'
-            },
-            success: function (response) {
-                // $("#model-content").append(response.data.numberofpages);
-                loaddata(response.data)
-            },
-            error: function () {
-                console.log('Error in getting chapters')
-            }
-        });
-
-        function loaddata(data) {
-            $('#chaptertitle').text(data.chaptertitle);
-            $('#totalpages').text(data.numberofpages);
-            $('#currentpage').text(1);
-            $('#modal-container').empty();
-            $('#modal-container').css('width', data.canvaswidth)
-            $.each(data.pages, function (key, value) {
-                $.each(value, function (count) {
-                    // Create modal
-                    $('#modal-container').append(`
+            function loaddata(data) {
+                $('#chaptertitle').text(data.chaptertitle);
+                $('#totalpages').text(data.numberofpages);
+                $('#currentpage').text(1);
+                $('#modal-container').empty();
+                $('#modal-container').css('width', data.canvaswidth)
+                $.each(data.pages, function (key, value) {
+                    $.each(value, function (count) {
+                        // Create modal
+                        $('#modal-container').append(`
                     <div id="page${key}" role="dialog" style="display:none;">
                         
                     </div>
                 `)
-                    // -------------------------------
-                    $.each(value[count], function (div, div_value) {
-                        if (div == 'textdiv') {
-                            $.each(div_value, function (css, css_value) {
-                                // css_string = JSON.stringify(css_value)
-                                $('#page' + key).append(`
+                        // -------------------------------
+                        $.each(value[count], function (div, div_value) {
+                            if (div == 'textdiv') {
+                                $.each(div_value, function (css, css_value) {
+                                    // css_string = JSON.stringify(css_value)
+                                    $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}">
                                     ${css_value.content}
                                 </div>
                             `);
-                            });
-                        }
-                        if (div == 'pic') {
-                            $.each(div_value, function (css, css_value) {
-                                src = css_value['background-image']
-                                imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                                $('#page' + key).append(`
+                                });
+                            }
+                            if (div == 'pic') {
+                                $.each(div_value, function (css, css_value) {
+                                    src = css_value['background-image']
+                                    imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
+                                    $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}">
                                     <image src = ${imgsrc} width=100% height=100%/>
                                 </div>
                             `);
-                            });
-                        }
+                                });
+                            }
 
-                        if (div == 'btn-div') {
-                            $.each(div_value, function (css, css_value) {
-                                link = "";
-                                if(css_value.hasOwnProperty('link')){
-                                    link = "href = " + css_value.link;
-                                }
-                                $('#page' + key).append(`
+                            if (div == 'btn-div') {
+                                $.each(div_value, function (css, css_value) {
+                                    link = "";
+                                    if (css_value.hasOwnProperty('link')) {
+                                        link = "href = " + css_value.link;
+                                    }
+                                    $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <a ${link} target="_blank"><button>Button</button</a>
                                 </div>
                             `)
-                            });
-                        }
+                                });
+                            }
 
-                        if (div == 'pdf') {
-                            $.each(div_value, function (css, css_value) {
-                                $('#page' + key).append(`
+                            if (div == 'pdf') {
+                                $.each(div_value, function (css, css_value) {
+                                    $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <object data="${css_value.link}" type="application/pdf" width="100%" height="100%">
                                         alt : <a href="${css_value.link}">${css_value.link}</a>
                                     </object>
                                 </div>
                             `)
-                            });
-                        }
-                        // if (div == 'video') {
-                        //     $.each(div_value, function (css, css_value) {
-                        //         $('#page' + key).append(`
-                        //         <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                        //             <video width="100%" height="100%" controls>
-                        //                 <source src="${css_value.link}" type="video/mp4">
-                        //                 <source src="${css_value.link}" type="video/ogg">
-                        //                 Your browser does not support the video tag.
-                        //             </video>
-                        //         </div>
-                        //     `)
-                        //     });
-                        // }
-                        if (div == 'video') {
-                            $.each(div_value, function (css, css_value) {
-                                $('#page' + key).append(`
+                                });
+                            }
+                            // if (div == 'video') {
+                            //     $.each(div_value, function (css, css_value) {
+                            //         $('#page' + key).append(`
+                            //         <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                            //             <video width="100%" height="100%" controls>
+                            //                 <source src="${css_value.link}" type="video/mp4">
+                            //                 <source src="${css_value.link}" type="video/ogg">
+                            //                 Your browser does not support the video tag.
+                            //             </video>
+                            //         </div>
+                            //     `)
+                            //     });
+                            // }
+                            if (div == 'video') {
+                                $.each(div_value, function (css, css_value) {
+                                    $('#page' + key).append(`
                                 <div id = '${css_value.link}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     
                                 </div>
@@ -447,78 +488,78 @@
 
                                 var videoPlayer = new Vimeo.Player('${css_value.link}', options);
                             `)
-                            });
-                        }
+                                });
+                            }
+                        });
                     });
                 });
-            });
-            $('#page1').css('display', 'block');
+                $('#page1').css('display', 'block');
 
-            // $("#modal-content").append(htmlContent);
-        }
-
-        $("#course-modal").on("hidden.bs.modal", function () {
-            $("#modal-container").empty()
-        });
-
-        $('#next-btn').click(function () {
-            $("#modal-container > div ").each(function () {
-                if ($(this).css("display") == "block") {
-                    res = this.id.match(/[0-9]+/);
-                }
-            });
-            if (res < $("#modal-container > div ").length) {
-                $('#page' + res).css("display", "none");
-                res++;
-                $('#page' + res).css("display", "block")
+                // $("#modal-content").append(htmlContent);
             }
-            $('#currentpage').text(res);
-        });
-        $('#prev-btn').click(function () {
-            $("#modal-container > div ").each(function () {
-                if ($(this).css("display") == "block") {
-                    res = this.id.match(/[0-9]+/);
-                }
+
+            $("#course-modal").on("hidden.bs.modal", function () {
+                $("#modal-container").empty()
             });
-            if ((res - 1) > 0) {
-                $('#page' + res).css("display", "none");
-                res--;
-                $('#page' + res).css("display", "block")
-            }
-            $('#currentpage').text(res);
+
+            $('#next-btn').click(function () {
+                $("#modal-container > div ").each(function () {
+                    if ($(this).css("display") == "block") {
+                        res = this.id.match(/[0-9]+/);
+                    }
+                });
+                if (res < $("#modal-container > div ").length) {
+                    $('#page' + res).css("display", "none");
+                    res++;
+                    $('#page' + res).css("display", "block")
+                }
+                $('#currentpage').text(res);
+            });
+            $('#prev-btn').click(function () {
+                $("#modal-container > div ").each(function () {
+                    if ($(this).css("display") == "block") {
+                        res = this.id.match(/[0-9]+/);
+                    }
+                });
+                if ((res - 1) > 0) {
+                    $('#page' + res).css("display", "none");
+                    res--;
+                    $('#page' + res).css("display", "block")
+                }
+                $('#currentpage').text(res);
+            });
         });
-    });
-</script>
+    </script>
 
 
-<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
-<script>
-    $('#myModal').on('shown.bs.modal', function () {
-        $('#myInput').trigger('focus')
-    });
+    <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+    <script>
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        });
 
-    $('#add-newassignment-btn').on('click', function () {
-        $('#create_assignment_modal_body').empty();
-        $('#create_assignment_modal_body').append(
-            `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+        $('#add-newassignment-btn').on('click', function () {
+            $('#create_assignment_modal_body').empty();
+            $('#create_assignment_modal_body').append(
+                `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
                class="select form-control">
             <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
                class="select form-control">`
-        )
+            )
 
-        $.ajax({
-            type: "GET",
-            url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
-            success: function (response) {
-                $('#create_assignment_modal_body').append(response);
-            },
-            error: function () {
-                console.log('Error in generating assignment create form')
-            },
-            complete: function () {
-                $(".se-pre-con-ajax").fadeOut("fast");
-            }
+            $.ajax({
+                type: "GET",
+                url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+                success: function (response) {
+                    $('#create_assignment_modal_body').append(response);
+                },
+                error: function () {
+                    console.log('Error in generating assignment create form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
         });
-    });
-</script>
+    </script>
 {% endblock %}
