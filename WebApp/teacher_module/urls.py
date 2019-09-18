@@ -75,11 +75,31 @@ urlpatterns += (
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="teacher_forum"),
     path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
+         views.create_thread, name='teacher_forum_create'),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
+         views.create_thread, name='teacher_forum_create'),
+
+
+
+
+    path('forum/create_topic/(?P<nodegroup_pk>\d+)/',
+         views.create_topic, name='teacher_create_topic'),
+
     path('forum/create_topic', views.create_topic, name="teacher_create_topic"),
     path('forum/search/(?P<keyword>.*)',
          views.SearchView.as_view(), name='teacher_search'),
     path('forum/search/', views.search_redirect,
          name='teacher_search_redirect'),
+    path('forum/nodegroup/<int:pk>/',
+         views.NodeGroupView.as_view(), name='teacher_nodegroup'),
+    path('forum/thread/<int:pk>/',
+         views.ThreadView.as_view(), name='teacher_thread'),
+    path('forum/topic/<int:pk>/', views.TopicView.as_view(), name='teacher_topic'),
+    path('forum/info/<int:pk>/', views.user_info, name='teacher_info'),
+    path('forum/posts/<int:pk>/', views.UserPosts.as_view(), name='teacher_posts'),
+    path('forum/threads/<int:pk>/',
+         views.UserThreads.as_view(), name='teacher_threads'),
 )
 
 urlpatterns += (

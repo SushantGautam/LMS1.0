@@ -17,7 +17,8 @@ else:
 class ThreadForm(ModelForm):
 
     if use_pagedown:
-        content_raw = forms.CharField(label=_('Content'), widget=PagedownWidget())
+        content_raw = forms.CharField(
+            label=_('Content'), widget=PagedownWidget())
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -46,7 +47,8 @@ class ThreadForm(ModelForm):
 class ThreadEditForm(ModelForm):
 
     if use_pagedown:
-        content_raw = forms.CharField(label=_('Content'), widget=PagedownWidget())
+        content_raw = forms.CharField(
+            label=_('Content'), widget=PagedownWidget())
 
     def __init__(self, *args, **kwargs):
         super(ThreadEditForm, self).__init__(*args, **kwargs)
@@ -55,14 +57,17 @@ class ThreadEditForm(ModelForm):
 
     class Meta:
         model = Thread
-        fields = ('content_raw', )
+        fields = ('title', 'content_raw', )
         labels = {
             'content_raw': _('Content'),
         }
+
+
 class TopicForm(ModelForm):
 
     if use_pagedown:
-        content_raw = forms.CharField(label=_('Content'), widget=PagedownWidget())
+        content_raw = forms.CharField(
+            label=_('Content'), widget=PagedownWidget())
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -72,9 +77,9 @@ class TopicForm(ModelForm):
 
     class Meta:
         model = Topic
-        fields = ['node_group','title','description','topic_icon' ]
+        fields = ['node_group', 'title', 'description', 'topic_icon']
         labels = {
-            'node_group':_('NodeGroup'),
+            'node_group': _('NodeGroup'),
             'description': _('Description'),
             'title': _('Title'),
             'topic_icon': _('Topic Icon'),
@@ -92,7 +97,8 @@ class TopicForm(ModelForm):
 class TopicEditForm(ModelForm):
 
     if use_pagedown:
-        content_raw = forms.CharField(label=_('Content'), widget=PagedownWidget())
+        content_raw = forms.CharField(
+            label=_('Content'), widget=PagedownWidget())
 
     def __init__(self, *args, **kwargs):
         super(TopicEditForm, self).__init__(*args, **kwargs)
@@ -101,7 +107,7 @@ class TopicEditForm(ModelForm):
 
     class Meta:
         model = Topic
-        fields = ('description','topic_icon', )
+        fields = ('description', 'topic_icon', )
         labels = {
             'description': _('Description'),
             'topic_icon': _('Topic Icon'),
@@ -189,7 +195,8 @@ class ReplyForm(ModelForm):
 class PostEditForm(ModelForm):
 
     if use_pagedown:
-        content_raw = forms.CharField(label=_('Content'), widget=PagedownWidget())
+        content_raw = forms.CharField(
+            label=_('Content'), widget=PagedownWidget())
 
     def __init__(self, *args, **kwargs):
         super(PostEditForm, self).__init__(*args, **kwargs)
