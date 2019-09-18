@@ -169,7 +169,8 @@
                                         <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
                                     </form>
                                 {% endif %}
-
+                            {% empty %}
+                                <a href="{% url 'quizfw' %}">Create Quiz</a>
                             {% endfor %}
                         </td>
                     </tr>
@@ -206,6 +207,9 @@
 
                                     </form>
                                 {% endif %}
+                            {% empty %}
+                                <a href="{% url 'quizfw' %}">Create Quiz</a>
+
                             {% endfor %}
 
                         </td>
