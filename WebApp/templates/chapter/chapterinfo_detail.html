@@ -79,7 +79,7 @@
 
                         {% if quiz.pre_test is True and quiz.draft is False %}
                             <tr>
-                                <td>quiz title</td>
+                                <td>{{quiz.title}}</td>
                                 <td>
                                     <button id="feedbackbtn-quiz" type="button" class="btn btn-info "
                                             data-toggle="modal" data-target="#myModal">Play Quiz
@@ -111,7 +111,7 @@
 
                             {% if quiz.post_test is True and quiz.draft is False %}
                                 <tr>
-                                    <td>quiz title</td>
+                                    <td>{{ quiz.title }}</td>
                                     <td>
                                         <button id="feedbackbtn-quiz" type="button" class="btn btn-info "
                                                 data-toggle="modal" data-target="#myModal">Play Quiz
