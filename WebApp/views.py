@@ -951,13 +951,13 @@ def save_video(request):
         v = vimeo.VimeoClient(
             token='7a954bb83b66a50a95efc2d1cfdd484a',
             key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
-            secret='+1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
+            secret='1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
         )
 
         # media = '{path to a video on the file system}'
 
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
-            'name': "media",
+        uri = v.upload('/LMS',path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
+            'name': media.name,
         })
 
         response = v.get(uri + '?fields=link').json()
