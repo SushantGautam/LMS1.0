@@ -1029,16 +1029,19 @@ $(document).ready(function() {
                         method: 'POST',
                         type: 'POST',
                         beforeSend: function() {
-                            div.append(`<div class="loader" id="loadingDiv"></div>`)
+                            div.append(`<div class="loader" id="loadingDiv"></div>
+                            <p id = "percentcomplete"></p>
+                            `)
                             $('#loadingDiv').show();
                         }, 
                         error: function(errorThrown){
                             alert("Failed to upload Video")
                             div.find('#loadingDiv').remove();
+                            div.find('#percentcomplete').remove();
                         },                     
                         success: function(data) {
-                            div.find('.loadingDiv').remove();
-                            console.log(data.link)
+                            div.find('#loadingDiv').remove();
+                            div.find('#percentcomplete').remove();
                             div.empty();
                             div.append(`
                             <video width="100%" height="90%" controls id=${data.link}>
@@ -1070,6 +1073,7 @@ $(document).ready(function() {
                                     var percentComplete = evt.loaded / evt.total;
                                     percentComplete = parseInt(percentComplete * 100);
                                     console.log(percentComplete);
+                                    $('#percentcomplete').text(percentComplete+'%')
                                     $('#progress-bar-fill').css('width', percentComplete + '%');
     
                                     if (percentComplete === 100) {
