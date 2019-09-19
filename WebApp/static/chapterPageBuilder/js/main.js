@@ -9,10 +9,10 @@ $(document).ready(function() {
             let position = {
                 top, left, height, width
             };
-            let html = `<div class='textdiv'>
-                     <div id="text-actions" class = "text-actions">
+            let html = `<div class='textdiv'  >
+                     <div id="text-actions"   class = "text-actions">
                          <i class="fas fa-trash" id=${id}></i>
-                         <i class="fas fa-arrows-alt" id="draghere" class="draghere"></i>
+                         <i class="fas fa-arrows-alt" id="draghere" ></i>
                      </div> 
                      <div id="editor" class="messageText" contenteditable> ${message}</div>
                   </div>
@@ -28,11 +28,13 @@ $(document).ready(function() {
                     "border": "2px dashed #000 !important"
 
                 }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",  // dragging beyond this <div> will not be possible
+                    containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
+                    snap: ".gridlines",
+                    snapMode: 'inner',
+                    cursorAt: { bottom: 0 },
+                  
                     handle: '#draghere'
                 });
 
@@ -632,14 +634,6 @@ $(document).ready(function() {
             }, function() {
                 $(this).css("border", '0')
             })
-<<<<<<< HEAD
-
-           
-
-            
-
-=======
->>>>>>> 193365f66cb20e1da089dbd6bd855f07828d0fee
         }
 
         function readURL(input) {
@@ -861,16 +855,16 @@ $(document).ready(function() {
             });
 
 
-        //     $('.pdf').resizable({
-        //         containment: $('#tabs-for-download'),
-        //         grid: [20, 20],
-        //         autoHide: true,
-        //         minWidth:500,
-        //         minHeight:500
+            $(div).resizable({
+                containment: $('#tabs-for-download'),
+                grid: [20, 20],
+                autoHide: true,
+                minWidth:500,
+                minHeight:500
 
 
             
-        // })
+        })
 
 
         $('.pdf').css({
@@ -939,13 +933,17 @@ $(document).ready(function() {
                         $(this).css("border", '0')
                     })
 
-                    $('.pdf').resizable({
+                    $(div).resizable({
                         containment: $('#tabs-for-download'),
                         grid: [20, 20],
                         autoHide: true,
                         minWidth: 150,
                         minHeight: 150
                     });
+
+                    $('.pdf').css({
+                        'resize':'both'
+                    })
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -1350,7 +1348,12 @@ $(document).ready(function() {
 
             `<li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
                
-            </li>`
+            </li><br/>
+
+            <p>${num_tabs}</p>
+            
+            
+            `
 
         );
         $(".tabs").append(
