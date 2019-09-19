@@ -1,7 +1,7 @@
 {% load static %}
 
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true" id="create_chapter_modal">
+    aria-hidden="true" id="create_chapter_modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
@@ -49,13 +49,13 @@
                     </h5>
                 </div>
                 {% if '/students' not in request.path %}
-                    <div class="col-md-3 col-sm-12 col-xs-12" style="margin-top: 10px;">
-                        <a href="{% if '/teachers' in request.path %}
+                <div class="col-md-3 col-sm-12 col-xs-12" style="margin-top: 10px;">
+                    <a href="{% if '/teachers' in request.path %}
                     /teachers{{ object.get_update_url }}
                         {% else %}
                             {{ object.get_update_url }}
                         {% endif %}"><b><u>Edit Course</u></b></a>
-                    </div>
+                </div>
                 {% endif %}
             </div>
             <table class="table">
@@ -81,9 +81,9 @@
                     <td>Status</td>
                     <td>
                         {% if object.Use_Flag == True %}
-                            Active
+                        Active
                         {% elif object.Use_Flag == False %}
-                            Deactivated
+                        Deactivated
                         {% endif %}
                     </td>
                 </tr>
@@ -93,40 +93,18 @@
                 <p style="margin-left: 10px; overflow-wrap:break-word; "> {{ object.Course_Description }} </p>
                 <hr>
             </div>
-
-
-            {#            <div class="quiz-counter" style="margin-left: 10px">#}
-            {##}
-            {#                <div class="col-md-6 col-sm-6 col-xs-6">#}
-            {#                    <p class="quiz-counter">Number of Survey</p>#}
-            {#                </div>#}
-            {#                <div class=" counter col-md-6 col-sm-6 col-xs-6  text-right">#}
-            {#                    <h4>{{ surveycount.count }}</h4>#}
-            {#                </div>#}
-            {##}
-            {##}
-            {#                <div class="col-md-6 col-sm-6 col-xs-6">#}
-            {#                    <p class="quiz-counter">Number of Quiz</p>#}
-            {#                </div>#}
-            {#                <div class=" counter col-md-6 col-sm-6 col-xs-6 text-right">#}
-            {#                    <h4>{{ quizcount.count }}</h4>#}
-            {#                </div>#}
-            {#            </div>#}
-
-
             <p>
+
                 <a class="btn btn-primary" data-toggle="collapse" href="#quizcollapse" role="button"
-                   aria-expanded="false" aria-controls="quizcollapse">
+                    aria-expanded="false" aria-controls="quizcollapse">
                     {{ quizcount.count }} Quizes
                 </a>
 
             </p>
-
-            <br>
-
+            <!-- <br> -->
             <p>
                 <a class="btn btn-primary" data-toggle="collapse" href="#surveycollapse" role="button"
-                   aria-expanded="false" aria-controls="surveycollapse">
+                    aria-expanded="false" aria-controls="surveycollapse">
                     {{ surveycount.count }} Surveys
                 </a>
 
@@ -134,7 +112,7 @@
             {#            <div class="collapse" id="surveycollapse">#}
             <div class="card card-body">
                 {% for each in surveycount %}
-                    <a href="/survey/surveyinfo/detail/{{ each.pk }}"> {{ each.Survey_Title }}</a>
+                <a href="/survey/surveyinfo/detail/{{ each.pk }}"> {{ each.Survey_Title }}</a>
                 {% endfor %}
                 {#                </div>#}
             </div>
@@ -150,45 +128,44 @@
                 </div>
 
                 {% if '/students' not in request.path %}
-                    <div class="col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
-                        <button type="button" class="btn-sm btn-success" data-toggle="modal"
-                                data-target="#exampleModal1"
-                                id="add-newchapter-btn">
-                            Create New Chapter
-                        </button>
-                    </div>
+                <div class="col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
+                    <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModal1"
+                        id="add-newchapter-btn">
+                        Create New Chapter
+                    </button>
+                </div>
                 {% endif %}
                 <div class="col-md-12 col-sm-12 xol-xs-12">
                     <script> var lastchapter = 0;</script>
                     {% for o in chapters %}
-                        <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
-                            <div class="col-md-8 col-sm-8 col-xs-12">
-                                <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}</h5>
-                                <h4>
-                                    <b style="color: #000000">{{ o.Chapter_Name }}</b>
-                                </h4>
-                            </div>
-                            <div class="col-md-4 col-sm-4 col-xs-12">
-                                <a href="{% if '/students' in request.path %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
+                        <div class="col-md-8 col-sm-8 col-xs-12">
+                            <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}</h5>
+                            <h4>
+                                <b style="color: #000000">{{ o.Chapter_Name }}</b>
+                            </h4>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <a href="{% if '/students' in request.path %}
                                 {{ o.student_get_absolute_url }}
                             {% elif '/teachers' in request.path %}
                                 {{ o.teacher_get_absolute_url }}
                             {% else %}
                                {{ o.get_absolute_url }}
                             {% endif %}">
-                                    <button type="button" style="float: right;width:150px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                <button type="button" style="float: right;width:150px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                 margin-top: 20px;margin-bottom: 10px;">View Chapter &nbsp;<i
-                                            class="fa fa-arrow-right"></i>
-                                    </button>
-                                </a>
-                            </div>
-
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                <hr style="margin-top: 5px; margin-bottom: 5px;">
-                                <p>{{ o.Summary }}</p>
-                            </div>
+                                        class="fa fa-arrow-right"></i>
+                                </button>
+                            </a>
                         </div>
-                        <script> var lastchapter = {{ o.Chapter_No }};</script>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <hr style="margin-top: 5px; margin-bottom: 5px;">
+                            <p>{{ o.Summary }}</p>
+                        </div>
+                    </div>
+                    <script> var lastchapter = {{ o.Chapter_No }};</script>
 
                     {% endfor %}
                 </div>
@@ -198,45 +175,45 @@
 </div>
 
 {% block customjss %}
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
 
-        if (parseInt('{{object.Course_Level}}'))
-            for (j = 0; j < parseInt('{{object.Course_Level}}'); j++) {
-                $('#rating').append("&nbsp;<i class='fa fa-star' style='color:#f5ba00'></i>");
-            }
-        else
-            $('#rating').append("Rating not defined");
+    if (parseInt('{{object.Course_Level}}'))
+        for (j = 0; j < parseInt('{{object.Course_Level}}'); j++) {
+            $('#rating').append("&nbsp;<i class='fa fa-star' style='color:#f5ba00'></i>");
+        }
+    else
+        $('#rating').append("Rating not defined");
 
-    </script>
-    <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
-    <script>
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus')
-        });
+</script>
+<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+<script>
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    });
 
-        $('#add-newchapter-btn').on('click', function () {
-            $('#create_chapter_modal_body').empty();
-            $('#create_chapter_modal_body').append(
-                `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}"
+    $('#add-newchapter-btn').on('click', function () {
+        $('#create_chapter_modal_body').empty();
+        $('#create_chapter_modal_body').append(
+            `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}"
                class="select form-control">`
-            )
-            $.ajax({
-                type: "GET",
-                url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
-                success: function (response) {
-                    $('#create_chapter_modal_body').append(response);
-                },
-                error: function () {
-                    console.log('Error in generating chapter create form')
-                },
-                complete: function () {
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                    $("#id_Chapter_No").val(lastchapter + 1);
-                }
-            });
-
-
+        )
+        $.ajax({
+            type: "GET",
+            url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
+            success: function (response) {
+                $('#create_chapter_modal_body').append(response);
+            },
+            error: function () {
+                console.log('Error in generating chapter create form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+                $("#id_Chapter_No").val(lastchapter + 1);
+            }
         });
-    </script>
+
+
+    });
+</script>
 {% endblock %}
