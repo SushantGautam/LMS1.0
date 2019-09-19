@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime
 
+import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -24,7 +25,6 @@ from django.views.generic.edit import FormView
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Question
-import vimeo # from PyVimeo for uploading videos to vimeo.com
 from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
@@ -402,8 +402,8 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
-        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk')).count()
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk')).count()
+        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
+        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
 
         return context
 
@@ -948,16 +948,24 @@ def save_video(request):
         filename = fs.save(media.name, media)
         print(filename)
         # #video uploading to vimeo.com
+        #standard Account
+        # v = vimeo.VimeoClient(
+        #     token='7a954bb83b66a50a95efc2d1cfdd484a',
+        #     key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
+        #     secret='1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
+        # )
+        #Premium Account
         v = vimeo.VimeoClient(
-            token='7a954bb83b66a50a95efc2d1cfdd484a',
-            key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
-            secret='+1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
+            token='3b42ecf73e2a1d0088dd677089d23e32',
+            key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
+            secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
         )
+
 
         # media = '{path to a video on the file system}'
 
         uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
-            'name': "media",
+            'name': media.name,
         })
 
         response = v.get(uri + '?fields=link').json()

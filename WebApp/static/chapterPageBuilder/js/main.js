@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+    $('#loadingDiv').hide();
     // ==================For TextBoxx================================
 
     class Textbox {
@@ -557,7 +557,20 @@ $(document).ready(function() {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
-    
+
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+            //  alert('btn clickd')
+        });
+
+        $('.pic').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
+        });
+
         $('.pic').on('dragover', function(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -585,8 +598,17 @@ $(document).ready(function() {
                 processData: false,
                 method: 'POST',
                 type: 'POST',
+                beforeSend: function() {
+                    div.append(`<div class="loader" id="loadingDiv"></div>`)
+                    $('#loadingDiv').show();
+                }, 
+                error: function(errorThrown){
+                    alert("Failed to upload PDF")
+                    div.find('#loadingDiv').remove();
+                },
                 success: function(data) {
                     div.find('p').text("");
+                    div.find('#loadingDiv').remove();
                     div.css({
                         'background-image': 'url('+load_file_url+'/' + file.name + ')',
                         'background-repeat': 'no-repeat',
@@ -610,11 +632,14 @@ $(document).ready(function() {
             }, function() {
                 $(this).css("border", '0')
             })
+<<<<<<< HEAD
 
            
 
             
 
+=======
+>>>>>>> 193365f66cb20e1da089dbd6bd855f07828d0fee
         }
 
         function readURL(input) {
@@ -643,8 +668,17 @@ $(document).ready(function() {
                         enctype: 'multipart/form-data',
                         method: 'POST',
                         type: 'POST',
+                        beforeSend: function() {
+                            div.append(`<div class="loader" id="loadingDiv"></div>`)
+                            $('#loadingDiv').show();
+                        }, 
+                        error: function(errorThrown){
+                            alert("Failed to upload PDF")
+                            div.find('#loadingDiv').remove();
+                        },
                         success: function(data) {
                             console.log(div)
+                            div.find('#loadingDiv').remove();
                             div.find('p').text("");
                             div.css({
                               'background-image': 'url('+load_file_url+'/'+input.files[0].name+')',
@@ -786,6 +820,14 @@ $(document).ready(function() {
                 processData: false,
                 method: 'POST',
                 type: 'POST',
+                beforeSend: function() {
+                    div.append(`<div class="loader" id="loadingDiv"></div>`)
+                    $('#loadingDiv').show();
+                }, 
+                error: function(errorThrown){
+                    alert("Failed to upload PDF")
+                    div.find('#loadingDiv').remove();
+                },
                 success: function(data) {
                     div.empty();
                     div.append(`
@@ -864,8 +906,17 @@ $(document).ready(function() {
                         enctype: 'multipart/form-data',
                         method: 'POST',
                         type: 'POST',
+                        beforeSend: function() {
+                            div.append(`<div class="loader" id="loadingDiv"></div>`)
+                            $('#loadingDiv').show();
+                        }, 
+                        error: function(errorThrown){
+                            alert("Failed to upload PDF")
+                            div.find('#loadingDiv').remove();
+                        },                     
                         success: function(data) {
                             // console.log(data);
+                            div.find('#loadingDiv').remove();
                             div.empty();
                             div.append(`
                                 <object data="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}" type="application/pdf" width="100%" height="100%">
@@ -907,7 +958,10 @@ $(document).ready(function() {
     function VideoFunction(top=null, left=null, link=null, height=null, width=null){
         const Videos = new video(top, left, link, height, width);
         Videos.renderDiagram();
-    
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+            //  alert('btn clickd')
+        });
         $('.fa-upload').click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
@@ -1038,8 +1092,20 @@ $(document).ready(function() {
                         processData: false,
                         method: 'POST',
                         type: 'POST',
+                        beforeSend: function() {
+                            div.append(`<div class="loader" id="loadingDiv"></div>
+                            <p id = "percentcomplete"></p>
+                            `)
+                            $('#loadingDiv').show();
+                        }, 
+                        error: function(errorThrown){
+                            alert("Failed to upload Video")
+                            div.find('#loadingDiv').remove();
+                            div.find('#percentcomplete').remove();
+                        },                     
                         success: function(data) {
-                            console.log(data.link)
+                            div.find('#loadingDiv').remove();
+                            div.find('#percentcomplete').remove();
                             div.empty();
                             div.append(`
                             <video width="100%" height="90%" controls id=${data.link}>
@@ -1071,6 +1137,7 @@ $(document).ready(function() {
                                     var percentComplete = evt.loaded / evt.total;
                                     percentComplete = parseInt(percentComplete * 100);
                                     console.log(percentComplete);
+                                    $('#percentcomplete').text(percentComplete+'%')
                                     $('#progress-bar-fill').css('width', percentComplete + '%');
     
                                     if (percentComplete === 100) {
@@ -1324,7 +1391,7 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PictureFunction(css_value.tops,
-                                css_value.left,css_value['background-image'],css_value.height,css_value.width);
+                                css_value.left,css_value['background-image'],css_value.width,css_value.height);
                         });
                     }
 
