@@ -612,7 +612,7 @@ $(document).ready(function() {
             })
 
             $('.pic').resizable({
-                containment: $('.editor-canvas'),
+                containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
                 minWidth: 150,
@@ -1327,7 +1327,7 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PictureFunction(css_value.tops,
-                                css_value.left,css_value['background-image'],css_value.height,css_value.width);
+                                css_value.left,css_value['background-image'],css_value.width,css_value.height);
                         });
                     }
 
