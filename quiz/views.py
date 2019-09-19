@@ -800,6 +800,10 @@ class QuizCreateWizard(SessionWizardView):
             setattr(my_quiz, k, v)
         my_quiz.save()
         my_quiz.url = str(my_quiz.title) + str(my_quiz.id)
+        my_quiz.url = re.sub('\s+', '-', my_quiz.url).lower()
+
+        my_quiz.url = ''.join(letter for letter in my_quiz.url if
+                           letter.isalnum() or letter == '-')
         my_quiz.cent_code = self.request.user.Center_Code
         my_quiz.save()
         my_quiz.mcquestion.add(*mcq)

@@ -59,7 +59,7 @@ class ThreadEditForm(ModelForm):
         model = Thread
         fields = ('title', 'content_raw', )
         labels = {
-            'content_raw': _('Content'),
+            'content_raw': ('Content'),
         }
 
 

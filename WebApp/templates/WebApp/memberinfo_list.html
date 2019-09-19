@@ -46,7 +46,7 @@
                     <td>Name</td>
                     <td>Current Address</td>
                     <td>Email</td>
-                    <td>Phone</td>
+                    <!-- <td>Phone</td> -->
                     <td>Gender</td>
                     <td class="text-center">Action</td>
                     <td>Student</td>
@@ -61,15 +61,15 @@
 
                 </td>
 
-                <td style=" padding-top: 15px;"><b><a
+                <td style="vertical-align: middle;"><b><a
                             href="{{ object.get_absolute_url }}">{{ object.Member_ID }}</a></b>
                 </td>
 
-                <td style=" padding-top: 15px;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
-                <td style=" padding-top: 15px;">{{ object.Member_Temporary_Address }}</td>
-                <td style=" padding-top: 15px;">{{ object.email }}</td>
-                <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
-                <td style=" padding-top: 15px;">
+                <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
+                <td style="vertical-align: middle;">{{ object.Member_Temporary_Address }}</td>
+                <td style="vertical-align: middle;">{{ object.email }}</td>
+                <!-- <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td> -->
+                <td style="vertical-align: middle;">
                     {% if object.Member_Gender == 'M' %}
                     Male
                     {% elif object.Member_Gender == 'F' %}
@@ -131,12 +131,12 @@
                 }],
             "columnDefs": [
                 {
-                    "targets": [8, 9],
+                    "targets": [7, 8],
                     "visible": false,
                     "searchable": true
                 },
                 {
-                    "targets": [8, 9],
+                    "targets": [7, 8],
                     "visible": false,
                     "searchable": true
                 }
@@ -151,7 +151,7 @@
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
             table_main.columns().search('').draw();
-            table_main.column(8).search("True").draw();
+            table_main.column(7).search("True").draw();
 
 
         });
@@ -161,7 +161,7 @@
             $("#all_button").css("color", "black");
 
             table_main.columns().search('').draw();
-            table_main.column(9).search("True").draw();
+            table_main.column(8).search("True").draw();
 
         });
 

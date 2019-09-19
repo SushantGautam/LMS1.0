@@ -25,7 +25,6 @@
 <form method="POST" id="FormID" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-
         <div id="div_id_Course_Name" class="form-group">
             <label for="id_Course_Name" class="control-label ">
                 Course Name
@@ -71,7 +70,7 @@
                 value="{{ object.Course_Level }}">
         </div>
     </div>
-    
+
 
 
     {% if 'edit' in request.path %}
@@ -83,9 +82,9 @@
             &nbsp; {% else %} checked {% endif %}><br> <br>
     </div>
     {% else %}
-        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-            <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
-        </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+    </div>
     {% endif %}
 
     {#    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}
