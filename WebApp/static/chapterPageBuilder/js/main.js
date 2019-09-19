@@ -548,7 +548,20 @@ $(document).ready(function() {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
-    
+
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+            //  alert('btn clickd')
+        });
+
+        $('.pic').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
+        });
+
         $('.pic').on('dragover', function(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -610,15 +623,6 @@ $(document).ready(function() {
             }, function() {
                 $(this).css("border", '0')
             })
-
-            $('.pic').resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
-
         }
 
         function readURL(input) {
