@@ -314,7 +314,7 @@ def edit_thread(request, pk):
     else:
         form = ThreadEditForm(instance=thread)
 
-    return render(request, 'forum/edit_thread.html', {'form': form, 'title': _('Edit thread')})
+    return render(request, 'forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
 @login_required

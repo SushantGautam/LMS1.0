@@ -140,7 +140,8 @@
                                     {% if thread.reply_count %}
                                     <i class="fa fa-comments-o"></i>
                                     {% blocktrans count reply_count=thread.reply_count %}({{ reply_count }}) Reply
-                                    {% plural %}({{ reply_count }})Replies {% endblocktrans %} {% endif %}</h2>
+                                    {% plural %}({{ reply_count }})Replies {% endblocktrans %} {% endif %}-Post a Reply
+                                </h2>
                                 <hr>
 
                                 {% for post in posts %}
@@ -347,6 +348,7 @@
                                     <div id="editor-one" class="editor-wrapper"></div>
 
                                     <textarea name="content_raw" id="id_content_raw" style="display:none;"></textarea>
+
                                 </div>
 
 
@@ -374,17 +376,17 @@
 
 {% endblock %}
 
-{#{% block widget_after %}#}
-{#    {% include 'forum/widgets/topic_info.html' %}#}
-{#{% endblock %}#}
+
 
 {% block footer_ext %}
 <script>
     $(document).ready(function () {
         $('.reply-to').click(function (e) {
             e.preventDefault();
-            var box = $("#reply-content-input, #id_content_raw");
-            box.val(box.val() + "@" + $(this).data('username') + "\n");
+            var box = $(".editor-wrapper");
+            $('.editor-wrapper').html(box.html() + "@" + $(this).data('username') + "\n");
+            var scrollPos = $(".editor-wrapper").offset().top;
+            $(window).scrollTop(scrollPos);
 
         });
     });
@@ -525,7 +527,9 @@
     $("#submitButton").click(function () {
         $('#id_content_raw').val($('.editor-wrapper').html());
         var content_raw = document.getElementById("id_content_raw").value
-        var data = { "content_raw": content_raw, "user": {{ request.user.pk }}, "thread": {{ thread.pk }} };
+        var data = { "content_raw": content_raw, "user": {{ request.user.pk }}, "thread": {{ thread.pk }} 
+        
+        };
 
 
 
