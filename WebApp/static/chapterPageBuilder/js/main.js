@@ -548,7 +548,20 @@ $(document).ready(function() {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
-    
+
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+            //  alert('btn clickd')
+        });
+
+        $('.pic').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
+        });
+
         $('.pic').on('dragover', function(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -610,15 +623,6 @@ $(document).ready(function() {
             }, function() {
                 $(this).css("border", '0')
             })
-
-            $('.pic').resizable({
-                containment: $('.editor-canvas'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
-
         }
 
         function readURL(input) {
@@ -1327,7 +1331,7 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PictureFunction(css_value.tops,
-                                css_value.left,css_value['background-image'],css_value.height,css_value.width);
+                                css_value.left,css_value['background-image'],css_value.width,css_value.height);
                         });
                     }
 
