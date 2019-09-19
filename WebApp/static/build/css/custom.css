@@ -11,7 +11,9 @@ html, body {
 .tableTitleRow {
     max-width: 50%;
 }
-
+/* .table>tbody>tr>td>.table_valign_center{
+    vertical-align: middle !important;
+} */
 .footer {
     position: absolute;
     bottom: 0;
@@ -5696,9 +5698,11 @@ article {
 }
 
 #listCard {
-
     border: grey;
-    padding: 30px;
+    /* padding: 20px; */
+    padding-left: 15px;
+    padding-top: 15px;
+    padding-bottom: 10px;
 }
 
 .card-header {
