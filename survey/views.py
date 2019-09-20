@@ -179,7 +179,9 @@ def create_questioninfo_formset(obj_instance):
             print(index)
 
             my_mcqs =obj_instance.questioninfo.all().filter(Question_Type='MCQ')
-            if index is not None:
+            if form.is_bound:
+                my_op_initial = None
+            elif index is not None:
                 my_op_initial = [my_dict for my_dict in my_mcqs[index].optioninfo.all().values()]
             else:
                 my_op_initial = None
@@ -237,7 +239,7 @@ def create_questioninfo_formset(obj_instance):
 class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+    template_name = 'ajax/surveyInfoRetake_ajax.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -284,6 +286,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
                 prefix='questionansinfo'
             )  # SAQ
             context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+            context['parent_pk'] = obj_instance.pk
         return context
 
     def form_valid(self, form):
