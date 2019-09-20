@@ -69,11 +69,11 @@
                         {{ questioninfo_form.nested.non_form_errors }}
 
                         <div class='opinfo_dynamic' style="margin-left:40px;">
-                          {% for option_form in questioninfo_form.nested.forms %}
-
-                            {{ option_form|crispy }}
-
-                          {% endfor %}
+                            {#                          {% for option_form in questioninfo_form.nested.forms %}#}
+                            {##}
+                            {#                            {{ option_form|crispy }}#}
+                            {##}
+                            {#                          {% endfor %}#}
                         </div>
 
                         <button id="abc${questionId}"
@@ -130,7 +130,7 @@
     {{ questioninfo_formset.empty_form|crispy }}
     {{ questioninfo_formset.empty_form.nested.management_form }}
     {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-    {#        {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
+      {#            {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
 
     <div id="optionContainer_id" style="margin-left: 40px;">
 
@@ -179,7 +179,15 @@
 
           $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3).replace(r4, str4));
           $(append_after).append(`<button id="abc${questionId}" onclick="addOption(event, ${questionId}, '#emptyOpInfoForm', '#optionContainer_${questionId}', 'questioninfo', 'optioninfo')" class="btn btn-success" >Add option</button>`);
+
+          var newel_id = String(
+              '#div_id_questioninfo-' + questionId + '-Question_Name'
+          );
+
           questionId++;
+
+          var counter_el = `<p>${questionId}</p>`;
+          $(newel_id).before(counter_el);
           $('#id_' + type + '-TOTAL_FORMS').val(questionId);
       }
 
@@ -198,8 +206,14 @@
           var r2 = new RegExp(type2 + '\-__prefix__', 'g');
           var r3 = new RegExp('add_more_op_id', 'g');
           $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3));
+          var newel_id = String(
+              '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
+          );
+          var counter_el = `<p>${optionId}</p>`;
+          $(newel_id).before(counter_el);
           optionId++;
           $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
+
       }
 
       function copyEmptyShortAnsQuestion(selector, append_after, type) {

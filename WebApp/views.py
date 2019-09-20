@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-import vimeo  # from PyVimeo for uploading videos to vimeo.com
+# import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -39,11 +39,17 @@ class Changestate(View):
         quizid = self.request.POST["quiz_id"] 
         my_quiz = Quiz.objects.get(id=quizid)
         pre_test = self.request.POST.get("pre-test-radio", None)
-        if(pre_test is not None):
-            my_quiz.pre_test = pre_test
         post_test = self.request.POST.get("post-test-radio", None)
-        if(post_test is not None):
-            my_quiz.post_test = post_test
+        if(pre_test == '0' or post_test == '0'):
+            my_quiz.draft = True
+        elif(pre_test == '1' or post_test == '1'):
+            my_quiz.draft = False
+
+        print(pre_test,post_test)
+        # if(pre_test is not None):
+        #     my_quiz.pre_test = pre_test
+        # if(post_test is not None):
+        #     my_quiz.post_test = post_test
         
         my_quiz.save()
         return JsonResponse({'message':'success'}, status=200)
@@ -457,7 +463,8 @@ class ChapterInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
-        context['quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'))
+        context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
+        context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'),  pre_test=True)
 
         return context
 
