@@ -43,26 +43,25 @@ class QuizForm(forms.ModelForm):
     # override __init__() to
     # remove "required" from question field
     # and hide friendly url for now????
+    class Meta:
+        model = Quiz
+        fields = ['title', 'description', 'random_order', 'success_text', 'fail_text', 'mcquestion', 'tfquestion',
+                  'saquestion']
+
     def __init__(self, *args, **kwargs):
+        course_id = kwargs.pop('course_id')
+        mcqueryset = MCQuestion.objects.filter(course_code = course_id)
+        tfqueryset = TF_Question.objects.filter(course_code = course_id)
+        saqueryset = SA_Question.objects.filter(course_code = course_id)
         super().__init__(*args, **kwargs)
         self.fields['mcquestion'].required = False
         self.fields['tfquestion'].required = False
         self.fields['saquestion'].required = False
-        # self.fields['cent_code'].required = False
-
-        # self.fields['url'].required = False
-        # self.fields['url'].widget = forms.HiddenInput()
-        # last_quiz = Quiz.objects.last()
-        # if(last_quiz):
-        #    self.fields['url'].initial = "quiz" + str(last_quiz.id)
-        #    self.fields['title'].initial = "quiz" + str(last_quiz.id)
-        # else:
-        #    self.fields['url'].initial = "quiz0"
-        #    self.fields['title'].initial = "quiz0"
-
-    class Meta:
-        model = Quiz
-        fields = '__all__'
+        self.fields['success_text'].initial = 'Congratulations!!!'
+        self.fields['fail_text'].initial = 'Sorry!'
+        self.fields['mcquestion'].queryset = mcqueryset
+        self.fields['tfquestion'].queryset = tfqueryset
+        self.fields['saquestion'].queryset = saqueryset
 
     # override clean() to
     # add custom validation such that atleast
