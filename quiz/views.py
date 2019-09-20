@@ -456,7 +456,7 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = MCQuestion
     form_class = MCQuestionForm
     # success_url = reverse_lazy('quiz_create')
-    template_name = 'ajax/mcquestion_form_ajax.html'
+    template_name = 'ajax_quiz/mcquestion_form_ajax.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -618,7 +618,7 @@ class TFQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = TF_Question
     form_class = TFQuestionForm
     # success_url = reverse_lazy('quiz_create')
-    template_name = 'ajax/tfquestion_form_ajax.html'
+    template_name = 'ajax_quiz/tfquestion_form_ajax.html'
 
     def form_valid(self, form):
         vform = super().form_valid(form)
@@ -701,13 +701,14 @@ class SAQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = SA_Question
     form_class = SAQuestionForm
     # success_url = reverse_lazy('quiz_create')
-    template_name = 'ajax/saquestion_form_ajax.html'
+    template_name = 'ajax_quiz/saquestion_form_ajax.html'
 
     def form_valid(self, form):
         vform = super().form_valid(form)
         new_saq = {}
         new_saq['new_saq_id'] = self.object.id
-        new_saq['new_Saq_content'] = self.object.content
+        new_saq['new_saq_content'] = self.object.content
+        print(self.object.content)
         return JsonResponse(new_saq)
 
     def get_context_data(self, **kwargs):
@@ -846,7 +847,7 @@ class QuizCreateWizard(SessionWizardView):
 class CreateQuizFromChapter(CreateView):
     model = Quiz
     form_class = QuizForm
-    template_name = 'ajax/quiz_create_chapter_ajax.html'
+    template_name = 'ajax_quiz/quiz_create_chapter_ajax.html'
 
     def form_valid(self, form):
         related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
