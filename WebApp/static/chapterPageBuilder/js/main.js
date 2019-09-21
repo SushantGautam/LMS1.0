@@ -1047,11 +1047,15 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
                             div.empty();
+                            // div.append(`
+                            // <video width="100%" height="90%" controls id=${data.link}>
+                            // <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
+                            //     Your browser does not support the video tag.
+                            // </video>`);
+
                             div.append(`
-                            <video width="100%" height="90%" controls id=${data.link}>
-                            <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>`);
+                                ${data.html}
+                            `);
                             // div.append(`
                             // <source src="${data.link}" type="video/mp4">
                             //    Your browser does not support the video tag.
@@ -1285,14 +1289,15 @@ $(document).ready(function() {
     
     function newpagefunction(){
         var num_tabs = $(".tabs-to-click ul li").length + 1;
-
-        $(".tabs-to-click ul").append(
-
-            `<li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
+        
+        $(".tabs-to-click ul").append(`
+            <div>
+                <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
+            </div>
+            <li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
                
-            </li>`
-
-        );
+            </li>
+        `);
         $(".tabs").append(
             `<p id='tab${num_tabs}' style="display:none" class="tab-content-no droppable editor-canvas ui-droppable">
             
@@ -1376,6 +1381,27 @@ $(document).ready(function() {
     display();
 });
 
+//clone Page function
+// $('.tabs-to-click').on('click', '.clone-page-btn', function(){
+//     $(".tabs-to-click ul").append(`
+//         <div>
+//             <button class="clone-page-btn" value="${parseInt(this.value)+1}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
+//         </div>
+//         <li class="tabs-link pagenumber" onclick="openTab(event,'tab${parseInt(this.value)+1}')" >
+            
+//         </li>
+//     `);
+    
+//     $('#tab'+this.value).clone().after($('#tab'+this.value));
+
+//     $(".editor-canvas").droppable({
+//         drop: function(event, ui){
+//             dropfunction(event,ui);
+//         }
+//     });
+
+// });
+// =====================================================================================
 var colorList = ['000000', '993300', '333300', '003300', '003366', '000066', '333399', '333333',
     '660000', 'FF6633', '666633', '336633', '336666', '0066FF', '666699', '666666', 'CC3333', 'FF9933', '99CC33', '669966', '66CCCC', '3366FF', '663366', '999999', 'CC66FF', 'FFCC33', 'FFFF66', '99FF66', '99CCCC', '66CCFF', '993366', 'CCCCCC', 'FF99CC', 'FFCC99', 'FFFF99', 'CCffCC', 'CCFFff', '99CCFF', 'CC99FF', 'FFFFFF'
 ];
