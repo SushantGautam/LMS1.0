@@ -9,10 +9,10 @@ $(document).ready(function() {
             let position = {
                 top, left, height, width
             };
-            let html = `<div class='textdiv'>
-                     <div id="text-actions" class = "text-actions">
+            let html = `<div class='textdiv'  >
+                     <div id="text-actions"   class = "text-actions">
                          <i class="fas fa-trash" id=${id}></i>
-                         <i class="fas fa-arrows-alt" id="draghere" class="draghere"></i>
+                         <i class="fas fa-arrows-alt" id="draghere" ></i>
                      </div> 
                      <div id="editor" class="messageText" contenteditable> ${message}</div>
                   </div>
@@ -28,11 +28,13 @@ $(document).ready(function() {
                     "border": "2px dashed #000 !important"
 
                 }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",  // dragging beyond this <div> will not be possible
+                    containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
+                    snap: ".gridlines",
+                    snapMode: 'inner',
+                    cursorAt: { bottom: 0 },
+                  
                     handle: '#draghere'
                 });
 
@@ -131,15 +133,22 @@ $(document).ready(function() {
                     </div>
                     <div>
                         <p id="video-drag">${message}</p>
-                        <div id="progress-bar">
-                            <span id="progress-bar-fill"></span>
-                        </div>
+                        
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                         <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
                         </form>
-                        ${videoobj}
+      
+                        <div class="progress">
+                            <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                                ${videoobj}
                     </div>
                 </div>`
+
+            //     <div id="progress-bar">
+            //     <span id="progress-bar-fill"></span>
+            // </div>
+
 
             this.RemoveElement = function () {
                 return idss;
@@ -191,6 +200,8 @@ $(document).ready(function() {
                         </div>
         
                 `;
+
+                // href = ${link}
         this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
             let dom = $(html).css({
@@ -698,6 +709,12 @@ $(document).ready(function() {
         const btns = new Button(top, left, link, height, width);
         
         btns.renderDiagram();
+
+        $('.btn').attr('contentEditable', true);
+
+        $('.btn').on('click',function(){
+            alert('say me more!!')
+        })
     
         const div1 = $('i').parent();
     
@@ -741,6 +758,14 @@ $(document).ready(function() {
         );
     
         Pdf.renderDiagram();
+
+        $('.pdf').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+          
+        });
+        
 
           // ==for pdf upload==
         $('.fa-upload').click(function(e) {
@@ -794,29 +819,49 @@ $(document).ready(function() {
                             alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
                         </object>
                     `);
+
                 },
                 error: function(data, status, errorThrown) {
                     alert(data.responseJSON.message);
                 }
             });
-            let div = $('#picture-drag').parent().parent();
-            $('#picture-drag').css({
+            let div = $('#pdf-actions1').parent();
+            console.log(div);
+            $('#pdf-actions1').css({
                 'display': 'none'
             });
 
             $(div).hover(function() {
-                $(this).css("border", "1px solid red");
+                $(this).css(
+                    {
+                        "border": "1px solid red",
+
+                });
+               
+
+              
             }, function() {
                 $(this).css("border", '0')
-            })
+            });
 
-            $('.pdf').resizable({
-                containment: $('.editor-canvas'),
+
+            $(div).resizable({
+                containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
+                minWidth:500,
+                minHeight:500
+
+
+            
+        })
+
+
+        $('.pdf').css({
+            'resize':' both'
+        })
+
+           
 
         }
 
@@ -878,13 +923,17 @@ $(document).ready(function() {
                         $(this).css("border", '0')
                     })
 
-                    $('.pdf').resizable({
-                        containment: $('.editor-canvas'),
+                    $(div).resizable({
+                        containment: $('#tabs-for-download'),
                         grid: [20, 20],
                         autoHide: true,
                         minWidth: 150,
                         minHeight: 150
                     });
+
+                    $('.pdf').css({
+                        'resize':'both'
+                    })
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -904,6 +953,14 @@ $(document).ready(function() {
         $('.fa-upload').click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
+        });
+
+        $('.video-div').resizable({
+            containment: $('.editor-canvas'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
         });
     
         $('.video-div').on('dragover', function(e) {
@@ -951,10 +1008,11 @@ $(document).ready(function() {
                             var percentComplete = evt.loaded / evt.total;
                             percentComplete = parseInt(percentComplete * 100);
                             console.log(percentComplete);
-                            $('#progress-bar-fill').css('width', percentComplete + '%');
-    
+                            // $('#progress-bar-fill').css('width', percentComplete + '%');
+                                $("#progress-bar").attr('aria-valuenow',percentComplete).css('width',percentComplete+'%').text(percentComplete+'%');
+
                             if (percentComplete === 100) {
-                                $('#progress-bar').css("display", "none");
+                                // $('#progress-bar').css("display", "none");
                                 let div = $('#video-drag').parent().parent();
                                 $('#video-drag').css({
                                     'display': 'none'
@@ -973,7 +1031,7 @@ $(document).ready(function() {
                                     $(this).css("border", '0')
                                 })
     
-                                $('.pic').resizable({
+                                $('.video-div').resizable({
                                     containment: $('.editor-canvas'),
                                     grid: [20, 20],
                                     autoHide: true,
@@ -1082,7 +1140,7 @@ $(document).ready(function() {
                                             $(this).css("border", '0')
                                         })
     
-                                        $('.pic').resizable({
+                                        $('.video-div').resizable({
                                             containment: $('#tabs-for-download'),
                                             grid: [20, 20],
                                             autoHide: true,
@@ -1148,26 +1206,26 @@ $(document).ready(function() {
                 top = 0,
                 left = 0,
                 "",
-                height="50%",width = "50%");
+                height="50%",width = "100%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="52%",
                 left=0,
-                height="45%", width="50%"
+                height="45%", width="100%"
             );
         } else if (ui.helper.hasClass('title-slide')) {
             PictureFunction(
                 top = 0,
                 left = "0%",
                 "",
-                width = "50%", height="60%");
+                width = "100%", height="60%");
             PictureFunction(
                 top = 0,
                 left = "50%",
                 "",
-                width = "50%", height="60%");
+                width = "100%", height="60%");
             TextboxFunction(
                 top="62%",
                 left=0,
@@ -1274,8 +1332,14 @@ $(document).ready(function() {
             </div>
             <li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
                
-            </li>
-        `);
+            </li><br/>
+
+            <p>${num_tabs}</p>
+            
+            
+            `
+
+        );
         $(".tabs").append(
             `<p id='tab${num_tabs}' style="display:none" class="tab-content-no droppable editor-canvas ui-droppable">
             

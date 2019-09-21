@@ -385,7 +385,7 @@ class SA_Question(Question):
 
 @python_2_unicode_compatible
 class Quiz(models.Model):
-    mcquestion = models.ManyToManyField(MCQuestion,verbose_name=_("Multiple Choice Question"))
+    mcquestion = models.ManyToManyField(MCQuestion, verbose_name=_("Multiple Choice Question"))
     tfquestion = models.ManyToManyField(TF_Question, verbose_name=_("True/False Question"))
     saquestion = models.ManyToManyField(SA_Question, verbose_name=_("Short Answer Type Question"))
 
