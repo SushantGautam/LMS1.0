@@ -109,13 +109,6 @@ $(document).ready(function() {
             let videoobj;
             let message = ""
             if(link!=null){
-                // videoobj = `
-                // <video width="100%" height="90%" controls>
-                //     <source src="${link}" type="video/mp4">
-                //     <source src="${link}" type="video/ogg">
-                //     Your browser does not support the video tag.
-                // </video>
-                // `
                 videoobj = `<div id='${link}'><div><script>
                 var options = {
                     url: '${link}',
@@ -124,10 +117,7 @@ $(document).ready(function() {
                 };
               
                 var videoPlayer = new Vimeo.Player('${link}', options);
-              
-                videoPlayer.on('play', function() {
-                  console.log('Played the video');
-                });
+                ${console.log(videoPlayer)}
               </script>`
             }else{
                 message = "drag and drop video here...";
@@ -921,16 +911,18 @@ $(document).ready(function() {
             e.preventDefault();
         })
     
+        $('.video-div').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
+        });
+
         $('.video-div').on('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            $(this).resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
+            
     
             $(this).css({
                 'padding': '5px'
@@ -1056,20 +1048,6 @@ $(document).ready(function() {
                             div.append(`
                                 ${data.html}
                             `);
-                            // div.append(`
-                            // <source src="${data.link}" type="video/mp4">
-                            //    Your browser does not support the video tag.
-                            // </video>
-                            // var options = {
-                            //     url: data.link,
-                            // };
-                        
-                            // var videoPlayer = new Vimeo.Player(div, options);
-                        
-                            // videoPlayer.on('play', function() {
-                            // console.log('Played the video');
-                            // });
-                            // `);
                         },
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();

@@ -950,46 +950,37 @@ def save_video(request):
         # #video uploading to vimeo.com
 
         #standard Account
-        v = vimeo.VimeoClient(
-            token='7a954bb83b66a50a95efc2d1cfdd484a',
-            key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
-            secret='1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
-        )
-        #Premium Account
         # v = vimeo.VimeoClient(
-        #     token='3b42ecf73e2a1d0088dd677089d23e32',
-        #     key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
-        #     secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
+        #     token='7a954bb83b66a50a95efc2d1cfdd484a',
+        #     key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
+        #     secret='1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
         # )
+        # Premium Account
+        v = vimeo.VimeoClient(
+            token='3b42ecf73e2a1d0088dd677089d23e32',
+            key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
+            secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
+        )
 
         # media = '{path to a video on the file system}'
 
         uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
             'name': media.name,
-            'embed.buttons.share': False,
-            'embed.buttons.scaling': False,
-            'embed.buttons.like': False,
-            'embed.buttons.watchlater': False,
-            'embed.logos.vimeo': False,
-            'privacy.download': True,
-            'privacy.embed': 'private',
         })
 
         response = v.get(uri).json()
         status = response['status']
         print(response['link'])
         videoid = response['uri'].split('/')[-1]
-        # videoid = videoid['uri'].split('/')[-1]
         
-        # url = 'https://api.vimeo.com/me/projects/772975/videos/'+videoid
-        url = 'https://api.vimeo.com/me/projects/936814/videos/'+videoid
+        url = 'https://api.vimeo.com/me/projects/772975/videos/'+videoid  #Premium account Folder 
+        # url = 'https://api.vimeo.com/me/projects/936814/videos/'+videoid    #Standard Account Folder
         v.put(url)
-        print(response['embed']['html'])
+        print(response['status'])
 
-        while status == 'transcode_starting' or status == 'transcoding':
+        while status == 'transcode_starting' or status == 'transcoding' :
             r = v.get(uri+ '?fields=status').json()
             status = r['status']
-            print(status)
         return JsonResponse({'link':response['link'], 'html':response['embed']['html']})
 
 @csrf_exempt

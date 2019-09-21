@@ -469,18 +469,18 @@
                             if (div == 'video') {
                                 $.each(div_value, function (css, css_value) {
                                     $('#page' + key).append(`
-                                <div id = '${css_value.link}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    
-                                </div>
-                                <script>
-                                var options = {
-                                    url: "${css_value.link}",
-                                    width: "${css_value.width}",
-                                    height: "${css_value.height}"
-                                };
+                                        <div id = '${css_value.link}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                            
+                                        </div>
+                                        <script>
+                                        var options = {
+                                            url: "${css_value.link}",
+                                            width: "${css_value.width}",
+                                            height: "${css_value.height}"
+                                        };
 
-                                var videoPlayer = new Vimeo.Player('${css_value.link}', options);
-                            `)
+                                        var videoPlayer = new Vimeo.Player('${css_value.link}', options);
+                                    `)
                                 });
                             }
                         });
