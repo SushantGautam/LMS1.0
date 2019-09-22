@@ -1,7 +1,10 @@
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
+from import_export.resources import ModelResource
+
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-                    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
+    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
 
 
 class CenterInfoAdminForm(forms.ModelForm):
@@ -9,9 +12,11 @@ class CenterInfoAdminForm(forms.ModelForm):
         model = CenterInfo
         fields = '__all__'
 
+
 class CenterInfoAdmin(admin.ModelAdmin):
     form = CenterInfoAdminForm
     list_display = ['Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent']
+
 
 admin.site.register(CenterInfo, CenterInfoAdmin)
 
@@ -21,13 +26,25 @@ class MemberInfoAdminForm(forms.ModelForm):
         model = MemberInfo
         fields = '__all__'
 
-class MemberInfoAdmin(admin.ModelAdmin):
+
+class MemberInfoResource(ModelResource):
+    class Meta:
+        model = MemberInfo
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'Member_Permanent_Address',
+                  'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',
+                  'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
+                  'Member_Memo']
+
+
+class MemberInfoAdmin(ImportExportModelAdmin):
+    resource_class = MemberInfoResource
     form = MemberInfoAdminForm
     list_display = ['id', 'username', 'first_name', 'last_name', 'email', 'Member_Permanent_Address',
                     'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',
                     'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                     'Member_Memo']
     list_display_links = ['id', 'username']
+
 
 admin.site.register(MemberInfo, MemberInfoAdmin)
 
@@ -44,6 +61,7 @@ class CourseInfoAdmin(admin.ModelAdmin):
                     'Course_Info', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                     'Course_Provider', 'Center_Code']
 
+
 admin.site.register(CourseInfo, CourseInfoAdmin)
 
 
@@ -57,6 +75,7 @@ class ChapterInfoAdmin(admin.ModelAdmin):
     form = ChapterInfoAdminForm
     list_display = ['Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag',
                     'Register_DateTime', 'Updated_DateTime', 'Register_Agent', 'Course_Code']
+
 
 admin.site.register(ChapterInfo, ChapterInfoAdmin)
 
@@ -104,8 +123,8 @@ class AssignAssignmentInfoAdmin(admin.ModelAdmin):
     list_display = ['Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Inning_Code', 'Assignment_Code',
                     'Assigned_By']
 
-admin.site.register(AssignAssignmentInfo, AssignAssignmentInfoAdmin)
 
+admin.site.register(AssignAssignmentInfo, AssignAssignmentInfoAdmin)
 
 
 class AssignAnswerInfoAdminForm(forms.ModelForm):
