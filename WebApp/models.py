@@ -106,7 +106,7 @@ class MemberInfo(AbstractUser):
         if self.Member_Gender =='F':
             default_avatar = ""
         else:
-            default_avatar = ""
+            default_avatar = "" # TODO add default path here
 
         return self.Member_Avatar or default_avatar
 
