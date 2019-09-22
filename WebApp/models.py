@@ -101,7 +101,7 @@ class MemberInfo(AbstractUser):
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default= ('F', 'Female'))
 
     @property
-    def Member_Avatar(self):
+    def Avatar(self):
         default_avatar = ""
         if self.Member_Gender =='F':
             default_avatar = ""
