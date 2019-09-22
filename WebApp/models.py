@@ -82,7 +82,7 @@ class MemberInfo(AbstractUser):
         ),
     )
 
-    Member_ID = models.CharField(max_length=250, blank=True, null=True, help_text=_('ID assigned by university'))
+    Member_ID = models.CharField(max_length=250, blank=True, null=True, help_text=_('ID assigned by university/Roll No'))
     password = models.CharField(_('password'), max_length=128)
     Member_Permanent_Address = models.CharField(max_length=500, blank=True, null=True)
     Member_Temporary_Address = models.CharField(max_length=500, blank=True, null=True)
@@ -141,7 +141,7 @@ class CourseInfo(models.Model):
     Course_Level = IntegerField(blank=True, null=True)
     Course_Info = TextField(blank=True, null=True)
 
-    Use_Flag = BooleanField(default=True)
+    Use_Flag = BooleanField(default=True,  verbose_name="Tick this flag if you want to prevent user from login.")
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
