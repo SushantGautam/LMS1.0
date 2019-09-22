@@ -94,12 +94,21 @@ class MemberInfo(AbstractUser):
     Updated_DateTime = DateTimeField(auto_now=True)
     Member_Memo = models.CharField(max_length=500, blank=True, null=True)
     Member_Avatar = models.ImageField(upload_to="Member_images/", blank=True, null=True)
-
     Is_Teacher = models.BooleanField(default=False)
-    Is_Student = models.BooleanField(default=False)
+    Is_Student = models.BooleanField(default=True)
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
-    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices)
+    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default= ('F', 'Female'))
+
+    @property
+    def Member_Avatar(self):
+        default_avatar = ""
+        if self.Member_Gender =='F':
+            default_avatar = ""
+        else:
+            default_avatar = ""
+
+        return self.Member_Avatar or default_avatar
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -561,3 +570,5 @@ class Events(models.Model):
 
     def __str__(self):
         return self.event_name
+
+
