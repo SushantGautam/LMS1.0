@@ -58595,3 +58595,7 @@ a:hover {
     padding-right: 5px;
     font-size: 14px;
 }
+.reply_header{
+    text-align: center;
+    font-size: 24px;
+}

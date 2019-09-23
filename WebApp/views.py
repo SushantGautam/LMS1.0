@@ -26,6 +26,7 @@ from django.views.generic.edit import FormView
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Question
+# import vimeo # from PyVimeo for uploading videos to vimeo.com
 from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
