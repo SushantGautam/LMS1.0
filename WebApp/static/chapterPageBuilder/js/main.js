@@ -9,10 +9,10 @@ $(document).ready(function() {
             let position = {
                 top, left, height, width
             };
-            let html = `<div class='textdiv'>
-                     <div id="text-actions" class = "text-actions">
+            let html = `<div class='textdiv'  >
+                     <div id="text-actions"   class = "text-actions">
                          <i class="fas fa-trash" id=${id}></i>
-                         <i class="fas fa-arrows-alt" id="draghere" class="draghere"></i>
+                         <i class="fas fa-arrows-alt" id="draghere" ></i>
                      </div> 
                      <div id="editor" class="messageText" contenteditable> ${message}</div>
                   </div>
@@ -28,11 +28,13 @@ $(document).ready(function() {
                     "border": "2px dashed #000 !important"
 
                 }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",  // dragging beyond this <div> will not be possible
+                    containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
+                    snap: ".gridlines",
+                    snapMode: 'inner',
+                    cursorAt: { bottom: 0 },
+                  
                     handle: '#draghere'
                 });
 
@@ -109,13 +111,6 @@ $(document).ready(function() {
             let videoobj;
             let message = ""
             if(link!=null){
-                // videoobj = `
-                // <video width="100%" height="90%" controls>
-                //     <source src="${link}" type="video/mp4">
-                //     <source src="${link}" type="video/ogg">
-                //     Your browser does not support the video tag.
-                // </video>
-                // `
                 videoobj = `<div id='${link}'><div><script>
                 var options = {
                     url: '${link}',
@@ -124,10 +119,7 @@ $(document).ready(function() {
                 };
               
                 var videoPlayer = new Vimeo.Player('${link}', options);
-              
-                videoPlayer.on('play', function() {
-                  console.log('Played the video');
-                });
+                ${console.log(videoPlayer)}
               </script>`
             }else{
                 message = "drag and drop video here...";
@@ -141,15 +133,22 @@ $(document).ready(function() {
                     </div>
                     <div>
                         <p id="video-drag">${message}</p>
-                        <div id="progress-bar">
-                            <span id="progress-bar-fill"></span>
-                        </div>
+                        
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                         <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
                         </form>
-                        ${videoobj}
+      
+                        <div class="progress">
+                            <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                                ${videoobj}
                     </div>
                 </div>`
+
+            //     <div id="progress-bar">
+            //     <span id="progress-bar-fill"></span>
+            // </div>
+
 
             this.RemoveElement = function () {
                 return idss;
@@ -201,6 +200,8 @@ $(document).ready(function() {
                         </div>
         
                 `;
+
+                // href = ${link}
         this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
             let dom = $(html).css({
@@ -708,6 +709,12 @@ $(document).ready(function() {
         const btns = new Button(top, left, link, height, width);
         
         btns.renderDiagram();
+
+        $('.btn').attr('contentEditable', true);
+
+        $('.btn').on('click',function(){
+            alert('say me more!!')
+        })
     
         const div1 = $('i').parent();
     
@@ -751,6 +758,14 @@ $(document).ready(function() {
         );
     
         Pdf.renderDiagram();
+
+        $('.pdf').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+          
+        });
+        
 
           // ==for pdf upload==
         $('.fa-upload').click(function(e) {
@@ -804,29 +819,49 @@ $(document).ready(function() {
                             alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
                         </object>
                     `);
+
                 },
                 error: function(data, status, errorThrown) {
                     alert(data.responseJSON.message);
                 }
             });
-            let div = $('#picture-drag').parent().parent();
-            $('#picture-drag').css({
+            let div = $('#pdf-actions1').parent();
+            console.log(div);
+            $('#pdf-actions1').css({
                 'display': 'none'
             });
 
             $(div).hover(function() {
-                $(this).css("border", "1px solid red");
+                $(this).css(
+                    {
+                        "border": "1px solid red",
+
+                });
+               
+
+              
             }, function() {
                 $(this).css("border", '0')
-            })
+            });
 
-            $('.pdf').resizable({
-                containment: $('.editor-canvas'),
+
+            $(div).resizable({
+                containment: $('#tabs-for-download'),
                 grid: [20, 20],
                 autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
+                minWidth:500,
+                minHeight:500
+
+
+            
+        })
+
+
+        $('.pdf').css({
+            'resize':' both'
+        })
+
+           
 
         }
 
@@ -888,13 +923,17 @@ $(document).ready(function() {
                         $(this).css("border", '0')
                     })
 
-                    $('.pdf').resizable({
-                        containment: $('.editor-canvas'),
+                    $(div).resizable({
+                        containment: $('#tabs-for-download'),
                         grid: [20, 20],
                         autoHide: true,
                         minWidth: 150,
                         minHeight: 150
                     });
+
+                    $('.pdf').css({
+                        'resize':'both'
+                    })
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -915,22 +954,32 @@ $(document).ready(function() {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
+
+        $('.video-div').resizable({
+            containment: $('.editor-canvas'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
+        });
     
         $('.video-div').on('dragover', function(e) {
             e.stopPropagation();
             e.preventDefault();
         })
     
+        $('.video-div').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
+        });
+
         $('.video-div').on('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            $(this).resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
+            
     
             $(this).css({
                 'padding': '5px'
@@ -959,10 +1008,11 @@ $(document).ready(function() {
                             var percentComplete = evt.loaded / evt.total;
                             percentComplete = parseInt(percentComplete * 100);
                             console.log(percentComplete);
-                            $('#progress-bar-fill').css('width', percentComplete + '%');
-    
+                            // $('#progress-bar-fill').css('width', percentComplete + '%');
+                                $("#progress-bar").attr('aria-valuenow',percentComplete).css('width',percentComplete+'%').text(percentComplete+'%');
+
                             if (percentComplete === 100) {
-                                $('#progress-bar').css("display", "none");
+                                // $('#progress-bar').css("display", "none");
                                 let div = $('#video-drag').parent().parent();
                                 $('#video-drag').css({
                                     'display': 'none'
@@ -981,7 +1031,7 @@ $(document).ready(function() {
                                     $(this).css("border", '0')
                                 })
     
-                                $('.pic').resizable({
+                                $('.video-div').resizable({
                                     containment: $('.editor-canvas'),
                                     grid: [20, 20],
                                     autoHide: true,
@@ -1047,25 +1097,15 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
                             div.empty();
-                            div.append(`
-                            <video width="100%" height="90%" controls id=${data.link}>
-                            <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>`);
                             // div.append(`
-                            // <source src="${data.link}" type="video/mp4">
-                            //    Your browser does not support the video tag.
-                            // </video>
-                            // var options = {
-                            //     url: data.link,
-                            // };
-                        
-                            // var videoPlayer = new Vimeo.Player(div, options);
-                        
-                            // videoPlayer.on('play', function() {
-                            // console.log('Played the video');
-                            // });
-                            // `);
+                            // <video width="100%" height="90%" controls id=${data.link}>
+                            // <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
+                            //     Your browser does not support the video tag.
+                            // </video>`);
+
+                            div.append(`
+                                ${data.html}
+                            `);
                         },
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();
@@ -1100,7 +1140,7 @@ $(document).ready(function() {
                                             $(this).css("border", '0')
                                         })
     
-                                        $('.pic').resizable({
+                                        $('.video-div').resizable({
                                             containment: $('#tabs-for-download'),
                                             grid: [20, 20],
                                             autoHide: true,
@@ -1166,26 +1206,26 @@ $(document).ready(function() {
                 top = 0,
                 left = 0,
                 "",
-                height="50%",width = "50%");
+                height="50%",width = "100%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="52%",
                 left=0,
-                height="45%", width="50%"
+                height="45%", width="100%"
             );
         } else if (ui.helper.hasClass('title-slide')) {
             PictureFunction(
                 top = 0,
                 left = "0%",
                 "",
-                width = "50%", height="60%");
+                width = "100%", height="60%");
             PictureFunction(
                 top = 0,
                 left = "50%",
                 "",
-                width = "50%", height="60%");
+                width = "100%", height="60%");
             TextboxFunction(
                 top="62%",
                 left=0,
@@ -1285,12 +1325,19 @@ $(document).ready(function() {
     
     function newpagefunction(){
         var num_tabs = $(".tabs-to-click ul li").length + 1;
-
-        $(".tabs-to-click ul").append(
-
-            `<li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
+        
+        $(".tabs-to-click ul").append(`
+            <div>
+                <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
+            </div>
+            <li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
                
-            </li>`
+            </li><br/>
+
+            <p>${num_tabs}</p>
+            
+            
+            `
 
         );
         $(".tabs").append(
@@ -1376,6 +1423,27 @@ $(document).ready(function() {
     display();
 });
 
+//clone Page function
+// $('.tabs-to-click').on('click', '.clone-page-btn', function(){
+//     $(".tabs-to-click ul").append(`
+//         <div>
+//             <button class="clone-page-btn" value="${parseInt(this.value)+1}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
+//         </div>
+//         <li class="tabs-link pagenumber" onclick="openTab(event,'tab${parseInt(this.value)+1}')" >
+            
+//         </li>
+//     `);
+    
+//     $('#tab'+this.value).clone().after($('#tab'+this.value));
+
+//     $(".editor-canvas").droppable({
+//         drop: function(event, ui){
+//             dropfunction(event,ui);
+//         }
+//     });
+
+// });
+// =====================================================================================
 var colorList = ['000000', '993300', '333300', '003300', '003366', '000066', '333399', '333333',
     '660000', 'FF6633', '666633', '336633', '336666', '0066FF', '666699', '666666', 'CC3333', 'FF9933', '99CC33', '669966', '66CCCC', '3366FF', '663366', '999999', 'CC66FF', 'FFCC33', 'FFFF66', '99FF66', '99CCCC', '66CCFF', '993366', 'CCCCCC', 'FF99CC', 'FFCC99', 'FFFF99', 'CCffCC', 'CCFFff', '99CCFF', 'CC99FF', 'FFFFFF'
 ];

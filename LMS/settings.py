@@ -1,8 +1,8 @@
-from django.contrib.messages import constants as messages
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import django_heroku
+from django.contrib.messages import constants as messages
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_auth',
     'django_filters',
+    'import_export',
     'WebApp',
     'django.contrib.humanize',
     'forum',
@@ -68,7 +69,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 # Media related settings are required for avatar uploading to function properly
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -168,7 +168,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 django_heroku.settings(locals())
 
-
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = '/'
 
@@ -188,4 +187,3 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
 }
-

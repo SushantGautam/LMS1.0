@@ -1,11 +1,36 @@
 {% extends "base.html" %}
 {% load i18n%}
-
+{% load static %}
 {% load quiz_tags %}
 
 {% block title %} {{ quiz.title }} {% endblock %}
 {% block description %} {{ quiz.title }} - {{ quiz.description }} {% endblock %}
+{% block breadcrumb %}
 
+{% block top_navigation %}
+
+{% endblock top_navigation %}
+
+{% block sidebar %}
+
+<style>
+.nav-md .container.body .right_col {
+    padding: 10px 20px 0;
+    margin-left: 0px!important;
+}
+.breadcrumb{
+	display: none;
+}
+</style>
+
+{% endblock sidebar %}
+
+
+
+
+
+
+{% endblock %}
 {% block content %}
 
 {% if previous.answers %}
@@ -60,10 +85,10 @@
 
 
 <p>
-  <small class="muted"><strong> 
+  <small class="muted"><strong>
 			{% trans "Question category" %}:
 
-	</strong> 
+	</strong>
 		</small>
   <strong>{{ question.category }}</strong>
 </p>
@@ -74,24 +99,24 @@
 
 
 <div class="quiz-questions">
-			<div id="step-1"> 
+			<div id="step-1">
 				   <div class="privew1">
 						    <div class="questionsBox">
-										<div class="questions">{{ progress.0|add:1 }})&nbsp; {{ question.content }}</div>  
+										<div class="questions">{{ progress.0|add:1 }})&nbsp; {{ question.content }}</div>
 
-											 
-										{% if question.figure %} 
-  												<div class="quiz-ques-image"> 
-		   
+
+										{% if question.figure %}
+  												<div class="quiz-ques-image">
+
 																<img src="{{ question.figure.url }}" alt="{{ question.content }}" />
-			 
-			
+
+
 
 														</div>
-    
+
 										{% endif %}
 									<form action="" method="POST">{% csrf_token %}
-										 <input type=hidden name="question_id" value="{{ question.id }}">  
+										 <input type=hidden name="question_id" value="{{ question.id }}">
 										 		<ul class="list-group">
 
 													{% for answer in form.answers %}
@@ -99,11 +124,11 @@
 															{{ answer }}
 													</li>
 													{% endfor %}
-											
-												</ul> 
-										<input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block btn-warning" >			
-									</form>	
-										
+
+												</ul>
+										<input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block btn-warning" >
+									</form>
+
 								</div>
 					 </div>
 
@@ -119,15 +144,15 @@
 
 <!-- <p class="lead">{{ question.content }}</p>
 
-{% if question.figure %} 
-  <div class="quiz-ques-image"> 
-		   
+{% if question.figure %}
+  <div class="quiz-ques-image">
+
 					<img src="{{ question.figure.url }}" alt="{{ question.content }}" />
-			 
-			
+
+
 
 	</div>
-    
+
 {% endif %}
 
 <form action="" method="POST">{% csrf_token %}
@@ -151,3 +176,9 @@
 
 
 {% endblock %}
+
+{% block footer %}
+
+
+
+{% endblock footer %}

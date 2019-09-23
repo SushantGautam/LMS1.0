@@ -97,7 +97,7 @@ $("#SaveBtn").on("click",function(e){
       }
       if(value.classList.contains('video-div')){
         console.log(value)
-        link = $(this).find('video').attr('id');
+        link = $(this).find('iframe').attr('src');
         video.push(
           {
             'tops': $(this).css("top"),
