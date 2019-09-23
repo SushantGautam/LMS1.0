@@ -30,7 +30,7 @@ class MemberInfoAdminForm(forms.ModelForm):
 class MemberInfoResource(ModelResource):
     class Meta:
         model = MemberInfo
-        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'Member_Permanent_Address',
+        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email','Center_Code', 'Member_Permanent_Address',
                   'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',
                   'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                   'Member_Memo', 'Member_ID', 'Is_Teacher', 'Is_Student', ]
