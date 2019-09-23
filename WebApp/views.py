@@ -1,13 +1,14 @@
 import json
 import os
 from datetime import datetime
-import requests
-import vimeo  # from PyVimeo for uploading videos to vimeo.com
+
+# import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
@@ -25,34 +26,36 @@ from django.views.generic.edit import FormView
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Question
+# import vimeo # from PyVimeo for uploading videos to vimeo.com
 from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
-    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm
+    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, UserUpdateForm, \
+    MemberUpdateForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
 
 class Changestate(View):
-    def post(self, request): 
-        quizid = self.request.POST["quiz_id"] 
+    def post(self, request):
+        quizid = self.request.POST["quiz_id"]
         my_quiz = Quiz.objects.get(id=quizid)
         pre_test = self.request.POST.get("pre-test-radio", None)
         post_test = self.request.POST.get("post-test-radio", None)
-        if(pre_test == '0' or post_test == '0'):
+        if (pre_test == '0' or post_test == '0'):
             my_quiz.draft = True
-        elif(pre_test == '1' or post_test == '1'):
+        elif (pre_test == '1' or post_test == '1'):
             my_quiz.draft = False
 
-        print(pre_test,post_test)
+        print(pre_test, post_test)
         # if(pre_test is not None):
         #     my_quiz.pre_test = pre_test
         # if(post_test is not None):
         #     my_quiz.post_test = post_test
-        
+
         my_quiz.save()
-        return JsonResponse({'message':'success'}, status=200)
+        return JsonResponse({'message': 'success'}, status=200)
 
 
 class AjaxableResponseMixin:
@@ -95,7 +98,6 @@ def login(request, template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm,
           extra_context=None, redirect_authenticated_user=True):
-   
     return LoginView.as_view(
         template_name=template_name,
         redirect_field_name=redirect_field_name,
@@ -109,7 +111,6 @@ def logout(request, next_page=None,
            template_name='logged_out.html',
            redirect_field_name=REDIRECT_FIELD_NAME,
            extra_context=None):
-  
     return LogoutView.as_view(
         next_page=next_page,
         template_name=template_name,
@@ -158,8 +159,9 @@ def start(request):
             thread = Thread.objects.order_by('-pub_date')[:5]
             wordCloud = Thread.objects.all()
             thread_keywords = get_top_thread_keywords(request, 10)
-            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by('-Register_DateTime')[:10]
-            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code,Use_Flag=True).count
+            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
+                '-Register_DateTime')[:10]
+            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
@@ -195,20 +197,13 @@ def editprofile(request):
 
         form = UserUpdateForm(request.POST, request.FILES, instance=post)
 
-        # if request.user.isAdmin:
-        #     form = UserUpdateFormForAdmin(request.POST, request.FILES, instance=post)
-
         if form.is_valid():
-            # post.date_last_update = datetime.now()
+            post.date_last_update = datetime.now()
             post.save()
             return redirect('start')
     else:
 
-        # form = UserUpdateForm(instance=post)
         form = UserUpdateForm(request.POST, request.FILES, instance=post)
-
-        # if request.user.isAdmin == 1:
-        #     form = UserUpdateFormForAdmin(instance=post)
 
     return render(request, 'registration/editprofile.html', {'form': form})
 
@@ -238,7 +233,7 @@ def change_password_others(request, pk):
             # update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Password is changed successfully!')
 
-            return redirect('memberinfo_detail',pk=pk)
+            return redirect('memberinfo_detail', pk=pk)
         else:
             messages.error(request, 'Please correct the error below.')
     else:
@@ -279,7 +274,7 @@ class MemberInfoListView(ListView):
     model = MemberInfo
 
     def get_queryset(self):
-        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
+        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
 class MemberInfoListViewInactive(ListView):
@@ -287,13 +282,26 @@ class MemberInfoListViewInactive(ListView):
     template_name = 'WebApp/memberinfo_list_inactive.html'
 
     def get_queryset(self):
-        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=False)
-
+        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=False)
 
 
 class MemberInfoCreateView(CreateView):
     model = MemberInfo
     form_class = MemberInfoForm
+
+    def form_valid(self, form):
+        print("here")
+        if form.is_valid():
+            print("get")
+            obj = form.save(commit=False)
+            obj.Center_Code = self.request.user.Center_Code
+            obj.password = make_password(obj.password)
+            obj.Use_Flag = True
+            obj.save()
+            return super().form_valid(form)
+        else:
+            print(form.errors)
+
 
 def validate_username(request):
     username = request.GET.get('username', None)
@@ -304,30 +312,30 @@ def validate_username(request):
         data['error_message'] = 'A user with this username already exists.'
     return JsonResponse(data)
 
-def MemberInfoActivate(request,pk):
+
+def MemberInfoActivate(request, pk):
     try:
         obj = MemberInfo.objects.get(pk=pk)
-        obj.Use_Flag=True
+        obj.Use_Flag = True
         obj.save()
     except:
-        messages.error(request,'Cannot perform the action. Please try again later')
+        messages.error(request, 'Cannot perform the action. Please try again later')
 
-    if(request.POST['url']):
+    if (request.POST['url']):
         return redirect(request.POST['url'])
-    else:    
-        return redirect('memberinfo_detail',pk=pk)
+    else:
+        return redirect('memberinfo_detail', pk=pk)
 
-def MemberInfoDeactivate(request,pk):
+
+def MemberInfoDeactivate(request, pk):
     try:
         obj = MemberInfo.objects.get(pk=pk)
-        obj.Use_Flag=False
+        obj.Use_Flag = False
         obj.save()
     except:
-        messages.error(request,'Cannot perform the action. Please try again later')
-    
-    return redirect('memberinfo_detail',pk=pk)
+        messages.error(request, 'Cannot perform the action. Please try again later')
 
-
+    return redirect('memberinfo_detail', pk=pk)
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -365,7 +373,9 @@ class MemberInfoDetailView(DetailView):
 
 class MemberInfoUpdateView(UpdateView):
     model = MemberInfo
-    form_class = MemberInfoForm
+    form_class = MemberUpdateForm
+
+
 
 
 class MemberInfoDeleteView(DeleteView):
@@ -400,7 +410,7 @@ class CourseInfoListView(ListView):
 class CourseInfoCreateView(CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
-    
+
 
 class CourseInfoDetailView(DetailView):
     model = CourseInfo
@@ -464,7 +474,7 @@ class ChapterInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
-        context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'),  pre_test=True)
+        context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
 
         return context
 
@@ -474,18 +484,17 @@ def CourseForum(request, course):
     course_forum = None
     course_node_forum = None
     try:
-        course_node_forum=NodeGroup.objects.get(title='Course')
+        course_node_forum = NodeGroup.objects.get(title='Course')
     except ObjectDoesNotExist:
-        NodeGroup.objects.create(title='Course',  description='Root node for course Forum').save()
-        course_node_forum=NodeGroup.objects.get(title='Course')
+        NodeGroup.objects.create(title='Course', description='Root node for course Forum').save()
+        course_node_forum = NodeGroup.objects.get(title='Course')
 
     try:
-        course_forum=Topic.objects.get(title=course.Course_Name)
+        course_forum = Topic.objects.get(title=course.Course_Name)
     except ObjectDoesNotExist:
         Topic.objects.create(title=course.Course_Name, node_group=course_node_forum).save()
-        course_forum=Topic.objects.get(title=course.Course_Name)
+        course_forum = Topic.objects.get(title=course.Course_Name)
     return redirect('forum:topic', pk=course_forum.pk)
-
 
 
 class ChapterInfoUpdateView(UpdateView):
@@ -518,6 +527,7 @@ class GroupMappingCreateViewPopup(CreateView):
 
 class SessionInfoListView(ListView):
     model = SessionInfo
+
     # Send data only related to the center
     def get_queryset(self):
         return SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code)
@@ -544,6 +554,7 @@ class InningInfoListView(ListView):
     def get_queryset(self):
         return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now())
 
+
 class InningInfoListViewInactive(ListView):
     model = InningInfo
     template_name = 'WebApp/inninginfo_list_inactive.html'
@@ -561,6 +572,7 @@ class InningInfoCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+
 class InningInfoDetailView(DetailView):
     model = InningInfo
 
@@ -573,11 +585,11 @@ class InningInfoUpdateView(UpdateView):
         kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
-    
 
 
 class InningGroupListView(ListView):
     model = InningGroup
+
     # Send data only related to the center
     def get_queryset(self):
         return InningGroup.objects.filter(Center_Code=self.request.user.Center_Code)
@@ -637,6 +649,7 @@ class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
 
 class GroupMappingListView(ListView):
     model = GroupMapping
+
     # Send data only related to the center
     def get_queryset(self):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
@@ -650,6 +663,7 @@ class GroupMappingCreateView(CreateView):
         kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
 
 class GroupMappingDetailView(DetailView):
     model = GroupMapping
@@ -848,7 +862,6 @@ def polls(request):
     return render(request, 'WebApp/polls.html')
 
 
-
 class MessageInfoListView(ListView):
     model = MessageInfo
 
@@ -874,11 +887,12 @@ def make_directory_if_not_exists(courseID, chapterID):
     # following is commented because filesystemstorage auto create directories if not exist
     if not os.path.exists(os.path.join(path, 'chapterBuilder')):
         os.makedirs(os.path.join(path, 'chapterBuilder'))
-    if not os.path.exists(path+'/chapterBuilder/'+courseID):
-        print(path+'/chapterBuilder/'+courseID)
-        os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID))
-    if not os.path.exists(path+'/chapterBuilder/'+courseID+'/'+chapterID):
-        os.makedirs(os.path.join(path, 'chapterBuilder/'+courseID+'/'+chapterID))
+    if not os.path.exists(path + '/chapterBuilder/' + courseID):
+        print(path + '/chapterBuilder/' + courseID)
+        os.makedirs(os.path.join(path, 'chapterBuilder/' + courseID))
+    if not os.path.exists(path + '/chapterBuilder/' + courseID + '/' + chapterID):
+        os.makedirs(os.path.join(path, 'chapterBuilder/' + courseID + '/' + chapterID))
+
 
 def chapterviewer(request):
     if request.method == "GET":
@@ -892,15 +906,15 @@ def chapterviewer(request):
                 data = json.load(json_file)
         except Exception as e:
             print(e)
-            data=""
+            data = ""
         return JsonResponse({'data': data})
 
 
 def chapterpagebuilder(request, course, chapter):
-    chapterlist = ChapterInfo.objects.filter(Course_Code = CourseInfo.objects.get(id=course))
+    chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
-    data = {"":""}
+    data = {"": ""}
     try:
         with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
                 chapter) + '.txt') as json_file:
@@ -929,13 +943,14 @@ def save_file(request):
         if request.FILES['file-0']:
             media = request.FILES['file-0']
             if media_type == 'pic':
-                if (media.size/1024) > 2048:
-                    return JsonResponse(data = {"message":"File size exceeds 2MB"}, status=500)
+                if (media.size / 1024) > 2048:
+                    return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
-               
+
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(media.name, media)
         return JsonResponse(data={"message": "success"})
+
 
 @csrf_exempt
 def save_video(request):
@@ -946,17 +961,17 @@ def save_video(request):
         path = ''
         if request.FILES['file-0']:
             media = request.FILES['file-0']
-            if (media.size/1024) > (2048*1024): # checking if file size is greater than 2 GB
-                return JsonResponse(data = {"message":"File size exceeds 2GB"}, status=500)
-        
+            if (media.size / 1024) > (2048 * 1024):  # checking if file size is greater than 2 GB
+                return JsonResponse(data={"message": "File size exceeds 2GB"}, status=500)
+
         path = settings.MEDIA_ROOT
-               
+
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(media.name, media)
-        
+
         # #video uploading to vimeo.com
 
-        #standard Account
+        # standard Account
         # v = vimeo.VimeoClient(
         #     token='7a954bb83b66a50a95efc2d1cfdd484a',
         #     key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
@@ -971,7 +986,7 @@ def save_video(request):
 
         # media = '{path to a video on the file system}'
 
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID+'/'+media.name, data={
+        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + media.name, data={
             'name': media.name,
         })
 
@@ -979,16 +994,17 @@ def save_video(request):
         status = response['status']
         print(response['link'])
         videoid = response['uri'].split('/')[-1]
-        
-        url = 'https://api.vimeo.com/me/projects/772975/videos/'+videoid  #Premium account Folder 
+
+        url = 'https://api.vimeo.com/me/projects/772975/videos/' + videoid  # Premium account Folder
         # url = 'https://api.vimeo.com/me/projects/936814/videos/'+videoid    #Standard Account Folder
         v.put(url)
         print(response['status'])
 
-        while status == 'transcode_starting' or status == 'transcoding' :
-            r = v.get(uri+ '?fields=status').json()
+        while status == 'transcode_starting' or status == 'transcoding':
+            r = v.get(uri + '?fields=status').json()
             status = r['status']
-        return JsonResponse({'link':response['link'], 'html':response['embed']['html']})
+        return JsonResponse({'link': response['link'], 'html': response['embed']['html']})
+
 
 @csrf_exempt
 def save_json(request):
@@ -998,22 +1014,23 @@ def save_json(request):
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
-        
-        #creates directory structure if not exists
+
+        # creates directory structure if not exists
         make_directory_if_not_exists(courseID, chapterID)
 
-        #for saving json data for viewing purposes
+        # for saving json data for viewing purposes
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)
 
-        #for saving all html data of page for API purposes
-        with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + 'html.txt', 'w') as outfile:
+        # for saving all html data of page for API purposes
+        with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + 'html.txt',
+                  'w') as outfile:
             json.dump(htmldata, outfile, indent=4)
 
-        chapterObj = ChapterInfo.objects.get(id = chapterID)
+        chapterObj = ChapterInfo.objects.get(id=chapterID)
         chapterObj.Page_Num = int(jsondata['numberofpages'])
         chapterObj.save()
 
-        return JsonResponse(data = {"message":"Json Saved"})
+        return JsonResponse(data={"message": "Json Saved"})
 
 # -------------------------------------------------------------------------------------------------------
