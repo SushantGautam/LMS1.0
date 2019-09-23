@@ -135,13 +135,27 @@
                             </h3>
 
                             <ul class="list-comment reply-lists">
+                                {% if thread.reply_count > 2 %}
+                                <div class="reply_header">
+                                    <a href="#Goto_Reply">Post a Reply</a>
+                                </div>
+                                {% endif %}
                                 <hr>
+
                                 <h2 class="thread_replies">
                                     {% if thread.reply_count %}
                                     <i class="fa fa-comments-o"></i>
-                                    {% blocktrans count reply_count=thread.reply_count %}({{ reply_count }}) Reply
-                                    {% plural %}({{ reply_count }})Replies {% endblocktrans %} {% endif %}-Post a Reply
+
+                                    {% blocktrans count reply_count=thread.reply_count %} ({{ reply_count }})
+                                    Reply
+                                    {% plural %}({{ reply_count }})Replies {% endblocktrans %}
+                                    {% else %}
+                                    <i class="fa fa-comments-o"></i> {% trans "No Replies" %}
+                                    {% endif %}
+
                                 </h2>
+
+
                                 <hr>
 
                                 {% for post in posts %}
@@ -244,7 +258,7 @@
 
                             <br>
 
-                            <div class="x_panel">
+                            <div class="x_panel" id="Goto_Reply">
                                 <div class="x_title">
                                     <h2 style="font-weight: bold">Post Reply
 
@@ -390,6 +404,11 @@
 
         });
     });
+
+
+
+
+
 </script>
 {% if request.user.is_superuser %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.12.0/babel.min.js"></script>
@@ -521,14 +540,13 @@
                 modal.find('.modal-confirm').click(modalCb);
                 modal.find('.modal-title').text(modalTitle);
                 modal.find('.modal-body').html(modalBody);
-            })
+            });
 
 
     $("#submitButton").click(function () {
         $('#id_content_raw').val($('.editor-wrapper').html());
         var content_raw = document.getElementById("id_content_raw").value
-        var data = { "content_raw": content_raw, "user": {{ request.user.pk }}, "thread": {{ thread.pk }} };
-
+        console.log("gsh");var data = { "content_raw": content_raw, "user": {{ request.user.pk }}, "thread": {{ thread.pk }} }
 
     console.log(data);
 
@@ -551,8 +569,8 @@
         alert('data entry failed');
     });
 
+        });
 
-    });
 
 
 

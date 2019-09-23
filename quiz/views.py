@@ -1,4 +1,5 @@
 import random
+import urllib
 
 from django_addanother.views import CreatePopupMixin
 
@@ -14,8 +15,10 @@ from django.db import models
 from WebApp.models import CourseInfo, ChapterInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
+import re
 
 from django.shortcuts import render_to_response
+
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -453,7 +456,7 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = MCQuestion
     form_class = MCQuestionForm
     # success_url = reverse_lazy('quiz_create')
-    template_name = 'ajax/mcquestion_form_ajax.html'
+    template_name = 'ajax_quiz/mcquestion_form_ajax.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -615,7 +618,7 @@ class TFQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = TF_Question
     form_class = TFQuestionForm
     # success_url = reverse_lazy('quiz_create')
-    template_name = 'ajax/tfquestion_form_ajax.html'
+    template_name = 'ajax_quiz/tfquestion_form_ajax.html'
 
     def form_valid(self, form):
         vform = super().form_valid(form)
@@ -629,6 +632,7 @@ class TFQuestionCreateView(AjaxableResponseMixin, CreateView):
         if self.request.GET:
             context['course_from_quiz'] = self.request.GET["course_from_quiz"]
         return context
+
 
 class TFQuestionCreateFromQuiz(CreateView):
     model = TF_Question
@@ -697,13 +701,14 @@ class SAQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = SA_Question
     form_class = SAQuestionForm
     # success_url = reverse_lazy('quiz_create')
-    template_name = 'ajax/saquestion_form_ajax.html'
+    template_name = 'ajax_quiz/saquestion_form_ajax.html'
 
     def form_valid(self, form):
         vform = super().form_valid(form)
         new_saq = {}
         new_saq['new_saq_id'] = self.object.id
-        new_saq['new_Saq_content'] = self.object.content
+        new_saq['new_saq_content'] = self.object.content
+        print(self.object.content)
         return JsonResponse(new_saq)
 
     def get_context_data(self, **kwargs):
@@ -711,6 +716,7 @@ class SAQuestionCreateView(AjaxableResponseMixin, CreateView):
         if self.request.GET:
             context['course_from_quiz'] = self.request.GET["course_from_quiz"]
         return context
+
 
 class SAQuestionCreateFromQuiz(CreateView):
     model = SA_Question
@@ -799,7 +805,8 @@ class QuizCreateWizard(SessionWizardView):
         for k, v in form_dict.items():
             setattr(my_quiz, k, v)
         my_quiz.save()
-        my_quiz.url = str(my_quiz.title) + str(my_quiz.id)
+        # my_quiz.url = urllib.parse.quote_plus(str(my_quiz.title) + str(my_quiz.id))
+        my_quiz.url = 'quiz' + str(my_quiz.id)
         my_quiz.cent_code = self.request.user.Center_Code
         my_quiz.save()
         my_quiz.mcquestion.add(*mcq)
@@ -836,3 +843,43 @@ class QuizCreateWizard(SessionWizardView):
             context.update({'course_from_quiz': step1_course})
         return context
 
+
+class CreateQuizFromChapter(CreateView):
+    model = Quiz
+    form_class = QuizForm
+    template_name = 'ajax_quiz/quiz_create_chapter_ajax.html'
+
+    def form_valid(self, form):
+        related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            self.object.cent_code = self.request.user.Center_Code
+            self.object.course_code = related_chapter.Course_Code
+            self.object.chapter_code = related_chapter
+            self.object.pre_test = True if self.kwargs['test_type'] == 'pre_test' else False
+            self.object.post_test = True if self.kwargs['test_type'] == 'post_test' else False
+            self.object.save()
+        self.object.url = 'quiz' + str(self.object.id)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['chapter_pk'] = self.kwargs['chapter_pk']
+        context['test_type'] = self.kwargs['test_type']
+        return context
+
+    def get_success_url(self):
+        related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
+        return reverse(
+            'chapterinfo_detail',
+            kwargs={
+                'course': related_chapter.Course_Code.id,
+                'pk': related_chapter.pk,
+            },
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
+        kwargs.update({'course_id': related_chapter.Course_Code.id})
+        return kwargs
