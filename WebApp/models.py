@@ -82,7 +82,7 @@ class MemberInfo(AbstractUser):
         ),
     )
 
-    Member_ID = models.CharField(max_length=250, blank=True, null=True, help_text=_('ID assigned by university'))
+    Member_ID = models.CharField(max_length=250, blank=True, null=True, help_text=_('ID assigned by university/Roll No'))
     password = models.CharField(_('password'), max_length=128)
     Member_Permanent_Address = models.CharField(max_length=500, blank=True, null=True)
     Member_Temporary_Address = models.CharField(max_length=500, blank=True, null=True)
@@ -94,12 +94,21 @@ class MemberInfo(AbstractUser):
     Updated_DateTime = DateTimeField(auto_now=True)
     Member_Memo = models.CharField(max_length=500, blank=True, null=True)
     Member_Avatar = models.ImageField(upload_to="Member_images/", blank=True, null=True)
-
     Is_Teacher = models.BooleanField(default=False)
-    Is_Student = models.BooleanField(default=False)
+    Is_Student = models.BooleanField(default=True)
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
-    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices)
+    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default= ('F', 'Female'))
+
+    @property
+    def Avatar(self):
+        default_avatar = ""
+        if self.Member_Gender =='F':
+            default_avatar = ""
+        else:
+            default_avatar = "" # TODO add default path here
+
+        return self.Member_Avatar or default_avatar
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -132,7 +141,7 @@ class CourseInfo(models.Model):
     Course_Level = IntegerField(blank=True, null=True)
     Course_Info = TextField(blank=True, null=True)
 
-    Use_Flag = BooleanField(default=True)
+    Use_Flag = BooleanField(default=True,  verbose_name="Tick this flag if you want to prevent user from login.")
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
@@ -561,3 +570,5 @@ class Events(models.Model):
 
     def __str__(self):
         return self.event_name
+
+

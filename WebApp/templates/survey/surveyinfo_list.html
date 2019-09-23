@@ -92,19 +92,20 @@
                   {#                          <button type="button" class="btn btn-info" id="live" data-popup-open="popup-1">Live Survey</button>#}
                   {#                      </div>#}
                   {#                  </div>#}
-                <form class="col-md-8 col-xs-12" id="searchBarSurvey">
-
-                  <div role="search" action="/forum/search/" id="surveySearch">
-                    <input type="text" id="keywordInput" name="keyword"
-                           placeholder="Type to search">
-                    <div class=" pull-right searchButton">
-                      <button type="submit" id="navSearchBtn" class="btn btn-inverse"
-                              data-hover-z="1"><i class="fa fa-search"></i>
-                      </button>
-                    </div>
+                  <div class="col-md-8 col-xs-12" id="searchBarSurvey">
+                      <form method="get" action="">
+                          <div role="search" id="surveySearch">
+                              <input type="text" id="keywordInput" name="query" placeholder="Type to search"
+                                     value="{{ request.GET.query }}" class="form-control">
+                              <div class=" pull-right searchButton">
+                                  <button type="submit" id="navSearchBtn" class="btn btn-inverse"
+                                          data-hover-z="1"><i class="fa fa-search"></i>
+                                  </button>
+                              </div>
+                          </div>
+                      </form>
                   </div>
 
-                </form>
               </div>
               <div class="hR"></div>
               <!-- ......................................Active section........................................ -->
@@ -338,7 +339,7 @@
 
   {% for category in categories %}
     <script>
-        console.log('{{category.Category_Name}}');
+        {#console.log('{{category.Category_Name}}');#}
         $('#category_Add_Button{{ category.id }}').on('click', function () {
 
             $.ajax({
@@ -364,7 +365,7 @@
               url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);
-                  console.log(data)
+                  {#console.log(data)#}
               }
           });
       });
@@ -379,7 +380,7 @@
               url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);
-                  console.log(data)
+                  {#console.log(data)#}
               }
           });
       });

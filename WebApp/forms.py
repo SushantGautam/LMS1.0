@@ -1,36 +1,41 @@
+from crispy_forms.bootstrap import Accordion, AccordionGroup, FormActions
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, Field, HTML, Submit
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
-from django.forms import ModelForm, TextInput
+from django.forms import SelectDateWidget
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-                    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, USER_ROLES
-
+    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
 
 
 class UserRegisterForm(UserCreationForm):
     # Member_Role = forms.MultipleChoiceField(choices=USER_ROLES, widget=forms.CheckboxSelectMultiple())
 
     class Meta(UserCreationForm.Meta):
+        Member_BirthDate = forms.DateField(widget=SelectDateWidget)
         model = MemberInfo
-        fields = ('username', 'email', 'Member_Gender', 'Center_Code', 'Is_Student', 'Is_Teacher','Use_Flag')
+        fields = ('username', 'email', 'Member_Gender', 'Center_Code', 'Is_Student', 'Is_Teacher', 'Use_Flag')
 
 
 class UserUpdateForm(forms.ModelForm):
-    role = forms.MultipleChoiceField(choices=USER_ROLES, )
-
+    # role = forms.MultipleChoiceField(choices=USER_ROLES, )
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget)
     class Meta:
         model = MemberInfo
-        fields = ('username', 'email')
-        widgets = {
-            'role': forms.CheckboxSelectMultiple,
-        }
+        fields = (
+              'email', 'Member_Permanent_Address',
+            'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',)
 
 
 class UserUpdateFormForAdmin(forms.ModelForm):
     class Meta:
         model = MemberInfo
         fields = '__all__'
+        widgets = {
+            'role': forms.CheckboxSelectMultiple,
+        }
 
 
 class CenterInfoForm(forms.ModelForm):
@@ -40,11 +45,130 @@ class CenterInfoForm(forms.ModelForm):
 
 
 class MemberInfoForm(forms.ModelForm):
+    Use_Flag = forms.BooleanField(initial=True, required=False)
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+    password = forms.CharField(initial='00000')
+    helper = FormHelper()
+    helper.layout = Layout(
+
+        Accordion(
+            AccordionGroup('Basic Information',
+
+                           Div(
+                               Field('Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Gender', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('first_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('last_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('password', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               HTML('''<div class='col-md-6'></div>'''),
+                               css_class='row'),
+
+                           Div(
+                               Field('Is_Teacher', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Is_Student', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+                           css_class='collapse'),
+
+            AccordionGroup('Additional Information',
+
+                           Div(
+                               Field('Member_Permanent_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Temporary_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('Member_BirthDate', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Phone', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Memo', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+                           )
+        ),
+        FormActions(
+            Submit('submit', 'Save changes'),
+            HTML(''' <button id="saveandnew" type="submit" formtarget="_blank"> Save and New </button> ''')
+            # Button('cancel', 'Cancel')
+        )
+    )
+
     class Meta:
         model = MemberInfo
-        # fields = 'username', 'first_name', 'last_name', 'email', 'date_joined', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Gender', 'Member_Memo','Center_Code'
-        fields = '__all__'
-        exclude = ('last_login', 'date_joined', 'password', 'is_staff', 'is_active', 'is_superuser')
+        Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
+
+
+class MemberUpdateForm(forms.ModelForm):
+    helper = FormHelper()
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+    helper.layout = Layout(
+
+        Accordion(
+            AccordionGroup('Basic Information',
+
+                           Div(
+                               Field('Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Gender', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('first_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('last_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                         
+                           Div(
+                               Field('Is_Teacher','Is_Student', wrapper_class='col-md-3 col-sm-6 col-xs-12'),
+                               ),
+                           css_class='collapse'),
+
+            AccordionGroup('Additional Information',
+
+                           Div(
+                               Field('Member_Permanent_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Temporary_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('Member_BirthDate', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Phone', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Memo', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                              
+                               css_class='row'),
+                           )
+        ),
+        FormActions(
+            Submit('submit', 'Save changes'),
+            # Button('cancel', 'Cancel')
+        )
+    )
+    # helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+
+    class Meta:
+        model = MemberInfo
+        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student'
 
 
 class CourseInfoForm(forms.ModelForm):
@@ -66,7 +190,7 @@ class SessionInfoForm(forms.ModelForm):
 
 
 class GroupMappingForm(forms.ModelForm):
-    Students = forms.ModelMultipleChoiceField(queryset=None,required=True,
+    Students = forms.ModelMultipleChoiceField(queryset=None, required=True,
                                               widget=FilteredSelectMultiple("Students", is_stacked=False))
 
     class Media:
@@ -76,15 +200,17 @@ class GroupMappingForm(forms.ModelForm):
     class Meta:
         model = GroupMapping
         fields = '__all__'
+
     # To filter out only active students of that center
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(GroupMappingForm, self).__init__(*args, **kwargs)
-        self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True,Use_Flag=True,Center_Code=self.request.user.Center_Code)
+        self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True, Use_Flag=True,
+                                                                     Center_Code=self.request.user.Center_Code)
 
 
 class InningGroupForm(forms.ModelForm):
-    Teacher_Code = forms.ModelMultipleChoiceField(queryset=None,required=True,
+    Teacher_Code = forms.ModelMultipleChoiceField(queryset=None, required=True,
                                                   widget=FilteredSelectMultiple("Teachers", is_stacked=False))
 
     class Media:
@@ -94,15 +220,19 @@ class InningGroupForm(forms.ModelForm):
     class Meta:
         model = InningGroup
         fields = '__all__'
+
     # To filter out only active teachers of that center
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(InningGroupForm, self).__init__(*args, **kwargs)
-        self.fields['Teacher_Code'].queryset = MemberInfo.objects.filter(Is_Teacher=True,Use_Flag=True,Center_Code=self.request.user.Center_Code)
-        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
+        self.fields['Teacher_Code'].queryset = MemberInfo.objects.filter(Is_Teacher=True, Use_Flag=True,
+                                                                         Center_Code=self.request.user.Center_Code)
+        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                        Use_Flag=True)
+
 
 class InningInfoForm(forms.ModelForm):
-    Course_Group = forms.ModelMultipleChoiceField(queryset=None,required=True,
+    Course_Group = forms.ModelMultipleChoiceField(queryset=None, required=True,
                                                   widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
     class Media:
@@ -112,13 +242,18 @@ class InningInfoForm(forms.ModelForm):
     class Meta:
         model = InningInfo
         fields = '__all__'
+
     # To filter out only active course group of that center
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(InningInfoForm, self).__init__(*args, **kwargs)
-        self.fields['Course_Group'].queryset = InningGroup.objects.filter(Use_Flag=True,Center_Code=self.request.user.Center_Code)
-        self.fields['Inning_Name'].queryset = SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
-        self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,Use_Flag=True)
+        self.fields['Course_Group'].queryset = InningGroup.objects.filter(Use_Flag=True,
+                                                                          Center_Code=self.request.user.Center_Code)
+        self.fields['Inning_Name'].queryset = SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                         Use_Flag=True)
+        self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                     Use_Flag=True)
+
 
 # AssignmentInfoForms
 class AssignmentInfoForm(forms.ModelForm):
@@ -156,8 +291,3 @@ class ChangeOthersPasswordForm(forms.Form):
         "type": "password"
     }
     password = forms.CharField(widget=forms.TextInput(attrs=attrs))
-
-
-
-
-

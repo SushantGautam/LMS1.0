@@ -129,7 +129,7 @@
     {{ questioninfo_formset.empty_form|crispy }}
     {{ questioninfo_formset.empty_form.nested.management_form }}
     {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-    {#            {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
+      {#                {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
 
     <div id="optionContainer_id" style="margin-left: 40px;">
 
@@ -182,12 +182,14 @@
           var newel_id = String(
               '#div_id_questioninfo-' + questionId + '-Question_Name'
           );
-
+          var question_counter = parseInt(questionId) + 1;
+          var counter_el = `<p>${question_counter}</p>`;
+          $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;'></div>`);
+          $('#new_que_div' + questionId).prepend(counter_el);
           questionId++;
-
-          var counter_el = `<p>${questionId}</p>`;
-          $(newel_id).before(counter_el);
+          {#$(newel_id).before(counter_el);       #}
           $('#id_' + type + '-TOTAL_FORMS').val(questionId);
+          $(newel_id).css({"margin-left": "10px", "width": "100%"});
       }
 
       $('#add_more_qn').click(function () {
@@ -197,7 +199,7 @@
       function addOption(event, questionId, selector, append_after, type, type2) {
           event.preventDefault();
           var optionId = $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val();
-          // console.log(optionId)
+          // console.log(optionId
           var str1 = String(type + '-' + questionId);
           var str2 = String(type2 + '-' + optionId);
           var str3 = String('add_more_op_' + questionId);
@@ -208,11 +210,14 @@
           var newel_id = String(
               '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
           );
+          {#var option_counter = parseInt(optionId)+ 1;#}
           var counter_el = `<p>${optionId}</p>`;
-          $(newel_id).before(counter_el);
+          {#$(newel_id).find('label').before(counter_el);#}
+          $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex;'></div>`);
+          $('#new_op_div' + questionId + optionId).prepend(counter_el);
           optionId++;
           $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
-
+          $(newel_id).css({"margin-left": "10px", "width": "100%"});
       }
 
       function copyEmptyShortAnsQuestion(selector, append_after, type) {
@@ -229,15 +234,21 @@
           copyEmptyShortAnsQuestion('#emptyQnAnsInfoForm', 'div.qnansinfo_dynamic_append', 'questionansinfo');
       });
 
+      $('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({"display": "none"});
+
+      $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
+      $('#first_que_div').prepend(`<p>1</p>`);
+      $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
+
       // ......................................HIDING THE FORM................................................
 
       var categoryName = "{{ categoryObject.Category_Name }}".toLowerCase();
       if (categoryName == 'general') {
-          console.log(categoryName)
+          console.log(categoryName);
           $("#div_id_Survey_Cover").hide();
           $("#div_id_Use_Flag").hide();
-          $("#div_id_Center_Code").hide();
-          $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+          {#$("#div_id_Center_Code").hide();#}
+          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
           $("#div_id_Session_Code").hide();
           $("#div_id_Added_By").hide();
           $("#id_Added_By").val("{{request.user.id}}");
@@ -245,11 +256,11 @@
           $("#id_Category_Code").val("{{categoryObject.id}}");
           $("#div_id_Course_Code").hide();
       } else if (categoryName == 'session') {
-          console.log(categoryName)
+          console.log(categoryName);
           $("#div_id_Survey_Cover").hide();
           $("#div_id_Use_Flag").hide();
-          $("#div_id_Center_Code").hide();
-          $("#id_Center_Code").val("{{  request.user.Center_Code.id }}");
+          {#$("#div_id_Center_Code").hide();#}
+          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id }}");#}
           $("#div_id_Session_Code").show();
           $("#div_id_Added_By").hide();
           $("#id_Added_By").val("{{request.user.id}}");
@@ -257,11 +268,11 @@
           $("#id_Category_Code").val("{{categoryObject.id}}");
           $("#div_id_Course_Code").hide();
       } else if (categoryName == 'course') {
-          console.log(categoryName)
+          console.log(categoryName);
           $("#div_id_Survey_Cover").hide();
           $("#div_id_Use_Flag").hide();
-          $("#div_id_Center_Code").hide();
-          $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+          {#$("#div_id_Center_Code").hide();#}
+          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
           $("#div_id_Session_Code").show();
           $("#div_id_Added_By").hide();
           $("#id_Added_By").val("{{request.user.id}}");
@@ -269,11 +280,12 @@
           $("#id_Category_Code").val("{{categoryObject.id}}");
           $("#div_id_Course_Code").show();
       } else if (categoryName == 'system') {
-          console.log(categoryName)
+          console.log(categoryName);
           $("#div_id_Survey_Cover").hide();
           $("#div_id_Use_Flag").hide();
-          $("#div_id_Center_Code").hide();
-          $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+          {#$("#div_id_Center_Code").hide();#}
+          <!--$("#id_Center_Code").val("
+          {{  request.user.Center_Code.id}}");-->
           $("#div_id_Session_Code").hide();
           $("#div_id_Added_By").hide();
           $("#id_Added_By").val("{{request.user.id}}");

@@ -15,16 +15,17 @@
         </div>
     </div>
     <div class="col-md-8 col-xs-12" id="searchBarSurvey">
-
-        <div role="search" action="/forum/search/" id="surveySearch">
-            <input type="text" id="keywordInput" name="keyword" placeholder="Type to search">
+        <form method="get" action="">
+            <div role="search" id="surveySearch">
+                <input type="text" id="keywordInput" name="query" placeholder="Type to search"
+                       value="{{ request.GET.query }}" class="form-control">
             <div class=" pull-right searchButton">
-                <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i
-                        class="fa fa-search"></i>
+                <button type="submit" id="navSearchBtn" class="btn btn-inverse"
+                        data-hover-z="1"><i class="fa fa-search"></i>
                 </button>
             </div>
-        </div>
-
+            </div>
+        </form>
     </div>
 </div>
 
