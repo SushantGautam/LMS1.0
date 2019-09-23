@@ -119,7 +119,6 @@ $(document).ready(function() {
                 };
               
                 var videoPlayer = new Vimeo.Player('${link}', options);
-                ${console.log(videoPlayer)}
               </script>`
             }else{
                 message = "drag and drop video here...";
@@ -1327,9 +1326,9 @@ $(document).ready(function() {
         var num_tabs = $(".tabs-to-click ul li").length + 1;
         
         $(".tabs-to-click ul").append(`
-            <div>
+            <!--<div>
                 <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
-            </div>
+            </div>-->
             <li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
                
             </li><br/>
