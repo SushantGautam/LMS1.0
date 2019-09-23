@@ -4,28 +4,57 @@
 {%  load crispy_forms_tags %}
 
 {% block title %}Edit Profile{% endblock %}
-{% block smart_forum_title %} Edit Profile  {% endblock %}
-{% block smart_forum_Heading %} Edit Profile  {% endblock %}
-
+{% block smart_forum_title %} Edit Profile {% endblock %}
+{% block smart_forum_Heading %} Edit Profile{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'user_profile' %}">Profile</a></li>
+<li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+{% endblock %}
 {% block content %}
-    <base href="/"/>
-    <div class="alert alert-info" role="alert">
- Edit Profile
+<base href="/" />
+<div class="headerDiv">
+    <h2 class="infoFormHeader">
+        Edit Profile
+    </h2>
+    <hr class="header_hr">
 </div>
-    <div class="posts__item bg-fef2e0">
-        <div class="posts__section-left">
-            <div class="posts__topic">
-                <div class="posts__content">
+
+<!-- <div class="alert alert-info" role="alert">
+    Edit Profile
+</div> -->
 
 
-                   <form enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        {{ form|crispy}}
-        <button type="submit">Update</button>
-    </form>
-                </div>
-            </div>
-        </div>
+<form enctype="multipart/form-data" method="post" id="FormID">
+    {% csrf_token %}
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.email|as_crispy_field }}
     </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.Member_Phone|as_crispy_field }}
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.Member_Permanent_Address|as_crispy_field }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.Member_Temporary_Address|as_crispy_field }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <!-- <label for="Member_BirthDate" class="control-label ">
+            Member BirthDate
+        </label> <br> -->
+        {{ form.Member_BirthDate|as_crispy_field }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.Member_Avatar|as_crispy_field }}
+    </div>
+
+    <!-- {{ form|crispy}} -->
+    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+        <br>
+        <button type="submit" class="btn btn-success">Update</button>
+    </div>
+</form>
+
 
 {% endblock %}

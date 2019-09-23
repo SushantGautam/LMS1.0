@@ -55,46 +55,46 @@ class MemberInfoForm(forms.ModelForm):
             AccordionGroup('Basic Information',
 
                            Div(
-                               Field('Member_ID', wrapper_class='col-md-6'),
-                               Field('Member_Gender', wrapper_class='col-md-6'),
+                               Field('Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Gender', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('first_name', wrapper_class='col-md-6'),
-                               Field('last_name', wrapper_class='col-md-6'),
+                               Field('first_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('last_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('username', wrapper_class='col-md-6'),
-                               Field('password', wrapper_class='col-md-6'),
+                               Field('username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('password', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('email', wrapper_class='col-md-6'),
+                               Field('email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                HTML('''<div class='col-md-6'></div>'''),
                                css_class='row'),
 
                            Div(
-                               Field('Is_Teacher', wrapper_class='col-md-6'),
-                               Field('Is_Student', wrapper_class='col-md-6'),
+                               Field('Is_Teacher', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Is_Student', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
                            css_class='collapse'),
 
             AccordionGroup('Additional Information',
 
                            Div(
-                               Field('Member_Permanent_Address', wrapper_class='col-md-6'),
-                               Field('Member_Temporary_Address', wrapper_class='col-md-6'),
+                               Field('Member_Permanent_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Temporary_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('Member_BirthDate', wrapper_class='col-md-6'),
-                               Field('Member_Phone', wrapper_class='col-md-6'),
+                               Field('Member_BirthDate', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Phone', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('Member_Avatar', wrapper_class='col-md-6'),
-                               Field('Member_Memo', wrapper_class='col-md-6'),
+                               Field('Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Memo', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
                            )
         ),
@@ -107,14 +107,64 @@ class MemberInfoForm(forms.ModelForm):
 
     class Meta:
         model = MemberInfo
-
         Member_BirthDate = forms.DateField(widget=SelectDateWidget)
         fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
 
 
 class MemberUpdateForm(forms.ModelForm):
     helper = FormHelper()
-    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+    helper.layout = Layout(
+
+        Accordion(
+            AccordionGroup('Basic Information',
+
+                           Div(
+                               Field('Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Gender', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('first_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('last_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                         
+                           Div(
+                               Field('Is_Teacher','Is_Student', wrapper_class='col-md-3 col-sm-6 col-xs-12'),
+                               ),
+                           css_class='collapse'),
+
+            AccordionGroup('Additional Information',
+
+                           Div(
+                               Field('Member_Permanent_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Temporary_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('Member_BirthDate', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Phone', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Memo', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field('Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                              
+                               css_class='row'),
+                           )
+        ),
+        FormActions(
+            Submit('submit', 'Save changes'),
+            # Button('cancel', 'Cancel')
+        )
+    )
+    # helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
 
     class Meta:
         model = MemberInfo
