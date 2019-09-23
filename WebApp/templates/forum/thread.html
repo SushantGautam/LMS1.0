@@ -527,10 +527,7 @@
     $("#submitButton").click(function () {
         $('#id_content_raw').val($('.editor-wrapper').html());
         var content_raw = document.getElementById("id_content_raw").value
-        var data = { "content_raw": content_raw, "user": {{ request.user.pk }}, "thread": {{ thread.pk }} 
-        
-        };
-
+        var data = { "content_raw": content_raw, "user": {{ request.user.pk }}, "thread": {{ thread.pk }} };
 
 
     console.log(data);
