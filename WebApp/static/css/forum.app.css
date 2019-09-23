@@ -437,7 +437,7 @@ body > .container + .bg-white {
     padding-left: 80px;
 }
 
-html {
+/* html {
     line-height: 13px;
     font-size: 13px;
     -webkit-font-smoothing: antialiased;
@@ -446,7 +446,7 @@ html {
 body {
     line-height: 1.53rem;
     font-size: 1rem;
-}
+} */
 
 .text-display-4 {
     font-size: 8.6rem;
@@ -12683,14 +12683,14 @@ div.list-group > .list-group-item {
     border-bottom: none;
 }
 
-body {
+/* body {
     position: relative;
     margin: 0;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-touch-callout: none;
     background-color: #f5f5f5;
     color: #212121;
-}
+} */
 
 body > .container-fluid > h1,
 body #content > .container-fluid > h1,
@@ -41884,12 +41884,12 @@ html.app-mobile #content .container-fluid {
     }
 }
 
-.navbar-nav .dropdown-menu > li > a,
+/* .navbar-nav .dropdown-menu > li > a,
 .navbar-nav .dropdown-menu > li > a:focus {
     font-weight: 500;
     padding: 8px 14px;
     border-top: 1px solid #efefef;
-}
+} */
 
 .navbar-nav .dropdown-menu > li > a:hover,
 .navbar-nav .dropdown-menu > li > a:focus:hover {
