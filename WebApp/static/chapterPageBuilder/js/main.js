@@ -1318,10 +1318,10 @@ $(document).ready(function() {
         var num_tabs = $(".tabs-to-click ul li").length + 1;
         
         $(".tabs-to-click ul").append(`
-            <!--<div>
-                <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
-            </div>-->
             <div>
+                <div>
+                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
+                </div>
                 <div>
                     <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times fa-2x" aria-hidden="true"></i></button>
                 </div>
@@ -1422,34 +1422,40 @@ $('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
     displaypagenumbers();
 });
 
+// clone Page function
+$('.tabs-to-click').on('click', '.clone-page-btn', function(){
+    var num_tabs = $(".tabs-to-click ul li").length + 1;
+    let copy = $(this).parent().parent().clone();
+
+    // for cloning page navigation tabs
+    copy.find('.clone-page-btn').val(num_tabs);
+    copy.find('.delete-page-btn').val(num_tabs);
+    copy.find('.pagenumber').val(num_tabs);
+    copy.find('.pagenumber').attr('onclick','openTab(event,"tab'+num_tabs+'")');
+    $(this).parent().parent().after(copy);
+    // =============================================================================
+
+    // for editor cloning
+    editorcopy = $('#tab'+this.value).clone();
+    editorcopy.attr('id','tab'+num_tabs);
+    $(".tabs").append(editorcopy);
+    // =========================================================================
+    $(".editor-canvas").droppable({
+        drop: function(event, ui){
+            dropfunction(event,ui);
+        }
+    });
+    displaypagenumbers();
+});
+// =====================================================================================
+
 function displaypagenumbers(){
     $('.pagenumber').each(function(key,value){
         // $(this).parent().children('p').text('')
         $(this).parent().children('p').text(key+1);
     })
 }
-//clone Page function
-// $('.tabs-to-click').on('click', '.clone-page-btn', function(){
-//     $(".tabs-to-click ul").append(`
-//         <div>
-//             <button class="clone-page-btn" value="${parseInt(this.value)+1}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
-//         </div>
-//         <li class="tabs-link pagenumber" onclick="openTab(event,'tab${parseInt(this.value)+1}')" >
-            
-//         </li>
-//     `);
-    
 
-//     $('#tab'+this.value).clone().after($('#tab'+this.value));
-
-//     $(".editor-canvas").droppable({
-//         drop: function(event, ui){
-//             dropfunction(event,ui);
-//         }
-//     });
-
-// });
-// =====================================================================================
 var colorList = ['000000', '993300', '333300', '003300', '003366', '000066', '333399', '333333',
     '660000', 'FF6633', '666633', '336633', '336666', '0066FF', '666699', '666666', 'CC3333', 'FF9933', '99CC33', '669966', '66CCCC', '3366FF', '663366', '999999', 'CC66FF', 'FFCC33', 'FFFF66', '99FF66', '99CCCC', '66CCFF', '993366', 'CCCCCC', 'FF99CC', 'FFCC99', 'FFFF99', 'CCffCC', 'CCFFff', '99CCFF', 'CC99FF', 'FFFFFF'
 ];
