@@ -167,23 +167,22 @@ class QuizForm2(forms.ModelForm):
         exam_val = cleaned_data.get("exam_paper")
         pre_val = cleaned_data.get("pre_test")
         post_val = cleaned_data.get("post_test")
-        if not exam_val:
-            if not (pre_val or post_val):
-                raise forms.ValidationError(
-                    "Please Select at least One Quiz Type"
-                )
-        else:
-            if pre_val or post_val:
-                raise forms.ValidationError(
-                    "Exam cannot be pre/post chapter"
-                )
-            else:
-                pass
+        time_val = cleaned_data.get("duration")
+        pass_val = cleaned_data.get("pass_mark")
 
-        if not (pre_val or post_val) and not (exam_val):
-            raise forms.ValidationError(
-                "Please Select Atleast One Question"
-            )
+        if exam_val:
+            if not time_val:
+                raise forms.ValidationError(
+                    {
+                        'duration': ["Please Enter Quiz Duration", ],
+                    }
+                )
+            if not pass_val:
+                raise forms.ValidationError(
+                    {
+                        'pass_mark': ["Please Enter Pass Marks", ],
+                    }
+                )
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -198,7 +197,7 @@ class QuizForm2(forms.ModelForm):
         self.helper.label_class = 'quiz-add-label'
         self.helper.layout = Layout(
 
-             Row(
+            Row(
                 Column('chapter_code', css_class='form-group col-md-4 mb-0'),
                 Column(
                     PrependedText(
@@ -220,12 +219,18 @@ class QuizForm2(forms.ModelForm):
             ),
             HTML('''<hr size="10">'''),
 
-
             HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
             Row(
                 Column('pre_test', css_class='form-group col-md-4 mb-0'),
                 Column('post_test', css_class='form-group col-md-4 mb-0'),
                 Column('exam_paper', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column(
+                    Div(css_id='test_error', css_class="alert alert-block alert-danger"),
+                    css_class='form-group col-md-12 mb-0'
+                ),
                 css_class='form-row'
             ),
             Row(
@@ -235,7 +240,7 @@ class QuizForm2(forms.ModelForm):
 
                 css_class='form-row'
             ),
-           
+
             # HTML('''<hr size="10">'''),
             HTML('''<hr size="10">'''),
             HTML('''<label class=quiz-add-label>Quiz Features</label>'''),
@@ -256,6 +261,7 @@ class QuizForm2(forms.ModelForm):
                 ),
                 css_class='form-row'
             ),
+
         )
 
 
