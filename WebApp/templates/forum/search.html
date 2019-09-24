@@ -13,13 +13,6 @@
 {% endblock %}
 
 {% block main_contain %}
-
-
-
-
-
-
-
 <div class="panel panel-default paper-shadow" data-z="0.5">
     <ul class="list-group">
         <li class="list-group-item">
@@ -38,16 +31,8 @@
 
 
         {% if threads %}
-        {#                {% for nodegroup in node_groups %}#}
-
-        <li class="list-group-item">
-
-        </li>
-
-
         <div class="paper-shadow" data-z="0.5" style="margin-top: -15px">
             {% for thread in threads %}
-            {#                            {% if thread.topic.node_group == nodegroup %}#}
             <li class="list-group-item media v-middle">
                 <div class="media-left">
                     <div class="icon-block half img-circle bg-grey-300">
@@ -104,10 +89,6 @@
                             class="fa fa-comments fa-fw"></i>
                         {{ thread.reply_count }}</a>
                 </div>
-
-
-
-                {#                            {% endif %}#}
                 {% endfor %}
 
 
@@ -115,9 +96,6 @@
             </li>
         </div>
 
-
-
-        {#                {% endfor %}#}
         {% else %}
         <li class="list-group-item">
             <div class="media v-middle">
@@ -138,7 +116,4 @@
 
     </ul>
 </div>
-
-
-
 {% endblock %}

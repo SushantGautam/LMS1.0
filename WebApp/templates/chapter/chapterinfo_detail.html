@@ -457,6 +457,8 @@
                         // -------------------------------
 
                         $.each(value[count], function (div, div_value) {
+                            var now = Math.floor(Math.random() * 900000) + 100000;
+;
                             if (div == 'textdiv') {
                                 $.each(div_value, function (css, css_value) {
                                     // css_string = JSON.stringify(css_value)
@@ -470,12 +472,12 @@
                             if (div == 'pic') {
                                 $.each(div_value, function (css, css_value) {
                                     src = css_value['background-image']
+                                    console.log(src)
                                     imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
                                     $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}">
-                                    <image src = ${imgsrc} width=100% height=100%/>
-                                </div>
-                            `);
+                                        <div style = 'background-image: ${src}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}'>
+                                        </div>
+                                    `);
                                 });
                             }
 
@@ -520,7 +522,7 @@
                             if (div == 'video') {
                                 $.each(div_value, function (css, css_value) {
                                     $('#page' + key).append(`
-                                <div id = '${css_value.link}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                <div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
 
                                 </div>
                                 <script>
@@ -530,7 +532,7 @@
                                     height: "${css_value.height}"
                                 };
 
-                                var videoPlayer = new Vimeo.Player('${css_value.link}', options);
+                                var videoPlayer = new Vimeo.Player('${now}', options);
                             `)
                                 });
                             }

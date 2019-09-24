@@ -40,7 +40,13 @@
 
     </tr>
   </tbody>
- </table>
+ </table> 
+ 
+ <div class="col-md-12">
+   <h4>{{quiz.title}}</h4>
+ </div>
+
+
 
   <div class="quiz-question-list">
 
@@ -61,18 +67,24 @@
               <div class="mcq-list-details">
                 <div class="row">
                   <div class="col-md-12">
-                      <div class="col-md-10">
+                      <div class="col-md-9">
 
                           <li class="quiz-listing">  {{quest.content}}</li>
 
 
                   </div>
+                 
+
                   <div class="col-md-1 text-right " style="line-height: 24px;">
                       {% if quest.get_answers %}
 
                       <a class="button-color-only1" href="#mcans_list_{{quest.id}}" data-toggle="collapse">Option</a>
 
                       {% endif %}
+
+                  </div>
+                  <div class="col-md-1 text-right " style="line-height: 24px;">
+                    <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
 
                   </div>
                   <div class="col-md-1 text-left">
@@ -134,6 +146,7 @@
 
                   </div>
                   <div class="col-md-1 text-right " style="line-height: 24px;">
+                    <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
 
 
                   </div>
@@ -179,15 +192,18 @@
 
 
                 </div>
-                <div class="col-md-1 text-right " style="line-height: 24px;">
+                <div class="col-md-1 text-right " style="line-height: 24px;"> 
+                  <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
 
 
                 </div>
                 <div class="col-md-1 text-left">
 
                     <form action="{% url 'saquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id%}" method="get">
-                        <input type="submit" value="Edit">
+                      <input class="button-color-only" type="submit" value="Edit">
                       </form>
+                     
+                      
 
                 </div>
               </div>

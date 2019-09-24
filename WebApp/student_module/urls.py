@@ -74,6 +74,8 @@ urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView),
          name='student_user_profile'),
+    path('editprofile_student/', login_required(views.student_editprofile), name='student_user_editprofile'),
+
 )
 
 # urlpatterns += (
