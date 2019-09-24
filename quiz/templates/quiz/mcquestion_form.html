@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% block breadcrumb %} 
+<li class="breadcrumb-item"><a href="/">QUIZ</a></li>
+                
+ 
+<li class="breadcrumb-item active" aria-current="page">PROGRESS PAGE</li> 
+{% endblock %} 
 {% block content %}
 
     <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>

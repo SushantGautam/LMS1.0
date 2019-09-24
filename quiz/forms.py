@@ -180,34 +180,42 @@ class QuizForm2(forms.ModelForm):
                 Column('exam_paper', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
-            HTML('''<hr size="10">'''),
             Row(
-                Column('chapter_code', css_class='form-group col-md-4 mb-0'),
                 Column('duration', css_class='form-group col-md-4 mb-0'),
                 Column('pass_mark', css_class='form-group col-md-4 mb-0'),
+                Column(css_class='form-group col-md-4 mb-0'),
 
                 css_class='form-row'
             ),
+            HTML('''<hr size="10">'''),
             Row(
-                # Column('success_text', rows='5', css_class='form-group col-md-6 mb-0'),
-                # Column('fail_text', css_class='form-group col-md-6 mb-0'),
+                Column('chapter_code', css_class='form-group col-md-4 mb-0'),
                 Column(
-                    Field('success_text', rows='4'),
-                    css_class='form-group col-md-6 mb-0'
+                    PrependedText(
+                        'success_text',
+                        '<i class="fa fa-edit"></i>',
+                        rows='1'
+                    ),
+                    css_class='form-group col-md-4 mb-0'
                 ),
                 Column(
-                    Field('fail_text', rows='4'),
-                    css_class='form-group col-md-6 mb-0'
+                    PrependedText(
+                        'fail_text',
+                        '<i class="fa fa-edit"></i>',
+                        rows='1'
+                    ),
+                    css_class='form-group col-md-4 mb-0'
                 ),
                 css_class='form-row'
             ),
+            HTML('''<hr size="10">'''),
+            HTML('''<hr size="10">'''),
             Row(
                 Column('random_order', css_class='form-group col-md-4 mb-0'),
                 Column('single_attempt', css_class='form-group col-md-4 mb-0'),
                 Column('draft', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
-
             Row(
                 Column(css_class='col-md-4 mb-0'),
                 Column(css_class='col-md-4 mb-0'),
