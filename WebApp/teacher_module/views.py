@@ -357,6 +357,10 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
                 print(qna.errors)
         return vform
 
+    def get_form_kwargs(self):
+        default_kwargs = super().get_form_kwargs()
+        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
+        return default_kwargs
 
 def polls_teachers(request):
     return render(request, 'teacher_module/polls_teachers.html')
