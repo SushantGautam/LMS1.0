@@ -152,11 +152,7 @@ AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=[
 class QuizForm1(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['title', 'course_code', 'description', 'url']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['title'].required = False
+        fields = ['title', 'course_code', 'description']
 
 
 class QuizForm2(forms.ModelForm):
@@ -165,6 +161,30 @@ class QuizForm2(forms.ModelForm):
         fields = ['chapter_code', 'pre_test', 'post_test', 'answers_at_end', 'random_order',
                   'single_attempt', 'draft', 'exam_paper', 'duration',
                   'pass_mark', 'success_text', 'fail_text']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        exam_val = cleaned_data.get("exam_paper")
+        pre_val = cleaned_data.get("pre_test")
+        post_val = cleaned_data.get("post_test")
+        if not exam_val:
+            if not (pre_val or post_val):
+                raise forms.ValidationError(
+                    "Please Select at least One Quiz Type"
+                )
+        else:
+            if pre_val or post_val:
+                raise forms.ValidationError(
+                    "Exam cannot be pre/post chapter"
+                )
+            else:
+                pass
+
+        if not (pre_val or post_val) and not (exam_val):
+            raise forms.ValidationError(
+                "Please Select Atleast One Question"
+            )
+        return cleaned_data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -232,7 +252,7 @@ class QuizForm2(forms.ModelForm):
                     StrictButton('Previous', name='wizard_goto_step', value='form1', css_class='add-mcq',
                                  type='submit'),
                     StrictButton('Next', css_class='add-mcq', type='submit'),
-                    css_class='col-md-4 mb-0'
+                    css_class='col-md-4 mb-0 text-right'
                 ),
                 css_class='form-row'
             ),

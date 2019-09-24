@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.contrib.auth.hashers import make_password
 from import_export.admin import ImportExportModelAdmin
 from import_export.resources import ModelResource
 
@@ -26,11 +27,26 @@ class MemberInfoAdminForm(forms.ModelForm):
         model = MemberInfo
         fields = '__all__'
 
+    def save(self, commit=True):
+        # Save the provided password in hashed format
+        user = super().save(commit=False)
+
+        if user.id is None:
+            user.set_password(self.cleaned_data["password"])
+        else:
+            if MemberInfo.objects.get(id=user.id).password != user.password:
+                user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+
+        return user
+
 
 class MemberInfoResource(ModelResource):
     class Meta:
         model = MemberInfo
-        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email','Center_Code', 'Member_Permanent_Address',
+        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'Center_Code',
+                  'Member_Permanent_Address',
                   'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',
                   'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                   'Member_Memo', 'Member_ID', 'Is_Teacher', 'Is_Student', ]
