@@ -119,7 +119,6 @@ $(document).ready(function() {
                 };
               
                 var videoPlayer = new Vimeo.Player('${link}', options);
-                ${console.log(videoPlayer)}
               </script>`
             }else{
                 message = "drag and drop video here...";
@@ -155,7 +154,6 @@ $(document).ready(function() {
             }
             this.renderDiagram = function () {
                 // dom includes the html,css code with draggable property
-
                 let dom = $(html).css({
                     "position": "absolute",
                     "top": position.top,
@@ -578,6 +576,7 @@ $(document).ready(function() {
         });
     
         function upload(file) {
+            let div = $('#picture-drag').parent().parent();
             const data = new FormData();
             data.append("file-0", file);
             data.append('chapterID', chapterID);
@@ -613,7 +612,7 @@ $(document).ready(function() {
                     alert(data.responseJSON.message);
                 }
             });
-            let div = $('#picture-drag').parent().parent();
+            
             $('#picture-drag').css({
                 'display': 'none'
             })
@@ -631,19 +630,14 @@ $(document).ready(function() {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     let div = $(input).parent().parent().parent();
-                    // console.log(div);
                     var data = new FormData();
-                    // var count = 0
-                    // console.log(input.files);
                     $.each(input.files, function(i, file) {
                         // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
-                    // data.append('count', count);
                     data.append('type', 'pic');
                     data.append('chapterID', chapterID);
                     data.append('courseID', courseID);
-                    // console.log("imageuploadfromhere")
                     $.ajax({
                         url: save_file_url,
                         data: data,
@@ -948,19 +942,10 @@ $(document).ready(function() {
         Videos.renderDiagram();
         $('.fa-trash').click(function(e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
         });
         $('.fa-upload').click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
-        });
-
-        $('.video-div').resizable({
-            containment: $('.editor-canvas'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 150,
-            minHeight: 150
         });
     
         $('.video-div').on('dragover', function(e) {
@@ -1089,7 +1074,8 @@ $(document).ready(function() {
                             $('#loadingDiv').show();
                         }, 
                         error: function(errorThrown){
-                            alert("Failed to upload Video")
+                            alert("Failed to upload Video"+errorThrown)
+                            console.log(errorThrown)
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
                         },                     
@@ -1102,10 +1088,15 @@ $(document).ready(function() {
                             // <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
                             //     Your browser does not support the video tag.
                             // </video>`);
+                            var html = $(data.html);
+                            console.log(html);
+                            console.log(typeof(html))
+                            $(html).css('height','100%')
+                            $(html).css('width','100%')
 
-                            div.append(`
-                                ${data.html}
-                            `);
+                            div.append(
+                                html
+                            );
                         },
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();
@@ -1327,19 +1318,19 @@ $(document).ready(function() {
         var num_tabs = $(".tabs-to-click ul li").length + 1;
         
         $(".tabs-to-click ul").append(`
-            <div>
+            <!--<div>
                 <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
+            </div>-->
+            <div>
+                <div>
+                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times fa-2x" aria-hidden="true"></i></button>
+                </div>
+                <li class="tabs-link pagenumber" value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')" >
+                
+                </li><br/> 
+                <p></p> 
             </div>
-            <li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
-               
-            </li><br/>
-
-            <p>${num_tabs}</p>
-            
-            
-            `
-
-        );
+        `);
         $(".tabs").append(
             `<p id='tab${num_tabs}' style="display:none" class="tab-content-no droppable editor-canvas ui-droppable">
             
@@ -1351,6 +1342,7 @@ $(document).ready(function() {
                 dropfunction(event,ui);
             }
         });
+        displaypagenumbers();
     }
 
     function display(){
@@ -1362,7 +1354,7 @@ $(document).ready(function() {
         }
         $.each(data.pages, function(key, value){
             newpagefunction()   // add pages corresponding to the number of pages in json
-            $('.tabs-to-click > ul > li')[key-1].click()
+            $('.tabs-to-click > ul > div > li')[key-1].click()
             $.each(value, function(count){
                 // -------------------------------
                 $.each(value[count], function(div,div_value){
@@ -1417,12 +1409,25 @@ $(document).ready(function() {
                 });
             });
         });
-        $('.tabs-to-click > ul > li')[0].click()
+        $('.tabs-to-click > ul > div > li')[0].click()
     }
     
     display();
 });
 
+// delete page function
+$('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
+    $('#tab'+this.value).remove();
+    $(this).parent().parent().remove();
+    displaypagenumbers();
+});
+
+function displaypagenumbers(){
+    $('.pagenumber').each(function(key,value){
+        // $(this).parent().children('p').text('')
+        $(this).parent().children('p').text(key+1);
+    })
+}
 //clone Page function
 // $('.tabs-to-click').on('click', '.clone-page-btn', function(){
 //     $(".tabs-to-click ul").append(`
@@ -1434,6 +1439,7 @@ $(document).ready(function() {
 //         </li>
 //     `);
     
+
 //     $('#tab'+this.value).clone().after($('#tab'+this.value));
 
 //     $(".editor-canvas").droppable({

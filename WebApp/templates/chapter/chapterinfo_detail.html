@@ -240,45 +240,60 @@
 {# Modal for chapter view #}
 
 <!-- Modal -->
-<div id="course-modal" class="modal fade custom-course-modal" role="dialog" style="padding-right: 0px !important;">
-    <div class="modal-dialog" style="width: 100%; height: 100%; margin: 0px!important">
+<div id="course-modal" class="modal fade" role="dialog">
+  <div id='hijoa' class="modal-dialog" style="width: 80%">
 
-        <!-- Modal content-->
-        <div class="modal-content" style="height: 100%;">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <a data-toggle="tooltip" data-placement="right" title="" onclick="toggleFullScreen()"
-                   data-original-title="FullScreen" style="float:right;padding-right: 20px;">
-                    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                </a>
-                <h4 class="modal-title">
-                    <span id="chaptertitle">
-                        <!-- Chapter title goes here -->
-                    </span>
-                </h4>
-                Page <span id="currentpage"></span> of <span id="totalpages"></span>
-            </div>
-            <div class="modal-body custom-modal-body">
-                <div class="button-position" style="position: relative">
-                    <div class="prev-btn" style="float: left; position: absolute; top: 50px; left: 0px">
-                        <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i></button>
-                    </div>
-                </div>
+      <!-- Modal content-->
+      <div id='hijo' class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <a data-toggle="tooltip" data-placement="right" title="" onclick="toggleFullScreen()"
+                 data-original-title="FullScreen" style="float:right;padding-right: 20px;">
+                  <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+              </a>
+              <h4 class="modal-title">
+                  <span id="chaptertitle">
+                      <!-- Chapter title goes here -->
+                  </span>
+              </h4>
+              Page <span id="currentpage"></span> of <span id="totalpages"></span>
 
 
-                <div>
-                    <div id="modal-container" style="position: relative;">
+          </div>
+          <div id='hijox' class="modal-body" style="overflow-y: hidden!important;">
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="col-md-1">
+                          <div class="button-position" style="position: relative">
+                              <div class="prev-btn"
+                                   style="height: 100vh;float: left;display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                                  <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i>
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-md-10">
+                          <div id="modal-container" style="position: relative;">
 
-                    </div>
-                </div>
-                <div style="float: right">
-                    <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i></button>
+                          </div>
+                      </div>
+                      <div class="col-md-1">
+                          <div class="button-position">
+                              <div style="height: 100vh;display: flex;float: right;flex-direction: column;justify-content: center;align-items: center;height:100vh;">
+                                  <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i>
+                                  </button>
 
-                </div>
-            </div>
-        </div>
-    </div>
+                              </div>
+
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
+
 <!-- Modal -->
 <div class="modal fade custom-modal" id="quizmodal" role="dialog">
     <div class="modal-dialog"
@@ -337,115 +352,105 @@
                 $('#quizmodalbody').html(`<iframe style="height: 90vh; width: 100%"
         src="/quiz/{{ quiz.url }}/take/"
         frameborder="0px"></iframe>`);
-            })
-        </script>
-    {% endfor %}
+        })
+    </script>
+  {% endfor %}
+  <script>
 
-    {% for quiz in post_quizes %}
-        <script>
-            $('#feedbackbtn-quiz{{ quiz.id }}').click(function () {
-                console.log('button-clicked');
-                $('#quizmodalbody').html(`<iframe style="height: 90vh; width: 100%"
-        src="/quiz/{{ quiz.url }}/take/"
-        frameborder="0px"></iframe>`);
-            })
-        </script>
-    {% endfor %}
-    <script>
+      $(document).ready(function () {
+        $(document).keydown(function (e) {
+            if (e.keyCode == '39') {
+                $('#next-btn').click();
+                return false
+            }
+            if (e.keyCode == '37') {
+                $('#prev-btn').click();
+                return false
+            }
+            //UP
+            if (e.keyCode == '38') {
+                $('.modal-body').animate({scrollTop: 0}, 100);
+                return false;
+            }
+            //DOWN
+            if (e.keyCode == '40') {
+                $('.modal-body').animate({scrollTop: $(document).height()}, 100);
+                return false;
+            }
 
-        $(document).ready(function () {
-            $('.pre_test_change').change(function () {
-                // console.log(this.id);
-                // console.log($('#radio-buttons input[name=pre-test-radio]:checked').val());
-                $.ajax({
-                    url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
-                    data: $(this).serialize(), // get the form data
-                    type: $(this).attr('method'), // GET or POST
-                    success: function (response) {
-                        console.log('posted form');
-                    },
-                    error: function () {
-                        console.log('Error in posting form');
-                    }
-                });
-                $(document).keydown(function (e) {
-                    if (e.keyCode == '39') {
-                        $('#next-btn').click();
-                        return false
-                    }
-                    if (e.keyCode == '37') {
-                        $('#prev-btn').click();
-                        return false
-                    }
-                    //UP
-                    if (e.keyCode == '38') {
-                        $('.modal-body').animate({scrollTop: 0}, 100);
-                        return false;
-                    }
-                    //DOWN
-                    if (e.keyCode == '40') {
-                        $('.modal-body').animate({scrollTop: $(document).height()}, 100);
-                        return false;
-                    }
+            if (e.keyCode == '70' || e.keyCode == '102') {
+                toggleFullScreen();
+                return false;
+            }
 
-                    if (e.keyCode == '70' || e.keyCode == '102') {
-                        toggleFullScreen();
-                        return false;
-                    }
-
-                    if (e.keyCode == '81' || e.keyCode == '113') {
-                        $('#course-modal').modal('hide');
-                        return false;
-                    }
-                });
-            });
-            $('.post_test_change').change(function () {
-                // console.log($('#radio-buttons1 input[name=post-test-radio]:checked').val());
-                $.ajax({
-                    url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
-                    data: $(this).serialize(), // get the form data
-                    type: $(this).attr('method'), // GET or POST
-                    success: function (response) {
-                        console.log('posted form');
-                    },
-                    error: function () {
-                        console.log('Error in posting form');
-                    }
-                });
-            });
-        });
-
-        $('#course-viewer').click(function () {
+            if (e.keyCode == '81' || e.keyCode == '113') {
+                $('#course-modal').modal('hide');
+                return false;
+            }
+          });
+          $('.pre_test_change').change(function () {
+            // console.log(this.id);
+            // console.log($('#radio-buttons input[name=pre-test-radio]:checked').val());
             $.ajax({
-                type: "GET",
-                url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
-                data: {
-                    'chapterID': '{{ object.id }}'
-                },
+                url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
+                data: $(this).serialize(), // get the form data
+                type: $(this).attr('method'), // GET or POST
                 success: function (response) {
-                    // $("#model-content").append(response.data.numberofpages);
-                    loaddata(response.data)
+                    console.log('posted form');
                 },
                 error: function () {
-                    console.log('Error in getting chapters')
+                    console.log('Error in posting form');
                 }
             });
+              
+          });
+          $('.post_test_change').change(function () {
+              // console.log($('#radio-buttons1 input[name=post-test-radio]:checked').val());
+              $.ajax({
+                  url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
+                  data: $(this).serialize(), // get the form data
+                  type: $(this).attr('method'), // GET or POST
+                  success: function (response) {
+                      console.log('posted form');
+                  },
+                  error: function () {
+                      console.log('Error in posting form');
+                  }
+              });
+          });
+      });
 
-            function loaddata(data) {
-                if (data == "") {
-                    $('#course-modal').modal('hide')
-                    alert("There are no contents available in this chapter.");
-                }
-                var emptycheckflag = [];
-                $('#chaptertitle').text(data.chaptertitle);
-                $('#totalpages').text(data.numberofpages);
-                $('#currentpage').text(1);
-                $('#modal-container').empty();
-                $('#modal-container').css('width', data.canvaswidth)
-                $.each(data.pages, function (key, value) {
-                    $.each(value, function (count) {
-                        // Create modal
-                        $('#modal-container').append(`
+      $('#course-viewer').click(function () {
+          $.ajax({
+              type: "GET",
+              url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
+              data: {
+                  'chapterID': '{{ object.id }}'
+              },
+              success: function (response) {
+                  // $("#model-content").append(response.data.numberofpages);
+                  loaddata(response.data)
+              },
+              error: function () {
+                  console.log('Error in getting chapters')
+              }
+          });
+
+          function loaddata(data) {
+              if (data == "") {
+                  $('#course-modal').modal('hide')
+                  alert("There are no contents available in this chapter.");
+              }
+              var emptycheckflag = [];
+              $('#chaptertitle').text(data.chaptertitle);
+              $('#totalpages').text(data.numberofpages);
+              $('#currentpage').text(1);
+              $('#modal-container').empty();
+              $('#modal-container').css('width', data.canvaswidth)
+              $.each(data.pages, function (key, value) {
+                  $.each(value, function (count) {
+                      // Create modal
+                      $('#modal-container').append(`
                     <div id="page${key}" role="dialog" style="display:none;">
 
                     </div>`)

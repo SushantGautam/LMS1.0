@@ -50,6 +50,13 @@ var CURRENT_URL = window.location.href.split("#")[0].split("?")[0],
   $NAV_MENU = $(".nav_menu"),
   $FOOTER = $("footer");
 
+  $RIGHT_COL.css("min-height",$(window).height());
+    var a=$BODY.outerHeight(),
+    b=$BODY.hasClass("footer_fixed")?-10:$FOOTER.height(),
+    c=$LEFT_COL.eq(1).height()+$SIDEBAR_FOOTER.height(),
+    d=a<c?c:a;d-=$NAV_MENU.height()+b,
+    $RIGHT_COL.css("min-height",d)
+
 // Sidebar
 function init_sidebar() {
   // TODO: This is some kind of easy fix, maybe we can improve this
@@ -67,7 +74,7 @@ function init_sidebar() {
 
     $RIGHT_COL.css("min-height", contentHeight);
   };
-
+  
   $SIDEBAR_MENU.find("a").on("click", function (ev) {
     console.log("clicked - sidebar_menu");
     var $li = $(this).parent();

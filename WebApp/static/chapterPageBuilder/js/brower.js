@@ -39,13 +39,13 @@ $("#SaveBtn").on("click",function(e){
     pdf = [];
     video = [];
     numberofpages++;
-    const obj=$("#tab"+parseInt(key+1)).children();
+    const obj=$("#tab"+parseInt(this.value)).children();
     let tops;
     let left;
     let width;
     let height;
     let content;
-    htmlfile[(key+1)] = ($("#tab"+parseInt(key+1)).html());
+    htmlfile[(key+1)] = ($("#tab"+parseInt(this.value)).html());
     
     $.each( obj, function( i, value ) {
       if(value.classList.contains('textdiv')){
@@ -91,12 +91,11 @@ $("#SaveBtn").on("click",function(e){
             'left': $(this).css("left"),
             'width': $(this).css("width"),
             'height': $(this).css("height"),
-            'link': $(this).children('object').attr('data'),
+            'link': $(this).find('object').attr('data'),
           }
         );
       }
       if(value.classList.contains('video-div')){
-        console.log(value)
         link = $(this).find('iframe').attr('src');
         video.push(
           {
@@ -121,19 +120,19 @@ $("#SaveBtn").on("click",function(e){
   };
   var json=JSON.stringify(data);
   $.ajax({
-      url: save_json_url,
-      type: 'post',
-      data: {
-        'json': json,
-        'htmlfile': JSON.stringify(htmlfile),
-        'chapterID': chapterID,
-        'courseID': courseID
-      },
-      success: function (data) {
-        console.log(data)
-        alert('saved successfully.')
-      },
-    });
+    url: save_json_url,
+    type: 'post',
+    data: {
+      'json': json,
+      'htmlfile': JSON.stringify(htmlfile),
+      'chapterID': chapterID,
+      'courseID': courseID
+    },
+    success: function (data) {
+      console.log(data)
+      alert('saved successfully.')
+    },
+  });
 });
 
 $("#loadBtn").on("click",function(){
