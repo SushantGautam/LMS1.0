@@ -152,7 +152,11 @@ AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=[
 class QuizForm1(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['title', 'course_code', 'description']
+        fields = ['title', 'course_code', 'description', 'url']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['title'].required = False
 
 
 class QuizForm2(forms.ModelForm):
@@ -173,22 +177,8 @@ class QuizForm2(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.label_class = 'quiz-add-label'
         self.helper.layout = Layout(
-            HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
-            Row(
-                Column('pre_test', css_class='form-group col-md-4 mb-0'),
-                Column('post_test', css_class='form-group col-md-4 mb-0'),
-                Column('exam_paper', css_class='form-group col-md-4 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('duration', css_class='form-group col-md-4 mb-0'),
-                Column('pass_mark', css_class='form-group col-md-4 mb-0'),
-                Column(css_class='form-group col-md-4 mb-0'),
 
-                css_class='form-row'
-            ),
-            HTML('''<hr size="10">'''),
-            Row(
+             Row(
                 Column('chapter_code', css_class='form-group col-md-4 mb-0'),
                 Column(
                     PrependedText(
@@ -209,7 +199,26 @@ class QuizForm2(forms.ModelForm):
                 css_class='form-row'
             ),
             HTML('''<hr size="10">'''),
+
+
+            HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
+            Row(
+                Column('pre_test', css_class='form-group col-md-4 mb-0'),
+                Column('post_test', css_class='form-group col-md-4 mb-0'),
+                Column('exam_paper', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('duration', css_class='form-group col-md-4 mb-0'),
+                Column('pass_mark', css_class='form-group col-md-4 mb-0'),
+                Column(css_class='form-group col-md-4 mb-0'),
+
+                css_class='form-row'
+            ),
+           
+            # HTML('''<hr size="10">'''),
             HTML('''<hr size="10">'''),
+            HTML('''<label class=quiz-add-label>Quiz Features</label>'''),
             Row(
                 Column('random_order', css_class='form-group col-md-4 mb-0'),
                 Column('single_attempt', css_class='form-group col-md-4 mb-0'),
