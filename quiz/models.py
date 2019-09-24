@@ -385,9 +385,21 @@ class SA_Question(Question):
 
 @python_2_unicode_compatible
 class Quiz(models.Model):
-    mcquestion = models.ManyToManyField(MCQuestion, verbose_name=_("Multiple Choice Question"))
-    tfquestion = models.ManyToManyField(TF_Question, verbose_name=_("True/False Question"))
-    saquestion = models.ManyToManyField(SA_Question, verbose_name=_("Short Answer Type Question"))
+    mcquestion = models.ManyToManyField(
+        MCQuestion, 
+        verbose_name=_("Multiple Choice Question"),
+        help_text=_("You can select multiple students by holding ctrl key on Windows and Command⌘ key on MAC.")
+        )
+    tfquestion = models.ManyToManyField(
+        TF_Question, 
+        verbose_name=_("True/False Question"),
+        help_text=_("You can select multiple students by holding ctrl key on Windows and Command⌘ key on MAC.")
+        )
+    saquestion = models.ManyToManyField(
+        SA_Question, 
+        verbose_name=_("Short Answer Type Question"),
+        help_text=_("You can select multiple students by holding ctrl key on Windows and Command⌘ key on MAC.")
+        )
 
     # start_time=
     title = models.CharField(
@@ -417,11 +429,11 @@ class Quiz(models.Model):
         verbose_name=_("Time limit for quiz"))
 
     pre_test = models.BooleanField( 
-        help_text=_("Before the course"),
+        help_text=_("Before the chapter"),
         default = False
     ) 
     post_test = models.BooleanField( 
-         help_text=_("After the course"),
+         help_text=_("After the chapter"),  
         default = False
     ) 
     created_date =  models.DateTimeField(

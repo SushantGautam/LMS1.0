@@ -1,27 +1,18 @@
-from django.forms import model_to_dict
-from django.shortcuts import render, redirect
 from datetime import datetime
 
+from django.contrib import messages
 from django.db import transaction
+from django.forms import model_to_dict
+from django.http import HttpResponseRedirect
 from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 from django.views.generic.base import View
 
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
-    QuestionInfoFormset, QuestionAnsInfoFormset, BaseQuestionInfoFormset
-from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
-from datetime import datetime
-
-from django.db import transaction
-from django.http import JsonResponse
-from django.views.generic import DetailView, ListView, UpdateView, CreateView
-
-from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
     QuestionInfoFormset, QuestionAnsInfoFormset
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
-
-from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
 
 
 class AjaxableResponseMixin:
@@ -89,6 +80,20 @@ class SurveyInfoListView(ListView):
         # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
 
         return context
+
+    # ......................................Survey Search ..............................................
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        query = self.request.GET.get('query')
+        print(query)
+        if query:
+            query = query.strip()
+            qs = qs.filter(Survey_Title__contains=query)
+            if not len(qs):
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
+        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
+        return qs
 
     # def post(self, request):
     #     obj = SurveyInfo()
@@ -164,7 +169,13 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             else:
                 print('qna is invalid')
                 print(qna.errors)
-        return vform
+        return redirect('surveyinfo_detail', self.object.id)
+
+    def get_form_kwargs(self):
+        default_kwargs = super().get_form_kwargs()
+        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
+        return default_kwargs
+
 
 
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
@@ -288,6 +299,11 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
             context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
             context['parent_pk'] = obj_instance.pk
         return context
+
+    def get_form_kwargs(self):
+        default_kwargs = super().get_form_kwargs()
+        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
+        return default_kwargs
 
     def form_valid(self, form):
         vform = super().form_valid(form)
@@ -605,3 +621,4 @@ class surveyFilterCategory(ListView):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
         return context
+

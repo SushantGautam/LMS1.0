@@ -42,25 +42,25 @@
                                 {% if request.user.Is_Teacher %}
                                 <i class="fa fa-user"></i>Teacher
                                 {% endif %}
-                                <br>
                             </li>
+                            <br>
+                            {% if request.user.Member_Gender %}
                             <li>
-                                {% if request.user.Member_Gender == '1' %}
+                                {% if request.user.Member_Gender == 'M' %}
                                 <i class="fa fa-male"></i>&nbsp; Male
-
-                                {% elif request.user.Member_Gender == '2' %}
+                                {% elif request.user.Member_Gender == 'F' %}
                                 <i class="fa fa-female"></i>&nbsp; Female
-
                                 {% endif %}
-                                <br>
                             </li>
+                            <br>
+                            {% endif %}
+
                             {% if request.user.Member_Permanent_Address %}
                             <li>
                                 <i class="fa fa-map-marker "></i>
                                 &nbsp;&nbsp;{{ request.user.Member_Permanent_Address }}
-                                <br>
-
                             </li>
+                            <br>
                             {% endif %}
                             {% if request.user.email %}
                             <li>
@@ -88,10 +88,12 @@
 
 
                 <div class="col-md-8 col-xs-12 text-center">
-                    <div class="btn btn-success" id="editButton">
-                        <h2>Edit Profile</h2>
-                    </div>
-
+                    <a href="/editprofile">
+                        <div class="btn btn-success" id="">
+                            <h2>Edit Profile</h2>
+                        </div>
+                    </a>
+                    <!-- 
                     <div class="x_panel" id="editContent" style="display: none">
                         <div class="x_content">
                             <form method="post" id="profileForm" data-parsley-validate=""
@@ -178,7 +180,7 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    </div> -->
                     <br>
                     <br>
                     <br>

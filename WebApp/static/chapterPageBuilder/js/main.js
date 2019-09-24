@@ -107,19 +107,19 @@ $(document).ready(function() {
     class video {
         constructor(top, left, link=null, height=null, width=null) {
             let id = (new Date).getTime();
+            var now = Math.floor(Math.random() * 900000) + 100000;
             let position = { top, left, height, width };
             let videoobj;
             let message = ""
             if(link!=null){
-                videoobj = `<div id='${link}'><div><script>
+                videoobj = `<div id='${now}'><div><script>
                 var options = {
                     url: '${link}',
                     width: "${width}",
                     height: "${height}"
                 };
               
-                var videoPlayer = new Vimeo.Player('${link}', options);
-                ${console.log(videoPlayer)}
+                var videoPlayer = new Vimeo.Player('${now}', options);
               </script>`
             }else{
                 message = "drag and drop video here...";
@@ -155,7 +155,6 @@ $(document).ready(function() {
             }
             this.renderDiagram = function () {
                 // dom includes the html,css code with draggable property
-
                 let dom = $(html).css({
                     "position": "absolute",
                     "top": position.top,
@@ -578,6 +577,7 @@ $(document).ready(function() {
         });
     
         function upload(file) {
+            let div = $('#picture-drag').parent().parent();
             const data = new FormData();
             data.append("file-0", file);
             data.append('chapterID', chapterID);
@@ -613,7 +613,7 @@ $(document).ready(function() {
                     alert(data.responseJSON.message);
                 }
             });
-            let div = $('#picture-drag').parent().parent();
+            
             $('#picture-drag').css({
                 'display': 'none'
             })
@@ -631,19 +631,14 @@ $(document).ready(function() {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     let div = $(input).parent().parent().parent();
-                    // console.log(div);
                     var data = new FormData();
-                    // var count = 0
-                    // console.log(input.files);
                     $.each(input.files, function(i, file) {
                         // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
-                    // data.append('count', count);
                     data.append('type', 'pic');
                     data.append('chapterID', chapterID);
                     data.append('courseID', courseID);
-                    // console.log("imageuploadfromhere")
                     $.ajax({
                         url: save_file_url,
                         data: data,
@@ -948,19 +943,10 @@ $(document).ready(function() {
         Videos.renderDiagram();
         $('.fa-trash').click(function(e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
         });
         $('.fa-upload').click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
-        });
-
-        $('.video-div').resizable({
-            containment: $('.editor-canvas'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 150,
-            minHeight: 150
         });
     
         $('.video-div').on('dragover', function(e) {
@@ -1089,7 +1075,8 @@ $(document).ready(function() {
                             $('#loadingDiv').show();
                         }, 
                         error: function(errorThrown){
-                            alert("Failed to upload Video")
+                            alert("Failed to upload Video"+errorThrown)
+                            console.log(errorThrown)
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
                         },                     
@@ -1102,10 +1089,15 @@ $(document).ready(function() {
                             // <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
                             //     Your browser does not support the video tag.
                             // </video>`);
+                            var html = $(data.html);
+                            console.log(html);
+                            console.log(typeof(html))
+                            $(html).css('height','100%')
+                            $(html).css('width','100%')
 
-                            div.append(`
-                                ${data.html}
-                            `);
+                            div.append(
+                                html
+                            );
                         },
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();
@@ -1172,6 +1164,40 @@ $(document).ready(function() {
     
         });
     }
+
+    // delete page function
+$('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
+    $('#tab'+this.value).remove();
+    $(this).parent().parent().remove();
+    displaypagenumbers();
+});
+
+// clone Page function
+$('.tabs-to-click').on('click', '.clone-page-btn', function(){
+    var num_tabs = $(".tabs-to-click ul li").length + 1;
+    let copy = $(this).parent().parent().clone();
+
+    // for cloning page navigation tabs
+    copy.find('.clone-page-btn').val(num_tabs);
+    copy.find('.delete-page-btn').val(num_tabs);
+    copy.find('.pagenumber').val(num_tabs);
+    copy.find('.pagenumber').attr('onclick','openTab(event,"tab'+num_tabs+'")');
+    $(this).parent().parent().after(copy);
+    // =============================================================================
+
+    // for editor cloning
+    editorcopy = $('#tab'+this.value).clone();
+    editorcopy.attr('id','tab'+num_tabs);
+    $(".tabs").append(editorcopy);
+    // =========================================================================
+    $(".editor-canvas").droppable({
+        drop: function(event, ui){
+            dropfunction(event,ui);
+        }
+    });
+    displaypagenumbers();
+});
+// =====================================================================================
 
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
@@ -1328,18 +1354,18 @@ $(document).ready(function() {
         
         $(".tabs-to-click ul").append(`
             <div>
-                <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
+                <div>
+                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
+                </div>
+                <div>
+                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times fa-2x" aria-hidden="true"></i></button>
+                </div>
+                <li class="tabs-link pagenumber" value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')" >
+                
+                </li><br/> 
+                <p></p> 
             </div>
-            <li class="tabs-link pagenumber" onclick="openTab(event,'tab${num_tabs}')" >
-               
-            </li><br/>
-
-            <p>${num_tabs}</p>
-            
-            
-            `
-
-        );
+        `);
         $(".tabs").append(
             `<p id='tab${num_tabs}' style="display:none" class="tab-content-no droppable editor-canvas ui-droppable">
             
@@ -1351,6 +1377,7 @@ $(document).ready(function() {
                 dropfunction(event,ui);
             }
         });
+        displaypagenumbers();
     }
 
     function display(){
@@ -1362,7 +1389,7 @@ $(document).ready(function() {
         }
         $.each(data.pages, function(key, value){
             newpagefunction()   // add pages corresponding to the number of pages in json
-            $('.tabs-to-click > ul > li')[key-1].click()
+            $('.tabs-to-click > ul > div > li')[key-1].click()
             $.each(value, function(count){
                 // -------------------------------
                 $.each(value[count], function(div,div_value){
@@ -1417,33 +1444,19 @@ $(document).ready(function() {
                 });
             });
         });
-        $('.tabs-to-click > ul > li')[0].click()
+        $('.tabs-to-click > ul > div > li')[0].click()
     }
     
     display();
 });
 
-//clone Page function
-// $('.tabs-to-click').on('click', '.clone-page-btn', function(){
-//     $(".tabs-to-click ul").append(`
-//         <div>
-//             <button class="clone-page-btn" value="${parseInt(this.value)+1}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
-//         </div>
-//         <li class="tabs-link pagenumber" onclick="openTab(event,'tab${parseInt(this.value)+1}')" >
-            
-//         </li>
-//     `);
-    
-//     $('#tab'+this.value).clone().after($('#tab'+this.value));
+function displaypagenumbers(){
+    $('.pagenumber').each(function(key,value){
+        // $(this).parent().children('p').text('')
+        $(this).parent().children('p').text(key+1);
+    })
+}
 
-//     $(".editor-canvas").droppable({
-//         drop: function(event, ui){
-//             dropfunction(event,ui);
-//         }
-//     });
-
-// });
-// =====================================================================================
 var colorList = ['000000', '993300', '333300', '003300', '003366', '000066', '333399', '333333',
     '660000', 'FF6633', '666633', '336633', '336666', '0066FF', '666699', '666666', 'CC3333', 'FF9933', '99CC33', '669966', '66CCCC', '3366FF', '663366', '999999', 'CC66FF', 'FFCC33', 'FFFF66', '99FF66', '99CCCC', '66CCFF', '993366', 'CCCCCC', 'FF99CC', 'FFCC99', 'FFFF99', 'CCffCC', 'CCFFff', '99CCFF', 'CC99FF', 'FFFFFF'
 ];
