@@ -124,7 +124,8 @@ Polls
                                 <div class="card">
                                     <a href=" {% url 'questions_student_detail' object.pk %}">
                                         <div class="card-body">
-                                            <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong></h2>
+                                            <h2 class="card-title ">
+                                                <strong>{{ object.Survey_Title|truncatechars:12 }}</strong></h2>
                                             <hr>
                                             <ul class="card_labels">
                                                 <li><label>Questions: {{ object.questions_count }}</label></li>
@@ -154,7 +155,8 @@ Polls
                                 <div class="card">
                                     <a href=" {% url 'questions_student_detail_history' object.pk %}">
                                         <div class="card-body">
-                                            <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong>
+                                            <h2 class="card-title ">
+                                                <strong>{{ object.Survey_Title|truncatechars:12 }}</strong>
                                             </h2>
                                             <hr>
                                             <ul class="card_labels">

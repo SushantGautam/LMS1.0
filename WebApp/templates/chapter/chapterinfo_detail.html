@@ -138,8 +138,8 @@
                                 {#                <a id="pre_test_popup" target="_blank"#}
                                 {#                   href={% url 'quiz_create_from_chapter' chapter_pk=object.pk test_type='pre_test' %}><i#}
                                 {#                    class="fa fa-plus"></i></a>#}
-                                <button type="button" class="btn qts-button" id="pre_test_popup" data-toggle="modal"
-                                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i>
+                                <button type="button" class="btn qts-button" id="pre_test_popup" data-toggle="modal" data-target="#quiz_create_popup">
+                                    <i class="fa fa-plus"></i>
                                 </button>
                             </td>
                         </tr>
@@ -175,8 +175,8 @@
                                 {#                <a target="_blank" id="post_test_popup"#}
                                 {#                   href="{% url 'quiz_create_from_chapter' chapter_pk=object.pk test_type='post_test' %}"><i#}
                                 {#                    class="fa fa-plus"></i></a>#}
-                                <button type="button" class="btn qts-button" id="post_test_popup" data-toggle="modal"
-                                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i>
+                                <button type="button" class="btn qts-button" id="post_test_popup" data-toggle="modal" data-target="#quiz_create_popup">
+                                    <i class="fa fa-plus"></i>
                                 </button>
                             </td>
                         </tr>
@@ -349,11 +349,9 @@
         <script>
             $('#feedbackbtn-quiz{{ quiz.id }}').click(function () {
                 console.log('button-clicked');
-                $('#quizmodalbody').html(`<iframe style="height: 90vh; width: 100%"
-        src="/quiz/{{ quiz.url }}/take/"
-        frameborder="0px"></iframe>`);
-        })
-    </script>
+                $('#quizmodalbody').html(`<iframe style="height: 90vh; width: 100%" src="/quiz/{{ quiz.url }}/take/" frameborder="0px"></iframe>`);
+            })
+        </script>
   {% endfor %}
   <script>
 
@@ -472,12 +470,12 @@
                             if (div == 'pic') {
                                 $.each(div_value, function (css, css_value) {
                                     src = css_value['background-image']
+                                    console.log(src)
                                     imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
                                     $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}">
-                                    <image src = ${imgsrc} width=100% height=100%/>
-                                </div>
-                            `);
+                                        <div style = 'background-image: ${src}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}'>
+                                        </div>
+                                    `);
                                 });
                             }
 

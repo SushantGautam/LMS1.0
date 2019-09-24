@@ -1,0 +1,174 @@
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+{% load static %}
+
+
+{% block main_contain %}
+<div class="panel panel-default paper-shadow">
+    <div class="panel panel-heading ">
+
+        <h2 class="topic_header">
+            <div class="icon-block half img-circle bg-grey-300">
+                {% if topic.topic_icon %}
+                <i class="fa fa-{{ topic.topic_icon }}"></i>
+                {% else %}
+                <i class="fa fa-book"></i>
+                {% endif %}
+
+            </div> {{ panel_title }}
+        </h2>
+        <div class="topic_des">
+            <small> {{ topic.description }} </small>
+        </div>
+
+        <span class="pull-right new_thread">
+            <a class="btn btn-white btn-flat" href="
+            {% if '/teachers' in request.path %}
+            {% url 'teacher_forum_create' topic.node_group.pk topic.pk %}
+                        {% else %}
+                        {% url 'forum:create_thread' topic.node_group.pk topic.pk %}
+                        {% endif %}
+         "><i class="fa fa-fw fa-plus"></i>
+                Ask New Question</a>
+
+        </span>
+
+    </div>
+
+
+
+
+    <!-- List group -->
+    <ul class="list-group thread-list">
+        {% for thread in threads %}
+        <li class="list-group-item thread-entry">
+            <div class="entry media">
+
+                <a href="{% if '/teachers' in request.path %}
+                {% url 'teacher_info' pk=thread.user.pk %}
+                {% else %}
+                {% url 'forum:user_info' pk=thread.user.pk %}
+                {% endif %}">
+                    <img src="
+                        {% if thread.user.Member_Avatar %}
+                            {{ thread.user.Member_Avatar.url }}
+                        {% elif thread.user.Member_Gender == 'M' %}
+                            {% static 'images/profile/male.jpg' %}
+                        {% elif thread.user.Member_Gender == 'F' %}
+                            {% static 'images/profile/female.png' %}
+                        {% else %}
+                            {% static 'images/profile/profile.png' %}
+                        {% endif %}" alt="..."
+                        class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default ">
+                </a>
+                <h2 class="thread_title">
+                    <div class="media-body media-middle"> &nbsp;
+                        <a href="
+                        {% if '/teachers' in request.path %}
+                        {% url 'teacher_thread' pk=thread.user.pk %}
+                        {% else %}
+                        {% url 'forum:thread' pk=thread.pk %}
+                        {% endif %}" class="entry-link">
+                            {{ thread.title }}
+                        </a>
+
+                        <p class="entry-meta">
+                            {% if thread.order <= 3 %}
+                            <span class="meta">
+                                <span class="label label-info meta-top">
+                                    TOP
+                                </span>
+                            </span>
+                            {% endif %}
+
+                            <div class="topic_list text-light text-caption" id="">
+
+
+                                <h5>
+
+                                    <span class="meta">
+                                        SubCategory:
+                                        <a href="{% if '/teachers' in request.path %}
+                                        {% url 'teacher_topic' pk=thread.user.pk %}
+                                        {% else %}
+                                        {% url 'forum:topic' thread.topic.pk %}
+                                        {% endif %}
+                                        ">
+                                            <span class="topic-meta link-text">
+                                                {{ thread.topic.title }}
+                                            </span> |
+                                        </a>
+                                    </span>
+                                    <span class="meta meta-username">
+                                        posted by<a href="{% if '/teachers' in request.path %}
+                                        {% url 'teacher_info' thread.user.pk %}
+                                        {% else %}
+                                        {% url 'forum:user_info' thread.user.pk %}
+                                        {% endif %}
+                                       ">
+                                            <span class="topic-meta link-text"> {{ thread.user.username }} </span>
+                                        </a>
+                                    </span>
+
+                                    <span class="meta meta-last_replied hidden-xs">|
+                                        {% trans "Last Replied" %}: {{ thread.last_replied | naturaltime }}
+                                    </span>
+                                    <br>
+
+                                    <br>
+                                </h5>
+                            </div>
+                            <h6>
+                                <div class="right_content">
+                                    <span class=" btn btn-white text-light">
+                                        {{ thread.pub_date | date:"d, M" }}</span>
+                                    <br>
+                                    <span class="btn btn-white">
+                                        <i class="fa fa-eye"></i> {{ thread.view_count }}
+                                    </span>
+                                </div>
+                            </h6>
+                        </p>
+
+                        <div class="media-right media-middle">
+                            <span class="btn btn-primary btn-xs">{{ thread.reply_count }} Reply</span>
+                        </div>
+
+
+                    </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+
+
+    <div class=" text-center">
+        {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="panel-footer">
+        {% get_pagination %}
+    </div>
+</div>
+
+{% endblock %}

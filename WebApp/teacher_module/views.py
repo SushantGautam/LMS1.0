@@ -14,9 +14,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
 from django_addanother.views import CreatePopupMixin
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
-from WebApp.models import AssignAnswerInfo
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm    
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo, MemberInfo
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post
 from forum.views import get_top_thread_keywords
@@ -29,7 +28,7 @@ from survey.views import AjaxableResponseMixin
 from .forms import ThreadForm
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
-
+from WebApp.forms import UserUpdateForm
 datetime_now = datetime.now()
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from formtools.wizard.views import SessionWizardView
@@ -66,6 +65,24 @@ def start(request):
         return render(request, "teacher_module/homepage.html",{'MyCourses':mycourse,'Session':sessions,'activeAssignments':activeassignments})
 
 
+def teacher_editprofile(request):
+    if not request.user.is_authenticated:
+        return HttpResponse("you are not authenticated", {'error_message': 'Error Message Customize here'})
+    
+    post = get_object_or_404(MemberInfo, pk=request.user.id)
+    if request.method == "POST":
+
+        form = UserUpdateForm(request.POST, request.FILES, instance=post)
+
+        if form.is_valid():
+            post.date_last_update = datetime.now()
+            post.save()
+            return redirect('teacher_user_profile')
+    else:
+
+        form = UserUpdateForm(request.POST, request.FILES, instance=post)
+
+    return render(request, 'teacher_module/editprofile.html', {'form': form})
 
 
 
@@ -357,6 +374,10 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
                 print(qna.errors)
         return vform
 
+    def get_form_kwargs(self):
+        default_kwargs = super().get_form_kwargs()
+        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
+        return default_kwargs
 
 def polls_teachers(request):
     return render(request, 'teacher_module/polls_teachers.html')

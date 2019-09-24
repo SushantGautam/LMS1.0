@@ -450,6 +450,7 @@ form {
   margin-top: 30px;
 }
 #surveySearch {
+    display: flex;
   padding-right: 50px;
 }
 
