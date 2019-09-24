@@ -162,6 +162,30 @@ class QuizForm2(forms.ModelForm):
                   'single_attempt', 'draft', 'exam_paper', 'duration',
                   'pass_mark', 'success_text', 'fail_text']
 
+    def clean(self):
+        cleaned_data = super().clean()
+        exam_val = cleaned_data.get("exam_paper")
+        pre_val = cleaned_data.get("pre_test")
+        post_val = cleaned_data.get("post_test")
+        if not exam_val:
+            if not (pre_val or post_val):
+                raise forms.ValidationError(
+                    "Please Select at least One Quiz Type"
+                )
+        else:
+            if pre_val or post_val:
+                raise forms.ValidationError(
+                    "Exam cannot be pre/post chapter"
+                )
+            else:
+                pass
+
+        if not (pre_val or post_val) and not (exam_val):
+            raise forms.ValidationError(
+                "Please Select Atleast One Question"
+            )
+        return cleaned_data
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -173,22 +197,8 @@ class QuizForm2(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.label_class = 'quiz-add-label'
         self.helper.layout = Layout(
-            HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
-            Row(
-                Column('pre_test', css_class='form-group col-md-4 mb-0'),
-                Column('post_test', css_class='form-group col-md-4 mb-0'),
-                Column('exam_paper', css_class='form-group col-md-4 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('duration', css_class='form-group col-md-4 mb-0'),
-                Column('pass_mark', css_class='form-group col-md-4 mb-0'),
-                Column(css_class='form-group col-md-4 mb-0'),
 
-                css_class='form-row'
-            ),
-            HTML('''<hr size="10">'''),
-            Row(
+             Row(
                 Column('chapter_code', css_class='form-group col-md-4 mb-0'),
                 Column(
                     PrependedText(
@@ -209,7 +219,26 @@ class QuizForm2(forms.ModelForm):
                 css_class='form-row'
             ),
             HTML('''<hr size="10">'''),
+
+
+            HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
+            Row(
+                Column('pre_test', css_class='form-group col-md-4 mb-0'),
+                Column('post_test', css_class='form-group col-md-4 mb-0'),
+                Column('exam_paper', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('duration', css_class='form-group col-md-4 mb-0'),
+                Column('pass_mark', css_class='form-group col-md-4 mb-0'),
+                Column(css_class='form-group col-md-4 mb-0'),
+
+                css_class='form-row'
+            ),
+           
+            # HTML('''<hr size="10">'''),
             HTML('''<hr size="10">'''),
+            HTML('''<label class=quiz-add-label>Quiz Features</label>'''),
             Row(
                 Column('random_order', css_class='form-group col-md-4 mb-0'),
                 Column('single_attempt', css_class='form-group col-md-4 mb-0'),
@@ -223,7 +252,7 @@ class QuizForm2(forms.ModelForm):
                     StrictButton('Previous', name='wizard_goto_step', value='form1', css_class='add-mcq',
                                  type='submit'),
                     StrictButton('Next', css_class='add-mcq', type='submit'),
-                    css_class='col-md-4 mb-0'
+                    css_class='col-md-4 mb-0 text-right'
                 ),
                 css_class='form-row'
             ),

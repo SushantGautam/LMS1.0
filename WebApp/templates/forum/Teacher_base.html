@@ -1,24 +1,15 @@
 {% extends "teacher_module/base.html" %}
 {% load i18n %}
-
-
 {% load static %}
+
+
+
 {% block stylesheets %}
 
 
 <link rel="stylesheet" href="{% static 'css/forum.app.css' %}" />
 
-<script>
-    $(document).ready(function () {
-        $('#navSearchBtn').click(function (e) {
-            e.preventDefault();
-            var keyword = $('#keywordInput').val();
-            if (keyword) {
-                window.location = "/search/" + keyword + "/"; // FIXME: Use url tag!
-            }
-        });
-    });
-</script>
+
 
 {% endblock stylesheets %}
 
@@ -112,6 +103,17 @@
 <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
 <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
 <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#navSearchBtn').click(function (e) {
+            e.preventDefault();
+            var keyword = $('#keywordInput').val();
+            if (keyword) {
+                window.location = "/search/" + keyword + "/"; // FIXME: Use url tag!
+            }
+        });
+    });
+</script>
 {% endblock %}
 {% block footer_ext %}
 

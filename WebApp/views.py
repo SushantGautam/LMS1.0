@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-import vimeo  # from PyVimeo for uploading videos to vimeo.com
+# import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
