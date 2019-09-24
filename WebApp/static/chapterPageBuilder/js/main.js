@@ -107,18 +107,19 @@ $(document).ready(function() {
     class video {
         constructor(top, left, link=null, height=null, width=null) {
             let id = (new Date).getTime();
+            var now = Math.floor(Math.random() * 900000) + 100000;
             let position = { top, left, height, width };
             let videoobj;
             let message = ""
             if(link!=null){
-                videoobj = `<div id='${link}'><div><script>
+                videoobj = `<div id='${now}'><div><script>
                 var options = {
                     url: '${link}',
                     width: "${width}",
                     height: "${height}"
                 };
               
-                var videoPlayer = new Vimeo.Player('${link}', options);
+                var videoPlayer = new Vimeo.Player('${now}', options);
               </script>`
             }else{
                 message = "drag and drop video here...";
@@ -1164,6 +1165,40 @@ $(document).ready(function() {
         });
     }
 
+    // delete page function
+$('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
+    $('#tab'+this.value).remove();
+    $(this).parent().parent().remove();
+    displaypagenumbers();
+});
+
+// clone Page function
+$('.tabs-to-click').on('click', '.clone-page-btn', function(){
+    var num_tabs = $(".tabs-to-click ul li").length + 1;
+    let copy = $(this).parent().parent().clone();
+
+    // for cloning page navigation tabs
+    copy.find('.clone-page-btn').val(num_tabs);
+    copy.find('.delete-page-btn').val(num_tabs);
+    copy.find('.pagenumber').val(num_tabs);
+    copy.find('.pagenumber').attr('onclick','openTab(event,"tab'+num_tabs+'")');
+    $(this).parent().parent().after(copy);
+    // =============================================================================
+
+    // for editor cloning
+    editorcopy = $('#tab'+this.value).clone();
+    editorcopy.attr('id','tab'+num_tabs);
+    $(".tabs").append(editorcopy);
+    // =========================================================================
+    $(".editor-canvas").droppable({
+        drop: function(event, ui){
+            dropfunction(event,ui);
+        }
+    });
+    displaypagenumbers();
+});
+// =====================================================================================
+
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
             TextboxFunction(ui.helper.position().top - toolbarheight,
@@ -1414,40 +1449,6 @@ $(document).ready(function() {
     
     display();
 });
-
-// delete page function
-$('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
-    $('#tab'+this.value).remove();
-    $(this).parent().parent().remove();
-    displaypagenumbers();
-});
-
-// clone Page function
-$('.tabs-to-click').on('click', '.clone-page-btn', function(){
-    var num_tabs = $(".tabs-to-click ul li").length + 1;
-    let copy = $(this).parent().parent().clone();
-
-    // for cloning page navigation tabs
-    copy.find('.clone-page-btn').val(num_tabs);
-    copy.find('.delete-page-btn').val(num_tabs);
-    copy.find('.pagenumber').val(num_tabs);
-    copy.find('.pagenumber').attr('onclick','openTab(event,"tab'+num_tabs+'")');
-    $(this).parent().parent().after(copy);
-    // =============================================================================
-
-    // for editor cloning
-    editorcopy = $('#tab'+this.value).clone();
-    editorcopy.attr('id','tab'+num_tabs);
-    $(".tabs").append(editorcopy);
-    // =========================================================================
-    $(".editor-canvas").droppable({
-        drop: function(event, ui){
-            dropfunction(event,ui);
-        }
-    });
-    displaypagenumbers();
-});
-// =====================================================================================
 
 function displaypagenumbers(){
     $('.pagenumber').each(function(key,value){
