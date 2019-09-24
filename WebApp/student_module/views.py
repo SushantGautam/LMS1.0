@@ -26,6 +26,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 # Create your views here.
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView
+from WebApp.forms import UserUpdateForm
 
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, \
     AssignAnswerInfo
@@ -58,6 +59,9 @@ def start(request):
         return render(request, 'student_module/dashboard.html',
                       {'GroupName': batches, 'Group': sessions, 'Course': courses,'activeAssignments':activeassignments})
 
+
+
+
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
     success_url = reverse_lazy('student_user_profile')
@@ -84,6 +88,26 @@ class PasswordChangeView(PasswordContextMixin, FormView):
                          'Your password was successfully updated! You can login with your new credentials')
 
         return super().form_valid(form)
+
+
+def student_editprofile(request):
+    if not request.user.is_authenticated:
+        return HttpResponse("you are not authenticated", {'error_message': 'Error Message Customize here'})
+    post = get_object_or_404(MemberInfo, pk=request.user.id)
+    if request.method == "POST":
+
+        form = UserUpdateForm(request.POST, request.FILES, instance=post)
+
+        if form.is_valid():
+            post.date_last_update = datetime.now()
+            post.save()
+            return redirect('student_user_profile')
+    else:
+
+        form = UserUpdateForm(request.POST, request.FILES, instance=post)
+
+    return render(request, 'student_module/editprofile.html', {'form': form})
+
 
 def quiz(request):
     return render(request, 'student_module/quiz.html')
