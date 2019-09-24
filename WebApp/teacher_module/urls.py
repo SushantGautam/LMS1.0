@@ -50,7 +50,7 @@ urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView),
          name='teacher_user_profile'),
-
+    path('editprofile_teacher/', login_required(views.teacher_editprofile), name='teacher_user_editprofile'),
 )
 
 urlpatterns += (

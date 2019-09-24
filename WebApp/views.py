@@ -93,6 +93,7 @@ def ProfileView(request):
     return render(request, 'WebApp/profile.html', {"center": center})
 
 
+
 def login(request, template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm,
@@ -190,7 +191,7 @@ def start(request):
 def editprofile(request):
     if not request.user.is_authenticated:
         return HttpResponse("you are not authenticated", {'error_message': 'Error Message Customize here'})
-
+    print('admin amdin')
     post = get_object_or_404(MemberInfo, pk=request.user.id)
     if request.method == "POST":
 
@@ -199,12 +200,12 @@ def editprofile(request):
         if form.is_valid():
             post.date_last_update = datetime.now()
             post.save()
-            return redirect('start')
+            return redirect('user_profile')
     else:
 
         form = UserUpdateForm(request.POST, request.FILES, instance=post)
 
-    return render(request, 'registration/editprofile.html', {'form': form})
+    return render(request, 'WebApp/editprofile.html', {'form': form})
 
 
 class register(CreateView):

@@ -2,9 +2,12 @@ from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.conf import settings
+from django import forms
 from forum.models import Thread, Appendix, ForumAvatar, Post, Topic
 from django.utils.translation import ugettext as _
-
+from django.forms import SelectDateWidget
+import datetime
+from .models import MemberInfo
 
 if 'pagedown' in settings.INSTALLED_APPS:
     use_pagedown = True
@@ -13,6 +16,14 @@ if 'pagedown' in settings.INSTALLED_APPS:
 else:
     use_pagedown = False
 
+class UserUpdateForm(forms.ModelForm):
+    # role = forms.MultipleChoiceField(choices=USER_ROLES, )
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
+    class Meta:
+        model = MemberInfo
+        fields = (
+              'email', 'Member_Permanent_Address',
+            'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',)
 
 class ThreadForm(ModelForm):
 
