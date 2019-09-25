@@ -31,15 +31,17 @@
                     <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
                     <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
                     <p class="info-text" style="background: azure; padding-top: 0.6em; margin-top: 1em;">
-                        INFO: Username must be unique for all users, users can change their username later.
-                        Gender Value should be M for male and F for Female.
-                        Is_Student should be 1 for student and Is_Teacher should be 1 for teacher.
+                        INFO: Username must be unique for all users, users can change their username later. 
+                        Gender Value should be M for male and F for Female. 
+                        Is_Student should be 1 for student and Is_Teacher should be 1 for teacher. Required fields are: 
+                        <b>username, Member_ID, first_name, last_name, email, Member_Gender, Is_Student, Is_Teacher</b>
+
                     </p>
                     <a class="text-center" href="{% static 'importcsv_sample.csv' %}" style="padding-top: 2em;"><h4>Download Sample CSV</h4></a><br>
                     <div class="import-message"></div>
                     <div class="text-center">
-                        <button class="btn btn-success" type="submit" style="margin:4em auto 2em auto">Submit File</button>
-                        <button class="btn btn-primary" data-dismiss="modal" aria-label="Close" style="margin:4em auto 2em auto">Close</button>
+                        <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit File</button>
+                        <button class="btn btn-primary" data-dismiss="modal" aria-label="Close" style="margin:3em auto 2em auto">Close</button>
                     </div>
                 </form>
             </div>
@@ -79,7 +81,7 @@
                 <tr class="tableTitleRow">
                     <td class="text-center">ID</td>
                     <td>Member ID</td>
-                    <td>Name</td>
+                    <td>Full Name</td>
                     <td>Current Address</td>
                     <td>Email</td>
                     <!-- <td>Phone</td> -->

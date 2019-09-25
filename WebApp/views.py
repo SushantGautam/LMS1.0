@@ -369,15 +369,19 @@ def ImportCsvFile(request):
                 obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Member_BirthDate'],'%m/%d/%Y').strftime('%Y-%m-%d')
                 obj.Member_Phone = df.iloc[i]['Member_Phone']
                 obj.Member_Gender = df.iloc[i]['Member_Gender']
-                if df.iloc[i]['Is_Teacher'] == '1':
+
+                if df.iloc[i]['Is_Teacher'] == 1:
                     obj.Is_Teacher = True
                 else:
                     obj.Is_Teacher = False
-                if df.iloc[i]['Is_Student'] == '1':
+            
+                if df.iloc[i]['Is_Student'] == 1:
                     obj.Is_Student = True
                 else:
                     obj.Is_Student = False
+                    
                 obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
+                obj.set_password('00000')
                 obj.save()
                 saved_id.append(obj.id)
 
