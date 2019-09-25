@@ -35,7 +35,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, UserUpdateForm, \
     MemberUpdateForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
 
 class Changestate(View):
@@ -721,7 +721,7 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
@@ -740,11 +740,11 @@ class AssignmentInfoUpdateView(UpdateView):
 
 
 class QuestionInfoListView(ListView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
 
 
 class QuestionInfoCreateView(CreateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
 
     # success_url = 'questioninfo_detail'
@@ -758,12 +758,12 @@ class QuestionInfoCreateView(CreateView):
 
 
 class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
     template_name = 'ajax/questioninfo_form_ajax.html'
 
     def post(self, request, *args, **kwargs):
-        Obj = QuestionInfo()
+        Obj = AssignmentQuestionInfo()
         Obj.Question_Title = request.POST["Question_Title"]
         Obj.Question_Score = request.POST["Question_Score"]
         Obj.Question_Description = request.POST["Question_Description"]
@@ -783,11 +783,11 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
 
 class QuestionInfoDetailView(DetailView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
 
 
 class QuestionInfoUpdateView(UpdateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
 
     def get_context_data(self, **kwargs):
@@ -838,7 +838,7 @@ class AssignAnswerInfoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Question_Code'] = get_object_or_404(QuestionInfo, pk=self.kwargs.get('questioncode'))
+        context['Question_Code'] = get_object_or_404(AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
         return context
 
 
@@ -852,7 +852,7 @@ class AssignAnswerInfoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Question_Code'] = get_object_or_404(QuestionInfo, pk=self.kwargs.get('questioncode'))
+        context['Question_Code'] = get_object_or_404(AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
         return context
 
 
