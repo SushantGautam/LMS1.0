@@ -1,5 +1,7 @@
 import json
 import os
+import uuid
+
 from datetime import datetime
 
 import vimeo  # from PyVimeo for uploading videos to vimeo.com
@@ -947,9 +949,10 @@ def save_file(request):
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
 
+            name = (str(uuid.uuid4())).replace('-','')+'.'+media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-            filename = fs.save(media.name, media)
-        return JsonResponse(data={"message": "success"})
+            filename = fs.save(name, media)
+        return JsonResponse(data={"message": "success", "media_name": name})
 
 
 @csrf_exempt
@@ -965,9 +968,10 @@ def save_video(request):
                 return JsonResponse(data={"message": "File size exceeds 2GB"}, status=500)
 
         path = settings.MEDIA_ROOT
-
+        name = (str(uuid.uuid4()).replace('-',''))+'.'+media.name.split('.')[-1]
+        print(name)
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-        filename = fs.save(media.name, media)
+        filename = fs.save(name, media)
 
         # #video uploading to vimeo.com
 
@@ -986,13 +990,12 @@ def save_video(request):
 
         # media = '{path to a video on the file system}'
 
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + media.name, data={
-            'name': media.name,
+        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + name, data={
+            'name': name,
         })
 
         response = v.get(uri).json()
         status = response['status']
-        print(response['link'])
         videoid = response['uri'].split('/')[-1]
 
         url = 'https://api.vimeo.com/me/projects/772975/videos/' + videoid  # Premium account Folder
@@ -1003,7 +1006,7 @@ def save_video(request):
         while status == 'transcode_starting' or status == 'transcoding':
             r = v.get(uri + '?fields=status').json()
             status = r['status']
-        return JsonResponse({'link': response['link'], 'html': response['embed']['html']})
+        return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
 
 
 @csrf_exempt

@@ -468,7 +468,7 @@ class Quiz(models.Model):
         verbose_name=_("Answers at end"))
 
     exam_paper = models.BooleanField(
-        blank=False, default=True,
+        blank=False, default=False,
         help_text=_("If yes, the result of attempts by user will be"
                     " stored "),
         verbose_name=_("Exam Paper"))
@@ -512,8 +512,8 @@ class Quiz(models.Model):
         # self.url = ''.join(letter for letter in self.url if
         #                    letter.isalnum() or letter == '-')
 
-        if self.single_attempt is True:
-            self.exam_paper = True
+        if self.exam_paper is True:
+            self.single_attempt = True
 
         if self.pass_mark is None:
             self.pass_mark = 0
@@ -580,7 +580,7 @@ class Answer(models.Model):
                                blank=False,
                                help_text=_("Enter the answer text that "
                                            "you want displayed"),
-                               verbose_name=_("Content"))
+                               verbose_name=_("Option Content"))
 
     correct = models.BooleanField(blank=False,
                                   default=False,

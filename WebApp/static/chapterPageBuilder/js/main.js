@@ -469,7 +469,7 @@ $(document).ready(function() {
                     div.find('p').text("");
                     div.find('#loadingDiv').remove();
                     div.css({
-                        'background-image': 'url('+load_file_url+'/' + file.name + ')',
+                        'background-image': 'url('+load_file_url+'/' + data.media_name + ')',
                         'background-repeat': 'no-repeat',
                         'background-size': 'contain',
                         'background-position': 'center',
@@ -527,7 +527,7 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                             div.find('p').text("");
                             div.css({
-                              'background-image': 'url('+load_file_url+'/'+input.files[0].name+')',
+                              'background-image': 'url('+load_file_url+'/'+data.media_name+')',
                               'background-repeat': 'no-repeat',
                               'background-size': 'contain',
                               'background-position': 'center',
@@ -592,16 +592,16 @@ $(document).ready(function() {
         // })
     
         $('.fa-link').bind("click", function(e) {
-            let argument = prompt("Enter a Link here...");
-            if (argument == null || argument == "") {
-                return console.log("cancled pressed")
-            } else {
-                var btn_id = parseInt(e.currentTarget.id) + 1
-                $('#' + btn_id).attr({
-                    "href": `http://${argument}`
-                })
-            }
-    
+            // let argument = prompt("Enter a Link here...");
+            // if (argument == null || argument == "") {
+            //     return console.log("cancled pressed")
+            // } else {
+            //     var btn_id = parseInt(e.currentTarget.id) + 1
+            //     $('#' + btn_id).attr({
+            //         "href": `http://${argument}`
+            //     })
+            // }
+            $('#btn-modal').modal();
         });
     
         $('.btn').resizable({
@@ -677,8 +677,8 @@ $(document).ready(function() {
                 success: function(data) {
                     div.empty();
                     div.append(`
-                        <object data="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}" type="application/pdf" width="100%" height="100%">
-                            alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
+                        <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
+                            alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">test.pdf</a>
                         </object>
                     `);
 
@@ -688,7 +688,6 @@ $(document).ready(function() {
                 }
             });
             let div = $('#pdf-actions1').parent();
-            console.log(div);
             $('#pdf-actions1').css({
                 'display': 'none'
             });
@@ -761,12 +760,13 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                         },                     
                         success: function(data) {
-                            // console.log(data);
+                            console.log(data.media_name);
                             div.find('#loadingDiv').remove();
                             div.empty();
+                            console.log(input.files[0].name, data.media_name)
                             div.append(`
-                                <object data="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}" type="application/pdf" width="100%" height="100%">
-                                    alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${input.files[0].name}">test.pdf</a>
+                                <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
+                                    alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">${data.media_name}</a>
                                 </object>
                             `);
                         },
@@ -873,7 +873,7 @@ $(document).ready(function() {
     
                                 div.append(`
                                         <video width="400" height="200" controls>
-                                        <source src="../uploads/${file.name}" type="video/mp4">
+                                        <source src="../uploads/${data.media_name}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                                 `);
@@ -891,7 +891,6 @@ $(document).ready(function() {
                                     minWidth: 150,
                                     minHeight: 150
                                 });
-                                console.log(file.name);
                             }
     
                         }
