@@ -359,35 +359,37 @@
 
       $(document).ready(function () {
         $(document).keydown(function (e) {
-            if (e.keyCode == '39') {
-                $('#next-btn').click();
-                return false
-            }
-            if (e.keyCode == '37') {
-                $('#prev-btn').click();
-                return false
-            }
-            //UP
-            if (e.keyCode == '38') {
-                $('.modal-body').animate({scrollTop: 0}, 100);
-                return false;
-            }
-            //DOWN
-            if (e.keyCode == '40') {
-                $('.modal-body').animate({scrollTop: $(document).height()}, 100);
-                return false;
-            }
+            if($('#course-modal').is(':visible')) {
+                if (e.keyCode == '39') {
+                    $('#next-btn').click();
+                    return false
+                }
+                if (e.keyCode == '37') {
+                    $('#prev-btn').click();
+                    return false
+                }
+                //UP
+                if (e.keyCode == '38') {
+                    $('.modal-body').animate({scrollTop: 0}, 100);
+                    return false;
+                }
+                //DOWN
+                if (e.keyCode == '40') {
+                    $('.modal-body').animate({scrollTop: $(document).height()}, 100);
+                    return false;
+                }
 
-            if (e.keyCode == '70' || e.keyCode == '102') {
-                toggleFullScreen();
-                return false;
-            }
+                if (e.keyCode == '70' || e.keyCode == '102') {
+                    toggleFullScreen();
+                    return false;
+                }
 
-            if (e.keyCode == '81' || e.keyCode == '113') {
+                if (e.keyCode == '81' || e.keyCode == '113') {
                 $('#course-modal').modal('hide');
                 return false;
             }
-          });
+            }
+        });
           $('.pre_test_change').change(function () {
             // console.log(this.id);
             // console.log($('#radio-buttons input[name=pre-test-radio]:checked').val());
