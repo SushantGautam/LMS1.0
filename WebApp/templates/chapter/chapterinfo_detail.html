@@ -449,6 +449,7 @@
             if (data == "") {
                 $('#course-modal').modal('hide')
                 alert("There are no contents available in this chapter.");
+                return
             }
             var emptycheckflag = [];
             $('#chaptertitle').text(data.chaptertitle);
@@ -549,7 +550,7 @@
                 });
             });
 
-            { #sushant gautam made this# }
+            {#sushant gautam made this#}
 
 
             setTimeout(function () {
