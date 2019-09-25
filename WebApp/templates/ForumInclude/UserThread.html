@@ -1,22 +1,11 @@
-{% extends 'forum/Teacher_base.html' %}
 {% load i18n %}
 {% load forum_tags %}
 {% load humanize %}
 {% load static %}
 
-{% block breadcrumb %}
-
-<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
-<li class="breadcrumb-item"><a href="{% url 'teacher_info' pk=user.pk %}">{{ user.username }}</a></li>
-<li class="breadcrumb-item active">
-    <a href="{% url 'teacher_threads' pk=user.pk %}">Threads</a>
-</li>
-
-{% endblock %}
 
 {% block main_contain %}
-{% include 'ForumInclude/UserThread.html' %}
-<!-- <div class="panel panel-default paper-shadow">
+<div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
         <h2> Threads Created by {{ panel_title }} </h2>
     </div>
@@ -34,7 +23,7 @@
     {% endif %}
 
 
-    
+    <!-- List group -->
     <ul class="list-group thread-list">
         {% for thread in threads %}
         <li class="list-group-item thread-entry">
@@ -42,11 +31,11 @@
 
                 <a>
                     <img src="
-                        {% if request.user.Member_Avatar %}
-                            {{ request.user.Member_Avatar.url }}
-                        {% elif request.user.Member_Gender == 'M' %}
+                        {% if thread.user.Member_Avatar %}
+                            {{ thread.user.Member_Avatar.url }}
+                        {% elif thread.user.Member_Gender == 'M' %}
                             {% static 'images/profile/male.jpg' %}
-                        {% elif request.user.Member_Gender == 'F' %}
+                        {% elif thread.user.Member_Gender == 'F' %}
                             {% static 'images/profile/female.png' %}
                         {% else %}
                             {% static 'images/profile/profile.png' %}
@@ -56,7 +45,13 @@
 
                 <h2 class=" thread_title">
                     <div class="media-body media-middle"> &nbsp;
-                        <a href="{% url 'teacher_thread' pk=thread.pk %}" class="entry-link">
+                        <a href="
+                        {% if '/teachers' in request.path %}
+                        {% url 'teacher_thread' pk=thread.pk %}
+                        {% else %}
+                        {% url 'forum:thread' pk=thread.pk %}
+                        {% endif %}
+                       " class="entry-link">
                             {{ thread.title }}
                         </a>
                         <p class="entry-meta">
@@ -71,7 +66,13 @@
                                 <h5>
                                     <span class="meta meta-username">
                                         Topic:
-                                        <a href="{% url 'teacher_topic' thread.topic.pk %}" class="link-color">
+                                        <a href="
+                                        {% if '/teachers' in request.path %}
+                                        {% url 'teacher_topic' thread.topic.pk %}
+                                        {% else %}
+                                        {% url 'forum:topic' thread.topic.pk %}
+                                        {% endif %}
+                                      " class="link-color">
                                             <span>
                                                 {{ thread.topic.title }}
                                             </span>
@@ -79,7 +80,12 @@
                                     </span> |
                                     <span class="meta meta-username ">
                                         posted by
-                                        <a href="{% url 'teacher_info' thread.user.pk %}" class="link-color">
+                                        <a href="
+                                        {% if '/teachers' in request.path %}
+                                        {% url 'teacher_info' thread.user.pk %}
+                                        {% else %}
+                                        {% url 'forum:user_info' thread.user.pk %}
+                                        {% endif %}" class="link-color">
                                             {{ thread.user.username }}
                                         </a>
                                     </span>
@@ -106,5 +112,5 @@
     <div class="panel-footer">
         {% get_pagination %}
     </div>
-</div> -->
+</div>
 {% endblock %}
