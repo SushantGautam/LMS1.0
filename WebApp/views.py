@@ -1,5 +1,7 @@
 import json
 import os
+import uuid
+
 from datetime import datetime
 
 import vimeo  # from PyVimeo for uploading videos to vimeo.com
@@ -33,7 +35,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, UserUpdateForm, \
     MemberUpdateForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
 
 class Changestate(View):
@@ -719,7 +721,7 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
@@ -738,11 +740,11 @@ class AssignmentInfoUpdateView(UpdateView):
 
 
 class QuestionInfoListView(ListView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
 
 
 class QuestionInfoCreateView(CreateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
 
     # success_url = 'questioninfo_detail'
@@ -756,12 +758,12 @@ class QuestionInfoCreateView(CreateView):
 
 
 class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
     template_name = 'ajax/questioninfo_form_ajax.html'
 
     def post(self, request, *args, **kwargs):
-        Obj = QuestionInfo()
+        Obj = AssignmentQuestionInfo()
         Obj.Question_Title = request.POST["Question_Title"]
         Obj.Question_Score = request.POST["Question_Score"]
         Obj.Question_Description = request.POST["Question_Description"]
@@ -781,11 +783,11 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
 
 class QuestionInfoDetailView(DetailView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
 
 
 class QuestionInfoUpdateView(UpdateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
 
     def get_context_data(self, **kwargs):
@@ -836,7 +838,7 @@ class AssignAnswerInfoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Question_Code'] = get_object_or_404(QuestionInfo, pk=self.kwargs.get('questioncode'))
+        context['Question_Code'] = get_object_or_404(AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
         return context
 
 
@@ -850,7 +852,7 @@ class AssignAnswerInfoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Question_Code'] = get_object_or_404(QuestionInfo, pk=self.kwargs.get('questioncode'))
+        context['Question_Code'] = get_object_or_404(AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
         return context
 
 
@@ -947,9 +949,10 @@ def save_file(request):
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
 
+            name = (str(uuid.uuid4())).replace('-','')+'.'+media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-            filename = fs.save(media.name, media)
-        return JsonResponse(data={"message": "success"})
+            filename = fs.save(name, media)
+        return JsonResponse(data={"message": "success", "media_name": name})
 
 
 @csrf_exempt
@@ -965,9 +968,10 @@ def save_video(request):
                 return JsonResponse(data={"message": "File size exceeds 2GB"}, status=500)
 
         path = settings.MEDIA_ROOT
-
+        name = (str(uuid.uuid4()).replace('-',''))+'.'+media.name.split('.')[-1]
+        print(name)
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-        filename = fs.save(media.name, media)
+        filename = fs.save(name, media)
 
         # #video uploading to vimeo.com
 
@@ -986,13 +990,12 @@ def save_video(request):
 
         # media = '{path to a video on the file system}'
 
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + media.name, data={
-            'name': media.name,
+        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + name, data={
+            'name': name,
         })
 
         response = v.get(uri).json()
         status = response['status']
-        print(response['link'])
         videoid = response['uri'].split('/')[-1]
 
         url = 'https://api.vimeo.com/me/projects/772975/videos/' + videoid  # Premium account Folder
@@ -1003,7 +1006,7 @@ def save_video(request):
         while status == 'transcode_starting' or status == 'transcoding':
             r = v.get(uri + '?fields=status').json()
             status = r['status']
-        return JsonResponse({'link': response['link'], 'html': response['embed']['html']})
+        return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
 
 
 @csrf_exempt

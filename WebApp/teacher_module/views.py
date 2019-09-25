@@ -15,7 +15,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django_addanother.views import CreatePopupMixin
 
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm    
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, QuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo, MemberInfo
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo, MemberInfo
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post
 from forum.views import get_top_thread_keywords
@@ -241,7 +241,7 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),Register_Agent=self.request.user.id)
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),Register_Agent=self.request.user.id)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
@@ -253,7 +253,7 @@ class AssignmentAnswers(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        questions = QuestionInfo.objects.filter(Assignment_Code = self.kwargs['pk'],Register_Agent=self.request.user.id)
+        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code = self.kwargs['pk'],Register_Agent=self.request.user.id)
         context['questions'] = questions
         context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
 
