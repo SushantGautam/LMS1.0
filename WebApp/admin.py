@@ -5,7 +5,7 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.resources import ModelResource
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
 
 
 class CenterInfoAdminForm(forms.ModelForm):
@@ -114,7 +114,7 @@ admin.site.register(AssignmentInfo, AssignmentInfoAdmin)
 
 class QuestionInfoAdminForm(forms.ModelForm):
     class Meta:
-        model = QuestionInfo
+        model = AssignmentQuestionInfo
         fields = '__all__'
 
 
@@ -125,7 +125,7 @@ class QuestionInfoAdmin(admin.ModelAdmin):
                     'Answer_Choices', 'Answer_Type']
 
 
-admin.site.register(QuestionInfo, QuestionInfoAdmin)
+admin.site.register(AssignmentQuestionInfo, QuestionInfoAdmin)
 
 
 class AssignAssignmentInfoAdminForm(forms.ModelForm):

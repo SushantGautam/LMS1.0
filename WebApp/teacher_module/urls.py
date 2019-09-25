@@ -42,15 +42,18 @@ urlpatterns += (
          name='teacher_assignmentinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='teacher_assignmentinfo_update'),
-    path('myassignments/',views.MyAssignmentsListView.as_view(), name='teacher_myassignmentinfo_list'),
-    path('assignment_answers/<int:pk>',views.AssignmentAnswers.as_view(), name='teacher_assignment_answers'),
+    path('myassignments/', views.MyAssignmentsListView.as_view(),
+         name='teacher_myassignmentinfo_list'),
+    path('assignment_answers/<int:pk>', views.AssignmentAnswers.as_view(),
+         name='teacher_assignment_answers'),
 )
 
 urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView),
          name='teacher_user_profile'),
-    path('editprofile_teacher/', login_required(views.teacher_editprofile), name='teacher_user_editprofile'),
+    path('editprofile_teacher/', login_required(views.teacher_editprofile),
+         name='teacher_user_editprofile'),
 )
 
 urlpatterns += (
@@ -60,7 +63,8 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    path('question_teachers/', views.SurveyInfoListView.as_view(), name="question_teachers"),
+    path('question_teachers/', views.SurveyInfoListView.as_view(),
+         name="question_teachers"),
     # path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
     #          name='surveyinfo_create'),
     path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
@@ -77,13 +81,11 @@ urlpatterns += (
     path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
          views.create_thread, name='teacher_forum_create'),
-    path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
+    path('forum/create_thread/(?P<teacher_nodegroup_pk>\d+)/(?P<teacher_topic>\d+)/',
          views.create_thread, name='teacher_forum_create'),
 
 
-
-
-    path('forum/create_topic/(?P<nodegroup_pk>\d+)/',
+    path('forum/create_topic/(?P<teacher_nodegroup_pk>\d+)/',
          views.create_topic, name='teacher_create_topic'),
 
     path('forum/create_topic', views.create_topic, name="teacher_create_topic"),

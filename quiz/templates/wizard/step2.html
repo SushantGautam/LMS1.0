@@ -30,7 +30,7 @@
       </li>
     </ul>
   </div>
-  <form action="" method="post">{% csrf_token %}
+  <form action="" method="post" onsubmit="return validateForm()">
     {{ wizard.form.non_field_errors }}
     {{ wizard.management_form }}
     {#      {{ wizard.form|crispy }}#}
@@ -57,14 +57,17 @@
       //$('#div_id_form2-success_text').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
       //$('#div_id_form2-fail_text').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
       //console.log($('#id_form2-duration').val());
+      $(document).ready(function () {
+          if ($("#id_form2-exam_paper").is(':checked')) {
+              $("#div_id_form2-duration").show();
+              $("#div_id_form2-pass_mark").show();
+          } else {
+              $("#div_id_form2-duration").hide();
+              $("#div_id_form2-pass_mark").hide();
+          }
+          $("#test_error").hide();
+      });
 
-      if ($("#id_form2-exam_paper").checked) {
-          $("#div_id_form2-duration").show();
-          $("#div_id_form2-pass_mark").show();
-      } else {
-          $("#div_id_form2-duration").hide();
-          $("#div_id_form2-pass_mark").hide();
-      }
 
       $('#id_form2-duration').durationPicker({
           showDays: false,
@@ -82,5 +85,19 @@
               $("#div_id_form2-pass_mark").hide();
           }
       });
+
+      function validateForm() {
+          if ($("#id_form2-exam_paper").is(':checked')) {
+              if ($("#id_form2-pre_test").is(':checked') || $("#id_form2-post_test").is(':checked')) {
+                  $("#test_error").show();
+                  $("#test_error").html("Exam cannot be pre or post test.");
+                  return false;
+              }
+          } else if (!($("#id_form2-pre_test").is(':checked') || $("#id_form2-post_test").is(':checked'))) {
+              $("#test_error").show();
+              $("#test_error").html("Please select at least one test type.");
+              return false;
+          }
+      }
   </script>
 {% endblock customjss %}
