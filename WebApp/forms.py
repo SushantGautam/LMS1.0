@@ -8,7 +8,7 @@ from django.forms import SelectDateWidget
 import datetime
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
 
 
 class UserRegisterForm(UserCreationForm):
@@ -264,7 +264,7 @@ class AssignmentInfoForm(forms.ModelForm):
 
 class QuestionInfoForm(forms.ModelForm):
     class Meta:
-        model = QuestionInfo
+        model = AssignmentQuestionInfo
         fields = '__all__'
 
 
