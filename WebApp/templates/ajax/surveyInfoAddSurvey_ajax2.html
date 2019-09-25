@@ -226,8 +226,18 @@
           var r1 = new RegExp(type + '\-__prefix__', 'g');
 
           $(append_after).append($(selector).html().replace(r1, str1));
+
+          var newel_id = String('#div_id_questionansinfo-' + questionId + '-Question_Name');
+          var sa_question_counter = parseInt(questionId) + 1;
+          var counter_saq_el = `<p>${sa_question_counter}</p>`;
+          {#var newel_id = $('#div_id_questioninfo-' + questionId + '-Question_Name');#}
+          $(newel_id).wrap(`<div class='new_saq' id='new_sa_que_div${questionId}' style='display:flex;'></div>`);
+          {#console.log(${questionId});#}
+          $('#new_sa_que_div' + questionId).prepend(counter_saq_el);
+
           questionId++;
           $('#id_' + type + '-TOTAL_FORMS').val(questionId);
+          $(newel_id).css({"margin-left": "10px", "width": "100%"});
       }
 
       $('#add_more_sa_qn').click(function () {
@@ -236,9 +246,15 @@
 
       $('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({"display": "none"});
 
+      {#..............................................For MCQ ...........................................#}
       $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
       $('#first_que_div').prepend(`<p>1</p>`);
       $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
+
+      {#..............................................For SAQ ...........................................#}
+      $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
+      $('#first_sa_que_div').prepend(`<p>1</p>`);
+      $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
       // ......................................HIDING THE FORM................................................
 
@@ -284,8 +300,7 @@
           $("#div_id_Survey_Cover").hide();
           $("#div_id_Use_Flag").hide();
           {#$("#div_id_Center_Code").hide();#}
-          <!--$("#id_Center_Code").val("
-          {{  request.user.Center_Code.id}}");-->
+          {#<!--$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");-->#}
           $("#div_id_Session_Code").hide();
           $("#div_id_Added_By").hide();
           $("#id_Added_By").val("{{request.user.id}}");

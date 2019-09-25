@@ -27,7 +27,7 @@
         </div>
     </div>
 </div>
-<form id="categoryForm" action="{% url 'TeacherSurveyInfo_ajax' %}" method="post">
+<form id="categoryForm" action="{% url 'surveyinfo_ajax' %}" method="post">
     {% csrf_token %}
     <div role="form">
         <div class="row setup-content" id="step-1">
@@ -59,7 +59,7 @@
                                 {{ questioninfo_formset.non_form_errors }}
 
                                 <div class='qninfo_dynamic_append'>
-                                    {% for questioninfo_form in questioninfo_formset.forms %}{{ forloop.counter }}
+                                    {% for questioninfo_form in questioninfo_formset.forms %}
 
                                         <div class='qninfo_dynamic'>
                                             {{ questioninfo_form|crispy }}
@@ -68,16 +68,16 @@
                                                 {{ questioninfo_form.nested.management_form }}
                                                 {{ questioninfo_form.nested.non_form_errors }}
 
-                                                <div class='opinfo_dynamic' style="margin-left:40px;">
-                                                    {#                                            {% for option_form in questioninfo_form.nested.forms %}#}
-                                                    {##}
-                                                    {#                                            {{ option_form|crispy }}#}
-                                                    {##}
-                                                    {#                                            {% endfor %}#}
+                                                <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic'
+                                                     style="margin-left:40px;">
+                                                    {% for option_form in questioninfo_form.nested.forms %}
+
+                                                        {{ option_form|crispy }}
+
+                                                    {% endfor %}
                                                 </div>
 
-                                                <button id="abc${questionId}"
-                                                        onclick="addOption(event, 0, '#emptyOpInfoForm', 'div.opinfo_dynamic', 'questioninfo', 'optioninfo')"
+                                                <button onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
                                                         class="btn btn-success">Add option
                                                 </button>
 
@@ -130,7 +130,7 @@
         {{ questioninfo_formset.empty_form|crispy }}
         {{ questioninfo_formset.empty_form.nested.management_form }}
         {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-        {#        {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
+        {#                {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
 
         <div id="optionContainer_id" style="margin-left: 40px;">
 
@@ -179,8 +179,18 @@
 
             $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3).replace(r4, str4));
             $(append_after).append(`<button id="abc${questionId}" onclick="addOption(event, ${questionId}, '#emptyOpInfoForm', '#optionContainer_${questionId}', 'questioninfo', 'optioninfo')" class="btn btn-success" >Add option</button>`);
+
+            var newel_id = String(
+                '#div_id_questioninfo-' + questionId + '-Question_Name'
+            );
+            var question_counter = parseInt(questionId) + 1;
+            var counter_el = `<p>${question_counter}</p>`;
+            $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;'></div>`);
+            $('#new_que_div' + questionId).prepend(counter_el);
             questionId++;
+            {#$(newel_id).before(counter_el);       #}
             $('#id_' + type + '-TOTAL_FORMS').val(questionId);
+            $(newel_id).css({"margin-left": "10px", "width": "100%"});
         }
 
         $('#add_more_qn').click(function () {
@@ -190,7 +200,7 @@
         function addOption(event, questionId, selector, append_after, type, type2) {
             event.preventDefault();
             var optionId = $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val();
-            // console.log(optionId)
+            // console.log(optionId
             var str1 = String(type + '-' + questionId);
             var str2 = String(type2 + '-' + optionId);
             var str3 = String('add_more_op_' + questionId);
@@ -198,8 +208,17 @@
             var r2 = new RegExp(type2 + '\-__prefix__', 'g');
             var r3 = new RegExp('add_more_op_id', 'g');
             $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3));
+            var newel_id = String(
+                '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
+            );
+            {#var option_counter = parseInt(optionId)+ 1;#}
+            var counter_el = `<p>${optionId}</p>`;
+            {#$(newel_id).find('label').before(counter_el);#}
+            $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex;'></div>`);
+            $('#new_op_div' + questionId + optionId).prepend(counter_el);
             optionId++;
             $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
+            $(newel_id).css({"margin-left": "10px", "width": "100%"});
         }
 
         function copyEmptyShortAnsQuestion(selector, append_after, type) {
@@ -208,23 +227,45 @@
             var r1 = new RegExp(type + '\-__prefix__', 'g');
 
             $(append_after).append($(selector).html().replace(r1, str1));
+
+            var newel_id = String('#div_id_questionansinfo-' + questionId + '-Question_Name');
+            var sa_question_counter = parseInt(questionId) + 1;
+            var counter_saq_el = `<p>${sa_question_counter}</p>`;
+            {#var newel_id = $('#div_id_questioninfo-' + questionId + '-Question_Name');#}
+            $(newel_id).wrap(`<div class='new_saq' id='new_sa_que_div${questionId}' style='display:flex;'></div>`);
+            {#console.log(${questionId});#}
+            $('#new_sa_que_div' + questionId).prepend(counter_saq_el);
+
             questionId++;
             $('#id_' + type + '-TOTAL_FORMS').val(questionId);
+            $(newel_id).css({"margin-left": "10px", "width": "100%"});
         }
 
         $('#add_more_sa_qn').click(function () {
             copyEmptyShortAnsQuestion('#emptyQnAnsInfoForm', 'div.qnansinfo_dynamic_append', 'questionansinfo');
         });
 
+        $('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({"display": "none"});
+
+        {#..............................................For MCQ ...........................................#}
+        $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
+        $('#first_que_div').prepend(`<p>1</p>`);
+        $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
+
+        {#..............................................For SAQ ...........................................#}
+        $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
+        $('#first_sa_que_div').prepend(`<p>1</p>`);
+        $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
+
         // ......................................HIDING THE FORM................................................
 
         var categoryName = "{{ categoryObject.Category_Name }}".toLowerCase();
         if (categoryName == 'general') {
-            console.log(categoryName)
+            console.log(categoryName);
             $("#div_id_Survey_Cover").hide();
             $("#div_id_Use_Flag").hide();
-            $("#div_id_Center_Code").hide();
-            $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+            {#$("#div_id_Center_Code").hide();#}
+            {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
             $("#div_id_Session_Code").hide();
             $("#div_id_Added_By").hide();
             $("#id_Added_By").val("{{request.user.id}}");
@@ -232,11 +273,11 @@
             $("#id_Category_Code").val("{{categoryObject.id}}");
             $("#div_id_Course_Code").hide();
         } else if (categoryName == 'session') {
-            console.log(categoryName)
+            console.log(categoryName);
             $("#div_id_Survey_Cover").hide();
             $("#div_id_Use_Flag").hide();
-            $("#div_id_Center_Code").hide();
-            $("#id_Center_Code").val("{{  request.user.Center_Code.id }}");
+            {#$("#div_id_Center_Code").hide();#}
+            {#$("#id_Center_Code").val("{{  request.user.Center_Code.id }}");#}
             $("#div_id_Session_Code").show();
             $("#div_id_Added_By").hide();
             $("#id_Added_By").val("{{request.user.id}}");
@@ -244,11 +285,11 @@
             $("#id_Category_Code").val("{{categoryObject.id}}");
             $("#div_id_Course_Code").hide();
         } else if (categoryName == 'course') {
-            console.log(categoryName)
+            console.log(categoryName);
             $("#div_id_Survey_Cover").hide();
             $("#div_id_Use_Flag").hide();
-            $("#div_id_Center_Code").hide();
-            $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+            {#$("#div_id_Center_Code").hide();#}
+            {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
             $("#div_id_Session_Code").show();
             $("#div_id_Added_By").hide();
             $("#id_Added_By").val("{{request.user.id}}");
@@ -256,11 +297,11 @@
             $("#id_Category_Code").val("{{categoryObject.id}}");
             $("#div_id_Course_Code").show();
         } else if (categoryName == 'system') {
-            console.log(categoryName)
+            console.log(categoryName);
             $("#div_id_Survey_Cover").hide();
             $("#div_id_Use_Flag").hide();
-            $("#div_id_Center_Code").hide();
-            $("#id_Center_Code").val("{{  request.user.Center_Code.id}}");
+            {#$("#div_id_Center_Code").hide();#}
+            {#<!--$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");-->#}
             $("#div_id_Session_Code").hide();
             $("#div_id_Added_By").hide();
             $("#id_Added_By").val("{{request.user.id}}");
