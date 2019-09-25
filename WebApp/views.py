@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-# import vimeo  # from PyVimeo for uploading videos to vimeo.com
+import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -26,7 +26,6 @@ from django.views.generic.edit import FormView
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Question
-# import vimeo # from PyVimeo for uploading videos to vimeo.com
 from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \

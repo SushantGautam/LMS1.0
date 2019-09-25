@@ -1,7 +1,7 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
 {% block title %}
-Polls
+    Teacher survey
 {% endblock %}
 {% block stylesheets %}
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
@@ -95,19 +95,19 @@ Polls
                                 {#                          <button type="button" class="btn btn-info" id="live" data-popup-open="popup-1">Live Survey</button>#}
                                 {#                      </div>#}
                                 {#                  </div>#}
-                                <form class="col-md-8 col-xs-12" id="searchBarSurvey">
+                                <div class="col-md-8 col-xs-12" id="searchBarSurvey">
 
-                                    <div role="search" action="/forum/search/" id="surveySearch">
-                                        <input type="text" id="keywordInput" name="keyword"
-                                               placeholder="Type to search">
-                                        <div class=" pull-right searchButton">
+                                    <form method="get" action="">
+                                        <div role="search" id="surveySearch">
+                                            <input type="text" id="keywordInput" name="query"
+                                                   placeholder="Type to search"
+                                                   value="{{ request.GET.query }}" class="form-control">
                                             <button type="submit" id="navSearchBtn" class="btn btn-inverse"
                                                     data-hover-z="1"><i class="fa fa-search"></i>
                                             </button>
                                         </div>
-                                    </div>
-
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                             <div class="hR"></div>
                             <!-- ......................................Active section........................................ -->
@@ -121,7 +121,8 @@ Polls
                                                 <a href=" {% url 'surveyinfo_detail' object.pk %}">
                                                     <div class="card-body">
                                                         <h2 class="card-title ">
-                                                            <strong>{{ object.Survey_Title }}</strong></h2>
+                                                            <strong>{{ object.Survey_Title|truncatechars:12 }}</strong>
+                                                        </h2>
                                                         <hr>
                                                         <ul class="card_labels">
                                                             <li><label>Questions: {{ object.questions_count }}</label>
@@ -154,7 +155,7 @@ Polls
                                                     <a href=" {% url 'surveyinfo_detail' object.pk %}">
                                                         <div class="card-body">
                                                             <h2 class="card-title ">
-                                                                <strong>{{ object.Survey_Title }}</strong>
+                                                                <strong>{{ object.Survey_Title|truncatechars:12 }}</strong>
                                                             </h2>
                                                             <hr>
                                                             <ul class="card_labels">
@@ -201,6 +202,7 @@ Polls
                     url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
                     success: function (data) {
                         $("#surveyForm").html(data);
+                        console.log(data);
                     }
                 });
             });

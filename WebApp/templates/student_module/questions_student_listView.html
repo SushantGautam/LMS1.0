@@ -37,7 +37,7 @@
         <div class="card">
             <a href=" {% url 'questions_student_detail' object.pk %}">
                 <div class="card-body">
-                    <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong></h2>
+                    <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong></h2>
                     <hr>
                     <ul class="card_labels">
                         <li><label>Questions: {{ object.questions_count }}</label></li>
@@ -65,9 +65,9 @@
     {% if object.End_Date|date:'y m d' < currentDate|date:'y m d' %}
     <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">
         <div class="card">
-            <a href=" {% url 'surveyinfo_detail' object.pk %}">
+            <a href=" {% url 'questions_student_detail_history' object.pk %}">
                 <div class="card-body">
-                    <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong>
+                    <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong>
                     </h2>
                     <hr>
                     <ul class="card_labels">

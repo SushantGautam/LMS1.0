@@ -19,11 +19,11 @@
             <div role="search" id="surveySearch">
                 <input type="text" id="keywordInput" name="query" placeholder="Type to search"
                        value="{{ request.GET.query }}" class="form-control">
-            <div class=" pull-right searchButton">
+                {#            <div class=" pull-right searchButton">#}
                 <button type="submit" id="navSearchBtn" class="btn btn-inverse"
                         data-hover-z="1"><i class="fa fa-search"></i>
                 </button>
-            </div>
+                {#            </div>#}
             </div>
         </form>
     </div>
@@ -38,7 +38,7 @@
         <div class="card">
             <a href=" {% url 'surveyinfo_detail' object.pk %}">
                 <div class="card-body">
-                    <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong></h2>
+                    <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong></h2>
                     <hr>
                     <ul class="card_labels">
                         <li><label>Questions: {{ object.questions_count }}</label></li>
@@ -68,7 +68,7 @@
         <div class="card">
             <a href=" {% url 'surveyinfo_detail' object.pk %}">
                 <div class="card-body">
-                    <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong>
+                    <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong>
                     </h2>
                     <hr>
                     <ul class="card_labels">
