@@ -89,7 +89,7 @@ class AssignmentInfoSerializer(serializers.ModelSerializer):
 
 class QuestionInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.QuestionInfo
+        model = models.AssignmentQuestionInfo
         fields = (
             'pk',
             'Question_Title', 'Question_Score', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime',

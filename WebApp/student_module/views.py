@@ -28,7 +28,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView
 from WebApp.forms import UserUpdateForm
 
-from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, \
+from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, AssignmentQuestionInfo, \
     AssignAnswerInfo
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
@@ -233,7 +233,7 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['Answers'] = []
@@ -263,7 +263,7 @@ class submitAnswer(View):
         Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
         Obj.Student_Code = MemberInfo.objects.get(pk=request.POST["Student_Code"])
-        Obj.Question_Code = QuestionInfo.objects.get(pk=request.POST["Question_Code"])
+        Obj.Question_Code = AssignmentQuestionInfo.objects.get(pk=request.POST["Question_Code"])
         print(Obj.Student_Code)
         Obj.save()
        
