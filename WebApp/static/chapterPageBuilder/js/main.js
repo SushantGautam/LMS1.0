@@ -1054,10 +1054,11 @@ $(document).ready(function() {
         // for editor cloning
         editorcopy = $('#tab'+this.value).clone();
         editorcopy.attr('id','tab'+num_tabs);
-        editorcopy.empty()
+        editorcopy.empty();
         const obj=$("#tab"+this.value).children();
         $(".tabs").append(editorcopy);
-        $('.tabs-to-click > ul > div > li')[num_tabs-1].click()
+        console.log(this.value)
+        $('.tabs-to-click > ul > div > li')[this.value].click() // li starts from 0 so. this.value is actually this.value + 1 -1 i.e. new tab
 
         $.each( obj, function( i, value ) {
             if(value.classList.contains('textdiv')){
