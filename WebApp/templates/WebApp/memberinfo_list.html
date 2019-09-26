@@ -33,19 +33,13 @@
                     <a class="text-center" href="{% static 'importcsv_sample.csv' %}" style="padding-top: 2em;">
                         <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
                     </a><br>
-                    
-                    <!-- <p style="background: azure; padding-top: 0.6em; margin-top: 1em;">
-                        INFO: Username must be unique for all users, users can change their username later. 
-                        Gender Value should be M for male and F for Female. 
-                        Is_Student should be 1 for student and Is_Teacher should be 1 for teacher.
-                    </p> -->
+                 
                     <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail Info...</b></span>
                     <ul class="info-text" style="display:none;background:azure;">
                         <li>- Username must be unique for every member (required)</li>
                         <li>- Gender value must be M for male and F for female (required)</li>
                         <li>- Teacher column value should be 1 for teacher</li>
                         <li>- Student column value should be 1 for student</li>
-                        <li>- Username can't be <b>nan</b> such member will be skipped and not created but other valid members data will be created</li>
                         <li>- If any problem occur in a row then no any member data will be created</li>
                         <li>- Error message will show the number of row in which the problem occur</li>
                         <li>- Default password will be 00000 for everyuser</li>

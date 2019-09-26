@@ -353,6 +353,8 @@ def ImportCsvFile(request):
         path = os.path.join(path,filename)
 
         df = pd.read_csv(path)
+        # Drop empty row of excel csv file
+        df = df.dropna(how='all')
         saved_id = []
         for i in range(len(df)):
             try:
