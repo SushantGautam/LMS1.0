@@ -11,7 +11,82 @@
 {#	{% trans "Start quiz" %} #}
   </a>
 </p> -->
+<table class="table table-bordered">
+  <thead>
+     <tr>
+       
+     </tr>
+  </thead>
+  <tbody> 
+    <tr>
+        <td><h4>Quiz</h4></td> 
+        <td>  <h4>{{quiz.title}}</h4></td>
+    </tr>
+    <tr>
+        <td><h4>Description</h4></td> 
+        <td>  <h4>{{quiz.description}}</h4></td>
+    </tr>
+    <tr>
+        <td><h4>Course -> Chapter</h4></td> 
+        <td>  <h4>{{ quiz.course_code }} -> {{ quiz.chapter_code }}</h4></td>
+    </tr>
+    <tr>
+        <td><h4>Type of quiz</h4></td> 
+        <td>  <h4>{% if quiz.pre_test  %}pre test <br>{% endif %}
+          {% if quiz.post_test  %}post test <br>{% endif %}
+          {% if quiz.exam_paper  %}exam <br>{% endif %}</h4></td>
+    </tr>
+    <tr>
+        <td><h4>Url</h4></td> 
+        <td>  <h4>{{quiz.url}}</h4></td>
+    </tr>
 
+  </tbody>
+</table>
+<div class="quiz-info-detail-page">
+  <div class="col-md-12">
+       <div class="col-md-4">
+        <h4>Quiz</h4> 
+       </div>
+       <div class="col-md-8">
+           <h4>{{quiz.title}}</h4> 
+       </div>
+       
+       <div class="col-md-4">
+           <h4>Description</h4> 
+        </div>
+        <div class="col-md-8">
+          <h4>{{quiz.description}}</h4> 
+        </div> 
+
+        <div class="col-md-4">
+            <h4>Course -> Chapter</h4> 
+         </div>
+         <div class="col-md-8">
+           <h4>{{ quiz.course_code }} -> {{ quiz.chapter_code }}</h4> 
+         </div>
+          
+         <div class="col-md-4">
+            <h4>Type of quiz</h4> 
+         </div>
+         <div class="col-md-8">
+           <h4>{% if quiz.pre_test  %}pre test <br>{% endif %}
+               {% if quiz.post_test  %}post test <br>{% endif %}
+               {% if quiz.exam_paper  %}exam <br>{% endif %} </h4> 
+         </div>
+         <div class="col-md-4">
+            <h4>Url</h4> 
+         </div>
+         <div class="col-md-8">
+           <h4>{{quiz.url}} </h4> 
+         </div>
+
+       
+  </div>
+  <hr>
+  
+
+</div>
  <table class="table table-bordered table-striped">
   <thead>
     <tr class="quiz-capital">
@@ -28,7 +103,7 @@
   <tbody>
     <tr>
       <td>{{ quiz.title }} </td>
-      <td>{{ quiz.category.Course_Name }} -> {{ quiz.chapter_code.Chapter_Name }}</td>
+      <td>{{ quiz.course_code }} -> {{ quiz.chapter_code }}</td>
       <td>{{ quiz.question_count }}</td>
       <td>
         {% if quiz.pre_test  %}pre test <br>{% endif %}
@@ -42,9 +117,8 @@
   </tbody>
  </table> 
  
- <div class="col-md-12">
-   <h4>{{quiz.title}}</h4>
- </div>
+ 
+ <br>
 
 
 

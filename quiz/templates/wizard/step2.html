@@ -6,6 +6,12 @@
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
 {% endblock stylesheets %}
+{% block breadcrumb %} 
+<li class="breadcrumb-item"><a href="/">Quiz</a></li>
+                
+ 
+<li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 
+{% endblock %}
 {% block content %}
 
   <div id="" class="form_wizard wizard_horizontal">
