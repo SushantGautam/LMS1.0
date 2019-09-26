@@ -81,6 +81,7 @@ $("#SaveBtn").on("click",function(e){
             'width': $(this).css("width"),
             'height': $(this).css("height"),
             'link': $(this).children("a").attr('href'),
+            'btn_name': $(this).children("a").text(),
           }
         );
       }
