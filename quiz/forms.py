@@ -6,6 +6,7 @@ from django.utils.translation import gettext as _
 # from quiz import admin
 from django_addanother.widgets import AddAnotherWidgetWrapper
 
+from WebApp.models import CourseInfo
 from quiz.models import Quiz, MCQuestion, TF_Question, SA_Question, Answer
 from django.forms import inlineformset_factory
 
@@ -167,23 +168,22 @@ class QuizForm2(forms.ModelForm):
         exam_val = cleaned_data.get("exam_paper")
         pre_val = cleaned_data.get("pre_test")
         post_val = cleaned_data.get("post_test")
-        if not exam_val:
-            if not (pre_val or post_val):
-                raise forms.ValidationError(
-                    "Please Select at least One Quiz Type"
-                )
-        else:
-            if pre_val or post_val:
-                raise forms.ValidationError(
-                    "Exam cannot be pre/post chapter"
-                )
-            else:
-                pass
+        time_val = cleaned_data.get("duration")
+        pass_val = cleaned_data.get("pass_mark")
 
-        if not (pre_val or post_val) and not (exam_val):
-            raise forms.ValidationError(
-                "Please Select Atleast One Question"
-            )
+        if exam_val:
+            if not time_val:
+                raise forms.ValidationError(
+                    {
+                        'duration': ["Please Enter Quiz Duration", ],
+                    }
+                )
+            if not pass_val:
+                raise forms.ValidationError(
+                    {
+                        'pass_mark': ["Please Enter Pass Marks", ],
+                    }
+                )
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -198,7 +198,7 @@ class QuizForm2(forms.ModelForm):
         self.helper.label_class = 'quiz-add-label'
         self.helper.layout = Layout(
 
-             Row(
+            Row(
                 Column('chapter_code', css_class='form-group col-md-4 mb-0'),
                 Column(
                     PrependedText(
@@ -220,7 +220,6 @@ class QuizForm2(forms.ModelForm):
             ),
             HTML('''<hr size="10">'''),
 
-
             HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
             Row(
                 Column('pre_test', css_class='form-group col-md-4 mb-0'),
@@ -229,14 +228,18 @@ class QuizForm2(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
+                Column(
+                    Div(css_id='test_error', css_class="text-danger"),
+                    css_class='form-group col-md-12 mb-0'
+                ),
+                css_class='form-row'
+            ),
+            Row(
                 Column('duration', css_class='form-group col-md-4 mb-0'),
                 Column('pass_mark', css_class='form-group col-md-4 mb-0'),
                 Column(css_class='form-group col-md-4 mb-0'),
-
                 css_class='form-row'
             ),
-           
-            # HTML('''<hr size="10">'''),
             HTML('''<hr size="10">'''),
             HTML('''<label class=quiz-add-label>Quiz Features</label>'''),
             Row(
@@ -256,6 +259,7 @@ class QuizForm2(forms.ModelForm):
                 ),
                 css_class='form-row'
             ),
+
         )
 
 
@@ -280,3 +284,103 @@ class QuizForm3(forms.ModelForm):
                 "Please Select Atleast One Question"
             )
         return cleaned_data
+
+
+class QuizBasicInfoForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['title', 'course_code', 'description', 'chapter_code', 'pre_test', 'post_test', 'answers_at_end',
+                  'random_order', 'single_attempt', 'draft', 'exam_paper', 'duration', 'pass_mark', 'success_text',
+                  'fail_text']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        exam_val = cleaned_data.get("exam_paper")
+        pre_val = cleaned_data.get("pre_test")
+        post_val = cleaned_data.get("post_test")
+        time_val = cleaned_data.get("duration")
+        pass_val = cleaned_data.get("pass_mark")
+
+        if exam_val:
+            if not time_val:
+                raise forms.ValidationError(
+                    {
+                        'duration': ["Please Enter Quiz Duration", ],
+                    }
+                )
+            if not pass_val:
+                raise forms.ValidationError(
+                    {
+                        'pass_mark': ["Please Enter Pass Marks", ],
+                    }
+                )
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        my_obj = kwargs.pop('current_obj', None)
+        super().__init__(*args, **kwargs)
+
+        print(my_obj.cent_code)
+        self.fields['course_code'].queryset = CourseInfo.objects.filter(Center_Code=my_obj.cent_code)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.label_class = 'quiz-add-label'
+        self.helper.layout = Layout(
+            Row(
+                Column('title', css_class='form-group col-md-4 mb-0'),
+                Column('course_code', css_class='form-group col-md-4 mb-0'),
+                Column('chapter_code', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column(PrependedText('description', '<i class="fa fa-edit"></i>', rows='5'),
+                       css_class='form-group col-md-4 mb-0'
+                       ),
+                Column(PrependedText('success_text', '<i class="fa fa-edit"></i>', rows='5'),
+                       css_class='form-group col-md-4 mb-0'
+                       ),
+                Column(PrependedText('fail_text', '<i class="fa fa-edit"></i>', rows='5'),
+                       css_class='form-group col-md-4 mb-0'
+                       ),
+                css_class='form-row'
+            ),
+            HTML('''<hr size="10">'''),
+            HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
+            Row(
+                Column('pre_test', css_class='form-group col-md-4 mb-0'),
+                Column('post_test', css_class='form-group col-md-4 mb-0'),
+                Column('exam_paper', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column(
+                    Div(css_id='test_error', css_class="text-danger"),
+                    css_class='form-group col-md-12 mb-0'
+                ),
+                css_class='form-row'
+            ),
+            Row(
+                Column('duration', css_class='form-group col-md-4 mb-0'),
+                Column('pass_mark', css_class='form-group col-md-4 mb-0'),
+                Column(css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            HTML('''<hr size="10">'''),
+            HTML('''<label class=quiz-add-label>Quiz Features</label>'''),
+            Row(
+                Column('random_order', css_class='form-group col-md-4 mb-0'),
+                Column('single_attempt', css_class='form-group col-md-4 mb-0'),
+                Column('draft', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column(css_class='col-md-4 mb-0'),
+                Column(css_class='col-md-4 mb-0'),
+                Column(
+                    StrictButton('Save', css_class='add-mcq', type='submit'),
+                    css_class='col-md-4 mb-0 text-right'
+                ),
+                css_class='form-row'
+            ),
+        )

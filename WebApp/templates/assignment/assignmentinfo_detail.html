@@ -193,8 +193,8 @@
                                 <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                     Cancel
                                 </button> -->
-                                <button class="btn btn-primary" type="reset">Reset</button>
-                                <button type="submit" class="btn btn-success submitAnswer"
+                                <button class="btn btn-sm btn-primary" type="reset">Reset</button>
+                                <button type="submit" class="btn btn-sm btn-success submitAnswer"
                                     id="answer{{questions.id}}">Submit</button>
                             </div>
                             {% elif questions.Answer_Type == 'F' %}
@@ -208,10 +208,11 @@
                                     id="id_Question_Code{{questions.id}}">
                             </div>
                             <div class="form-group text-center">
-                                <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+                                <button class="btn btn-sm btn-primary" type="button"
+                                    id="cancelButton{{ questions.pk }}">
                                     Cancel
                                 </button>
-                                <button type="submit" class="btn btn-success submitAnswer"
+                                <button type="submit" class="btn btn-sm btn-success submitAnswer"
                                     id="answer{{questions.id}}">Submit</button>
                             </div>
                             {% endif %}
@@ -281,8 +282,8 @@
             url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
-                "Assignment_Answer": $(`#id_Assignment_Answer${this.id}`).val(),
-                // "Assignment_File": $('#id_Assignment_File').val(),
+                // "Assignment_Answer": $(`#id_Assignment_Answer${this.id}`).val(),
+                "Assignment_File": $('#id_Assignment_File').val(),
                 "Question_Code": $(`#id_Question_Code${this.id}`).val(),
                 "Student_Code": $(`#id_Student_Code${this.id}`).val(),
                 // "Student_Code": $('#id_Use_Flag').is(":checked"),

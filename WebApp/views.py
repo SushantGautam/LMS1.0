@@ -1,6 +1,11 @@
 import json
 import os
+import uuid
+
 from datetime import datetime
+import uuid
+import pandas as pd
+from django.db import transaction
 
 # import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
@@ -25,15 +30,14 @@ from django.views.generic.edit import FormView
 
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
-from quiz.models import Question
-from quiz.models import Quiz
+from quiz.models import Question, Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, UserUpdateForm, \
     MemberUpdateForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
 
 class Changestate(View):
@@ -337,6 +341,57 @@ def MemberInfoDeactivate(request, pk):
 
     return redirect('memberinfo_detail', pk=pk)
 
+def ImportCsvFile(request):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+        file_name = uuid.uuid4()
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + str(extension)
+        path = 'media/import_csv/' + str(center_id)
+
+        fs = FileSystemStorage(location= path)
+        filename = fs.save(new_file_name + '.' + extension, media)
+        path = os.path.join(path,filename)
+
+        df = pd.read_csv(path)
+        saved_id = []
+        for i in range(len(df)):
+            try:
+                obj = MemberInfo()
+                obj.username = df.iloc[i]['username']
+                obj.Member_ID = df.iloc[i]['Member_ID']
+                obj.first_name = df.iloc[i]['first_name']
+                obj.last_name = df.iloc[i]['last_name']
+                obj.email = df.iloc[i]['email']
+                obj.Member_Permanent_Address = df.iloc[i]['Member_Permanent_Address']
+                obj.Member_Temporary_Address = df.iloc[i]['Member_Temporary_Address']
+                obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Member_BirthDate'],'%m/%d/%Y').strftime('%Y-%m-%d')
+                obj.Member_Phone = df.iloc[i]['Member_Phone']
+                obj.Member_Gender = df.iloc[i]['Member_Gender']
+
+                if df.iloc[i]['Is_Teacher'] == 1:
+                    obj.Is_Teacher = True
+                else:
+                    obj.Is_Teacher = False
+            
+                if df.iloc[i]['Is_Student'] == 1:
+                    obj.Is_Student = True
+                else:
+                    obj.Is_Student = False
+                    
+                obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
+                obj.set_password('00000')
+                obj.save()
+                saved_id.append(obj.id)
+
+            except:
+                for j in saved_id:
+                    MemberInfo.objects.filter(id=j).delete()
+                msg = "Can't Upload all data. Problem in " + str(i+1) + "th row of data while uploading."
+                return JsonResponse(data={"message": msg,"class":"text-danger","rmclass":"text-success" })
+        return JsonResponse(data={"message": "All data has been Uploaded Sucessfully","class":"text-success","rmclass":"text-danger"})
+            
 
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
@@ -719,7 +774,7 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
@@ -738,11 +793,11 @@ class AssignmentInfoUpdateView(UpdateView):
 
 
 class QuestionInfoListView(ListView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
 
 
 class QuestionInfoCreateView(CreateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
 
     # success_url = 'questioninfo_detail'
@@ -756,12 +811,12 @@ class QuestionInfoCreateView(CreateView):
 
 
 class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
     template_name = 'ajax/questioninfo_form_ajax.html'
 
     def post(self, request, *args, **kwargs):
-        Obj = QuestionInfo()
+        Obj = AssignmentQuestionInfo()
         Obj.Question_Title = request.POST["Question_Title"]
         Obj.Question_Score = request.POST["Question_Score"]
         Obj.Question_Description = request.POST["Question_Description"]
@@ -781,11 +836,11 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
 
 class QuestionInfoDetailView(DetailView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
 
 
 class QuestionInfoUpdateView(UpdateView):
-    model = QuestionInfo
+    model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
 
     def get_context_data(self, **kwargs):
@@ -836,7 +891,7 @@ class AssignAnswerInfoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Question_Code'] = get_object_or_404(QuestionInfo, pk=self.kwargs.get('questioncode'))
+        context['Question_Code'] = get_object_or_404(AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
         return context
 
 
@@ -850,7 +905,7 @@ class AssignAnswerInfoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Question_Code'] = get_object_or_404(QuestionInfo, pk=self.kwargs.get('questioncode'))
+        context['Question_Code'] = get_object_or_404(AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
         return context
 
 
@@ -947,9 +1002,10 @@ def save_file(request):
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
 
+            name = (str(uuid.uuid4())).replace('-','')+'.'+media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-            filename = fs.save(media.name, media)
-        return JsonResponse(data={"message": "success"})
+            filename = fs.save(name, media)
+        return JsonResponse(data={"message": "success", "media_name": name})
 
 
 @csrf_exempt
@@ -965,9 +1021,10 @@ def save_video(request):
                 return JsonResponse(data={"message": "File size exceeds 2GB"}, status=500)
 
         path = settings.MEDIA_ROOT
-
+        name = (str(uuid.uuid4()).replace('-',''))+'.'+media.name.split('.')[-1]
+        print(name)
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-        filename = fs.save(media.name, media)
+        filename = fs.save(name, media)
 
         # #video uploading to vimeo.com
 
@@ -986,13 +1043,12 @@ def save_video(request):
 
         # media = '{path to a video on the file system}'
 
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + media.name, data={
-            'name': media.name,
+        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + name, data={
+            'name': name,
         })
 
         response = v.get(uri).json()
         status = response['status']
-        print(response['link'])
         videoid = response['uri'].split('/')[-1]
 
         url = 'https://api.vimeo.com/me/projects/772975/videos/' + videoid  # Premium account Folder
@@ -1003,7 +1059,7 @@ def save_video(request):
         while status == 'transcode_starting' or status == 'transcoding':
             r = v.get(uri + '?fields=status').json()
             status = r['status']
-        return JsonResponse({'link': response['link'], 'html': response['embed']['html']})
+        return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
 
 
 @csrf_exempt

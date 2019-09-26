@@ -1,44 +1,27 @@
-{% extends 'forum/Teacher_base.html' %}
 {% load i18n %}
 {% load humanize %}
 {% load forum_tags %}
-{% load static %}
+{% load static %}{% block main_contain %}
 
 
-{% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
-
-<li class="breadcrumb-item active">
-    <a href="{% url 'teacher_info' pk=user.pk %}">Profile</a>
-</li>
-
-
-{% endblock %}
-
-{% block main_contain %}
-
-
-{% inlcude 'ForumInclude/UserReplies.html' %}
-
-
-<!-- <div class="panel panel-default paper-shadow">
+<div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
         <h2>{% blocktrans with username=user.username %}
             Threads created by {{ username }}
             {% endblocktrans %}</h2>
     </div>
-  
+    <!-- List group -->
     <ul class="list-group thread-list">
         {% for thread in threads %}
         <li class="list-group-item thread-entry">
-            <div class="entry media"><a href="{% url 'teacher_info' pk=thread.user.pk %}">
+            <div class="entry media"><a href="{% url 'forum:user_info' pk=thread.user.pk %}">
                     <img src="
-                                                                            {% if request.user.Member_Avatar %}
-                                                                                {{ request.user.Member_Avatar.url }}
-                                                                            {% elif request.user.Member_Gender == 'M' %}
+                                                                            {% if thread.user.Member_Avatar %}
+                                                                                {{ thread.user.Member_Avatar.url }}
+                                                                            {% elif thread.user.Member_Gender == 'M' %}
                                                                                 {% static 'images/profile/male.jpg' %}
-                                                                            {% elif request.user.Member_Gender == 'F' %}
+                                                                            {% elif thread.user.Member_Gender == 'F' %}
                                                                                 {% static 'images/profile/female.png' %}
                                                                             {% else %}
                                                                                 {% static 'images/profile/profile.png' %}
@@ -47,7 +30,12 @@
                 </a>
                 <h2 class="thread_title">
                     <div class="media-body media-middle"> &nbsp;
-                        <a href="{% url 'teacher_thread' pk=thread.pk %}" class="entry-link">
+                        <a href="{% if '/teachers' in request.path %}
+                        {% url 'teacher_thread' pk=thread.pk %}
+                        {% else %}
+                        {% url 'forum:thread' pk=thread.pk %}
+                        {% endif %}
+                        " class="entry-link">
                             {{ thread.title }}
                         </a>
 
@@ -55,7 +43,14 @@
                             <h5>
                                 <p class="topic-meta">
                                     &nbsp; Topic:
-                                    <a href="{% url 'teacher_topic' thread.topic.pk %}">
+                                    <a href="
+                                    
+                                    {% if '/teachers' in request.path %}
+                        {% url 'teacher_topic' thread.topic.pk %}
+                        {% else %}
+                        {% url 'forum:topic' thread.topic.pk
+                        {% endif %}
+                                  ">
                                         <span class="link-color">
                                             {{ thread.topic.title }}
                                         </span>
@@ -74,7 +69,7 @@
                 </h2>
 
 
-              
+                <!-------------------------------- Replies ------------------------------------------>
 
 
                 <div class="panel user_infos">
@@ -99,13 +94,13 @@
 
                                 <div id="reply_{{ reply.thread.pk }}_{{ reply.pk }}">
                                     <li class="list-group-item reply-entry reply-entry-content">
-                                        <a href="{% url 'teacher_info' pk=reply.user.pk %}">
+                                        <a href="{% url 'forum:user_info' pk=reply.user.pk %}">
                                             <img src="
-                                                {% if request.user.Member_Avatar %}
-                                                    {{ request.user.Member_Avatar.url }}
-                                                {% elif request.user.Member_Gender == 'M' %}
+                                                {% if reply.user.Member_Avatar %}
+                                                    {{ reply.user.Member_Avatar.url }}
+                                                {% elif reply.user.Member_Gender == 'M' %}
                                                     {% static 'images/profile/male.jpg' %}
-                                                {% elif request.user.Member_Gender == 'F' %}
+                                                {% elif reply.user.Member_Gender == 'F' %}
                                                     {% static 'images/profile/female.png' %}
                                                 {% else %}
                                                     {% static 'images/profile/profile.png' %}
@@ -141,24 +136,28 @@
         {% endfor %}
         <li class="list-group-item">
             <h4>
-                <a href="{% url 'forum:user_threads' user.pk %}"
-                    class="text-success">{% trans "More threads from this user" %}</a>
+                <a href="
+                {% if '/teachers' in request.path %}
+                        {% url 'teacher_threads' user.pk %}
+                        {% else %}
+                        {% url 'forum:user_threads' user.pk %}
+                        {% endif %}" class="text-success">{% trans "More threads from this user" %}</a>
             </h4>
         </li>
 
     </ul>
-</div> -->
+</div>
 
 
 
-<!-- <div class="panel panel-default">
+<div class="panel panel-default">
     <div class="panel panel-heading">
         <h2>{% blocktrans with username=user.username %}
             Replies from {{ username }}
             {% endblocktrans %}</h2>
 
     </div>
-   
+    <!-- List group -->
 
     <ul class="list-group topic-list">
         {% for reply in replies %}
@@ -170,11 +169,11 @@
                         <h2>
                             <div class="content_reply">
                                 <img src="
-                                    {% if request.user.Member_Avatar %}
-                                        {{ request.user.Member_Avatar.url }}
-                                    {% elif request.user.Member_Gender == 'M' %}
+                                    {% if reply.user.Member_Avatar %}
+                                        {{ reply.user.Member_Avatar.url }}
+                                    {% elif reply.user.Member_Gender == 'M' %}
                                         {% static 'images/profile/male.jpg' %}
-                                    {% elif request.user.Member_Gender == 'F' %}
+                                    {% elif reply.user.Member_Gender == 'F' %}
                                         {% static 'images/profile/female.png' %}
                                     {% else %}
                                         {% static 'images/profile/profile.png' %}
@@ -185,8 +184,14 @@
                             </div>
 
                             <div class="reply_title">
-                                <a href="{% url 'teacher_thread' pk=reply.thread.pk %}"
-                                    class="entry-link">{{ reply.thread.title }}</a>
+                                <a href="
+                                {% if '/teachers' in request.path %}
+                        {% url 'teacher_threads' pk=reply.thread.pk %}
+                        {% else %}
+                        {% url 'forum:thread' pk=reply.thread.pk %}
+                        {% endif %}
+                                
+                                " class="entry-link">{{ reply.thread.title }}</a>
                             </div>
 
                         </h2>
@@ -209,20 +214,35 @@
 
         </li>
     </ul>
-</div> -->
+</div>
 
 
-
-<!-- <ul class="list-group topic-list">
+<!-- List group -->
+<ul class="list-group topic-list">
     {% for topic in topics %}
     <li class="list-group-item topic-entry">
         <div class="entry media">
             <div class="media-body media-middle">topic:
-                <a href="{% url 'teacher_topic' pk=topic.pk %}" class="entry-link">
+                <a href="
+                
+                
+                {% if '/teachers' in request.path %}
+                {% url 'teacher_topic' pk=topic.pk %}
+                        {% else %}
+                        {% url 'forum:topic' pk=topic.pk %}
+                        {% endif %}
+                " class="entry-link">
                     {{ topic.title }}
                 </a>
                 <p class="entry-meta">node group:
-                    <a href="{% url 'teacher_nodegroup' topic.node_group.pk %}">
+                    <a href="
+                    {% if '/teachers' in request.path %}
+                    {% url 'teacher_nodegroup' topic.node_group.pk %}
+                        {% else %}
+                        {% url 'forum:nodegroup' topic.node_group.pk %}
+                        {% endif %}
+                    
+                    ">
                         <span class="label label-default meta-node">
                             {{ topic.node_group.title }}
                         </span>
@@ -242,8 +262,7 @@
         </div>
     </li>
     {% endfor %}
-</ul> -->
-
+</ul>
 
 
 
