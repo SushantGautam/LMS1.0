@@ -8,50 +8,18 @@
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 
   {{ form.media }}
-
-  <!--
-<form method="post">
-    {#{% csrf_token %}#}
-    {#{{ form|crispy }}#}
-    {#{{ answers_formset|crispy }}#}
-<button class="btn btn-primary" type="submit">Submit</button>
-</form>
--->
-
-  <!-- <form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <br><br>
-    <p></p>
-    
-    {{ answers_formset.management_form }}
-    {% for form in answers_formset.forms %}
-        <div class='table'>
-        <table class='no_error'>
-                {{ form|crispy }}
-        </table>
-        </div>
-    {% endfor %}
-    <input type="button" value="Add More" id="add_more">
-    
-
-<button class="btn btn-primary" type="submit">Submit</button>
-</form>  -->
-  <form method="post">
+  <form method="post" onsubmit="return validateForm()">
     {% csrf_token %}
     <div class="form-group">
       <div class="col-md-12">
         <div class="col-md-6">
           <label class="quiz-add-label" for="">Question</label>
           {{ form.content }}
-        
         </div>
         <div class="col-md-6">
           <label class="quiz-add-label" for="">Answer Order</label>
           {{ form.answer_order }}
         </div>
-
-
       </div>
     </div>
     {% if form.cent_code %}
@@ -60,14 +28,11 @@
           <div class="col-md-6">
             <label class="quiz-add-label" for="">Center Code</label>
             {{ form.cent_code }}
-
           </div>
           <div class="col-md-6">
             <label class="quiz-add-label" for="">Course Info</label>
             {{ form.course_code }}
           </div>
-
-
         </div>
       </div>
     {% endif %}
@@ -77,16 +42,7 @@
         <div class="col-md-6">
           <label class="quiz-add-label" for="">Figure</label>
           {{ form.figure }}
-
-
         </div>
-        <!-- <div class="col-md-6">
-                            <label class="quiz-add-label"  for="">Content</label>
-                            {{form.content}} 
-                            {{form.content.help_text}} 
-                    </div> -->
-
-
       </div>
     </div>
     <div class="form-group">
@@ -115,9 +71,10 @@
                   <li>
                     <div id="div_id_answer_set-{{ forloop.counter0 }}-correct" class="checkbox">
                       <br>
-                      <label for="id_answer_set-{{ forloop.counter0 }}-correct" class=""> <input type="checkbox" name="answer_set-{{ forloop.counter0 }}-correct"
-                                                                            class="checkboxinput"
-                                                                            id="id_answer_set-{{ forloop.counter0 }}-correct">
+                      <label for="id_answer_set-{{ forloop.counter0 }}-correct" class=""> <input type="checkbox"
+                                                                                                 name="answer_set-{{ forloop.counter0 }}-correct"
+                                                                                                 class="checkboxinput"
+                                                                                                 id="id_answer_set-{{ forloop.counter0 }}-correct">
                         Correct
                       </label>
 
@@ -130,23 +87,20 @@
                     <div id="div_id_answer_set-{{ forloop.counter0 }}-DELETE" class="checkbox">
                       <br>
 
-                      <label for="id_answer_set-{{ forloop.counter0 }}-DELETE" class=""> <input type="checkbox" name="answer_set-{{ forloop.counter0 }}-DELETE"
-                                                                           class="checkboxinput"
-                                                                           id="id_answer_set-{{ forloop.counter0 }}-DELETE">
+                      <label for="id_answer_set-{{ forloop.counter0 }}-DELETE" class="">
+                        <input type="checkbox"
+                               name="answer_set-{{ forloop.counter0 }}-DELETE"
+                               class="checkboxinput"
+                               id="id_answer_set-{{ forloop.counter0 }}-DELETE">
                         Delete
                       </label></div>
-
                   </li>
                 </ul>
-
-
               </div>
             </div>
-
-            <!-- {{ form|crispy }} -->
-            </table>
           </div>
         {% endfor %}
+        <div class="text-danger" id="option_error"></div>
         <div class="add-more">
           <a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more options</a>
 
@@ -183,6 +137,25 @@
       $('#add_more').click(function () {
           cloneMore('div.table:last', 'answer_set');
       });
+
+      function validateForm() {
+          var is_checked = false;
+          var cnt = 0;
+          for (cnt = 0; cnt < $("#id_answer_set-TOTAL_FORMS").val(); cnt++) {
+              if ($("#id_answer_set-" + cnt + "-correct").is(':checked')) {
+                  is_checked = true;
+                  if ($("#id_answer_set-" + cnt + "-content").val().length == 0) {
+                      $("#option_error").html("Correct answer cannot be empty");
+                      return false;
+                  }
+              }
+          }
+          if (!is_checked) {
+              $("#option_error").html("Please select at least one correct answer");
+              return false;
+          }
+      }
+
 
   </script>
 {% endblock customjss %}
