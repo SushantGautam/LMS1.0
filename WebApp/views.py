@@ -1,5 +1,6 @@
 import json
 import os
+import zipfile  #For import/export of compressed zip folder
 import uuid
 
 from datetime import datetime
@@ -1088,5 +1089,8 @@ def save_json(request):
         chapterObj.save()
 
         return JsonResponse(data={"message": "Json Saved"})
+
+def export(request):
+    pass
 
 # -------------------------------------------------------------------------------------------------------

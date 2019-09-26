@@ -6,8 +6,8 @@
 {% block breadcrumb %}
 
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
-<li class="breadcrumb-item active"><a href="{% url "forum:notifications" %}"> Notifications</a>
+<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
+<li class="breadcrumb-item active"><a href="{% url 'teacher_notification' %}"> Notifications</a>
 </li>
 
 {% endblock %}
@@ -24,7 +24,7 @@
                 {% for notification in notifications %}
                 <li>
                     {% if notification.thread %}
-                    {% url 'forum:thread' notification.thread_id as thread_url %}
+                    {% url 'teacher_thread' notification.thread_id as thread_url %}
                     <a href="{{ thread_url }}">
                         <span class=""><img src="/media/{{ notification.sender.Member_Avatar }}" alt="" /></span>
                         <span>
@@ -41,7 +41,7 @@
                         </span>
                     </a>
                     {% else %}
-                    {% url 'forum:thread' notification.post.thread_id as thread_url %}
+                    {% url 'teacher_thread' notification.post.thread_id as thread_url %}
                     <a href="{{ thread_url }}">
                         <span class="image"><img src="/media/{{ notification.sender.Member_Avatar }}" alt="" /></span>
                         <span>

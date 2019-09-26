@@ -1000,3 +1000,19 @@ table th {
 
 
 /* -------------------------------------------------------------- */
+
+/* button link css */
+span.btnlink {
+  background-color: #FFF;
+  color: #888;
+  line-height:20px;
+  height:20px;
+  padding:4px;
+  border:1px #888 solid;
+  font-size:9pt;
+}
+
+span.btnlink input {
+  border: 0px;
+  background-color: #FFF;
+}

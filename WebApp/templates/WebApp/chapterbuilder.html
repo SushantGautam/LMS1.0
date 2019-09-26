@@ -481,12 +481,16 @@
         <div class="modal-body">
           <!-- Modal Contents Here -->
           <label>Display Name</label>
-          <input type="text" name="btn-name" id="btn-name">
+          <input type="text" name="btn-name" id="btn-name"><br>
           <label>Link</label>
-          <input type="text" name="btn-link" id="btn-link">
+          <span class="btnlink">
+            http://
+            <input type="text" name="btn-link" id="btn-link">
+          </span>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="#">Submit</button>
+          <input type="hidden" id= "button_id" value="">
+          <button type="button" id = "btn-submit" class="#">Submit</button>
           <button type="button" class="#" data-dismiss="modal">Close</button>
         </div>
       </form>
