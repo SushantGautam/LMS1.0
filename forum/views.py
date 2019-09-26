@@ -507,7 +507,6 @@ def get_top_thread_keywords(request, number_of_keyword):
         for eachword in words:
             for singleword in eachword.split(" "):
                 if singleword in word_counter:
-                    print(singleword)
                     word_counter[singleword] += 1
                 else:
                     word_counter[singleword] = 1

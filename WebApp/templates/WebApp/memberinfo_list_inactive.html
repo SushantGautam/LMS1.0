@@ -41,15 +41,16 @@
         <table class="table table-striped table-bordered bg-white nowrap">
             <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
-                    <td class="text-center">ID</td>
+                    <td class="text-center">S. No.</td>
                     <td>Member ID</td>
-                    <td>Name</td>
+                    <td>Full Name</td>
                     <!-- <td>Current Address</td> -->
                     <!-- <td>Email</td>
                     <td>Phone</td> -->
                     <td>Gender</td>
                     <td>Student</td>
                     <td>Teacher</td>
+                    <td>Type</td>
                     <td>Status</td>
                     <td class="text-center">Action</td>
                 </tr>
@@ -75,6 +76,17 @@
                 </td>
                 <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
                 <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
+                <td>
+                        {% if object.Is_Teacher == True and object.Is_Student == True %}
+                            Teacher, Student
+                        {% elif object.Is_Teacher == True %}
+                            Teacher
+                        {% elif object.Is_Student == True %}
+                            Student
+                        {% else %}
+                            Not Assigned
+                        {% endif %}
+                    </td>
                 <td style="vertical-align: middle;">
                     {% if object.Use_Flag == True %}
                     Active

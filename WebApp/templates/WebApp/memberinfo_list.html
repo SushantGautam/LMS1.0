@@ -79,34 +79,31 @@
         <table class="table table-striped table-bordered bg-white nowrap">
             <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
-                    <td class="text-center">ID</td>
+                    <td class="text-center">S. No.</td>
+                    <td>Username</td>
                     <td>Member ID</td>
                     <td>Full Name</td>
-                    <td>Current Address</td>
                     <td>Email</td>
-                    <!-- <td>Phone</td> -->
+                    <td>Phone</td>
                     <td>Gender</td>
-                    <td class="text-center">Action</td>
                     <td>Student</td>
                     <td>Teacher</td>
-                    {#                    <td>Status</td>#}
+                    <td>Temporary Address</td>
+                    <td>Permanent Address</td>
+                    <td>Birthdate</td>
+                    <td>Type</td>
+                    <td class="text-center">Action</td>
                 </tr>
             </thead>
             {% for object in object_list %}
             {% if object.id != request.user.id %}
             <tr>
                 <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
-
-                </td>
-
-                <td style="vertical-align: middle;"><b><a
-                            href="{{ object.get_absolute_url }}">{{ object.Member_ID }}</a></b>
-                </td>
-
+                <td style="vertical-align: middle;"><b><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
+                <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
                 <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
-                <td style="vertical-align: middle;">{{ object.Member_Temporary_Address }}</td>
                 <td style="vertical-align: middle;">{{ object.email }}</td>
-                <!-- <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td> -->
+                <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
                 <td style="vertical-align: middle;">
                     {% if object.Member_Gender == 'M' %}
                     Male
@@ -114,9 +111,35 @@
                     Female
                     {% endif %}
                 </td>
+                <td>
+                    {% if object.Is_Student == True %}
+                        1
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                <td>
+                    {% if object.Is_Teacher == True %}
+                        1
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                <td>{{ object.Member_Temporary_Address }}</td>
+                <td>{{ object.Member_Permanent_Address }}</td>
+                <td>{{ object.Member_BirthDate }}</td>
+                <td>
+                    {% if object.Is_Teacher == True and object.Is_Student == True %}
+                        Teacher, Student
+                    {% elif object.Is_Teacher == True %}
+                        Teacher
+                    {% elif object.Is_Student == True %}
+                        Student
+                    {% else %}
+                        Not Assigned
+                    {% endif %}
+                </td>
                 <td class="text-center"><a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
-                <td>{{ object.Is_Student }}</td>
-                <td>{{ object.Is_Teacher }}</td>
 
                 {% endif %}
 
@@ -172,15 +195,15 @@
                 }],
             "columnDefs": [
                 {
-                    "targets": [7, 8],
+                    "targets": [7, 8, 9, 10, 11],
                     "visible": false,
-                    "searchable": true
+                    "searchable": false
                 },
-                {
-                    "targets": [7, 8],
+                /*{
+                    "targets": [9, 10, 11],
                     "visible": false,
                     "searchable": true
-                }
+                }*/
 
             ]
 
@@ -192,7 +215,7 @@
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
             table_main.columns().search('').draw();
-            table_main.column(7).search("True").draw();
+            table_main.column(7).search("1").draw();
 
 
         });
@@ -202,7 +225,7 @@
             $("#all_button").css("color", "black");
 
             table_main.columns().search('').draw();
-            table_main.column(8).search("True").draw();
+            table_main.column(8).search("1").draw();
 
         });
 

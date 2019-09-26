@@ -77,8 +77,8 @@
                 {% for object in thread %}
                 <li class="list-group-item ">
                     <div class="media-body">
-                        <B><span class="forum"><a
-                                    href="{{ object.get_absolute_url }}">{{ object.title }}</a></span><span
+                        <B><span class="forum"><a 
+                                    href="{{ object.get_absolute_url }}">{{ object.title|truncatewords:12  }}</a></span><span
                                 class="thread">{{ object.pub_date|naturaltime }}</span></B>
                     </div>
                 </li>
@@ -337,7 +337,7 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="panel panel-default">
-            <div class="title">
+            <div class="title text-center">
                 <h2 style="font-size: 20px ">&nbsp;<b>Word Cloud - Forum</b> </h2>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em"></div>
