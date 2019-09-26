@@ -46,7 +46,13 @@
                 </div>
               </div>
             </div>
-            <div class="popup" data-popup="popup-1">
+              <div class="liveSurveyCreateButton">
+                  <a href=" {% url 'liveSurveyCreate' %}">
+                      <button class="btn btn-success" id="liveSurveyBtn">Create Live survey</button>
+                  </a>
+              </div>
+
+              <div class="popup" data-popup="popup-1">
               <div class="popup-inner ">
                 <article class="index-form">
                   <div class="label_inputs">
@@ -59,7 +65,6 @@
                             <div id="surveyForm">
 
                             </div>
-
                           </div>
                         </div>
                       </div>
@@ -76,257 +81,115 @@
 
               <div class="row">
                 <div class="col-md-4 col-xs-12">
-                  <div class="btn-group" id="status" data-toggle="buttons">
-                    <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                      <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                             checked="checked">Active</label>
-                    <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-                      <input type="radio" value="0"
-                             name="multifeatured_module[module_id][status]">Expire</label>
-                  </div>
+                    {#                  <div class="btn-group" id="status" data-toggle="buttons">#}
+                    {#                    <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">#}
+                    {#                      <input type="radio" value="1" name="multifeatured_module[module_id][status]"#}
+                    {#                             checked="checked">Active</label>#}
+                    {#                    <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">#}
+                    {#                      <input type="radio" value="0"#}
+                    {#                             name="multifeatured_module[module_id][status]">Expire</label>#}
+                    {#                  </div>#}
                 </div>
-                  {#                  <div class="col-md-2 col-xs-12">#}
-                  {#                    <button class="btn btn-success" id="live">Live Survey</button>#}
-                  {##}
-                  {#                      <div class="pollButtons">#}
-                  {#                          <button type="button" class="btn btn-info" id="live" data-popup-open="popup-1">Live Survey</button>#}
-                  {#                      </div>#}
-                  {#                  </div>#}
                   <div class="col-md-8 col-xs-12" id="searchBarSurvey">
                       <form method="get" action="">
                           <div role="search" id="surveySearch">
                               <input type="text" id="keywordInput" name="query" placeholder="Type to search"
                                      value="{{ request.GET.query }}" class="form-control">
-                              <div class=" pull-right searchButton">
-                                  <button type="submit" id="navSearchBtn" class="btn btn-inverse"
-                                          data-hover-z="1"><i class="fa fa-search"></i>
-                                  </button>
-                              </div>
+                              <button type="submit" id="navSearchBtn" class="btn btn-inverse"
+                                      data-hover-z="1"><i class="fa fa-search"></i>
+                              </button>
                           </div>
                       </form>
                   </div>
 
               </div>
               <div class="hR"></div>
-              <!-- ......................................Active section........................................ -->
-              <div class="active_survey ">
-                {% for object in object_list %}
+                {#              <!-- ......................................Active section........................................ -->#}
+                {#              <div class="active_survey ">#}
+                {#                {% for object in object_list %}#}
+                {##}
+                {#                  {% if object.End_Date > currentDate and object.Survey_Live == False %}#}
+                {##}
+                {#                    <div class="questionLists col-xs-12 col-sm-6 col-md-3 " id=" {{ object.id }}">#}
+                {#                      <div class="card">#}
+                {#                        <a href=" {% url 'surveyinfo_detail' object.pk %}">#}
+                {#                          <div class="card-body">#}
+                {#                              <h2 class="card-title "><strong>{{ object.Survey_Title |truncatechars:12 }}</strong></h2>#}
+                {#                            <hr>#}
+                {#                            <ul class="card_labels">#}
+                {#                              <li><label>Questions: {{ object.questions_count }}</label></li>#}
+                {#                              <li><label>Start date: {{ object.Start_Date }}</label></li>#}
+                {#                              <li><label>End date: {{ object.End_Date }}</label></li>#}
+                {#                            </ul>#}
+                {#                            <!-- <h5 class="card-text text-justify">#}
+                {##}
+                {#                                    <div class="pollButtons">#}
+                {#                                        <button type="button" class="btn btn-info">View</button>#}
+                {#                                    </div>#}
+                {##}
+                {#                            </h5> -->#}
+                {#                          </div>#}
+                {#                        </a>#}
+                {#                      </div>#}
+                {#                    </div>#}
+                {##}
+                {#                  {% endif %}#}
+                {#                {% endfor %}#}
+                {#              </div>#}
+                {#              <!-- ......................................Expire section.................................... -->#}
+                {#              <div class="expire_survey " style="display: none;">#}
+                {#                {% for object in object_list %}#}
+                {#                  {% if object.End_Date < currentDate and object.Survey_Live == False %}#}
+                {#                    <div class="  ">#}
+                {#                      <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">#}
+                {#                        <div class="card">#}
+                {#                          <a href=" {% url 'surveyinfo_detail' object.pk %}">#}
+                {#                            <div class="card-body">#}
+                {#                                <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong>#}
+                {#                              </h2>#}
+                {#                              <hr>#}
+                {#                              <ul class="card_labels">#}
+                {#                                <li><label>Questions: {{ object.questions_count }} </label></li>#}
+                {#                                <li><label>Start date: {{ object.Start_Date }}</label></li>#}
+                {#                                <li><label>End date: {{ object.End_Date }}</label></li>#}
+                {#                              </ul>#}
+                {#                            </div>#}
+                {#                          </a>#}
+                {#                        </div>#}
+                {#                      </div>#}
+                {#                    </div>#}
+                {#                  {% endif %}#}
+                {#                {% endfor %}#}
+                {#              </div>#}
+                {##}
+                {#            <!-- ......................................Live section.................................... -->#}
+                {#            <div class="live_survey " style="display: none;">#}
+                {#                {% for object in object_list %}#}
+                {#                {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == True %}#}
+                {#                <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">#}
+                {#                    <div class="card">#}
+                {#                        <a href=" {% url 'liveSurveyDetail' object.pk %}">#}
+                {#                            <div class="card-body">#}
+                {#                                <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong>#}
+                {#                                </h2>#}
+                {#                                <hr>#}
+                {#                                <ul class="card_labels">#}
+                {#                                    <li><label>Questions: {{ object.questions_count }} </label></li>#}
+                {#                                    <li><label>Start date: {{ object.Start_Date }}</label></li>#}
+                {#                                    <li><label>End date: {{ object.End_Date }}</label></li>#}
+                {#                                </ul>#}
+                {#                            </div>#}
+                {#                        </a>#}
+                {#                    </div>#}
+                {#                </div>#}
+                {#                {% endif %}#}
+                {#                {% endfor %}#}
+                {#            </div>#}
 
-                  {% if object.End_Date > currentDate %}
-
-                    <div class="questionLists col-xs-12 col-sm-6 col-md-3 " id=" {{ object.id }}">
-                      <div class="card">
-                        <a href=" {% url 'surveyinfo_detail' object.pk %}">
-                          <div class="card-body">
-                            <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong></h2>
-                            <hr>
-                            <ul class="card_labels">
-                              <li><label>Questions: {{ object.questions_count }}</label></li>
-                              <li><label>Start date: {{ object.Start_Date }}</label></li>
-                              <li><label>End date: {{ object.End_Date }}</label></li>
-                            </ul>
-                            <!-- <h5 class="card-text text-justify">
-
-                                    <div class="pollButtons">
-                                        <button type="button" class="btn btn-info">View</button>
-                                    </div>
-
-                            </h5> -->
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-
-                  {% endif %}
-                {% endfor %}
-              </div>
-              <!-- ......................................Expire section.................................... -->
-              <div class="expire_survey " style="display: none;">
-                {% for object in object_list %}
-                  {% if object.End_Date < currentDate %}
-                    <div class="  ">
-                      <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">
-                        <div class="card">
-                          <a href=" {% url 'surveyinfo_detail' object.pk %}">
-                            <div class="card-body">
-                              <h2 class="card-title "><strong>{{ object.Survey_Title }}</strong>
-                              </h2>
-                              <hr>
-                              <ul class="card_labels">
-                                <li><label>Questions: {{ object.questions_count }} </label></li>
-                                <li><label>Start date: {{ object.Start_Date }}</label></li>
-                                <li><label>End date: {{ object.End_Date }}</label></li>
-                              </ul>
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
-                {% endfor %}
-
-              </div>
             </div>
           </div>
-        </div>
 
       </div>
-
-      <!-- <div class="popup" data-popup="popup-2">
-      <div class="popup-inner ">
-          <article class="index-form">
-              <form id="popupForm">
-                  <div class="label_inputs">
-
-                      <a class="popup-close" data-popup-close="popup-2" href="#">x</a>
-                      <div class="row">
-                          <div class="col-md-12 col-sm-12 col-xs-12">
-                              <div class="x_panel">
-                                  <div class="x_content">
-
-                                      <div class="container">
-                                          <div class="row" id="surveyView">
-
-                                              <div class="container">
-
-                                                  <h2 class="pollTitle" id="pollTitle"></h2>
-                                                  <div class="horizontalBar"></div>
-
-                                                  <div class="viewSurveyTitle">
-                                                      <ul class="card_labels">
-                                                          <li>
-                                                              <div class="form-group">
-                                                                  <label class="control-label col-md-12 col-sm-12 col-xs-12"
-                                                                       for="first-name">Category :
-                                                                      <span id="categoryTitle1"></span>
-                                                                  </label>
-                                                              </div>
-                                                          </li>
-                                                          <li class="surveyViewDates">
-                                                              <i class="fa fa-calendar"></i>
-                                                              <label>
-                                                                  Start date: <span  id="start_date"></span>
-                                                              </label>
-                                                          </li>
-                                                          <li class="surveyViewDates">
-                                                              <i class="fa fa-calendar"></i>
-                                                              <label>
-                                                                  End date: <span  id="end_date"></span>
-                                                              </label>
-                                                          </li>
-                                                      </ul>
-
-                                                      <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn">Retake
-                                                          survey</button>
-                                                  </div>
-
-
-
-                                                  <div class="col-md-12 col-sm-12 col-xs-12">
-                                                      <div class="x_panel" id="pollsQuestions">
-                                                          <div class="x_title">
-                                                              <h2 class="title " id="questionNameTitle"><strong>
-                                                                      &nbsp; </strong></h2>
-                                                              <div class="clearfix"></div>
-                                                          </div>
-                                                          <div class="x_content">
-                                                              <label>
-                                                                  <ul class="radioInputs">
-
-                                                                      <li>
-                                                                          <label class="optionIndex">A.</label>
-                                                                          <label id="pollsOptions">
-
-                                                                          </label>
-                                                                      </li>
-
-                                                                  </ul>
-                                                              </label>
-                                                          </div>
-
-                                                          <div class="bs-chart-container" id="progressResult"
-                                                              style="width: 80%;">
-                                                              <h4>Results:</h4>
-                                                              <div class="surveyResults">
-                                                                  <strong>Option A</strong>
-                                                                  <div class="progress">
-                                                                      <div class="progress-bar progress-bar-success"
-                                                                          role="progressbar" aria-valuenow="40"
-                                                                          aria-valuemin="0" aria-valuemax="100"
-                                                                          style="width: 50%">
-                                                                          <span class>50% </span>
-                                                                      </div>
-                                                                  </div>
-                                                                  <strong>Option B</strong>
-                                                                  <div class="progress">
-                                                                      <div class="progress-bar progress-bar-success"
-                                                                          role="progressbar" aria-valuenow="20"
-                                                                          aria-valuemin="0" aria-valuemax="100"
-                                                                          style="width: 5%">
-                                                                          <span class>5%</span>
-                                                                      </div>
-                                                                  </div>
-                                                                  <strong>Option C</strong>
-                                                                  <div class="progress">
-                                                                      <div class="progress-bar progress-bar-success"
-                                                                          role="progressbar" aria-valuenow="60"
-                                                                          aria-valuemin="0" aria-valuemax="100"
-                                                                          style="width: 20%">
-                                                                          <span class>20% </span>
-                                                                      </div>
-                                                                  </div>
-                                                                  <strong>Option D</strong>
-                                                                  <div class="progress">
-                                                                      <div class="progress-bar progress-bar-success"
-                                                                          role="progressbar" aria-valuenow="60"
-                                                                          aria-valuemin="0" aria-valuemax="100"
-                                                                          style="width: 25%">
-                                                                          <span class>25% </span>
-                                                                      </div>
-                                                                  </div>
-                                                              </div>
-
-                                                          </div>
-                                                      </div>
-                                                  </div>
-
-                                                  <div class="col-md-12 col-sm-12 col-xs-12">
-                                                      <div class="x_panel" id="pollsQuestions" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
-                                                          <div>
-                                                              <h2 class="title " id="SAQ_questionNameTitle"><strong>
-                                                                     </strong></h2>
-                                                              <h5> </h5>
-                                                          </div>
-                                                          <div style="
-                                                              width: 100%;
-                                                              height: 2px;
-                                                              display: flex;
-                                                              flex-direction: auto;
-                                                              background-color: #f1f1f1; ">
-                                                          </div>
-
-                                                          <div class="x_content" style="margin-left: 40px;">
-                                                              <label class="SAQ_answer_label">Answers:</label>
-                                                              <p class="SAQ_answer">
-
-                                                              </p>
-                                                          </div>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </div>
-
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </form>
-          </article>
-      </div>
-
-  </div> -->
 
     </div>
 

@@ -26,8 +26,9 @@ from django.views.decorators.debug import sensitive_post_parameters
 # Create your views here.
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView
+from WebApp.forms import UserUpdateForm
 
-from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, QuestionInfo, \
+from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, AssignmentQuestionInfo, \
     AssignAnswerInfo
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
@@ -58,6 +59,9 @@ def start(request):
         return render(request, 'student_module/dashboard.html',
                       {'GroupName': batches, 'Group': sessions, 'Course': courses,'activeAssignments':activeassignments})
 
+
+
+
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
     success_url = reverse_lazy('student_user_profile')
@@ -84,6 +88,26 @@ class PasswordChangeView(PasswordContextMixin, FormView):
                          'Your password was successfully updated! You can login with your new credentials')
 
         return super().form_valid(form)
+
+
+def student_editprofile(request):
+    if not request.user.is_authenticated:
+        return HttpResponse("you are not authenticated", {'error_message': 'Error Message Customize here'})
+    post = get_object_or_404(MemberInfo, pk=request.user.id)
+    if request.method == "POST":
+
+        form = UserUpdateForm(request.POST, request.FILES, instance=post)
+
+        if form.is_valid():
+            post.date_last_update = datetime.now()
+            post.save()
+            return redirect('student_user_profile')
+    else:
+
+        form = UserUpdateForm(request.POST, request.FILES, instance=post)
+
+    return render(request, 'student_module/editprofile.html', {'form': form})
+
 
 def quiz(request):
     return render(request, 'student_module/quiz.html')
@@ -209,7 +233,7 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = QuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['Answers'] = []
@@ -239,7 +263,7 @@ class submitAnswer(View):
         Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
         Obj.Student_Code = MemberInfo.objects.get(pk=request.POST["Student_Code"])
-        Obj.Question_Code = QuestionInfo.objects.get(pk=request.POST["Question_Code"])
+        Obj.Question_Code = AssignmentQuestionInfo.objects.get(pk=request.POST["Question_Code"])
         print(Obj.Student_Code)
         Obj.save()
        

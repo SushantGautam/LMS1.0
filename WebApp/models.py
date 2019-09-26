@@ -281,7 +281,7 @@ def upload_to(instance, filename):
     return 'questions/{0}/{1}'.format(instance.id, filename)
 
 
-class QuestionInfo(models.Model):
+class AssignmentQuestionInfo(models.Model):
     
     Question_Title = CharField(max_length=4000)
     Question_Score = IntegerField(blank=True, null=True)
@@ -367,7 +367,7 @@ class AssignAnswerInfo(models.Model):
 
     # Relationship Fields
     Question_Code = ForeignKey(
-        'QuestionInfo',
+        'AssignmentQuestionInfo',
         related_name="assignanswerinfos", on_delete=models.DO_NOTHING
     )
     Student_Code = ForeignKey(

@@ -44,6 +44,7 @@ urlpatterns = (
 urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView), name='user_profile'),
+    path('editprofile/', login_required(views.editprofile), name='user_editprofile'),
     path('change-password/', views.PasswordChangeView.as_view(
         template_name='registration/change_password.html')),
     path('change-password/<int:pk>/', views.change_password_others),
@@ -75,6 +76,7 @@ urlpatterns += (
     path('memberinfo/detail/<int:pk>/', views.MemberInfoDetailView.as_view(), name='memberinfo_detail'),
     path('memberinfo/update/<int:pk>/', views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
     path('memberinfo/delete/<int:pk>/', views.MemberInfoDeleteView.as_view(), name='memberinfo_delete'),
+    path('importcsvajax',views.ImportCsvFile, name='csv_import_ajax'),
     path('ajax/validate_username/', views.validate_username, name='validate_username'),
 )
 

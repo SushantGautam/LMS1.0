@@ -68,7 +68,7 @@ class AssignAssignmentInfoViewSet(viewsets.ModelViewSet):
 class QuestionInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the QuestionInfo class"""
 
-    queryset = models.QuestionInfo.objects.all()
+    queryset = models.AssignmentQuestionInfo.objects.all()
     serializer_class = serializers.QuestionInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
 

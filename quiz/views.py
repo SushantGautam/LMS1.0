@@ -11,9 +11,11 @@ from django.views.generic import DetailView, ListView, TemplateView, FormView, C
 from django.urls import reverse, reverse_lazy
 from django.db import transaction
 from django.db import models
+from django.views import View
 
 from WebApp.models import CourseInfo, ChapterInfo
-from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset
+from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
+    QuizBasicInfoForm
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
 import re
 
@@ -449,7 +451,7 @@ class MCQuestionListView(ListView):
     model = MCQuestion
 
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 
 
 class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
@@ -832,6 +834,8 @@ class QuizCreateWizard(SessionWizardView):
         if step == 'form3':
             step1_data = self.get_cleaned_data_for_step('form1')
             form.fields["mcquestion"].queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
+            form.fields["tfquestion"].queryset = TF_Question.objects.filter(course_code=step1_data['course_code'])
+            form.fields["saquestion"].queryset = SA_Question.objects.filter(course_code=step1_data['course_code'])
 
         return form
 
@@ -883,3 +887,63 @@ class CreateQuizFromChapter(CreateView):
         related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
         kwargs.update({'course_id': related_chapter.Course_Code.id})
         return kwargs
+
+
+class UpdateQuizBasicInfo(UpdateView):
+    model = Quiz
+    form_class = QuizBasicInfoForm
+    template_name = 'quiz/quiz_update_basic_info.html'
+
+    def get_form_kwargs(self):
+        default_kwargs = super().get_form_kwargs()
+        default_kwargs['current_obj'] = self.object
+        return default_kwargs
+
+    def get_success_url(self):
+        return reverse(
+            'quiz_detail',
+            kwargs={'pk': self.object.pk},
+        )
+
+
+class GetCourseChapter(View):
+    def get(self, request):
+        my_course = CourseInfo.objects.get(id=request.GET['course_id'])
+        resp = {}
+        for my_dict in my_course.chapterinfos.all().values('id', 'Chapter_Name'):
+            resp[my_dict['id']] = my_dict['Chapter_Name']
+        print(resp)
+        return JsonResponse(resp)
+
+class RemoveMcqLink(View):
+    def get(self, request, **kwargs):
+        my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+        my_obj.mcquestion.remove(get_object_or_404(MCQuestion, id=self.kwargs['qn_id']))
+        return HttpResponseRedirect(
+            reverse(
+                'quiz_detail',
+                kwargs={'pk': my_obj.pk},
+            )
+        )
+
+class RemoveTfqLink(View):
+    def get(self, request, **kwargs):
+        my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+        my_obj.tfquestion.remove(get_object_or_404(TF_Question, id=self.kwargs['qn_id']))
+        return HttpResponseRedirect(
+            reverse(
+                'quiz_detail',
+                kwargs={'pk': my_obj.pk},
+            )
+        )
+
+class RemoveSaqLink(View):
+    def get(self, request, **kwargs):
+        my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+        my_obj.mcquestion.remove(get_object_or_404(SA_Question, id=self.kwargs['qn_id']))
+        return HttpResponseRedirect(
+            reverse(
+                'quiz_detail',
+                kwargs={'pk': my_obj.pk},
+            )
+        )

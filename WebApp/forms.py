@@ -5,23 +5,24 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import SelectDateWidget
+import datetime
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, QuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
 
 
 class UserRegisterForm(UserCreationForm):
     # Member_Role = forms.MultipleChoiceField(choices=USER_ROLES, widget=forms.CheckboxSelectMultiple())
 
     class Meta(UserCreationForm.Meta):
-        Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+        Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
         model = MemberInfo
         fields = ('username', 'email', 'Member_Gender', 'Center_Code', 'Is_Student', 'Is_Teacher', 'Use_Flag')
 
 
 class UserUpdateForm(forms.ModelForm):
     # role = forms.MultipleChoiceField(choices=USER_ROLES, )
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
     class Meta:
         model = MemberInfo
         fields = (
@@ -46,7 +47,7 @@ class CenterInfoForm(forms.ModelForm):
 
 class MemberInfoForm(forms.ModelForm):
     Use_Flag = forms.BooleanField(initial=True, required=False)
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
     password = forms.CharField(initial='00000')
     helper = FormHelper()
     helper.layout = Layout(
@@ -107,13 +108,13 @@ class MemberInfoForm(forms.ModelForm):
 
     class Meta:
         model = MemberInfo
-        Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+        Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
         fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
 
 
 class MemberUpdateForm(forms.ModelForm):
     helper = FormHelper()
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget)
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
     helper.layout = Layout(
 
         Accordion(
@@ -155,7 +156,6 @@ class MemberUpdateForm(forms.ModelForm):
 
                            Div(
                                Field('Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                              
                                css_class='row'),
                            )
         ),
@@ -264,7 +264,7 @@ class AssignmentInfoForm(forms.ModelForm):
 
 class QuestionInfoForm(forms.ModelForm):
     class Meta:
-        model = QuestionInfo
+        model = AssignmentQuestionInfo
         fields = '__all__'
 
 

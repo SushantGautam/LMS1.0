@@ -15,7 +15,8 @@
 {% endblock %}
 
 {% block main_contain %}
-<div class="panel panel-default paper-shadow">
+{% include 'ForumInclude/UserThread.html' %}
+<!-- <div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
         <h2> Threads Created by {{ panel_title }} </h2>
     </div>
@@ -33,7 +34,7 @@
     {% endif %}
 
 
-    <!-- List group -->
+   
     <ul class="list-group thread-list">
         {% for thread in threads %}
         <li class="list-group-item thread-entry">
@@ -105,5 +106,5 @@
     <div class="panel-footer">
         {% get_pagination %}
     </div>
-</div>
+</div> -->
 {% endblock %}

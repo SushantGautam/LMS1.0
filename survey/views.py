@@ -73,6 +73,8 @@ class SurveyInfoListView(ListView):
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
 
+        # context['']
+
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
 
         # context['surveyForm'] = {'categoryName': list(categoryName)}
@@ -535,6 +537,61 @@ def surveyinfo_category(request, id):
     return JsonResponse({'category': 'category'})
 
 
+class liveSurveyCreate(CreateView):
+    model = SurveyInfo
+    form_class = SurveyInfoForm
+    template_name = 'survey\liveSurvey_createPage.html'
+
+    def get_form_kwargs(self):
+        default_kwargs = super().get_form_kwargs()
+        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
+        return default_kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
+            # context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
+            #                                                             prefix='questionansinfo')  # SAQ
+        else:
+            context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
+            # context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
+            # context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+        return context
+
+    def form_valid(self, form):
+        vform = super().form_valid(form)
+        context = self.get_context_data()
+        qn = context['questioninfo_formset']
+        # qna = context['questionansinfo_formset']
+        with transaction.atomic():
+            if qn.is_valid():
+                qn.instance = self.object
+                qn.save()
+            else:
+                print(qn.errors)
+                print('qn is invalid')
+            # if qna.is_valid():
+            #     qna.instance = self.object
+            #     qna.save()
+            # else:
+            #     print('qna is invalid')
+            #     print(qna.errors)
+        return redirect('liveSurveyDetail', self.object.id)
+
+
+class LiveSurveyDetail(DetailView):
+    model = SurveyInfo
+    template_name = 'survey\liveSurvey_detailPage.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+        return context
+
 class QuestionInfoListView(ListView):
     model = QuestionInfo
 
@@ -620,5 +677,6 @@ class surveyFilterCategory(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
+
         return context
 
