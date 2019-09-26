@@ -179,7 +179,7 @@ $(document).ready(function() {
     // =====================For Button==============================
 
     class Button {
-        constructor(top, left, link=null, height=null, width=null) {
+        constructor(top, left, link=null, height=null, width=null, name='Button') {
         let id = (new Date).getTime();
         let position = { top, left, height, width };
         let button_link = ""
@@ -194,7 +194,7 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" ${button_link} id=${id + 1}  target="_blank"  >Submit</a>
+                            <a class="btn" ${button_link} id=${id + 1}  target="_blank"  >${name}</a>
                         </div>
         
                 `;
@@ -567,15 +567,15 @@ $(document).ready(function() {
         });
     }
 
-    function ButtonFunction(top=null, left=null, link=null, height=null, width=null){
-        const btns = new Button(top, left, link, height, width);
+    function ButtonFunction(top=null, left=null, link=null, height=null, width=null, name='Button'){
+        const btns = new Button(top, left, link, height, width, name);
         
         btns.renderDiagram();
 
-        $('.btn').attr('contentEditable', true);
+        // $('.btn').attr('contentEditable', true);
 
         $('.btn').on('click',function(){
-            alert('say me more!!')
+            // alert('say me more!!')
         })
     
         const div1 = $('i').parent();
@@ -592,15 +592,19 @@ $(document).ready(function() {
         // })
     
         $('.fa-link').bind("click", function(e) {
-            // let argument = prompt("Enter a Link here...");
-            // if (argument == null || argument == "") {
-            //     return console.log("cancled pressed")
-            // } else {
-            //     var btn_id = parseInt(e.currentTarget.id) + 1
-            //     $('#' + btn_id).attr({
-            //         "href": `http://${argument}`
-            //     })
-            // }
+            var btn_id = parseInt(e.currentTarget.id) + 1
+            
+            $('#btn-form input[type=text]').val('');
+            $('#btn-name').val($(this).parent().parent().find('a').text());
+            var link = $(this).parent().parent().find('a').attr('href');
+            if(link != undefined){
+                console.log(link)
+                link = link.replace('http://','');
+                console.log(link)
+            }
+            $('#btn-link').val(link);
+
+            $('#button_id').val(btn_id);
             $('#btn-modal').modal();
         });
     
@@ -620,14 +624,6 @@ $(document).ready(function() {
         );
     
         Pdf.renderDiagram();
-
-        $('.pdf').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-          
-        });
-        
 
           // ==for pdf upload==
         $('.fa-upload').click(function(e) {
@@ -675,7 +671,6 @@ $(document).ready(function() {
                     div.find('#loadingDiv').remove();
                 },
                 success: function(data) {
-                    div.empty();
                     div.append(`
                         <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
                             alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">test.pdf</a>
@@ -760,10 +755,7 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                         },                     
                         success: function(data) {
-                            console.log(data.media_name);
                             div.find('#loadingDiv').remove();
-                            div.empty();
-                            console.log(input.files[0].name, data.media_name)
                             div.append(`
                                 <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
                                     alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">${data.media_name}</a>
@@ -785,7 +777,7 @@ $(document).ready(function() {
                         $(this).css("border", '0')
                     })
 
-                    $(div).resizable({
+                    $('.pdf').resizable({
                         containment: $('#tabs-for-download'),
                         grid: [20, 20],
                         autoHide: true,
@@ -800,6 +792,14 @@ $(document).ready(function() {
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        $('.pdf').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+          
+        });
+
         $(".pdfInp").change(function(e) {
             readURL(this);
         });
@@ -949,15 +949,10 @@ $(document).ready(function() {
                         success: function(data) {
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
-                            div.empty();
+                            // div.empty();
                             // div.append(`
-                            // <video width="100%" height="90%" controls id=${data.link}>
-                            // <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
-                            //     Your browser does not support the video tag.
-                            // </video>`);
+                            
                             var html = $(data.html);
-                            console.log(html);
-                            console.log(typeof(html))
                             $(html).css('height','100%')
                             $(html).css('width','100%')
 
@@ -1312,7 +1307,7 @@ $(document).ready(function() {
                             ButtonFunction(css_value.tops,
                                 css_value.left, 
                                 css_value.link,
-                                css_value.height, css_value.width);
+                                css_value.height, css_value.width, css_value.btn_name);
                         });
                     }
 
@@ -1352,6 +1347,25 @@ function displaypagenumbers(){
         $(this).parent().children('p').text(key+1);
     })
 }
+
+// Button Form Submit
+
+$('#btn-submit').on('click', function(){
+    var btn_name = $('#btn-name').val();
+    var btn_link = $('#btn-link').val();
+    var btn_id = $('#button_id').val();
+    if(btn_link != ""){
+        $('#' + btn_id).attr({
+            "href": `http://${btn_link}`
+        });
+    }else{
+        $('#' + btn_id).removeAttr('href');
+    }
+    $('#' + btn_id).text(btn_name);
+    $('#btn-modal').modal('hide');
+})
+
+// ======================================================================
 
 var colorList = ['000000', '993300', '333300', '003300', '003366', '000066', '333399', '333333',
     '660000', 'FF6633', '666633', '336633', '336666', '0066FF', '666699', '666666', 'CC3333', 'FF9933', '99CC33', '669966', '66CCCC', '3366FF', '663366', '999999', 'CC66FF', 'FFCC33', 'FFFF66', '99FF66', '99CCCC', '66CCFF', '993366', 'CCCCCC', 'FF99CC', 'FFCC99', 'FFFF99', 'CCffCC', 'CCFFff', '99CCFF', 'CC99FF', 'FFFFFF'
