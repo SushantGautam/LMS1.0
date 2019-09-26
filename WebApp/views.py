@@ -1023,10 +1023,10 @@ def save_video(request):
 
         path = settings.MEDIA_ROOT
         name = (str(uuid.uuid4()).replace('-',''))+'.'+media.name.split('.')[-1]
-        print(name)
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(name, media)
-
+        return JsonResponse({'media_name': name})
+'''
         # #video uploading to vimeo.com
 
         # standard Account
@@ -1061,7 +1061,7 @@ def save_video(request):
             r = v.get(uri + '?fields=status').json()
             status = r['status']
         return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
-
+'''
 
 @csrf_exempt
 def save_json(request):
