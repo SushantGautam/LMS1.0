@@ -45,6 +45,7 @@ class Index(ListView):
     model = Thread
     template_name = 'forum/index.html'
     context_object_name = 'threads'
+    paginate_by = 4
 
     def get_queryset(self):
         nodegroups = NodeGroup.objects.all()
@@ -73,6 +74,7 @@ class NodeGroupView(ListView):
     model = Topic
     template_name = 'forum/nodegroup.html'
     context_object_name = 'topics'
+    
 
     def get_queryset(self):
         return Topic.objects.filter(
@@ -107,7 +109,7 @@ class NodeGroupView(ListView):
 
 class TopicView(ListView):
     model = Thread
-    paginate_by = 20
+    paginate_by = 15
     template_name = 'forum/topic.html'
     context_object_name = 'threads'
 
@@ -252,6 +254,7 @@ class SearchView(ListView):
         context['title'] = context['panel_title'] = _(
             'Search: ') + self.kwargs.get('keyword')
         context['show_order'] = True
+        context['keyword'] = self.kwargs.get('keyword')
         return context
 
 

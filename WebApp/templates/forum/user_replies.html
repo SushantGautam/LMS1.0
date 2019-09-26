@@ -1,8 +1,5 @@
 {% extends 'forum/base.html' %}
-{% load i18n %}
-{% load humanize %}
-{% load forum_tags %}
-{% load static %}
+
 
 
 {% block breadcrumb %}
@@ -17,16 +14,16 @@
 {% endblock %}
 
 {% block main_contain %}
+{% include 'ForumInclude/UserReplies.html' %}
 
-
-<div class="panel panel-default">
+<!-- <div class="panel panel-default">
     <div class="panel panel-heading">
         <h2>{% blocktrans with username=user.username %}
             Replies from {{ username }}
             {% endblocktrans %}</h2>
 
     </div>
-    <!-- List group -->
+ 
 
     <ul class="list-group topic-list">
         {% for reply in replies %}
@@ -77,11 +74,11 @@
 
         </li>
     </ul>
-</div>
+</div> -->
 
 
-<!-- List group -->
-<ul class="list-group topic-list">
+
+<!-- <ul class="list-group topic-list">
     {% for topic in topics %}
     <li class="list-group-item topic-entry">
         <div class="entry media">
@@ -110,7 +107,7 @@
         </div>
     </li>
     {% endfor %}
-</ul>
+</ul> -->
 
 
 {% endblock %}

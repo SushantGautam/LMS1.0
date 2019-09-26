@@ -379,14 +379,57 @@ form {
 }
 .categoryContainer {
   margin-left: 60px;
-  display: block;
+}
+
+@media (max-width: 767px) {
+  .categoryContainer {
+    margin-left: 0;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.liveSurveyCreateButton {
+  margin-top: 28px;
+  margin-left: 120px;
+  display: flex;
   justify-content: center;
 }
+
+@media screen and (min-width: 768px) and (max-width: 1400px) {
+  .liveSurveyCreateButton {
+    margin-left: 170px;
+  }
+}
+
+@media (max-width: 767px) {
+  .liveSurveyCreateButton {
+    margin-left: 0;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  #surveyheader {
+    display: grid;
+    justify-content: center;
+  }
+}
+
+
 .categoryContainer .card {
   margin-top: 120px;
-  float: center;
   width: 22rem;
   height: 35rem;
+}
+
+@media (max-width: 767px) {
+  .categoryContainer .card {
+    margin-top: 50px;
+    width: 22rem;
+    height: 35rem;
+  }
 }
 
 .categoryContainer .card-body {
@@ -449,9 +492,10 @@ form {
   justify-content: flex-end;
   margin-top: 30px;
 }
+
 #surveySearch {
     display: flex;
-  padding-right: 50px;
+  /*padding-right: 30px;*/
 }
 
 /* @media (max-width: 529px) {
@@ -476,7 +520,6 @@ form {
 @media screen and (min-width: 992px) and (max-width: 1070px) {
   #keywordInput {
     width: 78%;
-    
   }
 }
 /* #surveySearch .searchButton {
@@ -484,16 +527,25 @@ form {
 } */
 
 .hR {
-  margin-right: 40px;
+  margin-right: 50px;
   height: 2px;
   display: flex;
-  flex-direction: auto;
+  /*flex-direction: auto;*/
   background-color: white;
 }
 .btn-group {
   padding-top: 30px;
   padding-bottom: 30px;
 }
+
+@media (max-width: 767px) {
+  .btn-group {
+    padding-bottom: 0;
+    padding-top: 25px;
+  }
+}
+
+
 #optionsRadios1 {
   width: 20px;
   height: 20px;
@@ -503,7 +555,8 @@ form {
 }
 #retakeSurveyBtn {
   float: right;
-  height: 5vh;
+  /*height: 5vh;*/
+  margin-right: 20px;
   background-color: #26b99a;
 }
 #retakeSurveyBtn:hover {
@@ -513,14 +566,16 @@ form {
   width: 100%;
   height: 2px;
   background-color: #f1f1f1;
-  margin-top: 20px;
   margin-bottom: 20px;
+  margin-top: 20px;
+
 }
-#surveyView .viewSurveyTitle {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+
+/*#surveyView .viewSurveyTitle {*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*}*/
 #categoryTitle1 {
   padding-bottom: 5px;
   font-size: 18px;

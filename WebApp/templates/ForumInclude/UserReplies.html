@@ -1,29 +1,21 @@
-{% extends 'forum/Teacher_base.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load forum_tags %}
+{% load static %}
 
 
-
-{% block breadcrumb %}
-
-<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
-<li class="breadcrumb-item"><a href="{% url 'teacher_info' pk=user.pk %}">{{ user.username }}</a></li>
-<li class="breadcrumb-item active">
-    <a href="{% url 'teacher_posts' pk=user.pk %}">Replies</a>
-</li>
-
-
-{% endblock %}
 
 {% block main_contain %}
 
-{% include 'ForumInclude/UserReplies.html' %}
-<!-- <div class="panel panel-default">
+
+<div class="panel panel-default">
     <div class="panel panel-heading">
         <h2>{% blocktrans with username=user.username %}
             Replies from {{ username }}
             {% endblocktrans %}</h2>
 
     </div>
-    
+    <!-- List group -->
 
     <ul class="list-group topic-list">
         {% for reply in replies %}
@@ -35,11 +27,11 @@
                         <h2>
                             <div class="content_reply">
                                 <img src="
-                                        {% if request.user.Member_Avatar %}
-                                            {{ request.user.Member_Avatar.url }}
-                                        {% elif request.user.Member_Gender == 'M' %}
+                                        {% if reply.user.Member_Avatar %}
+                                            {{ reply.user.Member_Avatar.url }}
+                                        {% elif reply.user.Member_Gender == 'M' %}
                                             {% static 'images/profile/male.jpg' %}
-                                        {% elif request.user.Member_Gender == 'F' %}
+                                        {% elif reply.user.Member_Gender == 'F' %}
                                             {% static 'images/profile/female.png' %}
                                         {% else %}
                                             {% static 'images/profile/profile.png' %}
@@ -50,8 +42,14 @@
                             </div>
 
                             <div class="reply_title">
-                                <a href="{% url 'teacher_thread' pk=reply.thread.pk %}"
-                                    class="entry-link">{{ reply.thread.title }}</a>
+                                <a href="
+                                {% if '/teachers' in request.path %}
+                                {% url 'teacher_thread' pk=reply.thread.pk %}
+                        {% else %}
+                        {% url 'forum:thread' pk=reply.thread.pk %}
+                        {% endif %}
+                                
+                                " class="entry-link">{{ reply.thread.title }}</a>
                             </div>
 
                         </h2>
@@ -74,20 +72,64 @@
 
         </li>
     </ul>
-</div> -->
 
 
+    <div class=" text-center">
+        {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+            <li class="active">
+                <span>{{ i }} <span class="sr-only">(current)</span></span>
+            </li>
+            {% else %}
+            <li>
+                <a href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
 
-<!-- <ul class="list-group topic-list">
+
+<!-- List group -->
+<ul class="list-group topic-list">
     {% for topic in topics %}
     <li class="list-group-item topic-entry">
         <div class="entry media">
             <div class="media-body media-middle">topic:
-                <a href="{% url 'teacher_topic' pk=topic.pk %}" class="entry-link">
+                <a href="
+                
+                
+                {% if '/teachers' in request.path %}
+                {% url 'teacher_topic' pk=topic.pk %}
+                        {% else %}
+                        {% url 'forum:topic' pk=topic.pk %}
+                        {% endif %}
+                " class="entry-link">
                     {{ topic.title }}
                 </a>
                 <p class="entry-meta">node group:
-                    <a href="{% url 'teacher_nodegroup' topic.node_group.pk %}">
+                    <a href="
+                    {% if '/teachers' in request.path %}
+                    {% url 'teacher_nodegroup' topic.node_group.pk %}
+                        {% else %}
+                        {% url 'forum:nodegroup' topic.node_group.pk %}
+                        {% endif %}
+                    
+                    ">
                         <span class="label label-default meta-node">
                             {{ topic.node_group.title }}
                         </span>
@@ -107,7 +149,7 @@
         </div>
     </li>
     {% endfor %}
-</ul> -->
+</ul>
 
 
 {% endblock %}

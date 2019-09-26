@@ -12,6 +12,44 @@
 {% endblock %}
 
 {% block content %}
+
+<!-- Model for Import CSV file -->
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
+                <form method="POST" id="form_import_csv" enctype="multipart/form-data">
+                    {% csrf_token %} <br><br>
+                    <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
+                    <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
+                    <p class="info-text" style="background: azure; padding-top: 0.6em; margin-top: 1em;">
+                        INFO: Username must be unique for all users, users can change their username later. 
+                        Gender Value should be M for male and F for Female. 
+                        Is_Student should be 1 for student and Is_Teacher should be 1 for teacher. Required fields are: 
+                        <b>username, Member_ID, first_name, last_name, email, Member_Gender, Is_Student, Is_Teacher</b>
+
+                    </p>
+                    <a class="text-center" href="{% static 'importcsv_sample.csv' %}" style="padding-top: 2em;"><h4>Download Sample CSV</h4></a><br>
+                    <div class="import-message"></div>
+                    <div class="text-center">
+                        <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit File</button>
+                        <button class="btn btn-primary" data-dismiss="modal" aria-label="Close" style="margin:3em auto 2em auto">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of model -->
+
 <div class="memberDiv">
     <hr class="header_hr">
     <h2 class="tableHeader">List of Members</h2>
@@ -43,7 +81,7 @@
                 <tr class="tableTitleRow">
                     <td class="text-center">ID</td>
                     <td>Member ID</td>
-                    <td>Name</td>
+                    <td>Full Name</td>
                     <td>Current Address</td>
                     <td>Email</td>
                     <!-- <td>Phone</td> -->
@@ -125,6 +163,9 @@
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
                 },
                 {
+                    text:'<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
+                },
+                {
                     extend: 'print',
                     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
                     fieldSeparator: '\t'
@@ -170,6 +211,38 @@
             $("#student_button").css("color", "black");
             $("#teacher_button").css("color", "black");
             table_main.columns().search('').draw();
+        });
+
+
+        $('#form_import_csv').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData($('form').get(0));
+            // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
+            csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
+            formData.append("csrfmiddlewaretoken",csrf);
+            if($('#id_import_csv').val()){
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'csv_import_ajax' %}",  // URL to your view that serves new info
+                    data: formData,
+                    cache:false,
+                    processData:false,
+                    contentType: false,
+                    success: function (response) {
+                        $('.import-message').addClass(response.class);
+                        $('.import-message').removeClass(response.rmclass);
+                        $('.import-message').html(response.message);
+                    },
+                    error: function () {
+                        $('.import-message').addClass('text-danger');
+                        $('.import-message').removeClass('text-sucess');
+                        $('.import-message').html("Error while processing data please try again and verify the format.");
+                    },
+                });
+            }else{
+                $('.import-message').addClass('text-danger');
+                $('.import-message').html("Please upload a csv file with defined format.");
+            }
         });
 
 

@@ -451,7 +451,7 @@ class MCQuestionListView(ListView):
     model = MCQuestion
 
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 
 
 class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
@@ -914,3 +914,36 @@ class GetCourseChapter(View):
             resp[my_dict['id']] = my_dict['Chapter_Name']
         print(resp)
         return JsonResponse(resp)
+
+class RemoveMcqLink(View):
+    def get(self, request, **kwargs):
+        my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+        my_obj.mcquestion.remove(get_object_or_404(MCQuestion, id=self.kwargs['qn_id']))
+        return HttpResponseRedirect(
+            reverse(
+                'quiz_detail',
+                kwargs={'pk': my_obj.pk},
+            )
+        )
+
+class RemoveTfqLink(View):
+    def get(self, request, **kwargs):
+        my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+        my_obj.tfquestion.remove(get_object_or_404(TF_Question, id=self.kwargs['qn_id']))
+        return HttpResponseRedirect(
+            reverse(
+                'quiz_detail',
+                kwargs={'pk': my_obj.pk},
+            )
+        )
+
+class RemoveSaqLink(View):
+    def get(self, request, **kwargs):
+        my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+        my_obj.mcquestion.remove(get_object_or_404(SA_Question, id=self.kwargs['qn_id']))
+        return HttpResponseRedirect(
+            reverse(
+                'quiz_detail',
+                kwargs={'pk': my_obj.pk},
+            )
+        )
