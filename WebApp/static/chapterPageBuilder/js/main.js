@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    $("#import_zip_link").on('click', function(e){
+        e.preventDefault();
+        $("#importzipfile:hidden").trigger('click');
+    });
+    
     $('#loadingDiv').hide();
     // ==================For TextBoxx================================
 
@@ -110,16 +115,25 @@ $(document).ready(function() {
             let position = { top, left, height, width };
             let videoobj;
             let message = ""
-            if(link!=null){
-                videoobj = `<div id='${now}'><div><script>
-                var options = {
-                    url: '${link}',
-                    width: "${width}",
-                    height: "${height}"
-                };
+            // if(link!=null){
+            //     videoobj = `<div id='${now}'><div>
+            //  <script>
+            //     var options = {
+            //         url: '${link}',
+            //         width: "${width}",
+            //         height: "${height}"
+            //     };
               
-                var videoPlayer = new Vimeo.Player('${now}', options);
-              </script>`
+            //     var videoPlayer = new Vimeo.Player('${now}', options);
+            //   </script>`
+            //  ================================   end for vimeo    ===========================================
+            if(link!=null){
+                videoobj = `
+                        <video width="100%" height="75%" controls>
+                            <source src="${link}"  type="video/mp4">
+                        </video>
+                    
+                `
             }else{
                 message = "drag and drop video here...";
                 videoobj = "";
@@ -179,7 +193,7 @@ $(document).ready(function() {
     // =====================For Button==============================
 
     class Button {
-        constructor(top, left, link=null, height=null, width=null) {
+        constructor(top, left, link=null, height=null, width=null, name='Button') {
         let id = (new Date).getTime();
         let position = { top, left, height, width };
         let button_link = ""
@@ -194,7 +208,7 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" ${button_link} id=${id + 1}  target="_blank"  >Submit</a>
+                            <a class="btn" ${button_link} id=${id + 1}  target="_blank"  >${name}</a>
                         </div>
         
                 `;
@@ -567,15 +581,15 @@ $(document).ready(function() {
         });
     }
 
-    function ButtonFunction(top=null, left=null, link=null, height=null, width=null){
-        const btns = new Button(top, left, link, height, width);
+    function ButtonFunction(top=null, left=null, link=null, height=null, width=null, name='Button'){
+        const btns = new Button(top, left, link, height, width, name);
         
         btns.renderDiagram();
 
-        $('.btn').attr('contentEditable', true);
+        // $('.btn').attr('contentEditable', true);
 
         $('.btn').on('click',function(){
-            alert('say me more!!')
+            // alert('say me more!!')
         })
     
         const div1 = $('i').parent();
@@ -592,15 +606,17 @@ $(document).ready(function() {
         // })
     
         $('.fa-link').bind("click", function(e) {
-            // let argument = prompt("Enter a Link here...");
-            // if (argument == null || argument == "") {
-            //     return console.log("cancled pressed")
-            // } else {
-            //     var btn_id = parseInt(e.currentTarget.id) + 1
-            //     $('#' + btn_id).attr({
-            //         "href": `http://${argument}`
-            //     })
-            // }
+            var btn_id = parseInt(e.currentTarget.id) + 1
+            
+            $('#btn-form input[type=text]').val('');
+            $('#btn-name').val($(this).parent().parent().find('a').text());
+            var link = $(this).parent().parent().find('a').attr('href');
+            if(link != undefined){
+                link = link.replace('http://','');
+            }
+            $('#btn-link').val(link);
+
+            $('#button_id').val(btn_id);
             $('#btn-modal').modal();
         });
     
@@ -620,14 +636,6 @@ $(document).ready(function() {
         );
     
         Pdf.renderDiagram();
-
-        $('.pdf').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-          
-        });
-        
 
           // ==for pdf upload==
         $('.fa-upload').click(function(e) {
@@ -675,7 +683,6 @@ $(document).ready(function() {
                     div.find('#loadingDiv').remove();
                 },
                 success: function(data) {
-                    div.empty();
                     div.append(`
                         <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
                             alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">test.pdf</a>
@@ -732,17 +739,14 @@ $(document).ready(function() {
                 reader.onload = function(e) {
                     let div = $(input).parent().parent().parent();
                     var data = new FormData();
-                    // var count = 0
-                    // console.log(input.files);
+                    
                     $.each(input.files, function(i, file) {
                         // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
-                    // data.append('count', count);
                     data.append('type', 'pdf');
                     data.append('chapterID', chapterID);
                     data.append('courseID', courseID);
-                    // console.log("imageuploadfromhere")
                     $.ajax({
                         url: save_file_url,
                         data: data,
@@ -760,10 +764,9 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                         },                     
                         success: function(data) {
-                            console.log(data.media_name);
                             div.find('#loadingDiv').remove();
-                            div.empty();
-                            console.log(input.files[0].name, data.media_name)
+                            div.find('p').remove();
+
                             div.append(`
                                 <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
                                     alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">${data.media_name}</a>
@@ -785,7 +788,7 @@ $(document).ready(function() {
                         $(this).css("border", '0')
                     })
 
-                    $(div).resizable({
+                    $('.pdf').resizable({
                         containment: $('#tabs-for-download'),
                         grid: [20, 20],
                         autoHide: true,
@@ -800,6 +803,14 @@ $(document).ready(function() {
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        $('.pdf').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+          
+        });
+
         $(".pdfInp").change(function(e) {
             readURL(this);
         });
@@ -918,9 +929,8 @@ $(document).ready(function() {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     let div = $(input).parent().parent().parent();
-    
+                    div.find('video').remove();
                     var data = new FormData();
-                    console.log(input.files)
                     $.each(input.files, function(i, file) {
                         data.append('file-' + i, file);
                     });
@@ -949,21 +959,24 @@ $(document).ready(function() {
                         success: function(data) {
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
-                            div.empty();
-                            // div.append(`
-                            // <video width="100%" height="90%" controls id=${data.link}>
-                            // <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
-                            //     Your browser does not support the video tag.
-                            // </video>`);
-                            var html = $(data.html);
-                            console.log(html);
-                            console.log(typeof(html))
-                            $(html).css('height','100%')
-                            $(html).css('width','100%')
+                            div.find('p').remove();
+                            if(data.hasOwnProperty('html')){
+                                var html = $(data.html);
+                                $(html).css('height','100%')
+                                $(html).css('width','100%')
 
-                            div.append(
-                                html
-                            );
+                                div.append(`
+                                    <video width="100%" height="100%">
+                                        <source src="${data.link}">
+                                    </video>
+                                `);
+                            }else{
+                                div.append(`
+                                    <video width="100%" height="75%" controls>
+                                        <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
+                                    </video>
+                                `)
+                            }
                         },
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();
@@ -1033,6 +1046,10 @@ $(document).ready(function() {
 
     // delete page function
     $('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
+        var confirmation = confirm("Are you sure you want to delete?")
+        if(confirmation==false){
+            return false
+        }
         $('#tab'+this.value).remove();
         $(this).parent().parent().remove();
         displaypagenumbers();
@@ -1057,7 +1074,6 @@ $(document).ready(function() {
         editorcopy.empty();
         const obj=$("#tab"+this.value).children();
         $(".tabs").append(editorcopy);
-        console.log(this.value)
         $('.tabs-to-click > ul > div > li')[this.value].click() // li starts from 0 so. this.value is actually this.value + 1 -1 i.e. new tab
 
         $.each( obj, function( i, value ) {
@@ -1090,8 +1106,15 @@ $(document).ready(function() {
         
         // =========================================================================
        
-    
+        $(".editor-canvas").droppable({
+            drop: function(event, ui){
+                dropfunction(event,ui)
+            }
+        });
+
         displaypagenumbers();
+
+        alert('Clone Successful')
     });
     // =====================================================================================
 
@@ -1312,7 +1335,7 @@ $(document).ready(function() {
                             ButtonFunction(css_value.tops,
                                 css_value.left, 
                                 css_value.link,
-                                css_value.height, css_value.width);
+                                css_value.height, css_value.width, css_value.btn_name);
                         });
                     }
 
@@ -1333,7 +1356,7 @@ $(document).ready(function() {
                             VideoFunction(
                                 css_value.tops,
                                 css_value.left,
-                                css_value['link'],
+                                css_value['local_link'],
                                 css_value.height,css_value.width);
                         });
                     }
@@ -1352,6 +1375,25 @@ function displaypagenumbers(){
         $(this).parent().children('p').text(key+1);
     })
 }
+
+// Button Form Submit
+
+$('#btn-submit').on('click', function(){
+    var btn_name = $('#btn-name').val();
+    var btn_link = $('#btn-link').val();
+    var btn_id = $('#button_id').val();
+    if(btn_link != ""){
+        $('#' + btn_id).attr({
+            "href": `http://${btn_link}`
+        });
+    }else{
+        $('#' + btn_id).removeAttr('href');
+    }
+    $('#' + btn_id).text(btn_name);
+    $('#btn-modal').modal('hide');
+})
+
+// ======================================================================
 
 var colorList = ['000000', '993300', '333300', '003300', '003366', '000066', '333399', '333333',
     '660000', 'FF6633', '666633', '336633', '336666', '0066FF', '666699', '666666', 'CC3333', 'FF9933', '99CC33', '669966', '66CCCC', '3366FF', '663366', '999999', 'CC66FF', 'FFCC33', 'FFFF66', '99FF66', '99CCCC', '66CCFF', '993366', 'CCCCCC', 'FF99CC', 'FFCC99', 'FFFF99', 'CCffCC', 'CCFFff', '99CCFF', 'CC99FF', 'FFFFFF'

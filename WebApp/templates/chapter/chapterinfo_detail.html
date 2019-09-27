@@ -461,7 +461,7 @@
                 $.each(value, function (count) {
                     // Create modal
                     $('#modal-container').append(`
-                    <div id="page${key}" role="dialog" style="display:none;">
+                    <div id="page${key}" class = 'coursepages' role="dialog" style="display:none;">
 
                     </div>`)
                     // -------------------------------
@@ -499,7 +499,7 @@
                                 }
                                 $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <a ${link} target="_blank"><button>Button</button</a>
+                                    <a ${link} target="_blank"><button>${css_value.btn_name}</button</a>
                                 </div>
                             `)
                             });
@@ -531,19 +531,31 @@
                         // }
                         if (div == 'video') {
                             $.each(div_value, function (css, css_value) {
-                                $('#page' + key).append(`
-                                <div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                if (div_value.hasOwnProperty['online_link']){
+                                    var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
 
-                                </div>
-                                <script>
-                                var options = {
-                                    url: "${css_value.link}",
-                                    width: "${css_value.width}",
-                                    height: "${css_value.height}"
-                                };
+                                        </div>
+                                        <script>
+                                        var options = {
+                                            url: "${css_value.link}",
+                                            width: "${css_value.width}",
+                                            height: "${css_value.height}"
+                                        };
 
-                                var videoPlayer = new Vimeo.Player('${now}', options);
-                            `)
+                                        var videoPlayer = new Vimeo.Player('${now}', options);
+                                    `
+                                }else{
+                                    var embed = `
+                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                        <video width="100%" height="100%" controls>
+                                            <source src="${css_value.local_link}" type="video/mp4">
+                                            <source src="${css_value.local_link}" type="video/ogg">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    `
+                                }
+                                $('#page' + key).append(embed)
                             });
                         }
                     });
@@ -575,7 +587,6 @@
                 $.each(value, function (count) {
                     if (value[count].textdiv.length == 0 && value[count].pic.length == 0 && value[count].video.length == 0 && value[count].pdf.length == 0 && value[count]['btn-div'].length == 0) {
                         emptycheckflag.push(true);
-                        console.log(key)
                         $('#page' + key).append(`<div>No content here</div>`);
                     } else {
                         emptycheckflag.push(false)
@@ -593,11 +604,12 @@
         }
 
         $("#course-modal").on("hidden.bs.modal", function () {
-            $("#modal-container").empty()
+            $("#modal-container").empty();
         });
 
         $('#next-btn').click(function () {
-            $("#modal-container > div ").each(function () {
+            $("#modal-container > .coursepages ").each(function () {
+                console.log('x')
                 if ($(this).css("display") == "block") {
                     res = this.id.match(/[0-9]+/);
                 }

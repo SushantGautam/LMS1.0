@@ -611,19 +611,24 @@ class SittingManager(models.Manager):
         tfquestion_set = [item.id for item in tfquestion_set]
         saquestion_set = [item.id for item in saquestion_set]
 
-        if (len(mcquestion_set) == 0 and len(tfquestion_set) == 0 and len(question_set) == 0):
+        if (len(mcquestion_set) == 0 and len(tfquestion_set) == 0 and len(saquestion_set) == 0):
             raise ImproperlyConfigured('Question set of the quiz is empty. Please configure questions properly')
 
         # if quiz.max_questions and quiz.max_questions < len(mcquestion_set):
         #     mcquestion_set = mcquestion_set[:quiz.max_questions]
         # if quiz.max_questions and quiz.max_questions < len(tfquestion_set):
         #     tfquestion_set = tfquestion_set[:quiz.max_questions]
-        # if quiz.max_questions and quiz.max_questions < len(question_set):
+        # if quiz.max_questions and quiz.max_questions < len(saquestion_set):
         #     saquestion_set = saquestion_set[:quiz.max_questions]
 
-        mcquestions = ",".join(map(str, mcquestion_set)) + ","
-        tfquestions = ",".join(map(str, tfquestion_set)) + ","
-        saquestions = ",".join(map(str, saquestion_set)) + ","
+        mcquestions, tfquestions, saquestions = "", "", ""
+
+        if mcquestion_set:
+            mcquestions = ",".join(map(str, mcquestion_set)) + ","
+        if tfquestion_set:
+            tfquestions = ",".join(map(str, tfquestion_set)) + ","
+        if saquestion_set:
+            saquestions = ",".join(map(str, saquestion_set)) + ","
 
         questions = mcquestions + tfquestions + saquestions
 
@@ -727,9 +732,11 @@ class Sitting(models.Model):
     def remove_first_question(self):
         if not self.question_list:
             return
-
+        print(self.question_list)
         _, others = self.question_list.split(',', 1)
         self.question_list = others
+        print("remove first question")
+        print(self.question_list)
         self.save()
 
     def add_to_score(self, points):

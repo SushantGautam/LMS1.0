@@ -322,6 +322,10 @@ class QuizTake(FormView):
         self.request.session.set_expiry(259200)  # expires after 3 days
         questions = self.quiz.get_questions()
         question_list = [question.id for question in questions]
+        print("get qns:")
+        print(questions)
+        print("qn list:")
+        print(question_list)
 
         if self.quiz.random_order is True:
             random.shuffle(question_list)
@@ -507,30 +511,6 @@ class MCQuestionUpdateView(UpdateView):
         return vform
 
 
-class MCQuestionUpdateFromQuiz(UpdateView):
-    model = MCQuestion
-    form_class = MCQuestionForm
-    success_url = reverse_lazy('quiz_create')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['answers_formset'] = AnsFormset(self.request.POST, instance=self.object)
-        else:
-            context['answers_formset'] = AnsFormset(instance=self.object)
-        return context
-
-    def form_valid(self, form):
-        vform = super().form_valid(form)
-        context = self.get_context_data()
-        ans = context['answers_formset']
-        with transaction.atomic():
-            if ans.is_valid():
-                ans.instance = self.object
-                ans.save()
-        return vform
-
-
 class MCQuestionDetailView(DetailView):
     model = MCQuestion
 
@@ -566,6 +546,9 @@ class MCQuestionCreateFromQuiz(CreateView):
             if ans.is_valid():
                 ans.instance = self.object
                 ans.save()
+            else:
+                print('ans not valid')
+                print(ans.errors)
         return vform
 
     def get_success_url(self, **kwargs):
@@ -577,7 +560,7 @@ class MCQuestionCreateFromQuiz(CreateView):
 
 class MCQuestionUpdateFromQuiz(UpdateView):
     model = MCQuestion
-    fields = ['figure', 'content', 'explanation', 'answer_order']
+    fields = ['content', 'answer_order', 'figure', 'explanation']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -591,6 +574,8 @@ class MCQuestionUpdateFromQuiz(UpdateView):
         related_quiz = Quiz.objects.get(id=self.kwargs['quiz_id'])
         if form.is_valid():
             self.object = form.save()
+        else:
+            print('qn not valid')
         self.object.cent_code = related_quiz.cent_code
         self.object.course_code = related_quiz.course_code
         vform = super().form_valid(form)
@@ -601,6 +586,9 @@ class MCQuestionUpdateFromQuiz(UpdateView):
             if ans.is_valid():
                 ans.instance = self.object
                 ans.save()
+            else:
+                print('ans not valid')
+                print(ans.errors)
         return vform
 
     def get_success_url(self, **kwargs):
@@ -915,6 +903,7 @@ class GetCourseChapter(View):
         print(resp)
         return JsonResponse(resp)
 
+
 class RemoveMcqLink(View):
     def get(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
@@ -926,6 +915,7 @@ class RemoveMcqLink(View):
             )
         )
 
+
 class RemoveTfqLink(View):
     def get(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
@@ -936,6 +926,7 @@ class RemoveTfqLink(View):
                 kwargs={'pk': my_obj.pk},
             )
         )
+
 
 class RemoveSaqLink(View):
     def get(self, request, **kwargs):

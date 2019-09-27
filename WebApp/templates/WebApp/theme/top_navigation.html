@@ -41,9 +41,7 @@
                     {% if request.user.Is_Teacher %}
                     <li><a href="/teachers"> Login as Teacher</a></li>
                     {% endif %}
-                    {# <li><a href="/"> Login as Admin</a></li>#}
-                    <!-- <li><a href=""> Profile</a></li> -->
-                    {#                        <li><a href="/"> Login as Admin</a></li>#}
+
                     <li><a href="{% url 'user_profile' %}"> Profile</a></li>
 
 

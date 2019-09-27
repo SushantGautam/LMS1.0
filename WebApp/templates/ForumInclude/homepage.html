@@ -48,17 +48,20 @@
 
 
         {% for nodegroup in node_groups %}
+
         {% if nodegroup.topic_count > 0 %}
 
         <li class="list-group-item">
             <div class="media v-middle">
                 <div class="media-body">
                     <h6 class="text-headline margin-none">
+
                         <a href="{% if '/teachers' in request.path %}
                         {% url 'teacher_nodegroup' nodegroup.pk %}
                         {% else %}
                         {% url 'forum:nodegroup' nodegroup.pk %}
                         {% endif %}" class="">{{ nodegroup.title }}</a>
+
                     </h6>
                 </div>
 
@@ -69,6 +72,7 @@
 
         <div class="paper-shadow" data-z="0.5" style="margin-top: -15px">
             {% for thread in threads %}
+
             {% if thread.topic.node_group == nodegroup %}
             <li class="list-group-item media v-middle">
                 <div class="media-left">
@@ -161,16 +165,49 @@
 
 
 
+
+
             </li>
         </div>
 
 
         {% else %}
+
         {% endif %}
         {% endfor %}
 
     </ul>
     <div class="clearfix"></div>
+
+
+    <div class=" text-center">
+        {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+            <li class="active">
+                <span>{{ i }} <span class="sr-only">(current)</span></span>
+            </li>
+            {% else %}
+            <li>
+                <a href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+
 </div>
 
 {% endblock %}

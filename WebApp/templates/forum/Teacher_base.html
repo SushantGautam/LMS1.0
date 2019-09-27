@@ -81,16 +81,19 @@
                         <h4 class="panel-title">Categories</h4>
                     </div>
                     {% for nodegroup in node_groups %}
+
                     <li class="list-group-item
                     {% if '/nodegroup/' in request.path %}
                         {% if nodegroup.pk|stringformat:"i" in request.path %}
                             active
                         {% endif %}
                     {% endif %}">
+
                         <a href="{% url 'teacher_nodegroup' nodegroup.pk %}" id="{{ nodegroup.pk }}"
                             class="node_group_list">
                             {{ nodegroup.title }}</a>
                     </li>
+
                     {% endfor %}
                 </ul>
             </div>
@@ -99,6 +102,7 @@
         </div>
     </div>
 </div>
+{% endblock %}
 {% block customjss %}
 <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
 <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
@@ -114,7 +118,10 @@
         });
     });
 </script>
-{% endblock %}
+<script>
+
+
+</script>
 {% block footer_ext %}
 
 

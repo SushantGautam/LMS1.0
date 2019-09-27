@@ -54,7 +54,7 @@ def start(request):
                 courses.update(course)
         
             for course in courses:
-                activeassignments += AssignmentInfo.objects.filter(Assignment_Deadline__gte=datetime_now)
+                activeassignments += AssignmentInfo.objects.filter(Assignment_Deadline__gte=datetime_now)[:7]
  
         
         return render(request, 'student_module/dashboard.html',

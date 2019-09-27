@@ -53,7 +53,7 @@
                     <form role="search" action="{% url 'forum:search_redirect' %}" class="form">
 
 
-                        <input type="text" id="keywordInput" name="keyword" class="form-control"
+                        <input type="text" id="keywordInput" name="keyword" class="form-control" value="{{ keyword }}"
                             placeholder="Type to search">
 
                         <div class=" pull-right searchButton">
@@ -92,6 +92,7 @@
                         <h4 class="panel-title">Categories</h4>
                     </div>
                     {% for nodegroup in node_groups %}
+
                     <li class="list-group-item
                     {% if '/nodegroup/' in request.path %}
                         {% if nodegroup.pk|stringformat:"i" in request.path %}
@@ -102,6 +103,7 @@
                             class="node_group_list">
                             {{ nodegroup.title }}</a>
                     </li>
+
                     {% endfor %}
                 </ul>
             </div>
