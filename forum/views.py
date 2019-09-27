@@ -55,7 +55,7 @@ class Index(ListView):
             topics = Topic.objects.filter(node_group=ng.pk)
             for topic in topics:
                 threads = Thread.objects.visible().filter(
-                    topic=topic.pk).exclude(id__in=Thread_Topic_not_assigned_to_user(self)[0]).order_by('pub_date')[:4]
+                    topic=topic.pk).filter(id__in=Thread_Topic_not_assigned_to_user(self)[0]).order_by('pub_date')[:4]
                 threadqueryset |= threads
 
         return threadqueryset
@@ -64,7 +64,7 @@ class Index(ListView):
         context = super(ListView, self).get_context_data(**kwargs)
         context['panel_title'] = _('New Threads')
         context['title'] = _('Index')
-        context['topics'] = Topic.objects.all().exclude(id__in=Thread_Topic_not_assigned_to_user(self)[1])
+        context['topics'] = Topic.objects.all().filter(id__in=Thread_Topic_not_assigned_to_user(self)[1])
         context['show_order'] = True
         context['get_top_thread_keywords'] = get_top_thread_keywords(
             self.request, 10)
@@ -83,10 +83,10 @@ class NodeGroupView(ListView):
             'user', 'node_group'
         ).prefetch_related(
             'user__forum_avatar'
-        ).exclude(id__in=Thread_Topic_not_assigned_to_user(self)[1])
+        ).filter(id__in=Thread_Topic_not_assigned_to_user(self)[1])
 
     def get_context_data(self, **kwargs):
-        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).exclude(id__in=Thread_Topic_not_assigned_to_user(self)[1])
+        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).filter(id__in=Thread_Topic_not_assigned_to_user(self)[1])
         latest_threads = []
         for topic in topics:
             reply_count = 0
@@ -122,7 +122,7 @@ class TopicView(ListView):
             'user__forum_avatar'
         ).order_by(
             *['order', get_thread_ordering(self.request)]
-        ).exclude(id__in=Thread_Topic_not_assigned_to_user(self)[0])
+        ).filter(id__in=Thread_Topic_not_assigned_to_user(self)[0])
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
