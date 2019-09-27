@@ -44,7 +44,7 @@ def Topic_not_related_to_user(self):
     innings = InningInfo.objects.filter(
         Groups__in=GroupMapping.objects.filter(Students__pk=self.request.user.pk))
     courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
-    not_assigned_topics = Topic.objects.all(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
+    not_assigned_topics = Topic.objects.filter(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
                                                       node_group__title="Course")
     print("this called", not_assigned_topics)
     return not_assigned_topics
