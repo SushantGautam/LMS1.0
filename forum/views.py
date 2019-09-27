@@ -136,7 +136,7 @@ class TopicView(ListView):
             'user__forum_avatar'
         ).order_by(
             *['order', get_thread_ordering(self.request)]
-        )
+        ).exclude(topic_id__in=Topic_not_related_to_user(self))
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
