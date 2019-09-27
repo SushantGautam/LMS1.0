@@ -10,132 +10,45 @@
   {{ form.media }}
   <form method="post" onsubmit="return validateForm()">
     {% csrf_token %}
-    <div class="form-group">
-      <div class="col-md-12">
-        <div class="col-md-6">
-          <label class="quiz-add-label" for="">Question</label>
-          {{ form.content }}
-        </div>
-        <div class="col-md-6">
-          <label class="quiz-add-label" for="">Answer Order</label>
-          {{ form.answer_order }}
-        </div>
-      </div>
+    {{ form|crispy }}
+    <div id="option_dynamic_append">
+      {{ answers_formset|crispy }}
     </div>
-    {% if form.cent_code %}
-      <div class="form-group">
-        <div class="col-md-12">
-          <div class="col-md-6">
-            <label class="quiz-add-label" for="">Center Code</label>
-            {{ form.cent_code }}
-          </div>
-          <div class="col-md-6">
-            <label class="quiz-add-label" for="">Course Info</label>
-            {{ form.course_code }}
-          </div>
-        </div>
-      </div>
-    {% endif %}
-
-    <div class="form-group">
-      <div class="col-md-12">
-        <div class="col-md-6">
-          <label class="quiz-add-label" for="">Figure</label>
-          {{ form.figure }}
-        </div>
-      </div>
+    <div class="text-danger" id="option_error"></div>
+    <div class="add-more">
+      <a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more options</a>
     </div>
-    <div class="form-group">
-      <div class="col-md-12">
-        <label class="quiz-add-label" for="">Quiz</label>
-      </div>
-      <div class="col-md-12 controls">
-
-        {{ form.quiz }}
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-md-12">
-        {{ answers_formset.management_form }}
-        {% for form in answers_formset.forms %}
-          <div class='table ques-add-quiz '>
-            <div class="row">
-              <div class="col-md-6">
-                <label for="id_answer_set-{{ forloop.counter0 }}-content" class="control-label  requiredField">
-                  Option: </label>
-                <!-- <div class="controls "> <input type="text" name="answer_set-0-content" maxlength="1000" class="textinput textInput form-control form-control" id="id_answer_set-0-content"> <p id="hint_id_answer_set-0-content" class="help-block">Enter the answer text that you want displayed</p> </div>       -->
-                {{ form.content }}
-              </div>
-              <div class="col-md-6">
-                <ul class="mcq-line">
-                  <li>
-                    <div id="div_id_answer_set-{{ forloop.counter0 }}-correct" class="checkbox">
-                      <br>
-                      <label for="id_answer_set-{{ forloop.counter0 }}-correct" class=""> <input type="checkbox"
-                                                                                                 name="answer_set-{{ forloop.counter0 }}-correct"
-                                                                                                 class="checkboxinput"
-                                                                                                 id="id_answer_set-{{ forloop.counter0 }}-correct">
-                        Correct
-                      </label>
-
-
-                    </div>
-
-                  </li>
-                  &nbsp; &nbsp;
-                  <li>
-                    <div id="div_id_answer_set-{{ forloop.counter0 }}-DELETE" class="checkbox">
-                      <br>
-
-                      <label for="id_answer_set-{{ forloop.counter0 }}-DELETE" class="">
-                        <input type="checkbox"
-                               name="answer_set-{{ forloop.counter0 }}-DELETE"
-                               class="checkboxinput"
-                               id="id_answer_set-{{ forloop.counter0 }}-DELETE">
-                        Delete
-                      </label></div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-        <div class="text-danger" id="option_error"></div>
-        <div class="add-more">
-          <a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more options</a>
-
-        </div>
-        <hr>
-        <!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
-        <button class="btn btn-primary" type="submit">Submit</button>
-      </div>
-    </div>
+    <hr>
+    <!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
+    <button class="btn btn-primary" type="submit">Submit</button>
   </form>
+
+  <div style="display:none">
+    <div id="emptyOptionForm">
+      <div class="multiField">
+        {{ answers_formset.empty_form|crispy }}
+      </div>
+    </div>
+  </div>
+
 
 {% endblock %}
 {% block customjss %}
 
-
   <script>
-      function cloneMore(selector, type) {
-          var newElement = $(selector).clone(true);
-          var total = $('#id_' + type + '-TOTAL_FORMS').val();
-          newElement.find(':input').each(function () {
-              var name = $(this).attr('name').replace('-' + (total - 1) + '-', '-' + total + '-');
-              var id = 'id_' + name;
-              $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked value');
-          });
-          newElement.find('label').each(function () {
-              var newFor = $(this).attr('for').replace('-' + (total - 1) + '-', '-' + total + '-');
-              $(this).attr('for', newFor);
-          });
-          total++;
-          $('#id_' + type + '-TOTAL_FORMS').val(total);
-          $(selector).after(newElement);
+      function copyEmptyOption(selector, append_after, type) {
+          var optionId = $('#id_' + type + '-TOTAL_FORMS').val();
+          var str1 = String(type + '-' + optionId);
+          var r1 = new RegExp(type + '\-__prefix__', 'g');
+          console.log($(selector).html().replace(r1, str1));
+
+          $(append_after).append($(selector).html().replace(r1, str1));
+          optionId++;
+          $('#id_' + type + '-TOTAL_FORMS').val(optionId);
       }
 
       $('#add_more').click(function () {
-          cloneMore('div.table:last', 'answer_set');
+          copyEmptyOption('#emptyOptionForm', '#option_dynamic_append', 'answer_set');
       });
 
       function validateForm() {
@@ -156,6 +69,28 @@
           }
       }
 
+      $(".multiField").addClass("col-md-12");
+      //$('div[id^="div_id_answer_set"]').removeClass("form-group");
+      //$('div[id^="div_id_answer_set"]').addClass("form-inline");
+      //$('div[class^="controls"]').addClass("form-group");
+
+      $('div[id$="-content"]').addClass("col-md-6");
+      $('div[id$="-correct"]').addClass("col-md-3");
+      $('div[id$="-DELETE"]').addClass("col-md-3");
+      $('p[id^="hint_id_answer_set"]').remove();
+
+      //$(".control-label").after(`&nbsp;`);
+
+      $('div[id^="div_id_answer_set"]').wrapInner("<div class='col-md-12 answer_set_wrapper' ></div>");
+      $('label[for^="id_answer_set"]').wrap("<div class='col-md-3'></div>");
+      $('.answer_set_wrapper > .controls').addClass('col-md-9');
+
+      $('#div_id_content').addClass('col-md-4');
+      $('#div_id_answer_order').addClass('col-md-4');
+      $('#div_id_figure').addClass('col-md-4');
+      $('#div_id_content, #div_id_answer_order, #div_id_figure').wrapAll("<div class = col-md-12></div>");
+
+      $('label').addClass("quiz-add-label");
 
   </script>
 {% endblock customjss %}

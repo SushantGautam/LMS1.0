@@ -546,6 +546,9 @@ class MCQuestionCreateFromQuiz(CreateView):
             if ans.is_valid():
                 ans.instance = self.object
                 ans.save()
+            else:
+                print('ans not valid')
+                print(ans.errors)
         return vform
 
     def get_success_url(self, **kwargs):
@@ -557,7 +560,7 @@ class MCQuestionCreateFromQuiz(CreateView):
 
 class MCQuestionUpdateFromQuiz(UpdateView):
     model = MCQuestion
-    fields = ['figure', 'content', 'explanation', 'answer_order']
+    fields = ['content', 'answer_order', 'figure', 'explanation']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

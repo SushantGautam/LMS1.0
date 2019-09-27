@@ -84,8 +84,9 @@
 
               </div>
               <div class="col-md-1 text-right ">
-                <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="get">
-                  <input class="button-color-only" type="submit" value="Remove">
+                <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="get"
+                      id="removeForm">
+                  <input class="button-color-only confirm-remove" type="button" value="Remove">
                 </form>
               </div>
               <div class="col-md-1 text-left">
