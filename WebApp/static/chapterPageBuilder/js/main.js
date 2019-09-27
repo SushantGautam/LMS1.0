@@ -598,9 +598,7 @@ $(document).ready(function() {
             $('#btn-name').val($(this).parent().parent().find('a').text());
             var link = $(this).parent().parent().find('a').attr('href');
             if(link != undefined){
-                console.log(link)
                 link = link.replace('http://','');
-                console.log(link)
             }
             $('#btn-link').val(link);
 
@@ -727,17 +725,14 @@ $(document).ready(function() {
                 reader.onload = function(e) {
                     let div = $(input).parent().parent().parent();
                     var data = new FormData();
-                    // var count = 0
-                    // console.log(input.files);
+                    
                     $.each(input.files, function(i, file) {
                         // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
-                    // data.append('count', count);
                     data.append('type', 'pdf');
                     data.append('chapterID', chapterID);
                     data.append('courseID', courseID);
-                    // console.log("imageuploadfromhere")
                     $.ajax({
                         url: save_file_url,
                         data: data,
@@ -756,6 +751,8 @@ $(document).ready(function() {
                         },                     
                         success: function(data) {
                             div.find('#loadingDiv').remove();
+                            div.find('p').remove();
+
                             div.append(`
                                 <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
                                     alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">${data.media_name}</a>
@@ -920,7 +917,6 @@ $(document).ready(function() {
                     let div = $(input).parent().parent().parent();
     
                     var data = new FormData();
-                    console.log(input.files)
                     $.each(input.files, function(i, file) {
                         data.append('file-' + i, file);
                     });
@@ -949,16 +945,24 @@ $(document).ready(function() {
                         success: function(data) {
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
-                            // div.empty();
-                            // div.append(`
-                            
-                            var html = $(data.html);
-                            $(html).css('height','100%')
-                            $(html).css('width','100%')
+                            div.find('p').remove();
+                            if(data.hasOwnProperty('html')){
+                                var html = $(data.html);
+                                $(html).css('height','100%')
+                                $(html).css('width','100%')
 
-                            div.append(
-                                html
-                            );
+                                div.append(`
+                                    <video width="100%" height="100%">
+                                        <source src="${data.link}">
+                                    </video>
+                                `);
+                            }else{
+                                div.append(`
+                                    <video width="100%" height="80%" controls>
+                                        <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
+                                    </video>
+                                `)
+                            }
                         },
                         xhr: function() {
                             var xhr = new window.XMLHttpRequest();
@@ -1028,6 +1032,10 @@ $(document).ready(function() {
 
     // delete page function
     $('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
+        var confirmation = confirm("Are you sure you want to delete?")
+        if(confirmation==false){
+            return false
+        }
         $('#tab'+this.value).remove();
         $(this).parent().parent().remove();
         displaypagenumbers();
@@ -1052,7 +1060,6 @@ $(document).ready(function() {
         editorcopy.empty();
         const obj=$("#tab"+this.value).children();
         $(".tabs").append(editorcopy);
-        console.log(this.value)
         $('.tabs-to-click > ul > div > li')[this.value].click() // li starts from 0 so. this.value is actually this.value + 1 -1 i.e. new tab
 
         $.each( obj, function( i, value ) {
@@ -1085,8 +1092,15 @@ $(document).ready(function() {
         
         // =========================================================================
        
-    
+        $(".editor-canvas").droppable({
+            drop: function(event, ui){
+                dropfunction(event,ui)
+            }
+        });
+
         displaypagenumbers();
+
+        alert('Clone Successful')
     });
     // =====================================================================================
 

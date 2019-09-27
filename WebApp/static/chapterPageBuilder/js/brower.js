@@ -97,14 +97,17 @@ $("#SaveBtn").on("click",function(e){
         );
       }
       if(value.classList.contains('video-div')){
-        link = $(this).find('iframe').attr('src');
+        online_link = $(this).find('iframe').attr('src');
+        local_link = $(this).find('video > source').attr('src');
+
         video.push(
           {
             'tops': $(this).css("top"),
             'left': $(this).css("left"),
             'width': $(this).css("width"),
             'height': $(this).css("height"),
-            'link': link
+            'online_link': online_link,
+            'local_link': local_link
           }
         );
       }

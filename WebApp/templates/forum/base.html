@@ -92,7 +92,7 @@
                         <h4 class="panel-title">Categories</h4>
                     </div>
                     {% for nodegroup in node_groups %}
-                    {% if nodegroup.title != "Course" %}
+
                     <li class="list-group-item
                     {% if '/nodegroup/' in request.path %}
                         {% if nodegroup.pk|stringformat:"i" in request.path %}
@@ -103,7 +103,7 @@
                             class="node_group_list">
                             {{ nodegroup.title }}</a>
                     </li>
-                    {% endif %}
+
                     {% endfor %}
                 </ul>
             </div>
