@@ -27,9 +27,7 @@
             <li><a><i class="fa fa-desktop"></i> Forum <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="{% url 'forum:index' %}">Home</a></li>
-                    {% for nodegroup in node_groups %}
-                    <li><a href="{% url 'forum:nodegroup' nodegroup.pk %}">{{ nodegroup.title }}</a></li>
-                    {% endfor %}
+
                 </ul>
             </li>
             <li><a><i class="fa fa-user"></i> Profile <span class="fa fa-chevron-down"></span></a>
