@@ -1186,7 +1186,8 @@ article {
     background: #FFF;
     border-radius: 10px;
     padding: 35px 10px;
-    margin: 30px 0px;
+    margin: 15px 5px;
+    width: auto;
 }
 
 .box-part:hover {
