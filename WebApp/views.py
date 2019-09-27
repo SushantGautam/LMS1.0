@@ -1,6 +1,7 @@
 import json
 import os
 import zipfile  #For import/export of compressed zip folder
+import shutil
 import uuid
 
 from datetime import datetime
@@ -1090,7 +1091,12 @@ def save_json(request):
 
         return JsonResponse(data={"message": "Json Saved"})
 
-def export(request):
-    pass
-
+def export(request, course, chapter):
+    path = settings.MEDIA_ROOT
+    dir_name = path+'/chapterBuilder/'+str(course)+'/'+str(chapter)
+    if not os.path.exists(dir_name):
+        return HttpResponse('No directory')
+    zipfile = shutil.make_archive(path+'/export/course'+str(course)+'chapter'+str(chapter), 'zip', dir_name)
+   
+    return redirect(settings.MEDIA_URL+'/export/course'+str(course)+'chapter'+str(chapter)+'.zip')
 # -------------------------------------------------------------------------------------------------------

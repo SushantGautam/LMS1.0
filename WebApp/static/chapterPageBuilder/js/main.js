@@ -1032,6 +1032,10 @@ $(document).ready(function() {
 
     // delete page function
     $('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
+        var confirmation = confirm("Are you sure you want to delete?")
+        if(confirmation==false){
+            return false
+        }
         $('#tab'+this.value).remove();
         $(this).parent().parent().remove();
         displaypagenumbers();
@@ -1056,7 +1060,6 @@ $(document).ready(function() {
         editorcopy.empty();
         const obj=$("#tab"+this.value).children();
         $(".tabs").append(editorcopy);
-        console.log(this.value)
         $('.tabs-to-click > ul > div > li')[this.value].click() // li starts from 0 so. this.value is actually this.value + 1 -1 i.e. new tab
 
         $.each( obj, function( i, value ) {
@@ -1089,8 +1092,15 @@ $(document).ready(function() {
         
         // =========================================================================
        
-    
+        $(".editor-canvas").droppable({
+            drop: function(event, ui){
+                dropfunction(event,ui)
+            }
+        });
+
         displaypagenumbers();
+
+        alert('Clone Successful')
     });
     // =====================================================================================
 
