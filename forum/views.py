@@ -15,7 +15,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import ListView
 from textblob import TextBlob
 
-
+from WebApp.models import InningInfo, GroupMapping, InningGroup
 from .forms import ThreadForm, ThreadEditForm, AppendixForm, ForumAvatarForm, ReplyForm, TopicForm, TopicEditForm, \
     PostEditForm
 from .misc import get_query
@@ -47,6 +47,7 @@ class Index(ListView):
     context_object_name = 'threads'
     paginate_by = 4
 
+
     def get_queryset(self):
         nodegroups = NodeGroup.objects.all()
         threadqueryset = Thread.objects.none()
@@ -54,7 +55,7 @@ class Index(ListView):
             topics = Topic.objects.filter(node_group=ng.pk)
             for topic in topics:
                 threads = Thread.objects.visible().filter(
-                    topic=topic.pk).order_by('pub_date')[:4]
+                    topic=topic.pk).exclude(id__in=Thread_Topic_not_assigned_to_user(self)[0]).order_by('pub_date')[:4]
                 threadqueryset |= threads
 
         return threadqueryset
@@ -63,7 +64,7 @@ class Index(ListView):
         context = super(ListView, self).get_context_data(**kwargs)
         context['panel_title'] = _('New Threads')
         context['title'] = _('Index')
-        context['topics'] = Topic.objects.all()
+        context['topics'] = Topic.objects.all().exclude(id__in=Thread_Topic_not_assigned_to_user(self)[1])
         context['show_order'] = True
         context['get_top_thread_keywords'] = get_top_thread_keywords(
             self.request, 10)
@@ -74,7 +75,6 @@ class NodeGroupView(ListView):
     model = Topic
     template_name = 'forum/nodegroup.html'
     context_object_name = 'topics'
-    
 
     def get_queryset(self):
         return Topic.objects.filter(
@@ -83,10 +83,10 @@ class NodeGroupView(ListView):
             'user', 'node_group'
         ).prefetch_related(
             'user__forum_avatar'
-        )
+        ).exclude(id__in=Thread_Topic_not_assigned_to_user(self)[1])
 
     def get_context_data(self, **kwargs):
-        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk'))
+        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).exclude(id__in=Thread_Topic_not_assigned_to_user(self)[1])
         latest_threads = []
         for topic in topics:
             reply_count = 0
@@ -122,11 +122,11 @@ class TopicView(ListView):
             'user__forum_avatar'
         ).order_by(
             *['order', get_thread_ordering(self.request)]
-        )
+        ).exclude(id__in=Thread_Topic_not_assigned_to_user(self)[0])
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        print(self.kwargs.get('pk'))
+        # print(self.kwargs.get('pk'))
         context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
         context['title'] = context['panel_title'] = topic.title
         context['show_order'] = True
@@ -513,3 +513,13 @@ def get_top_thread_keywords(request, number_of_keyword):
 
     popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
     return popular_words[:number_of_keyword]
+
+
+def Thread_Topic_not_assigned_to_user(self):
+    innings = InningInfo.objects.filter(
+        Groups__in=GroupMapping.objects.filter(Students__pk=self.request.user.pk))
+    courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
+    not_assigned_topics = Topic.objects.all().exclude(id__in=Topic.objects.filter(title__in=courses))
+    not_related_threads = Thread.objects.filter(topic__in=not_assigned_topics)
+    print(not_related_threads, not_assigned_topics)
+    return not_related_threads, not_assigned_topics
