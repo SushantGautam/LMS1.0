@@ -266,6 +266,7 @@ urlpatterns += (
     path('saveFile', views.save_file, name='saveFile'),
     path('saveVideo', views.save_video, name='saveVideo'),
     path('saveJson', views.save_json, name='saveJson'),
+    path('export/<int:course>/<int:chapter>/', views.export, name='exportzip'),
 )
 
 

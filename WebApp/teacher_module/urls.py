@@ -102,6 +102,8 @@ urlpatterns += (
     path('forum/posts/<int:pk>/', views.UserPosts.as_view(), name='teacher_posts'),
     path('forum/threads/<int:pk>/',
          views.UserThreads.as_view(), name='teacher_threads'),
+    path('forum/notification', views.NotificationView.as_view(),
+         name='teacher_notification'),
 )
 
 urlpatterns += (

@@ -48,7 +48,7 @@ class SurveyInfo(models.Model):
 
     Category_Code = ForeignKey(
         'CategoryInfo',
-        related_name="surveyinfo", on_delete=models.DO_NOTHING
+        related_name="surveyinfo", on_delete=models.DO_NOTHING, default="General"
     )
 
     Session_Code = ForeignKey(

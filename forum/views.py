@@ -15,7 +15,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import ListView
 from textblob import TextBlob
 
-
+from WebApp.models import InningInfo, GroupMapping, InningGroup
 from .forms import ThreadForm, ThreadEditForm, AppendixForm, ForumAvatarForm, ReplyForm, TopicForm, TopicEditForm, \
     PostEditForm
 from .misc import get_query
@@ -40,29 +40,44 @@ def get_thread_ordering(request):
     return get_default_ordering()
 
 
+def Topic_not_related_to_user(self):
+    innings = InningInfo.objects.filter(
+        Groups__in=GroupMapping.objects.filter(Students__pk=self.request.user.pk))
+    courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
+    not_assigned_topics = Topic.objects.all().exclude(id__in=Topic.objects.filter(title__in=courses),
+                                                      node_group__title="Course")
+    print("this called", not_assigned_topics)
+    return not_assigned_topics
+
+
+def Thread_not_related_to_user(self):
+    return Thread.objects.filter(topic__in=Topic_not_related_to_user(self))
+
+
 # Create your views here.
 class Index(ListView):
     model = Thread
     template_name = 'forum/index.html'
     context_object_name = 'threads'
+    paginate_by = 4
 
     def get_queryset(self):
         nodegroups = NodeGroup.objects.all()
         threadqueryset = Thread.objects.none()
         for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk)
+            topics = Topic.objects.filter(node_group=ng.pk).exclude(id__in=Topic_not_related_to_user(self))
             for topic in topics:
                 threads = Thread.objects.visible().filter(
-                    topic=topic.pk).order_by('pub_date')[:4]
+                    topic=topic.pk).order_by('pub_date').exclude(topic_id__in=Topic_not_related_to_user(self))[:4]
                 threadqueryset |= threads
-
+        print(threadqueryset, "threadqueryset")
         return threadqueryset
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
         context['panel_title'] = _('New Threads')
         context['title'] = _('Index')
-        context['topics'] = Topic.objects.all()
+        context['topics'] = Topic.objects.all().exclude(id__in=Topic_not_related_to_user(self))
         context['show_order'] = True
         context['get_top_thread_keywords'] = get_top_thread_keywords(
             self.request, 10)
@@ -75,16 +90,17 @@ class NodeGroupView(ListView):
     context_object_name = 'topics'
 
     def get_queryset(self):
+
         return Topic.objects.filter(
             node_group__id=self.kwargs.get('pk')
         ).select_related(
             'user', 'node_group'
         ).prefetch_related(
             'user__forum_avatar'
-        )
+        ).exclude(id__in=Topic_not_related_to_user(self))
 
     def get_context_data(self, **kwargs):
-        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk'))
+        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).exclude(id__in=Topic_not_related_to_user(self))
         latest_threads = []
         for topic in topics:
             reply_count = 0
@@ -107,7 +123,7 @@ class NodeGroupView(ListView):
 
 class TopicView(ListView):
     model = Thread
-    paginate_by = 20
+    paginate_by = 15
     template_name = 'forum/topic.html'
     context_object_name = 'threads'
 
@@ -252,6 +268,7 @@ class SearchView(ListView):
         context['title'] = context['panel_title'] = _(
             'Search: ') + self.kwargs.get('keyword')
         context['show_order'] = True
+        context['keyword'] = self.kwargs.get('keyword')
         return context
 
 
@@ -504,7 +521,6 @@ def get_top_thread_keywords(request, number_of_keyword):
         for eachword in words:
             for singleword in eachword.split(" "):
                 if singleword in word_counter:
-                    print(singleword)
                     word_counter[singleword] += 1
                 else:
                     word_counter[singleword] = 1

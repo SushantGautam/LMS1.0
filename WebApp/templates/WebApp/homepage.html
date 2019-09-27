@@ -65,21 +65,18 @@
 
     <div class="col-md-6 col-sm-12 col-xs-12">
         <div class="panel panel-default">
-            <div class="row title">
-                <div class="col-md-12 forumDiv">
-                    <h3><a href="{% url 'forum:index' %}"><span class="forum">&nbsp; FORUM</span><span
-                                class="thread">{{ threadcount }}</span></a></h3>
-                    <h5></h5>
-                </div>
+            <div class="title">
+                    <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b>FORUM</b><span
+                                class="thread">{{ threadcount }}</span></a></h2>
             </div>
-            <ul class="list-group relative paper-shadow" data-hover-z="0.5" data-animated="">
+            <ul class="list-group" data-hover-z="0.5" data-animated="">
 
                 {% for object in thread %}
                 <li class="list-group-item ">
                     <div class="media-body">
-                        <B><span class="forum"><a
-                                    href="{{ object.get_absolute_url }}">{{ object.title }}</a></span><span
-                                class="thread">{{ object.pub_date|naturaltime }}</span></B>
+                        <b><span class="forum"><a 
+                                    href="{{ object.get_absolute_url }}">{{ object.title|truncatechars:68  }}</a></span><span
+                                class="thread">{{ object.pub_date|naturaltime }}</span></b>
                     </div>
                 </li>
                 {% endfor %}
@@ -93,17 +90,16 @@
         <div class="panel panel-default">
             <div class="title">
                 <a href="{% url 'courseinfo_list' %}">
-                    <h2 style="font-size: 23px ">&nbsp;<b>Courses</b> </h2>
+                    <h2 style="font-size: 2em">&nbsp;<b>COURSES</b></h2>
                 </a>
-                <!-- <h5>Your recent courses</h5> -->
             </div>
             <ul class="list-group">
                 {% for object in course %}
 
                 <li class="list-group-item ">
                     <div class="media-body">
-                        <B style="font-size: 14px"><a
-                                href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></B>
+                        <b><a
+                                href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></b>
                     </div>
                 </li>
                 {% endfor %}
@@ -337,8 +333,8 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="panel panel-default">
-            <div class="title">
-                <h2 style="font-size: 20px ">&nbsp;<b>Word Cloud - Forum</b> </h2>
+            <div class="title text-center">
+                <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b> </h2>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em"></div>
         </div>
@@ -511,4 +507,5 @@
         // })();
 
 </script>
+
 {% endblock %}

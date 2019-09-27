@@ -58,6 +58,9 @@ urlpatterns += (
 
     path('surveyFilterCategory/', views.surveyFilterCategory.as_view(),
          name='surveyFilterCategory'),
+
+    path('liveSurveyCreate/', views.liveSurveyCreate.as_view(), name='liveSurveyCreate'),
+    path('liveSurveyDetail/detail/<int:pk>/', views.LiveSurveyDetail.as_view(), name='liveSurveyDetail'),
 )
 
 urlpatterns += (

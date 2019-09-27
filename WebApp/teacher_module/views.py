@@ -17,7 +17,7 @@ from django_addanother.views import CreatePopupMixin
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm    
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo, MemberInfo
 from forum.models import NodeGroup, Thread, Topic
-from forum.models import Post
+from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
 from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
@@ -1230,6 +1230,31 @@ class UserThreads(ListView):
         context['user'] = User.objects.get(pk=self.kwargs.get('pk'))
         context['panel_title'] = context['title'] = context['user'].username
         return context
+
+
+
+
+class NotificationView(ListView):
+    model = Notification
+    paginate_by = 20
+    template_name = 'forum/notification.html'
+    context_object_name = 'notifications'
+
+    def get_queryset(self):
+        Notification.objects.filter(to=self.request.user).update(read=True)
+        return Notification.objects.filter(
+            to=self.request.user
+        ).select_related(
+            'sender', 'thread', 'post'
+        ).prefetch_related(
+            'sender__forum_avatar', 'post__thread'
+        ).order_by('-pub_date')
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['title'] = _("Notifications")
+        return context
+
 
 
 
