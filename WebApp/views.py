@@ -3,11 +3,8 @@ import os
 import zipfile  #For import/export of compressed zip folder
 import shutil
 import uuid
-
 from datetime import datetime
-import uuid
 import pandas as pd
-from django.db import transaction
 
 # import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
@@ -166,7 +163,7 @@ def start(request):
             wordCloud = Thread.objects.all()
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
-                '-Register_DateTime')[:10]
+                '-Register_DateTime')[:5]
             coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
@@ -357,27 +354,32 @@ def ImportCsvFile(request):
         path = os.path.join(path,filename)
 
         df = pd.read_csv(path)
+        # Drop empty row of excel csv file
+        df = df.dropna(how='all')
         saved_id = []
         for i in range(len(df)):
             try:
                 obj = MemberInfo()
-                obj.username = df.iloc[i]['username']
-                obj.Member_ID = df.iloc[i]['Member_ID']
-                obj.first_name = df.iloc[i]['first_name']
-                obj.last_name = df.iloc[i]['last_name']
-                obj.email = df.iloc[i]['email']
-                obj.Member_Permanent_Address = df.iloc[i]['Member_Permanent_Address']
-                obj.Member_Temporary_Address = df.iloc[i]['Member_Temporary_Address']
-                obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Member_BirthDate'],'%m/%d/%Y').strftime('%Y-%m-%d')
-                obj.Member_Phone = df.iloc[i]['Member_Phone']
-                obj.Member_Gender = df.iloc[i]['Member_Gender']
+                obj.username = df.iloc[i]['Username']
+                obj.Member_ID = df.iloc[i]['Member ID']
+                obj.first_name = df.iloc[i]['First Name']
+                obj.last_name = df.iloc[i]['Last Name']
+                obj.email = df.iloc[i]['Email']
+                obj.Member_Permanent_Address = df.iloc[i]['Permanent Address']
+                obj.Member_Temporary_Address = df.iloc[i]['Temporary Address']
+                try:
+                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'],'%m/%d/%Y').strftime('%Y-%m-%d')
+                except:
+                    obj.Member_BirthDate = None
+                obj.Member_Phone = df.iloc[i]['Phone']
+                obj.Member_Gender = df.iloc[i]['Gender']
 
-                if df.iloc[i]['Is_Teacher'] == 1:
+                if df.iloc[i]['Teacher'] == 1:
                     obj.Is_Teacher = True
                 else:
                     obj.Is_Teacher = False
             
-                if df.iloc[i]['Is_Student'] == 1:
+                if df.iloc[i]['Student'] == 1:
                     obj.Is_Student = True
                 else:
                     obj.Is_Student = False
