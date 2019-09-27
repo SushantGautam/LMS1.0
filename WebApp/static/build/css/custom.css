@@ -1142,7 +1142,7 @@ article {
 
 #divID {
     background: #f5f5f5;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 /*top nav center name Rajav*/
@@ -1524,6 +1524,9 @@ input[type=checkbox], input[type=radio] {
 }
 
 /* quiz results css */
+.quiz-info-detail-page{
+    margin: 20px 0;
+}
 .mcqlist-container{ 
     
     

@@ -99,7 +99,14 @@
               {{ object.Course_Description }}
             </p>
             {% else %}
-            <p style=" padding-left: 10px;">
+            <p style="padding-left: 10px;
+            padding-right: 10px;
+            line-height: 1.5em;
+            height: 3em;
+            overflow-wrap:break-word; 
+            overflow: hidden;
+            white-space: normal;
+            text-overflow: ellipsis;">
               No Description
             </p>
             {% endif %}
