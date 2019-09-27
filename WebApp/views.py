@@ -168,13 +168,17 @@ def start(request):
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
+            surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code,Use_Flag=True)[:5]
+            sessioncount = SessionInfo.objects.filter(Center_Code=request.user.Center_Code,Use_Flag=True)[:5]
 
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
                           {'course': course, 'coursecount': coursecount, 'studentcount': studentcount,
                            'teachercount': teachercount,
                            'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,
-                           'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
+                           'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
+                           'surveycount':surveycount,
+                           'sessioncount':sessioncount})
         if request.user.Is_Student:
             return redirect('student_home')
         if request.user.Is_Teacher:

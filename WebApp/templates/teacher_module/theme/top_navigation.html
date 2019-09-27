@@ -20,7 +20,6 @@
 
             <li class="">
                 <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-
                     <img src="
                                     {% if request.user.Member_Avatar %}
                                         /media/{{ request.user.Member_Avatar }}
@@ -38,8 +37,8 @@
                     {% if request.user.Is_Student %}
                     <li><a href="/students"> Login as Student</a></li>
                     {% endif %}
-                    {% if request.user.Is_Teacher %}
-                    <li><a href="/teachers"> Login as Teacher</a></li>
+                    {% if request.user.Is_CenterAdmin %}
+                    <li><a href="{% url 'start' %}"> Login as Admin</a></li>
                     {% endif %}
                     {# <li><a href="/"> Login as Admin</a></li>#}
                     <!-- <li><a href=""> Profile</a></li> -->
