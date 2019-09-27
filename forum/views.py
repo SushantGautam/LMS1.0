@@ -518,7 +518,6 @@ def get_top_thread_keywords(request, number_of_keyword):
 def Thread_Topic_not_assigned_to_user(self):
     innings = InningInfo.objects.filter(
         Groups__in=GroupMapping.objects.filter(Students__pk=self.request.user.pk))
-    NodeGroup
     courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
     not_assigned_topics = Topic.objects.all().exclude(id__in=Topic.objects.filter(title__in=courses), node_group__title="Course")
     not_related_threads = Thread.objects.filter(topic__in=not_assigned_topics)
