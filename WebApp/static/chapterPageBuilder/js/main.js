@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    $("#import_zip_link").on('click', function(e){
+        e.preventDefault();
+        $("#importzipfile:hidden").trigger('click');
+    });
+    
     $('#loadingDiv').hide();
     // ==================For TextBoxx================================
 
@@ -110,16 +115,25 @@ $(document).ready(function() {
             let position = { top, left, height, width };
             let videoobj;
             let message = ""
-            if(link!=null){
-                videoobj = `<div id='${now}'><div><script>
-                var options = {
-                    url: '${link}',
-                    width: "${width}",
-                    height: "${height}"
-                };
+            // if(link!=null){
+            //     videoobj = `<div id='${now}'><div>
+            //  <script>
+            //     var options = {
+            //         url: '${link}',
+            //         width: "${width}",
+            //         height: "${height}"
+            //     };
               
-                var videoPlayer = new Vimeo.Player('${now}', options);
-              </script>`
+            //     var videoPlayer = new Vimeo.Player('${now}', options);
+            //   </script>`
+            //  ================================   end for vimeo    ===========================================
+            if(link!=null){
+                videoobj = `
+                        <video width="100%" height="75%" controls>
+                            <source src="${link}"  type="video/mp4">
+                        </video>
+                    
+                `
             }else{
                 message = "drag and drop video here...";
                 videoobj = "";
@@ -915,7 +929,7 @@ $(document).ready(function() {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     let div = $(input).parent().parent().parent();
-    
+                    div.find('video').remove();
                     var data = new FormData();
                     $.each(input.files, function(i, file) {
                         data.append('file-' + i, file);
@@ -958,7 +972,7 @@ $(document).ready(function() {
                                 `);
                             }else{
                                 div.append(`
-                                    <video width="100%" height="80%" controls>
+                                    <video width="100%" height="75%" controls>
                                         <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
                                     </video>
                                 `)
@@ -1342,7 +1356,7 @@ $(document).ready(function() {
                             VideoFunction(
                                 css_value.tops,
                                 css_value.left,
-                                css_value['link'],
+                                css_value['local_link'],
                                 css_value.height,css_value.width);
                         });
                     }

@@ -1093,12 +1093,19 @@ def save_json(request):
 
         return JsonResponse(data={"message": "Json Saved"})
 
-def export(request, course, chapter):
+def export_chapter(request, course, chapter):
+    coursename = CourseInfo.objects.get(id = course).Course_Name
     path = settings.MEDIA_ROOT
     dir_name = path+'/chapterBuilder/'+str(course)+'/'+str(chapter)
     if not os.path.exists(dir_name):
         return HttpResponse('No directory')
-    zipfile = shutil.make_archive(path+'/export/course'+str(course)+'chapter'+str(chapter), 'zip', dir_name)
+    zipfile = shutil.make_archive(path+'/export/'+str(coursename)+'_Chapter'+str(chapter), 'zip', dir_name)
    
-    return redirect(settings.MEDIA_URL+'/export/course'+str(course)+'chapter'+str(chapter)+'.zip')
+    return redirect(settings.MEDIA_URL+'/export/'+str(coursename)+'_Chapter'+str(chapter)+'.zip')
+
+def import_chapter(request):
+    if request.FILES['filename']:
+            filename = request.FILES['filename']
+    if not filename.name.endswith('.zip'):
+        return JsonResponse({'status':'false','message':"Only zip files are allowed"}, status=500)
 # -------------------------------------------------------------------------------------------------------
