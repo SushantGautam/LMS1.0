@@ -70,7 +70,7 @@ class Index(ListView):
                 threads = Thread.objects.visible().filter(
                     topic=topic.pk).order_by('pub_date').exclude(topic_id__in=Topic_not_related_to_user(self))[:4]
                 threadqueryset |= threads
-
+        print(threadqueryset)
         return threadqueryset
 
     def get_context_data(self, **kwargs):
