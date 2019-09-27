@@ -48,7 +48,7 @@
 
 
         {% for nodegroup in node_groups %}
-        {% if nodegroup.title != "Course" %}
+
         {% if nodegroup.topic_count > 0 %}
 
         <li class="list-group-item">
@@ -72,6 +72,7 @@
 
         <div class="paper-shadow" data-z="0.5" style="margin-top: -15px">
             {% for thread in threads %}
+
             {% if thread.topic.node_group == nodegroup %}
             <li class="list-group-item media v-middle">
                 <div class="media-left">
@@ -164,12 +165,14 @@
 
 
 
+
+
             </li>
         </div>
 
 
         {% else %}
-        {% endif %}
+
         {% endif %}
         {% endfor %}
 

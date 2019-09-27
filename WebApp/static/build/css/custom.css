@@ -1524,6 +1524,9 @@ input[type=checkbox], input[type=radio] {
 }
 
 /* quiz results css */
+.quiz-info-detail-page{
+    margin: 20px 0;
+}
 .mcqlist-container{ 
     
     
