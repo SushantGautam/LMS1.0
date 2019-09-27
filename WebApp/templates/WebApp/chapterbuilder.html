@@ -299,7 +299,7 @@
               <a href="#"><i class="fas fa-file-import" ></i><br />Import</a>
 
               
-              <a href="#"><i class="fas fa-file-export" ></i><br />Export</a>
+              <a href="{% url 'exportzip' course chapter %}" target="_blank" onclick="return confirm('Have you saved the latest change?')"><i class="fas fa-file-export" ></i><br />Export</a>
 
 
           </nav>
