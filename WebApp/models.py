@@ -60,8 +60,8 @@ class MemberInfo(AbstractUser):
             'unique': _("A user with that username already exists."),
         },
     )
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=150, blank=True)
+    first_name = models.CharField(_('first name'), max_length=50, blank=True)
+    last_name = models.CharField(_('last name'), max_length=50, blank=True)
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
         _('staff status'),
@@ -82,15 +82,15 @@ class MemberInfo(AbstractUser):
         ),
     )
 
-    Member_ID = models.CharField(max_length=250, blank=True, null=True, help_text=_('ID assigned by university/Roll No'))
-    password = models.CharField(_('password'), max_length=128)
+    Member_ID = models.CharField(max_length=150, blank=True, null=True, help_text=_('ID assigned by university/Roll No'))
+    password = models.CharField(_('password'), max_length=264)
     Member_Permanent_Address = models.CharField(max_length=500, blank=True, null=True)
     Member_Temporary_Address = models.CharField(max_length=500, blank=True, null=True)
     Member_BirthDate = models.DateTimeField(blank=True, null=True)
     Member_Phone = models.CharField(max_length=150, blank=True, null=True)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
-    Register_Agent = CharField(max_length=500, blank=True, null=True)
+    Register_Agent = CharField(max_length=128, blank=True, null=True)
     Updated_DateTime = DateTimeField(auto_now=True)
     Member_Memo = models.CharField(max_length=500, blank=True, null=True)
     Member_Avatar = models.ImageField(upload_to="Member_images/", blank=True, null=True)
@@ -98,7 +98,7 @@ class MemberInfo(AbstractUser):
     Is_Student = models.BooleanField(default=True)
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
-    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default= ('F', 'Female'))
+    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
 
     @property
     def Avatar(self):
