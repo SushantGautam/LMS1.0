@@ -2,54 +2,77 @@
 
 
 <table class="table table-bordered ">
-       
-    <tbody> 
-      <tr>
-          <td><p>Quiz</p></td> 
-          <td>  <p>{{quiz.title}}</p></td>
-      </tr>
-      <tr>
-          <td><p>Description</p></td> 
-          <td>  <p>{{quiz.description}}</p></td>
-      </tr>
-      <tr>
-          <td><p>Course </p></td> 
-          <td>  <p>{{ quiz.course_code }}</p></td>
-      </tr>
-      <tr>
-          <td><p> Chapter</p></td> 
-          <td>  <p> {{ quiz.chapter_code }}</p></td>
+
+  <tbody>
+  <tr>
+    <td><p>Quiz</p></td>
+    <td><p>{{ quiz.title }}</p></td>
+  </tr>
+  <tr>
+    <td><p>Description</p></td>
+    <td><p>{{ quiz.description }}</p></td>
+  </tr>
+  <tr>
+    <td><p>Course </p></td>
+    <td><p>{{ quiz.course_code }}</p></td>
+  </tr>
+  <tr>
+    <td><p> Chapter</p></td>
+    <td><p> {{ quiz.chapter_code }}</p></td>
   
-      </tr>
-      <tr>
-          <td><p>Type of quiz</p></td> 
-          <td>  <p>{% if quiz.pre_test  %}Pre Test <br>{% endif %}
-            {% if quiz.post_test  %}Post Test <br>{% endif %}
-            {% if quiz.exam_paper  %}Exam <br>{% endif %}</p></td>
-      </tr>
-      <tr>
-          <td><p>Url</p></td> 
-          <td>  <p>{{quiz.url}}</p></td>
-      </tr> 
-      <tr>
-          <td><p>Quiz Feature</p></td> 
-          <td>  <p>{% if quiz.random_order  %}Random Order <br>{% endif %}
-            {% if quiz.single_attempt  %}Single Attempt <br>{% endif %}
-            
-      </tr> 
-      <tr>
-          <td><p>Status</p></td> 
-          <td>  <p>{% if quiz.draft is True  %} Inactive<br>{% endif %}
-            {% if quiz.draft is False  %} Active <br>{% endif %} </p>
-            </td>
-            
-            
-      </tr>
-  
-    </tbody>
-  </table>
+  </tr>
+  <tr>
+    <td><p>Type of quiz</p></td>
+    <td><p>{% if quiz.pre_test %}Pre Test <br>{% endif %}
+      {% if quiz.post_test %}Post Test <br>{% endif %}
+      {% if quiz.exam_paper %}Exam <br>{% endif %}</p></td>
+  </tr>
+  <tr>
+    <td><p>Url</p></td>
+    <td><p>{{ quiz.url }}</p></td>
+  </tr>
+  <tr>
+    <td><p>Quiz Feature</p></td>
+    <td><p>{% if quiz.random_order %}Random Order <br>{% endif %}
+      {% if quiz.single_attempt %}Single Attempt <br>{% endif %}</p>
+
+  </tr>
+  <tr>
+    <td><p>Status</p></td>
+    <td>
+      {% if quiz.draft is True %}
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <span class="text-danger">Inactive</span>
+          </div>
+          <div class="col-md-6">
+            <form action="{% url 'activate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
+              <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
+                     class="confirm-activate">
+            </form>
+          </div>
+        </div>
+      {% endif %}
+      {% if quiz.draft is False %}
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <span class="text-success">Active</span>
+          </div>
+          <div class="col-md-6">
+            <form action="{% url 'deactivate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
+              <input type="button" value="Deactivate" style="float: right;color: #2A3F54;cursor:pointer"
+                     class="confirm-deactivate">
+            </form>
+          </div>
+        </div>
+      {% endif %}
+    </td>
 
 
+  </tr>
+  
+  </tbody>
+</table>
 
 
 <div class="quiz-question-list">
@@ -96,11 +119,12 @@
 
               </div>
               <div class="col-md-1 text-right ">
-                <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="get">
-                  <input class="button-color-only" type="submit" value="Remove">
+                <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="post">
+                  {% csrf_token %}
+                  <input class="button-color-only confirm-remove" type="submit" value="Remove">
                 </form>
               </div>
-             
+
 
             </div>
 
@@ -118,7 +142,6 @@
               {{ ans.content }}{% if ans.correct %} -> <span class="mcq-correct">Correct</span>
               {% endif %}
             {% endfor %}
-            </li>
           </ul>
         </div>
 
@@ -161,11 +184,13 @@
 
               </div>
               <div class="col-md-1 text-right " style="line-height: 24px;">
-                <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
-
+                <form action="{% url 'tfquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="post">
+                  {% csrf_token %}
+                  <input class="button-color-only confirm-remove" type="submit" value="Remove">
+                </form>
 
               </div>
-             
+
             </div>
 
           </div>
@@ -212,7 +237,10 @@
 
               </div>
               <div class="col-md-1 text-right " style="line-height: 24px;">
-                <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
+                <form action="{% url 'saquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="post">
+                  {% csrf_token %}
+                  <input class="button-color-only confirm-remove" type="submit" value="Remove">
+                </form>
 
 
               </div>

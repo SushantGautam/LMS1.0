@@ -28,5 +28,21 @@
             return false;
         }
     });
+    $(document).on('click', '.confirm-activate', function (event) {
+        ans = confirm('Are you sure you want to activate this Quiz?');
+        if (ans == true) {
+            $(this).parents('form:first').submit();
+        } else {
+            return false;
+        }
+    });
+    $(document).on('click', '.confirm-deactivate', function (event) {
+        ans = confirm('Are you sure you want to deactivate this Quiz?');
+        if (ans == true) {
+            $(this).parents('form:first').submit();
+        } else {
+            return false;
+        }
+    });
   </script>
 {% endblock %}
