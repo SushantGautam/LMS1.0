@@ -295,8 +295,8 @@
             <a href="#" id="SaveBtn"><i class="far fa-save  "
               ></i><br />Save</a>
 
-              
-              <a href="#"><i class="fas fa-file-import" ></i><br />Import</a>
+              <input id="importzipfile" name="importfile" type="file" accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
+              <a href="#" id="import_zip_link"><i class="fas fa-file-import" ></i><br />Import</a>
 
               
               <a href="{% url 'exportzip' course chapter %}" target="_blank" onclick="return confirm('Have you saved the latest change?')"><i class="fas fa-file-export" ></i><br />Export</a>
@@ -518,6 +518,30 @@
   $('#chapterlist').change(function(){
     let chapter = $('#chapterlist').val()
     location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
+  });
+
+   $("#importzipfile").change(function(e) {
+      var confirmation = confirm('All current data will be replaced! Are you sure you want to continue?')
+      if(confirmation == false){
+        return false
+      }
+      let input = this.files[0];
+      var fileExtension = ['zip', 'jpg'];
+      if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+          alert(fileExtension.join(', ')+" formats allowed only");
+          return false
+      }
+      var filedata = new FormData();
+      filedata.append("filename",input);
+      filedata.append("csrfmiddlewaretoken",'{{csrf_token}}');
+      $.ajax({
+          url: '{% url "importzip" %}',
+          contentType: false,
+          processData: false,
+          data: filedata,
+          enctype: 'multipart/form-data',
+          method: 'POST'
+      });
   });
 </script>
   <script src="https://player.vimeo.com/api/player.js"></script>

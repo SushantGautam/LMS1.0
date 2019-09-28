@@ -4,7 +4,7 @@
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
-<div class="row">
+<div class="row" id="surveyheader">
     <div class="col-md-4 col-xs-12">
         <div class="btn-group" id="status" data-toggle="buttons">
             <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
@@ -12,6 +12,8 @@
                     checked="checked">Active</label>
             <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
                 <input type="radio" value="0" name="multifeatured_module[module_id][status]">History</label>
+            <label class="btn btn-default btn-off-3 btn-sm" id="LiveButton">
+                <input type="radio" value="0" name="multifeatured_module[module_id][status]">Live Survey</label>
         </div>
     </div>
     <div class="col-md-8 col-xs-12" id="searchBarSurvey">
@@ -29,61 +31,96 @@
 </div>
 
 <div class="hR"></div>
-<!-- ......................................Active section........................................ -->
-<div class="active_survey ">
-    {% for object in object_list %}
-    {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' %}
-    <div class="questionLists col-xs-12 col-sm-6 col-md-3 " id=" {{ object.id }}">
-        <div class="card">
-            <a href=" {% url 'questions_student_detail' object.pk %}">
-                <div class="card-body">
-                    <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong></h2>
-                    <hr>
-                    <ul class="card_labels">
+<div class="row">
+    <div class="col-md-12">
+        {% for object in object_list %}
+            {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == False %}
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 active_survey">
+                    <a href=" {% url 'questions_student_detail' object.pk %}">
+                        <div class="box-part text-center">
+                            {% if object.id in submittedSurvey %}
+                                <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
+                            {% else %}
+                                <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x" id="participatedSurvey"
+                                   aria-hidden="true"></i>
+                            {% endif %}
+                            <div class="title">
+                                <h3>{{ object.Survey_Title|truncatechars:12 }}</h3>
+                            </div>
+
+                            <ul class="card_labels">
                         <li><label>Questions: {{ object.questions_count }}</label></li>
                         <li><label>Start date: {{ object.Start_Date }}</label></li>
                         <li><label>End date: {{ object.End_Date }}</label></li>
                     </ul>
-                    <!-- <h5 class="card-text text-justify">
-                                    
-                                        <div class="pollButtons">
-                                            <button type="button" class="btn btn-info">View</button>
-                                        </div>
-                                    
-                                </h5> -->
+
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
+            {% endif %}
+        {% endfor %}
+
+        {% for object in object_list %}
+            {% if object.End_Date|date:'y m d' < currentDate|date:'y m d' and object.Survey_Live == False %}
+                <div class=" col-lg-4 col-md-6 col-sm-6 col-xs-12 expire_survey " style="display: none;">
+                    <a href=" {% url 'questions_student_detail_history' object.pk %}">
+                        <div class="box-part text-center">
+                            {% if object.id in submittedSurvey %}
+                                <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
+                            {% else %}
+                                <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x" id="participatedSurvey"
+                                   aria-hidden="true"></i>
+                            {% endif %}
+
+                            <div class="title">
+                                <h3>{{ object.Survey_Title|truncatechars:12 }}</h3>
+                            </div>
+
+                            <ul class="card_labels">
+                                <li><label>Questions: {{ object.questions_count }}</label></li>
+                                <li><label>Start date: {{ object.Start_Date }}</label></li>
+                                <li><label>End date: {{ object.End_Date }}</label></li>
+                            </ul>
+
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% for object in object_list %}
+            {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == True %}
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 live_survey " style="display: none;">
+                    <a href=" {% url 'liveSurveyDetail' object.pk %}">
+                        <div class="box-part text-center">
+                            {% if object.id in submittedSurvey %}
+                                <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
+                            {% else %}
+                                <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x" id="participatedSurvey"
+                                   aria-hidden="true"></i>
+                            {% endif %}
+
+                            <div class="title">
+                                <h3>{{ object.Survey_Title|truncatechars:12 }}</h3>
+                            </div>
+
+                            <ul class="card_labels">
+                                <li><label>Questions: {{ object.questions_count }}</label></li>
+                                <li><label>Start date: {{ object.Start_Date }}</label></li>
+                                <li><label>End date: {{ object.End_Date }}</label></li>
+                            </ul>
+
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
 
-    {% endif %}
-    {% endfor %}
 </div>
-<!-- ......................................Expire section.................................... -->
-<div class="expire_survey " style="display: none;">
-    {% for object in object_list %}
-    {% if object.End_Date|date:'y m d' < currentDate|date:'y m d' %}
-    <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">
-        <div class="card">
-            <a href=" {% url 'questions_student_detail_history' object.pk %}">
-                <div class="card-body">
-                    <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong>
-                    </h2>
-                    <hr>
-                    <ul class="card_labels">
-                        <li><label>Questions: {{ object.questions_count }} </label></li>
-                        <li><label>Start date: {{ object.Start_Date }}</label></li>
-                        <li><label>End date: {{ object.End_Date }}</label></li>
-                    </ul>
-                </div>
-            </a>
-        </div>
-    </div>
-    {% endif %}
-    {% endfor %}
-
-</div>
-
 {% block javascripts %}
 <script src=" {% static 'build/js/survey.js' %}"></script>
 {% endblock %}
+
+
+

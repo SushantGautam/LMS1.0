@@ -1016,3 +1016,10 @@ span.btnlink input {
   border: 0px;
   background-color: #FFF;
 }
+
+#import_zip_link{
+  text-decoration:none;
+}
+#importzipfile{
+  display:none
+}

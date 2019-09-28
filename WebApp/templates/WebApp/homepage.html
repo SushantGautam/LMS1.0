@@ -62,31 +62,26 @@
 
     </div>
     <hr>
-
     <div class="col-md-6 col-sm-12 col-xs-12">
         <div class="panel panel-default">
             <div class="title">
-                    <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b>FORUM</b><span
-                                class="thread">{{ threadcount }}</span></a></h2>
+                <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b>Sessions</b><span
+                            class="thread">{{ sessioncount.count }}</span></a></h2>
             </div>
             <ul class="list-group" data-hover-z="0.5" data-animated="">
 
-                {% for object in thread %}
+                {% for session in sessioncount %}
                 <li class="list-group-item ">
                     <div class="media-body">
-                        <b><span class="forum"><a 
-                                    href="{{ object.get_absolute_url }}">{{ object.title|truncatechars:68  }}</a></span><span
-                                class="thread">{{ object.pub_date|naturaltime }}</span></b>
+                        <b><span class="forum"><a
+                                    href="{{ session.get_absolute_url }}">{{ session.Session_Name|truncatechars:68  }}</a></span>
+                            <!-- <span class="thread">{{ survey.Category_Code }}</span> -->
+                        </b>
                     </div>
                 </li>
                 {% endfor %}
             </ul>
-            <!-- <div class="clearfix"></div> -->
         </div>
-    </div>
-
-
-    <div class="col-md-6 col-sm-12 col-xs-12">
         <div class="panel panel-default">
             <div class="title">
                 <a href="{% url 'courseinfo_list' %}">
@@ -98,8 +93,7 @@
 
                 <li class="list-group-item ">
                     <div class="media-body">
-                        <b><a
-                                href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></b>
+                        <b><a href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></b>
                     </div>
                 </li>
                 {% endfor %}
@@ -108,6 +102,50 @@
 
         </div>
     </div>
+
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="title">
+                <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b>FORUM</b><span
+                            class="thread">{{ threadcount }}</span></a></h2>
+            </div>
+            <ul class="list-group" data-hover-z="0.5" data-animated="">
+
+                {% for object in thread %}
+                <li class="list-group-item ">
+                    <div class="media-body">
+                        <b><span class="forum"><a
+                                    href="{{ object.get_absolute_url }}">{{ object.title|truncatechars:68  }}</a></span><span
+                                class="thread">{{ object.pub_date|naturaltime }}</span></b>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="panel panel-default">
+            <div class="title">
+                <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b>SURVEY</b><span
+                            class="thread">{{ surveycount.count }}</span></a></h2>
+            </div>
+            <ul class="list-group" data-hover-z="0.5" data-animated="">
+
+                {% for survey in surveycount %}
+                <li class="list-group-item ">
+                    <div class="media-body">
+                        <b><span class="forum"><a
+                                    href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title|truncatechars:68  }}</a></span><span
+                                class="thread">{{ survey.Category_Code }}</span></b>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+
+
+
+
     <!-- <div class="col-lg-4" id='calendar'></div> -->
     <!-- <div class="col-lg-4 col-xs-12">
             <div class="fc-view-container " style="">
