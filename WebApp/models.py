@@ -102,13 +102,17 @@ class MemberInfo(AbstractUser):
 
     @property
     def Avatar(self):
-        default_avatar = ""
-        if self.Member_Gender =='F':
-            default_avatar = ""
-        else:
-            default_avatar = "" # TODO add default path here
 
-        return self.Member_Avatar or default_avatar
+        if self.Member_Avatar:
+            return self.Member_Avatar.url
+        else:
+            if self.Member_Gender =='F':
+                default_avatar = "/static/images/profile/female.png"
+            elif self.Member_Gender =='M':
+                default_avatar = "/static/images/profile/male.jpg"
+            else:
+                default_avatar = "/static/images/profile/profile.png"
+            return default_avatar
 
     # Relationship Fields
     Center_Code = ForeignKey(

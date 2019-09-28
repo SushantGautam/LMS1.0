@@ -17,15 +17,7 @@
     <div class="clearfix"></div>
     <div class="profile clearfix">
         <div class="profile_pic">
-            <img src="{% if request.user.Member_Avatar %}
-            /media/{{ request.user.Member_Avatar }}
-        {% elif request.user.Member_Gender == '1' %}
-            {% static 'images/profile/male.jpg' %}
-        {% elif request.user.Member_Gender == '2' %}
-            {% static 'images/profile/female.png' %}
-        {% else %}
-            {% static 'images/profile/profile.png' %}
-        {% endif %}" alt="Profile pic" class="img-circle profile_img"/>
+            <img src="{{ request.user.Avatar }}" alt="Profile pic" class="img-circle profile_img"/>
         </div>
         <div class="profile_info">
                 <span>Welcome,</span>
