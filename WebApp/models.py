@@ -98,7 +98,7 @@ class MemberInfo(AbstractUser):
     Is_Student = models.BooleanField(default=True)
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
-    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
+    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices)
 
     @property
     def Avatar(self):
