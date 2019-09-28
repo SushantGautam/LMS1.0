@@ -522,7 +522,7 @@ def MCQuestionDeleteView(request, pk):
 
 class MCQuestionCreateFromQuiz(CreateView):
     model = MCQuestion
-    fields = ['figure', 'content', 'explanation', 'answer_order']
+    fields = ['content', 'answer_order', 'figure', 'explanation']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -905,7 +905,7 @@ class GetCourseChapter(View):
 
 
 class RemoveMcqLink(View):
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
         my_obj.mcquestion.remove(get_object_or_404(MCQuestion, id=self.kwargs['qn_id']))
         return HttpResponseRedirect(
@@ -917,7 +917,7 @@ class RemoveMcqLink(View):
 
 
 class RemoveTfqLink(View):
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
         my_obj.tfquestion.remove(get_object_or_404(TF_Question, id=self.kwargs['qn_id']))
         return HttpResponseRedirect(
@@ -929,12 +929,38 @@ class RemoveTfqLink(View):
 
 
 class RemoveSaqLink(View):
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
-        my_obj.mcquestion.remove(get_object_or_404(SA_Question, id=self.kwargs['qn_id']))
+        my_obj.saquestion.remove(get_object_or_404(SA_Question, id=self.kwargs['qn_id']))
         return HttpResponseRedirect(
             reverse(
                 'quiz_detail',
                 kwargs={'pk': my_obj.pk},
+            )
+        )
+
+
+class ActivateQuiz(View):
+    def post(self, request, **kwargs):
+        my_quiz = get_object_or_404(Quiz, pk=self.kwargs['pk'])
+        my_quiz.draft = False
+        my_quiz.save()
+        return HttpResponseRedirect(
+            reverse(
+                'quiz_detail',
+                kwargs={'pk': my_quiz.pk},
+            )
+        )
+
+
+class DeactivateQuiz(View):
+    def post(self, request, **kwargs):
+        my_quiz = get_object_or_404(Quiz, pk=self.kwargs['pk'])
+        my_quiz.draft = True
+        my_quiz.save()
+        return HttpResponseRedirect(
+            reverse(
+                'quiz_detail',
+                kwargs={'pk': my_quiz.pk},
             )
         )
