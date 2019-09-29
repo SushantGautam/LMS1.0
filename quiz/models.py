@@ -72,9 +72,6 @@ ANSWER_ORDER_OPTIONS = (
 #     def __str__(self):
 #         return self.sub_category + " (" + self.category.category + ")"
 
-
-
-
 class ProgressManager(models.Manager):
 
     def new_progress(self, user):
@@ -206,7 +203,7 @@ class Progress(models.Model):
 
 
 class QuestionInheritanceManager(InheritanceManager):
-    #def get_queryset(self):
+    # def get_queryset(self):
     #    return super().get_queryset().filter(cent_code=request.user.center_code)
     pass
 
@@ -234,10 +231,10 @@ class Question(models.Model):
                                verbose_name=_('Question'))
 
     course_code = models.ForeignKey(CourseInfo,
-                                 verbose_name=_("CourseInfo"),
-                                 blank=True,
-                                 null=True,
-                                 on_delete=models.CASCADE)
+                                    verbose_name=_("CourseInfo"),
+                                    blank=True,
+                                    null=True,
+                                    on_delete=models.CASCADE)
 
     explanation = models.TextField(max_length=2000,
                                    blank=True,
@@ -264,6 +261,7 @@ class Question(models.Model):
 class MCQuestion(Question):
     answer_order = models.CharField(
         max_length=30, null=True, blank=True,
+        default='content',
         choices=ANSWER_ORDER_OPTIONS,
         help_text=_("The order in which multichoice "
                     "answer options are displayed "
@@ -358,7 +356,7 @@ class SA_Question(Question):
 
     def check_if_correct(self, guess):
         return True
- 
+
     def get_answers(self):
         return False
 
@@ -382,24 +380,23 @@ class SA_Question(Question):
         return reverse('saquestion_update', args=(self.pk,))
 
 
-
 @python_2_unicode_compatible
 class Quiz(models.Model):
     mcquestion = models.ManyToManyField(
-        MCQuestion, 
+        MCQuestion,
         verbose_name=_("Multiple Choice Question"),
         help_text=_("You can select multiple questions by holding ctrl key on Windows and Command⌘ key on MAC.")
-        )
+    )
     tfquestion = models.ManyToManyField(
-        TF_Question, 
+        TF_Question,
         verbose_name=_("True/False Question"),
         help_text=_("You can select multiple questions by holding ctrl key on Windows and Command⌘ key on MAC.")
-        )
+    )
     saquestion = models.ManyToManyField(
-        SA_Question, 
+        SA_Question,
         verbose_name=_("Short Answer Type Question"),
         help_text=_("You can select multiple questions by holding ctrl key on Windows and Command⌘ key on MAC.")
-        )
+    )
 
     # start_time=
     title = models.CharField(
@@ -428,19 +425,19 @@ class Quiz(models.Model):
         help_text=_("Time limit for quiz"),
         verbose_name=_("Time limit for quiz"))
 
-    pre_test = models.BooleanField( 
+    pre_test = models.BooleanField(
         help_text=_("Before the chapter"),
-        default = False
-    ) 
-    post_test = models.BooleanField( 
-         help_text=_("After the chapter"),  
-        default = False
-    ) 
-    created_date =  models.DateTimeField(
+        default=False
+    )
+    post_test = models.BooleanField(
+        help_text=_("After the chapter"),
+        default=False
+    )
+    created_date = models.DateTimeField(
         auto_now_add=True
-    ) 
-    updated_date =  models.DateTimeField(
-        auto_now = True
+    )
+    updated_date = models.DateTimeField(
+        auto_now=True
     )
     chapter_code = models.ForeignKey(
         ChapterInfo, null=True, blank=True,
@@ -477,7 +474,7 @@ class Quiz(models.Model):
         blank=False, default=False,
         help_text=_("If yes, only one attempt by"
                     " a user will be permitted."
-                   ),
+                    ),
         verbose_name=_("Single Attempt"))
 
     pass_mark = models.SmallIntegerField(
@@ -498,7 +495,7 @@ class Quiz(models.Model):
         blank=True, default=False,
         verbose_name=_("Draft"),
         help_text=_("If checked, the quiz is not displayed to the student"
-                   ))
+                    ))
 
     def get_absolute_url(self):
         return reverse('quiz_update', args=(self.pk,))
@@ -539,9 +536,8 @@ class Quiz(models.Model):
     def get_tfquestions(self):
         return self.tfquestion_set.all()
 
-    #def get_questions(self):
+    # def get_questions(self):
     #    return self.question_set.all()
-
 
     def get_questions(self):
         question_ids = self._question_ids()
@@ -554,13 +550,13 @@ class Quiz(models.Model):
         questions = sorted(
             self.tfquestion.filter(id__in=question_ids),
             key=lambda q: question_ids.index(q.id))
-        questions = mcquestions+ tfquestions+ questions
+        questions = mcquestions + tfquestions + questions
 
         return questions
 
     @property
     def get_max_score(self):
-        return self.get_mcquestions().count()+self.get_tfquestions().count()+self.get_questions().count()
+        return self.get_mcquestions().count() + self.get_tfquestions().count() + self.get_questions().count()
 
     def anon_score_id(self):
         return str(self.id) + "_score"
@@ -726,7 +722,7 @@ class Sitting(models.Model):
 
         first, _ = self.question_list.split(',', 1)
         question_id = int(first)
-        
+
         return Question.objects.get_subclass(id=question_id)
 
     def remove_first_question(self):
@@ -827,7 +823,7 @@ class Sitting(models.Model):
         saquestions = sorted(
             self.quiz.saquestion.filter(id__in=question_ids),
             key=lambda q: question_ids.index(q.id))
-        questions = mcquestions+ tfquestions+ saquestions
+        questions = mcquestions + tfquestions + saquestions
 
         if with_answers:
             user_answers = json.loads(self.user_answers)

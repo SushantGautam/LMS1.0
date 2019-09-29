@@ -295,8 +295,8 @@
             <a href="#" id="SaveBtn"><i class="far fa-save  "
               ></i><br />Save</a>
 
-              
-              <a href="#"><i class="fas fa-file-import" ></i><br />Import</a>
+              <input id="importzipfile" name="importfile" type="file" accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
+              <a href="#" id="import_zip_link"><i class="fas fa-file-import" ></i><br />Import</a>
 
               
               <a href="{% url 'exportzip' course chapter %}" target="_blank" onclick="return confirm('Have you saved the latest change?')"><i class="fas fa-file-export" ></i><br />Export</a>
@@ -513,12 +513,16 @@
   var save_video_url = "{% url 'saveVideo' %}";
   var load_file_url = "/media/chapterBuilder/"+courseID+"/"+chapterID;
   var save_json_url = "{% url 'saveJson' %}";
+  var import_zip_url = '{% url "importzip" %}';
+  var csrf_token = '{{csrf_token}}'
   
   $('#chapterlist').val(chapterID);
   $('#chapterlist').change(function(){
     let chapter = $('#chapterlist').val()
     location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
   });
+
+   
 </script>
   <script src="https://player.vimeo.com/api/player.js"></script>
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>

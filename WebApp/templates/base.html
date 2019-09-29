@@ -5,19 +5,19 @@
 <html lang="en">
 
 <head>
-    {% block head %}
+  {% block head %}
 
     {% block meta %}
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <!-- Meta, title, CSS, favicons, etc. -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
     {% endblock meta %}
 
     <title>LMS {% block title %}{% endblock %}</title>
 
-    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
 
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
 
@@ -53,97 +53,97 @@
 
     {% block extrahead %}{% endblock %}
 
-    {% endblock head %}
+  {% endblock head %}
 </head>
 
 <body class="{% block body_class %}nav-md {% endblock body_class %}">
 
-    {% block body %}
-    <div class="se-pre-con"></div>
-    <div class="container body">
-        <div class="main_container">
+{% block body %}
+  <div class="se-pre-con"></div>
+  <div class="container body">
+    <div class="main_container">
 
-            {% block sidebar %}
-            <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
-                {% include "WebApp/theme/sidebar.html" %}
-            </div>
-            {% endblock sidebar %}
-
-            {% block top_navigation %}
-            <div class="top_nav">
-                {% include "WebApp/theme/top_navigation.html" %}
-            </div>
-            {% endblock top_navigation %}
-
-
-            <div class="right_col" role="main">
-
-                {#                <div class="page-title">#}
-                {##}
-                {##}
-                {#                </div>#}
-                <ol aria-label="breadcrumb" class="breadcrumb navClass">
-                    <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-                    {% block breadcrumb %}
-
-                    {% endblock %}
-                </ol>
-                {% block content %}
-                {#                     {{ content }} #}
-                {% endblock content %}
-
-
-            </div>
-
+      {% block sidebar %}
+        <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
+          {% include "WebApp/theme/sidebar.html" %}
         </div>
-        {% block footer %}
+      {% endblock sidebar %}
 
-        {% include "WebApp/theme/footer.html" %}
+      {% block top_navigation %}
+        <div class="top_nav">
+          {% include "WebApp/theme/top_navigation.html" %}
+        </div>
+      {% endblock top_navigation %}
 
-        {% endblock footer %}
+
+      <div class="right_col" role="main">
+
+        {#                <div class="page-title">#}
+        {##}
+        {##}
+        {#                </div>#}
+        <ol aria-label="breadcrumb" class="breadcrumb navClass">
+          <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+          {% block breadcrumb %}
+
+          {% endblock %}
+        </ol>
+        {% block content %}
+          {#                     {{ content }} #}
+        {% endblock content %}
+
+
+      </div>
+
     </div>
+    {% block footer %}
+
+      {% include "WebApp/theme/footer.html" %}
+
+    {% endblock footer %}
+  </div>
 
 
-    <!-- jQuery -->
-    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-    <!-- Bootstrap -->
-    <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-    <!-- FastClick for mobile browser -->
-    <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
-    <!-- NProgress -->
-    <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script>
-    <!-- Switchery -->
-    <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
-    <!-- Custom Theme Scripts -->
-    <script src=" {% static 'build/js/custom.js' %}"></script>
+  <!-- jQuery -->
+  <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+  <!-- Bootstrap -->
+  <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <!-- FastClick for mobile browser -->
+  <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
+  <!-- NProgress -->
+  <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+  <!-- Switchery -->
+  <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
+  <!-- Custom Theme Scripts -->
+  <script src=" {% static 'build/js/custom.js' %}"></script>
 
 
-    <!-- bootstrap-progressbar -->
-    <!-- <script src="{% static 'vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script> -->
-    <!-- iCheck -->
-    <!-- <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script> -->
-    <!-- bootstrap-daterangepicker -->
-    <!-- <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script> -->
-    <!-- <script src="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.js' %}"></script> -->
-    <!-- bootstrap-wysiwyg -->
-    <!-- <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
+  <!-- bootstrap-progressbar -->
+  <!-- <script src="{% static 'vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script> -->
+  <!-- iCheck -->
+  <!-- <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script> -->
+  <!-- bootstrap-daterangepicker -->
+  <!-- <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script> -->
+  <!-- <script src="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.js' %}"></script> -->
+  <!-- bootstrap-wysiwyg -->
+  <!-- <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
     <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
     <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script> -->
-    <!-- jQuery Tags Input -->
-    <!-- <script src="{% static 'vendorsx/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script> -->
+  <!-- jQuery Tags Input -->
+  <!-- <script src="{% static 'vendorsx/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script> -->
 
-    <!-- Select2 -->
-    <!-- <script src="{% static 'vendorsx/select2/dist/js/select2.full.min.js' %}"></script> -->
-    <!-- Parsley -->
-    <!-- <script src="{% static 'vendorsx/parsleyjs/dist/parsley.min.js' %}"></script> -->
-    <!-- Autosize -->
-    <!-- <script src="{% static 'vendorsx/autosize/dist/autosize.min.js' %}"></script> -->
-    <!-- jQuery autocomplete -->
-    <!-- <script src="{% static 'vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script> -->
-    <!-- starrr -->
-    <!-- <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script> -->
+  <!-- Select2 -->
+  <!-- <script src="{% static 'vendorsx/select2/dist/js/select2.full.min.js' %}"></script> -->
+  <!-- Parsley -->
+  <!-- <script src="{% static 'vendorsx/parsleyjs/dist/parsley.min.js' %}"></script> -->
+  <!-- Autosize -->
+  <!-- <script src="{% static 'vendorsx/autosize/dist/autosize.min.js' %}"></script> -->
+  <!-- jQuery autocomplete -->
+  <!-- <script src="{% static 'vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script> -->
+  <!-- starrr -->
+  <!-- <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script> -->
 
-    <!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+  <!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
@@ -157,23 +157,23 @@
     <script src="{% static 'vendorsx/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script> -->
 
 
-    <!-- Fade out spinner image when the page is loaded -->
-    <script>
-        $(window).load(function () {
-            $(".se-pre-con").fadeOut("fast");
-        });
-    </script>
-    <script>
-            $('#feedbackbtn').click(function(){
-                $('.w3-container').html(`<iframe style="height: 90vh; width: 100%" 
-                src="https://docs.google.com/forms/d/e/1FAIpQLSfKpfYtiFs5YLnIMALd3rxUa2q1cgYTuM7owdcmGiNhAyhy3w/viewform?embedded=true"
-                frameborder="0px"></iframe>`);
-            })
-    </script>
+  <!-- Fade out spinner image when the page is loaded -->
+  <script>
+      $(window).load(function () {
+          $(".se-pre-con").fadeOut("fast");
+      });
+  </script>
+  <script>
+      $('#feedbackbtn').click(function () {
+          $('.w3-container').html(`<iframe style="height: 90vh; width: 100%"
+          src="https://docs.google.com/forms/d/e/1FAIpQLSfKpfYtiFs5YLnIMALd3rxUa2q1cgYTuM7owdcmGiNhAyhy3w/viewform?embedded=true&entry.511019843={{ request.path }}"
+          frameborder="0px"></iframe>`);
+      })
+  </script>
 
-    {% block customjss %}{% endblock %}
+  {% block customjss %}{% endblock %}
 
-    {% endblock %}
+{% endblock %}
 
 </body>
 

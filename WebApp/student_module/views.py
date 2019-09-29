@@ -26,9 +26,10 @@ from django.views.decorators.debug import sensitive_post_parameters
 # Create your views here.
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView
-from WebApp.forms import UserUpdateForm
 
-from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, AssignmentQuestionInfo, \
+from WebApp.forms import UserUpdateForm
+from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
+    AssignmentQuestionInfo, \
     AssignAnswerInfo
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
@@ -390,5 +391,9 @@ class surveyFilterCategory_student(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
+
+        submitSurveyQuerySet = SubmitSurvey.objects.filter(Student_Code=self.request.user.id)
+        context['submittedSurvey'] = [el.Survey_Code.id for el in submitSurveyQuerySet]
+
         return context
 

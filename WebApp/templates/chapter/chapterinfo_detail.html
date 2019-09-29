@@ -461,7 +461,7 @@
                 $.each(value, function (count) {
                     // Create modal
                     $('#modal-container').append(`
-                    <div id="page${key}" role="dialog" style="display:none;">
+                    <div id="page${key}" class = 'coursepages' role="dialog" style="display:none;">
 
                     </div>`)
                     // -------------------------------
@@ -587,7 +587,6 @@
                 $.each(value, function (count) {
                     if (value[count].textdiv.length == 0 && value[count].pic.length == 0 && value[count].video.length == 0 && value[count].pdf.length == 0 && value[count]['btn-div'].length == 0) {
                         emptycheckflag.push(true);
-                        console.log(key)
                         $('#page' + key).append(`<div>No content here</div>`);
                     } else {
                         emptycheckflag.push(false)
@@ -605,11 +604,12 @@
         }
 
         $("#course-modal").on("hidden.bs.modal", function () {
-            $("#modal-container").empty()
+            $("#modal-container").empty();
         });
 
-        $('#next-btn').click(function () {
-            $("#modal-container > div ").each(function () {
+        $('#next-btn').off().click(function () {
+            console.log('x')
+            $("#modal-container > .coursepages ").each(function () {
                 if ($(this).css("display") == "block") {
                     res = this.id.match(/[0-9]+/);
                 }
@@ -621,7 +621,7 @@
             }
             $('#currentpage').text(res);
         });
-        $('#prev-btn').click(function () {
+        $('#prev-btn').off().click(function () {
             $("#modal-container > div ").each(function () {
                 if ($(this).css("display") == "block") {
                     res = this.id.match(/[0-9]+/);
