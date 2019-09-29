@@ -16,174 +16,148 @@
 
 <hr class="header_hr">
 <div class="tabcontent" id="allAssignments">
-    {% for courses in Course %}
-    {% if courses %}
+    {% if Assignment %}
+
+    {% for courses in Assignment %}
+    {% for assignment in courses %}
+
+
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
     <h3 align="center">Course -
         <a href="{% if '/students' in request.path %}
-                                {{ courses.Course_Code.student_get_absolute_url }}
-                            {% else %}
-                               {{ courses.Course_Code.get_absolute_url }}
-                            {% endif %}"><b>{{ courses.Course_Code.Course_Name }}</b> </a>
+                                                {{ a.Course_Code.student_get_absolute_url }}
+                                            {% else %}
+                                               {{ a.Course_Code.get_absolute_url }}
+                                            {% endif %}"><b>{{ a.Course_Code }}</b> </a>
     </h3>
-
-    {% for chapter in courses.Course_Code.chapterinfos.all %}
+    {% endifchanged %}
     <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-        <a href="{% if '/students' in request.path %}
-                                {{ chapter.student_get_absolute_url }}
-                            {% else %}
-                               {{ chapter.get_absolute_url }}
-                            {% endif %}">
-            <h4>&nbsp; Chapter {{ chapter.Chapter_No }} - <b>{{ chapter.Chapter_Name }}</b></h4>
-        </a>
-        {% for assignments in chapter.assignmentinfos.all %}
-
-        <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
-
-            <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
-                <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
-                <h5>
-                    <b style="color: #000000">{{ assignments.Assignment_Topic }}</b>
-                </h5>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
-                <a href="{% if '/students' in request.path %}
-                                {{ assignments.student_get_absolute_url }}
-                            {% else %}
-                               {{ assignments.get_absolute_url }}
-                            {% endif %}">
-                    <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
-                    </button>
-                </a>
-            </div>
-
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-                <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ assignments.Assignment_Deadline }}</p>
-            </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+            <h5>
+                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+            </h5>
+            <h5>Chapter - {{a.Chapter_Code}}</h5>
         </div>
-        {% endfor %}
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <a href="{% if '/students' in request.path %}
+                                {{ a.student_get_absolute_url }}
+                            {% else %}
+                               {{ a.get_absolute_url }}
+                            {% endif %}">
+                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+            <hr style="margin-top: 1px; margin-bottom: 10px;">
+            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+        </div>
     </div>
     {% endfor %}
-    {% endif %}
     {% endfor %}
+    {% endfor %}
+    {% endif %}
 </div>
 <div class="tabcontent" id="activeAssignments" style="display: none;">
-    {% for courses in Course %}
-    {% if courses %}
+    {% if activeAssignment %}
+
+    {% for courses in activeAssignment %}
+    {% for assignment in courses %}
+
+
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
     <h3 align="center">Course -
         <a href="{% if '/students' in request.path %}
-                                    {{ courses.Course_Code.student_get_absolute_url }}
-                                {% else %}
-                                   {{ courses.Course_Code.get_absolute_url }}
-                                {% endif %}"><b>{{ courses.Course_Code.Course_Name }}</b> </a>
+                                                    {{ a.Course_Code.student_get_absolute_url }}
+                                                {% else %}
+                                                   {{ a.Course_Code.get_absolute_url }}
+                                                {% endif %}"><b>{{ a.Course_Code }}</b> </a>
     </h3>
-
-    {% for chapter in courses.Course_Code.chapterinfos.all %}
-
-
+    {% endifchanged %}
     <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-        <a href="{% if '/students' in request.path %}
-                                    {{ chapter.student_get_absolute_url }}
-                                {% else %}
-                                   {{ chapter.get_absolute_url }}
-                                {% endif %}">
-            <h4>&nbsp; Chapter {{ chapter.Chapter_No }} - <b>{{ chapter.Chapter_Name }}</b></h4>
-        </a>
-        {% for assignments in chapter.assignmentinfos.all %}
-        {% if assignments.Assignment_Deadline|date:'r' < currentDate|date:'r' %}
-
-        <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
-
-            <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
-                <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
-                <h5>
-                    <b style="color: #000000">{{ assignments.Assignment_Topic }}</b>
-                </h5>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
-                <a href="{% if '/students' in request.path %}
-                                    {{ assignments.student_get_absolute_url }}
-                                {% else %}
-                                   {{ assignments.get_absolute_url }}
-                                {% endif %}">
-                    <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                    margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
-                    </button>
-                </a>
-            </div>
-
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-                <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ assignments.Assignment_Deadline }}</p>
-            </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+            <h5>
+                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+            </h5>
+            <h5>Chapter - {{a.Chapter_Code}}</h5>
         </div>
-        {% endif %}
-        {% endfor %}
-    </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <a href="{% if '/students' in request.path %}
+                                    {{ a.student_get_absolute_url }}
+                                {% else %}
+                                   {{ a.get_absolute_url }}
+                                {% endif %}">
+                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
 
+        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+            <hr style="margin-top: 1px; margin-bottom: 10px;">
+            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
     {% endfor %}
     {% endif %}
-    {% endfor %}
 </div>
 <div class="tabcontent" id="expiredAssignments" style="display: none;">
-    {% for courses in Course %}
-    {% if courses %}
+    {% if expiredAssignment %}
+
+    {% for courses in expiredAssignment %}
+    {% for assignment in courses %}
+
+
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
     <h3 align="center">Course -
         <a href="{% if '/students' in request.path %}
-                                        {{ courses.Course_Code.student_get_absolute_url }}
-                                    {% else %}
-                                       {{ courses.Course_Code.get_absolute_url }}
-                                    {% endif %}"><b>{{ courses.Course_Code.Course_Name }}</b> </a>
+                                                    {{ a.Course_Code.student_get_absolute_url }}
+                                                {% else %}
+                                                   {{ a.Course_Code.get_absolute_url }}
+                                                {% endif %}"><b>{{ a.Course_Code }}</b> </a>
     </h3>
-
-    {% for chapter in courses.Course_Code.chapterinfos.all %}
+    {% endifchanged %}
     <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-        <a href="{% if '/students' in request.path %}
-                                        {{ chapter.student_get_absolute_url }}
-                                    {% else %}
-                                       {{ chapter.get_absolute_url }}
-                                    {% endif %}">
-            <h4>&nbsp; Chapter {{ chapter.Chapter_No }} - <b>{{ chapter.Chapter_Name }}</b></h4>
-        </a>
-        {% for assignments in chapter.assignmentinfos.all %}
-        {% if assignments.Assignment_Deadline|date:'r' > currentDate|date:'r' %}
-
-        <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
-
-            <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
-                <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
-                <h5>
-                    <b style="color: #000000">{{ assignments.Assignment_Topic }}</b>
-                </h5>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
-                <a href="{% if '/students' in request.path %}
-                                        {{ assignments.student_get_absolute_url }}
-                                    {% else %}
-                                       {{ assignments.get_absolute_url }}
-                                    {% endif %}">
-                    <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                        margin-top: 20px;margin-bottom: 10px;">CONTINUE <i
-                            class="fa fa-arrow-right"></i>
-                    </button>
-                </a>
-            </div>
-
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-                <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ assignments.Assignment_Deadline }}</p>
-            </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+            <h5>
+                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+            </h5>
+            <h5>Chapter - {{a.Chapter_Code}}</h5>
         </div>
-        {% endif %}
-        {% endfor %}
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <a href="{% if '/students' in request.path %}
+                                    {{ a.student_get_absolute_url }}
+                                {% else %}
+                                   {{ a.get_absolute_url }}
+                                {% endif %}">
+                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+            <hr style="margin-top: 1px; margin-bottom: 10px;">
+            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+        </div>
     </div>
     {% endfor %}
-    {% endif %}
     {% endfor %}
+    {% endfor %}
+    {% endif %}
 </div>
 
 {% endblock content %}

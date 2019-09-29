@@ -46,7 +46,7 @@
             </h5>
         </div>
         <br>
-        {% if '/students' not in request.path %}
+        {% if 'teacher' in request.path %}
         <div class="text-center">
             <h4><a href="{% url 'teacher_assignment_answers' object.pk %}">View Assignment Submissions</a></h4>
         </div>
@@ -174,8 +174,8 @@
                         {% else %}
                         {% for answer in notAnswered %}
                         {% if  questions.id == answer  %}
-                        <form method="post" id="{{ questions.id }}" data-parsley-validate=""
-                            class="form-horizontal form-label-left submitAnswer" novalidate=""
+                        <form enctype="multipart/form-data" method="post" id="{{ questions.id }}"
+                            data-parsley-validate="" class="form-horizontal form-label-left submitAnswer" novalidate=""
                             data-id="{{ questions.id }}">
                             {% csrf_token %}
                             {% if questions.Answer_Type == 'S' %}
