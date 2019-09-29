@@ -1299,7 +1299,48 @@ $(document).ready(function() {
         displaypagenumbers();
     }
 
-    function display(){
+    $("#importzipfile").change(function(e) {
+        var confirmation = confirm('All current data will be replaced! Are you sure you want to continue?')
+        if(confirmation == false){
+          return false
+        }
+        let input = this.files[0];
+        var fileExtension = ['zip', 'jpg'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            alert(fileExtension.join(', ')+" formats allowed only");
+            return false
+        }
+        var filedata = new FormData();
+        filedata.append("filename",input);
+        filedata.append("chapterID",chapterID);
+        filedata.append("courseID",courseID);
+        filedata.append("csrfmiddlewaretoken",csrf_token);
+        $.ajax({
+            url: import_zip_url,
+            contentType: false,
+            processData: false,
+            data: filedata,
+            enctype: 'multipart/form-data',
+            method: 'POST',
+            beforeSend: function() {
+                $('#tabs-for-download').append(`<div class="loader" id="loadingDiv"></div>
+                <p id = "percentcomplete"></p>
+                `)
+                $('#loadingDiv').show();
+            }, 
+            success: function(data){
+              $('#tabs-for-download').empty();
+              $('.tabs-to-click > ul').empty();
+              display(data);
+            },
+            error: function(errorThrown){
+              $('#tabs-for-download').find('#loadingDiv').empty();                
+                console.log(errorThrown)
+            }
+        });
+    });
+
+    function display(data = ""){
         $('#chaptertitle').text(chaptertitle);
         $('#tabs-for-download').empty();    // empty current canvas 
         $('.tabs-to-click > ul > li:first').remove()
@@ -1366,7 +1407,7 @@ $(document).ready(function() {
         $('.tabs-to-click > ul > div > li')[0].click()
     }
     
-    display();
+    display(data);
 });
 
 function displaypagenumbers(){

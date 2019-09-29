@@ -17,16 +17,7 @@
             <li class="">
                 <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 
-                    <img src="
-                                    {% if request.user.Member_Avatar %}
-                                        /media/{{ request.user.Member_Avatar }}
-                                    {% elif request.user.Member_Gender == '1' %}
-                                        {% static 'images/profile/male.jpg' %}
-                                    {% elif request.user.Member_Gender == '2' %}
-                                        {% static 'images/profile/female.png' %}
-                                    {% else %}
-                                        {% static 'images/profile/profile.png' %}
-                                    {% endif %}" alt="">
+                    <img src="{{ request.user.Avatar }}" alt="">
                     {{ request.user.username }}
                     <span class=" fa fa-angle-down" id="topNavSpan"></span>
                 </a>

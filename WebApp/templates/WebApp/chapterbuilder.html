@@ -513,6 +513,8 @@
   var save_video_url = "{% url 'saveVideo' %}";
   var load_file_url = "/media/chapterBuilder/"+courseID+"/"+chapterID;
   var save_json_url = "{% url 'saveJson' %}";
+  var import_zip_url = '{% url "importzip" %}';
+  var csrf_token = '{{csrf_token}}'
   
   $('#chapterlist').val(chapterID);
   $('#chapterlist').change(function(){
@@ -520,29 +522,7 @@
     location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
   });
 
-   $("#importzipfile").change(function(e) {
-      var confirmation = confirm('All current data will be replaced! Are you sure you want to continue?')
-      if(confirmation == false){
-        return false
-      }
-      let input = this.files[0];
-      var fileExtension = ['zip', 'jpg'];
-      if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
-          alert(fileExtension.join(', ')+" formats allowed only");
-          return false
-      }
-      var filedata = new FormData();
-      filedata.append("filename",input);
-      filedata.append("csrfmiddlewaretoken",'{{csrf_token}}');
-      $.ajax({
-          url: '{% url "importzip" %}',
-          contentType: false,
-          processData: false,
-          data: filedata,
-          enctype: 'multipart/form-data',
-          method: 'POST'
-      });
-  });
+   
 </script>
   <script src="https://player.vimeo.com/api/player.js"></script>
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>

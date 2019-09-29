@@ -607,9 +607,9 @@
             $("#modal-container").empty();
         });
 
-        $('#next-btn').click(function () {
+        $('#next-btn').off().click(function () {
+            console.log('x')
             $("#modal-container > .coursepages ").each(function () {
-                console.log('x')
                 if ($(this).css("display") == "block") {
                     res = this.id.match(/[0-9]+/);
                 }
@@ -621,7 +621,7 @@
             }
             $('#currentpage').text(res);
         });
-        $('#prev-btn').click(function () {
+        $('#prev-btn').off().click(function () {
             $("#modal-container > div ").each(function () {
                 if ($(this).css("display") == "block") {
                     res = this.id.match(/[0-9]+/);

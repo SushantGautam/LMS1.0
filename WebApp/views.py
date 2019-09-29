@@ -50,12 +50,6 @@ class Changestate(View):
         elif (pre_test == '1' or post_test == '1'):
             my_quiz.draft = False
 
-        print(pre_test, post_test)
-        # if(pre_test is not None):
-        #     my_quiz.pre_test = pre_test
-        # if(post_test is not None):
-        #     my_quiz.post_test = post_test
-
         my_quiz.save()
         return JsonResponse({'message': 'success'}, status=200)
 
@@ -376,8 +370,14 @@ def ImportCsvFile(request):
                 except:
                     obj.Member_BirthDate = None
                 obj.Member_Phone = df.iloc[i]['Phone']
-                obj.Member_Gender = df.iloc[i]['Gender']
 
+                if df.iloc[i]['Gender'] == 'Male' or df.iloc[i]['Gender'] == 'M':
+                    obj.Member_Gender = 'M'
+                elif df.iloc[i]['Gender'] == 'Female' or df.iloc[i]['Gender'] == 'F':
+                    obj.Member_Gender = 'F'
+                else:
+                    obj.Member_Gender = ''
+        
                 if df.iloc[i]['Teacher'] == 1:
                     obj.Is_Teacher = True
                 else:
@@ -1033,7 +1033,7 @@ def save_video(request):
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(name, media)
         return JsonResponse({'media_name': name})
-'''
+    '''
         # #video uploading to vimeo.com
 
         # standard Account
@@ -1068,7 +1068,7 @@ def save_video(request):
             r = v.get(uri + '?fields=status').json()
             status = r['status']
         return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
-'''
+    '''
 
 @csrf_exempt
 def save_json(request):
@@ -1108,8 +1108,43 @@ def export_chapter(request, course, chapter):
     return redirect(settings.MEDIA_URL+'/export/'+str(coursename)+'_Chapter'+str(chapter)+'.zip')
 
 def import_chapter(request):
+    chapterID = request.POST['chapterID']
+    courseID = request.POST['courseID']
     if request.FILES['filename']:
             filename = request.FILES['filename']
     if not filename.name.endswith('.zip'):
         return JsonResponse({'status':'false','message':"Only zip files are allowed"}, status=500)
-# -------------------------------------------------------------------------------------------------------
+    zip=zipfile.ZipFile(filename)
+    checkflag = False
+    for file in zip.namelist():
+        # print(zip.getinfo(file).filename) #gives content of file like 'ls' or 'dir'
+        if zip.getinfo(file).filename.endswith('.txt'):
+            checkflag = True
+    if not checkflag:
+        return JsonResponse({'status':'false','message':"Not valid zip"}, status=500)
+        
+    path = settings.MEDIA_ROOT
+
+    # creates directory structure if not exists
+    make_directory_if_not_exists(courseID, chapterID)
+    
+    storage_path = path + '/chapterBuilder/' + courseID + '/' + chapterID + '/'
+    for file in zip.namelist():
+        if zip.getinfo(file).filename.endswith('.txt') and 'html' not in zip.getinfo(file).filename:
+            with zip.open(zip.getinfo(file).filename) as json_file:
+                my_json = json_file.read().decode('utf8').replace("'", '"')
+                
+                data = json.loads(my_json)
+                
+                if not all (k in data for k in ("numberofpages","pages")):
+                    return JsonResponse({'status':'false','message':"Not valid zip"}, status=500)
+                elif data['numberofpages'] is 0:
+                    return JsonResponse({'status':'false','message':"Not valid zip"}, status=500)
+
+                # check if numberofpages and pages are in the dictionary or not
+                
+            continue
+        zip.extract(file, storage_path) # extract the file to current folder if it is a text file
+    # print(data)
+    return JsonResponse(data)
+    # -------------------------------------------------------------------------------------------------------

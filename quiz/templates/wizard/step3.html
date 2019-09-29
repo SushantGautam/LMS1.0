@@ -128,7 +128,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Create Question</h4>
+          <h4 class="modal-title" id="question_model_title"></h4>
         </div>
         <div class="modal-body" style="height: auto" id="question_form_ajax">
         </div>
@@ -149,6 +149,7 @@
               data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
               url: "{% url 'mcquestion_create' %}",  // URL to your view that serves new info
               success: function (data) {
+                  $("#question_model_title").html("Create Multiple Choice Question");
                   $("#question_form_ajax").html(data);
               }
           });
@@ -159,6 +160,7 @@
               data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
               url: "{% url 'tfquestion_create' %}",  // URL to your view that serves new info
               success: function (data) {
+                  $("#question_model_title").html("Create True False Question");
                   $("#question_form_ajax").html(data);
               }
           });
@@ -169,6 +171,7 @@
               data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
               url: "{% url 'saquestion_create' %}",  // URL to your view that serves new info
               success: function (data) {
+                  $("#question_model_title").html("Create Short Answer Question");
                   $("#question_form_ajax").html(data);
               }
           });
