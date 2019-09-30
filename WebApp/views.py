@@ -50,12 +50,6 @@ class Changestate(View):
         elif (pre_test == '1' or post_test == '1'):
             my_quiz.draft = False
 
-        print(pre_test, post_test)
-        # if(pre_test is not None):
-        #     my_quiz.pre_test = pre_test
-        # if(post_test is not None):
-        #     my_quiz.post_test = post_test
-
         my_quiz.save()
         return JsonResponse({'message': 'success'}, status=200)
 
@@ -376,8 +370,14 @@ def ImportCsvFile(request):
                 except:
                     obj.Member_BirthDate = None
                 obj.Member_Phone = df.iloc[i]['Phone']
-                obj.Member_Gender = df.iloc[i]['Gender']
 
+                if df.iloc[i]['Gender'] == 'Male' or df.iloc[i]['Gender'] == 'M':
+                    obj.Member_Gender = 'M'
+                elif df.iloc[i]['Gender'] == 'Female' or df.iloc[i]['Gender'] == 'F':
+                    obj.Member_Gender = 'F'
+                else:
+                    obj.Member_Gender = ''
+        
                 if df.iloc[i]['Teacher'] == 1:
                     obj.Is_Teacher = True
                 else:

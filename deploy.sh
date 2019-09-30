@@ -1,2 +1,2 @@
-fuser -k -n tcp 9002
-python manage.py runserver 0.0.0.0:9002
+fuser -k -n tcp 80
+python3.6 manage.py runserver 0.0.0.0:80

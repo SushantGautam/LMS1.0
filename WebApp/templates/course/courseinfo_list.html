@@ -58,7 +58,6 @@
   <div class="container" id="divID">
     {% include 'WebApp/theme/alerts.html' %}
     {% for object in object_list %}
-    {% if object.Use_Flag == True %}
     <div class="col-xl-2 col-md-3 col-sm-6 col-xs-12" id="listCard">
       <div class="gridContentsList">
         <div class="card-header">
@@ -84,6 +83,8 @@
                                       {% else %}
                                         {{ object.get_absolute_url }}
                                       {% endif %}">{{ object.Course_Name }}</a></strong>
+            {% if object.Use_Flag == False %}<i
+              style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
           </h2>
           <hr />
           <h5 class="lectureDescription" style="padding-bottom: 5px;">
@@ -114,7 +115,6 @@
         </div>
       </div>
     </div>
-    {% endif %}
     {% endfor %}
   </div>
   <div class=" text-center">

@@ -61,7 +61,7 @@ def start(request):
         activeassignments = []
         for course in courseID:
             activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
-
+        
         return render(request, "teacher_module/homepage.html",{'MyCourses':mycourse,'Session':sessions,'activeAssignments':activeassignments})
 
 
@@ -283,17 +283,22 @@ class MyAssignmentsListView(ListView):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
         context['Group'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
-        courseID=[]
+        course=[]
+        context['Assignment'] = []
+        context['expiredAssignment'] = []
+        context['activeAssignment'] = []
         for groups in context['Group']:
-            courseID.append(groups.Course_Code.id)
-        context['assignments'] = []
-        context['expiredassignments'] = []
-        context['activeassignments'] = []
-        for course in courseID:
-            context['assignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course)
-            context['expiredassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__lt=datetime_now)
-            context['activeassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
-
+            course.append(groups.Course_Code.id)
+        Assignment = []
+        expiredAssignment = []
+        activeAssignment = []
+        for course in course:
+            Assignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course))
+            expiredAssignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__lt=datetime_now))
+            activeAssignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now))
+        context['Assignment'].append(Assignment)     
+        context['activeAssignment'].append(activeAssignment)     
+        context['expiredAssignment'].append(expiredAssignment)     
         return context
 
 def ProfileView(request):
@@ -1237,7 +1242,7 @@ class UserThreads(ListView):
 class NotificationView(ListView):
     model = Notification
     paginate_by = 20
-    template_name = 'forum/notification.html'
+    template_name = 'teacher_module/teacher_forum/notifications.html'
     context_object_name = 'notifications'
 
     def get_queryset(self):
@@ -1252,7 +1257,7 @@ class NotificationView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        context['title'] = _("Notifications")
+        context['title'] = ("Notifications")
         return context
 
 

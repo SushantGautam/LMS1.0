@@ -15,7 +15,7 @@ from django.views import View
 
 from WebApp.models import CourseInfo, ChapterInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
-    QuizBasicInfoForm
+    QuizBasicInfoForm, QuestionQuizForm
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
 import re
 
@@ -964,3 +964,25 @@ class DeactivateQuiz(View):
                 kwargs={'pk': my_quiz.pk},
             )
         )
+
+
+class UpdateQuestions(UpdateView):
+    model = Quiz
+    form_class = QuestionQuizForm
+    template_name = 'quiz/updata_all_questions.html'
+
+    def get_success_url(self):
+        return reverse(
+                'quiz_detail',
+                kwargs={'pk': self.kwargs['pk']},
+            )
+
+    def get_form_kwargs(self):
+        old_kwargs = super().get_form_kwargs()
+        old_kwargs['course_id'] = get_object_or_404(Quiz, pk=self.kwargs['pk']).course_code.id
+        return old_kwargs
+
+    def get_context_data(self, **kwargs):
+        old_context = super().get_context_data(**kwargs)
+        old_context['course_from_quiz'] = get_object_or_404(Quiz, pk=self.kwargs['pk']).course_code
+        return old_context
