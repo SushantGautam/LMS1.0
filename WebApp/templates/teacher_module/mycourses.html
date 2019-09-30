@@ -48,19 +48,27 @@ Course
 
                     <h5 class="courseDescription" style="padding-bottom: 10px;">
                         {% if courses.Course_Code.Course_Description %}
-                        <p style="padding-left: 10px;
-            padding-right: 10px;
-            line-height: 1.5em;
-            height: 3em;
-            overflow-wrap:break-word; 
-            overflow: hidden;
-            white-space: normal;
-            text-overflow: ellipsis;">
+                        <p style="
+                        padding-right: 10px;
+                        line-height: 1.5em;
+                        height: 3em;
+                        overflow-wrap:break-word; 
+                        overflow: hidden;
+                        white-space: normal;
+                        text-overflow: ellipsis;">
                             {{ courses.Course_Code.Course_Description }}
                         </p>
                         {% else %}
-                        No Description
-                        {% endif %}
+                        <p style="
+                        padding-right: 10px;
+                        line-height: 1.5em;
+                        height: 3em;
+                        overflow-wrap:break-word; 
+                        overflow: hidden;
+                        white-space: normal;
+                        text-overflow: ellipsis;">
+                            No Description
+                        </p> {% endif %}
                     </h5>
 
                 </div>

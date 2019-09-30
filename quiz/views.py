@@ -1,3 +1,4 @@
+from django.http import JsonResponse, HttpResponseRedirect
 import random
 import urllib
 
@@ -205,7 +206,8 @@ class QuizTake(FormView):
             self.logged_in_user = self.request.user.is_authenticated
 
         if self.logged_in_user:
-            self.sitting = Sitting.objects.user_sitting(request.user, self.quiz)
+            self.sitting = Sitting.objects.user_sitting(
+                request.user, self.quiz)
         else:
             self.sitting = self.anon_load_sitting()
 
@@ -455,9 +457,6 @@ class MCQuestionListView(ListView):
     model = MCQuestion
 
 
-from django.http import JsonResponse, HttpResponseRedirect
-
-
 class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = MCQuestion
     form_class = MCQuestionForm
@@ -501,7 +500,8 @@ class MCQuestionUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['answers_formset'] = AnsFormset(self.request.POST, instance=self.object)
+            context['answers_formset'] = AnsFormset(
+                self.request.POST, instance=self.object)
         else:
             context['answers_formset'] = AnsFormset(instance=self.object)
             context['post_url'] = reverse('mcquestion_update', kwargs={'pk': self.object.pk})

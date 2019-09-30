@@ -46,7 +46,7 @@
             </h5>
         </div>
         <br>
-        {% if '/students' not in request.path %}
+        {% if 'teacher' in request.path %}
         <div class="text-center">
             <h4><a href="{% url 'teacher_assignment_answers' object.pk %}">View Assignment Submissions</a></h4>
         </div>
@@ -174,8 +174,8 @@
                         {% else %}
                         {% for answer in notAnswered %}
                         {% if  questions.id == answer  %}
-                        <form method="post" id="{{ questions.id }}" data-parsley-validate=""
-                            class="form-horizontal form-label-left submitAnswer" novalidate=""
+                        <form enctype="multipart/form-data" method="post" id="{{ questions.id }}"
+                            data-parsley-validate="" class="form-horizontal form-label-left submitAnswer" novalidate=""
                             data-id="{{ questions.id }}">
                             {% csrf_token %}
                             {% if questions.Answer_Type == 'S' %}
@@ -282,8 +282,8 @@
             url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
-                // "Assignment_Answer": $(`#id_Assignment_Answer${this.id}`).val(),
-                "Assignment_File": $('#id_Assignment_File').val(),
+                "Assignment_Answer": $(`#id_Assignment_Answer${this.id}`).val(),
+                // "Assignment_File": $('#id_Assignment_File').val(),
                 "Question_Code": $(`#id_Question_Code${this.id}`).val(),
                 "Student_Code": $(`#id_Student_Code${this.id}`).val(),
                 // "Student_Code": $('#id_Use_Flag').is(":checked"),

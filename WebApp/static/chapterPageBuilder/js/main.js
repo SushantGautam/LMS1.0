@@ -5,6 +5,18 @@ $(document).ready(function() {
     });
     
     $('#loadingDiv').hide();
+
+    function getYoutubeID(url) {
+        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        var match = url.match(regExp);
+    
+        if (match && match[2].length == 11) {
+            return match[2];
+        } else {
+            return 'error';
+        }
+    }
+
     // ==================For TextBoxx================================
 
     class Textbox {
@@ -128,21 +140,32 @@ $(document).ready(function() {
             //   </script>`
             //  ================================   end for vimeo    ===========================================
             if(link!=null){
-                videoobj = `
-                        <video width="100%" height="75%" controls>
+
+                // videoobj = `
+                //         <video width="100%" height="75%" controls>
+                //             <source src="https://www.youtube.com/embed/${myYoutubeId}"  type="video/mp4">
+                //         </video>
+                // `
+                if(link.startsWith('http')){
+                    videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" allowfullscreen></iframe>`
+                }else{
+                    videoobj = `
+                        <video width="100%" height="94%" controls>
                             <source src="${link}"  type="video/mp4">
                         </video>
-                    
-                `
+                `}
             }else{
                 message = "drag and drop video here...";
-                videoobj = "";
+                videoobj = `<div class="progress">
+                <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>`;
             }
             let html =
                 `<div class='video-div'>
                     <div id="video-actions">
                         <i class="fas fa-trash" id=${id}></i>
                         <i class="fas fa-upload" id=${id}></i>
+                        <i class="fas fa-link videolink" id=${id}></i>
                     </div>
                     <div>
                         <p id="video-drag">${message}</p>
@@ -151,18 +174,12 @@ $(document).ready(function() {
                         <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
                         </form>
       
-                        <div class="progress">
-                            <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
+                        
                                 ${videoobj}
                     </div>
                 </div>`
 
-            //     <div id="progress-bar">
-            //     <span id="progress-bar-fill"></span>
-            // </div>
-
-
+           
             this.RemoveElement = function () {
                 return idss;
             }
@@ -304,47 +321,47 @@ $(document).ready(function() {
 
     // =====================For Tables==============================
 
-    class Tables {
-        constructor(top, left) {
-        let id = (new Date).getTime();
-        let position = { top, left };
-        let html = `
-                        <div id="btn-div">
-                            <div id="options">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-arrows-alt" id="draghanle"></i>
-                            </div> 
+    // class Tables {
+    //     constructor(top, left) {
+    //     let id = (new Date).getTime();
+    //     let position = { top, left };
+    //     let html = `
+    //                     <div id="btn-div">
+    //                         <div id="options">
+    //                         <i class="fas fa-trash" id=${id}></i>
+    //                         <i class="fas fa-arrows-alt" id="draghanle"></i>
+    //                         </div> 
                         
-                        <div  class="tableDiv" id="${id + 1}">
+    //                     <div  class="tableDiv" id="${id + 1}">
 
-                        </div>
+    //                     </div>
                             
-                        </div>
+    //                     </div>
     
-                `;
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": position.top,
-            "left": position.left
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: ".editor-canvas",
-            scroll: false,
-            grid: [50, 20],
-            cursor: "move",
-            handle: '#draghanle'
-            });
+    //             `;
+    //     this.renderDiagram = function () {
+    //         // dom includes the html,css code with draggable property
+    //         let dom = $(html).css({
+    //         "position": "absolute",
+    //         "top": position.top,
+    //         "left": position.left
+    //         }).draggable({
+    //         //Constrain the draggable movement only within the canvas of the editor
+    //         containment: ".editor-canvas",
+    //         scroll: false,
+    //         grid: [50, 20],
+    //         cursor: "move",
+    //         handle: '#draghanle'
+    //         });
 
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom)
-            //canvas.append(dom);
-            // Making element Resizable
+    //         var a = document.getElementsByClassName("current")[0];
+    //         $('#' + a.id).append(dom)
+    //         //canvas.append(dom);
+    //         // Making element Resizable
 
-        };
-        }
-    }
+    //     };
+    //     }
+    // }
 // ====================== End of initializing elements ========================
     
     // title click function
@@ -826,6 +843,21 @@ $(document).ready(function() {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
+        $('.fa-link').bind("click", function(e) {
+            var link_id = parseInt(e.currentTarget.id) + 1
+            var div = $(this).parent().parent();
+            $('#link-modal').modal();
+
+            $('#link-submit').on('click',function(){
+                let link = ('http://'+$('#link').val())
+                $('#link-modal').modal('hide');
+                myYoutubeId = getYoutubeID(link)
+                div.find('p, iframe, video').remove();
+                div.append(`
+                    <iframe width="100%" height="94%" src="https://www.youtube.com/embed/${myYoutubeId}" frameborder="0" allowfullscreen></iframe>
+                `);
+            });
+        });
     
         $('.video-div').on('dragover', function(e) {
             e.stopPropagation();
@@ -1038,9 +1070,7 @@ $(document).ready(function() {
         }
     
         $(".video-form").change(function(e) {
-    
             readURL(this);
-    
         });
     }
 
@@ -1097,9 +1127,14 @@ $(document).ready(function() {
                 $(this).css("left"),$(this).find('object').attr('data'), $(this).css("height"),$(this).css("width"));
             }
             if(value.classList.contains('video-div')){
-                link = $(this).find('iframe').attr('src');
+                console.log($(this).find('video > source').attr('src'))
+                if($(this).find('iframe').length>0){
+                    var vidlink = $(this).find('iframe').attr('src');
+                }else if($(this).find('video').length){
+                    var vidlink = $(this).find('video > source').attr('src');  
+                }
                 VideoFunction($(this).css("top"),
-                $(this).css("left"),link, $(this).css("height"),$(this).css("width"));
+                $(this).css("left"),vidlink, $(this).css("height"),$(this).css("width"));
             }
         });
 
@@ -1273,16 +1308,21 @@ $(document).ready(function() {
         
         $(".tabs-to-click ul").append(`
             <div>
-                <div>
-                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
-                </div>
-                <div>
-                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times fa-2x" aria-hidden="true"></i></button>
-                </div>
-                <li class="tabs-link pagenumber" value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')" >
+                 <p style="display:inline-block"></p> 
+                <span style="float:right ">
+                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                </span>
+
+                <span style="float:right ">
+                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                </span>
+                <li class="tabs-link pagenumber " value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')" >
                 
-                </li><br/> 
-                <p></p> 
+                </li>
+               
+               <hr class="white-hr"/>
+            
+
             </div>
         `);
         $(".tabs").append(
@@ -1394,10 +1434,16 @@ $(document).ready(function() {
                     if(div == 'video'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
+                            let link;
+                            if(css_value.hasOwnProperty('online_link')){
+                                link = css_value.online_link
+                            }else{
+                                link = css_value.local_link
+                            }
                             VideoFunction(
                                 css_value.tops,
                                 css_value.left,
-                                css_value['local_link'],
+                                link,
                                 css_value.height,css_value.width);
                         });
                     }
