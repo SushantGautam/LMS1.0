@@ -11,6 +11,8 @@ from WebApp.models import MemberInfo
 from functools import partial
 from forum.tasks import notify
 from PIL import Image
+from django import template
+from markdownx.utils import markdownify
 from io import BytesIO
 import xxhash
 import mistune
@@ -24,6 +26,14 @@ if six.PY2:
 
 MENTION_REGEX = re.compile(r'@(\S+)', re.M)
 USER_MODEL = MemberInfo
+
+
+register = template.Library()
+
+
+@register.filter
+def show_markdown(text):
+    return markdownify(text)
 
 
 def _replace_username(link, matchobj):

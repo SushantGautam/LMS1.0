@@ -62,7 +62,6 @@ class Index(ListView):
     model = Thread
     template_name = 'forum/index.html'
     context_object_name = 'threads'
-    paginate_by = 4
 
     def get_queryset(self):
         nodegroups = NodeGroup.objects.all()

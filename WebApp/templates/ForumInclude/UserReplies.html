@@ -1,7 +1,9 @@
 {% load i18n %}
-{% load humanize %}
 {% load forum_tags %}
+{% load humanize %}
+{% load crispy_forms_tags %}
 {% load static %}
+{% load markdown_extras %}
 
 
 
@@ -63,7 +65,8 @@
 
 
                     <div class="content_render">
-                        <h4 class="">{{ reply.content_rendered | safe }}</h4>
+
+                        <h4 class="">{{ reply.content_rendered|markdown|safe }} </h4>
 
                     </div>
                     {% endfor %}
