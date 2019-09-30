@@ -43,9 +43,12 @@ def get_thread_ordering(request):
 def Topic_not_related_to_user(request):
     innings = InningInfo.objects.filter(
         Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
-    courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
-    not_assigned_topics = Topic.objects.filter(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
+    if innings:
+        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
+        not_assigned_topics = Topic.objects.filter(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
                                                       node_group__title="Course")
+    else:
+       not_assigned_topics =  Topic.objects.filter(node_group__title="Course")
     print("this called", not_assigned_topics)
     return not_assigned_topics
 
@@ -67,8 +70,7 @@ class Index(ListView):
         for ng in nodegroups:
             topics = Topic.objects.filter(node_group=ng.pk).exclude(id__in=Topic_not_related_to_user(self.request))
             for topic in topics:
-                threads = Thread.objects.visible().filter(
-                    topic=topic.pk).order_by('pub_date').exclude(topic_id__in=Topic_not_related_to_user(self.request))[:4]
+                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').exclude(topic_id__in=Topic_not_related_to_user(self.request))[:4]
                 threadqueryset |= threads
         print(threadqueryset, "threadqueryset")
         return threadqueryset

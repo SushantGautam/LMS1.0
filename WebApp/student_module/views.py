@@ -173,11 +173,9 @@ class MyAssignmentsListView(ListView):
         context['currentDate'] = datetime.now()
         context['GroupName'] = []
         context['GroupName'] += GroupMapping.objects.filter(Students__id=self.request.user.id)
-       
         context['Group'] = []
         for group in context['GroupName']:
             context['Group'] += InningInfo.objects.filter(Groups__id=group.id)
-         
         context['Course'] = []
         context['Assignment'] = []
         context['activeAssignment'] = []
