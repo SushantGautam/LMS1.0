@@ -2,8 +2,18 @@
 {% load static %}
 {% block breadcrumb %}
 
+<li class="breadcrumb-item"><a href="{% url 'teacher_mycourses_list' %}">My Courses</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_myassignmentinfo_list' %}">My Assignments</a></li>
 
+{% for question in questions|slice:":1" %}
+<li class="breadcrumb-item"><a
+        href="{{question.Assignment_Code.teacher_get_absolute_url }}">{{question.Assignment_Code }}</a>
+</li>
+{% endfor %}
+
+<li class="breadcrumb-item active" aria-current="page">Answers</li>
 {% endblock %}
+
 {% block content %}
 
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

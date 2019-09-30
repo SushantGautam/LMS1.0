@@ -282,8 +282,8 @@
             url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
-                // "Assignment_Answer": $(`#id_Assignment_Answer${this.id}`).val(),
-                "Assignment_File": $('#id_Assignment_File').val(),
+                "Assignment_Answer": $(`#id_Assignment_Answer${this.id}`).val(),
+                // "Assignment_File": $('#id_Assignment_File').val(),
                 "Question_Code": $(`#id_Question_Code${this.id}`).val(),
                 "Student_Code": $(`#id_Student_Code${this.id}`).val(),
                 // "Student_Code": $('#id_Use_Flag').is(":checked"),
