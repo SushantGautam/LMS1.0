@@ -1,3 +1,4 @@
+from django.http import JsonResponse, HttpResponseRedirect
 import random
 import urllib
 
@@ -205,7 +206,8 @@ class QuizTake(FormView):
             self.logged_in_user = self.request.user.is_authenticated
 
         if self.logged_in_user:
-            self.sitting = Sitting.objects.user_sitting(request.user, self.quiz)
+            self.sitting = Sitting.objects.user_sitting(
+                request.user, self.quiz)
         else:
             self.sitting = self.anon_load_sitting()
 
@@ -455,9 +457,6 @@ class MCQuestionListView(ListView):
     model = MCQuestion
 
 
-from django.http import JsonResponse, HttpResponseRedirect
-
-
 class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = MCQuestion
     form_class = MCQuestionForm
@@ -495,7 +494,8 @@ class MCQuestionUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['answers_formset'] = AnsFormset(self.request.POST, instance=self.object)
+            context['answers_formset'] = AnsFormset(
+                self.request.POST, instance=self.object)
         else:
             context['answers_formset'] = AnsFormset(instance=self.object)
         return context
@@ -530,6 +530,9 @@ class MCQuestionCreateFromQuiz(CreateView):
             context['answers_formset'] = AnsFormset(self.request.POST)
         else:
             context['answers_formset'] = AnsFormset()
+            context['quiz'] = get_object_or_404(
+                Quiz, id=self.kwargs['quiz_id'])
+
         return context
 
     def form_valid(self, form):
@@ -565,9 +568,13 @@ class MCQuestionUpdateFromQuiz(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['answers_formset'] = AnsFormset(self.request.POST, instance=self.object)
+            context['answers_formset'] = AnsFormset(
+                self.request.POST, instance=self.object)
         else:
             context['answers_formset'] = AnsFormset(instance=self.object)
+            context['quiz'] = get_object_or_404(
+                Quiz, id=self.kwargs['quiz_id'])
+
         return context
 
     def form_valid(self, form):
@@ -621,6 +628,7 @@ class TFQuestionCreateView(AjaxableResponseMixin, CreateView):
         context = super().get_context_data(**kwargs)
         if self.request.GET:
             context['course_from_quiz'] = self.request.GET["course_from_quiz"]
+
         return context
 
 
@@ -637,6 +645,12 @@ class TFQuestionCreateFromQuiz(CreateView):
         vform = super().form_valid(form)
         related_quiz.tfquestion.add(self.object)
         return vform
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['quiz'] = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+            
+        return context 
 
     def get_success_url(self, **kwargs):
         return reverse(
@@ -658,7 +672,11 @@ class TFQuestionUpdateFromQuiz(UpdateView):
         vform = super().form_valid(form)
         related_quiz.tfquestion.add(self.object)
         return vform
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['quiz'] = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+            
+        return context 
     def get_success_url(self, **kwargs):
         return reverse(
             'quiz_detail',
@@ -728,6 +746,12 @@ class SAQuestionCreateFromQuiz(CreateView):
             kwargs={'pk': self.kwargs['quiz_id']},
         )
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['quiz'] = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+            
+        return context    
+
 
 class SAQuestionUpdateFromQuiz(UpdateView):
     model = SA_Question
@@ -742,6 +766,11 @@ class SAQuestionUpdateFromQuiz(UpdateView):
         vform = super().form_valid(form)
         related_quiz.saquestion.add(self.object)
         return vform
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['quiz'] = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
+            
+        return context     
 
     def get_success_url(self, **kwargs):
         return reverse(
