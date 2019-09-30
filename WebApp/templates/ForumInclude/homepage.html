@@ -50,7 +50,7 @@
         {% for nodegroup in node_groups %}
 
         {% if nodegroup.topic_count > 0 %}
-
+        {% if nodegroup.threadx_count > 0 %}
         <li class="list-group-item">
             <div class="media v-middle">
                 <div class="media-body">
@@ -60,7 +60,7 @@
                         {% url 'teacher_nodegroup' nodegroup.pk %}
                         {% else %}
                         {% url 'forum:nodegroup' nodegroup.pk %}
-                        {% endif %}" class="">{{ nodegroup.title }}</a>
+                        {% endif %}" class="">{{ nodegroup.title }}{{ nodegroup.threadx_count }} </a>
 
                     </h6>
                 </div>
@@ -169,7 +169,8 @@
 
             </li>
         </div>
-
+        {% else %}
+        {% endif %}
 
         {% else %}
 
