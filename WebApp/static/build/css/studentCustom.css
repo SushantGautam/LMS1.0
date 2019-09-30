@@ -259,9 +259,9 @@ img {
   margin-bottom: 10px;
 }
 .pollTitle {
-  font-size: 1.5em;
+  font-size: 2em;
   line-height: 1.285em;
-  font-weight: 500;
+  font-weight: bold;
   color: #1ebeb4;
   display: flex;
   justify-content: center;
