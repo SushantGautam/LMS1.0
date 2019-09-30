@@ -288,10 +288,8 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     node_group = NodeGroup.objects.all()
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
-        topic = Topic.objects.filter(pk=topic_pk).exclude(id__in=Topic_not_related_to_user(request))
-        
-        topics = Topic.objects.filter(node_group=nodegroup_pk).exclude(id__in=Topic_not_related_to_user(request))
-        print("nosujil",Topic.objects.filter(node_group=nodegroup_pk).exclude(id__in=Topic_not_related_to_user(request)))
+        topic = Topic.objects.get(pk=topic_pk)
+    topics = Topic.objects.filter(node_group=nodegroup_pk).exclude(id__in=Topic_not_related_to_user(request))
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
         if form.is_valid():
