@@ -473,6 +473,7 @@ class QuizUserProgressView(TemplateView):
 
 class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
+    template_name = 'teacher_module/sitting_list.html'
 
     def get_queryset(self):
         queryset = super(QuizMarkingList, self).get_queryset() \
@@ -487,6 +488,7 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
 
 class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     model = Sitting
+    template_name = 'teacher_module/sitting_detail.html'
 
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()

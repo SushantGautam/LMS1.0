@@ -540,7 +540,7 @@ def surveyinfo_category(request, id):
 class liveSurveyCreate(CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'survey\liveSurvey_createPage.html'
+    template_name = 'survey/liveSurvey_createPage.html'
 
     def get_form_kwargs(self):
         default_kwargs = super().get_form_kwargs()
