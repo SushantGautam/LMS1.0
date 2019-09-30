@@ -1242,7 +1242,7 @@ class UserThreads(ListView):
 class NotificationView(ListView):
     model = Notification
     paginate_by = 20
-    template_name = 'forum/notification.html'
+    template_name = 'teacher_module/teacher_forum/notifications.html'
     context_object_name = 'notifications'
 
     def get_queryset(self):
@@ -1257,7 +1257,7 @@ class NotificationView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        context['title'] = _("Notifications")
+        context['title'] = ("Notifications")
         return context
 
 
