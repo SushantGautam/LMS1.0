@@ -1259,16 +1259,21 @@ $(document).ready(function() {
         
         $(".tabs-to-click ul").append(`
             <div>
-                <div>
-                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone fa-2x" aria-hidden="true"></i></button>
-                </div>
-                <div>
-                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times fa-2x" aria-hidden="true"></i></button>
-                </div>
-                <li class="tabs-link pagenumber" value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')" >
+                 <p style="display:inline-block"></p> 
+                <span style="float:right ">
+                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                </span>
+
+                <span style="float:right ">
+                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                </span>
+                <li class="tabs-link pagenumber " value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')" >
                 
-                </li><br/> 
-                <p></p> 
+                </li>
+               
+               <hr class="white-hr"/>
+            
+
             </div>
         `);
         $(".tabs").append(
