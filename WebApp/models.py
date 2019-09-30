@@ -60,8 +60,8 @@ class MemberInfo(AbstractUser):
             'unique': _("A user with that username already exists."),
         },
     )
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=150, blank=True)
+    first_name = models.CharField(_('first name'), max_length=50, blank=True)
+    last_name = models.CharField(_('last name'), max_length=50, blank=True)
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
         _('staff status'),
@@ -82,15 +82,15 @@ class MemberInfo(AbstractUser):
         ),
     )
 
-    Member_ID = models.CharField(max_length=250, blank=True, null=True, help_text=_('ID assigned by university/Roll No'))
-    password = models.CharField(_('password'), max_length=128)
+    Member_ID = models.CharField(max_length=150, blank=True, null=True, help_text=_('ID assigned by university/Roll No'))
+    password = models.CharField(_('password'), max_length=264)
     Member_Permanent_Address = models.CharField(max_length=500, blank=True, null=True)
     Member_Temporary_Address = models.CharField(max_length=500, blank=True, null=True)
     Member_BirthDate = models.DateTimeField(blank=True, null=True)
     Member_Phone = models.CharField(max_length=150, blank=True, null=True)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
-    Register_Agent = CharField(max_length=500, blank=True, null=True)
+    Register_Agent = CharField(max_length=128, blank=True, null=True)
     Updated_DateTime = DateTimeField(auto_now=True)
     Member_Memo = models.CharField(max_length=500, blank=True, null=True)
     Member_Avatar = models.ImageField(upload_to="Member_images/", blank=True, null=True)
@@ -98,17 +98,21 @@ class MemberInfo(AbstractUser):
     Is_Student = models.BooleanField(default=True)
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
-    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default= ('F', 'Female'))
+    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices)
 
     @property
     def Avatar(self):
-        default_avatar = ""
-        if self.Member_Gender =='F':
-            default_avatar = ""
-        else:
-            default_avatar = "" # TODO add default path here
 
-        return self.Member_Avatar or default_avatar
+        if self.Member_Avatar:
+            return self.Member_Avatar.url
+        else:
+            if self.Member_Gender =='F':
+                default_avatar = "/static/images/profile/female.png"
+            elif self.Member_Gender =='M':
+                default_avatar = "/static/images/profile/male.jpg"
+            else:
+                default_avatar = "/static/images/profile/profile.png"
+            return default_avatar
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -135,7 +139,7 @@ class MemberInfo(AbstractUser):
 
 
 class CourseInfo(models.Model):
-    Course_Name = CharField(max_length=500, blank=True, null=True)
+    Course_Name = CharField(max_length=500)
     Course_Description = TextField(blank=True, null=True)
     Course_Cover_File = ImageField(upload_to="Course_images/", blank=True, null=True)
     Course_Level = IntegerField(blank=True, null=True)
@@ -146,7 +150,7 @@ class CourseInfo(models.Model):
     Updated_DateTime = DateTimeField(auto_now=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
-    Course_Provider = CharField(max_length=250, blank=True, null=True)
+    Course_Provider = CharField(max_length=250)
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -176,8 +180,8 @@ class CourseInfo(models.Model):
 
 
 class ChapterInfo(models.Model):
-    Chapter_No = IntegerField(blank=True, null=True)
-    Chapter_Name = CharField(max_length=200, blank=True, null=True)
+    Chapter_No = IntegerField()
+    Chapter_Name = CharField(max_length=200)
     Summary = TextField(blank=True, null=True)
     Page_Num = IntegerField(blank=True, null=True)
 

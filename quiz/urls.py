@@ -95,4 +95,11 @@ urlpatterns += (
 
     path('quizfw/', views.QuizCreateWizard.as_view(), name='quizfw'),
     path('get_course_chapter/', views.GetCourseChapter.as_view(), name='get_course_chapter'),
+    path('activate_quiz/<int:pk>/', views.ActivateQuiz.as_view(), name='activate_quiz'),
+    path('deactivate_quiz/<int:pk>/', views.DeactivateQuiz.as_view(), name='deactivate_quiz'),
+
+    path('update_questions/<int:pk>/', views.UpdateQuestions.as_view(), name='update_questions'),
+
+
+
 )

@@ -117,6 +117,38 @@ class MCQuestionForm(forms.ModelForm):
     #     widget=FilteredSelectMultiple(verbose_name=_("Quizzes"), is_stacked=False))
 
 
+class QuestionQuizForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['mcquestion', 'tfquestion', 'saquestion']
+
+    def __init__(self, *args, **kwargs):
+        course_id = kwargs.pop('course_id', None)
+        mcqueryset = MCQuestion.objects.filter(course_code=course_id)
+        tfqueryset = TF_Question.objects.filter(course_code=course_id)
+        saqueryset = SA_Question.objects.filter(course_code=course_id)
+        super().__init__(*args, **kwargs)
+        self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
+            queryset=mcqueryset,
+            required=False,
+            # label=_("Questions"),
+            widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False)
+        )
+        self.fields['tfquestion'] = forms.ModelMultipleChoiceField(
+            queryset=tfqueryset,
+            required=False,
+            # label=_("Questions"),
+            widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False)
+        )
+        self.fields['saquestion'] = forms.ModelMultipleChoiceField(
+            queryset=saqueryset,
+            required=False,
+            # label=_("Questions"),
+            widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False)
+        )
+
+
+
 class TFQuestionForm(forms.ModelForm):
     class Meta:
         model = TF_Question

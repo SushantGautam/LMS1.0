@@ -1142,7 +1142,7 @@ article {
 
 #divID {
     background: #f5f5f5;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 /*top nav center name Rajav*/
@@ -1186,7 +1186,8 @@ article {
     background: #FFF;
     border-radius: 10px;
     padding: 35px 10px;
-    margin: 30px 0px;
+    margin: 15px 5px;
+    width: auto;
 }
 
 .box-part:hover {

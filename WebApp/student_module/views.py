@@ -26,9 +26,10 @@ from django.views.decorators.debug import sensitive_post_parameters
 # Create your views here.
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView
-from WebApp.forms import UserUpdateForm
 
-from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, AssignmentQuestionInfo, \
+from WebApp.forms import UserUpdateForm
+from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
+    AssignmentQuestionInfo, \
     AssignAnswerInfo
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
@@ -45,15 +46,19 @@ def start(request):
                 # Filtering out only active sessions
                 session = InningInfo.objects.filter(Groups__id=batch.id,End_Date__gt=datetime_now)
                 sessions += session
+        # courses = []
+        # activeassignments = []   
+        # if sessions:
+        #     for session in sessions:
+        #         courses.append(session.Course_Group)
         courses = set()
         activeassignments = []   
         if sessions:
             for session in sessions:
                 course = session.Course_Group.all()
                 courses.update(course)
-        
             for course in courses:
-                activeassignments += AssignmentInfo.objects.filter(Assignment_Deadline__gte=datetime_now)
+                activeassignments += AssignmentInfo.objects.filter(Assignment_Deadline__gte=datetime_now,Course_Code=course.Course_Code.id)[:7]
  
         
         return render(request, 'student_module/dashboard.html',
@@ -147,16 +152,16 @@ class MyCoursesListView(ListView):
         return context
 
     def get_queryset(self):
-        qs = self.model.objects.all()
+        qset = self.model.objects.all()
 
-        query = self.request.GET.get('mycoursequery')
-        if query:
-            query=query.strip()
-            qs = qs.filter(Course_Name__contains=query)
-            if not len(qs):
-                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
-        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
-        return qs
+        queryset = self.request.GET.get('studentmycoursequery')
+        if queryset:
+            queryset=queryset.strip()
+            qset = qset.filter(Course_Name__contains=queryset)
+            if not len(qset):
+                messages.error(self.request, 'Sorry no courses found! Try with a different keyword')
+        qset = qset.order_by("-id")  # you don't need this if you set up your ordering on the model
+        return qset
 
 
 class MyAssignmentsListView(ListView):
@@ -168,14 +173,27 @@ class MyAssignmentsListView(ListView):
         context['currentDate'] = datetime.now()
         context['GroupName'] = []
         context['GroupName'] += GroupMapping.objects.filter(Students__id=self.request.user.id)
-              
         context['Group'] = []
         for group in context['GroupName']:
             context['Group'] += InningInfo.objects.filter(Groups__id=group.id)
         context['Course'] = []
+        context['Assignment'] = []
+        context['activeAssignment'] = []
+        context['expiredAssignment'] = []
         for course in context['Group']:
-            context['Course'] = course.Course_Group.all()
-
+            Assignment = []
+            activeAssignment = []
+            expiredAssignment = []
+            context['Course'] += course.Course_Group.all()
+            
+            for assignment in context['Course']:
+                Assignment.append(AssignmentInfo.objects.filter(Course_Code__id=assignment.Course_Code.id)) 
+                activeAssignment.append(AssignmentInfo.objects.filter(Course_Code__id=assignment.Course_Code.id,Assignment_Deadline__gte=datetime_now))
+                expiredAssignment.append(AssignmentInfo.objects.filter(Course_Code__id=assignment.Course_Code.id,Assignment_Deadline__lte=datetime_now))
+                # print(context['Assignment'])
+            context['Assignment'].append(Assignment)     
+            context['activeAssignment'].append(activeAssignment)     
+            context['expiredAssignment'].append(expiredAssignment)     
         return context
 
 
@@ -371,5 +389,9 @@ class surveyFilterCategory_student(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
+
+        submitSurveyQuerySet = SubmitSurvey.objects.filter(Student_Code=self.request.user.id)
+        context['submittedSurvey'] = [el.Survey_Code.id for el in submitSurveyQuerySet]
+
         return context
 

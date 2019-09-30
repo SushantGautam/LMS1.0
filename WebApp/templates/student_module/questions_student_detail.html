@@ -154,7 +154,7 @@
 
                 <input type="hidden" name="surveyInfoId" value="{{ object.id }}">
                 <input type="hidden" name="userId" value="{{ request.user.id }}">
-                <!-- {{ request.user.id }} -->
+                {#                <!-- {{ request.user.id }} -->#}
                 <button>Submit</button>
             </form>
         </div>
@@ -194,9 +194,13 @@
                 type: $(this).attr('method'),
                 data: $(this).serialize(),
                 url: "{% url 'ParticipateSurvey' %}",  // URL to your view that serves new info
+                success: function () {
+                    $('#participatedSurvey').replaceWith(`<i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="truess"></i>`);
+                },
                 error: function () {
                     console.log('Error Already submitted')
                 }
+
             });
         }
         else {
