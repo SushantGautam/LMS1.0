@@ -22,7 +22,7 @@
 
                 <div class="media-right">
                     <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
-                    /teachers/forum/create_topic
+                    {% url 'teacher_create_topic' %}
                     {% else %}
                     /forum/topic/create
                      {% endif %}">
@@ -181,7 +181,7 @@
     <div class="clearfix"></div>
 
 
-    <div class=" text-center">
+    <!-- <div class=" text-center">
         {% if is_paginated %}
         <ul class="pagination">
             {% if page_obj.has_previous %}
@@ -207,7 +207,7 @@
             {% endif %}
         </ul>
         {% endif %}
-    </div>
+    </div> -->
 
 </div>
 

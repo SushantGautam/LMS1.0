@@ -91,7 +91,7 @@
                     <td> {{ list.2 }} </td>
                     {% if list.1 %}
                     <td><a href="{% if '/teachers' in request.path %}
-                        {% url 'teacher_threads' pk=thread.user.pk %}
+                        {% url 'teacher_threads' pk=list.1.pk %}
                         {% else %}
                      {% url 'forum:thread' pk=list.1.pk %}
                         {% endif %}
