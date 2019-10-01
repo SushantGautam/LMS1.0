@@ -1,0 +1,74 @@
+{% extends 'forum/Student_Base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+
+{% block breadcrumb %}
+
+
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="breadcrumb-item active"><a href="{% url 'student_notification' %}"> Notifications</a>
+</li>
+
+{% endblock %}
+
+{% block main_contain %}
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><i class="fa fa-bell"></i>Notifications</h2>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <ul class="list-unstyled msg_list">
+                {% for notification in notifications %}
+                <li>
+                    {% if notification.thread %}
+                    {% url 'teacher_thread' notification.thread_id as thread_url %}
+                    <a href="{{ thread_url }}">
+                        <span class=""><img src="/media/{{ notification.sender.Member_Avatar }}" alt="" /></span>
+                        <span>
+                            <span class="title">{{ notification.sender }} </span>
+                            <span class="time">{{ notification.pub_date }}</span>
+                        </span>
+                        <span class="message">
+                            {% blocktrans with username=notification.sender.username thread_title=notification.thread.title %}
+                            mentioned you in thread:
+                            <strong> {{ thread_title }}</strong>
+
+
+                            {% endblocktrans %}
+                        </span>
+                    </a>
+                    {% else %}
+                    {% url 'teacher_thread' notification.post.thread_id as thread_url %}
+                    <a href="{{ thread_url }}">
+                        <span class="image"><img src="/media/{{ notification.sender.Member_Avatar }}" alt="" /></span>
+                        <span>
+                            <span>{{ notification.sender }} </span>
+                            <span class="time">{{ notification.pub_date }}</span>
+                        </span>
+                        <span class="message">
+                            <strong>
+                                {% blocktrans with username=notification.sender.username thread_title=notification.post.thread.title %}
+                            </strong>
+                            mentioned you when replying to
+
+                            <strong> {{ thread_title }}</strong>
+
+                            {% endblocktrans %}
+                        </span>
+                    </a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

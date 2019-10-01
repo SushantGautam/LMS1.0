@@ -267,6 +267,9 @@ class AssignmentInfoUpdateView(UpdateView):
     form_class = AssignmentInfoForm
     template_name = 'teacher_module/assignmentinfo_form.html'
 
+    def get_success_url(self, **kwargs):
+            return reverse_lazy('teacher_assignmentinfo_detail', kwargs = {'course':self.object.Course_Code.id,'chapter':self.object.Chapter_Code.id,'pk': self.object.pk})
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1018,10 +1021,11 @@ class TeacherSurveyInfoDetailView(DetailView):
 
 
 
-def create_topic(request, nodegroup_pk=None):
-    node_group = NodeGroup.objects.filter(pk=nodegroup_pk)
+def create_topic(request, teacher_nodegroup_pk=None):
+    node_group = NodeGroup.objects.filter(pk=teacher_nodegroup_pk)
     if request.method == 'POST':
         form = TopicForm(request.POST, user=request.user)
+        print(form)
         if form.is_valid():
             t = form.save()
             return HttpResponseRedirect(reverse('teacher_topic', kwargs={'pk': t.pk}))
@@ -1103,8 +1107,8 @@ class NodeGroupView(ListView):
             try:
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
-                reply_count = Thread.objects.filter(topic=topic.pk).aggregate(
-                    Sum('reply_count'))['reply_count__sum']
+                reply_count = Post.objects.filter(thread=thread.pk).count()
+
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])

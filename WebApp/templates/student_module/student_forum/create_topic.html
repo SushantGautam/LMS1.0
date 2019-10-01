@@ -1,11 +1,11 @@
-{% extends 'forum/Teacher_base.html' %}
+{% extends 'forum/Student_Base.html' %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
-<li class="breadcrumb-item active"><a href="{% url 'teacher_create_topic' %}"> Create SubCategory</a>
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="breadcrumb-item active"><a href="{% url 'student_create_topic' %}"> Create SubCategory</a>
 </li>
 
 {% endblock %}
@@ -16,7 +16,7 @@
 <div class="panel panel-default paper-shadow" data-z="2">
 	<div class="panel-body">
 
-		<form method="post" action="{% url 'teacher_create_topic' %}">
+		<form method="post" action="{% url 'student_create_topic' %}">
 			{% csrf_token %}
 
 

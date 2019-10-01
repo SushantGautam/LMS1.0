@@ -2,7 +2,7 @@
 {% load humanize %}
 {% load forum_tags %}
 {% load static %}
-
+{% load markdown_extras %}
 
 {% block main_contain %}
 
@@ -18,7 +18,14 @@
     <ul class="list-group thread-list">
         {% for thread in threads %}
         <li class="list-group-item thread-entry">
-            <div class="entry media"><a href="{% url 'forum:user_info' pk=thread.user.pk %}">
+            <div class="entry media"><a href="           
+                {% if '/teachers' in request.path %}
+                {% url 'teacher_info' pk=thread.user.pk %}
+                {% elif '/students' in request.path %}
+                {% url 'student_info' pk=thread.user.pk %}
+                {% elif '/forum' in request.path %}
+                {% url 'forum:user_info' pk=thread.user.pk %}
+                {% endif %}">
                     <img src="
                                                                             {% if thread.user.Member_Avatar %}
                                                                                 {{ thread.user.Member_Avatar.url }}
@@ -35,7 +42,9 @@
                     <div class="media-body media-middle"> &nbsp;
                         <a href="{% if '/teachers' in request.path %}
                         {% url 'teacher_thread' pk=thread.pk %}
-                        {% else %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_thread' pk=thread.pk %}
+                        {% elif '/forum' in request.path %}
                         {% url 'forum:thread' pk=thread.pk %}
                         {% endif %}
                         " class="entry-link">
@@ -50,9 +59,11 @@
                                     
                                     {% if '/teachers' in request.path %}
                         {% url 'teacher_topic' thread.topic.pk %}
-                        {% else %}
-                        {% url 'forum:topic' thread.topic.pk
-                        {% endif %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_topic' thread.topic.pk %}
+                        {% elif '/forum' in request.path %}
+                        {% url 'forum:topic' thread.topic.pk %}
+                        {% endif %}                       
                                   ">
                                         <span class="link-color">
                                             {{ thread.topic.title }}
@@ -97,7 +108,14 @@
 
                                 <div id="reply_{{ reply.thread.pk }}_{{ reply.pk }}">
                                     <li class="list-group-item reply-entry reply-entry-content">
-                                        <a href="{% url 'forum:user_info' pk=reply.user.pk %}">
+                                        <a href="
+                                        {% if '/teachers' in request.path %}
+                                        {% url 'teacher_info' pk=reply.user.pk %}
+                                        {% elif '/students' in request.path %}
+                                        {% url 'student_info' pk=reply.user.pk %}
+                                        {% elif '/forum' in request.path %}
+                                        {% url 'forum:user_info' pk=reply.user.pk %}
+                                        {% endif %}">
                                             <img src="
                                                 {% if reply.user.Member_Avatar %}
                                                     {{ reply.user.Member_Avatar.url }}
@@ -142,7 +160,10 @@
                 <a href="
                 {% if '/teachers' in request.path %}
                         {% url 'teacher_threads' user.pk %}
-                        {% else %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_threads' user.pk %}
+                        {% elif '/forum' in request.path %}
+
                         {% url 'forum:user_threads' user.pk %}
                         {% endif %}" class="text-success">{% trans "More threads from this user" %}</a>
             </h4>
@@ -189,11 +210,12 @@
                             <div class="reply_title">
                                 <a href="
                                 {% if '/teachers' in request.path %}
-                        {% url 'teacher_threads' pk=reply.thread.pk %}
-                        {% else %}
-                        {% url 'forum:thread' pk=reply.thread.pk %}
-                        {% endif %}
-                                
+                                {% url 'teacher_info' pk=reply.thread.pk %}
+                                {% elif '/students' in request.path %}
+                                {% url 'student_info' pk=reply.thread.pk %}
+                                {% elif '/forum' in request.path %}
+                                {% url 'forum:user_info' pk=reply.thread.pk %}
+                                {% endif %}        
                                 " class="entry-link">{{ reply.thread.title }}</a>
                             </div>
 
@@ -208,7 +230,7 @@
 
 
                     <div class="content_render">
-                        <h4 class="">{{ reply.content_rendered | safe }}</h4>
+                        <h4 class="">{{ reply.content_rendered|markdown|safe }}</h4>
 
                     </div>
                     {% endfor %}

@@ -91,4 +91,6 @@ urlpatterns += (
     path('deactivate_quiz/<int:pk>/', views.DeactivateQuiz.as_view(), name='deactivate_quiz'),
 
     path('update_questions/<int:pk>/', views.UpdateQuestions.as_view(), name='update_questions'),
+
+    path('choose_mcq/<int:pk>/', views.QuizMCQChoosePrevious.as_view(), name='choose_mcq'),
 )

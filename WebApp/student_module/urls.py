@@ -46,7 +46,8 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for ChapterInfo
-    path('courseinfo/<int:course>/chapterinfo/', views.ChapterInfoListView.as_view(), name='student_chapterinfo_list'),
+    path('courseinfo/<int:course>/chapterinfo/',
+         views.ChapterInfoListView.as_view(), name='student_chapterinfo_list'),
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/', views.ChapterInfoDetailView.as_view(),
          name='student_chapterinfo_detail'),
 )
@@ -54,9 +55,10 @@ urlpatterns += (
 urlpatterns += (
     # urls for AssignmentInfo
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:pk>/',
-    views.AssignmentInfoDetailView.as_view(),
-        name='student_assignmentinfo_detail'),
-    path('myassignments/',views.MyAssignmentsListView.as_view(), name='student_myassignmentinfo_list')
+         views.AssignmentInfoDetailView.as_view(),
+         name='student_assignmentinfo_detail'),
+    path('myassignments/', views.MyAssignmentsListView.as_view(),
+         name='student_myassignmentinfo_list')
 )
 
 urlpatterns += (
@@ -74,7 +76,8 @@ urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView),
          name='student_user_profile'),
-    path('editprofile_student/', login_required(views.student_editprofile), name='student_user_editprofile'),
+    path('editprofile_student/', login_required(views.student_editprofile),
+         name='student_user_editprofile'),
 
 )
 
@@ -83,7 +86,8 @@ urlpatterns += (
 # )
 urlpatterns += (
     # urls for SurveyInfo
-    path('questions_student/', views.questions_student.as_view(), name='questions_student'),
+    path('questions_student/', views.questions_student.as_view(),
+         name='questions_student'),
 
     path('questions_student_detail/detail/<int:pk>/',
          views.questions_student_detail.as_view(), name='questions_student_detail'),
@@ -110,3 +114,34 @@ urlpatterns += (
 #     path('polls_student_view/', views.polls_student_view,
 #          name="polls_student_view"),
 # )
+
+
+urlpatterns += (
+    path('forum/', views.Index.as_view(), name="student_forum"),
+    path('forum/create_thread', views.create_thread, name="student_forum_create"),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
+         views.create_thread, name='student_forum_create'),
+    path('forum/create_thread/(?P<student_nodegroup_pk>\d+)/(?P<student_topic_pk>\d+)/',
+         views.create_thread, name='student_forum_create'),
+
+
+    path('forum/create_topic/(?P<student_nodegroup_pk>\d+)/',
+         views.create_topic, name='student_create_topic'),
+
+    path('forum/create_topic', views.create_topic, name="student_create_topic"),
+    path('forum/search/(?P<keyword>.*)',
+         views.SearchView.as_view(), name='student_search'),
+    path('forum/search/', views.search_redirect,
+         name='student_search_redirect'),
+    path('forum/nodegroup/<int:pk>/',
+         views.NodeGroupView.as_view(), name='student_nodegroup'),
+    path('forum/thread/<int:pk>/',
+         views.ThreadView.as_view(), name='student_thread'),
+    path('forum/topic/<int:pk>/', views.TopicView.as_view(), name='student_topic'),
+    path('forum/info/<int:pk>/', views.user_info, name='student_info'),
+    path('forum/posts/<int:pk>/', views.UserPosts.as_view(), name='student_posts'),
+    path('forum/threads/<int:pk>/',
+         views.UserThreads.as_view(), name='student_threads'),
+    path('forum/notification', views.NotificationView.as_view(),
+         name='student_notification'),
+)
