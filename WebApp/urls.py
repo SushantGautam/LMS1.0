@@ -40,7 +40,6 @@ urlpatterns = (
     url(r'^.*register/$', views.register.as_view(), name='register'),
 )
 
-
 urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView), name='user_profile'),
@@ -76,7 +75,7 @@ urlpatterns += (
     path('memberinfo/detail/<int:pk>/', views.MemberInfoDetailView.as_view(), name='memberinfo_detail'),
     path('memberinfo/update/<int:pk>/', views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
     path('memberinfo/delete/<int:pk>/', views.MemberInfoDeleteView.as_view(), name='memberinfo_delete'),
-    path('importcsvajax',views.ImportCsvFile, name='csv_import_ajax'),
+    path('importcsvajax', views.ImportCsvFile, name='csv_import_ajax'),
     path('ajax/validate_username/', views.validate_username, name='validate_username'),
 )
 
@@ -87,7 +86,7 @@ urlpatterns += (
     path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(), name='courseinfo_detail'),
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
 )
-     
+
 urlpatterns += (
     # urls for ChapterInfo
     path('chapterinfo/create/ajax', views.ChapterInfoCreateViewAjax.as_view(), name='chapterinfo_create_ajax'),
@@ -97,10 +96,9 @@ urlpatterns += (
          name='chapterinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/edit/', views.ChapterInfoUpdateView.as_view(),
          name='chapterinfo_update'),
-    path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'), 
+    path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'),
     path('change_quiz_test/', views.Changestate.as_view(), name='change_quiz_test'),
 )
-
 
 urlpatterns += (
     # urls for Assignmentinfo
@@ -271,4 +269,10 @@ urlpatterns += (
 
 )
 
-
+urlpatterns += (
+    # urls for chapterpagebuilder
+    path('3DViewer/<path:urlpath>',
+         views.ThreeDViewer, name='3DViewer'),
+    path('3DViewer/',
+         views.ThreeDViewer, name='3DViewer'),
+)
