@@ -15,8 +15,15 @@
             <div class="top_button ">
 
                 {% if request.user == thread.user %}
-                <a href="{% url 'forum:edit_thread' pk=thread.pk %}"><span class="btn btn-xs btn-primary"><i
-                            class="fa fa-edit"></i> {% trans 'Edit' %} </span></a>
+                <a href="
+                {% if '/teachers' in request.path %}
+                    {% url 'teacher_edit_thread' pk=thread.pk %}
+                    {% elif '/students' in request.path %}
+                    {% url 'student_edit_thread' pk=thread.pk %}  
+                     {% elif '/forum' in request.path %}
+                     {% url 'forum:edit_thread' pk=thread.pk %}
+                     {% endif %}"><span class="btn btn-xs btn-primary"><i class="fa fa-edit"></i> {% trans 'Edit' %}
+                    </span></a>
                 {% endif %}
 
 
