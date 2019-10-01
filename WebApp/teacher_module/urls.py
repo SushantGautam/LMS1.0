@@ -81,7 +81,7 @@ urlpatterns += (
     path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
          views.create_thread, name='teacher_forum_create'),
-    path('forum/create_thread/(?P<teacher_nodegroup_pk>\d+)/(?P<teacher_topic>\d+)/',
+    path('forum/create_thread/(?P<teacher_nodegroup_pk>\d+)/(?P<teacher_topic_pk>\d+)/',
          views.create_thread, name='teacher_forum_create'),
 
 

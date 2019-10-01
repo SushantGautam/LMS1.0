@@ -1011,10 +1011,11 @@ class TeacherSurveyInfoDetailView(DetailView):
 
 
 
-def create_topic(request, nodegroup_pk=None):
-    node_group = NodeGroup.objects.filter(pk=nodegroup_pk)
+def create_topic(request, teacher_nodegroup_pk=None):
+    node_group = NodeGroup.objects.filter(pk=teacher_nodegroup_pk)
     if request.method == 'POST':
         form = TopicForm(request.POST, user=request.user)
+        print(form)
         if form.is_valid():
             t = form.save()
             return HttpResponseRedirect(reverse('teacher_topic', kwargs={'pk': t.pk}))

@@ -2,7 +2,7 @@
 {% load humanize %}
 {% load forum_tags %}
 {% load static %}
-
+{% load markdown_extras %}
 
 {% block main_contain %}
 
@@ -208,7 +208,7 @@
 
 
                     <div class="content_render">
-                        <h4 class="">{{ reply.content_rendered | safe }}</h4>
+                        <h4 class="">{{ reply.content_rendered|markdown|safe }}</h4>
 
                     </div>
                     {% endfor %}
