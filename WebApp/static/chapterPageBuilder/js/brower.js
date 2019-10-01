@@ -1,8 +1,8 @@
 var data_save = true;
 
 window.onbeforeunload = function () {
-
   if (data_save) {
+    $('#chapterlist').val(previous)
     return "It looks like you haven't saved the document. If you leave before saving, your changes will be lost.";
   } else {
     return;
