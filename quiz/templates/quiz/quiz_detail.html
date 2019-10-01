@@ -93,8 +93,8 @@
     <a href="#mcqn_list" data-toggle="collapse">
 
       <p class="exam-results text-center">
-        <span class="exam-results">LIST OF MCQUESTIONS</span> <span class="fa fa-chevron-down"
-                                                                    style="color:white"></span>
+        <span class="exam-results">LIST OF MCQUESTIONS</span> {%if quiz.has_mcqs %} <span class="fa fa-chevron-down"
+                                                                    style="color:white"></span>{% endif %}
         <a href="{% url 'mcquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
                                                                                  style="float: right">ADD MCQ +</span></a>
 

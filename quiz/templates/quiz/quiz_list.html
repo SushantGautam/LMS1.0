@@ -49,8 +49,8 @@
 
   			<tr>
 						<td>{{ quiz.title }}</td>
-						<td>{{ quiz.category }} -> {{quiz.chapter_code}}</td>
-						<td></td>
+						<td>{{ quiz.course_code }} -> {{quiz.chapter_code}}</td>
+						<td>{{ quiz.question_count}}</td>
 						<td>{% if quiz.pre_test  %}
 								pre test <br>
 								{% endif %}
@@ -66,7 +66,12 @@
 				 		{{ quiz.url }}
 					</a>
 				 </td>
-				<td></td>
+				<td>{% if quiz.draft is True %}
+								 Inactive 
+						{% else %}		
+								 Active
+						{% endif %}	  
+				</td>
 			  <td>
 				<a href="{% url 'quiz_detail' pk=quiz.id %}">
 				  {% trans "View details" %}
