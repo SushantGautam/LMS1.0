@@ -30,6 +30,7 @@
            "><i class="fa fa-fw fa-plus"></i>
                 Ask New
                 Question</a>
+            {% if not request.user.Is_Student %}
             <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
             {% url 'teacher_create_topic' teacher_nodegroup_pk=node_group.pk %}
             {% elif '/students' in request.path %}
@@ -40,6 +41,7 @@
          "><i class="fa fa-fw fa-plus"></i>
                 Sub Category
             </a></i>
+            {% endif %}
         </div>
         <div class="clearfix"></div>
     </div>
