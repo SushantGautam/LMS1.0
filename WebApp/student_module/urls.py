@@ -124,7 +124,7 @@ urlpatterns += (
     path('forum/create_thread/(?P<student_nodegroup_pk>\d+)/(?P<student_topic_pk>\d+)/',
          views.create_thread, name='student_forum_create'),
 
-
+    path('forum/edit/<int:pk>/', views.edit_thread, name='student_edit_thread'),
     path('forum/create_topic/(?P<student_nodegroup_pk>\d+)/',
          views.create_topic, name='student_create_topic'),
 

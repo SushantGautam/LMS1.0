@@ -25,7 +25,7 @@ from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
 from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
 from survey.views import AjaxableResponseMixin
-from .forms import ThreadForm
+from forum.forms import ThreadForm, ThreadEditForm
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
 from WebApp.forms import UserUpdateForm
@@ -1265,6 +1265,22 @@ class NotificationView(ListView):
         context = super(ListView, self).get_context_data(**kwargs)
         context['title'] = ("Notifications")
         return context
+
+def edit_thread(request, pk):
+    thread = Thread.objects.get(pk=pk)
+    if thread.reply_count < 0:
+        return HttpResponseForbidden(_('Editing is not allowed when thread has been replied'))
+    if not thread.user == request.user:
+        return HttpResponseForbidden(_('You are not allowed to edit other\'s thread'))
+    if request.method == 'POST':
+        form = ThreadEditForm(request.POST, instance=thread)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
+    else:
+        form = ThreadEditForm(instance=thread)
+
+    return render(request, 'teacher_module/teacher_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
 
