@@ -19,7 +19,7 @@
 
                 </div>
                 {% if request.user.is_authenticated %}
-
+                {% if not request.user.Is_Student %}
                 <div class="media-right">
                     <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
                     {% url 'teacher_create_topic' %}
@@ -31,6 +31,7 @@
                         <i class="fa fa-fw fa-plus"></i> Sub Category
                     </a>
                 </div>
+                {% endif %}
 
                 <div class="media-right">
                     <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
@@ -63,7 +64,7 @@
                         <a href="{% if '/teachers' in request.path %}
                         {% url 'teacher_nodegroup' nodegroup.pk %}
                         {% elif '/students' in request.path %}
-                        {% url 'teacher_nodegroup' nodegroup.pk %}
+                        {% url 'student_nodegroup' nodegroup.pk %}
                         {% elif '/forum' in request.path %}
                         {% url 'forum:nodegroup' nodegroup.pk %}
                         {% endif %}" class="">{{ nodegroup.title }} </a>

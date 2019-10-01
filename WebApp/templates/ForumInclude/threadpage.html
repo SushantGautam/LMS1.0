@@ -21,6 +21,7 @@
 
 
                 {% if request.user.is_superuser %}
+                {% if not request.user.Is_Student %}
                 {#                                <a href="#" class="moderate-action move-thread-up" data-toggle="modal"#}
                 {#                                    data-target="#moderation-modal" data-pk="{{ thread.pk }}"#}
                 {#                                    data-action="move-thread-up"#}
@@ -55,6 +56,7 @@
                 </a>
                 {% endif %}
 
+                {% endif %}
                 {% endif %}
 
 
@@ -215,6 +217,7 @@
                                     <div class="top_button">
 
                                         {% if request.user.is_superuser %}
+                                        {% if not request.user.Is_Student %}
                                         {% if not post.hidden %}
 
                                         <a href="#" class="moderate-action hide-reply" data-toggle="modal"
@@ -246,7 +249,7 @@
                                                 </p>
                                             </div>
                                         </a>
-
+                                        {% endif %}
                                         {% endif %}
 
                                         {% endif %}
