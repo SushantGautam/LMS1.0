@@ -1,0 +1,30 @@
+{% extends 'forum/Teacher_base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block main_contain %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form method="post" action="{% url 'forum:edit_post' pk=form.instance.pk %}">
+
+            {{ csrf_token }}
+            <input type="hidden" name="csrfmiddlewaretoken">
+
+            <div id="div_id_content_raw" class="form-group"> <label for="id_content_raw"
+                    class="control-label  requiredField">
+                    Content<span class="asteriskField">*</span> </label>
+                <div class="controls "> <textarea name="content_raw" class="textarea form-control" cols="40" rows="10"
+                        required="" id="id_content_raw" spellcheck="false">Similique id irure e</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="controls "> <input type="submit" name="submit" value="Submit" class="btn btn-primary"
+                        id="submit-id-submit"> </div>
+            </div>
+
+
+        </form>
+    </div>
+</div>
+{% endblock %}

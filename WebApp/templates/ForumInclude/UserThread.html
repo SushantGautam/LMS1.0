@@ -48,7 +48,9 @@
                         <a href="
                         {% if '/teachers' in request.path %}
                         {% url 'teacher_thread' pk=thread.pk %}
-                        {% else %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_thread' pk=thread.pk %}
+                        {% elif '/forum' in request.path %}
                         {% url 'forum:thread' pk=thread.pk %}
                         {% endif %}
                        " class="entry-link">
@@ -69,7 +71,9 @@
                                         <a href="
                                         {% if '/teachers' in request.path %}
                                         {% url 'teacher_topic' thread.topic.pk %}
-                                        {% else %}
+                                        {% elif '/students' in request.path %}
+                                        {% url 'student_topic' thread.topic.pk %}
+                                        {% elif '/forum' in request.path %}
                                         {% url 'forum:topic' thread.topic.pk %}
                                         {% endif %}
                                       " class="link-color">
@@ -83,7 +87,10 @@
                                         <a href="
                                         {% if '/teachers' in request.path %}
                                         {% url 'teacher_info' thread.user.pk %}
-                                        {% else %}
+                                        {% elif '/students' in request.path %}
+                                        {% url 'student_info' thread.user.pk %}
+                                        {% elif '/forum' in request.path %}
+
                                         {% url 'forum:user_info' thread.user.pk %}
                                         {% endif %}" class="link-color">
                                             {{ thread.user.username }}
