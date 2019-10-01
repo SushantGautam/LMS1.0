@@ -28,11 +28,11 @@
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
                 <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
-                    data-target="#course-modal">Course Viewer &nbsp;</a>
+                    data-target="#course-modal">Content Viewer &nbsp;</a>
 
                 {% if '/students' not in request.path %}
                 <a class="btn-sm btn-success"
-                    href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Course
+                    href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Content
                     Builder &nbsp;</a>
 
                 {% endif %}

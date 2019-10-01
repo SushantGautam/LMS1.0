@@ -5,10 +5,11 @@
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
 {% if fixed_nodegroup.0.title %}
-<li class="breadcrumb-item"><a href="{% url 'forum:nodegroup' fixed_nodegroup.0.pk %}">{{ fixed_nodegroup.0.title }}</a>
+<li class="breadcrumb-item"><a
+        href="{% url 'teacher_nodegroup' fixed_nodegroup.0.pk %}">{{ fixed_nodegroup.0.title }}</a>
 </li>
 {% if topic.title %}
-<li class="breadcrumb-item"><a href="{% url 'forum:topic' topic.pk %}">{{ topic.title }}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_topic' teacher_topic.pk %}">{{ topic.title }}</a></li>
 {% endif %}
 {% endif %}
 <li class="breadcrumb-item active"><a href="{% url 'teacher_forum_create' %}"></a>
@@ -95,15 +96,6 @@
                 <div class="controls "><input type="text" name="title" id="id_title" required=""
                         class="textinput textInput form-control" maxlength="120"></div>
             </div>
-
-
-            <!-- <div id="div_id_content_raw" class="form-group"><label for="id_content_raw"
-                        class="control-label  requiredField">
-                        Content<span class="asteriskField">*</span> </label>
-                    <div class="controls "> <textarea name="content_raw" cols="40" id="id_content_raw" rows="10"
-                            class="textarea form-control" required=""></textarea></div>
-                </div> -->
-
 
             <div class="x_panel">
                 <div class="x_title">
