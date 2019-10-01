@@ -79,6 +79,9 @@ body{
   
 
 }
+#add-page-btn:hover{
+  cursor: pointer; 
+}
 @media screen and (max-width: 1170px){
 .builder
   {
@@ -625,6 +628,17 @@ svg{
 }
 
 /* Modal Content */
+#button-link-chapter .modal-content{ 
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 100%;
+  height:300px;
+  
+
+}
 .modal-content {
   position: relative;
   background-color: #fefefe;
@@ -830,7 +844,8 @@ table th {
 
 }
 .tabs-to-click ul li{
-  list-style: none;
+  list-style: none; 
+  
   min-width:180px;
   height:140px;
   background:#fff;
@@ -846,6 +861,19 @@ table th {
   align-items: center;
   justify-content: center;
   
+} 
+.white-hr{
+  height: 2px;
+  width: 100%;  
+  background-color: white; 
+  margin-top: 10px!important;
+  margin-bottom: 15px!important;
+}
+
+.tabs-to-click  p{ 
+  text-align: center;
+  font-size: 18px; 
+  font-weight: 800;
 }
 
 .tabs-to-click ul li.current{

@@ -15,124 +15,144 @@
 <hr class="header_hr">
 
 <div class="tabcontent" id="allAssignments">
+    {% if Assignment %}
+    {% for courses in Assignment %}
+    {% for assignment in courses %}
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
+    <h3 align="center">Course -
+        <a href="{{ a.Course_Code.teacher_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
+    </h3>
+    {% endifchanged %}
+    <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        {% for group in Group %}
-        {% if group %}
-        <h4 class="text-center"> Group &nbsp; - &nbsp;<b>{{ group.InningGroup_Name }}</b></h4>
-        <h2>&nbsp; Course &nbsp; - &nbsp;<a
-                href="{{ group.Course_Code.teacher_get_absolute_url }}"><b>{{ group.Course_Code }}</b></a>
-        </h2>
-        {% if not assignments %}
-        <h5> &nbsp; <b style="color: brown">&nbsp;No assignments</b></h5>
-        {% endif %}
-        {% for assignment in assignments %}
-
-        {% if assignment.Course_Code == group.Course_Code %}
-        <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
-
-            <div class="col-md-12 leftborder" style="color: black">
-                <h5>Assignment No - <b>{{ forloop.counter }}</b></h5>
-                <h5><a href="{{ assignment.teacher_get_absolute_url }}"><b>{{ assignment.Assignment_Topic }}</b></a>
-                </h5>
-
-                <h5>Chapter {{ assignment.Chapter_Code.Chapter_No }} - <b>
-                        <a href="{{ assignment.Chapter_Code.teacher_get_absolute_url }}">
-                            {{ assignment.Chapter_Code }}</a></b></h5>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-                <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ assignment.Assignment_Deadline }}</p>
-            </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+            <h5>
+                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+            </h5>
+            <h5>Chapter - {{a.Chapter_Code}}</h5>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <a href="{{ a.teacher_get_absolute_url }}">
+                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                </button>
+            </a>
         </div>
 
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        {% endfor %}
+        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+            <hr style="margin-top: 1px; margin-bottom: 10px;">
+            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+        </div>
     </div>
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
 </div>
+
 <div class="tabcontent" id="activeAssignments" style="display: none;">
+    {% if activeAssignment %}
 
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        {% for group in Group %}
-        {% if group %}
-        <h4 class="text-center"> Group &nbsp; - &nbsp;<b>{{ group.InningGroup_Name }}</b></h4>
-        <h2>&nbsp; Course &nbsp; - &nbsp;<a
-                href="{{ group.Course_Code.teacher_get_absolute_url }}"><b>{{ group.Course_Code }}</b></a>
-        </h2>
-        {% if not activeassignments %}
-        <h5> &nbsp; <b style="color: brown">&nbsp;No active assignments</b></h5>
-        {% endif %}
-        {% for assignment in activeassignments %}
+    {% for courses in activeAssignment %}
+    {% for assignment in courses %}
 
-        {% if assignment.Course_Code == group.Course_Code %}
-        <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-            <div class="col-md-12 leftborder" style="color: black">
-                <h5>Assignment No - <b>{{ forloop.counter }}</b></h5>
-                <h5><a href="{{ assignment.teacher_get_absolute_url }}"><b>{{ assignment.Assignment_Topic }}</b></a>
-                </h5>
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
+    <h3 align="center">Course -
+        <a href="{% if '/students' in request.path %}
+                                                    {{ a.Course_Code.student_get_absolute_url }}
+                                                {% else %}
+                                                   {{ a.Course_Code.get_absolute_url }}
+                                                {% endif %}"><b>{{ a.Course_Code }}</b> </a>
+    </h3>
+    {% endifchanged %}
+    <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-                <h5>Chapter {{ assignment.Chapter_Code.Chapter_No }} - <b>
-                        <a href="{{ assignment.Chapter_Code.teacher_get_absolute_url }}">
-                            {{ assignment.Chapter_Code }}</a></b></h5>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-                <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ assignment.Assignment_Deadline }}</p>
-            </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+            <h5>
+                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+            </h5>
+            <h5>Chapter - {{a.Chapter_Code}}</h5>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <a href="{% if '/students' in request.path %}
+                                    {{ a.student_get_absolute_url }}
+                                {% else %}
+                                   {{ a.get_absolute_url }}
+                                {% endif %}">
+                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                </button>
+            </a>
         </div>
 
-        {% endif %}
-
-        {% endfor %}
-        {% endif %}
-        {% endfor %}
+        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+            <hr style="margin-top: 1px; margin-bottom: 10px;">
+            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+        </div>
     </div>
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
 </div>
 <div class="tabcontent" id="expiredAssignments" style="display: none;">
+    {% if expiredAssignment %}
 
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        {% for group in Group %}
-        {% if group %}
-        <h4 class="text-center"> Group &nbsp; - &nbsp;<b>{{ group.InningGroup_Name }}</b></h4>
-        <h2>&nbsp; Course &nbsp; - &nbsp;<a
-                href="{{ group.Course_Code.teacher_get_absolute_url }}"><b>{{ group.Course_Code }}</b></a>
-        </h2>
-        {% if not expiredassignments %}
-        <h5> &nbsp; <b style="color: brown">&nbsp;No expired assignments</b></h5>
-        {% endif %}
-        {% for assignment in expiredassignments %}
+    {% for courses in expiredAssignment %}
+    {% for assignment in courses %}
 
-        {% if assignment.Course_Code == group.Course_Code %}
-        <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-            <div class="col-md-12 leftborder" style="color: black">
-                <h5>Assignment No - <b>{{ forloop.counter }}</b></h5>
-                <h5><a href="{{ assignment.teacher_get_absolute_url }}"><b>{{ assignment.Assignment_Topic }}</b></a>
-                </h5>
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
+    <h3 align="center">Course -
+        <a href="{% if '/students' in request.path %}
+                                                    {{ a.Course_Code.student_get_absolute_url }}
+                                                {% else %}
+                                                   {{ a.Course_Code.get_absolute_url }}
+                                                {% endif %}"><b>{{ a.Course_Code }}</b> </a>
+    </h3>
+    {% endifchanged %}
+    <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-                <h5>Chapter {{ assignment.Chapter_Code.Chapter_No }} - <b>
-                        <a href="{{ assignment.Chapter_Code.teacher_get_absolute_url }}">
-                            {{ assignment.Chapter_Code }}</a></b></h5>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-                <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ assignment.Assignment_Deadline }}</p>
-            </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+            <h5>
+                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+            </h5>
+            <h5>Chapter - {{a.Chapter_Code}}</h5>
         </div>
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        {% endfor %}
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <a href="{% if '/students' in request.path %}
+                                    {{ a.student_get_absolute_url }}
+                                {% else %}
+                                   {{ a.get_absolute_url }}
+                                {% endif %}">
+                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+            <hr style="margin-top: 1px; margin-bottom: 10px;">
+            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+        </div>
     </div>
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}
+
 {% block customjss %}
 
 <script>
-
     document.getElementById("allAssignments").click();
 
     function openTab(event, tabName) {

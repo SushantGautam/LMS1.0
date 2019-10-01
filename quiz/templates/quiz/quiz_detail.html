@@ -95,8 +95,15 @@
       <p class="exam-results text-center">
         <span class="exam-results">LIST OF MCQUESTIONS</span> <span class="fa fa-chevron-down"
                                                                     style="color:white"></span>
-        <a href="{% url 'mcquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
-                                                                                 style="float: right">ADD MCQ +</span></a>
+        <a href="" id="mcq_choose_button" data-toggle="modal"
+           data-target="#question_form_popup">
+          <span class="add-mcq-details" style="float: right; margin-left: 10px;"> CHOOSE PREVIOUS MCQ </span>
+        </a>
+        <a href="" id="mcq_create_button" data-toggle="modal"
+           data-target="#question_form_popup">
+          <span class="add-mcq-details" style="float: right">ADD MCQ +</span>
+        </a>
+        &nbsp;
 
       </p>
 
@@ -126,11 +133,8 @@
 
                 </div>
                 <div class="col-md-1 text-right">
-
-                  <form action="{% url 'mcquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}" method="get">
-                    <input class="button-color-only" type="submit" value="Edit">
-                  </form>
-
+                  <input id="mcq_{{ quest.id }}_update_button" class="button-color-only" type="submit"
+                         value="Edit" style="float: right" data-toggle="modal" data-target="#question_form_popup">
                 </div>
                 <div class="col-md-1 text-right ">
                   <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="post">
@@ -163,8 +167,14 @@
       <p class="exam-results text-center">
         <span class="exam-results">LIST OF TFQUESTIONS</span> <span class="fa fa-chevron-down"
                                                                     style="color:white"></span>
-        <a href="{% url 'tfquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
-                                                                                 style="float: right">ADD TFQ +</span></a>
+        <a href="" id="tfq_choose_button" data-toggle="modal"
+           data-target="#question_form_popup">
+          <span class="add-mcq-details" style="float: right; margin-left: 10px;"> CHOOSE PREVIOUS TFQ </span>
+        </a>
+        <a href="" id="tfq_create_button" data-toggle="modal"
+           data-target="#question_form_popup">
+          <span class="add-mcq-details" style="float: right">ADD TFQ +</span>
+        </a>
       </p>
     </a>
     <div id="tfqn_list" class="collapse">
@@ -177,11 +187,8 @@
                   <li class="quiz-listing">  {{ quest.content }}</li>
                 </div>
                 <div class="col-md-1 text-right">
-
-                  <form action="{% url 'tfquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}" method="get">
-                    <input class="button-color-only" type="submit" value="Edit">
-                  </form>
-
+                  <input id="tfq_{{ quest.id }}_update_button" class="button-color-only" type="submit"
+                         value="Edit" style="float: right" data-toggle="modal" data-target="#question_form_popup">
                 </div>
                 <div class="col-md-1 text-right " style="line-height: 24px;">
                   <form action="{% url 'tfquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="post">
@@ -209,9 +216,14 @@
       <p class="exam-results text-center">
         <span class="exam-results">LIST OF SHORT ANSWER QUESTIONS</span> <span class="fa fa-chevron-down"
                                                                                style="color:white"></span>
-        <a href="{% url 'saquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
-                                                                                 style="float: right">ADD SAQ +</span></a>
-
+        <a href="" id="saq_choose_button" data-toggle="modal"
+           data-target="#question_form_popup">
+          <span class="add-mcq-details" style="float: right; margin-left: 10px;"> CHOOSE PREVIOUS SAQ </span>
+        </a>
+        <a href="" id="saq_create_button" data-toggle="modal"
+           data-target="#question_form_popup">
+          <span class="add-mcq-details" style="float: right">ADD SAQ +</span>
+        </a>
       </p>
 
     </a>
@@ -223,30 +235,19 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="col-md-10">
-
                   <li class="quiz-listing">  {{ quest.content }}</li>
-
-
                 </div>
                 <div class="col-md-1 text-right">
-
-                  <form action="{% url 'saquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}" method="get">
-                    <input class="button-color-only" type="submit" value="Edit">
-                  </form>
-
-
+                  <input id="saq_{{ quest.id }}_update_button" class="button-color-only" type="submit"
+                         value="Edit" style="float: right" data-toggle="modal" data-target="#question_form_popup">
                 </div>
                 <div class="col-md-1 text-right " style="line-height: 24px;">
                   <form action="{% url 'saquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="post">
                     {% csrf_token %}
                     <input class="button-color-only confirm-remove" type="submit" value="Remove">
                   </form>
-
-
                 </div>
-
               </div>
-
             </div>
 
 
@@ -257,7 +258,20 @@
 
   </div>
 
-
+  <div id="question_form_popup" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="question_model_title"></h4>
+        </div>
+        <div class="modal-body" style="height: auto" id="question_form_ajax">
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 {% endblock %}
@@ -288,5 +302,88 @@
               return false;
           }
       });
+      $('#mcq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ quiz.course_code.id }}', 'quiz_id': '{{ quiz.id }}'},
+              url: "{% url 'mcquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create Multiple Choice Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      $('#tfq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ quiz.course_code.id }}', 'quiz_id': '{{ quiz.id }}'},
+              url: "{% url 'tfquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create True/False Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      $('#saq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ quiz.course_code.id }}', 'quiz_id': '{{ quiz.id }}'},
+              url: "{% url 'saquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create Short Answer Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      {% for quest in quiz.mcquestion.all %}
+          $('#mcq_{{ quest.id }}_update_button').on('click', function () {
+              $.ajax({
+                  type: "GET",
+                  data: {'course_from_quiz': '{{ quiz.course_code.id }}', 'quiz_id': '{{ quiz.id }}'},
+                  url: "{% url 'mcquestion_update' pk=quest.pk %}",  // URL to your view that serves new info
+                  success: function (data) {
+                      $("#question_model_title").html("Create Multiple Choice Question");
+                      $("#question_form_ajax").html(data);
+                  }
+              });
+          });
+      {% endfor %}
+      {% for quest in quiz.tfquestion.all %}
+          $('#tfq_{{ quest.id }}_update_button').on('click', function () {
+              $.ajax({
+                  type: "GET",
+                  data: {'course_from_quiz': '{{ quiz.course_code.id }}', 'quiz_id': '{{ quiz.id }}'},
+                  url: "{% url 'tfquestion_update' pk=quest.pk %}",  // URL to your view that serves new info
+                  success: function (data) {
+                      $("#question_model_title").html("Create True/False Question");
+                      $("#question_form_ajax").html(data);
+                  }
+              });
+          });
+      {% endfor %}
+      {% for quest in quiz.saquestion.all %}
+          $('#saq_{{ quest.id }}_update_button').on('click', function () {
+              $.ajax({
+                  type: "GET",
+                  data: {'course_from_quiz': '{{ quiz.course_code.id }}', 'quiz_id': '{{ quiz.id }}'},
+                  url: "{% url 'saquestion_update' pk=quest.pk %}",  // URL to your view that serves new info
+                  success: function (data) {
+                      $("#question_model_title").html("Create Short Answer Question");
+                      $("#question_form_ajax").html(data);
+                  }
+              });
+          });
+      {% endfor %}
+      function mcq_success(response) {
+          location.reload();
+      }
+
+      function tfq_success(response) {
+          location.reload();
+      }
+
+      function saq_success(response) {
+          location.reload();
+      }
   </script>
 {% endblock %}

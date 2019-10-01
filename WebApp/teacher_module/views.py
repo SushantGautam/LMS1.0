@@ -283,17 +283,22 @@ class MyAssignmentsListView(ListView):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
         context['Group'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
-        courseID=[]
+        course=[]
+        context['Assignment'] = []
+        context['expiredAssignment'] = []
+        context['activeAssignment'] = []
         for groups in context['Group']:
-            courseID.append(groups.Course_Code.id)
-        context['assignments'] = []
-        context['expiredassignments'] = []
-        context['activeassignments'] = []
-        for course in courseID:
-            context['assignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course)
-            context['expiredassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__lt=datetime_now)
-            context['activeassignments'] += AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
-
+            course.append(groups.Course_Code.id)
+        Assignment = []
+        expiredAssignment = []
+        activeAssignment = []
+        for course in course:
+            Assignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course))
+            expiredAssignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__lt=datetime_now))
+            activeAssignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now))
+        context['Assignment'].append(Assignment)     
+        context['activeAssignment'].append(activeAssignment)     
+        context['expiredAssignment'].append(expiredAssignment)     
         return context
 
 def ProfileView(request):
@@ -473,6 +478,7 @@ class QuizUserProgressView(TemplateView):
 
 class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
+    template_name = 'teacher_module/sitting_list.html'
 
     def get_queryset(self):
         queryset = super(QuizMarkingList, self).get_queryset() \
@@ -487,6 +493,7 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
 
 class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     model = Sitting
+    template_name = 'teacher_module/sitting_detail.html'
 
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()

@@ -1,6 +1,10 @@
 {% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet" />
-{% endblock stylesheets %} {% block breadcrumb %}
+<!-- iCheck -->
+<link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block breadcrumb %}
 <li class="breadcrumb-item" aria-current="page">
     <a href="{% url 'questions_student' %}">Survey</a>
 </li>
@@ -56,9 +60,9 @@
                     </li>
                 </ul>
 
-                <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-popup-open="popup-2">
+                <!-- <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-popup-open="popup-2">
                     Retake survey
-                </button>
+                </button> -->
 
                 <!-- <div class="popup" data-popup="popup-2">
                     <div class="popup-inner ">
@@ -108,18 +112,15 @@
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
-
-                            <ul class="radioInputs">
                                 {% for option in options %}
                                 {% if option.Question_Code.pk == question.pk %}
-                                <li>
-                                    <!-- <label class="optionIndex">A.</label> -->
-                                    <input type="radio" name="{{ question.pk }}" id="pollsOptions"
-                                        value="{{ option.pk }}">{{ option.Option_Name }}
-                                </li>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions" value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }} &nbsp;
+                                    </label>
+                                    </div>
                                 {% endif %}
                                 {% endfor %}
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -155,7 +156,9 @@
                 <input type="hidden" name="surveyInfoId" value="{{ object.id }}">
                 <input type="hidden" name="userId" value="{{ request.user.id }}">
                 {#                <!-- {{ request.user.id }} -->#}
-                <button>Submit</button>
+                <div class="text-center">
+                    <button class="btn btn-success" style="margin-top:4em" >Submit</button>
+                </div>
             </form>
         </div>
     </div>
@@ -164,6 +167,10 @@
 {% endblock %}
 
 {% block javascripts %}
+
+<!-- iCheck -->
+<script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script>
+
 <script>
     $('#retakeSurveyBtn').on('click', function () {
 

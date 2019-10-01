@@ -108,7 +108,7 @@ class QuizForm(forms.ModelForm):
 class MCQuestionForm(forms.ModelForm):
     class Meta:
         model = MCQuestion
-        fields = '__all__'
+        fields = ['content', 'answer_order', 'figure', 'explanation', 'course_code', 'cent_code']
 
     # quiz = forms.ModelMultipleChoiceField(
     #     queryset=Quiz.objects.all(),

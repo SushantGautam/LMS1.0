@@ -18,10 +18,12 @@
         </div>
         <ul class="list-group">
             {% for object in Session %}
+            {% ifchanged object %}
+
             <li class="list-group-item ">
                 <h5 class="text-center">
 
-                    <b> {{object.Inning_Name}}</b>
+                    <b> {{object.Groups}}</b>
                     <!-- <a href="{{ object.Inning_Name.teacher_get_absolute_url }}">
                         <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                         ">CONTINUE <i class="fa fa-arrow-right"></i>
@@ -30,6 +32,7 @@
 
                 </h5>
             </li>
+            {% endifchanged %}
             {% endfor %}
         </ul>
     </div>

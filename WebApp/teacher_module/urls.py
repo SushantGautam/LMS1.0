@@ -164,5 +164,7 @@ urlpatterns += (
     path('saquestion/delete/<int:pk>/', views.SAQuestionDeleteView,
          name='teacher_saquestion_delete'),
 
-    path('quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
+    path('quiz/quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
+    path('quiz/marking/', views.QuizMarkingList.as_view(), name='teacher_quiz_marking'),
+    path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(), name='teacher_quiz_marking_detail'),
 )

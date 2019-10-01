@@ -139,7 +139,7 @@ class MemberInfo(AbstractUser):
 
 
 class CourseInfo(models.Model):
-    Course_Name = CharField(max_length=500, blank=True, null=True)
+    Course_Name = CharField(max_length=500)
     Course_Description = TextField(blank=True, null=True)
     Course_Cover_File = ImageField(upload_to="Course_images/", blank=True, null=True)
     Course_Level = IntegerField(blank=True, null=True)
@@ -150,7 +150,7 @@ class CourseInfo(models.Model):
     Updated_DateTime = DateTimeField(auto_now=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
-    Course_Provider = CharField(max_length=250, blank=True, null=True)
+    Course_Provider = CharField(max_length=250)
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -180,8 +180,8 @@ class CourseInfo(models.Model):
 
 
 class ChapterInfo(models.Model):
-    Chapter_No = IntegerField(blank=True, null=True)
-    Chapter_Name = CharField(max_length=200, blank=True, null=True)
+    Chapter_No = IntegerField()
+    Chapter_Name = CharField(max_length=200)
     Summary = TextField(blank=True, null=True)
     Page_Num = IntegerField(blank=True, null=True)
 
@@ -532,8 +532,8 @@ class InningInfo(models.Model):
     def get_update_url(self):
         return reverse('inninginfo_update', args=(self.pk,))
 
-    # def __str__(self):
-    #     return self.Inning_Name
+    def __str__(self):
+        return self.Inning_Name.Session_Name
 
 class MessageInfo(models.Model):
     # Fields
