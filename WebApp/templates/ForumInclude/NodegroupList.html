@@ -29,7 +29,7 @@
                 Ask New
                 Question</a>
             <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
-            {% url 'teacher_create_topic' nodegroup_pk=node_group.pk %}
+            {% url 'teacher_create_topic' teacher_nodegroup_pk=node_group.pk %}
             {% else %}
             {% url 'forum:create_topic' nodegroup_pk=node_group.pk %}
             {% endif %}
