@@ -1154,7 +1154,7 @@ def import_chapter(request):
 
 def ThreeDViewer(request, urlpath=None):
     if not urlpath:
-        objpath = request.is_secure() and "https" or "http" + '://' + request._get_raw_host() + '/' + "static/3D_viewer/Sample.obj"
+        objpath = request.is_secure() and "https" or "http" + '://' + request._get_raw_host() + '/' + "static/3D_Viewer/Sample.obj"
     else:
         objpath = request.is_secure() and "https" or "http" + '://' + request._get_raw_host() + '/' + urlpath
 
