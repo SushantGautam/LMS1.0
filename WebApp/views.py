@@ -1172,8 +1172,6 @@ def ThreeDViewer(request, urlpath=None):
         // Mesh on top of the "water", instancing the geometry
         var mesh = new xeogl.Mesh({
             geometry: miamiGeometry,
-            position: [50, 50, 60],
-            scale: [10, 10, 10],
         });
         // Initial camera pose
         var camera = mesh.scene.camera;
