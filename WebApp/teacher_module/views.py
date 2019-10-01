@@ -267,6 +267,9 @@ class AssignmentInfoUpdateView(UpdateView):
     form_class = AssignmentInfoForm
     template_name = 'teacher_module/assignmentinfo_form.html'
 
+    def get_success_url(self, **kwargs):
+            return reverse_lazy('teacher_assignmentinfo_detail', kwargs = {'course':self.object.Course_Code.id,'chapter':self.object.Chapter_Code.id,'pk': self.object.pk})
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
