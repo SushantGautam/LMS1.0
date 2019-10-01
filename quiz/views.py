@@ -25,7 +25,7 @@ from django.shortcuts import render_to_response
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
-    @method_decorator(permission_required('quiz.view_sittings'))
+    #@method_decorator(permission_required('quiz.view_sittings'))
     def dispatch(self, *args, **kwargs):
         return super(QuizMarkerMixin, self).dispatch(*args, **kwargs)
 
@@ -157,7 +157,7 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
 
     def get_queryset(self):
         queryset = super(QuizMarkingList, self).get_queryset() \
-            .filter(complete=True)
+            .filter(complete=True, user__Center_Code=self.request.user.Center_Code)
 
         user_filter = self.request.GET.get('user_filter')
         if user_filter:
@@ -855,3 +855,9 @@ class UpdateQuestions(UpdateView):
         old_context = super().get_context_data(**kwargs)
         old_context['course_from_quiz'] = get_object_or_404(Quiz, pk=self.kwargs['pk']).course_code
         return old_context
+
+
+class QuizMCQChoosePrevious(UpdateView):
+    model = Quiz
+    fields = 'mcquestions'
+    template_name = 'ajax_quiz/mcquestion_choose_ajax.html'
