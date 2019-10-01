@@ -1,18 +1,18 @@
-{% extends 'forum/Teacher_base.html' %}
+{% extends 'forum/student_base.html' %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
 {% if fixed_nodegroup.0.title %}
 <li class="breadcrumb-item"><a
-        href="{% url 'teacher_nodegroup' fixed_nodegroup.0.pk %}">{{ fixed_nodegroup.0.title }}</a>
+        href="{% url 'student_nodegroup' fixed_nodegroup.0.pk %}">{{ fixed_nodegroup.0.title }}</a>
 </li>
 {% if topic.title %}
-<li class="breadcrumb-item"><a href="{% url 'teacher_topic' teacher_topic.pk %}">{{ topic.title }}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'student_topic' student_topic.pk %}">{{ topic.title }}</a></li>
 {% endif %}
 {% endif %}
-<li class="breadcrumb-item active"><a href="{% url 'teacher_forum_create' %}"></a>
+<li class="breadcrumb-item active"><a href="{% url 'student_forum_create' %}"></a>
     Create Thread
     </a>
 </li>
@@ -23,7 +23,7 @@
 <div class="panel panel-default paper-shadow" data-z="2">
     <div class="panel-body">
 
-        <form method="post" action="{% url 'teacher_forum_create' %}">
+        <form method="post" action="{% url 'student_forum_create' %}">
             {% csrf_token %}
 
             <div class=" x-title">

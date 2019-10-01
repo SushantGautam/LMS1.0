@@ -17,6 +17,7 @@ from django.contrib.auth.views import PasswordContextMixin
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
@@ -24,47 +25,50 @@ from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 # Create your views here.
-from django.views.generic import DetailView, ListView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
 from django.views.generic.edit import FormView
-
+from forum.models import NodeGroup, Thread, Topic, Post, Notification
+from forum.views import get_top_thread_keywords
+from .forms import ThreadForm, TopicForm, ReplyForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, \
     AssignAnswerInfo
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 
 datetime_now = datetime.now()
 
 
 def start(request):
     if request.user.Is_Student:
-        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
+        batches = GroupMapping.objects.filter(
+            Students__id=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
         if batches:
             for batch in batches:
                 # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id,End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(
+                    Groups__id=batch.id, End_Date__gt=datetime_now)
                 sessions += session
         # courses = []
-        # activeassignments = []   
+        # activeassignments = []
         # if sessions:
         #     for session in sessions:
         #         courses.append(session.Course_Group)
         courses = set()
-        activeassignments = []   
+        activeassignments = []
         if sessions:
             for session in sessions:
                 course = session.Course_Group.all()
                 courses.update(course)
             for course in courses:
-                activeassignments += AssignmentInfo.objects.filter(Assignment_Deadline__gte=datetime_now,Course_Code=course.Course_Code.id)[:7]
- 
-        
+                activeassignments += AssignmentInfo.objects.filter(
+                    Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id)[:7]
+
         return render(request, 'student_module/dashboard.html',
-                      {'GroupName': batches, 'Group': sessions, 'Course': courses,'activeAssignments':activeassignments})
-
-
+                      {'GroupName': batches, 'Group': sessions, 'Course': courses, 'activeAssignments': activeassignments})
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -125,6 +129,7 @@ def quizzes(request):
 def calendar(request):
     return render(request, 'student_module/calendar.html')
 
+
 class MyCoursesListView(ListView):
     model = CourseInfo
     template_name = 'student_module/myCourse.html'
@@ -133,13 +138,15 @@ class MyCoursesListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['batches'] = GroupMapping.objects.filter(Students__id=self.request.user.id, Center_Code=self.request.user.Center_Code)
+        context['batches'] = GroupMapping.objects.filter(
+            Students__id=self.request.user.id, Center_Code=self.request.user.Center_Code)
 
         sessions = []
         if context['batches']:
             for batch in context['batches']:
                 # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id,End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(
+                    Groups__id=batch.id, End_Date__gt=datetime_now)
                 sessions += session
         context['sessions'] = sessions
         courses = set()
@@ -156,23 +163,26 @@ class MyCoursesListView(ListView):
 
         queryset = self.request.GET.get('studentmycoursequery')
         if queryset:
-            queryset=queryset.strip()
+            queryset = queryset.strip()
             qset = qset.filter(Course_Name__contains=queryset)
             if not len(qset):
-                messages.error(self.request, 'Sorry no courses found! Try with a different keyword')
-        qset = qset.order_by("-id")  # you don't need this if you set up your ordering on the model
+                messages.error(
+                    self.request, 'Sorry no courses found! Try with a different keyword')
+        # you don't need this if you set up your ordering on the model
+        qset = qset.order_by("-id")
         return qset
 
 
 class MyAssignmentsListView(ListView):
     model = AssignmentInfo
     template_name = 'student_module/myassignments_list.html'
-  
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
         context['GroupName'] = []
-        context['GroupName'] += GroupMapping.objects.filter(Students__id=self.request.user.id)
+        context['GroupName'] += GroupMapping.objects.filter(
+            Students__id=self.request.user.id)
         context['Group'] = []
         for group in context['GroupName']:
             context['Group'] += InningInfo.objects.filter(Groups__id=group.id)
@@ -185,24 +195,26 @@ class MyAssignmentsListView(ListView):
             activeAssignment = []
             expiredAssignment = []
             context['Course'] += course.Course_Group.all()
-            
+
             for assignment in context['Course']:
-                Assignment.append(AssignmentInfo.objects.filter(Course_Code__id=assignment.Course_Code.id)) 
-                activeAssignment.append(AssignmentInfo.objects.filter(Course_Code__id=assignment.Course_Code.id,Assignment_Deadline__gte=datetime_now))
-                expiredAssignment.append(AssignmentInfo.objects.filter(Course_Code__id=assignment.Course_Code.id,Assignment_Deadline__lte=datetime_now))
+                Assignment.append(AssignmentInfo.objects.filter(
+                    Course_Code__id=assignment.Course_Code.id))
+                activeAssignment.append(AssignmentInfo.objects.filter(
+                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__gte=datetime_now))
+                expiredAssignment.append(AssignmentInfo.objects.filter(
+                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__lte=datetime_now))
                 # print(context['Assignment'])
-            context['Assignment'].append(Assignment)     
-            context['activeAssignment'].append(activeAssignment)     
-            context['expiredAssignment'].append(expiredAssignment)     
+            context['Assignment'].append(Assignment)
+            context['activeAssignment'].append(activeAssignment)
+            context['expiredAssignment'].append(expiredAssignment)
         return context
 
 
 class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'student_module/courseinfo_list.html'
-    
-    paginate_by = 8
 
+    paginate_by = 8
 
     def get_queryset(self):
         qs = self.model.objects.all()
@@ -212,9 +224,12 @@ class CourseInfoListView(ListView):
             query = query.strip()
             qs = qs.filter(Course_Name__contains=query)
             if not len(qs):
-                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
-        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
+                messages.error(
+                    self.request, 'Sorry no course found! Try with a different keyword')
+        # you don't need this if you set up your ordering on the model
+        qs = qs.order_by("-id")
         return qs
+
 
 class CourseInfoDetailView(DetailView):
     model = CourseInfo
@@ -222,9 +237,12 @@ class CourseInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
-        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
+        context['chapters'] = ChapterInfo.objects.filter(
+            Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
+        context['surveycount'] = SurveyInfo.objects.filter(
+            Course_Code=self.kwargs.get('pk'))
+        context['quizcount'] = Question.objects.filter(
+            course_code=self.kwargs.get('pk'))
         return context
 
 
@@ -238,9 +256,12 @@ class ChapterInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
-        context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
-        context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
+        context['assignments'] = AssignmentInfo.objects.filter(
+            Chapter_Code=self.kwargs.get('pk'))
+        context['post_quizes'] = Quiz.objects.filter(
+            chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
+        context['pre_quizes'] = Quiz.objects.filter(
+            chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
 
         return context
 
@@ -251,16 +272,20 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(
+            Assignment_Code=self.kwargs.get('pk'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
         context['Answers'] = []
         AnsweredQuestion = set()
         Question = set()
 
         for question in context['Questions']:
-            Answer = AssignAnswerInfo.objects.filter(Student_Code=self.request.user.pk,Question_Code=question.id)
-            context['Answers']+= Answer
+            Answer = AssignAnswerInfo.objects.filter(
+                Student_Code=self.request.user.pk, Question_Code=question.id)
+            context['Answers'] += Answer
             Question.add(question.id)
         # print (context['Answers'])
         for answers in context['Answers']:
@@ -273,21 +298,24 @@ class AssignmentInfoDetailView(DetailView):
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
+
 class submitAnswer(View):
     model = AssignAnswerInfo()
-
 
     def post(self, request, *args, **kwargs):
         Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
-        Obj.Student_Code = MemberInfo.objects.get(pk=request.POST["Student_Code"])
-        Obj.Question_Code = AssignmentQuestionInfo.objects.get(pk=request.POST["Question_Code"])
+        Obj.Student_Code = MemberInfo.objects.get(
+            pk=request.POST["Student_Code"])
+        Obj.Question_Code = AssignmentQuestionInfo.objects.get(
+            pk=request.POST["Question_Code"])
         print(Obj.Student_Code)
         Obj.save()
-       
+
         return JsonResponse(
             data={'Message': 'Success'}
         )
+
 
 def ProfileView(request):
     return render(request, 'student_module/profile.html')
@@ -311,15 +339,14 @@ class questions_student(ListView):
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
 
-        
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
 
         # context['surveyForm'] = {'categoryName': list(categoryName)}
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
         # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
-        
 
         return context
+
 
 class questions_student_detail(DetailView):
     model = SurveyInfo
@@ -327,12 +354,14 @@ class questions_student_detail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['questions'] = QuestionInfo.objects.filter(Survey_Code=self.kwargs.get('pk')).order_by('pk')
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
 
         return context
+
 
 class questions_student_detail_history(DetailView):
     model = SurveyInfo
@@ -356,11 +385,11 @@ class ParticipateSurvey(View):
         userId = self.request.user.id
         # print(request.POST)
         submitSurvey = SubmitSurvey()
-        submitSurvey.Survey_Code = SurveyInfo.objects.get(id = surveyId)
-        submitSurvey.Student_Code = MemberInfo.objects.get(id = userId)
+        submitSurvey.Survey_Code = SurveyInfo.objects.get(id=surveyId)
+        submitSurvey.Student_Code = MemberInfo.objects.get(id=userId)
         submitSurvey.save()
 
-        for question in QuestionInfo.objects.filter(Survey_Code = surveyId):
+        for question in QuestionInfo.objects.filter(Survey_Code=surveyId):
 
             optionId = request.POST[str(question.id)]
             answerObject = AnswerInfo()
@@ -368,7 +397,7 @@ class ParticipateSurvey(View):
             answerObject.Question_Code = question
             answerObject.Submit_Code = submitSurvey
             answerObject.save()
-    
+
         return redirect('questions_student')
 
 
@@ -390,8 +419,303 @@ class surveyFilterCategory_student(ListView):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
 
-        submitSurveyQuerySet = SubmitSurvey.objects.filter(Student_Code=self.request.user.id)
-        context['submittedSurvey'] = [el.Survey_Code.id for el in submitSurveyQuerySet]
+        submitSurveyQuerySet = SubmitSurvey.objects.filter(
+            Student_Code=self.request.user.id)
+        context['submittedSurvey'] = [
+            el.Survey_Code.id for el in submitSurveyQuerySet]
 
         return context
 
+
+class Index(ListView):
+    model = Thread
+    template_name = 'student_module/student_forum/forumIndex.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        nodegroups = NodeGroup.objects.all()
+        threadqueryset = Thread.objects.none()
+        for ng in nodegroups:
+            topics = Topic.objects.filter(node_group=ng.pk)
+            for topic in topics:
+                threads = Thread.objects.visible().filter(
+                    topic=topic.pk).order_by('pub_date')[:4]
+                threadqueryset |= threads
+
+        return threadqueryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['panel_title'] = ('New Threads')
+        context['title'] = ('Index')
+        context['topics'] = Topic.objects.all()
+        context['show_order'] = True
+        context['get_top_thread_keywords'] = get_top_thread_keywords(
+            self.request, 10)
+        return context
+
+
+def create_thread(request, topic_pk=None, nodegroup_pk=None):
+    topic = None
+    node_group = NodeGroup.objects.all()
+    fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
+    if topic_pk:
+        topic = Topic.objects.get(pk=topic_pk)
+    topics = Topic.objects.filter(node_group=nodegroup_pk)
+    if request.method == 'POST':
+        form = ThreadForm(request.POST, user=request.user)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('student_thread', kwargs={'pk': t.pk}))
+    else:
+        form = ThreadForm()
+
+    return render(request, 'student_module/student_forum/create_thread.html',
+                  {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
+                   'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
+
+
+def create_topic(request, student_nodegroup_pk=None):
+    node_group = NodeGroup.objects.filter(pk=student_nodegroup_pk)
+    if request.method == 'POST':
+        form = TopicForm(request.POST, user=request.user)
+        print(form)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('student_topic', kwargs={'pk': t.pk}))
+    else:
+        form = TopicForm()
+
+    return render(request, 'student_module/student_forum/create_topic.html',
+                  {'form': form, 'title': ('Create Topic'), 'node_group': node_group})
+
+
+def get_default_ordering():
+    return getattr(
+        settings,
+        "forum_DEFAULT_THREAD_ORDERING",
+        "-last_replied"
+    )
+
+
+def get_thread_ordering(request):
+    query_order = request.GET.get("order", "")
+    if query_order in ["-last_replied", "last_replied", "pub_date", "-pub_date"]:
+        return query_order
+    return get_default_ordering()
+
+
+class SearchView(ListView):
+    model = Thread
+    paginate_by = 20
+    template_name = 'student_module/student_forum/search.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        keywords = self.kwargs.get('keyword')
+        query = get_query(keywords, ['title'])
+        return Thread.objects.visible().filter(
+            query
+        ).select_related(
+            'user', 'topic'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by(
+            get_thread_ordering(self.request)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['title'] = context['panel_title'] = (
+            'Search: ') + self.kwargs.get('keyword')
+        context['show_order'] = True
+        return context
+
+def search_redirect(request):
+    if request.method == 'GET':
+        keyword = request.GET.get('keyword')
+        return HttpResponseRedirect(reverse('student_search', kwargs={'keyword': keyword}))
+    else:
+        return HttpResponseForbidden('Post you cannot')
+
+
+class NodeGroupView(ListView):
+    model = Topic
+    template_name = 'student_module/student_forum/nodegroup.html'
+    context_object_name = 'topics'
+
+    def get_queryset(self):
+        return Topic.objects.filter(
+            node_group__id=self.kwargs.get('pk')
+        ).select_related(
+            'user', 'node_group'
+        ).prefetch_related(
+            'user__forum_avatar'
+        )
+
+    def get_context_data(self, **kwargs):
+        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk'))
+        latest_threads = []
+        for topic in topics:
+            reply_count = 0
+            try:
+                thread = Thread.objects.filter(
+                    topic=topic.pk).order_by('pub_date')[0]
+                reply_count = Thread.objects.filter(topic=topic.pk).aggregate(
+                    Sum('reply_count'))['reply_count__sum']
+            except:
+                thread = None
+            latest_threads.append([topic, thread, reply_count])
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['node_group'] = nodegroup = NodeGroup.objects.get(
+            pk=self.kwargs.get('pk'))
+        context['title'] = context['panel_title'] = nodegroup.title
+        context['show_order'] = True
+        context['latest_thread_for_topics'] = latest_threads
+        return context
+
+
+class ThreadView(ListView):
+    model = Post
+    paginate_by = 15
+    template_name = 'student_module/student_forum/thread.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Post.objects.filter(
+            thread_id=self.kwargs.get('pk')
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date')
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        current = Thread.objects.get(pk=self.kwargs.get('pk'))
+        current.increase_view_count()
+        context['thread'] = current
+        context['title'] = context['thread'].title
+        context['topic'] = context['thread'].topic
+        context['form'] = ReplyForm()
+        return context
+
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        current = Thread.objects.visible().get(pk=self.kwargs.get('pk'))
+        if current.closed:
+            return HttpResponseForbidden("Thread closed")
+        thread_id = self.kwargs.get('pk')
+        form = ReplyForm(
+            request.POST,
+            user=request.user,
+            thread_id=thread_id
+        )
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(
+                reverse('student_thread', kwargs={'pk': thread_id})
+            )
+
+
+class TopicView(ListView):
+    model = Thread
+    paginate_by = 20
+    template_name = 'student_module/student_forum/topic.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        return Thread.objects.visible().filter(
+            topic__id=self.kwargs.get('pk')
+        ).select_related(
+            'user', 'topic'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by(
+            *['order', get_thread_ordering(self.request)]
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        print(self.kwargs.get('pk'))
+        context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
+        context['title'] = context['panel_title'] = topic.title
+        context['show_order'] = True
+        return context
+
+
+def user_info(request, pk):
+    u = User.objects.get(pk=pk)
+    return render(request, 'student_module/student_forum/user_info.html', {
+        'title': u.username,
+        'user': u,
+        'threads': u.threads.visible().select_related('topic')[:10],
+        'replies': u.posts.visible().select_related('thread', 'user').order_by('-pub_date')[:30],
+    })
+
+
+class UserPosts(ListView):
+    model = Post
+    paginate_by = 15
+    template_name = 'student_module/student_forum/user_replies.html'
+    context_object_name = 'replies'
+
+    def get_queryset(self):
+        return Post.objects.visible().filter(
+            user_id=self.kwargs.get('pk')
+        ).select_related(
+            'user', 'thread'
+        ).prefetch_related(
+            'user__forum_avatar'
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['user'] = User.objects.get(pk=self.kwargs.get('pk'))
+        context['panel_title'] = context['title'] = context['user'].username
+        return context
+
+class UserThreads(ListView):
+    model = Post
+    paginate_by = 15
+    template_name = 'student_module/student_forum/user_threads.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        return Thread.objects.visible().filter(
+            user_id=self.kwargs.get('pk')
+        ).select_related(
+            'user', 'topic'
+        ).prefetch_related(
+            'user__forum_avatar'
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['user'] = User.objects.get(pk=self.kwargs.get('pk'))
+        context['panel_title'] = context['title'] = context['user'].username
+        return context
+
+
+
+
+class NotificationView(ListView):
+    model = Notification
+    paginate_by = 20
+    template_name = 'student_module/student_forum/notifications.html'
+    context_object_name = 'notifications'
+
+    def get_queryset(self):
+        Notification.objects.filter(to=self.request.user).update(read=True)
+        return Notification.objects.filter(
+            to=self.request.user
+        ).select_related(
+            'sender', 'thread', 'post'
+        ).prefetch_related(
+            'sender__forum_avatar', 'post__thread'
+        ).order_by('-pub_date')
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['title'] = ("Notifications")
+        return context

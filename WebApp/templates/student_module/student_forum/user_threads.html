@@ -1,0 +1,101 @@
+{% extends 'forum/student_base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+{% load static %}
+
+{% block breadcrumb %}
+
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'student_info' pk=user.pk %}">{{ user.username }}</a></li>
+<li class="breadcrumb-item active">
+    <a href="{% url 'student_threads' pk=user.pk %}">Threads</a>
+</li>
+
+{% endblock %}
+
+{% block main_contain %}
+{% include 'ForumInclude/UserThread.html' %}
+<!-- <div class="panel panel-default paper-shadow">
+    <div class="panel panel-heading">
+        <h2> Threads Created by {{ panel_title }} </h2>
+    </div>
+
+    {% if show_order %}
+    <span class="pull-right ordering">
+        Order:
+        <span>
+            <a href="{% change_thread_ordering request '-last_replied' %}">Last Replied</a>
+        </span>
+        <span>
+            <a href="{% change_thread_ordering request '-pub_date' %}">thread Date</a>
+        </span>
+    </span>
+    {% endif %}
+
+
+    
+    <ul class="list-group thread-list">
+        {% for thread in threads %}
+        <li class="list-group-item thread-entry">
+            <div class="entry media">
+
+                <a>
+                    <img src="{{ request.user.Avatar }}" alt="..."
+                        class=" avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
+                </a>
+
+                <h2 class=" thread_title">
+                    <div class="media-body media-middle"> &nbsp;
+                        <a href="{% url 'student_thread' pk=thread.pk %}" class="entry-link">
+                            {{ thread.title }}
+                        </a>
+                        <p class="entry-meta">
+                            {% if thread.order <= 3 %}
+                            <span class="meta">
+                                <span class="label label-info meta-top">
+                                    TOP
+                                </span>
+                            </span>
+                            {% endif %}
+                            <div class="topic_meta text-light text-caption">
+                                <h5>
+                                    <span class="meta meta-username">
+                                        Topic:
+                                        <a href="{% url 'student_topic' thread.topic.pk %}" class="link-color">
+                                            <span>
+                                                {{ thread.topic.title }}
+                                            </span>
+                                        </a>
+                                    </span> |
+                                    <span class="meta meta-username ">
+                                        posted by
+                                        <a href="{% url 'student_info' thread.user.pk %}" class="link-color">
+                                            {{ thread.user.username }}
+                                        </a>
+                                    </span>
+                                    <span class="meta meta-pub_date">
+                                        {{ thread.pub_date | naturaltime }}
+                                    </span>
+                                    <span class="meta meta-last_replied hidden-xs">|
+                                        {% trans "Last Replied" %}: {{ thread.last_replied | naturaltime }}
+                                    </span>
+                                </h5>
+                            </div>
+                        </p>
+
+                        <div class="media-right media-middle">
+                            <span class="pull-right badge">{{ thread.reply_count }} Reply</span>
+                        </div>
+                    </div>
+                    </h5>
+                </h2>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="panel-footer">
+        {% get_pagination %}
+    </div>
+</div> -->
+{% endblock %}

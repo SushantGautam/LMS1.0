@@ -26,8 +26,10 @@
             <a class="btn btn-white btn-flat" href="
             {% if '/teachers' in request.path %}
             {% url 'teacher_forum_create' topic.node_group.pk topic.pk %}
-                        {% else %}
-                        {% url 'forum:create_thread' topic.node_group.pk topic.pk %}
+            {% elif '/students' in request.path %}
+            {% url 'student_forum_create' topic.node_group.pk topic.pk %}
+            {% elif '/forum' in request.path %}
+            {% url 'forum:create_thread' topic.node_group.pk topic.pk %}
                         {% endif %}
          "><i class="fa fa-fw fa-plus"></i>
                 Ask New Question</a>
@@ -47,7 +49,9 @@
 
                 <a href="{% if '/teachers' in request.path %}
                 {% url 'teacher_info' pk=thread.user.pk %}
-                {% else %}
+                {% elif '/students' in request.path %}
+                {% url 'student_info' pk=thread.user.pk %}
+                {% elif '/forum' in request.path %}
                 {% url 'forum:user_info' pk=thread.user.pk %}
                 {% endif %}">
                     <img src="
@@ -67,7 +71,9 @@
                         <a href="
                         {% if '/teachers' in request.path %}
                         {% url 'teacher_thread' pk=thread.user.pk %}
-                        {% else %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_thread' pk=thread.user.pk %}
+                        {% elif '/forum' in request.path %}
                         {% url 'forum:thread' pk=thread.pk %}
                         {% endif %}" class="entry-link">
                             {{ thread.title }}
@@ -91,7 +97,9 @@
                                         SubCategory:
                                         <a href="{% if '/teachers' in request.path %}
                                         {% url 'teacher_topic' pk=thread.user.pk %}
-                                        {% else %}
+                                        {% elif '/students' in request.path %}
+                                        {% url 'student_topic' pk=thread.user.pk %}
+                                        {% elif '/forum' in request.path %}
                                         {% url 'forum:topic' thread.topic.pk %}
                                         {% endif %}
                                         ">
@@ -103,7 +111,9 @@
                                     <span class="meta meta-username">
                                         posted by<a href="{% if '/teachers' in request.path %}
                                         {% url 'teacher_info' thread.user.pk %}
-                                        {% else %}
+                                        {% elif '/students' in request.path %}
+                                        {% url 'student_info' thread.user.pk %}
+                                        {% elif '/forum' in request.path %}
                                         {% url 'forum:user_info' thread.user.pk %}
                                         {% endif %}
                                        ">
