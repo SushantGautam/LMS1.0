@@ -104,6 +104,8 @@ urlpatterns += (
          views.UserThreads.as_view(), name='teacher_threads'),
     path('forum/notification', views.NotificationView.as_view(),
          name='teacher_notification'),
+    path('forum/edit/<int:pk>/', views.edit_thread, name='teacher_edit_thread'),
+
 )
 
 urlpatterns += (
@@ -165,6 +167,8 @@ urlpatterns += (
          name='teacher_saquestion_delete'),
 
     path('quiz/quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
-    path('quiz/marking/', views.QuizMarkingList.as_view(), name='teacher_quiz_marking'),
-    path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(), name='teacher_quiz_marking_detail'),
+    path('quiz/marking/', views.QuizMarkingList.as_view(),
+         name='teacher_quiz_marking'),
+    path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(),
+         name='teacher_quiz_marking_detail'),
 )
