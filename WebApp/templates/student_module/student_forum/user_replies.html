@@ -1,0 +1,104 @@
+{% extends 'forum/student_base.html' %}
+
+
+
+{% block breadcrumb %}
+
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'student_info' pk=user.pk %}">{{ user.username }}</a></li>
+<li class="breadcrumb-item active">
+    <a href="{% url 'student_posts' pk=user.pk %}">Replies</a>
+</li>
+
+
+{% endblock %}
+
+{% block main_contain %}
+
+{% include 'ForumInclude/UserReplies.html' %}
+<!-- <div class="panel panel-default">
+    <div class="panel panel-heading">
+        <h2>{% blocktrans with username=user.username %}
+            Replies from {{ username }}
+            {% endblocktrans %}</h2>
+
+    </div>
+    
+
+    <ul class="list-group topic-list">
+        {% for reply in replies %}
+        <li class="list-group-item reply-entry reply-entry-title">
+
+            <ul class=" messages">
+                <li>
+                    <p>
+                        <h2>
+                            <div class="content_reply">
+                                <img src="{{ request.user.Avatar }}" alt="..."
+                                    class="image avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
+                                <div class="pull-left reply_username"> {{ reply.user.username }}</div>
+
+                            </div>
+
+                            <div class="reply_title">
+                                <a href="{% url 'student_thread' pk=reply.thread.pk %}"
+                                    class="entry-link">{{ reply.thread.title }}</a>
+                            </div>
+
+                        </h2>
+
+                    </p>
+
+                    <div class="message_date">
+                        <p class="date">{{ reply.pub_date|date:"d M, Y" }}</p>
+                        <p class="month">{{ reply.pub_date|date:"H:i  A" }}<p>
+                    </div>
+
+
+                    <div class="content_render">
+                        <h4 class="">{{ reply.content_rendered | safe }}</h4>
+
+                    </div>
+                    {% endfor %}
+                </li>
+            </ul>
+
+        </li>
+    </ul>
+</div> -->
+
+
+
+<!-- <ul class="list-group topic-list">
+    {% for topic in topics %}
+    <li class="list-group-item topic-entry">
+        <div class="entry media">
+            <div class="media-body media-middle">topic:
+                <a href="{% url 'student_topic' pk=topic.pk %}" class="entry-link">
+                    {{ topic.title }}
+                </a>
+                <p class="entry-meta">node group:
+                    <a href="{% url 'student_nodegroup' topic.node_group.pk %}">
+                        <span class="label label-default meta-node">
+                            {{ topic.node_group.title }}
+                        </span>
+                    </a>
+                    <span class="meta meta-pub_date">
+                        {{ topic.pub_date | naturaltime }}
+                    </span>
+                    <span class="meta meta-last_replied hidden-xs">
+                        {% trans "Last Replied" %}: {{ topic.last_replied | naturaltime }}
+                    </span>
+                </p>
+            </div>
+            <div class="media-right media-middle">
+                <span class="badge">{{ topic.reply_count }}</span>
+            </div>
+
+        </div>
+    </li>
+    {% endfor %}
+</ul> -->
+
+
+{% endblock %}

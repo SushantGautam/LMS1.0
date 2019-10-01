@@ -24,7 +24,7 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <hr class="header_hr" style="margin-bottom: 5px;margin-top: 5px;">
-        <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="col-md-6 col-sm-12 col-xs-12 no-padding">
             <h3 align="center"><b>{{ object.Course_Name }}</b></h3>
             <br>
 
@@ -88,34 +88,58 @@
                     </td>
                 </tr>
             </table>
-            <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
                 <h4 align="center"><b>Course Description</b></h4>
                 <p style="margin-left: 10px; overflow-wrap:break-word; "> {{ object.Course_Description }} </p>
                 <hr>
             </div>
-            <p>
+
+            <table class="table">
+
+                <tr>
+                    <td style="border-top:0 ">
+                        <div class="col-md-8 col-sm-8 col-xs-8 no-padding">
+                            Number of Quizes
+                        </div>
+                    </td>
+                    <td style="border-top:0 ">
+                        {{ quizcount.count }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="col-md-8 col-sm-8 col-xs-8 no-padding">
+                            Number of Survey
+                        </div>
+                    </td>
+                    <td>
+                        {{ surveycount.count }}
+                    </td>
+                </tr>
+            </table>
+            <!-- <p>
 
                 <a class="btn btn-primary" data-toggle="collapse" href="#quizcollapse" role="button"
                     aria-expanded="false" aria-controls="quizcollapse">
                     {{ object.quiz_set.count }} Quizes
                 </a>
 
-            </p>
+            </p> -->
             <!-- <br> -->
-            <p>
+            <!-- <p>
                 <a class="btn btn-primary" data-toggle="collapse" href="#surveycollapse" role="button"
                     aria-expanded="false" aria-controls="surveycollapse">
                     {{ surveycount.count }} Surveys
                 </a>
 
-            </p>
-            {#            <div class="collapse" id="surveycollapse">#}
-            <div class="card card-body">
-                {% for each in surveycount %}
-                <a href="/survey/surveyinfo/detail/{{ each.pk }}"> {{ each.Survey_Title }}</a>
-                {% endfor %}
-                {#                </div>#}
-            </div>
+            </p> -->
+            <!-- <div class="collapse" id="surveycollapse">
+                <div class="card card-body">
+                    {% for each in surveycount %}
+                    <a href="/survey/surveyinfo/detail/{{ each.pk }}"> {{ each.Survey_Title }}</a>
+                    {% endfor %}
+                </div>
+            </div> -->
 
 
         </div>

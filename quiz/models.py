@@ -583,7 +583,7 @@ class Answer(models.Model):
                                blank=False,
                                help_text=_("Enter the answer text that "
                                            "you want displayed"),
-                               verbose_name=_("Option Content"))
+                               verbose_name=_("Option"))
 
     correct = models.BooleanField(blank=False,
                                   default=False,

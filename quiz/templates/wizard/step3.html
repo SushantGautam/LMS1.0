@@ -2,11 +2,11 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
-{% block breadcrumb %} 
-<li class="breadcrumb-item"><a href="/">Quiz</a></li>
-                
- 
-<li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="/">Quiz</a></li>
+
+
+  <li class="breadcrumb-item active" aria-current="page">Quiz Create</li>
 {% endblock %}
 {% block content %}
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
@@ -176,15 +176,36 @@
               }
           });
       });
-      $('#id_form3-mcquestion').change(function() {
+      $('#id_form3-mcquestion').change(function () {
           $('#selected_mcq_num').text($('#id_form3-mcquestion option:selected').length);
       });
-      $('#id_form3-tfquestion').change(function() {
+      $('#id_form3-tfquestion').change(function () {
           $('#selected_tfq_num').text($('#id_form3-tfquestion option:selected').length);
       });
-      $('#id_form3-saquestion').change(function() {
+      $('#id_form3-saquestion').change(function () {
           $('#selected_saq_num').text($('#id_form3-saquestion option:selected').length);
       });
+
+      function mcq_success(response) {
+          $('#id_form3-mcquestion').prepend(
+              `<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
+          $('#id_form3-mcquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
+
+      function tfq_success(response) {
+          $('#id_form3-tfquestion').prepend(
+              `<option value="${response['new_tfq_id']}" selected>${response['new_tfq_content']}</option>`);
+          $('#id_form3-tfquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
+
+      function saq_success(response) {
+          $('#id_form3-saquestion').prepend(
+              `<option value="${response['new_saq_id']}" selected>${response['new_saq_content']}</option>`);
+          $('#id_form3-saquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
 
   </script>
 {% endblock customjss %}

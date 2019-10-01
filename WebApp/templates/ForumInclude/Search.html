@@ -43,7 +43,9 @@
                     <h4 class="text-subhead margin-none thread_title">
                         <a href="{% if '/teachers' in request.path %}
                             {% url 'teacher_thread' pk=thread.pk %}
-                            {% else %}
+                            {% elif '/students' in request.path %}
+                            {% url 'student_thread' pk=thread.pk %}
+                            {% elif '/forum' in request.path %}
                             {% url 'forum:thread' pk=thread.pk %}
                             {% endif %}" class="link-text-color">{{ thread.title }}</a>
                     </h4>
@@ -53,7 +55,9 @@
                         Category:
                         <a href="{% if '/teachers' in request.path %}
                             {% url 'teacher_nodegroup' thread.topic.node_group.pk %}
-                            {% else %}
+                            {% elif '/students' in request.path %}
+                            {% url 'student_nodegroup' thread.topic.node_group.pk %}
+                            {% elif '/forum' in request.path %}
                             {% url 'forum:nodegroup' thread.topic.node_group.pk %}
                             {% endif %}" class="link-text">{{ thread.topic.node_group.title }}</a>
                         |
@@ -62,7 +66,9 @@
                         <a href="
                             {% if '/teachers' in request.path %}
                             {% url 'teacher_topic' pk=thread.topic.pk %}
-                            {% else %}
+                            {% elif '/students' in request.path %}
+                            {% url 'student_topic' pk=thread.topic.pk %}
+                            {% elif '/forum' in request.path %}
                             {% url 'forum:topic' pk=thread.topic.pk %}
                             {% endif %}" class="link-text">{{ thread.topic.title }}</a>
 
@@ -72,7 +78,9 @@
                         <a href="
                             {% if '/teachers' in request.path %}
                             {% url 'teacher_info' pk=thread.user.pk %}
-                            {% else %}
+                            {% elif '/students' in request.path %}
+                            {% url 'student_info' pk=thread.user.pk %}
+                            {% elif '/forum' in request.path %}
                             {% url 'forum:user_info' pk=thread.user.pk %}
                             {% endif %}" class="link-text">
                             <img src="
@@ -99,7 +107,9 @@
                 <div class="media-right">
                     <a href=" {% if '/teachers' in request.path %}
                         {% url 'teacher_thread' pk=thread.pk %}
-                        {% else %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_thread' pk=thread.pk %}
+                        {% elif '/forum' in request.path %}
                         {% url 'forum:thread' pk=thread.pk %}
                         {% endif %}
                         " class="btn btn-white text-light"><i class="fa fa-comments fa-fw"></i>

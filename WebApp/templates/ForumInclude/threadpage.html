@@ -71,7 +71,9 @@
                         <div class="tags">
                             <a href="  {% if '/teachers' in request.path %}
                             {% url 'teacher_topic' pk=thread.topic.pk %}
-                            {% else %}
+                            {% elif '/students' in request.path %}
+                            {% url 'student_topic' pk=thread.topic.pk %}
+                            {% elif '/forum' in request.path %}
                             {% url 'forum:topic' pk=thread.topic.pk %}
                             {% endif %}
                       " class="tag">
@@ -94,7 +96,9 @@
                                 posted by <a href="
                                 {% if '/teachers' in request.path %}
                                 {% url 'teacher_info' pk=thread.user.pk %}
-                                {% else %}
+                                {% elif '/students' in request.path %}
+                                {% url 'student_info' pk=thread.user.pk %}
+                                {% elif '/forum' in request.path %}
                                 {% url 'forum:user_info' pk=thread.user.pk %}
                                 {% endif %}" class="link-text-color">
                                     <img src="
@@ -174,7 +178,9 @@
                                                     <a href="
                                                     {% if '/teachers' in request.path %}
                         {% url 'teacher_info' post.user_id %}
-                        {% else %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_info' post.user_id %}
+                        {% elif '/forum' in request.path %}
                         {% url 'forum:user_info' post.user_id %}
                         {% endif %}
                                                    " class="username-link">{{ post.user }}</a>
@@ -200,12 +206,12 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="left">
+                                    <!-- <div class="left">
                                         <p class="reply-link">
                                             <a href="#" data-username="{{ post.user.username }}" class="reply-to"
                                                 style="color: darkblue">{% trans "Reply" %}</a>
                                         </p>
-                                    </div>
+                                    </div> -->
                                     <div class="top_button">
 
                                         {% if request.user.is_superuser %}

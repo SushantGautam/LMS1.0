@@ -478,6 +478,7 @@ class QuizUserProgressView(TemplateView):
 
 class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
+    template_name = 'teacher_module/sitting_list.html'
 
     def get_queryset(self):
         queryset = super(QuizMarkingList, self).get_queryset() \
@@ -492,6 +493,7 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
 
 class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     model = Sitting
+    template_name = 'teacher_module/sitting_detail.html'
 
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()
@@ -1016,10 +1018,11 @@ class TeacherSurveyInfoDetailView(DetailView):
 
 
 
-def create_topic(request, nodegroup_pk=None):
-    node_group = NodeGroup.objects.filter(pk=nodegroup_pk)
+def create_topic(request, teacher_nodegroup_pk=None):
+    node_group = NodeGroup.objects.filter(pk=teacher_nodegroup_pk)
     if request.method == 'POST':
         form = TopicForm(request.POST, user=request.user)
+        print(form)
         if form.is_valid():
             t = form.save()
             return HttpResponseRedirect(reverse('teacher_topic', kwargs={'pk': t.pk}))

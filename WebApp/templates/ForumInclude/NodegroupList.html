@@ -22,15 +22,19 @@
             <a class="btn btn-white btn-flat" href="
             {% if '/teachers' in request.path %}
             {% url 'teacher_forum_create' nodegroup_pk=node_group.pk %}
-                        {% else %}
-                        {% url 'forum:create_thread' nodegroup_pk=node_group.pk %}
+            {% elif '/students' in request.path %}
+            {% url 'student_forum_create' nodegroup_pk=node_group.pk %}
+            {% elif '/forum' in request.path %}
+            {% url 'forum:create_thread' nodegroup_pk=node_group.pk %}
                         {% endif %}
            "><i class="fa fa-fw fa-plus"></i>
                 Ask New
                 Question</a>
             <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
-            {% url 'teacher_create_topic' nodegroup_pk=node_group.pk %}
-            {% else %}
+            {% url 'teacher_create_topic' teacher_nodegroup_pk=node_group.pk %}
+            {% elif '/students' in request.path %}
+            {% url 'studet_create_topic' student_nodegroup_pk=node_group.pk %}
+            {% elif '/forum' in request.path %}
             {% url 'forum:create_topic' nodegroup_pk=node_group.pk %}
             {% endif %}
          "><i class="fa fa-fw fa-plus"></i>
@@ -91,7 +95,7 @@
                     <td> {{ list.2 }} </td>
                     {% if list.1 %}
                     <td><a href="{% if '/teachers' in request.path %}
-                        {% url 'teacher_threads' pk=thread.user.pk %}
+                        {% url 'teacher_threads' pk=list.1.pk %}
                         {% else %}
                      {% url 'forum:thread' pk=list.1.pk %}
                         {% endif %}

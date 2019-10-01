@@ -81,7 +81,7 @@ urlpatterns += (
     path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
          views.create_thread, name='teacher_forum_create'),
-    path('forum/create_thread/(?P<teacher_nodegroup_pk>\d+)/(?P<teacher_topic>\d+)/',
+    path('forum/create_thread/(?P<teacher_nodegroup_pk>\d+)/(?P<teacher_topic_pk>\d+)/',
          views.create_thread, name='teacher_forum_create'),
 
 
@@ -164,5 +164,7 @@ urlpatterns += (
     path('saquestion/delete/<int:pk>/', views.SAQuestionDeleteView,
          name='teacher_saquestion_delete'),
 
-    path('quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
+    path('quiz/quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
+    path('quiz/marking/', views.QuizMarkingList.as_view(), name='teacher_quiz_marking'),
+    path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(), name='teacher_quiz_marking_detail'),
 )
