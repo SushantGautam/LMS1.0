@@ -449,6 +449,9 @@ class GroupMapping(models.Model):
 
     def get_absolute_url(self):
         return reverse('groupmapping_detail', args=(self.pk,))
+    
+    def teacher_get_absolute_url(self):
+        return reverse('teacher_groupmapping_detail', args=(self.pk,))
 
     def get_update_url(self):
         return reverse('groupmapping_update', args=(self.pk,))

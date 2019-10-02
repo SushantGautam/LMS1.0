@@ -19,6 +19,8 @@ from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
     AssignAnswerInfo, MemberInfo
 from forum.forms import ThreadForm, ThreadEditForm
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo, MemberInfo, GroupMapping
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
@@ -90,6 +92,11 @@ def teacher_editprofile(request):
 
 def Dashboard(request):
     return render(request, 'teacher_module/homepage.html', )
+
+class GroupMappingDetailViewTeacher(DetailView):
+    model = GroupMapping
+    template_name = 'teacher_module/groupmapping_detail.html'
+
 
 class MyCourseListView(ListView):
     model = CourseInfo
