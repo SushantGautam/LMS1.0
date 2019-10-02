@@ -163,7 +163,7 @@ def start(request):
             threadcount = Thread.objects.count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
-            sessioncount = SessionInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
+            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
 
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
