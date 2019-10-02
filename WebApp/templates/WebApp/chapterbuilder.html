@@ -403,7 +403,6 @@
 
           <div class="selection">
             <select name="chapter-lists" id="chapterlist">
-              <option value="">Please Select Chapter...</option>
               {% for chapter in chapterlist %}
                 <option value="{{chapter.id}}">
                   {{chapter.Chapter_No}}. {{chapter.Chapter_Name}}
@@ -482,7 +481,7 @@
 </div>
 
 <!-- Link Modal -->
-<div id="link-modal" class="modal fade" role="dialog">
+<div id="link-video-modal" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -497,11 +496,11 @@
           <label>Link to video</label>
           <span class="btnlink">
             http://
-            <input type="text" name="link" id="link">
+            <input type="text" name="link" id="video-link">
           </span>
         </div>
         <div class="modal-footer">
-          <button type="button" id = "link-submit" class="#">Submit</button>
+          <button type="button" id = "link-video-submit" class="#">Submit</button>
           <button type="button" class="#" data-dismiss="modal">Close</button>
         </div>
     </div>
@@ -511,6 +510,35 @@
 
 <!-- End of link modal -->
 
+<!-- Link Modal -->
+<div id="link-image-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Link</h4>
+        </div>
+        <div class="modal-body">
+          <!-- Modal Contents Here -->
+          
+          <label>Image Link</label>
+          <span class="btnlink">
+            http://
+            <input type="text" name="link" id="image-link">
+          </span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id = "link-image-submit" class="#">Submit</button>
+          <button type="button" class="#" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- End of link modal -->
 
 <script>
   var data = {{ data|safe }};
@@ -525,10 +553,33 @@
   var csrf_token = '{{csrf_token}}'
   
   $('#chapterlist').val(chapterID);
-  $('#chapterlist').change(function(){
-    let chapter = $('#chapterlist').val()
-    location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
-  });
+  // $('#chapterlist').change(function(){
+  //   var confirmation = confirm("Are you sure you want to leave?")
+  //   if(confirmation==false){
+  //       return false
+  //   }
+  //   let chapter = $('#chapterlist').val()
+  //   location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
+  // });
+  var previous;
+  (function () {
+
+      $("select").on('focus', function () {
+          // Store the current value on focus and on change
+          previous = this.value;
+      }).change(function() {
+        console.log("heret")
+          // Do something with the previous value after the change
+          var confirmation = confirm("Are you sure you want to leave?")
+          if(confirmation==false){
+            $('#chapterlist').val(previous)
+            return false
+          }else{
+            let chapter = $('#chapterlist').val()
+            location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
+          }  
+      });
+  })();
 
    
 </script>

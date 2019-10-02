@@ -78,6 +78,7 @@ $(document).ready(function() {
                 <div id="pic-actions">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
+                    <i class="fas fa-link imagelink" id=${id}></i>
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -452,6 +453,26 @@ $(document).ready(function() {
             //  alert('btn clickd')
         });
 
+        $('.imagelink').bind("click", function(e) {
+            var link_id = parseInt(e.currentTarget.id) + 1
+            var div = $('#' + e.currentTarget.id).parent().parent();
+            var link = prompt("Link of image", "http://");
+            if(link==null){
+                return false
+            }else if(!link.startsWith('http://') && !link.startsWith('https://')){
+                link = 'http://'+link
+            }
+            
+            div.find('p').text("");
+            div.css({
+                'background-image': 'url('+link+')',
+                'background-repeat': 'no-repeat',
+                'background-size': 'contain',
+                'background-position': 'center',
+                'border': '0'
+            });
+        });
+
         $('.pic').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
@@ -554,7 +575,6 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                         },
                         success: function(data) {
-                            console.log(div)
                             div.find('#loadingDiv').remove();
                             div.find('p').text("");
                             div.css({
@@ -843,20 +863,20 @@ $(document).ready(function() {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
-        $('.fa-link').bind("click", function(e) {
+        $('.videolink').bind("click", function(e) {
             var link_id = parseInt(e.currentTarget.id) + 1
             var div = $(this).parent().parent();
-            $('#link-modal').modal();
-
-            $('#link-submit').on('click',function(){
-                let link = ('http://'+$('#link').val())
-                $('#link-modal').modal('hide');
-                myYoutubeId = getYoutubeID(link)
-                div.find('p, iframe, video').remove();
-                div.append(`
-                    <iframe width="100%" height="94%" src="https://www.youtube.com/embed/${myYoutubeId}" frameborder="0" allowfullscreen></iframe>
-                `);
-            });
+            var link = prompt("Link of image", "http://");
+            if(link==null){
+                return false
+            }else if(!link.startsWith('http://') && !link.startsWith('https://')){
+                link = 'http://'+link
+            }
+            myYoutubeId = getYoutubeID(link)
+            div.find('p, iframe, video').remove();
+            div.append(`
+                <iframe width="100%" height="94%" src="https://www.youtube.com/embed/${myYoutubeId}" frameborder="0" allowfullscreen></iframe>
+            `);
         });
     
         $('.video-div').on('dragover', function(e) {
