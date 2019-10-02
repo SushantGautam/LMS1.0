@@ -20,6 +20,11 @@ urlpatterns += (
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(),
          name='teacher_courseinfo_update'),
 )
+urlpatterns += (
+    # urls for TodoTInfo
+     path('groupmappinginfo/<int:pk>/', views.GroupMappingDetailViewTeacher.as_view(),
+          name='teacher_groupmapping_detail'),
+)
 
 urlpatterns += (
     # urls for ChapterInfo
