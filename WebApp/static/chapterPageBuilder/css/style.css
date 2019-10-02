@@ -526,6 +526,41 @@ svg{
 
 }
 
+._3dobj-div{
+  width:400px;
+  height:200px;
+  border:3px dashed #ddd !important;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+#_3dobj-drag{
+  font-size: 17px;
+  opacity: 0.3;
+}
+
+#_3dobj-actions{
+  width:95%;
+  position: absolute;
+  left:0;
+  top:0;
+  background:#CCC;
+ margin:5px;
+  display: none;
+
+}
+
+._3dobj-div:hover #_3dobj-actions{
+  opacity: 0.8;
+  display: flex;
+  flex-flow:row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  
+}
 
 .video-div:hover #video-actions{
   opacity: 0.8;

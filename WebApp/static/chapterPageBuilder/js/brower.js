@@ -38,6 +38,7 @@ $("#SaveBtn").on("click",function(e){
     buttondiv = [];
     pdf = [];
     video = [];
+    _3d = [];
     numberofpages++;
     const obj=$("#tab"+parseInt(this.value)).children();
     let tops;
@@ -111,9 +112,22 @@ $("#SaveBtn").on("click",function(e){
           }
         );
       }
+      if(value.classList.contains('_3dobj-div')){
+        link = $(this).find('iframe').attr('src');
+
+        _3d.push(
+          {
+            'tops': $(this).css("top"),
+            'left': $(this).css("left"),
+            'width': $(this).css("width"),
+            'height': $(this).css("height"),
+            'link': link,
+          }
+        );
+      }
     });
     
-    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video}]
+    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d}]
   });
   data = {
     'numberofpages': numberofpages, 
