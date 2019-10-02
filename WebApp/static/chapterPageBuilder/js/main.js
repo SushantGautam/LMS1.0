@@ -320,49 +320,71 @@ $(document).ready(function() {
         }
     }
 
-    // =====================For Tables==============================
+    // =====================For 3DObjects==============================
 
-    // class Tables {
-    //     constructor(top, left) {
-    //     let id = (new Date).getTime();
-    //     let position = { top, left };
-    //     let html = `
-    //                     <div id="btn-div">
-    //                         <div id="options">
-    //                         <i class="fas fa-trash" id=${id}></i>
-    //                         <i class="fas fa-arrows-alt" id="draghanle"></i>
-    //                         </div> 
-                        
-    //                     <div  class="tableDiv" id="${id + 1}">
+    class _3Dobject {
+        constructor(top, left, file=null, height=null, width=null) {
+            let id = (new Date).getTime();
+            let position = { top, left, width, height };
+            let message = "";
+            var _3dobj;
+            if(file == null){
+                message = "Drag and drop 3D objects here..."
+            }
+            if(file!=null){
+                _3dobj = `
+                    <iframe src="${file}" width="100%" height="100%">
+                    </iframe>
+                `
+            }else{
+                _3dobj = "";
+            }
+            let html =
+            `<div class='_3dobj-div'>
+                <div id="_3dobj-actions">
+                    <i class="fas fa-trash" id=${id}></i>
+                    <i class="fas fa-upload" id=${id}></i>
+                </div>
+                <div>
+                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
+                </form>
+                <p id="_3dobj-drag">${message}</p>
+                
+                </div>
+                ${_3dobj}
+            </div>`
 
-    //                     </div>
-                            
-    //                     </div>
-    
-    //             `;
-    //     this.renderDiagram = function () {
-    //         // dom includes the html,css code with draggable property
-    //         let dom = $(html).css({
-    //         "position": "absolute",
-    //         "top": position.top,
-    //         "left": position.left
-    //         }).draggable({
-    //         //Constrain the draggable movement only within the canvas of the editor
-    //         containment: ".editor-canvas",
-    //         scroll: false,
-    //         grid: [50, 20],
-    //         cursor: "move",
-    //         handle: '#draghanle'
-    //         });
+            this.RemoveElement = function () {
+                return idss;
+            }
+            this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+                
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "width": position.width,
+                "height": position.height
+            }).draggable({
+                //Constraint   the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: { bottom: 0 }
+            });
 
-    //         var a = document.getElementsByClassName("current")[0];
-    //         $('#' + a.id).append(dom)
-    //         //canvas.append(dom);
-    //         // Making element Resizable
-
-    //     };
-    //     }
-    // }
+            var a = document.getElementsByClassName("current")[0];
+            // console.log(a);
+            // console.log($('#' + a.id));
+            $('#' + a.id).append(dom);
+            // canvas.append(dom);
+            };
+        }
+    }
 // ====================== End of initializing elements ========================
     
     // title click function
@@ -453,10 +475,14 @@ $(document).ready(function() {
             //  alert('btn clickd')
         });
 
-        $('.imagelink').bind("click", function(e) {
+        $('.imagelink').off().bind("click", function(e) {
             var link_id = parseInt(e.currentTarget.id) + 1
             var div = $('#' + e.currentTarget.id).parent().parent();
-            var link = prompt("Link of image", "http://");
+            var prevlink = $(this).parent().parent().css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
+            if(prevlink == "none"){
+                prevlink = "http://";
+            }
+            var link = prompt("Link of image", prevlink);
             if(link==null){
                 return false
             }else if(!link.startsWith('http://') && !link.startsWith('https://')){
@@ -863,10 +889,14 @@ $(document).ready(function() {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
-        $('.videolink').bind("click", function(e) {
+        $('.videolink').off().bind("click", function(e) {
             var link_id = parseInt(e.currentTarget.id) + 1
             var div = $(this).parent().parent();
-            var link = prompt("Link of image", "http://");
+            var prevlink = $(this).parent().parent().find('iframe').attr('src');
+            if(prevlink == undefined){
+                prevlink = "http://";
+            }
+            var link = prompt("Youtube url", prevlink);
             if(link==null){
                 return false
             }else if(!link.startsWith('http://') && !link.startsWith('https://')){
@@ -1094,6 +1124,113 @@ $(document).ready(function() {
         });
     }
 
+    function _3dFunction(top=null, left=null, file = null, height=null, width=null){
+        const _3d = new _3Dobject(
+            top,
+            left,
+            file,
+            height,width);
+        _3d.renderDiagram();
+    
+        $('.fa-upload').click(function(e) {
+            trigger = parseInt(e.target.id) + 1;
+            $('#' + trigger).trigger('click');
+        });
+
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+            //  alert('btn clickd')
+        });
+
+        $('.3dobj').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
+        });
+
+        $('.3dobj').on('dragover', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            //   $(this).css('border',"2px solid #39F")
+        });
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    let div = $(input).parent().parent().parent();
+                    var data = new FormData();
+                    
+                    $.each(input.files, function(i, file) {
+                        // console.log(Math.round((file.size / 1024))) // get image size
+                        data.append('file-' + i, file);
+                    });
+                    data.append('type', '3d');
+                    data.append('chapterID', chapterID);
+                    data.append('courseID', courseID);
+                    $.ajax({
+                        url: save_file_url,
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        enctype: 'multipart/form-data',
+                        method: 'POST',
+                        type: 'POST',
+                        beforeSend: function() {
+                            div.append(`<div class="loader" id="loadingDiv"></div>`)
+                            $('#loadingDiv').show();
+                        }, 
+                        error: function(errorThrown){
+                            alert("Failed to upload File")
+                            div.find('#loadingDiv').remove();
+                        },                     
+                        success: function(data) {
+                            div.find('#loadingDiv').remove();
+                            div.find('p iframe').remove();
+
+                            div.append(`
+                                <iframe src = "/3DViewer/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" height="100%" width="100%">
+                                </iframe>
+                            `);
+                        },
+                        error: function(data, status, errorThrown) {
+                            alert(data.responseJSON.message);
+                        }
+                    });
+
+                    $('#_3dobj-drag').css({
+                        'display': 'none'
+                    })
+                    
+                    $(div).hover(function() {
+                        $(this).css("border", "1px solid red");
+                    }, function() {
+                        $(this).css("border", '0')
+                    })
+
+                    $('._3dobj').resizable({
+                        containment: $('#tabs-for-download'),
+                        grid: [20, 20],
+                        autoHide: true,
+                        minWidth: 150,
+                        minHeight: 150
+                    });
+
+                    $('._3dobj').css({
+                        'resize':'both'
+                    })
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("._3dobjinp").change(function(e) {
+            readURL(this);
+
+        });
+    }
+
     // delete page function
     $('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
         var confirmation = confirm("Are you sure you want to delete?")
@@ -1260,50 +1397,9 @@ $(document).ready(function() {
                 height="35%", width="100%"
             );
         
-        } else if (ui.helper.hasClass('tables')) {
-            const tables = new Tables();
-        
-            tables.renderDiagram();
-        
-            // $("#table-dialog").attr("open","open");
-            $('#table-dialog').css({
-                'display': 'block'
-            })
-        
-            $(".close").on("click", function() {
-                $('#table-dialog').css({
-                    'display': 'none'
-                })
-            })
-        
-            $("#ok").on("click", function(e) {
-                e.preventDefault();
-                var number_of_rows = $("#number_of_rows").val();
-                var number_of_columns = $("#number_of_columns").val();
-                var table_body = '<table id="tables_id" border="1" width="300px" height="300px">';
-                for (var i = 0; i < number_of_rows; i++) {
-                    table_body += '<tr>';
-                    for (var j = 0; j < number_of_columns; j++) {
-                        table_body += '<td>';
-                        table_body += '<p contentEditable="true" >&nbsp; &nbsp;</p>';
-                        table_body += '</td>';
-                    }
-                    table_body += '</tr>';
-                }
-                table_body += '</table>';
-                $('.tableDiv').html(table_body);
-                $("#table-dialog").css({
-                    'display': 'none'
-                });
-        
-            });
-        
-            // window.onclick = function(event) {
-            //   if (event.target == modal) {
-            //     modal.style.display = "none";
-            //   }
-            // }
-        
+        } else if (ui.helper.hasClass('3dobject')) {
+            _3dFunction(ui.helper.position().top - toolbarheight,
+            ui.helper.position().left - sidebarWidth); 
         }else if(ui.helper.hasClass('Pdf')){
             PDFFunction(ui.helper.position().top - toolbarheight,
             ui.helper.position().left - sidebarWidth);
@@ -1464,6 +1560,17 @@ $(document).ready(function() {
                                 css_value.tops,
                                 css_value.left,
                                 link,
+                                css_value.height,css_value.width);
+                        });
+                    }
+
+                    if(div == '_3d'){
+                        $.each(div_value, function(css, css_value){
+                            css_string = JSON.stringify(css_value)
+                            _3dFunction(
+                                css_value.tops,
+                                css_value.left,
+                                css_value['link'],
                                 css_value.height,css_value.width);
                         });
                     }
