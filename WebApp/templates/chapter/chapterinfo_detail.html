@@ -78,11 +78,11 @@
                         <td>
                             {% for pre_quiz in pre_quizes %}
                             <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                                {{ pre_quiz.title }}
-                                <button>Play quiz</button>
+                                
+                              
                             </a>
-                            {{ quizes }}{{ quizes }}{{ quizes }}{{ quizes }}
-                            feedbackbtn-quiz{{ pre_quiz.id }}
+                            
+                           
                             <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="btn btn-info "
                                 data-toggle="modal" data-target="#quizmodal">Play Quiz
                             </button>

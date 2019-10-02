@@ -165,8 +165,8 @@
   <div class="quiz-question-list">
     <a href="#tfqn_list" data-toggle="collapse">
       <p class="exam-results text-center">
-        <span class="exam-results">LIST OF TFQUESTIONS</span> <span class="fa fa-chevron-down"
-                                                                    style="color:white"></span>
+        <span class="exam-results">LIST OF TFQUESTIONS</span> {% if quiz.has_tfqs %}<span class="fa fa-chevron-down"
+                                                                    style="color:white"></span> {% endif %}
         <a href="" id="tfq_choose_button" data-toggle="modal"
            data-target="#question_form_popup">
           <span class="add-mcq-details" style="float: right; margin-left: 10px;"> CHOOSE PREVIOUS TFQ </span>
@@ -214,8 +214,8 @@
     <a href="#esqn_list" data-toggle="collapse">
 
       <p class="exam-results text-center">
-        <span class="exam-results">LIST OF SHORT ANSWER QUESTIONS</span> <span class="fa fa-chevron-down"
-                                                                               style="color:white"></span>
+        <span class="exam-results">LIST OF SHORT ANSWER QUESTIONS</span> {% if quiz.has_saqs %}<span class="fa fa-chevron-down"
+                                                                               style="color:white"></span>{% endif %}
         <a href="" id="saq_choose_button" data-toggle="modal"
            data-target="#question_form_popup">
           <span class="add-mcq-details" style="float: right; margin-left: 10px;"> CHOOSE PREVIOUS SAQ </span>
