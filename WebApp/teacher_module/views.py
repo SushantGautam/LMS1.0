@@ -14,8 +14,11 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
 from django_addanother.views import CreatePopupMixin
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm    
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo, MemberInfo
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from WebApp.forms import UserUpdateForm
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
+    AssignAnswerInfo, MemberInfo
+from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
@@ -25,10 +28,9 @@ from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
 from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
 from survey.views import AjaxableResponseMixin
-from forum.forms import ThreadForm, ThreadEditForm
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
-from WebApp.forms import UserUpdateForm
+
 datetime_now = datetime.now()
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from formtools.wizard.views import SessionWizardView
@@ -318,8 +320,8 @@ def makequery(request):
     })
 
 
-# def question_teachers(request):
-#     return render(request, 'teacher_module/question_teachers.html')
+# class question_teachers(ListView):
+#     model = SurveyInfo
 
 class SurveyInfoListView(ListView):
     model = SurveyInfo

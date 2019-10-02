@@ -33,6 +33,7 @@ urlpatterns += (
 urlpatterns += (
     # urls for SurveyInfo
     path('surveyinfo/', views.SurveyInfoListView.as_view(), name='surveyinfo_list'),
+    path('surveyinfo/', views.SurveyList.as_view(), name='surveylist'),
     path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
          name='surveyinfo_create'),
     path('surveyinfo/detail/<int:pk>/',

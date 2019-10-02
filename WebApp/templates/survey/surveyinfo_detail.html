@@ -7,8 +7,7 @@
   <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %} {% block content %}
 
-
-  <!-- <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit SurveyInfo</a> -->
+    {#  <!-- <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit SurveyInfo</a> -->#}
 
   <div class="clearfix"></div>
 
@@ -153,7 +152,6 @@
 
 {% block customjss %}
 
-
   <script>
       $('#retakeSurveyBtn').on('click', function () {
 
@@ -166,16 +164,6 @@
               }
           });
       });
-
-      {#$.ajax({#}
-      {#    type: "GET",#}
-      {#    data: {'questionId': "{{ object.Question_Code.id }}"},#}
-      {#    url: "{% url 'surveyFilterCategory' %}",#}
-      {#    success: function (data) {#}
-      {#        $(".liveProgress").html(data);#}
-      {#        console.log(data)#}
-      {#    }#}
-      {# });#}
 
   </script>
 {% endblock %}

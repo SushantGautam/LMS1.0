@@ -1,9 +1,9 @@
-from django.conf.urls import url
 from django.urls import path
-from django.contrib.auth.decorators import login_required
+from django.urls import path
 
 from WebApp.student_module import views
 from survey import views as surveyViews
+
 #
 # urlpatterns = (
 #     # urls for TodoTInfo
@@ -105,16 +105,6 @@ urlpatterns += (
          name='surveyFilterCategory_student'),
 
 )
-
-# urlpatterns += (
-#     path('polls_student/', views.polls_student, name="polls_student"),
-# )
-
-# urlpatterns += (
-#     path('polls_student_view/', views.polls_student_view,
-#          name="polls_student_view"),
-# )
-
 
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="student_forum"),

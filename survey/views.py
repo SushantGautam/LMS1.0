@@ -1,11 +1,13 @@
 from datetime import datetime
 
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.forms import model_to_dict
 from django.http import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
@@ -61,8 +63,18 @@ class CategoryInfoUpdateView(UpdateView):
     form_class = CategoryInfoForm
 
 
+class SurveyList(ListView):
+    model = SurveyInfo
+
 class SurveyInfoListView(ListView):
     model = SurveyInfo
+    template_name = 'survey/surveylist.html'
+
+    paginate_by = 8
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -74,6 +86,7 @@ class SurveyInfoListView(ListView):
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
 
+        return context
         # context['']
 
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
@@ -82,7 +95,18 @@ class SurveyInfoListView(ListView):
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
         # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
 
-        return context
+        # ....................................Pagination.............................................................
+
+    # def listing(request):
+    #     survey_list = SurveyInfo.objects.all()
+    #     print(survey_list)
+    #     paginator = Paginator(survey_list, 10)  # Show 25 contacts per page
+    #
+    #     page = request.GET.get('page')
+    #     surveys = paginator.get_page(page)
+    #     print(surveys)
+    #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
+
 
     # ......................................Survey Search ..............................................
 
@@ -672,9 +696,16 @@ class surveyFilterCategory(ListView):
     model = SurveyInfo
     template_name = 'survey/surveyinfo_expireView.html'
 
+    # paginate_by = 8
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
+
     def get_queryset(self):
         if self.request.GET['categoryId'] == '0':
             return SurveyInfo.objects.all()
+
         else:
             return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
 
@@ -684,3 +715,14 @@ class surveyFilterCategory(ListView):
 
         return context
 
+    # ....................................Pagination.............................................................
+
+    def listing(request):
+        survey_list = SurveyInfo.objects.all()
+        print(survey_list)
+        paginator = Paginator(survey_list, 10)
+
+        page = request.GET.get('page')
+        surveys = paginator.get_page(page)
+        print(surveys)
+        return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})

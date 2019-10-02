@@ -1,26 +1,21 @@
+{#..........................................Teacher detail page............................................#}
+
 {% extends "teacher_module/base.html" %}
-{% load static %}
-{% block title %}
-Polls
-{% endblock %}
-{% block stylesheets %}
-<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
-{% endblock stylesheets %}
-
-{% block breadcrumb %}
-<li class="breadcrumb-item" aria-current="page"><a href="{% url 'question_teachers' %}">Survey</a></li>
+{% load static %} {% block stylesheets %}
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+{% endblock stylesheets %} {% block breadcrumb %}
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'question_teachers' %}">Survey</a>
+    </li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
-{% endblock %}
-
-{% block content %}
-    <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit SurveyInfo</a>
+{% endblock %} {% block content %}
 
     <div class="clearfix"></div>
 
     <div class="container">
     <div class="row" id="surveyView">
         <div class="container">
-            <h2 class="pollTitle">{{ object.Survey_Title }}</h2>
+            <h1 class="pollTitle">{{ object.Survey_Title }}</h1>
             <div class="horizontalBar"></div>
 
             <div class="viewSurveyTitle">
@@ -105,20 +100,17 @@ Polls
 
                     <div class="bs-chart-container" id="progressResult" style="width: 80%;">
                         <h4>Results:</h4>
-                        {% for question in object.questioninfo.all %}
-                            {% for option in question.optioninfo.all %}
-                                <div class="surveyResults">
-                                    <strong>Option {{ forloop.counter }}</strong>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-success" role="progressbar"
-                                             aria-valuenow="40"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100" style="width: {{ option.get_option_percentage }}%">
-                                            <span class>{{ option.get_option_percentage }}% </span>
-                                        </div>
+                        {% for option in question.optioninfo.all %}
+                            <div class="surveyResults">
+                                <strong>Option {{ forloop.counter }}</strong>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100" style="width: {{ option.get_option_percentage }}%">
+                                        <span class>{{ option.get_option_percentage }}% </span>
                                     </div>
                                 </div>
-                            {% endfor %}
+                            </div>
                         {% endfor %}
                     </div>
 
@@ -132,7 +124,7 @@ Polls
                             <strong>{{ question.Question_Name }}</strong>
                         </h2>
                         <h5>
-                            {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}
+                            {#                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}#}
                         </h5>
                     </div>
                     <div style="
@@ -163,7 +155,6 @@ Polls
 
 {% block customjss %}
 
-
     <script>
         $('#retakeSurveyBtn').on('click', function () {
 
@@ -176,16 +167,6 @@ Polls
                 }
             });
         });
-
-        {#$.ajax({#}
-        {#    type: "GET",#}
-        {#    data: {'questionId': "{{ object.Question_Code.id }}"},#}
-        {#    url: "{% url 'surveyFilterCategory' %}",#}
-        {#    success: function (data) {#}
-        {#        $(".liveProgress").html(data);#}
-        {#        console.log(data)#}
-        {#    }#}
-        {# });#}
 
     </script>
 {% endblock %}

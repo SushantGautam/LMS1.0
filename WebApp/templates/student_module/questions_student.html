@@ -16,93 +16,50 @@ Polls
 
 <div class="clearfix"></div>
 <div class="container" id="mainSurveyPage">
-            <div id="surveyContainer">
-                <div class="col-md-2 col-sm-2 col-xs-12" style="z-index: 1;">
-                    <div class="categoryContainer">
-                        <div class="card">
-                            <div class="card-body">
-                                <h2 class="card-title "><strong>Category</strong></h2>
-                                <hr>
-                                <div id="card_category">
+    <div id="surveyContainer">
+        <div class="col-md-2 col-sm-2 col-xs-12" style="z-index: 1;">
+            <div class="categoryContainer">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title "><strong>Category</strong></h2>
+                        <hr>
+                        <div id="card_category">
 
-                                    <h5 class=" card-text active">
-                                        <a href="#" class="category-name" id="0">
-                                            <i class="fa fa-bar-chart" id=""></i>&nbsp All
-                                            survey</a>
-                                    </h5>
-                                    {% for category in categories %}
-                                    <h5 class="card-text">
-                                        <a href="#" class=" category-name " id=" {{ category.id }}"><i
-                                                class="fa fa-{{ category.Category_Icon}}" id="categoryIcons"></i>
-                                            {{ category.Category_Name }}
-                                        </a>
-                                        <!-- <button class=" {{ category.Category_Name }}  btn btn-success"
-                                            id="category_Add_Button" data-popup-open="popup-1">Add</button> -->
-                                    </h5>
+                            <h5 class=" card-text active">
+                                <a href="#" class="category-name" id="0">
+                                    <i class="fa fa-bar-chart" id=""></i>&nbsp All
+                                    survey</a>
+                            </h5>
+                            {% for category in categories %}
+                                <h5 class="card-text">
+                                    <a href="#" class=" category-name " id=" {{ category.id }}"><i
+                                            class="fa fa-{{ category.Category_Icon }}" id="categoryIcons"></i>
+                                        {{ category.Category_Name }}
+                                    </a>
+                                    {#                                <!-- <button class=" {{ category.Category_Name }}  btn btn-success"#}
+                                    {#                                    id="category_Add_Button" data-popup-open="popup-1">Add</button> -->#}
+                                </h5>
 
-                                    {% endfor %}
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
-                    </div>
-                    {#                    <div class="popup" data-popup="popup-1">#}
-                    {#                        <div class="popup-inner ">#}
-                    {#                            <article class="index-form">#}
-                    {#                                <div class="label_inputs">#}
-                    {#                                    <a class="popup-close" data-popup-close="popup-1" href="#">x</a>#}
-                    {#                                    <div class="row">#}
-                    {#                                        <div class="col-md-12 col-sm-12 col-xs-12">#}
-                    {#                                            <div class="x_panel">#}
-                    {#                                                <div class="x_content">#}
-                    {#                                                    <br>#}
-                    {#                                                    <div class="form-group">#}
-                    {#                                                        <label class="control-label " id="categoryTitle"#}
-                    {#                                                            for="first-name">Category :#}
-                    {#                                                            <span class="generalLabel">General</span>#}
-                    {#                                                            <span class="sessionLabel"#}
-                    {#                                                                style="display:none;">Session</span>#}
-                    {#                                                            <span class="   " style="display:none;">Course</span>#}
-                    {#                                                            <span class="systemLabel"#}
-                    {#                                                                style="display:none;">System</span>#}
-                    {#                                                        </label>#}
-                    {##}
-                    {#                                                    </div>#}
-                    {##}
-                    {#                                                    <div id="surveyForm">#}
-                    {##}
-                    {#                                                    </div>#}
-                    {##}
-                    {#                                                </div>#}
-                    {#                                            </div>#}
-                    {#                                        </div>#}
-                    {#                                    </div>#}
-                    {#                                </div>#}
-                    {#                            </article>#}
-                    {#                        </div>#}
-                    {#                    </div>#}
-                </div>
-
-
-                <div class="col-md-10 col-sm-10 col-xs-12" style="z-index: 0;">
-                    <div id="rowCards">
-                        {##}
                     </div>
                 </div>
             </div>
+        </div>
 
-
+        <div class="col-md-10 col-sm-10 col-xs-12" style="z-index: 0;">
+            <div id="rowCards">
+                {##}
+            </div>
+        </div>
+    </div>
 </div>
-
-
 
 {% endblock %}
 
-
 {% block javascripts %}
     <script>
-
         $(document).ready(function () {
-
             $.ajax({
                 type: "GET",
                 data: {'categoryId': 0},
@@ -113,7 +70,6 @@ Polls
                 }
             });
         });
-
 
         $('.category-name').on('click', function () {
             var categoryId = this.id;
