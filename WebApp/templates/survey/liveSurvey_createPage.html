@@ -45,11 +45,13 @@
                 <div class="row setup-content" id="step-1">
                     <div class="col-xs-12">
                         <div class="col-md-12">
+                            {{ form.errors }}
                             {{ form.Survey_Title|as_crispy_field }}
                             {{ form.Category_Code|as_crispy_field }}
                             {{ form.End_Date|as_crispy_field }}
                             {{ form.Session_Code|as_crispy_field }}
                             {{ form.Course_Code|as_crispy_field }}
+
 
                             <input type="hidden" name="Survey_Live" value="True">
                             <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
@@ -163,27 +165,12 @@
         </div>
     </div>
 
-    <script src=" {% static 'build/js/survey.js' %}"></script>
 
     {% block customjss %}
         <script>
-            function cloneMore(selector, append_after, type) {
-                var newElement = $(selector).clone(true);
-                var total = $('#id_' + type + '-TOTAL_FORMS').val();
-                newElement.find(':input').each(function () {
-                    var name = $(this).attr('name').replace('-' + (total - 1) + '-', '-' + total + '-');
-                    var id = 'id_' + name;
-                    $(this).attr({'name': name, 'id': id}).removeAttr('checked');
-                });
-                newElement.find('label').each(function () {
-                    var newFor = $(this).attr('for').replace('-' + (total - 1) + '-', '-' + total + '-');
-                    $(this).attr('for', newFor);
-                });
-                total++;
-                $('#id_' + type + '-TOTAL_FORMS').val(total);
-                $(append_after).append(newElement);
-            }
-
+            $(document).ready(function () {
+                console.log('hello document ready');
+            });
             function copyEmptyQuestion(selector, append_after, type, type2) {
                 var questionId = $('#id_' + type + '-TOTAL_FORMS').val();
                 var str1 = String(type + '-' + questionId);
@@ -240,29 +227,6 @@
                 $(newel_id).css({"margin-left": "10px", "width": "100%"});
             }
 
-            {#function copyEmptyShortAnsQuestion(selector, append_after, type) {#}
-            {#    var questionId = $('#id_' + type + '-TOTAL_FORMS').val();#}
-            {#    var str1 = String(type + '-' + questionId);#}
-            {#    var r1 = new RegExp(type + '\-__prefix__', 'g');#}
-            {##}
-            {#    $(append_after).append($(selector).html().replace(r1, str1));#}
-            {##}
-            {#    var newel_id = String('#div_id_questionansinfo-' + questionId + '-Question_Name');#}
-            {#    var sa_question_counter = parseInt(questionId) + 1;#}
-            {#    var counter_saq_el = `<p>${sa_question_counter}</p>`;#}
-            {#var newel_id = $('#div_id_questioninfo-' + questionId + '-Question_Name');#}
-            {#    $(newel_id).wrap(`<div class='new_saq' id='new_sa_que_div${questionId}' style='display:flex;'></div>`);#}
-            {#console.log(${questionId});#}
-            {#    $('#new_sa_que_div' + questionId).prepend(counter_saq_el);#}
-            {##}
-            {#    questionId++;#}
-            {#    $('#id_' + type + '-TOTAL_FORMS').val(questionId);#}
-            {#    $(newel_id).css({"margin-left": "10px", "width": "100%"});#}
-
-            {##}
-            {#$('#add_more_sa_qn').click(function () {#}
-            {#    copyEmptyShortAnsQuestion('#emptyQnAnsInfoForm', 'div.qnansinfo_dynamic_append', 'questionansinfo');#}
-            {# ); #}
 
             $('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({"display": "none"});
 
@@ -271,14 +235,12 @@
             $('#first_que_div').prepend(`<p>1</p>`);
             $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
-            {#..............................................For SAQ ...........................................#}
-            {#$('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);#}
-            {#$('#first_sa_que_div').prepend(`<p>1</p>`);#}
-            {#$('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});#}
-
             // ......................................HIDING THE FORM................................................
             $('#div_id_Session_Code').hide();
             $('#div_id_Course_Code').hide();
+            $('#div_id_Added_By').hide();
+            $("#id_Added_By").val("{{request.user.id}}");
+            $('#div_id_Center_Code').hide();
 
             $('#id_Category_Code').change(function () {
                 var categ_name = $('#id_Category_Code option:selected').text();

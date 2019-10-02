@@ -146,41 +146,41 @@ input[type="search"] {
 }
 /* ======================= LIST VIEW ======================== */
 
-img {
-  height: auto;
-  max-width: 100%;
-  vertical-align: middle;
-}
+/*img {*/
+/*  height: auto;*/
+/*  max-width: 100%;*/
+/*  vertical-align: middle;*/
+/*}*/
 
-.listView .card {
-  padding: 1%;
-  padding-top: 1%;
-  margin-bottom: 2%;
-}
+/*.listView .card {*/
+/*  padding: 1%;*/
+/*  padding-top: 1%;*/
+/*  margin-bottom: 2%;*/
+/*}*/
 
-.listView h2 {
-  margin-top: -0.5%;
-  margin-left: 1%;
-}
+/*.listView h2 {*/
+/*  margin-top: -0.5%;*/
+/*  margin-left: 1%;*/
+/*}*/
 
-.ratingIcons1 {
-  margin-top: -2%;
-  margin-left: 2%;
-  margin-bottom: -2%;
-}
+/*.ratingIcons1 {*/
+/*  margin-top: -2%;*/
+/*  margin-left: 2%;*/
+/*  margin-bottom: -2%;*/
+/*}*/
 
-.listView .card-text {
-  padding-left: 0.5%;
-}
+/*.listView .card-text {*/
+/*  padding-left: 0.5%;*/
+/*}*/
 
-.listView .col-md-2 {
-  padding-left: 7%;
-}
+/*.listView .col-md-2 {*/
+/*  padding-left: 7%;*/
+/*}*/
 
-.listView .col-md-10 {
-  padding-left: 0%;
-  padding-top: 1%;
-}
+/*.listView .col-md-10 {*/
+/*  padding-left: 0%;*/
+/*  padding-top: 1%;*/
+/*}*/
 
 #myInput {
   font-size: 14px;
