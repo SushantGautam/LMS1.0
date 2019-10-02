@@ -163,7 +163,7 @@ def start(request):
             threadcount = Thread.objects.count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
-            sessioncount = SessionInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
+            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
 
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
@@ -1154,38 +1154,5 @@ def import_chapter(request):
 
 def ThreeDViewer(request, urlpath=None):
     if not urlpath:
-        objpath = request.is_secure() and "https" or "http" + '://' + request._get_raw_host() + '/' + "static/3D_Viewer/Sample.obj"
-    else:
-        objpath = request.is_secure() and "https" or "http" + '://' + request._get_raw_host() + '/' + urlpath
-
-    html = '''
-    
-    
-<!DOCTYPE html>
-<div>
-<script src="/static/3D_Viewer/xeogl.js"></script>
-<script src="/static/3D_Viewer/k3d.js"></script>
-<script src="/static/3D_Viewer/objGeometryLoader.js"></script>
-<script>
-    var scene = xeogl.getDefaultScene();
-    xeogl.loadOBJGeometry(scene, "''' + objpath + '''", function (miamiGeometry) {
-        // Mesh on top of the "water", instancing the geometry
-        var mesh = new xeogl.Mesh({
-            geometry: miamiGeometry,
-        });
-        // Initial camera pose
-        var camera = mesh.scene.camera;
-        // Orbit the camera
-        scene.on("tick", function () {
-            camera.orbitYaw(-0.1);
-        });
-        // Camera interaction
-        var cameraControl = new xeogl.CameraControl();
-        var cameraFlight = new xeogl.CameraFlightAnimation();
-        cameraFlight.flyTo(mesh);
-    });
-</script>
-</div>
-
-    '''
-    return HttpResponse(html)
+        urlpath = "static/3D_Viewer/Sample.obj"
+    return render(request, '3D_Viewer/render_template.html', {'urlpath': urlpath})
