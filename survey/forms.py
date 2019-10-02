@@ -15,14 +15,7 @@ class SurveyInfoForm(forms.ModelForm):
     class Meta:
         model = SurveyInfo
         fields = ['Survey_Title', 'Category_Code', 'Start_Date', 'End_Date',
-                  'Session_Code', 'Course_Code', 'Added_By', 'Center_Code']
-
-    def __init__(self, *args, **kwargs):
-        my_center_code = kwargs.pop('center_code_id')
-        super().__init__(*args, **kwargs)
-        print(my_center_code)
-        self.fields['Center_Code'].widget = forms.HiddenInput()
-        self.fields['Center_Code'].initial = my_center_code
+                  'Session_Code', 'Course_Code']
 
     #     Id = kwargs["categoryId"]
     #     if Id == 'live':
@@ -30,6 +23,15 @@ class SurveyInfoForm(forms.ModelForm):
     #     else:
     #         self.fields['Start_Date'].widget = widgets.AdminDateWidget()
     #         self.fields['End_Date'].widget = widgets.AdminDateWidget()
+
+
+class LiveSurveyInfoForm(forms.ModelForm):
+    End_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = SurveyInfo
+        fields = ['Survey_Title', 'Category_Code', 'End_Date',
+                  'Session_Code', 'Course_Code']
 
 
 class QuestionInfoForm(forms.ModelForm):

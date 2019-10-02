@@ -63,7 +63,7 @@
                         {% url 'student_topic' thread.topic.pk %}
                         {% elif '/forum' in request.path %}
                         {% url 'forum:topic' thread.topic.pk %}
-                        {% endif %}                        {% endif %}
+                        {% endif %}                       
                                   ">
                                         <span class="link-color">
                                             {{ thread.topic.title }}

@@ -34,21 +34,19 @@
                     {% for category in categories %}
 
                         <div class="row card-text">
-                            <div class="col-md-8 category-name">
-                                <a href="#" id=" {{ category.id }}"><i
+                            <div class="col-md-8 ">
+                                <a href="#" class="category-name" id=" {{ category.id }}"><i
                                         class="fa fa-{{ category.Category_Icon }}" id="categoryIcons"></i>
                                     {{ category.Category_Name }}
                                 </a>
                             </div>
 
-                            <div class="">
+                            {#                            <div class="">#}
                                 <button class=" {{ category.Category_Name }} btn btn-success"
                                         id="category_Add_Button{{ category.id }}" style="margin: 0;"
                                         data-popup-open="popup-1">Add
                                 </button>
-                            </div>
-
-
+                            {#                            </div>#}
                         </div>
 
                     {% endfor %}
@@ -163,10 +161,11 @@
           });
       });
 
-      // categoryAddButton({{ categoryName }});
+      {#// categoryAddButton({{ categoryName }});#}
 
       $('.category-name').on('click', function () {
           var categoryId = this.id;
+          console.log('categoryId');
           $.ajax({
               type: "GET",
               data: {'categoryId': categoryId},

@@ -29,7 +29,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from forum.views import get_top_thread_keywords
-from .forms import ThreadForm, TopicForm, ReplyForm
+from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, \
@@ -37,8 +37,14 @@ from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, Ass
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.contrib.auth import get_user_model
+from .misc import get_query
+from LMS import settings
 
 datetime_now = datetime.now()
+
+
+User = get_user_model()
 
 
 def start(request):
@@ -561,11 +567,11 @@ class NodeGroupView(ListView):
             try:
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
-                reply_count = Thread.objects.filter(topic=topic.pk).aggregate(
-                    Sum('reply_count'))['reply_count__sum']
+                reply_count = Post.objects.filter(thread=thread.pk).count()
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
+            # print("sabina", latest_threads)
         context = super(ListView, self).get_context_data(**kwargs)
         context['node_group'] = nodegroup = NodeGroup.objects.get(
             pk=self.kwargs.get('pk'))
@@ -719,3 +725,21 @@ class NotificationView(ListView):
         context = super(ListView, self).get_context_data(**kwargs)
         context['title'] = ("Notifications")
         return context
+
+
+def edit_thread(request, pk):
+    thread = Thread.objects.get(pk=pk)
+    if thread.reply_count < 0:
+        return HttpResponseForbidden(_('Editing is not allowed when thread has been replied'))
+    if not thread.user == request.user:
+        return HttpResponseForbidden(_('You are not allowed to edit other\'s thread'))
+    if request.method == 'POST':
+        form = ThreadEditForm(request.POST, instance=thread)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
+    else:
+        form = ThreadEditForm(instance=thread)
+
+    return render(request, 'student_module/student_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
+

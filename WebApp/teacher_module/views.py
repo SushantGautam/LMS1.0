@@ -25,7 +25,7 @@ from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
 from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
 from survey.views import AjaxableResponseMixin
-from .forms import ThreadForm
+from forum.forms import ThreadForm, ThreadEditForm
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
 from WebApp.forms import UserUpdateForm
@@ -266,6 +266,9 @@ class AssignmentInfoUpdateView(UpdateView):
     model = AssignmentInfo
     form_class = AssignmentInfoForm
     template_name = 'teacher_module/assignmentinfo_form.html'
+
+    def get_success_url(self, **kwargs):
+            return reverse_lazy('teacher_assignmentinfo_detail', kwargs = {'course':self.object.Course_Code.id,'chapter':self.object.Chapter_Code.id,'pk': self.object.pk})
 
 
     def get_context_data(self, **kwargs):
@@ -1104,8 +1107,8 @@ class NodeGroupView(ListView):
             try:
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
-                reply_count = Thread.objects.filter(topic=topic.pk).aggregate(
-                    Sum('reply_count'))['reply_count__sum']
+                reply_count = Post.objects.filter(thread=thread.pk).count()
+
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
@@ -1262,6 +1265,22 @@ class NotificationView(ListView):
         context = super(ListView, self).get_context_data(**kwargs)
         context['title'] = ("Notifications")
         return context
+
+def edit_thread(request, pk):
+    thread = Thread.objects.get(pk=pk)
+    if thread.reply_count < 0:
+        return HttpResponseForbidden(_('Editing is not allowed when thread has been replied'))
+    if not thread.user == request.user:
+        return HttpResponseForbidden(_('You are not allowed to edit other\'s thread'))
+    if request.method == 'POST':
+        form = ThreadEditForm(request.POST, instance=thread)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
+    else:
+        form = ThreadEditForm(instance=thread)
+
+    return render(request, 'teacher_module/teacher_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
 

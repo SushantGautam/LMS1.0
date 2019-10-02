@@ -30,16 +30,18 @@
            "><i class="fa fa-fw fa-plus"></i>
                 Ask New
                 Question</a>
+            {% if not request.user.Is_Student %}
             <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
             {% url 'teacher_create_topic' teacher_nodegroup_pk=node_group.pk %}
             {% elif '/students' in request.path %}
-            {% url 'studet_create_topic' student_nodegroup_pk=node_group.pk %}
+            {% url 'student_create_topic' student_nodegroup_pk=node_group.pk %}
             {% elif '/forum' in request.path %}
             {% url 'forum:create_topic' nodegroup_pk=node_group.pk %}
             {% endif %}
          "><i class="fa fa-fw fa-plus"></i>
                 Sub Category
             </a></i>
+            {% endif %}
         </div>
         <div class="clearfix"></div>
     </div>
@@ -85,7 +87,9 @@
                     </td>
                     <td><a href="{% if '/teachers' in request.path %}
                         {% url 'teacher_topic' pk=list.0.pk %}
-                        {% else %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_topic' pk=list.0.pk %}
+                        {% elif '/forum' in request.path %}
                         {% url 'forum:topic' pk=list.0.pk %}
                         {% endif %}
                        ">{{ list.0 }}</a>
@@ -96,7 +100,9 @@
                     {% if list.1 %}
                     <td><a href="{% if '/teachers' in request.path %}
                         {% url 'teacher_threads' pk=list.1.pk %}
-                        {% else %}
+                        {% elif '/students' in request.path %}
+                        {% url 'student_threads' pk=list.1.pk %}
+                        {% elif '/forum' in request.path %}
                      {% url 'forum:thread' pk=list.1.pk %}
                         {% endif %}
                         "> {{ list.1.title }} </a></td>

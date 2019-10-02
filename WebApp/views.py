@@ -1,11 +1,11 @@
 import json
 import os
-import zipfile  #For import/export of compressed zip folder
 import shutil
 import uuid
+import zipfile  # For import/export of compressed zip folder
 from datetime import datetime
-import pandas as pd
 
+import pandas as pd
 # import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
@@ -90,7 +90,6 @@ def ProfileView(request):
     return render(request, 'WebApp/profile.html', {"center": center})
 
 
-
 def login(request, template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm,
@@ -163,8 +162,8 @@ def start(request):
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code,Use_Flag=True)[:5]
-            sessioncount = SessionInfo.objects.filter(Center_Code=request.user.Center_Code,Use_Flag=True)[:5]
+            surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
+            sessioncount = SessionInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
 
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
@@ -172,8 +171,8 @@ def start(request):
                            'teachercount': teachercount,
                            'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,
                            'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
-                           'surveycount':surveycount,
-                           'sessioncount':sessioncount})
+                           'surveycount': surveycount,
+                           'sessioncount': sessioncount})
         if request.user.Is_Student:
             return redirect('student_home')
         if request.user.Is_Teacher:
@@ -338,6 +337,7 @@ def MemberInfoDeactivate(request, pk):
 
     return redirect('memberinfo_detail', pk=pk)
 
+
 def ImportCsvFile(request):
     if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
@@ -347,9 +347,9 @@ def ImportCsvFile(request):
         new_file_name = str(file_name) + '.' + str(extension)
         path = 'media/import_csv/' + str(center_id)
 
-        fs = FileSystemStorage(location= path)
+        fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name + '.' + extension, media)
-        path = os.path.join(path,filename)
+        path = os.path.join(path, filename)
 
         df = pd.read_csv(path)
         # Drop empty row of excel csv file
@@ -366,7 +366,7 @@ def ImportCsvFile(request):
                 obj.Member_Permanent_Address = df.iloc[i]['Permanent Address']
                 obj.Member_Temporary_Address = df.iloc[i]['Temporary Address']
                 try:
-                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'],'%m/%d/%Y').strftime('%Y-%m-%d')
+                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'], '%m/%d/%Y').strftime('%Y-%m-%d')
                 except:
                     obj.Member_BirthDate = None
                 obj.Member_Phone = df.iloc[i]['Phone']
@@ -377,17 +377,17 @@ def ImportCsvFile(request):
                     obj.Member_Gender = 'F'
                 else:
                     obj.Member_Gender = ''
-        
+
                 if df.iloc[i]['Teacher'] == 1:
                     obj.Is_Teacher = True
                 else:
                     obj.Is_Teacher = False
-            
+
                 if df.iloc[i]['Student'] == 1:
                     obj.Is_Student = True
                 else:
                     obj.Is_Student = False
-                    
+
                 obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
                 obj.set_password('00000')
                 obj.save()
@@ -396,10 +396,11 @@ def ImportCsvFile(request):
             except:
                 for j in saved_id:
                     MemberInfo.objects.filter(id=j).delete()
-                msg = "Can't Upload all data. Problem in " + str(i+1) + "th row of data while uploading."
-                return JsonResponse(data={"message": msg,"class":"text-danger","rmclass":"text-success" })
-        return JsonResponse(data={"message": "All data has been Uploaded Sucessfully","class":"text-success","rmclass":"text-danger"})
-            
+                msg = "Can't Upload all data. Problem in " + str(i + 1) + "th row of data while uploading."
+                return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+        return JsonResponse(data={"message": "All data has been Uploaded Sucessfully", "class": "text-success",
+                                  "rmclass": "text-danger"})
+
 
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
@@ -437,8 +438,6 @@ class MemberInfoDetailView(DetailView):
 class MemberInfoUpdateView(UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
-
-
 
 
 class MemberInfoDeleteView(DeleteView):
@@ -1010,7 +1009,7 @@ def save_file(request):
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
 
-            name = (str(uuid.uuid4())).replace('-','')+'.'+media.name.split('.')[-1]
+            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
         return JsonResponse(data={"message": "success", "media_name": name})
@@ -1029,7 +1028,7 @@ def save_video(request):
                 return JsonResponse(data={"message": "File size exceeds 2GB"}, status=500)
 
         path = settings.MEDIA_ROOT
-        name = (str(uuid.uuid4()).replace('-',''))+'.'+media.name.split('.')[-1]
+        name = (str(uuid.uuid4()).replace('-', '')) + '.' + media.name.split('.')[-1]
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(name, media)
         return JsonResponse({'media_name': name})
@@ -1070,6 +1069,7 @@ def save_video(request):
         return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
     '''
 
+
 @csrf_exempt
 def save_json(request):
     if request.method == "POST":
@@ -1097,54 +1097,95 @@ def save_json(request):
 
         return JsonResponse(data={"message": "Json Saved"})
 
+
 def export_chapter(request, course, chapter):
-    coursename = CourseInfo.objects.get(id = course).Course_Name
+    coursename = CourseInfo.objects.get(id=course).Course_Name
     path = settings.MEDIA_ROOT
-    dir_name = path+'/chapterBuilder/'+str(course)+'/'+str(chapter)
+    dir_name = path + '/chapterBuilder/' + str(course) + '/' + str(chapter)
     if not os.path.exists(dir_name):
         return HttpResponse('No directory')
-    zipfile = shutil.make_archive(path+'/export/'+str(coursename)+'_Chapter'+str(chapter), 'zip', dir_name)
-   
-    return redirect(settings.MEDIA_URL+'/export/'+str(coursename)+'_Chapter'+str(chapter)+'.zip')
+    zipfile = shutil.make_archive(path + '/export/' + str(coursename) + '_Chapter' + str(chapter), 'zip', dir_name)
+
+    return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '.zip')
+
 
 def import_chapter(request):
     chapterID = request.POST['chapterID']
     courseID = request.POST['courseID']
     if request.FILES['filename']:
-            filename = request.FILES['filename']
+        filename = request.FILES['filename']
     if not filename.name.endswith('.zip'):
-        return JsonResponse({'status':'false','message':"Only zip files are allowed"}, status=500)
-    zip=zipfile.ZipFile(filename)
+        return JsonResponse({'status': 'false', 'message': "Only zip files are allowed"}, status=500)
+    zip = zipfile.ZipFile(filename)
     checkflag = False
     for file in zip.namelist():
         # print(zip.getinfo(file).filename) #gives content of file like 'ls' or 'dir'
         if zip.getinfo(file).filename.endswith('.txt'):
             checkflag = True
     if not checkflag:
-        return JsonResponse({'status':'false','message':"Not valid zip"}, status=500)
-        
+        return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
+
     path = settings.MEDIA_ROOT
 
     # creates directory structure if not exists
     make_directory_if_not_exists(courseID, chapterID)
-    
+
     storage_path = path + '/chapterBuilder/' + courseID + '/' + chapterID + '/'
     for file in zip.namelist():
         if zip.getinfo(file).filename.endswith('.txt') and 'html' not in zip.getinfo(file).filename:
             with zip.open(zip.getinfo(file).filename) as json_file:
                 my_json = json_file.read().decode('utf8').replace("'", '"')
-                
+
                 data = json.loads(my_json)
-                
-                if not all (k in data for k in ("numberofpages","pages")):
-                    return JsonResponse({'status':'false','message':"Not valid zip"}, status=500)
+
+                if not all(k in data for k in ("numberofpages", "pages")):
+                    return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
                 elif data['numberofpages'] is 0:
-                    return JsonResponse({'status':'false','message':"Not valid zip"}, status=500)
+                    return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
 
                 # check if numberofpages and pages are in the dictionary or not
-                
+
             continue
-        zip.extract(file, storage_path) # extract the file to current folder if it is a text file
+        zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
     # print(data)
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
+
+
+def ThreeDViewer(request, urlpath=None):
+    if not urlpath:
+        objpath = request.is_secure() and "https" or "http" + '://' + request._get_raw_host() + '/' + "static/3D_Viewer/Sample.obj"
+    else:
+        objpath = request.is_secure() and "https" or "http" + '://' + request._get_raw_host() + '/' + urlpath
+
+    html = '''
+    
+    
+<!DOCTYPE html>
+<div>
+<script src="/static/3D_Viewer/xeogl.js"></script>
+<script src="/static/3D_Viewer/k3d.js"></script>
+<script src="/static/3D_Viewer/objGeometryLoader.js"></script>
+<script>
+    var scene = xeogl.getDefaultScene();
+    xeogl.loadOBJGeometry(scene, "''' + objpath + '''", function (miamiGeometry) {
+        // Mesh on top of the "water", instancing the geometry
+        var mesh = new xeogl.Mesh({
+            geometry: miamiGeometry,
+        });
+        // Initial camera pose
+        var camera = mesh.scene.camera;
+        // Orbit the camera
+        scene.on("tick", function () {
+            camera.orbitYaw(-0.1);
+        });
+        // Camera interaction
+        var cameraControl = new xeogl.CameraControl();
+        var cameraFlight = new xeogl.CameraFlightAnimation();
+        cameraFlight.flyTo(mesh);
+    });
+</script>
+</div>
+
+    '''
+    return HttpResponse(html)
