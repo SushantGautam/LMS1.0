@@ -273,6 +273,9 @@ class AssignmentInfo(models.Model):
 
     def teacher_get_absolute_url(self):
         return reverse('teacher_assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
+    
+    def teacher_get_update_url(self):
+        return reverse('teacher_assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
     def get_absolute_url(self):
         return reverse('assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
@@ -446,6 +449,9 @@ class GroupMapping(models.Model):
 
     def get_absolute_url(self):
         return reverse('groupmapping_detail', args=(self.pk,))
+    
+    def teacher_get_absolute_url(self):
+        return reverse('teacher_groupmapping_detail', args=(self.pk,))
 
     def get_update_url(self):
         return reverse('groupmapping_update', args=(self.pk,))

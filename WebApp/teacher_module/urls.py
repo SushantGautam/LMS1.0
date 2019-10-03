@@ -20,6 +20,11 @@ urlpatterns += (
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(),
          name='teacher_courseinfo_update'),
 )
+urlpatterns += (
+    # urls for TodoTInfo
+     path('groupmappinginfo/<int:pk>/', views.GroupMappingDetailViewTeacher.as_view(),
+          name='teacher_groupmapping_detail'),
+)
 
 urlpatterns += (
     # urls for ChapterInfo
@@ -65,9 +70,11 @@ urlpatterns += (
 urlpatterns += (
     path('question_teachers/', views.SurveyInfoListView.as_view(),
          name="question_teachers"),
+    # path('question_teachers/', views.question_teachers.as_view(),
+    #          name="question_teachers"),
     # path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
     #          name='surveyinfo_create'),
-    path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
+    # path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
     path('polls_teachers/detail/<int:pk>/',
          views.TeacherSurveyInfoDetailView.as_view(), name='polls_teachers'),
     path('teacherSurveyFilterCategory/', views.teacherSurveyFilterCategory.as_view(),
@@ -104,6 +111,8 @@ urlpatterns += (
          views.UserThreads.as_view(), name='teacher_threads'),
     path('forum/notification', views.NotificationView.as_view(),
          name='teacher_notification'),
+    path('forum/edit/<int:pk>/', views.edit_thread, name='teacher_edit_thread'),
+
 )
 
 urlpatterns += (
@@ -165,6 +174,8 @@ urlpatterns += (
          name='teacher_saquestion_delete'),
 
     path('quiz/quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
-    path('quiz/marking/', views.QuizMarkingList.as_view(), name='teacher_quiz_marking'),
-    path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(), name='teacher_quiz_marking_detail'),
+    path('quiz/marking/', views.QuizMarkingList.as_view(),
+         name='teacher_quiz_marking'),
+    path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(),
+         name='teacher_quiz_marking_detail'),
 )

@@ -78,11 +78,11 @@
                         <td>
                             {% for pre_quiz in pre_quizes %}
                             <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                                {{ pre_quiz.title }}
-                                <button>Play quiz</button>
+                                
+                              
                             </a>
-                            {{ quizes }}{{ quizes }}{{ quizes }}{{ quizes }}
-                            feedbackbtn-quiz{{ pre_quiz.id }}
+                            
+                           
                             <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="btn btn-info "
                                 data-toggle="modal" data-target="#quizmodal">Play Quiz
                             </button>
@@ -468,7 +468,6 @@
 
                     $.each(value[count], function (div, div_value) {
                         var now = Math.floor(Math.random() * 900000) + 100000;
-                        ;
                         if (div == 'textdiv') {
                             $.each(div_value, function (css, css_value) {
                                 // css_string = JSON.stringify(css_value)
@@ -484,9 +483,9 @@
                                 src = css_value['background-image']
                                 imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
                                 $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}">
-                                    <image src = ${imgsrc} width=100% height=100%/>
-                                </div>
+                                <div style = 'background-image: ${src}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}'>
+                                        </div>
+
                             `);
                             });
                         }
@@ -559,6 +558,17 @@
                                 $('#page' + key).append(embed)
                             });
                         }
+                        
+                        if (div == '_3d') {
+                            $.each(div_value, function (css, css_value) {
+                                $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                    <iframe src="${css_value.link}" width="100%" height="100%">
+                                    </iframe>
+                                </div>
+                            `)
+                            });
+                        }
                     });
                 });
             });
@@ -586,7 +596,7 @@
             // ----------------------------------------------
             $.each(data.pages, function (key, value) {
                 $.each(value, function (count) {
-                    if (value[count].textdiv.length == 0 && value[count].pic.length == 0 && value[count].video.length == 0 && value[count].pdf.length == 0 && value[count]['btn-div'].length == 0) {
+                    if (value[count].textdiv.length == 0 && value[count].pic.length == 0 && value[count].video.length == 0 && value[count].pdf.length == 0 && value[count]['btn-div'].length == 0 && value[count]['_3d'].length == 0) {
                         emptycheckflag.push(true);
                         $('#page' + key).append(`<div>No content here</div>`);
                     } else {
@@ -609,7 +619,6 @@
         });
 
         $('#next-btn').off().click(function () {
-            console.log('x')
             $("#modal-container > .coursepages ").each(function () {
                 if ($(this).css("display") == "block") {
                     res = this.id.match(/[0-9]+/);

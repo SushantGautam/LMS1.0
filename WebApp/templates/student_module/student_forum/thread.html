@@ -1,0 +1,23 @@
+{% extends 'forum/Student_Base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block breadcrumb %}
+
+
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="breadcrumb-item">
+    <a href="{% url 'student_nodegroup' pk=thread.topic.node_group.pk %}">{{ thread.topic.node_group.title }}</a>
+</li>
+<li class="breadcrumb-item active"><a href="{% url 'student_topic' pk=thread.topic.pk %}">{{ thread.topic.title }}</a>
+</li>
+
+{% endblock %}
+
+
+{% block main_contain %}
+{% include 'ForumInclude/threadpage.html' %}
+{% endblock %}

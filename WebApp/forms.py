@@ -195,7 +195,7 @@ class GroupMappingForm(forms.ModelForm):
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
-        js = ('/admin/jsi18n/',)
+        js = ('/static/build/js/jsi18n.js',)        
 
     class Meta:
         model = GroupMapping
@@ -215,7 +215,7 @@ class InningGroupForm(forms.ModelForm):
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
-        js = ('/admin/jsi18n/',)
+        js = ('/static/build/js/jsi18n.js',)        
 
     class Meta:
         model = InningGroup
@@ -237,7 +237,7 @@ class InningInfoForm(forms.ModelForm):
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
-        js = ('/admin/jsi18n/',)
+        js = ('/static/build/js/jsi18n.js',)
 
     class Meta:
         model = InningInfo

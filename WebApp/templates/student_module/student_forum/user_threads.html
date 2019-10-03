@@ -1,23 +1,24 @@
-{% extends 'forum/base.html' %}
+{% extends 'forum/Student_Base.html' %}
 {% load i18n %}
 {% load forum_tags %}
 {% load humanize %}
-
+{% load static %}
 
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Home</a></li>
-<li>
-<li class="breadcrumb-item"><a href="{% url 'forum:user_info' pk=user.pk %}">{{ user.username }}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'student_info' pk=user.pk %}">{{ user.username }}</a></li>
 <li class="breadcrumb-item active">
-    <a href="{% url 'forum:user_threads' pk=user.pk %}">Threads</a>
+    <a href="{% url 'student_threads' pk=user.pk %}">Threads</a>
 </li>
+
 {% endblock %}
 
 {% block main_contain %}
-<div class="panel panel-default paper-shadow">
+{% include 'ForumInclude/UserThread.html' %}
+<!-- <div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
-        <h2> {{ panel_title }} </h2>
+        <h2> Threads Created by {{ panel_title }} </h2>
     </div>
 
     {% if show_order %}
@@ -33,20 +34,20 @@
     {% endif %}
 
 
-    <!-- List group -->
+    
     <ul class="list-group thread-list">
         {% for thread in threads %}
         <li class="list-group-item thread-entry">
             <div class="entry media">
 
                 <a>
-                    <img src="https://randomuser.me/api/portraits/men/65.jpg" alt=""
-                        class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default ">
+                    <img src="{{ request.user.Avatar }}" alt="..."
+                        class=" avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
                 </a>
 
-                <h2 class="thread_title">
+                <h2 class=" thread_title">
                     <div class="media-body media-middle"> &nbsp;
-                        <a href="{% url 'forum:thread' pk=thread.pk %}" class="entry-link">
+                        <a href="{% url 'student_thread' pk=thread.pk %}" class="entry-link">
                             {{ thread.title }}
                         </a>
                         <p class="entry-meta">
@@ -59,17 +60,18 @@
                             {% endif %}
                             <div class="topic_meta text-light text-caption">
                                 <h5>
-                                    <span class="meta">
+                                    <span class="meta meta-username">
                                         Topic:
-                                        <a href="{% url 'forum:topic' thread.topic.pk %}">
-                                            <span class="label label-success topic-meta">
+                                        <a href="{% url 'student_topic' thread.topic.pk %}" class="link-color">
+                                            <span>
                                                 {{ thread.topic.title }}
                                             </span>
                                         </a>
-                                    </span>
-                                    <span class="meta meta-username">
-                                        <a href="{% url 'forum:user_info' thread.user.pk %}">
-                                            posted by {{ thread.user.username }}
+                                    </span> |
+                                    <span class="meta meta-username ">
+                                        posted by
+                                        <a href="{% url 'student_info' thread.user.pk %}" class="link-color">
+                                            {{ thread.user.username }}
                                         </a>
                                     </span>
                                     <span class="meta meta-pub_date">
@@ -95,5 +97,5 @@
     <div class="panel-footer">
         {% get_pagination %}
     </div>
-</div>
+</div> -->
 {% endblock %}

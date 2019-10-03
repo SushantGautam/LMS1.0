@@ -1,117 +1,127 @@
+{% load forum_tags %}
+{% load i18n %}
 {% load static %}
 <div class="nav_menu">
     <nav>
         <div class="nav toggle">
             <a id="menu_toggle"><i class="fa fa-bars"></i></a>
         </div>
+
         <span class="centerNameTopNav">
             {% if user.Center_Code %}
             Center : <b>{{ user.Center_Code }}</b>
             {% endif %}
         </span>
 
-        <ul class="nav navbar-nav navbar-right" style="width: 50%;">
+
+        <ul class="nav navbar-nav navbar-right" style="width: 50%">
 
             {% if request.user.is_authenticated %}
 
             <li class="">
                 <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-
                     <img src="{{ request.user.Avatar }}" alt="">
                     {{ request.user.username }}
-                    <span class=" fa fa-angle-down" id="topNavSpan"></span>
+                    <span class="fa fa-angle-down" id="topNavSpan"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    {% if request.user.Is_Teacher %}
-                    <li><a href="/teachers"> Login as Teacher</a></li>
+                    {% if request.user.Is_Student %}
+                    <li><a href="/students"> Login as Student</a></li>
                     {% endif %}
                     {% if request.user.Is_CenterAdmin %}
                     <li><a href="{% url 'start' %}"> Login as Admin</a></li>
                     {% endif %}
-                    {# <li><a href="/students"> Login as Student</a></li>#}
+                    {# <li><a href="/"> Login as Admin</a></li>#}
+                    <!-- <li><a href=""> Profile</a></li> -->
+                    {#                        <li><a href="/"> Login as Admin</a></li>#}
+                    <li><a href="{% url 'teacher_user_profile' %}"> Profile</a></li>
 
-                    <li><a href="{% url 'student_user_profile' %}"> Profile</a></li>
 
-                    <!-- <li>
-                        <a href="javascript:">
-                            <span class="badge bg-red pull-right">50%</span>
-                            <span>Settings</span>
-                        </a>
-                    </li> -->
                     <li><a href="javascript:">Help</a></li>
                     <li><a href="/logout"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                 </ul>
             </li>
-
-            {% else %}
-
-            <li><a href="/login">Log In</a></li>
-            {% endif %}
-
             <li role="presentation" class="dropdown">
                 <a href="javascript:" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
+                    {% if unread_count %}
+                    <span class="badge bg-green">{{ unread_count }}</span>
+                    {% endif %}
                 </a>
                 <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+                    {% for notification in notifications %}
                     <li>
-                        <a>
-                            <span class="image"><img src="/static/images/img.jpg" alt="Profile Image" /></span>
+                        {% if notification.thread %}
+                        {% url 'student_thread' notification.thread_id as thread_url %}
+                        <a href="{{ thread_url }}">
+                            <span class="image"><img src="/media/{{ notification.sender.Member_Avatar }}"
+                                    alt="" /></span>
                             <span>
-                                <span>John Doe</span>
-                                <span class="time">3 mins ago</span>
+                                <span>{{ notification.sender }} </span>
+                                <span class="time">{{ notification.pub_date }}</span>
                             </span>
                             <span class="message">
-                                Film festivals used to be do-or-die moments for movie makers. They were where...
+                                {% blocktrans with username=notification.sender.username thread_title=notification.thread.title %}
+                                mentioned you in thread:
+                                <strong> {{ thread_title }}</strong>
+                                {% endblocktrans %}
+
                             </span>
                         </a>
-                    </li>
-                    <li>
-                        <a>
-                            <span class="image"><img src="/static/images/img.jpg" alt="Profile Image" /></span>
+                        {% else %}
+                        {% url 'student_thread' notification.post.thread_id as thread_url %}
+                        <a href="{{ thread_url }}">
+                            <span class="image"><img src="/media/{{ notification.sender.Member_Avatar }}"
+                                    alt="" /></span>
                             <span>
-                                <span>John Doe</span>
-                                <span class="time">3 mins ago</span>
+                                <span>{{ notification.sender }} </span>
+                                <span class="time">{{ notification.pub_date }}</span>
                             </span>
                             <span class="message">
-                                Film festivals used to be do-or-die moments for movie makers. They were where...
+                                {% blocktrans with username=notification.sender.username thread_title=notification.post.thread.title %}
+                                mentioned you when replying to
+
+                                <strong> {{ thread_title }}</strong>
+
+                                {% endblocktrans %}
                             </span>
                         </a>
+                        {% endif %}
                     </li>
-                    <li>
-                        <a>
-                            <span class="image"><img src="/static/images/img.jpg" alt="Profile Image" /></span>
-                            <span>
-                                <span>Joh</span>
-                                <span class="time">3 mins ago</span>
-                            </span>
-                            <span class="message">
-                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                            </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <span class="image"><img src="/static/images/img.jpg" alt="Profile Image" /></span>
-                            <span>
-                                <span>John Doe</span>
-                                <span class="time">3 mins ago</span>
-                            </span>
-                            <span class="message">
-                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                            </span>
-                        </a>
-                    </li>
+                    {% endfor %}
                     <li>
                         <div class="text-center">
-                            <a>
-                                <strong>See All Alerts</strong>
+                            <a href="{% url 'student_notification' %}">
+                                <strong>See All Notifications</strong>
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         </div>
                     </li>
                 </ul>
+
+
+                {% if request.path == '/messageinfo/' %}
+            <li>
+                <i class="fa fa-bell fa-2x" id="fa-bell" aria-hidden="true"></i>
             </li>
+
+            <li>
+                <i class="fa fa-users fa-2x" id="fa-users" aria-hidden="true"></i>
+            </li>
+
+            <li>
+                <i class="fa fa-comment fa-2x" id="fa-comment" aria-hidden="true"></i>
+            </li>
+
+            {% endif %}
+
+            </li>
+
+            {% else %}
+
+            <li><a href="/login">Log In</a></li>
+            <li><a href="/register">Register</a></li>
+            {% endif %}
 
 
         </ul>

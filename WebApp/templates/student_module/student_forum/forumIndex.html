@@ -1,0 +1,15 @@
+{% extends "forum/Student_Base.html" %}
+
+
+{% block breadcrumb %}
+
+<li class="active"><a href="{% url 'student_forum' %}">Forum</a></li>
+
+{% endblock %}
+
+{% block main_contain %}
+
+
+{% include 'ForumInclude/homepage.html' %}
+
+{% endblock %}

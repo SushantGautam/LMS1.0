@@ -1,17 +1,20 @@
 from datetime import datetime
 
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.forms import model_to_dict
 from django.http import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 from django.views.generic.base import View
 
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
-    QuestionInfoFormset, QuestionAnsInfoFormset
+    QuestionInfoFormset, QuestionAnsInfoFormset, LiveSurveyInfoForm
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 
 
@@ -60,8 +63,18 @@ class CategoryInfoUpdateView(UpdateView):
     form_class = CategoryInfoForm
 
 
+class SurveyList(ListView):
+    model = SurveyInfo
+
 class SurveyInfoListView(ListView):
     model = SurveyInfo
+    template_name = 'survey/surveylist.html'
+
+    paginate_by = 8
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -73,6 +86,7 @@ class SurveyInfoListView(ListView):
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
 
+        return context
         # context['']
 
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
@@ -81,7 +95,18 @@ class SurveyInfoListView(ListView):
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
         # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
 
-        return context
+        # ....................................Pagination.............................................................
+
+    # def listing(request):
+    #     survey_list = SurveyInfo.objects.all()
+    #     print(survey_list)
+    #     paginator = Paginator(survey_list, 10)  # Show 25 contacts per page
+    #
+    #     page = request.GET.get('page')
+    #     surveys = paginator.get_page(page)
+    #     print(surveys)
+    #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
+
 
     # ......................................Survey Search ..............................................
 
@@ -154,7 +179,12 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        vform = super().form_valid(form)
+        # vform = super().form_valid(form)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            self.object.Center_Code = self.request.user.Center_Code
+            self.object.Added_By = self.request.user
+            self.object.save()
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -172,11 +202,6 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
                 print('qna is invalid')
                 print(qna.errors)
         return redirect('surveyinfo_detail', self.object.id)
-
-    def get_form_kwargs(self):
-        default_kwargs = super().get_form_kwargs()
-        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
-        return default_kwargs
 
 
 
@@ -302,13 +327,12 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
             context['parent_pk'] = obj_instance.pk
         return context
 
-    def get_form_kwargs(self):
-        default_kwargs = super().get_form_kwargs()
-        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
-        return default_kwargs
-
     def form_valid(self, form):
-        vform = super().form_valid(form)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            self.object.Center_Code = self.request.user.Center_Code
+            self.object.Added_By = self.request.user
+            self.object.save()
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -329,7 +353,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
         self.object.Retaken_From = obj_instance.id
         self.object.Version_No = obj_instance.Version_No + 1
         self.object.save()
-        return vform
+        return redirect('surveyinfo_detail', self.object.id)
 
     def get_initial(self):
         obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
@@ -539,13 +563,8 @@ def surveyinfo_category(request, id):
 
 class liveSurveyCreate(CreateView):
     model = SurveyInfo
-    form_class = SurveyInfoForm
+    form_class = LiveSurveyInfoForm
     template_name = 'survey/liveSurvey_createPage.html'
-
-    def get_form_kwargs(self):
-        default_kwargs = super().get_form_kwargs()
-        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
-        return default_kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -560,7 +579,16 @@ class liveSurveyCreate(CreateView):
         return context
 
     def form_valid(self, form):
-        vform = super().form_valid(form)
+        # vform = super().form_valid(form)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            self.object.Center_Code = self.request.user.Center_Code
+            self.object.Added_By = self.request.user
+            self.object.Start_Date = timezone.now()
+            self.object.Survey_Live = True
+            self.object.save()
+        print(form.is_valid())
+        print("im here")
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         # qna = context['questionansinfo_formset']
@@ -582,7 +610,7 @@ class liveSurveyCreate(CreateView):
 
 class LiveSurveyDetail(DetailView):
     model = SurveyInfo
-    template_name = 'survey\liveSurvey_detailPage.html'
+    template_name = 'survey/liveSurvey_detailPage.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -668,9 +696,16 @@ class surveyFilterCategory(ListView):
     model = SurveyInfo
     template_name = 'survey/surveyinfo_expireView.html'
 
+    # paginate_by = 8
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
+
     def get_queryset(self):
         if self.request.GET['categoryId'] == '0':
             return SurveyInfo.objects.all()
+
         else:
             return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
 
@@ -680,3 +715,14 @@ class surveyFilterCategory(ListView):
 
         return context
 
+    # ....................................Pagination.............................................................
+
+    def listing(request):
+        survey_list = SurveyInfo.objects.all()
+        print(survey_list)
+        paginator = Paginator(survey_list, 10)
+
+        page = request.GET.get('page')
+        surveys = paginator.get_page(page)
+        print(surveys)
+        return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})

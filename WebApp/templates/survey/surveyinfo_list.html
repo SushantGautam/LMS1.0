@@ -1,17 +1,17 @@
-{% extends "base.html" %}
+{#{% extends "base.html" %}#}
 {% load static %}
-{% block stylesheets %}
+{#{% block stylesheets %}#}
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
-{% endblock stylesheets %}
-
-{% block breadcrumb %}
-  <li class="breadcrumb-item active" aria-current="page">Survey</li>
-{% endblock %}
-{% block content %}
+{#{% endblock stylesheets %}#}
+{##}
+{#{% block breadcrumb %}#}
+{#  <li class="breadcrumb-item active" aria-current="page">Survey</li>#}
+{#{% endblock %}#}
+{#{% block content %}#}
 
   <div class="clearfix">
 
-  <div class="container" id="mainSurveyPage">
+      <div id="mainSurveyPage">
 
     <div class="container">
       <div class="row">
@@ -24,35 +24,25 @@
                   <h2 class="card-title "><strong>Category</strong></h2>
                   <hr>
                   <div id="card_category">
-
                       <h5 class="card-text active">
                           <a href="#" class="category-name" id="0"><i
                           class="fa fa-bar-chart" id="categoryIcons"></i>All
                         survey</a>
-                    </h5>
-                      {#                  <div class="category-name">#}
+                      </h5>
                     {% for category in categories %}
-
                         <div class="row card-text">
-                            <div class="col-md-8 category-name">
-                                <a href="#" id=" {{ category.id }}"><i
+                            <div class="col-md-8 ">
+                                <a href="#" class="category-name" id=" {{ category.id }}"><i
                                         class="fa fa-{{ category.Category_Icon }}" id="categoryIcons"></i>
                                     {{ category.Category_Name }}
                                 </a>
                             </div>
-
-                            <div class="">
-                                <button class=" {{ category.Category_Name }} btn btn-success"
-                                        id="category_Add_Button{{ category.id }}" style="margin: 0;"
-                                        data-popup-open="popup-1">Add
-                                </button>
-                            </div>
-
-
+                            <button class=" {{ category.Category_Name }} btn btn-success"
+                                    id="category_Add_Button{{ category.id }}" style="margin: 0;"
+                                    data-popup-open="popup-1">Add
+                            </button>
                         </div>
-
                     {% endfor %}
-                      {#                  </div>#}
                   </div>
                 </div>
               </div>
@@ -87,107 +77,47 @@
             </div>
           </div>
 
-
             <div class="col-md-9 col-sm-9 col-xs-12" style="z-index: 0;">
                 <div id="rowCards">
-              <div class="hR"></div>
-
-                    {#            <!-- ......................................Live section.................................... -->#}
-                {#            <div class="live_survey " style="display: none;">#}
-                {#                {% for object in object_list %}#}
-                {#                {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == True %}#}
-                {#                <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">#}
-                {#                    <div class="card">#}
-                {#                        <a href=" {% url 'liveSurveyDetail' object.pk %}">#}
-                {#                            <div class="card-body">#}
-                {#                                <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong>#}
-                {#                                </h2>#}
-                {#                                <hr>#}
-                {#                                <ul class="card_labels">#}
-                {#                                    <li><label>Questions: {{ object.questions_count }} </label></li>#}
-                {#                                    <li><label>Start date: {{ object.Start_Date }}</label></li>#}
-                {#                                    <li><label>End date: {{ object.End_Date }}</label></li>#}
-                {#                                </ul>#}
-                {#                            </div>#}
-                {#                        </a>#}
-                {#                    </div>#}
-                {#                </div>#}
-                {#                {% endif %}#}
-                {#                {% endfor %}#}
-                {#            </div>#}
+                    <div class="hR"></div>
 
             </div>
-          </div>
+
+                <div class=" text-center">
+                    {% if is_paginated %}
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                            {% else %}
+                                <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <li class="active">
+                                        <span>{{ i }} <span class="sr-only">(current)</span></span>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                                <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                            {% else %}
+                                <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
 
       </div>
 
     </div>
 
-  </div>
 
-
-{% endblock %}
-
-{% block customjss %}
-
-  {% for category in categories %}
-    <script>
-        {#console.log('{{category.Category_Name}}');#}
-        $('#category_Add_Button{{ category.id }}').on('click', function () {
-
-            $.ajax({
-                type: "GET",
-                data: {'categoryId': '{{category.id}}'},
-                url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
-                success: function (data) {
-                    $("#surveyForm").html(data);
-                }
-            });
-        });
-    </script>
-
-  {% endfor %}
-
-  <script>
-
-      $(document).ready(function () {
-
-          $.ajax({
-              type: "GET",
-              data: {'categoryId': 0},
-              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#rowCards").html(data);
-                  {#console.log(data)#}
-              }
-          });
-      });
-
-      // categoryAddButton({{ categoryName }});
-
-      $('.category-name').on('click', function () {
-          var categoryId = this.id;
-          $.ajax({
-              type: "GET",
-              data: {'categoryId': categoryId},
-              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#rowCards").html(data);
-                  {#console.log(data)#}
-              }
-          });
-      });
-
-      {#$('#live').on('click', function () {#}
-      {#    $.ajax({#}
-      {#        type: "GET",#}
-      {#        data: {'categoryId': 'live'},#}
-      {#        url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info#}
-      {#        success: function (data) {#}
-      {#            $("#rowCards").html(data);#}
-      {#            console.log(data)#}
-      {#        }#}
-      {#    });#}
-      {# });#}
-  </script>
-{% endblock %}
+          {#{% endblock %}#}

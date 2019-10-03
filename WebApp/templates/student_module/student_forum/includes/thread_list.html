@@ -1,0 +1,19 @@
+{% extends 'forum/Student_Base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+
+
+{% block breadcrumb %}
+
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li>
+    <a href="{% url 'student_nodegroup' pk=topic.node_group.pk %}">{{ topic.node_group.title }}</a>
+</li>
+<li class="active"><a href="{% url 'student_topic' pk=topic.pk %}">{{ topic.title }}</a></li>
+
+{% endblock %}
+
+{% block main_contain %}
+{% include 'ForumInclude/SubcategoryList.html' %}
+{% endblock %}

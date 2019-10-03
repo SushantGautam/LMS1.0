@@ -1,0 +1,20 @@
+{% extends 'forum/Student_Base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+
+
+{% block breadcrumb %}
+
+<li><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="active">{{ node_group }} </li>
+
+
+{% endblock %}
+
+{% block main_contain %}
+{% include 'ForumInclude/NodegroupList.html'%}
+
+
+
+{% endblock %}
