@@ -148,7 +148,6 @@ class QuestionQuizForm(forms.ModelForm):
         )
 
 
-
 class TFQuestionForm(forms.ModelForm):
     class Meta:
         model = TF_Question
@@ -351,8 +350,6 @@ class QuizBasicInfoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         my_obj = kwargs.pop('current_obj', None)
         super().__init__(*args, **kwargs)
-
-        print(my_obj.cent_code)
         self.fields['course_code'].queryset = CourseInfo.objects.filter(Center_Code=my_obj.cent_code)
 
         self.helper = FormHelper()
@@ -415,4 +412,64 @@ class QuizBasicInfoForm(forms.ModelForm):
                 ),
                 css_class='form-row'
             ),
+        )
+
+
+class ChooseMCQForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['mcquestion']
+
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n/',)
+
+    def __init__(self, *args, **kwargs):
+        my_obj = kwargs.pop('current_obj', None)
+        print(my_obj.id)
+        super().__init__(*args, **kwargs)
+        self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
+            queryset=MCQuestion.objects.filter(course_code=my_obj.course_code),
+            required=False,
+            widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False)
+        )
+
+
+class ChooseTFQForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['tfquestion']
+
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n/',)
+
+    def __init__(self, *args, **kwargs):
+        my_obj = kwargs.pop('current_obj', None)
+        print(my_obj.id)
+        super().__init__(*args, **kwargs)
+        self.fields['tfquestion'] = forms.ModelMultipleChoiceField(
+            queryset=TF_Question.objects.filter(course_code=my_obj.course_code),
+            required=False,
+            widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False)
+        )
+
+
+class ChooseSAQForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['saquestion']
+
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n/',)
+
+    def __init__(self, *args, **kwargs):
+        my_obj = kwargs.pop('current_obj', None)
+        print(my_obj.id)
+        super().__init__(*args, **kwargs)
+        self.fields['saquestion'] = forms.ModelMultipleChoiceField(
+            queryset=SA_Question.objects.filter(course_code=my_obj.course_code),
+            required=False,
+            widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False)
         )

@@ -16,7 +16,7 @@ from django.views import View
 
 from WebApp.models import CourseInfo, ChapterInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
-    QuizBasicInfoForm, QuestionQuizForm
+    QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
 import re
 
@@ -25,7 +25,7 @@ from django.shortcuts import render_to_response
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
-    #@method_decorator(permission_required('quiz.view_sittings'))
+    # @method_decorator(permission_required('quiz.view_sittings'))
     def dispatch(self, *args, **kwargs):
         return super(QuizMarkerMixin, self).dispatch(*args, **kwargs)
 
@@ -842,9 +842,9 @@ class UpdateQuestions(UpdateView):
 
     def get_success_url(self):
         return reverse(
-                'quiz_detail',
-                kwargs={'pk': self.kwargs['pk']},
-            )
+            'quiz_detail',
+            kwargs={'pk': self.kwargs['pk']},
+        )
 
     def get_form_kwargs(self):
         old_kwargs = super().get_form_kwargs()
@@ -859,5 +859,48 @@ class UpdateQuestions(UpdateView):
 
 class QuizMCQChoosePrevious(UpdateView):
     model = Quiz
-    fields = 'mcquestions'
+    form_class = ChooseMCQForm
     template_name = 'ajax_quiz/mcquestion_choose_ajax.html'
+
+    def get_form_kwargs(self):
+        my_kwargs = super().get_form_kwargs()
+        my_kwargs['current_obj'] = get_object_or_404(Quiz, pk=self.kwargs['pk'])
+        return my_kwargs
+
+    def get_success_url(self):
+        return reverse(
+            'quiz_detail',
+            kwargs={'pk': self.kwargs['pk']},
+        )
+
+class QuizTFQChoosePrevious(UpdateView):
+    model = Quiz
+    form_class = ChooseTFQForm
+    template_name = 'ajax_quiz/tfquestion_choose_ajax.html'
+
+    def get_form_kwargs(self):
+        my_kwargs = super().get_form_kwargs()
+        my_kwargs['current_obj'] = get_object_or_404(Quiz, pk=self.kwargs['pk'])
+        return my_kwargs
+
+    def get_success_url(self):
+        return reverse(
+            'quiz_detail',
+            kwargs={'pk': self.kwargs['pk']},
+        )
+
+class QuizSAQChoosePrevious(UpdateView):
+    model = Quiz
+    form_class = ChooseSAQForm
+    template_name = 'ajax_quiz/saquestion_choose_ajax.html'
+
+    def get_form_kwargs(self):
+        my_kwargs = super().get_form_kwargs()
+        my_kwargs['current_obj'] = get_object_or_404(Quiz, pk=self.kwargs['pk'])
+        return my_kwargs
+
+    def get_success_url(self):
+        return reverse(
+            'quiz_detail',
+            kwargs={'pk': self.kwargs['pk']},
+        )
