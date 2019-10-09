@@ -109,11 +109,11 @@ urlpatterns += (
 
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="student_forum"),
-    path('forum/create_thread', views.create_thread, name="student_forum_create"),
+    path('forum/create_thread', views.create_thread, name="student_create_thread"),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
-         views.create_thread, name='student_forum_create'),
-    path('forum/create_thread/(?P<student_nodegroup_pk>\d+)/(?P<student_topic_pk>\d+)/',
-         views.create_thread, name='student_forum_create'),
+         views.create_thread, name='student_create_thread'),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
+         views.create_thread, name='student_create_thread'),
 
     path('forum/edit/<int:pk>/', views.edit_thread, name='student_edit_thread'),
     path('forum/create_topic/(?P<student_nodegroup_pk>\d+)/',

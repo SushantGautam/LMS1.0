@@ -380,15 +380,9 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             if qn.is_valid():
                 qn.instance = self.object
                 qn.save()
-            else:
-                print(qn.errors)
-                print('qn is invalid')
             if qna.is_valid():
                 qna.instance = self.object
                 qna.save()
-            else:
-                print('qna is invalid')
-                print(qna.errors)
         return vform
 
     def get_form_kwargs(self):
@@ -1034,7 +1028,6 @@ def create_topic(request, teacher_nodegroup_pk=None):
     node_group = NodeGroup.objects.filter(pk=teacher_nodegroup_pk)
     if request.method == 'POST':
         form = TopicForm(request.POST, user=request.user)
-        print(form)
         if form.is_valid():
             t = form.save()
             return HttpResponseRedirect(reverse('teacher_topic', kwargs={'pk': t.pk}))
@@ -1192,7 +1185,6 @@ class TopicView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        print(self.kwargs.get('pk'))
         context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
         context['title'] = context['panel_title'] = topic.title
         context['show_order'] = True

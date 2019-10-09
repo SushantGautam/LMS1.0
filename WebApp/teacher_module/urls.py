@@ -85,11 +85,11 @@ urlpatterns += (
 
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="teacher_forum"),
-    path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
+    path('forum/create_thread', views.create_thread, name="teacher_create_thread"),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
-         views.create_thread, name='teacher_forum_create'),
-    path('forum/create_thread/(?P<teacher_nodegroup_pk>\d+)/(?P<teacher_topic_pk>\d+)/',
-         views.create_thread, name='teacher_forum_create'),
+         views.create_thread, name='teacher_create_thread'),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
+         views.create_thread, name='teacher_create_thread'),
 
 
     path('forum/create_topic/(?P<teacher_nodegroup_pk>\d+)/',

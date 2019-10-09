@@ -49,7 +49,6 @@ def Topic_not_related_to_user(request):
                                                       node_group__title="Course")
     else:
        not_assigned_topics =  Topic.objects.filter(node_group__title="Course")
-    print("this called", not_assigned_topics)
     return not_assigned_topics
 
 
@@ -71,7 +70,6 @@ class Index(ListView):
             for topic in topics:
                 threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').exclude(topic_id__in=Topic_not_related_to_user(self.request))[:4]
                 threadqueryset |= threads
-        print(threadqueryset, "threadqueryset")
         return threadqueryset
 
     def get_context_data(self, **kwargs):
@@ -143,7 +141,6 @@ class TopicView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        print(self.kwargs.get('pk'))
         context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
         context['title'] = context['panel_title'] = topic.title
         context['show_order'] = True

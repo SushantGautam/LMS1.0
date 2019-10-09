@@ -300,7 +300,6 @@ class AssignmentInfoDetailView(DetailView):
         # print(Question)
         # print(context['AnsweredQuestion'])
         context['notAnswered'] = Question - AnsweredQuestion
-        print(context['notAnswered'])
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
@@ -315,7 +314,6 @@ class submitAnswer(View):
             pk=request.POST["Student_Code"])
         Obj.Question_Code = AssignmentQuestionInfo.objects.get(
             pk=request.POST["Question_Code"])
-        print(Obj.Student_Code)
         Obj.save()
 
         return JsonResponse(
@@ -477,7 +475,7 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
         form = ThreadForm()
 
     return render(request, 'student_module/student_forum/create_thread.html',
-                  {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
+                  {'form': form, 'node_group': node_group, 'title': _('Create Thread'), 'topic': topic,
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
 
 
@@ -485,7 +483,6 @@ def create_topic(request, student_nodegroup_pk=None):
     node_group = NodeGroup.objects.filter(pk=student_nodegroup_pk)
     if request.method == 'POST':
         form = TopicForm(request.POST, user=request.user)
-        print(form)
         if form.is_valid():
             t = form.save()
             return HttpResponseRedirect(reverse('student_topic', kwargs={'pk': t.pk}))
@@ -643,7 +640,6 @@ class TopicView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        print(self.kwargs.get('pk'))
         context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
         context['title'] = context['panel_title'] = topic.title
         context['show_order'] = True
