@@ -30,7 +30,7 @@ urlpatterns += (
 
 )
 urlpatterns += (
-    path('change-password/', views.PasswordChangeView.as_view(
+    path('profile/change-password/', views.PasswordChangeView.as_view(
         template_name='student_module/change_password_student.html'), name='student_change_password'),
 
 )

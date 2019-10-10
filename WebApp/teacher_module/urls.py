@@ -57,8 +57,10 @@ urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView),
          name='teacher_user_profile'),
-    path('editprofile_teacher/', login_required(views.teacher_editprofile),
-         name='teacher_user_editprofile'),
+#     path('editprofile_teacher/', login_required(views.teacher_editprofile),
+#          name='teacher_user_editprofile'),
+    path('profile/change-password/', views.PasswordChangeView.as_view(
+        template_name='teacher_module/change_password_teacher.html'), name='teacher_change_password'),
 )
 
 urlpatterns += (

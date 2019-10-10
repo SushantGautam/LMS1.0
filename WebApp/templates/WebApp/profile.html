@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-| Profile
+    | Profile
 {% endblock %}
 
 {% block stylesheets %}
@@ -10,201 +10,13 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Profile</li>
+    <li class="breadcrumb-item active" aria-current="page">Profile</li>
 {% endblock %}
 
 {% block content %}
-{% include 'profile.html' %}
+    {% include 'profile.html' %}
 {% endblock content %}
 
 {% block customjss %}
-{#    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>#}
-    <scrip src="http://themes.propeller.in/bootstrap4/html/bootstrap4-admin-theme/themes/js/bootstrap4-admin-compress.min.js"></scrip>
-    <script>
-	$(document).ready(function() {
-		var sPath=window.location.pathname;
-		var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
-		$(".pmd-sidebar-nav").each(function(){
-			$(this).find("a[href='"+sPage+"']").parents(".collapse").addClass("show");
-			$(this).find("a[href='"+sPage+"']").parents(".collapse").prev('a.nav-link').addClass("active");
-			$(this).find("a[href='"+sPage+"']").addClass("active");
-		});
-		$(".auto-update-year").html(new Date().getFullYear());
-	});
-
-    // Show Hide Edit Basic Info Card
-    $(".edit-basic-card").hide();
-    $("#edit-basic-info").click(function(){
-        $(".edit-basic-card").show();
-        $(".view-basic-card").hide();
-    });
-    $("#view-basic-info").click(function(){
-        $(".view-basic-card").show();
-        $(".edit-basic-card").hide();
-    });
-    $("#reset-basic-info").click(function(){
-        $(".view-basic-card").show();
-        $(".edit-basic-card").hide();
-    });
-
-    // Show Hide Edit Employee Info Card
-    $(".edit-employee-card").hide();
-    $("#edit-employee-info").click(function(){
-        $(".edit-employee-card").show();
-        $(".view-employee-card").hide();
-    });
-    $("#view-employee-info").click(function(){
-        $(".view-employee-card").show();
-        $(".edit-employee-card").hide();
-    });
-    $("#reset-employee-info").click(function(){
-        $(".view-employee-card").show();
-        $(".edit-employee-card").hide();
-    });
-
-    // Show Hide Edit Contact Info Card
-    $(".edit-contact-card").hide();
-    $("#edit-contact-info").click(function(){
-        $(".edit-contact-card").show();
-        $(".view-contact-card").hide();
-    });
-    $("#view-contact-info").click(function(){
-        $(".view-contact-card").show();
-        $(".edit-contact-card").hide();
-    });
-    $("#reset-contact-info").click(function(){
-        $(".view-contact-card").show();
-        $(".edit-contact-card").hide();
-    });
-
-    // Show Hide Edit Salary Info Card
-    $(".edit-salary-card").hide();
-    $("#edit-salary-info").click(function(){
-        $(".edit-salary-card").show();
-        $(".view-salary-card").hide();
-    });
-    $("#view-salary-info").click(function(){
-        $(".view-salary-card").show();
-        $(".edit-salary-card").hide();
-    });
-    $("#reset-salary-info").click(function(){
-        $(".view-salary-card").show();
-        $(".edit-salary-card").hide();
-    });
-
-    {#//Birthday DatePicker#}
-    {#$('#birthdate-picker').datetimepicker({#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#//Joining DatePicker#}
-    {#$('#joindate-picker').datetimepicker({#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#// Passing Year#}
-    {#$('#passing-year').datetimepicker({#}
-    {#    viewMode: 'years',#}
-    {#    format: 'YYYY'#}
-    {# });#}
-    {##}
-    {#// Passing Year#}
-    {#$('#edit-passing-year').datetimepicker({#}
-    {#    viewMode: 'years',#}
-    {#    format: 'YYYY'#}
-    {# });#}
-    {##}
-    {#// Add Education start date date and time picker#}
-    {#$('#datepicker-start').datetimepicker({#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#// Add Education End date date and time picker#}
-    {#$('#datepicker-end').datetimepicker({#}
-    {#    useCurrent: false,#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#// start date picker for Add Education#}
-    {#$("#datepicker-start").on("dp.change", function (e) {#}
-    {#    $('#datepicker-end').data("DateTimePicker").minDate(e.date);#}
-    {# });#}
-    {#// end date picker for Add Education#}
-    {#$("#datepicker-end").on("dp.change", function (e) {#}
-    {#    $('#datepicker-start').data("DateTimePicker").maxDate(e.date);#}
-    {# });#}
-    {##}
-    {#// edit Education start date date and time picker#}
-    {#$('#edit-datepicker-start').datetimepicker({#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# }); #}
-    {##}
-    {#// edit Education End date date and time picker#}
-    {#$('#edit-datepicker-end').datetimepicker({#}
-    {#    useCurrent: false,#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#// start date picker for edit Education#}
-    {#$("#edit-datepicker-start").on("dp.change", function (e) {#}
-    {#    $('#edit-datepicker-end').data("DateTimePicker").minDate(e.date);#}
-    {# });#}
-    {#// end date picker for edit Education#}
-    {#$("#edit-datepicker-end").on("dp.change", function (e) {#}
-    {#    $('#edit-datepicker-start').data("DateTimePicker").maxDate(e.date);#}
-    {# });#}
-    {##}
-    {#// edit experience  start date date and time picker#}
-    {#$('#editexp-datepicker-start').datetimepicker({#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#// edit experience End date date and time picker#}
-    {#$('#editexp-datepicker-end').datetimepicker({#}
-    {#    useCurrent: false,#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#// edit experience start date picker#}
-    {#$("#editexp-datepicker-start").on("dp.change", function (e) {#}
-    {#    $('#edit-datepicker-end').data("DateTimePicker").minDate(e.date);#}
-    {# });#}
-    {#// edit experience end date picker#}
-    {#$("#editexp-datepicker-end").on("dp.change", function (e) {#}
-    {#    $('#edit-datepicker-start').data("DateTimePicker").maxDate(e.date);#}
-    {# });#}
-    {##}
-    {#// add experience  start date date and time picker#}
-    {#$('#exp-datepicker-start').datetimepicker({#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#// add experience End date date and time picker#}
-    {#$('#exp-datepicker-end').datetimepicker({#}
-    {#    useCurrent: false,#}
-    {#    format: 'DD-MM-YYYY'#}
-    {# });#}
-    {##}
-    {#// add experience start date picker#}
-    {#$("#exp-datepicker-start").on("dp.change", function (e) {#}
-    {#    $('#edit-datepicker-end').data("DateTimePicker").minDate(e.date);#}
-    {# });#}
-    {#// add experience end date picker#}
-    {#$("#exp-datepicker-end").on("dp.change", function (e) {#}
-    {#    $('#edit-datepicker-start').data("DateTimePicker").maxDate(e.date);#}
-    {# });#}
-
-     // single range slider with default tooltip open
-    {#var pmdSliderTooltip = document.getElementById('pmd-slider-tooltip');#}
-    {#noUiSlider.create(pmdSliderTooltip, {#}
-    {#    start: [ 7 ],#}
-    {#    connect: 'lower',#}
-    {#    tooltips: [wNumb({ decimals: 0 }) ],#}
-    {#    range: {#}
-    {#        'min': [  0 ],#}
-    {#        'max': [ 10 ]#}
-    {#    }#}
-    {# });#}
-</script>
-
+    <script src="{% static 'build/js/profile.js' %}" ></script>
 {% endblock %}

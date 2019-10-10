@@ -2,11 +2,21 @@
 {% load static %}
 
 {% block title %}
-| Profile
+    | Profile
 {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Profile</li>
+    <li class="breadcrumb-item active" aria-current="page">Profile</li>
 {% endblock %}
+
 {% block content %}
-{% include 'profile.html' %}
+    {% include 'profile.html' %}
 {% endblock content %}
+
+{% block customjss %}
+    <script src="{% static 'build/js/profile.js' %}" ></script>
+{% endblock %}
