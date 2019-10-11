@@ -4,7 +4,7 @@ from datetime import datetime
 from django.conf import settings
 # from django.core.checks import messages
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
@@ -19,6 +19,7 @@ from django_addanother.views import CreatePopupMixin
 from django.utils.translation import gettext as _
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.csrf import csrf_protect
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
 from WebApp.forms import UserUpdateForm
@@ -108,11 +109,16 @@ class MyCourseListView(ListView):
     model = CourseInfo
     template_name = 'teacher_module/mycourses.html'
 
-    paginate_by = 8
+    # paginate_by = 8
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['courses'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id, Center_Code=self.request.user.Center_Code)
+
+        paginator = Paginator(context['courses'], 8)
+        page = self.request.GET.get('page')
+        paged_listings = paginator.get_page(page)
+        context['courses'] = paged_listings
 
         sessions = []
         if context['courses']:
@@ -344,9 +350,7 @@ class PasswordChangeView(PasswordContextMixin, FormView):
         # except the current one.
         update_session_auth_hash(self.request, form.user)
 
-        messages.success(self.request,
-                         'Your password was successfully updated! You can login with your new credentials')
-
+        messages.success(self.request,'Your password was successfully updated! You can login with your new credentials')
         return super().form_valid(form)
 
 def makequery(request):

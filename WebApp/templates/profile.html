@@ -1,10 +1,24 @@
 {% load static %}
 <!--content area start-->
+{% include 'WebApp/theme/alerts.html' %}
 <div id="content" class="pmd-content inner-page profile-page container-fluid">
     <div class="cover-content">
         <div class="page-content">
             <div class="d-flex d-flex-row align-items-center mobile-view">
-                <img alt="Profile-Pic" src="{{ user.Avatar }}" class="profile-pic rounded-circle pmd-z-depth-light-2-1 mr-md-4 mr-sm-0" height="200" width="200">
+                <div class="profile-img-container">
+
+                    <img alt="Profile-Pic" src="{{ user.Avatar }}" class="profile-pic rounded-circle pmd-z-depth-light-2-1 mr-md-4 mr-sm-0" height="200" width="200">
+                    <div class="overlay rounded-circle">
+                        <a href="#" class="icon" title="Upload Picture">
+                            <i class="fa fa-upload fa-2x"></i>
+                        </a>
+                        <form class="profile-pic-upload" enctype="multipart/form-data">
+                            <input type="file" name="Member_Avatar" id="id_Member_Avatar" accept="image/*">
+                        </form>
+                    </div>
+                    
+                    
+                </div>
                 <div class="media-body">
                     <h1>{{ user.first_name }} {{ user.last_name }}</h1>
                     <p class="pmd-list-subtitle">
@@ -147,7 +161,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-12 mt-3">
-                                                    <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit" id="view-basic-info">Submit</button>
+                                                    <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit">Submit</button>
                                                     <button class="btn btn-outline-secondary pmd-ripple-effect" type="button" id="reset-basic-info">Cancel</button>
                                                 </div>
                                             </div>
@@ -195,13 +209,13 @@
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label ">
                                                         <label for="id_email" class="col-form-label control-label">Personal Email</label>
-                                                        <input type="email" name="email" class="form-control" value="{{ user.email }}" id="id_email">
+                                                        <input type="email" name="email" class="form-control" value="{{ user.email }}" id="id_email" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label ">
                                                         <label for="id_Member_Phone" class="col-form-label control-label">Phone Number</label>
-                                                        <input type="tel" name="Member_Phone" class="form-control" id="id_Member_Phone" value="{{ user.Member_Phone }}">
+                                                        <input type="tel" name="Member_Phone" class="form-control" id="id_Member_Phone" value="{{ user.Member_Phone }}" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-3">
@@ -219,7 +233,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-12 mt-3">
-                                                    <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit" id="view-contact-info">Submit</button>
+                                                    <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit">Submit</button>
                                                     <button class="btn btn-outline-secondary pmd-ripple-effect" type="button" id="reset-contact-info">Cancel</button>
                                                 </div>
                                             </div>
@@ -297,7 +311,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-12 mt-3">
-                                                    <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit" id="view-description-info">Submit</button>
+                                                    <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit">Submit</button>
                                                     <button class="btn btn-outline-secondary pmd-ripple-effect" type="button" id="reset-description-info">Cancel</button>
                                                 </div>
                                             </div>
@@ -306,15 +320,15 @@
                                     </div>
                                     <br><br>
                                     <h3>Password: </h3>
-                                    <button class="btn btn-default">
-                                        <a href="{% if 'teacher' in request.path %}
-                                                {% url 'teacher_change_password' %}
-                                            {% elif 'student' in request.path %}
-                                                {% url 'student_change_password' %}
-                                            {% else %}
-                                                /change-password/
-                                            {% endif %}">Change Password</a>
-                                    </button>
+                                    <a href="
+                                    {% if 'teacher' in request.path %}
+                                        {% url 'teacher_change_password' %}
+                                    {% elif 'student' in request.path %}
+                                        {% url 'student_change_password' %}
+                                    {% else %}
+                                        /change-password/
+                                    {% endif %}">
+                                    <button class="btn btn-default">Change Password</button></a>
 
 {#                                    <!-- Education Information -->#}
 {#                                    <div class="details-tab mt-4">#}

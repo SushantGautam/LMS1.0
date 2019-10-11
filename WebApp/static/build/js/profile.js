@@ -118,3 +118,24 @@ $(".edit-description-card").submit(function (e) {
         }
     });
 });
+
+// upload image
+$("#id_Member_Avatar").on("change", function() {
+    formdata = new FormData();
+    var file = this.files[0];
+    if (formdata) {
+        formdata.append("Member_Avatar", file);
+        formdata.append("csrfmiddlewaretoken", $('input[name="csrfmiddlewaretoken"]').val())
+        jQuery.ajax({
+            url: "/editprofile/upload_image",
+            type: "POST",
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success:function(response){
+                console.log(response.msg)
+                location.reload()
+            }
+        });
+    }						
+});

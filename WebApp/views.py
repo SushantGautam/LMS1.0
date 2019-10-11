@@ -82,12 +82,7 @@ class AjaxableResponseMixin:
 
 
 def ProfileView(request):
-    try:
-        center = CenterInfo.objects.get(Center_Name=request.user.Center_Code)
-    except:
-        center = None
-        pass
-    return render(request, 'WebApp/profile.html', {"center": center})
+    return render(request, 'WebApp/profile.html')
 
 
 def login(request, template_name='registration/login.html',
@@ -227,6 +222,27 @@ def edit_description_info_ajax(request):
             return JsonResponse({'status':'Success', 'msg': 'save successfully'})
         except MemberInfo.DoesNotExist:
             return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+    else:
+        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
+
+def edit_profile_image_ajax(request):
+    if request.method=='POST' and request.FILES['Member_Avatar']:
+        try:
+            obj = MemberInfo.objects.get(pk=request.user.id)
+            media = request.FILES['Member_Avatar']
+            if media.size / 1024 > 2048:
+                    return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
+            path = settings.MEDIA_ROOT
+            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            fs = FileSystemStorage(location=path + '/Member_images/')
+            filename = fs.save(name, media)
+            obj.Member_Avatar = 'Member_images/' + name
+            obj.save()
+            return JsonResponse({'status':'Success', 'msg': 'Profile Picture Uploaded successfully'})
+        except MemberInfo.DoesNotExist:
+            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+        except:
+            return JsonResponse({'status': "Fail", 'msg': "Some error occured try again"})
     else:
         return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
 
