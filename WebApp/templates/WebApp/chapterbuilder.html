@@ -128,7 +128,7 @@
                 <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
 
 
-                <span>Text Box {{ request.user.Is_Teacher }}</span>
+                <span>Text Box</span>
               </div>
 
 
@@ -559,14 +559,7 @@
   var csrf_token = '{{csrf_token}}'
   
   $('#chapterlist').val(chapterID);
-  // $('#chapterlist').change(function(){
-  //   var confirmation = confirm("Are you sure you want to leave?")
-  //   if(confirmation==false){
-  //       return false
-  //   }
-  //   let chapter = $('#chapterlist').val()
-  //   location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
-  // });
+  
   var previous;
   (function () {
 
