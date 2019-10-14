@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.teacher_module import views
+from .. import views as admin_views
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -180,4 +181,8 @@ urlpatterns += (
          name='teacher_quiz_marking'),
     path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(),
          name='teacher_quiz_marking_detail'),
+)
+
+urlpatterns += (
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder', admin_views.chapterpagebuilder, name='teachers_chapterpagebuilder'),
 )

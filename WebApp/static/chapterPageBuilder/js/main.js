@@ -316,11 +316,11 @@ $(document).ready(function() {
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                     <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
-                </form>
+                    </form>
                 <p id="_3dobj-drag">${message}</p>
                 
-                </div>
                 ${_3dobj}
+                </div>
             </div>`
 
             this.RemoveElement = function () {
@@ -346,10 +346,7 @@ $(document).ready(function() {
             });
 
             var a = document.getElementsByClassName("current")[0];
-            // console.log(a);
-            // console.log($('#' + a.id));
             $('#' + a.id).append(dom);
-            // canvas.append(dom);
             };
         }
     }
@@ -433,7 +430,7 @@ $(document).ready(function() {
             width,height);
         Pic.renderDiagram();
     
-        $('.fa-upload').click(function(e) {
+        $('.fa-upload').off().click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
@@ -670,7 +667,7 @@ $(document).ready(function() {
         Pdf.renderDiagram();
 
           // ==for pdf upload==
-        $('.fa-upload').click(function(e) {
+        $('.fa-upload').off().click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
@@ -854,7 +851,7 @@ $(document).ready(function() {
         $('.fa-trash').click(function(e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
-        $('.fa-upload').click(function(e) {
+        $('.fa-upload').off().click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
