@@ -128,7 +128,7 @@
                 <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
 
 
-                <span>Text Box</span>
+                <span>Text Box {{ request.user.Is_Teacher }}</span>
               </div>
 
 
@@ -264,7 +264,13 @@
       <div class="  col-sm-8  col-md-7col-lg-8 col-xl-8 canvas">
 
         <div id="navbar-title">
-          <a href="{% url 'chapterinfo_detail' course chapter %}"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i></a>
+          <a href="
+          {% if 'teachers' in request.path %}
+          {% url 'teacher_chapterinfo_detail' course chapter %}
+          {% else %}
+          {% url 'chapterinfo_detail' course chapter %}
+          {% endif %}
+          " id="goBackBtn"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i></a>
           <h2 class="tlimit" contenteditable="false" id="chaptertitle">
             Add Title....
           </h2>
@@ -281,7 +287,7 @@
               
               <a href="{% url 'exportzip' course chapter %}" target="_blank" onclick="return confirm('Have you saved the latest change?')"><i class="fas fa-file-export" ></i><br />Export</a>
 
-
+              <a href = "#" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br />Save and Exit</a>
           </nav>
 
         </div>
@@ -568,7 +574,6 @@
           // Store the current value on focus and on change
           previous = this.value;
       }).change(function() {
-        console.log("heret")
           // Do something with the previous value after the change
           var confirmation = confirm("Are you sure you want to leave?")
           if(confirmation==false){
@@ -581,7 +586,15 @@
       });
   })();
 
-   
+  $('#save-and-exit-btn').click(function(e){
+    e.preventDefault();
+    
+    window.alert = function() { };
+    window.onbeforeunload = function() { };
+    $('#SaveBtn').click();
+    var href = $('#goBackBtn').attr('href');
+    location.href = href;
+  });
 </script>
   <script src="https://player.vimeo.com/api/player.js"></script>
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
