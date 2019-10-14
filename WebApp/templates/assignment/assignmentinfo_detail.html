@@ -78,7 +78,7 @@
                         <b style="color: #000000">{{ questions.Question_Title }}</b>
                     </h5>
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-12" style="padding-right: 0;">
+                <div class="col-md-4 col-sm-4 col-xs-12 no-padding">
                     {% if '/students' in request.path %}
                     <button class="answerButton" type="button" id="{{ questions.pk }}" style="width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                         margin-top: 25px;margin-left: 40px;">ANSWER <i class="fa fa-arrow-right"></i>
@@ -92,33 +92,47 @@
                 <div class="col-md-12 col-sm-12 col-xs-12" id="questionContent{{ questions.pk }}"
                     style="display: none;">
                     {% if  questions.Question_Score %}
-                    <div class=" col-md-4 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
                         Question Score :
                     </div>
-                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
                         <b style="color: #000000">{{ questions.Question_Score }}</b>
                     </div>
                     {% endif %}
                     {% if  questions.Question_Description %}
-                    <div class=" col-md-4 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
                         Question Description :
                     </div>
-                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
                         <b style="color: #000000">{{ questions.Question_Description }}</b>
                     </div>
                     {% endif %}
                     {% if questions.Answer_Type %}
-                    <div class="col-md-4 col-sm-12 col-xs-12" style="padding-left:0; padding-bottom: 10px;">
+                    <div class="col-md-4 col-sm-12 col-xs-12 no-padding">
                         Answer Type :
 
                     </div>
-                    <div class=" col-md-8 col-sm-12 col-xs-12" style="padding-left:0;">
+                    <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
                         <b style="color: #000000">
                             {% if questions.Answer_Type == 'S' %}
                             Short Answer
                             {% else %}
                             File Upload
                             {% endif %}</b> </div>
+                    {% endif %}
+                    {% if  questions.Question_Media_File %}
+                    <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
+                        Question Media :
+                    </div>
+                    <div class=" col-md-12 col-sm-12 col-xs-12 no-padding text-center">
+                        <!-- <b style="color: #000000">{{ questions.Question_Media_File }}</b> -->
+                        {% if questions.extension == '.jpg' or questions.extension == '.png' %}
+                        <img class="card-img-top" width="400px" src="{{ questions.Question_Media_File.url }}">
+                        {% else %}
+                        <a href="{{ questions.Question_Media_File.url }}" target="_blank"><b
+                                style="color: #000000">Click to view file</b></a>
+                        {% endif %}
+                    </div>
                     {% endif %}
                 </div>
                 <div class="x_panel" id="answerContent{{ questions.pk }}" style="display: none">

@@ -6,7 +6,7 @@ from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, FileField
 from django.urls import reverse
 from django.utils.translation import gettext as _
-
+import os
 fs = FileSystemStorage(location='LMS')
 
 USER_ROLES = (
@@ -342,7 +342,11 @@ class AssignmentQuestionInfo(models.Model):
 
     def get_update_url(self):
         return reverse('webapp_questioninfo_update', args=(self.Assignment_Code.Course_Code.pk,self.Assignment_Code.Chapter_Code.pk,self.Assignment_Code.pk,self.pk))
-
+    
+    
+    def extension(self):
+        name, extension = os.path.splitext(self.Question_Media_File.name)
+        return extension
 
 class AssignAssignmentInfo(models.Model):
     Use_Flag = BooleanField(default=True)
