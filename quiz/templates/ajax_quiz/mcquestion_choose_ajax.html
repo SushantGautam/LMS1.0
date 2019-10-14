@@ -1,30 +1,54 @@
 {% load static %}
 {% load crispy_forms_tags %}
-
-<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+<script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 {{ form.media }}
-
-<form method="post" id="saq_form_post">
+<script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+<form method="post" id="mcq_select_form_post" action="">
   {% csrf_token %}
-  {{ form|crispy }}
-  <button class="btn btn-primary" type="submit">Submit</button>
+  <div class="col-md-12">
+    {{ form|crispy }}
+  </div>
+  <div class="col-md-12">
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </div>
 </form>
-{% block customjss %}
+
+{#  <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>#}
+
   <script>
-      $("#saq_form_post").submit(function (e) {
+      $(".modal-dialog").css("width", "auto");
+      //$("#div_id_mcquestion").css("width", "auto");
+      //$(".selector-chosen").css("width", "auto");
+      //$("div.selector").css("width", "50%");
+      $(".selector-chooser").wrap("<div class='col-md-2'></div>");
+      $(".selector-chooser").after("<div class='col-md-2'></div>");
+      $("div.selector-available").addClass("col-md-5");
+      $("div.selector-chosen").addClass("col-md-5");
+
+      $(document).ready(function () {
+          console.log($('#id_mcquestion_to option').prop('title'));
+      });
+      //$(".modal-dialog").css("display", "inline-block");
+      $("#mcq_select_form_post").submit(function (e) {
           e.preventDefault(); // avoid to execute the actual submit of the form.
+          $('#id_mcquestion_to option').prop('selected', true);
           $.ajax({
               url: "{% url 'choose_mcq' pk=object.pk %}", // URL to your view that serves new info
               data: $(this).serialize(), // get the form data
-              type: $(this).attr('method'), // GET or POST
+              type: "POST", // GET or POST
               success: function (response) {
-                  saq_success(response);
+                  location.reload();
               },
               error: function () {
                   console.log('Error in posting form');
               }
           });
       });
+
+      $('#id_mcquestion').change(function () {
+          $('#selected_mcq_num').text($('#id_mcquestion option:selected').length);
+      });
+      {#$('#id_mcquestion').css("height", "50vh");#}
   </script>
-{% endblock customjss %}

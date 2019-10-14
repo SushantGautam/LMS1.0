@@ -25,16 +25,18 @@
                     <span class="fa fa-angle-down" id="topNavSpan"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    {% if request.user.Is_Student %}
-                    <li><a href="/students"> Login as Student</a></li>
+                    
+                    {% if request.user.Is_Teacher %}
+                    <li><a href="/teachers"> Login as Teacher</a></li>
                     {% endif %}
+
                     {% if request.user.Is_CenterAdmin %}
                     <li><a href="{% url 'start' %}"> Login as Admin</a></li>
                     {% endif %}
                     {# <li><a href="/"> Login as Admin</a></li>#}
                     <!-- <li><a href=""> Profile</a></li> -->
                     {#                        <li><a href="/"> Login as Admin</a></li>#}
-                    <li><a href="{% url 'teacher_user_profile' %}"> Profile</a></li>
+                    <li><a href="{% url 'student_user_profile' %}"> Profile</a></li>
 
 
                     <li><a href="javascript:">Help</a></li>

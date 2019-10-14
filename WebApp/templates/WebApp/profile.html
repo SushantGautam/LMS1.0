@@ -2,25 +2,21 @@
 {% load static %}
 
 {% block title %}
-| Profile
+    | Profile
 {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Profile</li>
+    <li class="breadcrumb-item active" aria-current="page">Profile</li>
 {% endblock %}
+
 {% block content %}
-{% include 'profile.html' %}
-<div class="text-center">
-    <h4>
-        <ul class="list-unstyled" ̥>
-            <li>
-                Center Name: {{ center.Center_Name }}
-            </li>
-            <br>
-            <li>
-                Center Address: {{ center.Center_Address }}
-            </li>
-            <br>
-        </ul>
-    </h4>
-</div>
+    {% include 'profile.html' %}
 {% endblock content %}
+
+{% block customjss %}
+    <script src="{% static 'build/js/profile.js' %}" ></script>
+{% endblock %}

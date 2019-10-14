@@ -1,9 +1,10 @@
-from django.conf.urls import url
-from django.urls import path
 from django.contrib.auth.decorators import login_required
+from django.urls import path
+from django.urls import path
 
 from WebApp.student_module import views
 from survey import views as surveyViews
+
 #
 # urlpatterns = (
 #     # urls for TodoTInfo
@@ -29,7 +30,7 @@ urlpatterns += (
 
 )
 urlpatterns += (
-    path('change-password/', views.PasswordChangeView.as_view(
+    path('profile/change-password/', views.PasswordChangeView.as_view(
         template_name='student_module/change_password_student.html'), name='student_change_password'),
 
 )
@@ -106,23 +107,13 @@ urlpatterns += (
 
 )
 
-# urlpatterns += (
-#     path('polls_student/', views.polls_student, name="polls_student"),
-# )
-
-# urlpatterns += (
-#     path('polls_student_view/', views.polls_student_view,
-#          name="polls_student_view"),
-# )
-
-
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="student_forum"),
-    path('forum/create_thread', views.create_thread, name="student_forum_create"),
+    path('forum/create_thread', views.create_thread, name="student_create_thread"),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
-         views.create_thread, name='student_forum_create'),
-    path('forum/create_thread/(?P<student_nodegroup_pk>\d+)/(?P<student_topic_pk>\d+)/',
-         views.create_thread, name='student_forum_create'),
+         views.create_thread, name='student_create_thread'),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
+         views.create_thread, name='student_create_thread'),
 
     path('forum/edit/<int:pk>/', views.edit_thread, name='student_edit_thread'),
     path('forum/create_topic/(?P<student_nodegroup_pk>\d+)/',

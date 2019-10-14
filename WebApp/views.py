@@ -82,12 +82,7 @@ class AjaxableResponseMixin:
 
 
 def ProfileView(request):
-    try:
-        center = CenterInfo.objects.get(Center_Name=request.user.Center_Code)
-    except:
-        center = None
-        pass
-    return render(request, 'WebApp/profile.html', {"center": center})
+    return render(request, 'WebApp/profile.html')
 
 
 def login(request, template_name='registration/login.html',
@@ -163,7 +158,7 @@ def start(request):
             threadcount = Thread.objects.count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
-            sessioncount = SessionInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
+            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
 
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
@@ -187,25 +182,88 @@ def start(request):
     else:
         return render(request, "WebApp/splash_page.html")
 
-
-def editprofile(request):
-    if not request.user.is_authenticated:
-        return HttpResponse("you are not authenticated", {'error_message': 'Error Message Customize here'})
-    print('admin amdin')
-    post = get_object_or_404(MemberInfo, pk=request.user.id)
-    if request.method == "POST":
-
-        form = UserUpdateForm(request.POST, request.FILES, instance=post)
-
-        if form.is_valid():
-            post.date_last_update = datetime.now()
-            post.save()
-            return redirect('user_profile')
+def edit_basic_info_ajax(request):
+    if request.method=='POST' and request.is_ajax():
+        try:
+            obj = MemberInfo.objects.get(pk=request.user.id)
+            obj.username = request.POST['username']
+            obj.first_name = request.POST['first_name']
+            obj.last_name = request.POST['last_name']
+            obj.Member_BirthDate = request.POST['Member_BirthDate']
+            obj.Member_Gender = request.POST['Member_Gender']
+            obj.save()
+            return JsonResponse({'status':'Success', 'msg': 'save successfully'})
+        except MemberInfo.DoesNotExist:
+            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
     else:
+        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
 
-        form = UserUpdateForm(request.POST, request.FILES, instance=post)
+def edit_contact_info_ajax(request):
+    if request.method=='POST' and request.is_ajax():
+        try:
+            obj = MemberInfo.objects.get(pk=request.user.id)
+            obj.email = request.POST['email']
+            obj.Member_Phone = request.POST['Member_Phone']
+            obj.Member_Temporary_Address = request.POST['Member_Temporary_Address']
+            obj.Member_Permanent_Address = request.POST['Member_Permanent_Address']
+            obj.save()
+            return JsonResponse({'status':'Success', 'msg': 'save successfully'})
+        except MemberInfo.DoesNotExist:
+            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+    else:
+        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
 
-    return render(request, 'WebApp/editprofile.html', {'form': form})
+def edit_description_info_ajax(request):
+    if request.method=='POST' and request.is_ajax():
+        try:
+            obj = MemberInfo.objects.get(pk=request.user.id)
+            obj.Member_Memo = request.POST['Member_Memo']
+            obj.save()
+            return JsonResponse({'status':'Success', 'msg': 'save successfully'})
+        except MemberInfo.DoesNotExist:
+            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+    else:
+        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
+
+def edit_profile_image_ajax(request):
+    if request.method=='POST' and request.FILES['Member_Avatar']:
+        try:
+            obj = MemberInfo.objects.get(pk=request.user.id)
+            media = request.FILES['Member_Avatar']
+            if media.size / 1024 > 2048:
+                    return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
+            path = settings.MEDIA_ROOT
+            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            fs = FileSystemStorage(location=path + '/Member_images/')
+            filename = fs.save(name, media)
+            obj.Member_Avatar = 'Member_images/' + name
+            obj.save()
+            return JsonResponse({'status':'Success', 'msg': 'Profile Picture Uploaded successfully'})
+        except MemberInfo.DoesNotExist:
+            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+        except:
+            return JsonResponse({'status': "Fail", 'msg': "Some error occured try again"})
+    else:
+        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
+
+# def editprofile(request):
+#     if not request.user.is_authenticated:
+#         return HttpResponse("you are not authenticated", {'error_message': 'Error Message Customize here'})
+#     print('admin amdin')
+#     post = get_object_or_404(MemberInfo, pk=request.user.id)
+#     if request.method == "POST":
+
+#         form = UserUpdateForm(request.POST, request.FILES, instance=post)
+
+#         if form.is_valid():
+#             post.date_last_update = datetime.now()
+#             post.save()
+#             return redirect('user_profile')
+#     else:
+
+#         form = UserUpdateForm(request.POST, request.FILES, instance=post)
+
+#     return render(request, 'WebApp/editprofile.html', {'form': form})
 
 
 class register(CreateView):

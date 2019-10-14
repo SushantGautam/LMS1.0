@@ -4,17 +4,29 @@ from datetime import datetime
 from django.conf import settings
 # from django.core.checks import messages
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import PasswordContextMixin
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
+from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
+from django.utils.translation import gettext as _
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.csrf import csrf_protect
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm    
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from WebApp.forms import UserUpdateForm
+from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
+    AssignAnswerInfo, MemberInfo
+from forum.forms import ThreadForm, ThreadEditForm
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo, MemberInfo, GroupMapping
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
@@ -25,10 +37,9 @@ from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
 from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
 from survey.views import AjaxableResponseMixin
-from forum.forms import ThreadForm, ThreadEditForm
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
-from WebApp.forms import UserUpdateForm
+
 datetime_now = datetime.now()
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from formtools.wizard.views import SessionWizardView
@@ -98,11 +109,16 @@ class MyCourseListView(ListView):
     model = CourseInfo
     template_name = 'teacher_module/mycourses.html'
 
-    paginate_by = 8
+    # paginate_by = 8
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['courses'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id, Center_Code=self.request.user.Center_Code)
+
+        paginator = Paginator(context['courses'], 8)
+        page = self.request.GET.get('page')
+        paged_listings = paginator.get_page(page)
+        context['courses'] = paged_listings
 
         sessions = []
         if context['courses']:
@@ -312,6 +328,30 @@ class MyAssignmentsListView(ListView):
 def ProfileView(request):
     return render(request, 'teacher_module/profile.html')
 
+class PasswordChangeView(PasswordContextMixin, FormView):
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('teacher_user_profile')
+    title = _('Password change')
+
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(csrf_protect)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        # Updating the password logs out all other sessions for the user
+        # except the current one.
+        update_session_auth_hash(self.request, form.user)
+
+        messages.success(self.request,'Your password was successfully updated! You can login with your new credentials')
+        return super().form_valid(form)
 
 def makequery(request):
     # model=SurveyInfo
@@ -323,8 +363,8 @@ def makequery(request):
     })
 
 
-# def question_teachers(request):
-#     return render(request, 'teacher_module/question_teachers.html')
+# class question_teachers(ListView):
+#     model = SurveyInfo
 
 class SurveyInfoListView(ListView):
     model = SurveyInfo
@@ -376,15 +416,9 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             if qn.is_valid():
                 qn.instance = self.object
                 qn.save()
-            else:
-                print(qn.errors)
-                print('qn is invalid')
             if qna.is_valid():
                 qna.instance = self.object
                 qna.save()
-            else:
-                print('qna is invalid')
-                print(qna.errors)
         return vform
 
     def get_form_kwargs(self):
@@ -1030,7 +1064,6 @@ def create_topic(request, teacher_nodegroup_pk=None):
     node_group = NodeGroup.objects.filter(pk=teacher_nodegroup_pk)
     if request.method == 'POST':
         form = TopicForm(request.POST, user=request.user)
-        print(form)
         if form.is_valid():
             t = form.save()
             return HttpResponseRedirect(reverse('teacher_topic', kwargs={'pk': t.pk}))
@@ -1188,7 +1221,6 @@ class TopicView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        print(self.kwargs.get('pk'))
         context['topic'] = topic = Topic.objects.get(pk=self.kwargs.get('pk'))
         context['title'] = context['panel_title'] = topic.title
         context['show_order'] = True

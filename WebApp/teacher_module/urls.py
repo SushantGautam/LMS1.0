@@ -58,8 +58,10 @@ urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView),
          name='teacher_user_profile'),
-    path('editprofile_teacher/', login_required(views.teacher_editprofile),
-         name='teacher_user_editprofile'),
+#     path('editprofile_teacher/', login_required(views.teacher_editprofile),
+#          name='teacher_user_editprofile'),
+    path('profile/change-password/', views.PasswordChangeView.as_view(
+        template_name='teacher_module/change_password_teacher.html'), name='teacher_change_password'),
 )
 
 urlpatterns += (
@@ -71,9 +73,11 @@ urlpatterns += (
 urlpatterns += (
     path('question_teachers/', views.SurveyInfoListView.as_view(),
          name="question_teachers"),
+    # path('question_teachers/', views.question_teachers.as_view(),
+    #          name="question_teachers"),
     # path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
     #          name='surveyinfo_create'),
-    path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
+    # path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
     path('polls_teachers/detail/<int:pk>/',
          views.TeacherSurveyInfoDetailView.as_view(), name='polls_teachers'),
     path('teacherSurveyFilterCategory/', views.teacherSurveyFilterCategory.as_view(),
@@ -84,11 +88,11 @@ urlpatterns += (
 
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="teacher_forum"),
-    path('forum/create_thread', views.create_thread, name="teacher_forum_create"),
+    path('forum/create_thread', views.create_thread, name="teacher_create_thread"),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
-         views.create_thread, name='teacher_forum_create'),
-    path('forum/create_thread/(?P<teacher_nodegroup_pk>\d+)/(?P<teacher_topic_pk>\d+)/',
-         views.create_thread, name='teacher_forum_create'),
+         views.create_thread, name='teacher_create_thread'),
+    path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
+         views.create_thread, name='teacher_create_thread'),
 
 
     path('forum/create_topic/(?P<teacher_nodegroup_pk>\d+)/',

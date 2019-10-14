@@ -1,8 +1,8 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
-{% block title %}
-    Teacher survey
-{% endblock %}
+{#{% block title %}#}
+{#    Teacher survey#}
+{#{% endblock %}#}
 {% block stylesheets %}
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
@@ -11,128 +11,12 @@
 <li class="breadcrumb-item active" aria-current="page">Survey</li>
 {% endblock %}
 {% block content %}
-
-<div class="clearfix">
-
-        <div class="container" id="mainSurveyPage">
-      
-          <div class="container">
-            <div class="row">
-              <div id="surveyContainer">
-      
-                  <div class="col-md-3 col-sm-3 col-xs-12" style="z-index: 1;">
-                  <div class="categoryContainer">
-                    <div class="card">
-                      <div class="card-body">
-                        <h2 class="card-title "><strong>Category</strong></h2>
-                        <hr>
-                        <div id="card_category">
-      
-                            <h5 class="card-text active">
-                            <a href="#" style=" padding-left: 15px;" class="category-name" id="0"><i
-                                class="fa fa-bar-chart" id="categoryIcons"></i>All
-                              survey</a>
-                          </h5>
-                            {#                  <div class="category-name">#}
-                          {% for category in categories %}
-      
-                              <div class="row card-text">
-                                  <div class="col-md-8 category-name">
-                                      <a href="#" id=" {{ category.id }}"><i
-                                              class="fa fa-{{ category.Category_Icon }}" id="categoryIcons"></i>
-                                          {{ category.Category_Name }}
-                                      </a>
-                                  </div>
-      
-                                  <div class="col-md-2">
-                                      <button class=" {{ category.Category_Name }}  btn btn-success"
-                                              id="category_Add_Button{{ category.id }}"
-                                              data-popup-open="popup-1">Add
-                                      </button>
-                                  </div>
-      
-      
-                              </div>
-      
-                          {% endfor %}
-                            {#                  </div>#}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-      
-                    <div class="liveSurveyCreateButton">
-                        <a href=" {% url 'liveSurveyCreate' %}">
-                            <button class="btn btn-success" id="liveSurveyBtn">Create Live survey</button>
-                        </a>
-                    </div>
-      
-                    <div class="popup" data-popup="popup-1">
-                    <div class="popup-inner ">
-                      <article class="index-form">
-                        <div class="label_inputs">
-                          <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
-                          <div class="row">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                              <div class="x_panel">
-                                <div class="x_content">
-                                  <br>
-                                  <div id="surveyForm">
-      
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </article>
-                    </div>
-                  </div>
-                </div>
-      
-      
-                  <div class="col-md-9 col-sm-9 col-xs-12" style="z-index: 0;">
-                      <div id="rowCards">
-                    <div class="hR"></div>
-      
-                          {#            <!-- ......................................Live section.................................... -->#}
-                      {#            <div class="live_survey " style="display: none;">#}
-                      {#                {% for object in object_list %}#}
-                      {#                {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == True %}#}
-                      {#                <div class="questionLists col-xs-12 col-sm-6 col-md-3 ">#}
-                      {#                    <div class="card">#}
-                      {#                        <a href=" {% url 'liveSurveyDetail' object.pk %}">#}
-                      {#                            <div class="card-body">#}
-                      {#                                <h2 class="card-title "><strong>{{ object.Survey_Title|truncatechars:12 }}</strong>#}
-                      {#                                </h2>#}
-                      {#                                <hr>#}
-                      {#                                <ul class="card_labels">#}
-                      {#                                    <li><label>Questions: {{ object.questions_count }} </label></li>#}
-                      {#                                    <li><label>Start date: {{ object.Start_Date }}</label></li>#}
-                      {#                                    <li><label>End date: {{ object.End_Date }}</label></li>#}
-                      {#                                </ul>#}
-                      {#                            </div>#}
-                      {#                        </a>#}
-                      {#                    </div>#}
-                      {#                </div>#}
-                      {#                {% endif %}#}
-                      {#                {% endfor %}#}
-                      {#            </div>#}
-      
-                  </div>
-                </div>
-      
-            </div>
-      
-          </div>
-      
-        </div>
-
-
+    {% include 'survey/surveyinfo_list.html' %}
 {% endblock %}
 
 {% block customjss %}
-{% for category in categories %}
+
+    {% for category in categories %}
     <script>
         {#console.log('{{category.Category_Name}}');#}
         $('#category_Add_Button{{ category.id }}').on('click', function () {
@@ -140,7 +24,7 @@
             $.ajax({
                 type: "GET",
                 data: {'categoryId': '{{category.id}}'},
-                url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
+                url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
                 success: function (data) {
                     $("#surveyForm").html(data);
                 }
@@ -151,9 +35,7 @@
   {% endfor %}
 
   <script>
-
       $(document).ready(function () {
-
           $.ajax({
               type: "GET",
               data: {'categoryId': 0},
@@ -165,10 +47,9 @@
           });
       });
 
-      // categoryAddButton({{ categoryName }});
-
       $('.category-name').on('click', function () {
           var categoryId = this.id;
+          console.log('categoryId');
           $.ajax({
               type: "GET",
               data: {'categoryId': categoryId},
@@ -179,17 +60,5 @@
               }
           });
       });
-
-      {#$('#live').on('click', function () {#}
-      {#    $.ajax({#}
-      {#        type: "GET",#}
-      {#        data: {'categoryId': 'live'},#}
-      {#        url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info#}
-      {#        success: function (data) {#}
-      {#            $("#rowCards").html(data);#}
-      {#            console.log(data)#}
-      {#        }#}
-      {#    });#}
-      {# });#}
   </script>
 {% endblock %}

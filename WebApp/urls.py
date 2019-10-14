@@ -33,7 +33,7 @@ urlpatterns = (
     url(r'^.*logout/$', views.logout,
         {'template_name': 'registration/logout.html', 'next_page': '/'}, name='logout'),
 
-    url(r'^.*editprofile/$', views.editprofile, name='editprofile'),
+#     url(r'^.*editprofile/$', views.editprofile, name='editprofile'),
 
     url(r'^successlogin/$', views.loginsuccess, name='loginsuccess'),
 
@@ -43,9 +43,15 @@ urlpatterns = (
 urlpatterns += (
     # urls for Profile
     path('profile/', login_required(views.ProfileView), name='user_profile'),
-    path('editprofile/', login_required(views.editprofile), name='user_editprofile'),
-    path('change-password/', views.PasswordChangeView.as_view(
-        template_name='registration/change_password.html')),
+#     path('editprofile/', login_required(views.editprofile), name='user_editprofile'),
+    
+    # Common url and views for all account for profile edit functions 
+    path('editprofile/basicinfo', login_required(views.edit_basic_info_ajax), name="edit_basic_info_ajax"),
+    path('editprofile/contactinfo', login_required(views.edit_contact_info_ajax), name="edit_contact_info_ajax"),
+    path('editprofile/descriptioninfo', login_required(views.edit_description_info_ajax), name="edit_description_info_ajax"),
+    path('editprofile/upload_image', login_required(views.edit_profile_image_ajax), name="edit_profile_image_ajax"),
+
+    path('change-password/', views.PasswordChangeView.as_view(template_name='registration/change_password.html')),
     path('change-password/<int:pk>/', views.change_password_others),
 )
 

@@ -21,9 +21,9 @@
 
             <a class="btn btn-white btn-flat" href="
             {% if '/teachers' in request.path %}
-            {% url 'teacher_forum_create' nodegroup_pk=node_group.pk %}
+            {% url 'teacher_create_thread' nodegroup_pk=node_group.pk %}
             {% elif '/students' in request.path %}
-            {% url 'student_forum_create' nodegroup_pk=node_group.pk %}
+            {% url 'student_create_thread' nodegroup_pk=node_group.pk %}
             {% elif '/forum' in request.path %}
             {% url 'forum:create_thread' nodegroup_pk=node_group.pk %}
                         {% endif %}
@@ -99,9 +99,9 @@
                     <td> {{ list.2 }} </td>
                     {% if list.1 %}
                     <td><a href="{% if '/teachers' in request.path %}
-                        {% url 'teacher_threads' pk=list.1.pk %}
+                        {% url 'teacher_thread' pk=list.1.pk %}
                         {% elif '/students' in request.path %}
-                        {% url 'student_threads' pk=list.1.pk %}
+                        {% url 'student_thread' pk=list.1.pk %}
                         {% elif '/forum' in request.path %}
                      {% url 'forum:thread' pk=list.1.pk %}
                         {% endif %}

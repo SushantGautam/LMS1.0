@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+gv mghvhgctt jcryjc itykcv
+{% block stylesheets %}
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Survey</li>
+{% endblock %}
+{% block content %}
+    {% include 'survey/surveyinfo_list.html' %}
+{% endblock %}
+
+
+{% block customjss %}
+
+    {% for category in categories %}
+        <script>
+            {#console.log('{{category.Category_Name}}');#}
+            $('#category_Add_Button{{ category.id }}').on('click', function () {
+
+                $.ajax({
+                    type: "GET",
+                    data: {'categoryId': '{{category.id}}'},
+                    url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
+                    success: function (data) {
+                        $("#surveyForm").html(data);
+                    }
+                });
+            });
+        </script>
+
+    {% endfor %}
+
+    <script>
+
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "GET",
+                data: {'categoryId': 0},
+                url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#rowCards").html(data);
+                    {#console.log(data)#}
+                }
+            });
+        });
+
+        $('.category-name').on('click', function () {
+            var categoryId = this.id;
+            console.log('categoryId');
+            $.ajax({
+                type: "GET",
+                data: {'categoryId': categoryId},
+                url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#rowCards").html(data);
+                    {#console.log(data)#}
+                }
+            });
+        });
+    </script>
+{% endblock %}

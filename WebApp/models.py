@@ -92,13 +92,36 @@ class MemberInfo(AbstractUser):
     Register_DateTime = DateTimeField(auto_now_add=True)
     Register_Agent = CharField(max_length=128, blank=True, null=True)
     Updated_DateTime = DateTimeField(auto_now=True)
-    Member_Memo = models.CharField(max_length=500, blank=True, null=True)
+    Member_Memo = models.TextField(blank=True, null=True)
     Member_Avatar = models.ImageField(upload_to="Member_images/", blank=True, null=True)
     Is_Teacher = models.BooleanField(default=False)
     Is_Student = models.BooleanField(default=True)
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices)
+
+    # Relationship Fields
+    Center_Code = ForeignKey(
+        'CenterInfo',
+        related_name="memberinfos", on_delete=models.DO_NOTHING, null=True
+    )
+
+    @property
+    def get_user_type(self):
+        if self.Is_CenterAdmin and self.Is_Teacher and self.Is_Student:
+            return "Center Admin, Teacher, Student"
+        elif self.Is_CenterAdmin and self.Is_Teacher:
+            return "Center Admin, Teacher"
+        elif self.Is_CenterAdmin and self.Is_Student:
+            return "Center Admin, Student"
+        elif self.Is_Teacher and self.Is_Student:
+            return "Teacher, Student"
+        elif self.Is_CenterAdmin:
+            return "Center Admin"
+        elif self.Is_Teacher:
+            return "Teacher"
+        elif self.Is_Student:
+            return "Student"
 
     @property
     def Avatar(self):
@@ -113,12 +136,6 @@ class MemberInfo(AbstractUser):
             else:
                 default_avatar = "/static/images/profile/profile.png"
             return default_avatar
-
-    # Relationship Fields
-    Center_Code = ForeignKey(
-        'CenterInfo',
-        related_name="memberinfos", on_delete=models.DO_NOTHING, null=True
-    )
 
     class Meta:
         ordering = ('-pk',)
@@ -247,11 +264,11 @@ class ChapterContentsInfo(models.Model):
 
 #================AssignmentModels================#
 class AssignmentInfo(models.Model):
-    Assignment_Topic = CharField(max_length=500, blank=True, null=True)
+    Assignment_Topic = CharField(max_length=500)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
-    Assignment_Deadline = DateTimeField(null=True, blank=True)
+    Assignment_Deadline = DateTimeField()
     Course_Code = ForeignKey(
         'CourseInfo',
         related_name="assignmentinfos", on_delete=models.DO_NOTHING
