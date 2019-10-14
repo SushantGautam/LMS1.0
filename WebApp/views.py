@@ -886,13 +886,21 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Question_Score = request.POST["Question_Score"]
         Obj.Question_Description = request.POST["Question_Description"]
         Obj.Answer_Type = request.POST["Answer_Type"]
-        Obj.Question_Media_File = request.POST["Question_Media_File"]
+        # Obj.Question_Media_File = request.POST["Question_Media_File"]
         if request.POST["Use_Flag"] == 'true':
             Obj.Use_Flag = True
         else:
             Obj.Use_Flag = False
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
         Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
+        media = request.FILES['Question_Media_File']
+        if media.size / 1024 > 2048:
+                    return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
+        path = settings.MEDIA_ROOT
+        name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+        fs = FileSystemStorage(location=path + '/Question_Media_Files/')
+        filename = fs.save(name, media)
+        Obj.Question_Media_File = 'Question_Media_Files/' + name
         Obj.save()
 
         return JsonResponse(

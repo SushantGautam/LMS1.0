@@ -230,6 +230,9 @@ class ChapterInfoCreateView(CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
     template_name = 'teacher_module/chapterinfo_form.html'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('teacher_chapterinfo_detail', kwargs = {'course':self.object.Course_Code.id,'pk': self.object.pk})
     
 
 class ChapterInfoDetailView(DetailView):
@@ -255,6 +258,9 @@ class ChapterInfoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         return context
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('teacher_chapterinfo_detail', kwargs = {'course':self.object.Course_Code.id,'pk': self.object.pk})
 
 class AssignmentInfoDetailView(DetailView):
     model = AssignmentInfo
