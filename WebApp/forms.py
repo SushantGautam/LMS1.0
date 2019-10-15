@@ -100,11 +100,12 @@ class MemberInfoForm(forms.ModelForm):
                            )
         ),
         FormActions(
-            Submit('submit', 'Save changes'),
-            HTML(''' <button id="saveandnew" type="submit" formtarget="_blank"> Save and New </button> ''')
+            Submit('submit', 'Create Member', css_class='btn btn-success'),
+            HTML(''' <button class='btn btn-primary' id="saveandnew" type="submit" formtarget="_blank"> Save and New </button> ''')
             # Button('cancel', 'Cancel')
         )
     )
+
 
     class Meta:
         model = MemberInfo

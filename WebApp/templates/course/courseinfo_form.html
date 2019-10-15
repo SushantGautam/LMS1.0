@@ -31,7 +31,7 @@
             </label>
             <div class="controls ">
                 <input type="text" name="Course_Name" value="{{ object.Course_Name }}"
-                    class="textinput textInput form-control" maxlength="500" id="id_Course_Name">
+                    class="textinput textInput form-control" maxlength="500" id="id_Course_Name" required="true">
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
             </label>
             <div class="controls ">
                 <input type="text" name="Course_Provider" value="{{ object.Course_Provider }}"
-                    class="textinput textInput form-control" maxlength="250" id="id_Course_Provider">
+                    class="textinput textInput form-control" maxlength="250" id="id_Course_Provider" required="true">
             </div>
         </div>
     </div>
@@ -87,14 +87,7 @@
     </div>
     {% endif %}
 
-    {#    <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">#}
-    {#        {% if '/teachers' in request.path %}#}
-    {#            <input type="hidden" name="Teacher_Code" id="id_Center_Code" value="{{ request.user.id }}"#}
-    {#                   class="select form-control">#}
-    {#        {% else %}#}
-    {#            {{ form.Teacher_Code|as_crispy_field }}#}
-    {#        {% endif %}#}
-    {#    </div>#}
+
 
 
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">

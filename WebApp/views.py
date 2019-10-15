@@ -157,8 +157,8 @@ def start(request):
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
-            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)[:5]
+            surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,End_Date__gte=datetime.now())[:5]
+            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,End_Date__gte=datetime.now())[:5]
 
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
@@ -574,10 +574,7 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Chapter_Name = request.POST["Chapter_Name"]
         Obj.Summary = request.POST["Summary"]
         # print(request.POST["Use_Flag"])
-        if request.POST["Use_Flag"] == 'true':
-            Obj.Use_Flag = True
-        else:
-            Obj.Use_Flag = False
+        Obj.Use_Flag = True
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
         Obj.save()
