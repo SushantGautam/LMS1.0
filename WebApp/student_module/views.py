@@ -40,6 +40,8 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth import get_user_model
 from .misc import get_query
 from LMS import settings
+import uuid
+from django.core.files.storage import FileSystemStorage
 
 datetime_now = datetime.now()
 
@@ -314,7 +316,20 @@ class submitAnswer(View):
             pk=request.POST["Student_Code"])
         Obj.Question_Code = AssignmentQuestionInfo.objects.get(
             pk=request.POST["Question_Code"])
+        Assignment_Code = Obj.Question_Code.Assignment_Code
+        if bool(request.FILES.get('Assignment_File',False)) == True:
+            media = request.FILES['Assignment_File']
+            print(media)
+            if media.size / 1024 > 2048:
+                return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
+            path = settings.MEDIA_ROOT  
+            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
+            filename = fs.save(name, media)
+            Obj.Question_Media_File = 'assignments/' + str(Assignment_Code.id) + name    
+            Obj.Assignment_File = media
         Obj.save()
+
 
         return JsonResponse(
             data={'Message': 'Success'}

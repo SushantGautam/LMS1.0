@@ -381,7 +381,7 @@ class AssignAssignmentInfo(models.Model):
 
 
 def assignment_upload(instance, filename):
-    return 'assignments/{0}/{1}'.format(instance.Assignment_Code.id, filename)
+    return 'assignments/{0}/{1}'.format(instance.Question_Code.Assignment_Code.id, filename)
 
 
 class AssignAnswerInfo(models.Model):
