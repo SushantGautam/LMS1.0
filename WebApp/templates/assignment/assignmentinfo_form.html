@@ -18,7 +18,6 @@
             <form method="post" id="FormID">
                 {% csrf_token %}
                 <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-
                     {{ form.Assignment_Topic|as_crispy_field }}
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
@@ -31,7 +30,6 @@
                                 id="id_Assignment_Deadline">
                         </div>
                     </div>
-                    {#                    {{ form.Assignment_Deadline|as_crispy_field }}#}
 
                 </div>
 

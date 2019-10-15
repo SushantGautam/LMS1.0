@@ -38,6 +38,7 @@
     {% csrf_token %}
     {% crispy form %}
 </form>
+
 {% include 'WebApp/theme/alerts.html' %}
 <div class="x_content">
 
@@ -275,53 +276,66 @@
 {% block customjss %}
 <script>
 
-        {#$('#FormID').submit(function (e) {#}
-        {##}
-        {#    var scheck = $('#id_Is_Student').is(':checked');#}
-        {#    var tcheck = $('#id_Is_Teacher').is(':checked');#}
-        {#    if(scheck == false && tcheck == false) {#}
-        {#        e.preventDefault();#}
-        {#        $('#error_member_type').html('Please select the type of user');#}
-        {#    } else {#}
-        {#            $('#error_member_type').html('');#}
-        {#    }#}
-    {#            if ($(".js-validate-username").attr('data-error') == 'true') { #}
-        {#                e.preventDefault(); #}
-        {# } #}
-    {# }); #}
+    {
+        #$('#FormID').submit(function (e) { # }
+        { ## }
+        { #    var scheck = $('#id_Is_Student').is(':checked'); # }
+        { #    var tcheck = $('#id_Is_Teacher').is(':checked'); # }
+        { #    if(scheck == false && tcheck == false) { # }
+        { #        e.preventDefault(); # }
+        { #        $('#error_member_type').html('Please select the type of user'); # }
+        { # } else { # }
+        { #            $('#error_member_type').html(''); # }
+        { # } #
+    }
+    {
+        #            if ($(".js-validate-username").attr('data-error') == 'true') { # }
+        { #                e.preventDefault(); # }
+        { # } #
+    }
+    { # }); #}
 
-    {#        $(".js-validate-username").change(function () { #}
-        {#            var username = $(this).val(); #}
-        {#            var edit_username = '{{ object.username }}'; #}
-        {#            var flag = 0; #}
+    {
+        #        $(".js-validate-username").change(function () { # }
+        { #            var username = $(this).val(); # }
+        { #            var edit_username = '{{ object.username }}'; # }
+        { #            var flag = 0; # }
 
-        {#            if(edit_username) { #}
-        {#                if(username == edit_username) { #}
-        {#                    $('#error_username').html(''); #}
-        {#                    $(".js-validate-username").attr('data-error', 'false'); #}
-        {#                    flag = 1; #}
-        {# } #}
-    {# } #}
+        { #            if(edit_username) { # }
+        { #                if(username == edit_username) { # }
+        { #                    $('#error_username').html(''); # }
+        { #                    $(".js-validate-username").attr('data-error', 'false'); # }
+        { #                    flag = 1; # }
+        { # } #
+    }
+    { # } #}
 
-    {#            if (flag == 0) { #}
-        {#                $.ajax({ #}
-        {#                    url: '{% url "validate_username" %}', #}
-        {#                    data: { #}
-        {#                        'username': username#}
-        {# },#}
-        {#                    dataType: 'json', #}
-        {#                    success: function (data) { #}
-            {#                        if (data.is_taken) { #}
-                {#                            $('#error_username').html(data.error_message); #}
-                {#                            $(".js-validate-username").attr('data-error', 'true'); #}
-                {# } else { #}
-                {#                            $('#error_username').html(''); #}
-                {#                            $(".js-validate-username").attr('data-error', 'false'); #}
-                {# } #}
-            {# } #}
-        {# }); #}
-    {# } #}
-    {# }); #}
+    {
+        #            if (flag == 0) { # }
+        {
+            #                $.ajax({ # }
+        { #                    url: '{% url "validate_username" %}', # }
+        { #                    data: { # }
+        { #                        'username': username# }
+        { # },#}
+        { #                    dataType: 'json', # }
+        {
+            #                    success: function (data) { # }
+            {
+                #                        if (data.is_taken) { # }
+                { #                            $('#error_username').html(data.error_message); # }
+                { #                            $(".js-validate-username").attr('data-error', 'true'); # }
+                { # } else { # }
+                { #                            $('#error_username').html(''); # }
+                { #                            $(".js-validate-username").attr('data-error', 'false'); # }
+                { # } #
+            }
+            { # } #
+        }
+        { # }); #
+    }
+    { # } #}
+    { # }); #}
 
     $('#id_first_name').change(function () {
         //suggest username
@@ -340,8 +354,8 @@
     });
 
 
-    {#        ) #}
-    {# ; #}
+    { #        ) # }
+    { #; # }
 
 </script>
 {% endblock %}
