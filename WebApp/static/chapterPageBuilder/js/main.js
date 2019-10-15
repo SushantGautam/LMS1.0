@@ -1142,7 +1142,7 @@ $(document).ready(function() {
             //  alert('btn clickd')
         });
 
-        $('.3dobj').resizable({
+        $('._3dobj-div').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
