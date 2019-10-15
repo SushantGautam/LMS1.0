@@ -31,10 +31,15 @@
                     data-target="#course-modal">Content Viewer &nbsp;</a>
 
                 {% if '/students' not in request.path %}
-                <a class="btn-sm btn-success"
-                    href="{% url 'teachers_chapterpagebuilder' object.Course_Code.id object.id %}">Content Builder &nbsp;</a>
-
+                    {% if '/teachers' in request.path %}
+                        <a class="btn-sm btn-success"
+                            href="{% url 'teachers_chapterpagebuilder' object.Course_Code.id object.id %}">Content Builder &nbsp;</a>
+                    {% else %}
+                        <a class="btn-sm btn-success"
+                            href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">Content Builder &nbsp;</a>
+                    {% endif %}
                 {% endif %}
+
             </div>
 
             {% if '/students' not in request.path %}
