@@ -1,7 +1,7 @@
 {% load static %}
 
 {% block stylesheets %}
-<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
 <div class="row" id="surveyheader">
@@ -9,7 +9,7 @@
         <div class="btn-group" id="status" data-toggle="buttons">
             <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
                 <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-                    checked="checked">Active</label>
+                       checked="checked">Active</label>
             <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
                 <input type="radio" value="0" name="multifeatured_module[module_id][status]">Expire</label>
             <label class="btn btn-default btn-off-3 btn-sm " id="LiveButton">
@@ -121,35 +121,35 @@
         {% endfor %}
     </div>
 
-</div>
+    {#    <div class=" text-center">#}
+    {#        {% if is_paginated %}#}
+    {#            <ul class="pagination">#}
+    {#                {% if page_obj.has_previous %}#}
+    {#                    <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>#}
+    {#                {% else %}#}
+    {#                    <li class="disabled"><span>&laquo;</span></li>#}
+    {#                {% endif %}#}
+    {#                {% for i in paginator.page_range %}#}
+    {#                    {% if page_obj.number == i %}#}
+    {#                        <li class="active">#}
+    {#                            <span>{{ i }} <span class="sr-only">(current)</span></span>#}
+    {#                        </li>#}
+    {#                    {% else %}#}
+    {#                        <li>#}
+    {#                            <a href="?page={{ i }}">{{ i }}</a>#}
+    {#                        </li>#}
+    {#                    {% endif %}#}
+    {#                {% endfor %}#}
+    {#                {% if page_obj.has_next %}#}
+    {#                    <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>#}
+    {#                {% else %}#}
+    {#                    <li class="disabled"><span>&raquo;</span></li>#}
+    {#                {% endif %}#}
+    {#            </ul>#}
+    {#        {% endif %}#}
+    {#    </div>#}
 
-{#<div class=" text-center">#}
-{#    {% if is_paginated %}#}
-{#    <ul class="pagination">#}
-{#      {% if page_obj.has_previous %}#}
-{#      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>#}
-{#      {% else %}#}
-{#      <li class="disabled"><span>&laquo;</span></li>#}
-{#      {% endif %}#}
-{#      {% for i in paginator.page_range %}#}
-{#      {% if page_obj.number == i %}#}
-{#      <li class="active">#}
-{#        <span>{{ i }} <span class="sr-only">(current)</span></span>#}
-{#      </li>#}
-{#      {% else %}#}
-{#      <li>#}
-{#        <a href="?page={{ i }}">{{ i }}</a>#}
-{#      </li>#}
-{#      {% endif %}#}
-{#      {% endfor %}#}
-{#      {% if page_obj.has_next %}#}
-{#      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>#}
-{#      {% else %}#}
-{#      <li class="disabled"><span>&raquo;</span></li>#}
-{#      {% endif %}#}
-{#    </ul>#}
-{#    {% endif %}#}
-{#  </div>#}
+</div>
 
 
 {% block customjss %}

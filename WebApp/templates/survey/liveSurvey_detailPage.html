@@ -37,6 +37,10 @@
                                 <li class="surveyViewDates">
                                     <i class="fa fa-calendar"></i><label>End date: {{ object.End_Date }}</label>
                                 </li>
+                                <li class="surveyViewDates">
+                                    <i class="fa fa-calendar"></i><label>Remaining
+                                    time: {{ object.End_Date |timeuntil }}</label>
+                                </li>
                             </ul>
                         </div>
                         <div class="col-md-6 col-xs-12">
