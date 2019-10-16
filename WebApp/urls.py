@@ -118,6 +118,8 @@ urlpatterns += (
          views.AssignmentInfoDetailView.as_view(), name='assignmentinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='assignmentinfo_update'),
+    path('assignmentinfo/edit/ajax', views.AssignmentInfoEditViewAjax.as_view(), name='assignmentinfo_edit_ajax'),
+ 
 
 )
 
@@ -137,6 +139,7 @@ urlpatterns += (
         views.QuestionInfoUpdateView.as_view(), name='webapp_questioninfo_update'),
     path('questioninfo/create/ajax',
          views.QuestionInfoCreateViewAjax.as_view(), name='questioninfo_create_ajax'),
+    path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/', views.QuestionInfoDeleteView.as_view(), name='webapp_questioninfo_delete'),
 
 )
 
