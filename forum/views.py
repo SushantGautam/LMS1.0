@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render
@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView
 from textblob import TextBlob
+from django.contrib.auth.decorators import login_required
 
 from WebApp.models import InningInfo, GroupMapping, InningGroup
 from .forms import ThreadForm, ThreadEditForm, AppendixForm, ForumAvatarForm, ReplyForm, TopicForm, TopicEditForm, \
@@ -47,6 +48,7 @@ def Topic_not_related_to_user(request):
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
         not_assigned_topics = Topic.objects.filter(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
                                                       node_group__title="Course")
+        not_assigned_topics= not_assigned_topics.filter()
     else:
        not_assigned_topics =  Topic.objects.filter(node_group__title="Course")
     return not_assigned_topics
@@ -57,7 +59,7 @@ def Thread_not_related_to_user(request):
 
 
 # Create your views here.
-class Index(ListView):
+class Index(LoginRequiredMixin, ListView):
     model = Thread
     template_name = 'forum/index.html'
     context_object_name = 'threads'
@@ -83,7 +85,7 @@ class Index(ListView):
         return context
 
 
-class NodeGroupView(ListView):
+class NodeGroupView(LoginRequiredMixin, ListView):
     model = Topic
     template_name = 'forum/nodegroup.html'
     context_object_name = 'topics'
@@ -122,7 +124,7 @@ class NodeGroupView(ListView):
         return context
 
 
-class TopicView(ListView):
+class TopicView(LoginRequiredMixin, ListView):
     model = Thread
     paginate_by = 15
     template_name = 'forum/topic.html'
@@ -147,7 +149,7 @@ class TopicView(ListView):
         return context
 
 
-class ThreadView(ListView):
+class ThreadView(LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/thread.html'
@@ -200,7 +202,7 @@ def user_info(request, pk):
     })
 
 
-class UserThreads(ListView):
+class UserThreads(LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/user_threads.html'
@@ -222,7 +224,7 @@ class UserThreads(ListView):
         return context
 
 
-class UserPosts(ListView):
+class UserPosts(LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/user_replies.html'
@@ -244,7 +246,7 @@ class UserPosts(ListView):
         return context
 
 
-class SearchView(ListView):
+class SearchView(LoginRequiredMixin, ListView):
     model = Thread
     paginate_by = 20
     template_name = 'forum/search.html'
@@ -416,7 +418,7 @@ def notification_view(request):
     })
 
 
-class NotificationView(ListView):
+class NotificationView(LoginRequiredMixin, ListView):
     model = Notification
     paginate_by = 20
     template_name = 'forum/notifications.html'
