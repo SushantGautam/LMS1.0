@@ -48,7 +48,8 @@
                             {{ form.errors }}
                             {{ form.Survey_Title|as_crispy_field }}
                             {{ form.Category_Code|as_crispy_field }}
-                            {{ form.End_Date|as_crispy_field }}
+                            {#                            {{ form.End_Date|as_crispy_field }}#}
+                            <input type="time" name="End_Time">
                             {{ form.Session_Code|as_crispy_field }}
                             {{ form.Course_Code|as_crispy_field }}
 
