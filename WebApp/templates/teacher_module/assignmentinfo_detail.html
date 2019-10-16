@@ -6,7 +6,8 @@
 </li>
 <li class="breadcrumb-item"><a href="{{ object.Chapter_Code.teacher_get_absolute_url }}">{{ object.Chapter_Code }}</a>
 </li>
-<li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Topic }}</li>
+<li class="breadcrumb-item active" aria-current="page" style="max-width: 30ch; overflow: hidden;white-space: nowrap; text-overflow:ellipsis;
+;margin-bottom: -5px;">{{ object.Assignment_Topic }}</li>
 {% endblock %}
 {% block content %}
 

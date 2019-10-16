@@ -62,7 +62,7 @@
         formdata.append("Register_Agent", $('#id_Register_Agent').val());
         formdata.append("Assignment_Code", $('#id_Assignment_Code').val());
 
-        console.log(formdata)
+
         $.ajax({
             url: "{% url 'questioninfo_create_ajax' %}",  // URL to your view that serves new info
             data: formdata,

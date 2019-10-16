@@ -1,7 +1,7 @@
 {% load static %}
 
 <div class="outerdiv">
-    <div class="col-md-6 col-sm-12 col-xs-12">
+    <div class="col-md-5 col-sm-12 col-xs-12">
         <h2 class="detailListHeader">Assignment Information</h2>
         <hr class="header_hr">
         {% if '/students' not in request.path %}
@@ -53,7 +53,7 @@
         {% endif %}
 
     </div>
-    <div class=" col-md-6 col-sm-12 col-xs-12 ">
+    <div class=" col-md-7 col-sm-12 col-xs-12 ">
         <div class=" col-md-8 col-sm-8 col-xs-12 text-center">
             <h2 class="subHeader">Questions</h2>
         </div>
@@ -129,8 +129,8 @@
                         {% if questions.extension == '.jpg' or questions.extension == '.png' %}
                         <img class="card-img-top" width="400px" src="{{ questions.Question_Media_File.url }}">
                         {% else %}
-                        <a href="{{ questions.Question_Media_File.url }}" target="_blank"><b
-                                style="color: #000000">Click to view file</b></a>
+                        <a href="{{ questions.Question_Media_File.url }}" target="_blank"><b style="color:#017a9b">Click
+                                to view attatched file</b></a>
                         {% endif %}
                     </div>
                     {% endif %}
@@ -139,7 +139,14 @@
                     <div class="x_content">
                         {% for answer in Answers %}
                         {% if questions.id == answer.Question_Code.id  %}
+                        {% if answer.Assignment_Answer != 'undefined' %}
                         <p style="margin: 0;color:#000000;">{{answer.Assignment_Answer}}</p>
+                        {% else %}
+                        <p style="margin: 0;color:#000000;">{{answer.Assignment_File}}</p>
+
+                        <a href="{{answer.Assignment_File.url }}" target="_blank"><b style="color:#017a9b">Click
+                                to view uploaded file</b></a>
+                        {% endif %}
                         {% endif %}
                         {% endfor %}
                         {% if not Answers %}
@@ -197,6 +204,8 @@
                                 <textarea class="form-control rounded-0" rows="5" cols="100" name="Assignment_Answer"
                                     id="id_Assignment_Answer{{questions.id}}" placeholder="Enter your Answer"
                                     required></textarea>
+                                <input type="hidden" name="Assignment_File" id="id_Assignment_File{{questions.id}}"
+                                    required value="0" />
                                 <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
                                     id="id_Student_Code{{questions.id}}">
                                 <input type="hidden" value="{{ questions.id }}" name="Question_Code"
@@ -291,19 +300,29 @@
     $(".submitAnswer").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         console.log(this.id)
+        var answerdata = new FormData();
+        if ($(`#id_Assignment_File${this.id}`).val() != 0) {
+            var answer_file = $(`#id_Assignment_File${this.id}`)[0].files[0];
+        }
+        else {
+            var answer_file = 0;
+        }
+        // console.log(answer_file)
+        answerdata.append("Assignment_File", answer_file);
+        answerdata.append("csrfmiddlewaretoken", '{{csrf_token}}');
+        answerdata.append("Assignment_Answer", $(`#id_Assignment_Answer${this.id}`).val());
+        answerdata.append("Question_Code", $(`#id_Question_Code${this.id}`).val());
+        answerdata.append("Student_Code", $(`#id_Student_Code${this.id}`).val());
 
+        console.log("Assignment_Answer")
         $.ajax({
             url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
-            data: {
-                "csrfmiddlewaretoken": '{{ csrf_token }}',
-                "Assignment_Answer": $(`#id_Assignment_Answer${this.id}`).val(),
-                // "Assignment_File": $('#id_Assignment_File').val(),
-                "Question_Code": $(`#id_Question_Code${this.id}`).val(),
-                "Student_Code": $(`#id_Student_Code${this.id}`).val(),
-                // "Student_Code": $('#id_Use_Flag').is(":checked"),
-            },
+            data: answerdata,
             // get the form data
             type: $(this).attr('method'), // GET or POST
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
             success: function (response) {
                 console.log('Success')
                 location.reload()

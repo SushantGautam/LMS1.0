@@ -26,12 +26,14 @@ class SurveyInfoForm(forms.ModelForm):
 
 
 class LiveSurveyInfoForm(forms.ModelForm):
-    End_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
+    # End_Date = forms.DateTimeField(label='End Time', widget=forms.DateInput(attrs={'type': 'time'}))
 
     class Meta:
         model = SurveyInfo
-        fields = ['Survey_Title', 'Category_Code', 'End_Date',
+        fields = ['Survey_Title', 'Category_Code',
                   'Session_Code', 'Course_Code']
+        # labels = {'End_Date': 'End Time',}
+        # setattr()
 
 
 class QuestionInfoForm(forms.ModelForm):
