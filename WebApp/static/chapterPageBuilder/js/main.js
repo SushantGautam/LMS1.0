@@ -1327,22 +1327,22 @@ $(document).ready(function() {
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
                 top = 0,
-                left = 150,
+                left = 0,
                 "",
-                width = "30%", height="45%");
+                width = "100%", height="50%");
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="50%",
-                left=150,
-                height="45%", width='50% '
+                left=0,
+                height="45%", width='100% '
             );
         } else if (ui.helper.hasClass('grid')) {
             VideoFunction(
                 top = 0,
                 left = 0,
-                "",
+                null,
                 height="50%",width = "100%");
             
             
