@@ -44,13 +44,13 @@ def get_thread_ordering(request):
 def Topic_not_related_to_user(request):
     innings = InningInfo.objects.filter(
         Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
+    other_center_topic = Topic.objects.exclude(center_associated_with=request.user.Center_Code)
     if innings:
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
-        not_assigned_topics = Topic.objects.filter(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
+        not_assigned_topics = other_center_topic.filter(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
                                                       node_group__title="Course")
-        not_assigned_topics= not_assigned_topics.filter()
     else:
-       not_assigned_topics =  Topic.objects.filter(node_group__title="Course")
+       not_assigned_topics =  other_center_topic.filter(node_group__title="Course")
     return not_assigned_topics
 
 
