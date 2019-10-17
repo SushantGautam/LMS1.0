@@ -13,7 +13,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView, DeleteView
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 from django.utils.translation import gettext as _
@@ -103,6 +103,26 @@ def Dashboard(request):
 class GroupMappingDetailViewTeacher(DetailView):
     model = GroupMapping
     template_name = 'teacher_module/groupmapping_detail.html'
+
+class QuestionInfoDeleteView(DeleteView):
+    model = AssignmentQuestionInfo
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
+
+    
+    def post(self, request, *args, **kwargs):
+     
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = AssignmentQuestionInfo.objects.get(pk=self.request.POST['question_id'])
+            Obj.delete()
+            return redirect('teacher_assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+
+        except:
+            messages.error(request,
+                           "Fail")
+            return redirect('teacher_assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+            # return redirect('student_home')
+    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 class MyCourseListView(ListView):
@@ -273,6 +293,27 @@ class AssignmentInfoDetailView(DetailView):
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
+
+class AssignmentInfoDeleteView(DeleteView):
+    model = AssignmentInfo
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
+
+    
+    def post(self, request, *args, **kwargs):
+     
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = AssignmentInfo.objects.get(pk=self.request.POST['assignment_id'])
+            Obj.delete()
+            return redirect('teacher_chapterinfo_detail', course=request.POST['course_id'], pk=request.POST['chapter_id'])
+
+        except:
+            messages.error(request,
+                           "Fail")
+            return redirect('teacher_assignmentinfo_detail',course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+            # return redirect('student_home')
+    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+
 
 class AssignmentAnswers(ListView):
     model = AssignAnswerInfo

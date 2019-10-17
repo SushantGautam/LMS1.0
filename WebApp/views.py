@@ -876,6 +876,25 @@ class AssignmentInfoUpdateView(UpdateView):
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         return context
 
+class AssignmentInfoDeleteView(DeleteView):
+    model = AssignmentInfo
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
+
+    
+    def post(self, request, *args, **kwargs):
+     
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = AssignmentInfo.objects.get(pk=self.request.POST['assignment_id'])
+            Obj.delete()
+            return redirect('chapterinfo_detail', course=request.POST['course_id'], pk=request.POST['chapter_id'])
+
+        except:
+            messages.error(request,
+                           "Fail")
+            return redirect('assignmentinfo_detail',course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+            # return redirect('student_home')
+    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 class QuestionInfoListView(ListView):
     model = AssignmentQuestionInfo
@@ -913,14 +932,15 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Use_Flag = False
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
         Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
-        media = request.FILES['Question_Media_File']
-        if media.size / 1024 > 2048:
-                    return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
-        path = settings.MEDIA_ROOT
-        name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
-        fs = FileSystemStorage(location=path + '/Question_Media_Files/')
-        filename = fs.save(name, media)
-        Obj.Question_Media_File = 'Question_Media_Files/' + name
+        if bool(request.FILES.get('Question_Media_File',False)) == True:
+            media = request.FILES['Question_Media_File']
+            if media.size / 1024 > 2048:
+                return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
+            path = settings.MEDIA_ROOT
+            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            fs = FileSystemStorage(location=path + '/Question_Media_Files/')
+            filename = fs.save(name, media)
+            Obj.Question_Media_File = 'Question_Media_Files/' + name
         Obj.save()
 
         return JsonResponse(
@@ -959,8 +979,8 @@ class QuestionInfoDeleteView(DeleteView):
         except:
             messages.error(request,
                            "Fail")
-            # return redirect('assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
-            return redirect('student_home')
+            return redirect('assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+            # return redirect('student_home')
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 class AssignAssignmentInfoListView(ListView):

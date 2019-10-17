@@ -16,6 +16,34 @@
                 id="editAssignment-btn">
                 Edit Assignment
             </button>
+            {% if '/teachers' in request.path %}
+
+            <span style="float: right;">
+                <button type="button" class="btn btn-link"><a id="{{ object.pk }}" class="assignment-confirm-delete"
+                        style="color: rgb(255, 0, 0);cursor:pointer">Delete</a></button>
+            </span>
+            <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
+                id="deleteAssignment{{ object.pk }}">
+                {% csrf_token %}
+                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                <input type="hidden" value="{{object.pk}}" name="assignment_id">
+                <input type="hidden" value="{{object.Course_Code.id}}" name="course_id">
+                <input type="hidden" value="{{object.Chapter_Code.id}}" name="chapter_id">
+            </form>
+            {% else %}
+            <span style="float: right;">
+                <button type="button" class="btn btn-link"><a id="{{ object.pk }}" class="assignment-confirm-delete"
+                        style="color: rgb(255, 0, 0);cursor:pointer">Delete</a></button>
+            </span>
+            <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
+                id="deleteAssignment{{ object.pk }}">
+                {% csrf_token %}
+                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                <input type="hidden" value="{{object.pk}}" name="assignment_id">
+                <input type="hidden" value="{{object.Course_Code.id}}" name="course_id">
+                <input type="hidden" value="{{object.Chapter_Code.id}}" name="chapter_id">
+            </form>
+            {% endif %}
         </div>
         {% endif %}
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -91,10 +119,29 @@
                     <a class="moreButton" id="{{ questions.pk }}"><i class="fa fa-chevron-down"
                             style="padding-top:30px; float:right;cursor: pointer;" id="moreArrow{{ questions.pk }}"></i>
                     </a>
+                    {% if '/students' not in request.path %}
+                    {% if '/teachers' in request.path %}
+
                     <span style="float: right;"><a id="{{ questions.pk }}" class="confirm-delete"
                             style="color: #2A3F54;cursor:pointer">
                             Delete
                         </a></span>
+
+                    <form method="post"
+                        action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=questions.pk %}"
+                        id="deleteQuestion{{ questions.pk }}">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{questions.pk}}" name="question_id">
+                        <input type="hidden" value="{{object.pk}}" name="assignment_id">
+                        <input type="hidden" value="{{object.Course_Code.id}}" name="course_id">
+                        <input type="hidden" value="{{object.Chapter_Code.id}}" name="chapter_id">
+                    </form>
+                    {% else %}
+                    <span style="float: right;"><a id="{{ questions.pk }}" class="confirm-delete"
+                            style="color: #2A3F54;cursor:pointer">
+                            Delete
+                        </a></span>
+
                     <form method="post"
                         action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=questions.pk %}"
                         id="deleteQuestion{{ questions.pk }}">
@@ -104,6 +151,8 @@
                         <input type="hidden" value="{{object.Course_Code.id}}" name="course_id">
                         <input type="hidden" value="{{object.Chapter_Code.id}}" name="chapter_id">
                     </form>
+                    {% endif %}
+                    {% endif %}
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12" id="questionContent{{ questions.pk }}"
                     style="display: none;">
@@ -334,10 +383,7 @@
                     <div class="submitButton  col-md-12">
                         <button class="btn btn-success" type="submit">Submit</button>
                     </div>
-
                 </form>
-
-
             </div>
         </div>
     </div>
@@ -392,6 +438,15 @@
         }
     });
 
+    $(document).on('click', '.assignment-confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Assignment?');
+        if (ans == true) {
+            $(`#deleteAssignment${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+
     $('#add-newquestion-btn').on('click', function () {
         $('#add_question_modal_body').empty();
         $('#add_question_modal_body').append(
@@ -415,22 +470,24 @@
 
     $(".submitAnswer").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        console.log(this.id)
+        // console.log(this.id)
         var answerdata = new FormData();
-        if ($(`#id_Assignment_File${this.id}`).val() != 0) {
+        if ($(`#id_Assignment_File${this.id}`).val()) {
             var answer_file = $(`#id_Assignment_File${this.id}`)[0].files[0];
+            // console.log('asdas');
         }
         else {
             var answer_file = 0;
+            // console.log('asdasd');
         }
-        // console.log(answer_file)
+        console.log($(`#id_Assignment_File${this.id}`).val())
         answerdata.append("Assignment_File", answer_file);
         answerdata.append("csrfmiddlewaretoken", '{{csrf_token}}');
         answerdata.append("Assignment_Answer", $(`#id_Assignment_Answer${this.id}`).val());
         answerdata.append("Question_Code", $(`#id_Question_Code${this.id}`).val());
         answerdata.append("Student_Code", $(`#id_Student_Code${this.id}`).val());
 
-        console.log("Assignment_Answer")
+        // console.log("Assignment_Answer")
         $.ajax({
             url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
             data: answerdata,

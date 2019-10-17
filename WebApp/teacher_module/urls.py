@@ -52,6 +52,9 @@ urlpatterns += (
          name='teacher_myassignmentinfo_list'),
     path('assignment_answers/<int:pk>', views.AssignmentAnswers.as_view(),
          name='teacher_assignment_answers'),
+    path('assignmentinfo/<int:pk>/', views.AssignmentInfoDeleteView.as_view(), name='teacher_assignmentinfo_delete'),
+    path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/', views.QuestionInfoDeleteView.as_view(), name='teacher_questioninfo_delete'),
+
 )
 
 urlpatterns += (

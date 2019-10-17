@@ -119,8 +119,7 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='assignmentinfo_update'),
     path('assignmentinfo/edit/ajax', views.AssignmentInfoEditViewAjax.as_view(), name='assignmentinfo_edit_ajax'),
- 
-
+    path('assignmentinfo/<int:pk>/', views.AssignmentInfoDeleteView.as_view(), name='assignmentinfo_delete'),
 )
 
 urlpatterns += (

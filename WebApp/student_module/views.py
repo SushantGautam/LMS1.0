@@ -319,7 +319,7 @@ class submitAnswer(View):
         Assignment_Code = Obj.Question_Code.Assignment_Code
         if bool(request.FILES.get('Assignment_File',False)) == True:
             media = request.FILES['Assignment_File']
-            print(media)
+            # print(media)
             if media.size / 1024 > 2048:
                 return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT  
