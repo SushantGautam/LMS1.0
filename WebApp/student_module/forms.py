@@ -9,7 +9,7 @@ from django.forms import ModelForm
 from django.forms import SelectDateWidget
 from django.utils.translation import ugettext as _
 from forum.models import Thread, ForumAvatar, Post, Topic
-from forum.forms import TopicForm
+from forum.forms import TopicForm, ThreadEditForm
 
 
 if 'pagedown' in settings.INSTALLED_APPS:
@@ -78,3 +78,7 @@ class ReplyForm(ModelForm):
             inst.save()
             self.save_m2m()
         return inst
+
+
+class ThreadEditForm(ThreadEditForm):
+    pass
