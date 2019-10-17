@@ -497,7 +497,6 @@ class MemberInfoUpdateView(UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
 
-
 class MemberInfoDeleteView(DeleteView):
     model = MemberInfo
     success_url = reverse_lazy('memberinfo_list')
@@ -596,6 +595,9 @@ class ChapterInfoDetailView(DetailView):
         return context
 
 
+
+
+
 def CourseForum(request, course):
     course = CourseInfo.objects.get(pk=course)
     course_forum = None
@@ -607,10 +609,10 @@ def CourseForum(request, course):
         course_node_forum = NodeGroup.objects.get(title='Course')
 
     try:
-        course_forum = Topic.objects.get(title=course.Course_Name)
+        course_forum = Topic.objects.get(course_associated_with=course)
     except ObjectDoesNotExist:
-        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum).save()
-        course_forum = Topic.objects.get(title=course.Course_Name)
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course).save()
+        course_forum = Topic.objects.get(course_associated_with=course)
     return redirect('forum:topic', pk=course_forum.pk)
 
 
@@ -830,7 +832,28 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             data={'Message': 'Success'}
         )
 
+class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
+    model = AssignmentInfo
 
+    def post(self, request, *args, **kwargs):
+        try:
+            Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
+            Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+            Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
+            Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
+            Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
+            Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+            Obj.save()
+            return JsonResponse(
+                data={'Message': 'Success'}
+            )
+        
+        except:
+            return JsonResponse(
+                data={'Message': 'Fail'}
+            )
+
+  
 class AssignmentInfoDetailView(DetailView):
     model = AssignmentInfo
 
@@ -920,6 +943,25 @@ class QuestionInfoUpdateView(UpdateView):
         context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
+class QuestionInfoDeleteView(DeleteView):
+    model = AssignmentQuestionInfo
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
+
+    
+    def post(self, request, *args, **kwargs):
+     
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = AssignmentQuestionInfo.objects.get(pk=self.request.POST['question_id'])
+            Obj.delete()
+            return redirect('assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+
+        except:
+            messages.error(request,
+                           "Fail")
+            # return redirect('assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+            return redirect('student_home')
+    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 class AssignAssignmentInfoListView(ListView):
     model = AssignAssignmentInfo

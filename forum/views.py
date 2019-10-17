@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render
@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView
 from textblob import TextBlob
+from django.contrib.auth.decorators import login_required
 
 from WebApp.models import InningInfo, GroupMapping, InningGroup
 from .forms import ThreadForm, ThreadEditForm, AppendixForm, ForumAvatarForm, ReplyForm, TopicForm, TopicEditForm, \
@@ -43,12 +44,17 @@ def get_thread_ordering(request):
 def Topic_not_related_to_user(request):
     innings = InningInfo.objects.filter(
         Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
+    other_center_topic = Topic.objects.exclude(center_associated_with=request.user.Center_Code)
+    print(other_center_topic,'other_center_topic')
     if innings:
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
-        not_assigned_topics = Topic.objects.filter(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
-                                                      node_group__title="Course")
+        own_courses_forum_topics  = Topic.objects.filter(course_associated_with__in=courses)
+        own_center_courses_forum = Topic.objects.filter(center_associated_with=request.user.Center_Code)
+        courses_forum_own_center_unauthorized = own_center_courses_forum.exclude(pk__in=own_center_courses_forum)
+        not_assigned_topics = courses_forum_own_center_unauthorized | other_center_topic
     else:
-       not_assigned_topics =  Topic.objects.filter(node_group__title="Course")
+       not_assigned_topics =  other_center_topic | Topic.objects.filter(node_group__title="Course")
+    print(not_assigned_topics, 'not_assigned_topics')
     return not_assigned_topics
 
 
@@ -57,7 +63,7 @@ def Thread_not_related_to_user(request):
 
 
 # Create your views here.
-class Index(ListView):
+class Index(LoginRequiredMixin, ListView):
     model = Thread
     template_name = 'forum/index.html'
     context_object_name = 'threads'
@@ -83,7 +89,7 @@ class Index(ListView):
         return context
 
 
-class NodeGroupView(ListView):
+class NodeGroupView(LoginRequiredMixin, ListView):
     model = Topic
     template_name = 'forum/nodegroup.html'
     context_object_name = 'topics'
@@ -100,7 +106,7 @@ class NodeGroupView(ListView):
 
     def get_context_data(self, **kwargs):
         topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).exclude(id__in=Topic_not_related_to_user(self.request))
-        
+
         latest_threads = []
         for topic in topics:
             reply_count = 0
@@ -122,7 +128,7 @@ class NodeGroupView(ListView):
         return context
 
 
-class TopicView(ListView):
+class TopicView(LoginRequiredMixin, ListView):
     model = Thread
     paginate_by = 15
     template_name = 'forum/topic.html'
@@ -147,7 +153,7 @@ class TopicView(ListView):
         return context
 
 
-class ThreadView(ListView):
+class ThreadView(LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/thread.html'
@@ -200,7 +206,7 @@ def user_info(request, pk):
     })
 
 
-class UserThreads(ListView):
+class UserThreads(LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/user_threads.html'
@@ -222,7 +228,7 @@ class UserThreads(ListView):
         return context
 
 
-class UserPosts(ListView):
+class UserPosts(LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/user_replies.html'
@@ -244,7 +250,7 @@ class UserPosts(ListView):
         return context
 
 
-class SearchView(ListView):
+class SearchView(LoginRequiredMixin, ListView):
     model = Thread
     paginate_by = 20
     template_name = 'forum/search.html'
@@ -416,7 +422,7 @@ def notification_view(request):
     })
 
 
-class NotificationView(ListView):
+class NotificationView(LoginRequiredMixin, ListView):
     model = Notification
     paginate_by = 20
     template_name = 'forum/notifications.html'
