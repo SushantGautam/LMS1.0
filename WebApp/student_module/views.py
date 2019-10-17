@@ -737,7 +737,7 @@ class NotificationView(ListView):
         context['title'] = ("Notifications")
         return context
 
-
+@login_required
 def edit_thread(request, pk):
     thread = Thread.objects.get(pk=pk)
     if thread.reply_count < 0:
@@ -748,7 +748,7 @@ def edit_thread(request, pk):
         form = ThreadEditForm(request.POST, instance=thread)
         if form.is_valid():
             t = form.save()
-            return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
+            return HttpResponseRedirect(reverse('student_thread', kwargs={'pk': t.pk}))
     else:
         form = ThreadEditForm(instance=thread)
 

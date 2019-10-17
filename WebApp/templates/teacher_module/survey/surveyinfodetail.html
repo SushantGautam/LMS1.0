@@ -1,14 +1,18 @@
-{% extends "base.html" %}
+{#..........................................Teacher detail page............................................#}
+
+{% extends "teacher_module/base.html" %}
 {% load static %}
 {% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %}
+
 {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'surveyinfo_list' %}">Survey</a>
+        <a href="{% url 'question_teachers' %}">Survey</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
+
 {% block content %}
-    {% include 'survey/common/commonliveSurvey_detailPage.html' %}
+    {% include 'survey/common/details.html' %}
 {% endblock %}

@@ -38,11 +38,11 @@
         {% for object in object_list %}
             {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == False %}
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 active_survey">
-                    <a href=" {% if 'teachers' in request.path %}
-                                {% url 'polls_teachers' object.pk %}
-                                {% else %}
+                    <a href="{% if '/teachers' in request.path %}
+                                {% url 'surveyinfodetail' object.pk %}
+                             {% else %}
                                  {% url 'surveyinfo_detail' object.pk %}
-                               {% endif %}
+                             {% endif %}
                                 ">
                         <div class="box-part text-center">
                             {% if object.id in submittedSurvey %}
@@ -69,7 +69,11 @@
 
             {% if object.End_Date|date:'y m d' < currentDate|date:'y m d' and object.Survey_Live == False %}
                 <div class=" col-lg-4 col-md-6 col-sm-6 col-xs-12 expire_survey " style="display: none;">
-                    <a href=" {% url 'surveyinfo_detail' object.pk %}">
+                    <a href=" {% if '/teachers' in request.path %}
+                                {% url 'surveyinfodetail' object.pk %}
+                             {% else %}
+                                 {% url 'surveyinfo_detail' object.pk %}
+                             {% endif %}">
                         <div class="box-part text-center">
                             {% if object.id in submittedSurvey %}
                                 <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>

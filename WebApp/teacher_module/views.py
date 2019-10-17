@@ -4,30 +4,28 @@ from datetime import datetime
 from django.conf import settings
 # from django.core.checks import messages
 from django.contrib import messages
-from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME, update_session_auth_hash
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView, DeleteView
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
-from django.utils.translation import gettext as _
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.csrf import csrf_protect
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
-    AssignAnswerInfo, MemberInfo
+    AssignAnswerInfo, MemberInfo, GroupMapping
 from forum.forms import ThreadForm, ThreadEditForm
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
-from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, AssignAnswerInfo, MemberInfo, GroupMapping
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
@@ -415,7 +413,7 @@ def makequery(request):
 
 class SurveyInfoListView(ListView):
     model = SurveyInfo
-    template_name = 'teacher_module/question_teachers.html'
+    template_name = 'teacher_module/survey/question_teachers.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -474,7 +472,7 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return default_kwargs
 
 def polls_teachers(request):
-    return render(request, 'teacher_module/polls_teachers.html')
+    return render(request, 'teacher_module/survey/surveyinfodetail.html')
 
 class AjaxableResponseMixin:
     """
@@ -1078,7 +1076,7 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
 
 class teacherSurveyFilterCategory(ListView):
     model = SurveyInfo
-    template_name = 'teacher_module/teacher_surveyFiltered.html'
+    template_name = 'survey/common/surveyinfo_expireView.html'
 
     def get_queryset(self):
         if self.request.GET['categoryId'] == '0':
@@ -1094,7 +1092,7 @@ class teacherSurveyFilterCategory(ListView):
 
 class TeacherSurveyInfoDetailView(DetailView):
     model = SurveyInfo
-    template_name = 'teacher_module/polls_teachers.html'
+    template_name = 'teacher_module/survey/surveyinfodetail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1103,9 +1101,6 @@ class TeacherSurveyInfoDetailView(DetailView):
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
         return context
-
-
-
 
 def create_topic(request, teacher_nodegroup_pk=None):
     node_group = NodeGroup.objects.filter(pk=teacher_nodegroup_pk)
@@ -1367,6 +1362,24 @@ def edit_thread(request, pk):
     return render(request, 'teacher_module/teacher_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
+
+
+@login_required
+def edit_thread(request, pk):
+    thread = Thread.objects.get(pk=pk)
+    if thread.reply_count < 0:
+        return HttpResponseForbidden(_('Editing is not allowed when thread has been replied'))
+    if not thread.user == request.user:
+        return HttpResponseForbidden(_('You are not allowed to edit other\'s thread'))
+    if request.method == 'POST':
+        form = ThreadEditForm(request.POST, instance=thread)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('teacher_thread', kwargs={'pk': t.pk}))
+    else:
+        form = ThreadEditForm(instance=thread)
+
+    return render(request, 'teacher_module/teacher_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
 
