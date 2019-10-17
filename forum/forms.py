@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from django.conf import settings
-
-from django.forms import ModelForm
 from django import forms
+from django.conf import settings
+from django.forms import ModelForm
 from django.utils.translation import ugettext as _
-from .models import Thread, Appendix, ForumAvatar, Post, Topic
 
+from .models import Thread, Appendix, ForumAvatar, Post, Topic
 
 if 'pagedown' in settings.INSTALLED_APPS:
     use_pagedown = True
@@ -860,18 +859,15 @@ class TopicForm(ModelForm):
     topic_icon = forms.CharField(
         widget=forms.Select(choices=TOPIC_CHOICES))
 
-
     if use_pagedown:
         content_raw = forms.CharField(
             label=_('Content'), widget=PagedownWidget())
-
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(TopicForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', _('Submit')))
-
 
     class Meta:
         model = Topic
@@ -883,7 +879,6 @@ class TopicForm(ModelForm):
 
         }
 
-
     def save(self, commit=True):
         inst = super(TopicForm, self).save(commit=False)
         inst.user = self.user
@@ -891,9 +886,6 @@ class TopicForm(ModelForm):
             inst.save()
             self.save_m2m()
         return inst
-
-
-
 
         if use_pagedown:
             content_raw = forms.CharField(
