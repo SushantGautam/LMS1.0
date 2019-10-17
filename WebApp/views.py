@@ -607,10 +607,10 @@ def CourseForum(request, course):
         course_node_forum = NodeGroup.objects.get(title='Course')
 
     try:
-        course_forum = Topic.objects.get(title=course.Course_Name)
+        course_forum = Topic.objects.get(course_associated_with=course)
     except ObjectDoesNotExist:
-        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum).save()
-        course_forum = Topic.objects.get(title=course.Course_Name)
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course).save()
+        course_forum = Topic.objects.get(course_associated_with=course)
     return redirect('forum:topic', pk=course_forum.pk)
 
 
