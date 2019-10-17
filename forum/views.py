@@ -47,10 +47,11 @@ def Topic_not_related_to_user(request):
     other_center_topic = Topic.objects.exclude(center_associated_with=request.user.Center_Code)
     if innings:
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
-        not_assigned_topics = other_center_topic.filter(node_group__title="Course").exclude(id__in=Topic.objects.filter(title__in=courses),
+        not_assigned_topics = other_center_topic.exclude(id__in=Topic.objects.filter(title__in=courses),
                                                       node_group__title="Course")
     else:
-       not_assigned_topics =  other_center_topic.filter(node_group__title="Course")
+       not_assigned_topics =  other_center_topic
+    print(not_assigned_topics, 'not_assigned_topics')
     return not_assigned_topics
 
 
