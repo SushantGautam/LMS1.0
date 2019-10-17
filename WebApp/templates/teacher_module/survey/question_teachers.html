@@ -1,0 +1,68 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{#{% block title %}#}
+{#    Teacher survey#}
+{#{% endblock %}#}
+{% block stylesheets %}
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Survey</li>
+{% endblock %}
+{% block content %}
+    {% include 'survey/surveyinfo_list.html' %}
+{% endblock %}
+
+{% block customjss %}
+
+    {% for category in categories %}
+        <script>
+            {#console.log('{{category.Category_Name}}');#}
+            $('#category_Add_Button{{ category.id }}').on('click', function () {
+
+                $.ajax({
+                    type: "GET",
+                    data: {'categoryId': '{{category.id}}'},
+                    url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
+                    success: function (data) {
+                        $("#surveyForm").html(data);
+                    }
+                });
+            });
+        </script>
+
+    {% endfor %}
+
+    <script>
+        $(document).ready(function () {
+            var urls = "{% if 'teachers' in request.path %}{% url 'teacherSurveyFilterCategory' %}{%  else %}{% url 'surveyFilterCategory' %}{%  endif %}";
+            urls = urls.trim();
+            $.ajax({
+                type: "GET",
+                data: {'categoryId': 0},
+                url: urls,
+                success: function (data) {
+                    $("#rowCards").html(data);
+                    {#console.log(data)#}
+                }
+            });
+        });
+
+        $('.category-name').on('click', function () {
+            var categoryId = this.id;
+            var urls = "{% if 'teachers' in request.path %}{% url 'teacherSurveyFilterCategory' %}{%  else %}{% url 'surveyFilterCategory' %}{%  endif %}";
+            urls = urls.trim();
+            console.log('categoryId');
+            $.ajax({
+                type: "GET",
+                data: {'categoryId': categoryId},
+                url: urls, // URL to your view that serves new info
+                success: function (data) {
+                    $("#rowCards").html(data);
+                    {#console.log(data)#}
+                }
+            });
+        });
+    </script>
+{% endblock %}
