@@ -5,8 +5,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse
@@ -14,7 +14,6 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView
 from textblob import TextBlob
-from django.contrib.auth.decorators import login_required
 
 from WebApp.models import InningInfo, GroupMapping, InningGroup
 from .forms import ThreadForm, ThreadEditForm, AppendixForm, ForumAvatarForm, ReplyForm, TopicForm, TopicEditForm, \
@@ -47,11 +46,10 @@ def Topic_not_related_to_user(request):
     other_center_topic = Topic.objects.exclude(center_associated_with=request.user.Center_Code)
     if innings:
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
-        not_assigned_topics = other_center_topic.exclude(id__in=Topic.objects.filter(title__in=courses),
-                                                      node_group__title="Course")
+        not_assigned_topics = other_center_topic.exclude(course_associated_with__in=courses)
     else:
-       not_assigned_topics =  other_center_topic
-    print(not_assigned_topics, 'not_assigned_topics')
+        not_assigned_topics = other_center_topic.exclude(node_group__title="Course")
+        print(not_assigned_topics, 'not_assigned_topics')
     return not_assigned_topics
 
 
@@ -71,7 +69,8 @@ class Index(LoginRequiredMixin, ListView):
         for ng in nodegroups:
             topics = Topic.objects.filter(node_group=ng.pk).exclude(id__in=Topic_not_related_to_user(self.request))
             for topic in topics:
-                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').exclude(topic_id__in=Topic_not_related_to_user(self.request))[:4]
+                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').exclude(
+                    topic_id__in=Topic_not_related_to_user(self.request))[:4]
                 threadqueryset |= threads
         return threadqueryset
 
@@ -102,8 +101,9 @@ class NodeGroupView(LoginRequiredMixin, ListView):
         ).exclude(id__in=Topic_not_related_to_user(self.request))
 
     def get_context_data(self, **kwargs):
-        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).exclude(id__in=Topic_not_related_to_user(self.request))
-        
+        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).exclude(
+            id__in=Topic_not_related_to_user(self.request))
+
         latest_threads = []
         for topic in topics:
             reply_count = 0
