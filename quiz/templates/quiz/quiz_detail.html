@@ -120,6 +120,15 @@
 
                   <li class="quiz-listing">  {{ quest.content }}</li>
 
+                  {% if quest.figure %}
+                      <div class="detail-page-images"> 
+                          <img src="{{quest.figure.url}}" alt="">
+
+                      </div>
+
+                    
+                  {% endif %}
+
 
                 </div>
 
@@ -185,6 +194,14 @@
               <div class="col-md-12">
                 <div class="col-md-10">
                   <li class="quiz-listing">  {{ quest.content }}</li>
+                  {% if quest.figure %}
+                  <div class="detail-page-images"> 
+                      <img src="{{quest.figure.url}}" alt="">
+
+                  </div>
+
+                
+              {% endif %}
                 </div>
                 <div class="col-md-1 text-right">
                   <input id="tfq_{{ quest.id }}_update_button" class="button-color-only" type="submit"
@@ -236,6 +253,14 @@
               <div class="col-md-12">
                 <div class="col-md-10">
                   <li class="quiz-listing">  {{ quest.content }}</li>
+                  {% if quest.figure %}
+                  <div class="detail-page-images"> 
+                      <img src="{{quest.figure.url}}" alt="">
+
+                  </div>
+
+                
+              {% endif %}
                 </div>
                 <div class="col-md-1 text-right">
                   <input id="saq_{{ quest.id }}_update_button" class="button-color-only" type="submit"
