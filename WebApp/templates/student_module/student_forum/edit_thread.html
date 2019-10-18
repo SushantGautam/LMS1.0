@@ -145,7 +145,7 @@
 
         });
 
-        $('.editor-wrapper').html('{{ object.content_raw }}');
+        $('.editor-wrapper').html('{{ object.content_raw|safe }}');
     });
 
 </script>

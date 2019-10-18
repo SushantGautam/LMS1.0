@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.forms import ModelForm
-from django.conf import settings
-from crispy_forms.layout import Submit
 from crispy_forms.helper import FormHelper
-from .models import Thread, Appendix, ForumAvatar, Post, Topic
+from crispy_forms.layout import Submit
+from django import forms
+from django.conf import settings
+from django.forms import ModelForm, HiddenInput
 from django.utils.translation import ugettext as _
+
+from .models import Thread, Appendix, ForumAvatar, Post, Topic
 
 if 'pagedown' in settings.INSTALLED_APPS:
     use_pagedown = True
@@ -15,7 +17,6 @@ else:
 
 
 class ThreadForm(ModelForm):
-
     if use_pagedown:
         content_raw = forms.CharField(
             label=_('Content'), widget=PagedownWidget())
@@ -45,7 +46,6 @@ class ThreadForm(ModelForm):
 
 
 class ThreadEditForm(ModelForm):
-
     if use_pagedown:
         content_raw = forms.CharField(
             label=_('Content'), widget=PagedownWidget())
@@ -57,7 +57,7 @@ class ThreadEditForm(ModelForm):
 
     class Meta:
         model = Thread
-        fields = ('title', 'content_raw', )
+        fields = ('title', 'content_raw',)
         labels = {
             'content_raw': ('Content'),
         }
@@ -73,6 +73,7 @@ class TopicForm(ModelForm):
         self.user = kwargs.pop('user', None)
         super(TopicForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.fields['topic_icon'].widget = HiddenInput()
         self.helper.add_input(Submit('submit', _('Submit')))
 
     class Meta:
@@ -87,7 +88,7 @@ class TopicForm(ModelForm):
 
     def save(self, commit=True):
         inst = super(TopicForm, self).save(commit=False)
-        inst.user = self.user
+        inst.center_associated_with = self.user.Center_Code
         if commit:
             inst.save()
             self.save_m2m()
@@ -95,7 +96,6 @@ class TopicForm(ModelForm):
 
 
 class TopicEditForm(ModelForm):
-
     if use_pagedown:
         content_raw = forms.CharField(
             label=_('Content'), widget=PagedownWidget())
@@ -107,7 +107,7 @@ class TopicEditForm(ModelForm):
 
     class Meta:
         model = Topic
-        fields = ('description', 'topic_icon', )
+        fields = ('description', 'topic_icon',)
         labels = {
             'description': _('Description'),
             'topic_icon': _('Topic Icon'),
@@ -124,7 +124,7 @@ class AppendixForm(ModelForm):
 
     class Meta:
         model = Appendix
-        fields = ('content_raw', )
+        fields = ('content_raw',)
         labels = {
             'content_raw': _('Content'),
         }
@@ -164,7 +164,6 @@ class ForumAvatarForm(ModelForm):
 
 
 class ReplyForm(ModelForm):
-
     if use_pagedown:
         content_raw = forms.CharField(label='', widget=PagedownWidget())
 
@@ -193,7 +192,6 @@ class ReplyForm(ModelForm):
 
 
 class PostEditForm(ModelForm):
-
     if use_pagedown:
         content_raw = forms.CharField(
             label=_('Content'), widget=PagedownWidget())
@@ -205,7 +203,7 @@ class PostEditForm(ModelForm):
 
     class Meta:
         model = Post
-        fields = ('content_raw', )
+        fields = ('content_raw',)
         labels = {
             'content_raw': _('Content'),
         }

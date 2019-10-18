@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
-from WebApp.models import MemberInfo
+from WebApp.models import MemberInfo, CourseInfo, CenterInfo
 from functools import partial
 from forum.tasks import notify
 from PIL import Image
@@ -260,6 +260,9 @@ class Topic(models.Model):
     thread_count = models.IntegerField(
         default=0, verbose_name=_("thread count"))
     topic_icon = models.CharField(max_length=30, verbose_name=_("topic_icon"))
+    course_associated_with = models.ForeignKey(CourseInfo, on_delete=models.CASCADE, null=True, blank=True)
+    center_associated_with = models.ForeignKey(CenterInfo, on_delete=models.CASCADE, null=True, blank=True)
+
 
     def __str__(self):
         return self.title

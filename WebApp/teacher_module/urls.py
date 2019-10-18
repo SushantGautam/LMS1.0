@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.teacher_module import views
+from survey import views as survey_views
 from .. import views as admin_views
 
 urlpatterns = (
@@ -52,6 +53,9 @@ urlpatterns += (
          name='teacher_myassignmentinfo_list'),
     path('assignment_answers/<int:pk>', views.AssignmentAnswers.as_view(),
          name='teacher_assignment_answers'),
+    path('assignmentinfo/<int:pk>/', views.AssignmentInfoDeleteView.as_view(), name='teacher_assignmentinfo_delete'),
+    path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/', views.QuestionInfoDeleteView.as_view(), name='teacher_questioninfo_delete'),
+
 )
 
 urlpatterns += (
@@ -78,12 +82,14 @@ urlpatterns += (
     # path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
     #          name='surveyinfo_create'),
     # path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
-    path('polls_teachers/detail/<int:pk>/',
-         views.TeacherSurveyInfoDetailView.as_view(), name='polls_teachers'),
-    path('teacherSurveyFilterCategory/', views.teacherSurveyFilterCategory.as_view(),
+    path('surveyinfodetail/detail/<int:pk>/',
+         views.TeacherSurveyInfoDetailView.as_view(), name='surveyinfodetail'),
+    path('surveyFilterCategory/', survey_views.surveyFilterCategory.as_view(),
          name='teacherSurveyFilterCategory'),
     path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
          name='TeacherSurveyInfo_ajax'),
+    path('liveSurveyCreate/', survey_views.liveSurveyCreate.as_view(), name='teacherliveSurveyCreate'),
+    path('liveSurveyDetail/detail/<int:pk>/', survey_views.LiveSurveyDetail.as_view(), name='teacherliveSurveyDetail'),
 )
 
 urlpatterns += (

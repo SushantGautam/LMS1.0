@@ -417,7 +417,7 @@
             </select>
             <div class="chapter-description" id="chapter-description">
               <p>
-                {{chapterdetails.Summary}}
+                
               </p>
             </div>
           </div>
@@ -588,6 +588,17 @@
     var href = $('#goBackBtn').attr('href');
     location.href = href;
   });
+
+  $(document).ready(function(){
+    let trunc = truncateString('{{chapterdetails.Summary}}');
+    $('#chapter-description').find('p').text(trunc);
+  });
+
+  const truncateString = (string, maxLength = 30) => {
+    if (!string) return null;
+    const showDots = string.length > maxLength;
+    return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+  };
 </script>
   <script src="https://player.vimeo.com/api/player.js"></script>
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
