@@ -754,3 +754,24 @@ def edit_thread(request, pk):
 
     return render(request, 'student_module/student_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
 
+
+def CourseForum(request, course):
+    course = CourseInfo.objects.get(pk=course)
+    course_forum = None
+    course_node_forum = None
+    try:
+        course_node_forum = NodeGroup.objects.get(title='Course')
+    except ObjectDoesNotExist:
+        NodeGroup.objects.create(title='Course', description='Root node for course Forum').save()
+        course_node_forum = NodeGroup.objects.get(title='Course')
+
+    try:
+        course_forum = Topic.objects.get(course_associated_with=course)
+    except ObjectDoesNotExist:
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course).save()
+        course_forum = Topic.objects.get(course_associated_with=course)
+    return redirect('student_topic', pk=course_forum.pk)
+
+
+
+

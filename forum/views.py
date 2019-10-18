@@ -5,8 +5,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse
@@ -14,7 +14,6 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView
 from textblob import TextBlob
-from django.contrib.auth.decorators import login_required
 
 from WebApp.models import InningInfo, GroupMapping, InningGroup
 from .forms import ThreadForm, ThreadEditForm, AppendixForm, ForumAvatarForm, ReplyForm, TopicForm, TopicEditForm, \
@@ -41,25 +40,27 @@ def get_thread_ordering(request):
     return get_default_ordering()
 
 
-def Topic_not_related_to_user(request):
+def Topic_related_to_user(request):
     innings = InningInfo.objects.filter(
         Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
-    other_center_topic = Topic.objects.exclude(center_associated_with=request.user.Center_Code)
-    print(other_center_topic,'other_center_topic')
+    own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
+        course_associated_with__isnull=True)
+    # print(other_center_topic,'other_center_topic')
+    assigned_topics = ''
     if innings:
-        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
-        own_courses_forum_topics  = Topic.objects.filter(course_associated_with__in=courses)
-        own_center_courses_forum = Topic.objects.filter(center_associated_with=request.user.Center_Code)
-        courses_forum_own_center_unauthorized = own_center_courses_forum.exclude(pk__in=own_center_courses_forum)
-        not_assigned_topics = courses_forum_own_center_unauthorized | other_center_topic
+        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+        own_courses_forum_topics = Topic.objects.filter(course_associated_with__in=courses)
+        assigned_topics = own_courses_forum_topics | own_center_general_topic
     else:
-       not_assigned_topics =  other_center_topic | Topic.objects.filter(node_group__title="Course")
-    print(not_assigned_topics, 'not_assigned_topics')
-    return not_assigned_topics
+        assigned_topics = own_center_general_topic
+
+    print("assigned_topics", assigned_topics)
+    return assigned_topics
 
 
-def Thread_not_related_to_user(request):
-    return Thread.objects.filter(topic__in=Topic_not_related_to_user(request))
+def Thread_related_to_user(request):
+    print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
+    return Thread.objects.filter(topic__in=Topic_related_to_user(request))
 
 
 # Create your views here.
@@ -72,9 +73,11 @@ class Index(LoginRequiredMixin, ListView):
         nodegroups = NodeGroup.objects.all()
         threadqueryset = Thread.objects.none()
         for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk).exclude(id__in=Topic_not_related_to_user(self.request))
+            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
             for topic in topics:
-                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').exclude(topic_id__in=Topic_not_related_to_user(self.request))[:4]
+                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
+                    topic_id__in=Topic_related_to_user(self.request))[:4]
+                print("threads", threads)
                 threadqueryset |= threads
         return threadqueryset
 
@@ -82,7 +85,7 @@ class Index(LoginRequiredMixin, ListView):
         context = super(ListView, self).get_context_data(**kwargs)
         context['panel_title'] = _('New Threads')
         context['title'] = _('Index')
-        context['topics'] = Topic.objects.all().exclude(id__in=Topic_not_related_to_user(self.request))
+        context['topics'] = Topic.objects.all().filter(id__in=Topic_related_to_user(self.request))
         context['show_order'] = True
         context['get_top_thread_keywords'] = get_top_thread_keywords(
             self.request, 10)
@@ -102,10 +105,11 @@ class NodeGroupView(LoginRequiredMixin, ListView):
             'user', 'node_group'
         ).prefetch_related(
             'user__forum_avatar'
-        ).exclude(id__in=Topic_not_related_to_user(self.request))
+        ).filter(id__in=Topic_related_to_user(self.request))
 
     def get_context_data(self, **kwargs):
-        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).exclude(id__in=Topic_not_related_to_user(self.request))
+        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).filter(
+            id__in=Topic_related_to_user(self.request))
 
         latest_threads = []
         for topic in topics:
@@ -143,7 +147,7 @@ class TopicView(LoginRequiredMixin, ListView):
             'user__forum_avatar'
         ).order_by(
             *['order', get_thread_ordering(self.request)]
-        ).exclude(topic_id__in=Topic_not_related_to_user(self.request))
+        ).filter(topic_id__in=Topic_related_to_user(self.request))
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
@@ -293,7 +297,7 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
         topic = Topic.objects.get(pk=topic_pk)
-    topics = Topic.objects.filter(node_group=nodegroup_pk).exclude(id__in=Topic_not_related_to_user(request))
+    topics = Topic.objects.filter(node_group=nodegroup_pk).filter(id__in=Topic_related_to_user(request))
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
         if form.is_valid():

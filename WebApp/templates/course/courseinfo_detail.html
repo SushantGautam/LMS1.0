@@ -45,7 +45,14 @@
 
                 <div class="col-lg-6" style="font-size: 15px;">
                     <h5 align="center"><i class="fa fa-comment-o"></i>
-                        <a target="_blank" href="{% url 'Course_Forum' object.pk %}">FORUM</a>
+                        <a target="_blank" href="
+                        {% if '/teachers' in request.path %}
+                        {% url 'Teacher_Course_Forum' object.pk %}
+                        {% elif '/students' in request.path %}
+                        {% url 'Student_Course_Forum' object.pk %}
+                        {% else %}
+                        {% url 'Course_Forum' object.pk %}
+                        {% endif %}">FORUM</a>
                     </h5>
                 </div>
                 {% if '/students' not in request.path %}
