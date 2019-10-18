@@ -91,6 +91,8 @@ urlpatterns += (
     path('courseinfo/create/', views.CourseInfoCreateView.as_view(), name='courseinfo_create'),
     path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(), name='courseinfo_detail'),
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
+    path('courseinfo/delete/<int:pk>/', views.CourseInfoDeleteView, name='courseinfo_delete'),
+
 )
 
 urlpatterns += (
@@ -104,6 +106,8 @@ urlpatterns += (
          name='chapterinfo_update'),
     path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'),
     path('change_quiz_test/', views.Changestate.as_view(), name='change_quiz_test'),
+    path('chapterinfo/delete/<int:pk>/', views.ChapterInfoDeleteView.as_view(), name='chapterinfo_delete'),
+
 )
 
 urlpatterns += (

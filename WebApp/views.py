@@ -547,6 +547,24 @@ class CourseInfoUpdateView(UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
 
+# class CourseInfoDeleteView(DeleteView):
+#     model = CourseInfo
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
+    
+def CourseInfoDeleteView(request,pk):
+        if request.method == 'POST':
+            try:
+                # return self.delete(request, *args, **kwargs)
+                Obj = CourseInfo.objects.get(pk=pk)
+                Obj.delete()
+                return redirect('courseinfo_list')
+
+            except:
+                messages.error(request,
+                            "Fail")
+                return redirect('courseinfo_detail',  pk =pk)   
+    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+
 
 class ChapterInfoListView(ListView):
     model = ChapterInfo
@@ -594,6 +612,23 @@ class ChapterInfoDetailView(DetailView):
 
         return context
 
+class ChapterInfoDeleteView(DeleteView):
+    model = ChapterInfo
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = ChapterInfo.objects.get(pk= request.POST['chapter_id'])
+            Obj.delete()
+            return redirect('courseinfo_detail', pk=request.POST['course_id'])
+
+        except:
+            messages.error(request,
+                           "Fail")
+            return redirect('chapterinfo_detail',course=self.request.POST['course_id'], pk=self.request.POST['chapter_id'])
+            # return redirect('student_home')
+    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 
@@ -879,7 +914,6 @@ class AssignmentInfoUpdateView(UpdateView):
 class AssignmentInfoDeleteView(DeleteView):
     model = AssignmentInfo
     # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
-
     
     def post(self, request, *args, **kwargs):
      
