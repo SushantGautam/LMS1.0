@@ -33,8 +33,7 @@ from quiz.models import Question, Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
-    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, UserUpdateForm, \
-    MemberUpdateForm
+    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
@@ -157,8 +156,10 @@ def start(request):
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,End_Date__gte=datetime.now())[:5]
-            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,End_Date__gte=datetime.now())[:5]
+            surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
+                                                    End_Date__gte=datetime.now())[:5]
+            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
+                                                     End_Date__gte=datetime.now())[:5]
 
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
@@ -182,8 +183,9 @@ def start(request):
     else:
         return render(request, "WebApp/splash_page.html")
 
+
 def edit_basic_info_ajax(request):
-    if request.method=='POST' and request.is_ajax():
+    if request.method == 'POST' and request.is_ajax():
         try:
             obj = MemberInfo.objects.get(pk=request.user.id)
             obj.username = request.POST['username']
@@ -192,14 +194,15 @@ def edit_basic_info_ajax(request):
             obj.Member_BirthDate = request.POST['Member_BirthDate']
             obj.Member_Gender = request.POST['Member_Gender']
             obj.save()
-            return JsonResponse({'status':'Success', 'msg': 'save successfully'})
+            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
         except MemberInfo.DoesNotExist:
-            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
     else:
-        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
 
 def edit_contact_info_ajax(request):
-    if request.method=='POST' and request.is_ajax():
+    if request.method == 'POST' and request.is_ajax():
         try:
             obj = MemberInfo.objects.get(pk=request.user.id)
             obj.email = request.POST['email']
@@ -207,44 +210,47 @@ def edit_contact_info_ajax(request):
             obj.Member_Temporary_Address = request.POST['Member_Temporary_Address']
             obj.Member_Permanent_Address = request.POST['Member_Permanent_Address']
             obj.save()
-            return JsonResponse({'status':'Success', 'msg': 'save successfully'})
+            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
         except MemberInfo.DoesNotExist:
-            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
     else:
-        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
 
 def edit_description_info_ajax(request):
-    if request.method=='POST' and request.is_ajax():
+    if request.method == 'POST' and request.is_ajax():
         try:
             obj = MemberInfo.objects.get(pk=request.user.id)
             obj.Member_Memo = request.POST['Member_Memo']
             obj.save()
-            return JsonResponse({'status':'Success', 'msg': 'save successfully'})
+            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
         except MemberInfo.DoesNotExist:
-            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
     else:
-        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
 
 def edit_profile_image_ajax(request):
-    if request.method=='POST' and request.FILES['Member_Avatar']:
+    if request.method == 'POST' and request.FILES['Member_Avatar']:
         try:
             obj = MemberInfo.objects.get(pk=request.user.id)
             media = request.FILES['Member_Avatar']
             if media.size / 1024 > 2048:
-                    return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
+                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/Member_images/')
             filename = fs.save(name, media)
             obj.Member_Avatar = 'Member_images/' + name
             obj.save()
-            return JsonResponse({'status':'Success', 'msg': 'Profile Picture Uploaded successfully'})
+            return JsonResponse({'status': 'Success', 'msg': 'Profile Picture Uploaded successfully'})
         except MemberInfo.DoesNotExist:
-            return JsonResponse({'status':'Fail', 'msg': 'Object does not exist'})
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
         except:
             return JsonResponse({'status': "Fail", 'msg': "Some error occured try again"})
     else:
-        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
+        return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
 
 # def editprofile(request):
 #     if not request.user.is_authenticated:
@@ -497,6 +503,7 @@ class MemberInfoUpdateView(UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
 
+
 class MemberInfoDeleteView(DeleteView):
     model = MemberInfo
     success_url = reverse_lazy('memberinfo_list')
@@ -595,9 +602,6 @@ class ChapterInfoDetailView(DetailView):
         return context
 
 
-
-
-
 def CourseForum(request, course):
     course = CourseInfo.objects.get(pk=course)
     course_forum = None
@@ -611,7 +615,8 @@ def CourseForum(request, course):
     try:
         course_forum = Topic.objects.get(course_associated_with=course)
     except ObjectDoesNotExist:
-        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,center_associated_with = request.user.Center_Code ).save()
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,
+                             center_associated_with=request.user.Center_Code, topic_icon="book").save()
         course_forum = Topic.objects.get(course_associated_with=course)
     return redirect('forum:topic', pk=course_forum.pk)
 
@@ -832,6 +837,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             data={'Message': 'Success'}
         )
 
+
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentInfo
 
@@ -847,13 +853,13 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             return JsonResponse(
                 data={'Message': 'Success'}
             )
-        
+
         except:
             return JsonResponse(
                 data={'Message': 'Fail'}
             )
 
-  
+
 class AssignmentInfoDetailView(DetailView):
     model = AssignmentInfo
 
@@ -876,13 +882,14 @@ class AssignmentInfoUpdateView(UpdateView):
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         return context
 
+
 class AssignmentInfoDeleteView(DeleteView):
     model = AssignmentInfo
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
 
-    
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+
     def post(self, request, *args, **kwargs):
-     
+
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = AssignmentInfo.objects.get(pk=self.request.POST['assignment_id'])
@@ -892,9 +899,11 @@ class AssignmentInfoDeleteView(DeleteView):
         except:
             messages.error(request,
                            "Fail")
-            return redirect('assignmentinfo_detail',course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+            return redirect('assignmentinfo_detail', course=self.request.POST['course_id'],
+                            chapter=self.request.POST['chapter_id'], pk=self.request.POST['assignment_id'])
             # return redirect('student_home')
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+
 
 class QuestionInfoListView(ListView):
     model = AssignmentQuestionInfo
@@ -932,10 +941,10 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Use_Flag = False
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
         Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
-        if bool(request.FILES.get('Question_Media_File',False)) == True:
+        if bool(request.FILES.get('Question_Media_File', False)) == True:
             media = request.FILES['Question_Media_File']
             if media.size / 1024 > 2048:
-                return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
+                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/Question_Media_Files/')
@@ -963,25 +972,29 @@ class QuestionInfoUpdateView(UpdateView):
         context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
+
 class QuestionInfoDeleteView(DeleteView):
     model = AssignmentQuestionInfo
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
 
-    
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+
     def post(self, request, *args, **kwargs):
-     
+
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = AssignmentQuestionInfo.objects.get(pk=self.request.POST['question_id'])
             Obj.delete()
-            return redirect('assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+            return redirect('assignmentinfo_detail', course=request.POST['course_id'],
+                            chapter=request.POST['chapter_id'], pk=request.POST['assignment_id'])
 
         except:
             messages.error(request,
                            "Fail")
-            return redirect('assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+            return redirect('assignmentinfo_detail', course=request.POST['course_id'],
+                            chapter=request.POST['chapter_id'], pk=request.POST['assignment_id'])
             # return redirect('student_home')
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+
 
 class AssignAssignmentInfoListView(ListView):
     model = AssignAssignmentInfo
