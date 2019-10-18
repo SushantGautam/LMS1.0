@@ -48,7 +48,7 @@ def Topic_not_related_to_user(request):
     print(other_center_topic,'other_center_topic')
     if innings:
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__Course_Name')
-        own_courses_forum_topics  = Topic.objects.filter(course_associated_wij=courses)
+        own_courses_forum_topics  = Topic.objects.filter(course_associated_with__in=courses)
         own_center_courses_forum = Topic.objects.filter(center_associated_with=request.user.Center_Code)
         courses_forum_own_center_unauthorized = own_center_courses_forum.exclude(pk__in=own_courses_forum_topics)
         not_assigned_topics = courses_forum_own_center_unauthorized | other_center_topic
