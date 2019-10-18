@@ -1,14 +1,14 @@
 // Show Hide Edit Basic Info Card
 $(".edit-basic-card").hide();
-$("#edit-basic-info").click(function(){
+$("#edit-basic-info").click(function () {
     $(".edit-basic-card").show();
     $(".view-basic-card").hide();
 });
-$("#view-basic-info").click(function(){
+$("#view-basic-info").click(function () {
     $(".view-basic-card").show();
     $(".edit-basic-card").hide();
 });
-$("#reset-basic-info").click(function(e){
+$("#reset-basic-info").click(function (e) {
     e.preventDefault();
     $(".view-basic-card").show();
     $(".edit-basic-card").hide();
@@ -16,15 +16,15 @@ $("#reset-basic-info").click(function(e){
 
 // Show Hide Edit Contact Info Card
 $(".edit-contact-card").hide();
-$("#edit-contact-info").click(function(){
+$("#edit-contact-info").click(function () {
     $(".edit-contact-card").show();
     $(".view-contact-card").hide();
 });
-$("#view-contact-info").click(function(){
+$("#view-contact-info").click(function () {
     $(".view-contact-card").show();
     $(".edit-contact-card").hide();
 });
-$("#reset-contact-info").click(function(e){
+$("#reset-contact-info").click(function (e) {
     e.preventDefault();
     $(".view-contact-card").show();
     $(".edit-contact-card").hide();
@@ -32,15 +32,15 @@ $("#reset-contact-info").click(function(e){
 
 // Show Hide Edit Description Info Card
 $(".edit-description-card").hide();
-$("#edit-description-info").click(function(){
+$("#edit-description-info").click(function () {
     $(".edit-description-card").show();
     $(".view-description-card").hide();
 });
-$("#view-description-info").click(function(){
+$("#view-description-info").click(function () {
     $(".view-description-card").show();
     $(".edit-description-card").hide();
 });
-$("#reset-description-info").click(function(e){
+$("#reset-description-info").click(function (e) {
     e.preventDefault();
     $(".view-description-card").show();
     $(".edit-description-card").hide();
@@ -61,7 +61,7 @@ $(".edit-basic-card").submit(function (e) {
             "Member_BirthDate": $('#id_Member_BirthDate').val(),
             "Member_Gender": $("input[name='gender']:checked").val()
         },
-        
+
         success: function (response) {
             console.log('Success');
             location.reload();
@@ -86,7 +86,7 @@ $(".edit-contact-card").submit(function (e) {
             "Member_Temporary_Address": $('#id_Member_Temporary_Address').val(),
             "Member_Permanent_Address": $('#id_Member_Permanent_Address').val()
         },
-        
+
         success: function (response) {
             console.log('Success')
             location.reload()
@@ -108,7 +108,7 @@ $(".edit-description-card").submit(function (e) {
             "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val(),
             "Member_Memo": $('#id_Member_Memo').val()
         },
-        
+
         success: function (response) {
             console.log('Success')
             location.reload()
@@ -120,7 +120,7 @@ $(".edit-description-card").submit(function (e) {
 });
 
 // upload image
-$("#id_Member_Avatar").on("change", function() {
+$("#id_Member_Avatar").on("change", function () {
     formdata = new FormData();
     var file = this.files[0];
     if (formdata) {
@@ -132,10 +132,10 @@ $("#id_Member_Avatar").on("change", function() {
             data: formdata,
             processData: false,
             contentType: false,
-            success:function(response){
+            success: function (response) {
                 console.log(response.msg)
                 location.reload()
             }
         });
-    }						
+    }
 });
