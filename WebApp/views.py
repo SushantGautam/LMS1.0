@@ -611,7 +611,7 @@ def CourseForum(request, course):
     try:
         course_forum = Topic.objects.get(course_associated_with=course)
     except ObjectDoesNotExist:
-        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course).save()
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,center_associated_with = request.user.Center_Code ).save()
         course_forum = Topic.objects.get(course_associated_with=course)
     return redirect('forum:topic', pk=course_forum.pk)
 
