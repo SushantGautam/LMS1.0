@@ -601,7 +601,6 @@ class ChapterInfoDetailView(DetailView):
 
         return context
 
-
 def CourseForum(request, course):
     course = CourseInfo.objects.get(pk=course)
     course_forum = None
@@ -618,8 +617,13 @@ def CourseForum(request, course):
         Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,
                              center_associated_with=request.user.Center_Code, topic_icon="book").save()
         course_forum = Topic.objects.get(course_associated_with=course)
+        
     return redirect('forum:topic', pk=course_forum.pk)
 
+def get_context_data(self, **kwargs):
+    course = CourseInfo.objects.get(pk=course)
+    course_forum = Topic.objects.get(course_associated_with=course)
+    return 
 
 class ChapterInfoUpdateView(UpdateView):
     model = ChapterInfo
