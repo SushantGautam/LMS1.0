@@ -156,7 +156,7 @@ def start(request):
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
+            surveycount = SurveyInfo.objects.filter( Use_Flag=True,
                                                     End_Date__gte=datetime.now())[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now())[:5]
@@ -568,7 +568,7 @@ def CourseInfoDeleteView(request,pk):
 
             except:
                 messages.error(request,
-                            "Fail")
+                            "Cannot delete courses with chapters")
                 return redirect('courseinfo_detail',  pk =pk)   
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
@@ -584,6 +584,8 @@ class ChapterInfoCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['datetime'] = datetime.now()
+
         return context
 
 
@@ -616,6 +618,7 @@ class ChapterInfoDetailView(DetailView):
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
+        context['datetime'] = datetime.now()
 
         return context
 
@@ -632,7 +635,7 @@ class ChapterInfoDeleteView(DeleteView):
 
         except:
             messages.error(request,
-                           "Fail")
+                           "Cannot delete chapter with assignments")
             return redirect('chapterinfo_detail',course=self.request.POST['course_id'], pk=self.request.POST['chapter_id'])
             # return redirect('student_home')
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
@@ -932,7 +935,7 @@ class AssignmentInfoDeleteView(DeleteView):
 
         except:
             messages.error(request,
-                           "Fail")
+                           "Cannot delete assignment")
             return redirect('assignmentinfo_detail', course=self.request.POST['course_id'],
                             chapter=self.request.POST['chapter_id'], pk=self.request.POST['assignment_id'])
             # return redirect('student_home')
@@ -991,6 +994,7 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         )
 
 
+
 class QuestionInfoDetailView(DetailView):
     model = AssignmentQuestionInfo
 
@@ -1023,7 +1027,7 @@ class QuestionInfoDeleteView(DeleteView):
 
         except:
             messages.error(request,
-                           "Fail")
+                           "Cannot delete question")
             return redirect('assignmentinfo_detail', course=request.POST['course_id'],
                             chapter=request.POST['chapter_id'], pk=request.POST['assignment_id'])
             # return redirect('student_home')
