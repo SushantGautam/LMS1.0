@@ -1,5 +1,5 @@
-
 {% load static %}
+
 <head>
   <meta charset="UTF-8">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/offline-theme-default.css' %}">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
+  <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
   <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
@@ -69,7 +70,6 @@
   }
 
   .right-sidebar-content {
-
     position: relative;
     /* top: 80px; */
     bottom: 20;
@@ -80,7 +80,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-
   }
 
   .right-sidebar-content::-webkit-scrollbar {
@@ -93,19 +92,15 @@
     padding-right: 10px;
     padding-bottom: 10px;
     margin-bottom: 5px;
-
   }
 </style>
 
 <body>
   <div class="container-fluid full-width ">
-
-
     <div class="editor row">
 
       <!-- Preview Bar must be here... -->
       <div class=" col-sm-2 col-md-2  col-lg-2 col-xl-2 sidebar">
-
 
         <br>
 
@@ -113,10 +108,7 @@
           <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
           <li><a data-toggle="tab" href="#menu1">Layout</a></li>
 
-
-
         </ul>
-
 
         <div class="tab-content">
 
@@ -127,16 +119,11 @@
               <div class="draggable builder textbox draggable-style ">
                 <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
 
-
                 <span>Text Box</span>
               </div>
 
-
-
               <div class="draggable builder picture draggable-style ">
                 <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
-
-
 
                 <span>Picture</span>
               </div>
@@ -144,21 +131,16 @@
               <div class="draggable builder video draggable-style ">
                 <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
 
-
-
                 <span>Video</span>
               </div>
 
               <div class="draggable builder buttons draggable-style">
                 <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
 
-
                 <span>Button</span>
               </div>
 
-
               <div class="draggable builder 3dobject draggable-style">
-
 
                 <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
                 <span>3D Object</span>
@@ -166,13 +148,11 @@
 
               <div class="draggable builder Pdf draggable-style">
 
-
                 <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
                 <span>PDF</span>
               </div>
 
             </div>
-
 
           </div>
           <div id="menu1" class="tab-pane fade">
@@ -186,39 +166,31 @@
                   </path>
                 </svg> -->
 
-                <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}" alt="like this"  >
-                
+                <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}" alt="like this">
+
               </div>
 
               <div class="draggable  layout grid-1">
 
+                <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}" alt="like this">
 
-                <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}" alt="like this"  >
-               
               </div>
-
 
               <div class="draggable  layout title-slide">
 
-
-                <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}" alt="like this"  >
+                <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}" alt="like this">
               </div>
 
               <div class="draggable  layout title-content-details">
 
-
-                <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}" alt="like this"  >
+                <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}" alt="like this">
               </div>
-
 
               <div class="draggable layout pdf-text">
-                <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}" alt="like this"  >
+                <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}" alt="like this">
               </div>
 
-
-              
               <div class="draggable  layout title-content-details">
-
 
                 <!-- <img src="images/saveimg5.png" alt="like this"  > -->
               </div>
@@ -226,10 +198,7 @@
 
           </div>
 
-
-
         </div>
-
 
         <h3 style="margin-top:80px; font-size:1.8rem">Media Items </h3>
         <hr>
@@ -239,7 +208,7 @@
           <div class="tab">
             <button class="tablinks" onclick="openCity(event, 'London')">Images</button>
             <button class="tablinks" onclick="openCity(event, 'Paris')">Videos</button>
-         
+
           </div>
 
           <!-- Tab content -->
@@ -255,151 +224,47 @@
 
         </div>
 
-
       </div>
 
-
-
-
       <div class="  col-sm-8  col-md-7col-lg-8 col-xl-8 canvas">
-
         <div id="navbar-title">
           <a href="
-          {% if 'teachers' in request.path %}
-          {% url 'teacher_chapterinfo_detail' course chapter %}
-          {% else %}
-          {% url 'chapterinfo_detail' course chapter %}
-          {% endif %}
-          " id="goBackBtn"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i></a>
-          <h2 class="tlimit" contenteditable="false" id="chaptertitle">
-            Add Title....
+                      {% if 'teachers' in request.path %}
+                      {% url 'teacher_chapterinfo_detail' course chapter %}
+                      {% else %}
+                      {% url 'chapterinfo_detail' course chapter %}
+                      {% endif %}
+                      " id="goBackBtn"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i>
+          </a>
+          <h2 class="tlimit" id="chaptertitle">
           </h2>
-  
+
           <nav class="navbar">
-          
+            <a href="#" id="SaveBtn"><i class="far fa-save"></i><br />Save</a>
 
-            <a href="#" id="SaveBtn"><i class="far fa-save  "
-              ></i><br />Save</a>
+            <input id="importzipfile" name="importfile" type="file"
+              accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" />
+            <a href="#" id="import_zip_link"><i class="fas fa-file-import"></i><br />Import</a>
 
-              <input id="importzipfile" name="importfile" type="file" accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
-              <a href="#" id="import_zip_link"><i class="fas fa-file-import" ></i><br />Import</a>
+            <a href="{% url 'exportzip' course chapter %}" target="_blank"
+              onclick="return confirm('Have you saved the latest change?')"><i
+                class="fas fa-file-export"></i><br />Export</a>
 
-              
-              <a href="{% url 'exportzip' course chapter %}" target="_blank" onclick="return confirm('Have you saved the latest change?')"><i class="fas fa-file-export" ></i><br />Export</a>
-
-              <a href = "#" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br />Save and Exit</a>
+            <a href="#" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br />Save and Exit</a>
           </nav>
-
         </div>
-       
-
-
-
 
         <!-- editable title -->
 
         <div>
-          <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-            integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-        
-            <div class="editor-toolbar">
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle" type="button" id="headingMenu" data-toggle="dropdown">
-                Heading
-              </button>
-
-              <div class="dropdown-menu" aria-labelledby="headingMenu">
-
-                <li><a href="javascript:void(0)" onclick="runCommand(this, 'formatBlock', 'h1')" class="head1">Heading
-                    1</a></li>
-                <li><a href="javascript:void(0)" onclick="runCommand(this, 'formatBlock', 'h2')" class="head2">Heading
-                    2</a></li>
-                <li><a href="javascript:void(0)" onclick="runCommand(this, 'formatBlock', 'h3')" class="head3">Heading
-                    3</a></li>
-                <li><a href="javascript:void(0)" onclick="runCommand(this, 'formatBlock', 'h4')" class="head4">Heading
-                    4</a></li>
-
-              </div>
-            </div>
-            <a href="javascript:void(0)" role="button" class="toolbar-btn unselectable"
-              onclick="runCommand(this, 'bold', null)" unselectable="on"><i class="fa fa-bold"></i></a>
-            <a href="javascript:void(0)" role="button" class="toolbar-btn" onclick="runCommand(this, 'italic', null)"><i
-                class="fa fa-italic"></i></a>
-            <a href="javascript:void(0)" role="button" onclick="runCommand(this, 'underline', null)"><i
-                class="fa fa-underline"></i></a>
-            <a href="javascript:void(0)" role="button" onclick="runCommand(this, 'indent', null)"><i
-                class="fa fa-indent"></i></a>
-            <a href="javascript:void(0)" role="button" onclick="runCommand(this, 'insertUnorderedList', null)"><i
-                class="fa fa-list-ul"></i></a>
-            <a href="javascript:void(0)" role="button" onclick="runCommand(this, 'insertOrderedList', null)"><i
-                class="fa fa-list-ol"></i></a>
-            <a href="javascript:void(0)" role="button" onclick="runCommand(this, 'createLink', null)"><i
-                class="fa fa-link"></i></a>
-            <a href="javascript:void(0)" role="button" onclick="runCommand(this, 'unlink', null)"><i
-                class="fa fa-unlink"></i></a>
-            <a href="javascript:void(0)" role="button" onclick="runCommand(this, 'redo', null)"><i
-                class="fa fa-repeat"></i></a>
-            <a href="javascript:void(0)" role="button" onclick="runCommand(this, 'undo', null)"><i
-                class="fa fa-undo"></i></a>
-
-          </div>
-
-          <div>
-            <div>
-              <div>
-
-
-
-                <!-- =============modal====================== -->
-
-
-                <dialog id="table-dialog">
-                  <div class="modal-content ">
-
-                    <div class="modal-header">
-                      <h4>Tables</h4>
-                      <div class="close">&times;</div>
-                    </div>
-                    <form action="#">
-                      <label>No. of Rows..</label>
-                      <input type="number" id="number_of_rows" placeholder="Enter no of rows" />
-
-                      <label>No. of Columns..</label>
-                      <input type="number" id="number_of_columns" placeholder="Enter no of Columns" />
-
-                      <button id="ok">Ok</button>
-                    </form>
-                  </div>
-                </dialog>
-                <!-- <div id=" editor" class="droppable editor-canvas">
-
-               </div> -->
-                <!-- <div class="tabs" id="tabs-for-download">
-                  <p id="tab1" class="tab-content-no current  editor-canvas ">
-                    <h3>News</h3>
-                    <p>Some news this fine day!</p> 
-                  </p>
-                  <p id="tab2" class="tab-content-no editor-canvas ">
-                    <h3>Home</h3>
-                   <p>Some news this fine day!</p> 
-                  </p>
-                  
-                </div> -->
-
-                <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
-                  <div class="editor-canvas" id="element-container">
-                    <p id="tab1" class="tab-content-no   droppable editor-canvas current "></p>
-                  </div>
-                </div>
-              </div>
+          <!-- Editor -->
+          <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
+            <div class="editor-canvas" id="element-container">
+              <p id="tab1" class="tab-content-no   droppable editor-canvas current "></p>
             </div>
           </div>
-
-
-
         </div>
       </div>
-
       <!-- sidebar must be here.... -->
 
       <div class=" col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar">
@@ -410,14 +275,14 @@
           <div class="selection">
             <select name="chapter-lists" id="chapterlist">
               {% for chapter in chapterlist %}
-                <option value="{{chapter.id}}">
-                  {{chapter.Chapter_No}}. {{chapter.Chapter_Name}}
-                </option>
+              <option value="{{chapter.id}}">
+                {{chapter.Chapter_No}}. {{chapter.Chapter_Name}}
+              </option>
               {% endfor %}
             </select>
             <div class="chapter-description" id="chapter-description">
               <p>
-                
+
               </p>
             </div>
           </div>
@@ -427,10 +292,10 @@
         <div class="silde-div">
           <div class="add-new-page">
             <!-- <h3>Preview</h3> -->
-         
+
             <!-- <i id="add-page-btn" class="fas fa-plus-square fas-5x"></i> -->
           </div>
-          
+
           <div class="right-sidebar">
             <div class="right-sidebar-content text-left">
               <i id="add-page-btn" class="fas fa-plus-square "></i>
@@ -439,7 +304,7 @@
                 <div class="tabs-to-click">
                   <ul>
                     <li class="tabs-link current pagenumber" onclick="openTab(event,'tab1')">
-                     
+
                     </li>
                   </ul>
                 </div>
@@ -453,52 +318,52 @@
     </div>
   </div>
 
+  <!-- Modal -->
+  <div id="btn-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
-<!-- Modal -->
-<div id="btn-modal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+      <!-- Modal content-->
+      <div id="button-link-chapter" class="  modal-content ">
+        <form id="btn-form">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Modal Header</h4>
+          </div>
+          <div class="modal-body">
+            <!-- Modal Contents Here -->
+            <label>Display Name</label>
+            <input type="text" name="btn-name" id="btn-name">
+            <br>
+            <label>Link</label>
+            <span class="btnlink">
+              http://
+              <input type="text" name="btn-link" id="btn-link">
+            </span>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" id="button_id" value="">
+            <button type="button" id="btn-submit" class="#">Submit</button>
+            <button type="button" class="#" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
 
-    <!-- Modal content-->
-    <div id="button-link-chapter" class="  modal-content ">
-      <form id="btn-form">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
-        </div>
-        <div class="modal-body">
-          <!-- Modal Contents Here -->
-          <label>Display Name</label>
-          <input type="text" name="btn-name" id="btn-name"><br>
-          <label>Link</label>
-          <span class="btnlink">
-            http://
-            <input type="text" name="btn-link" id="btn-link">
-          </span>
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" id= "button_id" value="">
-          <button type="button" id = "btn-submit" class="#">Submit</button>
-          <button type="button" class="#" data-dismiss="modal">Close</button>
-        </div>
-      </form>
     </div>
-
   </div>
-</div>
 
-<!-- Link Modal -->
-<div id="link-video-modal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+  <!-- Link Modal -->
+  <div id="link-video-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
+      <!-- Modal content-->
+      <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Link</h4>
         </div>
         <div class="modal-body">
           <!-- Modal Contents Here -->
-          
+
           <label>Link to video</label>
           <span class="btnlink">
             http://
@@ -506,29 +371,29 @@
           </span>
         </div>
         <div class="modal-footer">
-          <button type="button" id = "link-video-submit" class="#">Submit</button>
+          <button type="button" id="link-video-submit" class="#">Submit</button>
           <button type="button" class="#" data-dismiss="modal">Close</button>
         </div>
+      </div>
+
     </div>
-
   </div>
-</div>
 
-<!-- End of link modal -->
+  <!-- End of link modal -->
 
-<!-- Link Modal -->
-<div id="link-image-modal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+  <!-- Link Image Modal -->
+  <div id="link-image-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
+      <!-- Modal content-->
+      <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Link</h4>
         </div>
         <div class="modal-body">
           <!-- Modal Contents Here -->
-          
+
           <label>Image Link</label>
           <span class="btnlink">
             http://
@@ -536,71 +401,73 @@
           </span>
         </div>
         <div class="modal-footer">
-          <button type="button" id = "link-image-submit" class="#">Submit</button>
+          <button type="button" id="link-image-submit" class="#">Submit</button>
           <button type="button" class="#" data-dismiss="modal">Close</button>
         </div>
+      </div>
+
     </div>
-
   </div>
-</div>
 
-<!-- End of link modal -->
+  <!-- End of link modal -->
 
-<script>
-  var data = {{ data|safe }};
-  var courseID = '{{course}}';
-  var chapterID = '{{chapter}}';
-  var chaptertitle = '{{chapterdetails.Chapter_Name}}';
-  var save_file_url = "{% url 'saveFile' %}";
-  var save_video_url = "{% url 'saveVideo' %}";
-  var load_file_url = "/media/chapterBuilder/"+courseID+"/"+chapterID;
-  var save_json_url = "{% url 'saveJson' %}";
-  var import_zip_url = '{% url "importzip" %}';
-  var csrf_token = '{{csrf_token}}'
-  
-  $('#chapterlist').val(chapterID);
-  
-  var previous;
-  (function () {
+  <script>
+    var data = {{ data | safe}};
+    var courseID = '{{course}}';
+    var chapterID = '{{chapter}}';
+    var chaptertitle = '{{chapterdetails.Chapter_Name}}';
+    var save_file_url = "{% url 'saveFile' %}";
+    var save_video_url = "{% url 'saveVideo' %}";
+    var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
+    var save_json_url = "{% url 'saveJson' %}";
+    var import_zip_url = '{% url "importzip" %}';
+    var csrf_token = '{{csrf_token}}'
+
+    $('#chapterlist').val(chapterID);
+
+    var previous;
+    (function () {
 
       $("select").on('focus', function () {
-          // Store the current value on focus and on change
-          previous = this.value;
-      }).change(function() {
-          // Do something with the previous value after the change
-          var confirmation = confirm("Are you sure you want to leave?")
-          if(confirmation==false){
-            $('#chapterlist').val(previous)
-            return false
-          }else{
-            let chapter = $('#chapterlist').val()
-            location.assign('/courseinfo/'+courseID+'/chapterinfo/'+chapter+'/chapterpagebuilder')
-          }  
+        // Store the current value on focus and on change
+        previous = this.value;
+      }).change(function () {
+        // Do something with the previous value after the change
+        var confirmation = confirm("Are you sure you want to leave?")
+        if (confirmation == false) {
+          $('#chapterlist').val(previous)
+          return false
+        } else {
+          let chapter = $('#chapterlist').val()
+          location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+        }
       });
-  })();
+    })();
 
-  $('#save-and-exit-btn').click(function(e){
-    e.preventDefault();
-    
-    window.alert = function() { };
-    window.onbeforeunload = function() { };
-    $('#SaveBtn').click();
-    var href = $('#goBackBtn').attr('href');
-    location.href = href;
-  });
+    $('#save-and-exit-btn').click(function (e) {
+      e.preventDefault();
 
-  $(document).ready(function(){
-    let trunc = truncateString('{{chapterdetails.Summary}}');
-    $('#chapter-description').find('p').text(trunc);
-  });
+      window.alert = function () { };
+      window.onbeforeunload = function () { };
+      $('#SaveBtn').click();
+      var href = $('#goBackBtn').attr('href');
+      location.href = href;
+    });
 
-  const truncateString = (string, maxLength = 30) => {
-    if (!string) return null;
-    const showDots = string.length > maxLength;
-    return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
-  };
-</script>
+    $(document).ready(function () {
+      let trunc = truncateString('{{chapterdetails.Summary}}');
+      $('#chapter-description').find('p').text(trunc);
+    });
+
+    const truncateString = (string, maxLength = 30) => {
+      if (!string) return null;
+      const showDots = string.length > maxLength;
+      return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+    };
+  </script>
   <script src="https://player.vimeo.com/api/player.js"></script>
+  <script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
+
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
@@ -608,4 +475,3 @@
   <script src="{% static 'chapterPageBuilder/js/offline.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
 </body>
-  

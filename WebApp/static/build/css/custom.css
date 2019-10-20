@@ -1779,3 +1779,28 @@ input[type=checkbox], input[type=radio] {
 .mediumblack{
     color:#444;
 }
+
+/* CSS for feedback */
+#feedback {
+    float: left;
+    position: fixed;
+    top: calc(50% - 47px);
+    right: 0;
+    z-index: 9;
+}
+
+#feedback a {
+    background: #5A738E;
+    border-radius: 5px 0 0 5px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, .3);
+    border: 3px solid #fff;
+    border-right: 0;
+    display: block;
+    padding: 20px 5px;
+    transition: all .2s ease-in-out;
+}
+
+#feedback a:hover {
+    padding-right: 20px;
+}
+/* --- */
