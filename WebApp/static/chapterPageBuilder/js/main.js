@@ -25,12 +25,13 @@ $(document).ready(function() {
             let position = {
                 top, left, height, width
             };
-            let html = `<div class='textdiv'  >
-                     <div id="text-actions"   class = "text-actions">
+            let html = `<div class='textdiv' >
+                     
+                     <div id="editor${id}" class="messageText"></div>
+                     <div id="text-actions" class = "text-actions">
                          <i class="fas fa-trash" id=${id}></i>
                          <i class="fas fa-arrows-alt" id="draghere" ></i>
                      </div> 
-                     <div id="editor" class="messageText" contenteditable> ${message}</div>
                   </div>
                   `;
             this.renderDiagram = function() {
@@ -56,6 +57,8 @@ $(document).ready(function() {
 
                 var a = document.getElementsByClassName("current")[0];
                 $('#' + a.id).append(dom);
+                $('#editor'+id).summernote();
+                $('#editor'+id).parent().find('.note-editable').html(message);
                 // $(".editor-canvas").append(dom);
                 // Making element Resizable
 
@@ -226,7 +229,7 @@ $(document).ready(function() {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn" ${button_link} id=${id + 1}  target="_blank"  >${name}</a>
+                            <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank"  >${name}</a>
                         </div>
         
                 `;
@@ -426,35 +429,58 @@ $(document).ready(function() {
     function TextboxFunction(top=null, left=null, height="10%", width="20%", message="Type Something Here..."){
         const textBox = new Textbox(top, left, height, width, message);
         
-            textBox.renderDiagram();
-        
-            $('.textdiv').hover(function() {
-                $('.text-actions').css({
-                    'display': 'block'
-                });
-                $(this).css({
-                    'border': '1px solid grey'
-                })
-        
-            }, function() {
-                $('.text-actions').css({
-                    'display': 'none'
-                });
-                $(this).css({
-                    'border': 'none'
-                })
-                $('.messageText').css({
-                    'border': 'none'
-                })
+        textBox.renderDiagram();
+    
+        $('.textdiv').hover(function(e) {
+            $(e.currentTarget).find('.text-actions').css({
+                'display': 'block'
             });
-        
-            $('.textdiv').resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 75,
-                minHeight: 25
+            $(this).css({
+                'border': '1px solid grey'
+            })
+    
+        }, function() {
+            $('.text-actions').css({
+                'display': 'none'
             });
+            $(this).css({
+                'border': 'none'
+            })
+            $('.messageText').css({
+                'border': 'none'
+            })
+        });
+        
+        $('.fa-trash').click(function(e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+            //  alert('btn clickd')
+        });
+        $('.textdiv').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 75,
+            minHeight: 25
+        });
+        $('.note-editing-area').on('focusin', function(e){
+            $(e.currentTarget).parent().find('.note-popover .popover-content,.panel-heading.note-toolbar').css('display','block')
+        });
+          
+          var resultsSelected = false;
+          $(".note-toolbar > .note-btn-group").hover(
+              function () { resultsSelected = true; },
+              function () { 
+                resultsSelected = false; 
+                // if(!$('.note-editing-area').has(':focus')){
+                //   $('.note-popover .popover-content,.panel-heading.note-toolbar').css('display','none')
+                // }
+              }
+          );
+          $('.note-editing-area').on('focusout', function(e){
+            if(!resultsSelected){
+              $('.panel-heading.note-toolbar').css('display','none')
+            }
+          });
     }
 
     function PictureFunction(top=null, left=null, pic = null, width=null, height=null){
@@ -683,7 +709,7 @@ $(document).ready(function() {
             $('#btn-modal').modal();
         });
     
-        $('.btn').resizable({
+        $('.btn-button').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
@@ -1312,17 +1338,17 @@ $(document).ready(function() {
 
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
-            TextboxFunction(ui.helper.position().top - toolbarheight,
+            TextboxFunction(ui.helper.position().top,
             ui.helper.position().left - sidebarWidth, "10%", "25%");
         } else if (ui.helper.hasClass('picture')) {
-            PictureFunction(ui.helper.position().top - toolbarheight,
+            PictureFunction(ui.helper.position().top,
             ui.helper.position().left - sidebarWidth);
             //object of video component
         } else if (ui.helper.hasClass('video')) {
-            VideoFunction(ui.helper.position().top - toolbarheight,
+            VideoFunction(ui.helper.position().top,
                 ui.helper.position().left - sidebarWidth);
         } else if (ui.helper.hasClass('buttons')) {
-            ButtonFunction(ui.helper.position().top - toolbarheight,
+            ButtonFunction(ui.helper.position().top,
                 ui.helper.position().left - sidebarWidth);
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
@@ -1398,10 +1424,10 @@ $(document).ready(function() {
             );
         
         } else if (ui.helper.hasClass('3dobject')) {
-            _3dFunction(ui.helper.position().top - toolbarheight,
+            _3dFunction(ui.helper.position().top,
             ui.helper.position().left - sidebarWidth); 
         }else if(ui.helper.hasClass('Pdf')){
-            PDFFunction(ui.helper.position().top - toolbarheight,
+            PDFFunction(ui.helper.position().top,
             ui.helper.position().left - sidebarWidth);
         }
         $('.fa-trash').click(function(e) {

@@ -243,6 +243,8 @@ svg{
 #text-actions{
   background:#ddd;
   width: 100%;
+  position: absolute;
+  bottom: 0;
 }
 
 
@@ -574,7 +576,7 @@ svg{
 
 
 
-.btn{
+.btn-button{
   padding:4px;
   outline: none;
   background-color:#ddd;
@@ -585,7 +587,7 @@ svg{
 
 }
 
-.btn:link{
+.btn-button:link{
   color:white;
 }
 .options{
