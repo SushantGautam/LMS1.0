@@ -46,7 +46,6 @@
 
                     <h5 align="center">
                         {% if topic %}
-
                         <a target="_blank" href="
                         {% if '/teachers' in request.path %}
                         {% url 'Teacher_Course_Forum' object.pk %}
@@ -61,6 +60,7 @@
                             <a target="_blank" href="
                         {% if '/teachers' in request.path %}
                         {% url 'Teacher_Course_Forum' object.pk %}
+                        {% else %}
                         {% url 'Course_Forum' object.pk %}
                         {% endif %}">
                                 <i class="fa fa-comment-o"></i> <b> Add Forum </b> </a>
