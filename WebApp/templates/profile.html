@@ -326,7 +326,7 @@
                                     {% elif 'student' in request.path %}
                                         {% url 'student_change_password' %}
                                     {% else %}
-                                        /change-password/
+                                        {% url 'centeradmin_change_password' %}
                                     {% endif %}">
                                     <button class="btn btn-default">Change Password</button></a>
 

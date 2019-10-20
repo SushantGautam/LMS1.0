@@ -50,9 +50,11 @@ $("#SaveBtn").on("click",function(e){
     
     $.each( obj, function( i, value ) {
       if(value.classList.contains('textdiv')){
-        var clone = $(this).children('.messageText').clone();
-        clone.find('div').remove();
+        var clone = $(this).find('.note-editable').clone();
+        console.log(clone)
+        // clone.find('div').remove();
         var content_html = clone.html();
+        console.log(content_html)
         textdiv.push(
           {
             'tops': $(this).css("top"),
@@ -86,7 +88,7 @@ $("#SaveBtn").on("click",function(e){
           }
         );
       }
-      if(value.classList.contains('pdf')){
+      if(value.classList.contains('pdfdiv')){
         pdf.push(
           {
             'tops': $(this).css("top"),

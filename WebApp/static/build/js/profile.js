@@ -124,18 +124,22 @@ $("#id_Member_Avatar").on("change", function () {
     formdata = new FormData();
     var file = this.files[0];
     if (formdata) {
-        formdata.append("Member_Avatar", file);
-        formdata.append("csrfmiddlewaretoken", $('input[name="csrfmiddlewaretoken"]').val())
-        jQuery.ajax({
-            url: "/editprofile/upload_image",
-            type: "POST",
-            data: formdata,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                console.log(response.msg)
-                location.reload()
-            }
-        });
+        if(file.size > 2097152 ){
+            alert("Image size is greater than 2 Mb. Please upload image of smaller size");
+        }else{
+            formdata.append("Member_Avatar", file);
+            formdata.append("csrfmiddlewaretoken", $('input[name="csrfmiddlewaretoken"]').val())
+            jQuery.ajax({
+                url: "/editprofile/upload_image",
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(response.msg)
+                    location.reload()
+                }
+            });
+        }
     }
 });

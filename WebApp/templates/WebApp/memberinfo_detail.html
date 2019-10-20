@@ -13,18 +13,9 @@
     <div class="col-md-6">{% include 'WebApp/theme/alerts.html' %}</div>
     <div class="col-md-8 col-sm-12 col-xs-12 text-center col-md-offset-2">
         <div class="circleProfile text-center">
-            <img src="{% if object.Member_Avatar %}
-                    {{ object.Member_Avatar.url }}
-                {% elif object.Member_Gender == 'M' %}
-                    {% static 'images/profile/male.jpg' %}
-                {% elif object.Member_Gender == 'F' %}
-                    {% static 'images/profile/female.png' %}
-                {% else %}
-                    {% static 'images/profile/profile.png' %}
-                {% endif %}">
+            <img src="{{ object.Avatar }}">
         </div>
         <div class="text-center">
-            <!-- <a class="btn btn-info" href="/change-password/{{ object.id }}/"> Change Password </a> -->
             <a class="member-edit" style="float: right;color: #2A3F54" href="{{ object.get_update_url }}"><b>Edit Member</b></a>
         </div>
     </div>
@@ -44,10 +35,6 @@
                         <td class="mediumblack">Full Name</td>
                         <td>{{ object.first_name }} {{ object.last_name }}</td>
                     </tr>
-                    <!-- <tr>
-                        <td>Last Name</td>
-                        <td>{{ object.last_name }}</td>
-                    </tr> -->
                     <tr>
                         <td class="mediumblack">Email</td>
                         <td>{{ object.email }}</td>
@@ -62,7 +49,7 @@
                     </tr>
                     <tr>
                         <td class="mediumblack">BirthDate</td>
-                        <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
+                        <td>{{ object.Member_BirthDate|date:"F d, Y" }}</td>
                     </tr>
                     <tr>
                         <td class="mediumblack">Phone No.</td>
@@ -98,7 +85,7 @@
                     </tr>
                     <tr>
                         <td class="mediumblack">Register DateTime</td>
-                        <td>{{ object.date_joined|date:"m/d/Y" }}</td>
+                        <td>{{ object.date_joined }}</td>
                     </tr>
                     <tr>
                         <td class="mediumblack">Member Type</td>
@@ -150,10 +137,6 @@
 
 {% block customjss %}
 <script>
-    setTimeout(function () {
-        $('#message').fadeOut('slow');
-    }, 3000);
-
     $(document).on('click', '.confirm-deactivate', function (event) {
         ans = confirm('Are you sure you want to deactivate this Member?');
         if (ans == true) {
