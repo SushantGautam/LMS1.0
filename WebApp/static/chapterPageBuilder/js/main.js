@@ -278,8 +278,8 @@ $(document).ready(function() {
             pdfobj = "";
         }
         let html = `
-            <div class='pdf'>
-                <div id="pdf-actions1">
+            <div class='pdfdiv'>
+                <div id="pdfdiv-actions1">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
                 </div>
@@ -287,9 +287,9 @@ $(document).ready(function() {
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                     <input type='file' accept="application/pdf"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
                     </form>
-                    <p id="pdf-drag" placeholder="drag and drop files here..."></p>
-                ${pdfobj}
+                    <p id="pdfdiv-drag" placeholder="drag and drop files here..."></p>
                 </div>
+                ${pdfobj}
             </div>
         `;
         this.RemoveElement = function () {
@@ -316,7 +316,6 @@ $(document).ready(function() {
 
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
-            // canvas.append(dom);
             // Making element Resizable
 
         };
@@ -381,10 +380,7 @@ $(document).ready(function() {
             });
 
             var a = document.getElementsByClassName("current")[0];
-            // console.log(a);
-            // console.log($('#' + a.id));
             $('#' + a.id).append(dom);
-            // canvas.append(dom);
             };
         }
     }
@@ -736,13 +732,13 @@ $(document).ready(function() {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
 
-        $('.pdf').on('dragover', function(e) {
+        $('.pdfdiv').on('dragover', function(e) {
             e.stopPropagation();
             e.preventDefault();
             //   $(this).css('border',"2px solid #39F")
         })
 
-        $('.pdf').on('drop', function(e) {
+        $('.pdfdiv').on('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
             const files = e.originalEvent.dataTransfer.files;
@@ -893,7 +889,7 @@ $(document).ready(function() {
             }
         }
 
-        $('.pdf').resizable({
+        $('.pdfdiv').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
@@ -1383,7 +1379,7 @@ $(document).ready(function() {
                 top = 0,
                 left = "0%",
                 "",
-                width = "100%", height="60%");
+                width = "50%", height="60%");
             PictureFunction(
                 top = 0,
                 left = "50%",
@@ -1399,13 +1395,13 @@ $(document).ready(function() {
             TextboxFunction(
                 top="0%",
                 left=0,
-                height="10%", width="50%",
+                height="10%", width="100%",
                 message="Your Title Here"
             );
             TextboxFunction(
                 top="13%",
                 left=0,
-                height="84%", width="50%",
+                height="84%", width="100%",
                 message="Your Content Here"
             );
         } else if (ui.helper.hasClass('pdf-text')) {
@@ -1458,9 +1454,7 @@ $(document).ready(function() {
                 <span style="float:right ">
                     <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
                 </span>
-                <li class="tabs-link pagenumber " value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')" >
-                
-                </li>
+                <li class="tabs-link pagenumber " value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')"></li>
                
                <hr class="white-hr"/>
             
@@ -1635,210 +1629,6 @@ $('#btn-submit').on('click', function(){
 })
 
 // ======================================================================
-
-var colorList = ['000000', '993300', '333300', '003300', '003366', '000066', '333399', '333333',
-    '660000', 'FF6633', '666633', '336633', '336666', '0066FF', '666699', '666666', 'CC3333', 'FF9933', '99CC33', '669966', '66CCCC', '3366FF', '663366', '999999', 'CC66FF', 'FFCC33', 'FFFF66', '99FF66', '99CCCC', '66CCFF', '993366', 'CCCCCC', 'FF99CC', 'FFCC99', 'FFFF99', 'CCffCC', 'CCFFff', '99CCFF', 'CC99FF', 'FFFFFF'
-];
-var picker = $('#color-picker');
-
-for (var i = 0; i < colorList.length; i++) {
-    picker.append('<li class="color-item" data-hex="' + '#' + colorList[i] + '" style="background-color:' + '#' + colorList[i] + ';"></li>');
-}
-
-$('body').click(function() {
-    picker.fadeOut();
-});
-
-$('.call-picker').click(function(event) {
-    event.stopPropagation();
-    picker.fadeIn();
-    picker.children('li').hover(function() {
-        var codeHex = $(this).data('hex');
-
-        $('.color-holder').css('background-color', codeHex);
-        $('#pickcolor').val(codeHex);
-    });
-});
-// Move caret back to 
-function placeCaretAtEnd(el) {
-    el.focus();
-    if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        range.collapse(false);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    } else if (typeof document.body.createTextRange != "undefined") {
-        var textRange = document.body.createTextRange();
-        textRange.moveToElementText(el);
-        textRange.collapse(false);
-        textRange.select();
-    }
-}
-
-// Clean HTML tags using sanitize-html
-function cleanHtml() {
-    let value = $("#editor").html();
-    let clean = sanitizeHtml(value, {
-        allowedTags: ['div', 'blockquote', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li'],
-        allowedAttributes: {
-            'blockquote': ['style']
-        }
-    });
-
-    let cleanValue = clean.trim();
-    setContent();
-}
-
-// Paste from MS Word    *CREDIT: https://gist.github.com/sbrin/6801034
-(function($) {
-    $.fn.msword_html_filter = function(options) {
-        let settings = $.extend({}, options);
-
-        function word_filter(editor) {
-            let content = editor.html();
-
-            // Word comments like conditional comments etc
-            content = content.replace(/<!--[\s\S]+?-->/gi, '');
-
-            // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content,
-            // MS Office namespaced tags, and a few other tags
-            content = content.replace(/<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|img|meta|link|style|\w:\w+)(?=[\s\/>]))[^>]*>/gi, '');
-
-            // Convert <s> into <strike> for line-though
-            content = content.replace(/<(\/?)s>/gi, "<$1strike>");
-
-            // Replace nbsp entites to char since it's easier to handle
-            //content = content.replace(/&nbsp;/gi, "\u00a0");
-            content = content.replace(/&nbsp;/gi, ' ');
-
-            // Convert <span style="mso-spacerun:yes">___</span> to string of alternating
-            // breaking/non-breaking spaces of same length
-            content = content.replace(/<span\s+style\s*=\s*"\s*mso-spacerun\s*:\s*yes\s*;?\s*"\s*>([\s\u00a0]*)<\/span>/gi, function(str, spaces) {
-                return spaces.length > 0 ? spaces.replace(/./, " ").slice(Math.floor(spaces.length / 2)).split("").join("\u00a0") : '';
-            });
-
-            editor.html(content);
-
-            // Parse out list indent level for lists
-            $('p', editor).each(function() {
-                let str = $(this).attr('style');
-                let matches = /mso-list:\w+ \w+([0-9]+)/.exec(str);
-                if (matches) {
-                    $(this).data('_listLevel', parseInt(matches[1], 10));
-                }
-            });
-
-            // Parse Lists
-            let last_level = 0;
-            let pnt = null;
-            $('p', editor).each(function() {
-                let cur_level = $(this).data('_listLevel');
-                if (cur_level != undefined) {
-                    let txt = $(this).text();
-                    let list_tag = '<ul></ul>';
-                    if (/^\s*\w+\./.test(txt)) {
-                        let matches = /([0-9])\./.exec(txt);
-                        if (matches) {
-                            let start = parseInt(matches[1], 10);
-                            list_tag = start > 1 ? '<ol start="' + start + '"></ol>' : '<ol></ol>';
-                        } else {
-                            list_tag = '<ol></ol>';
-                        }
-                    }
-
-                    if (cur_level > last_level) {
-                        if (last_level == 0) {
-                            $(this).before(list_tag);
-                            pnt = $(this).prev();
-                        } else {
-                            pnt = $(list_tag).appendTo(pnt);
-                        }
-                    }
-                    if (cur_level < last_level) {
-                        for (let i = 0; i < last_level - cur_level; i++) {
-                            if (window.CP.shouldStopExecution(0)) break;
-                            pnt = pnt.parent();
-                        }
-                        window.CP.exitedLoop(0);
-                    }
-                    $('span:first', this).remove();
-                    pnt.append('<li>' + $(this).html().replace(/\d+\./g, '') + '</li>');
-                    $('b:empty').remove();
-                    $(this).remove();
-                    last_level = cur_level;
-                } else {
-                    last_level = 0;
-                }
-            });
-
-            $('[style]', editor).removeAttr('style');
-            $('[align]', editor).removeAttr('align');
-            $('span', editor).replaceWith(function() {
-                return $(this).contents();
-            });
-            $('span:empty', editor).remove();
-            $("[class^='Mso']", editor).removeAttr('class');
-            $('p:empty', editor).remove();
-        }
-
-        return this.each(function() {
-            let self = this;
-            $(self).on('keyup paste', function() {
-
-                setTimeout(function() {
-                    let content = $(self).html();
-                    /class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i.test(content) ? word_filter($(self)) : cleanHtml();
-                }, 400);
-            });
-        });
-    };
-})(jQuery);
-
-$(function() {
-    $('#editor').msword_html_filter();
-});
-
-function setContent() {
-    let value = $(this).html();
-
-    let el = $("#editor").get(0);
-    placeCaretAtEnd(el);
-}
-
-//### EVENTS/ACTIONS ###//
-
-//execCommand(aCommandName, aShowDefaultUI, aValueArgument)
-function runCommand(el, commandName, arg) {
-    if (commandName === "createLink") {
-        let argument = prompt("Insert link:");
-        if ((argument == null || argument == "")) {
-            console.log("sorry cancled")
-        } else {
-            $(this).on('click', receiveURL);
-        }
-
-        document.execCommand(commandName, false, argument);
-    } else {
-        document.execCommand(commandName, false, arg);
-    }
-    $("#editor").focus();
-    return false;
-}
-
-// Capture wysiwyg val and assign to textarea val
-// $("#editor").keyup(function() {
-//   let value = $(this).html();
-//   $("#messageText").val(value);  
-// });
-
-// Show submitted data
-$('#submit').click(function(e) {
-    e.preventDefault();
-    let content = $("#editor").html().trim();
-    alert("VALUE SUBMITTED: \n" + content);
-});
 
 function openTab(evt, tab_no) {
     tabcontent = document.getElementsByClassName("tab-content-no");

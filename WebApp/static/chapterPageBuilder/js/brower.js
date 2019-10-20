@@ -88,7 +88,7 @@ $("#SaveBtn").on("click",function(e){
           }
         );
       }
-      if(value.classList.contains('pdf')){
+      if(value.classList.contains('pdfdiv')){
         pdf.push(
           {
             'tops': $(this).css("top"),
