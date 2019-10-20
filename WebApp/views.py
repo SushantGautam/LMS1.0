@@ -430,7 +430,7 @@ def ImportCsvFile(request):
                 obj.Member_Permanent_Address = df.iloc[i]['Permanent Address']
                 obj.Member_Temporary_Address = df.iloc[i]['Temporary Address']
                 try:
-                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'], '%m/%d/%Y').strftime('%Y-%m-%d')
+                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'], "%Y/%m/%d").strftime('%Y-%m-%d')
                 except:
                     obj.Member_BirthDate = None
                 obj.Member_Phone = df.iloc[i]['Phone']
