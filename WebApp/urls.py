@@ -51,7 +51,7 @@ urlpatterns += (
     path('editprofile/descriptioninfo', login_required(views.edit_description_info_ajax), name="edit_description_info_ajax"),
     path('editprofile/upload_image', login_required(views.edit_profile_image_ajax), name="edit_profile_image_ajax"),
 
-    path('change-password/', views.PasswordChangeView.as_view(template_name='registration/change_password.html')),
+    path('profile/change-password/', views.PasswordChangeView.as_view(template_name='registration/change_password.html'), name="centeradmin_change_password"),
     path('change-password/<int:pk>/', views.change_password_others),
 )
 

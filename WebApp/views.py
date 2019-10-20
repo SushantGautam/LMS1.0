@@ -430,7 +430,7 @@ def ImportCsvFile(request):
                 obj.Member_Permanent_Address = df.iloc[i]['Permanent Address']
                 obj.Member_Temporary_Address = df.iloc[i]['Temporary Address']
                 try:
-                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'], '%m/%d/%Y').strftime('%Y-%m-%d')
+                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'], "%m/%d/%Y").strftime('%Y-%m-%d')
                 except:
                     obj.Member_BirthDate = None
                 obj.Member_Phone = df.iloc[i]['Phone']
@@ -653,6 +653,7 @@ def CourseForum(request, course):
         Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,
                              center_associated_with=request.user.Center_Code, topic_icon="book").save()
         course_forum = Topic.objects.get(course_associated_with=course)
+        
     return redirect('forum:topic', pk=course_forum.pk)
 
 

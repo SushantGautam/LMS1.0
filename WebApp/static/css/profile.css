@@ -79,12 +79,12 @@ html{
 		text-align: center
 	}
 }
-@media only screen and (max-width:992px) {
+/* @media only screen and (max-width:992px) {
 	.profile-page .profile-pic {
 		width: 150px;
 		height: 150px
 	}
-}
+} */
 .cover-content {
 	background-image: url(../images/profile-cover.png);
 	background-size: cover;
@@ -120,12 +120,12 @@ html{
 	display: -ms-flexbox!important;
 	display: flex!important
 }
-@media only screen and (max-width:992px) {
+/* @media only screen and (max-width:992px) {
 	.profile-page .profile-pic {
 		width: 150px;
 		height: 150px
 	}
-}
+} */
 .rounded-circle {
 	border-radius: 50%!important
 }
@@ -444,13 +444,13 @@ pmd-list-subtitle:last-child,
 .pmd-tabs {
 	position: relative
 }
-
+/* 
 @media (max-width:767.98px) {
 	.pmd-tabs {
 		overflow-x: auto;
 		overflow-y: hidden
 	}
-}
+} */
 
 .pmd-tabs .nav-tabs {
 	border-bottom: none
@@ -3762,4 +3762,10 @@ pmd-list-subtitle:last-child,
 
 .font-italic {
 	font-style: italic!important
+}
+
+.dropdown-menu{
+	min-width: 120px;
+	left: auto;
+	padding: 1px;
 }
