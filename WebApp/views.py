@@ -656,10 +656,6 @@ def CourseForum(request, course):
         
     return redirect('forum:topic', pk=course_forum.pk)
 
-def get_context_data(self, **kwargs):
-    course = CourseInfo.objects.get(pk=course)
-    course_forum = Topic.objects.get(course_associated_with=course)
-    return 
 
 class ChapterInfoUpdateView(UpdateView):
     model = ChapterInfo
