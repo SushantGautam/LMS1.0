@@ -142,7 +142,7 @@
                 </td>
                 <td>{{ object.Member_Temporary_Address }}</td>
                 <td>{{ object.Member_Permanent_Address }}</td>
-                <td>{{ object.Member_BirthDate|date:"Y/m/d" }}</td>
+                <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
                 <td style="vertical-align: middle;">
                     {% if object.Is_Teacher == True and object.Is_Student == True %}
                     Teacher, Student
