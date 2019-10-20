@@ -41,6 +41,8 @@ urlpatterns += (
          name='student_courseinfo_list'),
     path('courseinfo/mycourses', views.MyCoursesListView.as_view(),
          name='student_mycourses_list'),
+    path('courseinfo/detail/forum/<int:course>',
+         views.CourseForum, name='Student_Course_Forum'),
     path('courseinfo/detail/<int:pk>/', views.CourseInfoDetailView.as_view(),
          name='student_courseinfo_detail'),
 )
@@ -109,7 +111,8 @@ urlpatterns += (
 
 urlpatterns += (
     path('forum/', views.Index.as_view(), name="student_forum"),
-    path('forum/create_thread', views.create_thread, name="student_create_thread"),
+    path('forum/create_thread', views.create_thread,
+         name="student_create_thread"),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/',
          views.create_thread, name='student_create_thread'),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',

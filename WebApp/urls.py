@@ -91,6 +91,8 @@ urlpatterns += (
     path('courseinfo/create/', views.CourseInfoCreateView.as_view(), name='courseinfo_create'),
     path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(), name='courseinfo_detail'),
     path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
+    path('courseinfo/delete/<int:pk>/', views.CourseInfoDeleteView, name='courseinfo_delete'),
+
 )
 
 urlpatterns += (
@@ -104,6 +106,8 @@ urlpatterns += (
          name='chapterinfo_update'),
     path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'),
     path('change_quiz_test/', views.Changestate.as_view(), name='change_quiz_test'),
+    path('chapterinfo/delete/<int:pk>/', views.ChapterInfoDeleteView.as_view(), name='chapterinfo_delete'),
+
 )
 
 urlpatterns += (
@@ -118,7 +122,8 @@ urlpatterns += (
          views.AssignmentInfoDetailView.as_view(), name='assignmentinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='assignmentinfo_update'),
-
+    path('assignmentinfo/edit/ajax', views.AssignmentInfoEditViewAjax.as_view(), name='assignmentinfo_edit_ajax'),
+    path('assignmentinfo/<int:pk>/', views.AssignmentInfoDeleteView.as_view(), name='assignmentinfo_delete'),
 )
 
 urlpatterns += (
@@ -137,6 +142,7 @@ urlpatterns += (
         views.QuestionInfoUpdateView.as_view(), name='webapp_questioninfo_update'),
     path('questioninfo/create/ajax',
          views.QuestionInfoCreateViewAjax.as_view(), name='questioninfo_create_ajax'),
+    path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/', views.QuestionInfoDeleteView.as_view(), name='webapp_questioninfo_delete'),
 
 )
 

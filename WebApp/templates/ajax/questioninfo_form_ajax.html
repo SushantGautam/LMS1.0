@@ -51,7 +51,6 @@
         var formdata = new FormData();
         var file = $('#id_Question_Media_File')[0].files[0];
 
-
         formdata.append("Question_Media_File", file);
         formdata.append("csrfmiddlewaretoken", '{{ csrf_token }}');
         formdata.append("Question_Title", $('#id_Question_Title').val());

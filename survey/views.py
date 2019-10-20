@@ -5,7 +5,7 @@ from django.db import transaction
 from django.forms import model_to_dict
 from django.http import HttpResponseRedirect
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
@@ -81,7 +81,7 @@ class SurveyInfoListView(ListView):
     model = SurveyInfo
     template_name = 'survey/surveylist.html'
 
-    # paginate_by = 8
+    paginate_by = 8
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -564,8 +564,15 @@ def surveyinfo_category(request, id):
 
 class liveSurveyCreate(CreateView):
     model = SurveyInfo
-    form_class = LiveSurveyInfoForm
-    template_name = 'survey/liveSurvey_createPage.html'
+
+    # form_class =
+    # template_name = 'survey/common/commonliveSurvey_createPage.html'
+
+    def get(self, request, *args, **kwargs):
+        if 'teachers' in request.path:
+            return render(request, 'teacher_module/survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm()})
+        else:
+            return render(request, 'survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm()})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -608,12 +615,15 @@ class liveSurveyCreate(CreateView):
             # else:
             #     print('qna is invalid')
             #     print(qna.errors)
-        return redirect('liveSurveyDetail', self.object.id)
 
+        if 'teachers' in request.path:
+            return redirect('liveSurveyDetail', self.object.id)
+        else:
+            return redirect('liveSurveyDetail', self.object.id)
 
 class LiveSurveyDetail(DetailView):
     model = SurveyInfo
-    template_name = 'survey/liveSurvey_detailPage.html'
+    template_name = 'survey/common/../WebApp/templates/survey/liveSurvey_detailPage.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -697,7 +707,7 @@ class AnswerInfoUpdateView(UpdateView):
 
 class surveyFilterCategory(ListView):
     model = SurveyInfo
-    template_name = 'survey/surveyinfo_expireView.html'
+    template_name = 'survey/common/surveyinfo_expireView.html'
 
     # paginate_by = 8
 
