@@ -58440,7 +58440,7 @@ a:active {
 }
 
 
-.card {
+.card1 {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     max-width: 300px;
     margin: auto;
@@ -58598,4 +58598,10 @@ a:hover {
 }
 
 
-
+@media(min-width: 400px) and (max-width: 991px){
+    .card1{
+        width: 300px;
+        margin: auto;
+        text-align: center;
+    }
+}
