@@ -47,6 +47,9 @@ from quiz.models import Progress
 
 from django.http import JsonResponse
 
+from WebApp.filters import MyCourseFilter
+from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
+
 
 
 User = get_user_model()
@@ -131,12 +134,12 @@ class MyCourseListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['courses'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id, Center_Code=self.request.user.Center_Code)
-
-        paginator = Paginator(context['courses'], 8)
-        page = self.request.GET.get('page')
-        paged_listings = paginator.get_page(page)
-        context['courses'] = paged_listings
+        courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id, Center_Code=self.request.user.Center_Code)
+        context['courses'] = courses
+        # paginator = Paginator(context['courses'], 8)
+        # page = self.request.GET.get('page')
+        # paged_listings = paginator.get_page(page)
+        # context['courses'] = paged_listings
 
         sessions = []
         if context['courses']:
@@ -145,12 +148,22 @@ class MyCourseListView(ListView):
                 session = InningInfo.objects.filter(Groups__id=course.id,End_Date__gt=datetime_now)
                 sessions += session
         context['sessions'] = sessions
-        # courses = set()
-        # if context['sessions']:
-        #     for session in context['sessions']:
-        #         course = session.Course_Group.all()
-        #         courses.update(course)
-        # context['Course'] = courses
+        filtered_qs = MyCourseFilter(
+                      self.request.GET, 
+                      queryset=courses
+                  ).qs
+        paginator = Paginator(filtered_qs, 8)
+        page = self.request.GET.get('page')
+        try:
+            response = paginator.page(page)
+        except PageNotAnInteger:
+            response = paginator.page(1)
+        except EmptyPage:
+            response = paginator.page(paginator.num_pages)
+        context['response'] = response
+        context['paginator'] = paginator
+        context['page'] = page
+      
 
         return context
 

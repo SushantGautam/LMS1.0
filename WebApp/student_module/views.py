@@ -42,6 +42,8 @@ from .misc import get_query
 from LMS import settings
 import uuid
 from django.core.files.storage import FileSystemStorage
+from WebApp.filters import MyCourseFilter
+from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
 
 datetime_now = datetime.now()
 
@@ -142,7 +144,7 @@ class MyCoursesListView(ListView):
     model = CourseInfo
     template_name = 'student_module/myCourse.html'
 
-    paginate_by = 8
+    # paginate_by = 8
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -163,12 +165,28 @@ class MyCoursesListView(ListView):
                 course = session.Course_Group.all()
                 courses.update(course)
         context['Course'] = courses
+        filtered_qs = MyCourseFilter(
+                      self.request.GET, 
+                      queryset=course
+                  ).qs
+        paginator = Paginator(filtered_qs, 8)
+        page = self.request.GET.get('page')
+        try:
+            response = paginator.page(page)
+        except PageNotAnInteger:
+            response = paginator.page(1)
+        except EmptyPage:
+            response = paginator.page(paginator.num_pages)
+        context['response'] = response
+        context['paginator'] = paginator
+        context['page'] = page
+        # context['filtered_qs'] = filtered_qs
+
 
         return context
 
     def get_queryset(self):
         qset = self.model.objects.all()
-
         queryset = self.request.GET.get('studentmycoursequery')
         if queryset:
             queryset = queryset.strip()

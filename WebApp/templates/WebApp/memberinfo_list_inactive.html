@@ -58,7 +58,8 @@
             {% if object.id != request.user.id %}
             <tr>
                 <td class="text-center" style="vertical-align: middle;">{{ forloop.counter }}</td>
-                <td style="vertical-align: middle;"><b><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
+                <td style="vertical-align: middle;"><b><a
+                            href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
                 <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
                 <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
                 <td>{{ object.email }}</td>
@@ -73,16 +74,16 @@
                 <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
                 <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
                 <td>
-                        {% if object.Is_Teacher == True and object.Is_Student == True %}
-                            Teacher, Student
-                        {% elif object.Is_Teacher == True %}
-                            Teacher
-                        {% elif object.Is_Student == True %}
-                            Student
-                        {% else %}
-                            Not Assigned
-                        {% endif %}
-                    </td>
+                    {% if object.Is_Teacher == True and object.Is_Student == True %}
+                    Teacher, Student
+                    {% elif object.Is_Teacher == True %}
+                    Teacher
+                    {% elif object.Is_Student == True %}
+                    Student
+                    {% else %}
+                    Not Assigned
+                    {% endif %}
+                </td>
                 <td class="text-center">
 
                     <button class="btn btn-sm btn-success confirm-activate" id="{{object.pk}}">
@@ -98,7 +99,6 @@
             {% endif %}
             {% endfor %}
         </table>
-
     </div>
 </div>
 
