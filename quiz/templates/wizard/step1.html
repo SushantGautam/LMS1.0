@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
 {% block breadcrumb %} 
-<li class="breadcrumb-item"><a href="/">Quiz</a></li>
+<li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">QUIZ</a></li>
                 
  
 <li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 

@@ -38,15 +38,14 @@
     <div class="col-md-8 col-lg-9">
         {% block main_contain %}
         {% endblock %}
-
     </div>
 
     <div class="st-pusher" id="content">
-        <div class="col-md-4 col-lg-3">
+        <div class="col-md-4 col-lg-3 col-sm-12">
 
 
 
-            <div class="card">
+            <div class="card1">
 
                 <div class="form-group form-control-search searchField">
 
@@ -69,7 +68,7 @@
             </div>
 
 
-            <div class="card">
+            <div class="card1">
                 {% block widget_before %}{% endblock %}
                 {% if request.user.is_authenticated %}
                 {% include 'forum/widgets/authenticated_user_panel.html' %}
@@ -85,7 +84,7 @@
 
 
 
-            <div class="card panel panel-default">
+            <div class="card1 panel panel-default">
 
                 <ul class="list-group list-group-menu">
                     <div class="panel-heading" style="background-color:#F5F5F5">
@@ -111,6 +110,7 @@
 
         </div>
     </div>
+
 </div>
 {% block customjss %}
 <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
