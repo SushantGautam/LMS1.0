@@ -130,6 +130,19 @@
             <ul class="list-group" data-hover-z="0.5" data-animated="">
 
                 {% for survey in surveycount %}
+                {% if survey.Category_Code|stringformat:"s" == "General" or survey.Category_Code|stringformat:"s" == "System" %}
+                <li class="list-group-item ">
+                    <div class="media-body">
+
+                        <b><span class="forum"><a
+                                    href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title|truncatechars:68  }}</a></span><span
+                                class="thread">{{ survey.Category_Code }}</span></b>
+
+                    </div>
+                </li>
+                {% endif %}
+                {% if survey.Category_Code|stringformat:"s" == "Session" or survey.Category_Code|stringformat:"s" == "Course" %}
+                {% if survey.Center_Code == request.user.Center_Code %}
                 <li class="list-group-item ">
                     <div class="media-body">
                         <b><span class="forum"><a
@@ -137,6 +150,8 @@
                                 class="thread">{{ survey.Category_Code }}</span></b>
                     </div>
                 </li>
+                {% endif %}
+                {% endif %}
                 {% endfor %}
             </ul>
         </div>

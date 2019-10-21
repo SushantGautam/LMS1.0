@@ -1,6 +1,7 @@
 {% load static %}
 
 <div class="outerdiv">
+    {% include 'WebApp/theme/alerts.html' %}
     <div class="col-md-5 col-sm-12 col-xs-12">
         <h2 class="detailListHeader">Assignment Information</h2>
         <hr class="header_hr">
@@ -92,7 +93,7 @@
 
         {% if '/students' not in request.path %}
         <div class="col-md-4 col-sm-4 col-xs-12 text-center" style="margin-top: 10px">
-            <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModal1"
+            <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#addQuestionModal"
                 id="add-newquestion-btn">
                 Add Question
             </button>
@@ -120,6 +121,111 @@
                             style="padding-top:30px; float:right;cursor: pointer;" id="moreArrow{{ questions.pk }}"></i>
                     </a>
                     {% if '/students' not in request.path %}
+                    <!-- <button class="btn-link" class="btn-sm btn-success" data-toggle="modal"
+                        data-target="#editQuestionModal{{ questions.pk }}" id="editquestion-btn{{ questions.pk }}">
+                        Edit Question
+                    </button>
+                    <div class="modal fade" id="editQuestionModal{{ questions.pk }}" tabindex="-1" role="dialog"
+                        aria-labelledby="editQuestionLabel" aria-hidden="true" id="editquestion-btn{{ questions.pk }}">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header text-center">
+                                    <h4 class="modal-title" id="editQuestionModalLabel"><b>Edit Question </b>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </h4>
+                                </div>
+                                <div class="modal-body" id="edit_question_modal_body{{ questions.pk }}">
+                                    <form method="post" id="ajaxquestioninfoformedit" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="col-md-12 col-sm-12 col-xs-12 no-padding form-group has-feedback">
+                                            <div
+                                                class="col-md-12 col-sm-12 col-xs-12 no-padding form-group has-feedback">
+                                                <div id="div_id_Question_Title" class="form-group">
+                                                    <label for="id_Question_Title" class="control-label ">
+                                                        Question_Title
+                                                    </label>
+                                                    <div class="controls ">
+                                                        <input type="text" name="Question_Title" maxlength="500"
+                                                            id="id_Question_Title"
+                                                            class="textinput textInput form-control" required="required"
+                                                            value="{{questions.Question_Title}}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 no-padding form-group has-feedback">
+                                            <div id="div_id_Question_Description" class="form-group">
+                                                <label for="id_Question_Description" class="control-label ">
+                                                    Question Description
+                                                </label>
+                                                <div class="controls ">
+                                                    <textarea name="Question_Description" rows="5" cols="40"
+                                                        class="textarea form-control"
+                                                        id="id_Question_Description">{{ questions.Question_Description }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                                            <div id="div_id_Question_Score" class="form-group no-padding">
+                                                <label for="id_Question_Score" class="control-label ">
+                                                    Question Score
+                                                </label>
+                                                <div class="controls ">
+                                                    <input type="number" name="Question_Score"
+                                                        class="numberinput form-control" id="id_Question_Score"
+                                                        value="{{questions.Question_Score}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
+                                            <div id="div_id_Answer_Type" class="form-group no-padding">
+                                                <label for="id_Answer_Type" class="control-label  requiredField">
+                                                    Answer Type *
+                                                </label>
+                                                <div class="controls ">
+                                                    <select name="Answer_Type" class="select form-control" required=""
+                                                        id="id_Answer_Type">
+                                                        <option value="" selected="{{questions.Answer_Type}}">
+                                                            {{questions.Answer_Type}}</option>
+                                                        <option value="S">Short Answer</option>
+                                                        <option value="F">File Upload</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                                            <div id="div_id_Question_Media_File" class="form-group">
+                                                <label for="id_Question_Media_File" class="control-label ">
+                                                    Question Media File
+                                                </label>
+                                                <div class="controls ">
+                                                    Currently: <a
+                                                        href="/media/questions.Question_Media_File">{{questions.Question_Media_File}}</a>
+                                                    <input type="checkbox" name="Question_Media_File-clear"
+                                                        id="Question_Media_File-clear_id">
+                                                    <label for="Question_Media_File-clear_id">Clear</label><br>
+                                                    Change:
+                                                    <input type="file" name="Question_Media_File"
+                                                        id="id_Question_Media_File" class="clearablefileinput">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                                            <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                                        </div>
+
+                                        * are the required fields
+                                        <br><br>
+                                        <div class="submitButton  col-md-12">
+                                            <button class="btn btn-success" type="submit">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
                     {% if '/teachers' in request.path %}
 
                     <span style="float: right;"><a id="{{ questions.pk }}" class="confirm-delete"
@@ -316,12 +422,12 @@
     </div>
 
 </div>
-<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalLabel"
     aria-hidden="true" id="add_question_modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h4 class="modal-title" id="exampleModalLabel"><b>Add Question </b>
+                <h4 class="modal-title" id="addQuestionModalLabel"><b>Add Question </b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -332,6 +438,8 @@
         </div>
     </div>
 </div>
+
+
 <div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -467,6 +575,8 @@
             }
         });
     });
+
+
 
     $(".submitAnswer").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.

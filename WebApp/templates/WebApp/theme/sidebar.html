@@ -145,10 +145,19 @@
         <a data-toggle="tooltip" data-placement="top" title="FullScreen" onclick="toggleFullScreen()">
             <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
         </a>
-
-        <a data-toggle="tooltip" data-placement="top" title="Profile" href="/profile">
-            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+        {% if '/teachers' in request.path %}
+        <a data-toggle="tooltip" data-placement="top" title="Profile" href="{% url 'teacher_user_profile' %}">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
         </a>
+        {% elif '/students' in request.path %}
+        <a data-toggle="tooltip" data-placement="top" title="Profile" href="{% url 'student_user_profile' %}">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        </a>
+        {% else %}
+        <a data-toggle="tooltip" data-placement="top" title="Profile" href="{% url 'user_profile' %}">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        </a>
+        {% endif %}
 
         <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App"
             href="http://ublcloud.me/media/app/lms-app.apk">
