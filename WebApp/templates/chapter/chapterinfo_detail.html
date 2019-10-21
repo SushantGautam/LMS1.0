@@ -79,17 +79,30 @@
                     {% if 'students' in request.path %}
                     <tr>
                         <td>Pre Test Quiz</td>
-                        <td>
-                            {% for pre_quiz in pre_quizes %}
-                            <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                                
-                              
-                            </a>
+                        <td> 
+
+                        {% for pre_quiz in pre_quizes %}
+                             <div class="col-md-12">
+                                 <div class="col-md-6">
+                                        <span> {{ pre_quiz.title }} </span>
+                                 </div>
+                                 <div class="col-md-6">
+                                        <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                                                <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class=" qts-button "
+                                                data-toggle="modal" data-target="#quizmodal">Play Quiz
+                                            </button>
+                                              
+                                            </a>
+
+                                 </div>
+                             </div>
+                             <hr>
                             
                            
-                            <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="btn btn-info "
-                                data-toggle="modal" data-target="#quizmodal">Play Quiz
-                            </button>
+
+                            
+                             
+                           
                             {% empty %}
                             <p>No pre quiz</p>
                             {% endfor %}
@@ -99,10 +112,22 @@
                         <td> Post Test Quiz</td>
                         <td>
                             {% for post_quiz in post_quizes %}
-                            <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                                {{ post_quiz.title }}
-                                <button>Play quiz</button>
-                            </a>
+                          
+                            <div class="col-md-12">
+                                    <div class="col-md-6">
+                                           <span> {{ post_quiz.title }} </span>
+                                    </div>
+                                    <div class="col-md-6">
+                                           <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                                                   <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button" class=" qts-button "
+                                                   data-toggle="modal" data-target="#quizmodal">Play Quiz
+                                               </button>
+                                                 
+                                               </a>
+   
+                                    </div>
+                                </div>
+                                <hr>
                             {% empty %}
                             <p>No post quiz</p>
                             {% endfor %}
@@ -119,7 +144,7 @@
                             <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change"
                                 id="radiobtn{{ pre_quiz.id }}">
                                 {% csrf_token %}
-                                <a target="_blank" href="/quiz/detail/{{ pre_quiz.id }}">{{ pre_quiz.title }} </a><br>
+                                <a target="_blank" href="/quiz/detail/{{ pre_quiz.id }}">{{ quiz.title }} </a><br>
                                 <div class="btn-group" id="status" data-toggle="buttons">
                                     <label
                                         class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"

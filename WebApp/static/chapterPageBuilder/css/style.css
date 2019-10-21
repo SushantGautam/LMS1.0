@@ -662,6 +662,14 @@ svg{
   text-decoration: none;
   cursor: pointer;
 }
+@media (min-width: 768px) and (max-width: 1500px)  {
+.modal-dialog{
+  width: 600px!important;
+  margin: 30px auto;
+}
+
+}
+    
 
 /* Modal Content */
 #button-link-chapter .modal-content{ 
