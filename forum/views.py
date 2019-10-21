@@ -118,8 +118,7 @@ class NodeGroupView(LoginRequiredMixin, ListView):
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
-                # Thread.objects.filter(topic=topic.pk).aggregate(
-                #     Sum('reply_count'))['reply_count__sum']
+              
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
