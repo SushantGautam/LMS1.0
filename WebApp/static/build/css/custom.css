@@ -1523,7 +1523,10 @@ input[type=checkbox], input[type=radio] {
     font-weight: bold !important;
     color: black;
 }
-
+.modal-content{
+    max-width: 862px;
+    margin: auto;
+}
 /* quiz results css */
 .quiz-info-detail-page{
     margin: 20px 0;
@@ -1668,7 +1671,9 @@ input[type=checkbox], input[type=radio] {
     padding: 4px 6px;
     color: white;
     background-color: #007fbe;
-    text-align: center
+    text-align: center;
+    border: none;
+    border-radius: 5px
 }
 
 .questions-only {
