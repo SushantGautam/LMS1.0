@@ -144,7 +144,7 @@
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label">
                                                         <label for="id_Member_BirthDate" class="col-form-label control-label">Date of Birth</label>
-                                                        <input type="date" class="form-control" id="id_Member_BirthDate" value="{{ user.Member_BirthDate|date:"Y-m-d" }}" required>
+                                                        <input type="date" class="form-control" id="id_Member_BirthDate" max="9999-12-31" value="{{ user.Member_BirthDate|date:'Y-m-d' }}" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-3">
