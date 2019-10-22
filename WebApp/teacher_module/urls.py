@@ -116,6 +116,8 @@ urlpatterns += (
          views.SearchView.as_view(), name='teacher_search'),
     path('forum/search/', views.search_redirect,
          name='teacher_search_redirect'),
+    path('forum/search/(?P<keyword>.*?)/page/(?P<page>[0-9]+)/$',
+         views.SearchView.as_view(), name='teacher_search'),
     path('forum/nodegroup/<int:pk>/',
          views.NodeGroupView.as_view(), name='teacher_nodegroup'),
     path('forum/thread/<int:pk>/',

@@ -44,6 +44,7 @@ import uuid
 from django.core.files.storage import FileSystemStorage
 from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist
 
 datetime_now = datetime.now()
 
@@ -465,7 +466,7 @@ class surveyFilterCategory_student(ListView):
 
         return context
 
-
+# <===============================Forum==================================================>
 class Index(ListView):
     model = Thread
     template_name = 'student_module/student_forum/forumIndex.html'
@@ -500,7 +501,7 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
         topic = Topic.objects.get(pk=topic_pk)
-    topics = Topic.objects.filter(node_group=nodegroup_pk)
+    topics = Topic.objects.filter(node_group=nodegroup_pk).filter(id__in=Topic_related_to_user(request))
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
         if form.is_valid():
@@ -778,7 +779,8 @@ def edit_thread(request, pk):
 
 
 def CourseForum(request, course):
-    course = CourseInfo.objects.get(pk=course)
+    def CourseForum(request, course):
+        course = CourseInfo.objects.get(pk=course)
     course_forum = None
     course_node_forum = None
     try:
@@ -790,8 +792,10 @@ def CourseForum(request, course):
     try:
         course_forum = Topic.objects.get(course_associated_with=course)
     except ObjectDoesNotExist:
-        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course).save()
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,
+                             center_associated_with=request.user.Center_Code, topic_icon="book").save()
         course_forum = Topic.objects.get(course_associated_with=course)
+
     return redirect('student_topic', pk=course_forum.pk)
 
 

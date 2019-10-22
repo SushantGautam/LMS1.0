@@ -278,6 +278,17 @@ class register(CreateView):
     success_url = reverse_lazy('loginsuccess')
     template_name = 'registration/register.html'
 
+    def form_valid(self, form):
+        if form.is_valid():
+            self.object = form.save(commit = False)
+            member_type = self.request.POST.get('member_type')
+            if member_type == "Is_Teacher":
+                self.object.Is_Teacher = True
+            elif member_type == "Is_Student":
+                self.object.Is_Student = True
+            self.object.save()
+            return redirect('loginsuccess')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['centers'] = CenterInfo.objects.all()
