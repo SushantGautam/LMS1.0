@@ -136,11 +136,6 @@ class MyCourseListView(ListView):
         context = super().get_context_data(**kwargs)
         courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id, Center_Code=self.request.user.Center_Code)
         context['courses'] = courses
-        # paginator = Paginator(context['courses'], 8)
-        # page = self.request.GET.get('page')
-        # paged_listings = paginator.get_page(page)
-        # context['courses'] = paged_listings
-
         sessions = []
         if context['courses']:
             for course in context['courses']: 
@@ -148,6 +143,7 @@ class MyCourseListView(ListView):
                 session = InningInfo.objects.filter(Groups__id=course.id,End_Date__gt=datetime_now)
                 sessions += session
         context['sessions'] = sessions
+        
         filtered_qs = MyCourseFilter(
                       self.request.GET, 
                       queryset=courses
@@ -161,9 +157,7 @@ class MyCourseListView(ListView):
         except EmptyPage:
             response = paginator.page(paginator.num_pages)
         context['response'] = response
-        context['paginator'] = paginator
-        context['page'] = page
-      
+       
 
         return context
 
@@ -275,6 +269,8 @@ class ChapterInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk')) 
         context['quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'))
+        context['datetime'] = datetime.now()
+
         return context
 
 def ChapterInfoBuildView(request):

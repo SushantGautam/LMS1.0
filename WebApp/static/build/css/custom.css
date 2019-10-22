@@ -1809,3 +1809,8 @@ input[type=checkbox], input[type=radio] {
     padding-right: 20px;
 }
 /* --- */
+
+/* crispy form css */
+label .asteriskField{
+    float: right;
+}

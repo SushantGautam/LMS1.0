@@ -47,14 +47,14 @@
 
             {% if '/students' not in request.path %}
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <a style="float: right;margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
+                <a style="margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
         /teachers{{ object.get_update_url }}
     {% else %}
         {{ object.get_update_url }}
     {% endif %}"><b><u>Edit Chapter</u></b></a>
                 <span>
                     <a id="{{ object.pk }}" class="chapter-confirm-delete"
-                        style="color: rgb(255, 0, 0);cursor:pointer">Delete</a>
+                        style="color: rgb(255, 0, 0);cursor:pointer;float: right;margin-right: 60px;">Delete</a>
                 </span>
                 <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
                     id="deleteChapter{{ object.pk }}">
@@ -93,30 +93,30 @@
                     {% if 'students' in request.path %}
                     <tr>
                         <td>Pre Test Quiz</td>
-                        <td> 
+                        <td>
 
-                        {% for pre_quiz in pre_quizes %}
-                             <div class="col-md-12">
-                                 <div class="col-md-6">
-                                        <span> {{ pre_quiz.title }} </span>
-                                 </div>
-                                 <div class="col-md-6">
-                                        <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                                                <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class=" qts-button "
-                                                data-toggle="modal" data-target="#quizmodal">Play Quiz
-                                            </button>
-                                              
-                                            </a>
+                            {% for pre_quiz in pre_quizes %}
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <span> {{ pre_quiz.title }} </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                                        <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
+                                            class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
+                                        </button>
 
-                                 </div>
-                             </div>
-                             <hr>
-                            
-                           
+                                    </a>
 
-                            
-                             
-                           
+                                </div>
+                            </div>
+                            <hr>
+
+
+
+
+
+
                             {% empty %}
                             <p>No pre quiz</p>
                             {% endfor %}
@@ -126,22 +126,22 @@
                         <td> Post Test Quiz</td>
                         <td>
                             {% for post_quiz in post_quizes %}
-                          
+
                             <div class="col-md-12">
-                                    <div class="col-md-6">
-                                           <span> {{ post_quiz.title }} </span>
-                                    </div>
-                                    <div class="col-md-6">
-                                           <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                                                   <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button" class=" qts-button "
-                                                   data-toggle="modal" data-target="#quizmodal">Play Quiz
-                                               </button>
-                                                 
-                                               </a>
-   
-                                    </div>
+                                <div class="col-md-6">
+                                    <span> {{ post_quiz.title }} </span>
                                 </div>
-                                <hr>
+                                <div class="col-md-6">
+                                    <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
+                                            class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
+                                        </button>
+
+                                    </a>
+
+                                </div>
+                            </div>
+                            <hr>
                             {% empty %}
                             <p>No post quiz</p>
                             {% endfor %}
@@ -628,7 +628,7 @@
                 });
             });
 
-            {#sushant gautam made this#}
+            { #sushant gautam made this# }
 
 
             setTimeout(function () {
@@ -723,6 +723,7 @@
             url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
             success: function (response) {
                 $('#create_assignment_modal_body').append(response);
+                $('#id_Assignment_Deadline').attr('min', '{{datetime|date:"Y-m-d"}}');
             },
             error: function () {
                 console.log('Error in generating assignment create form')
