@@ -35,7 +35,7 @@
 
 
 
-            <div class="card">
+            <div class="card1">
 
                 <div class="form-group form-control-search searchField">
 
@@ -58,7 +58,7 @@
             </div>
 
 
-            <div class="card">
+            <div class="card1">
                 {% block widget_before %}{% endblock %}
                 {% if request.user.is_authenticated %}
                 {% include 'teacher_module/teacher_forum/widgets/authenticated_user_panel.html' %}
@@ -74,7 +74,7 @@
 
 
 
-            <div class="card panel panel-default">
+            <div class="card1 panel panel-default">
 
                 <ul class="list-group list-group-menu">
                     <div class="panel-heading" style="background-color:#F5F5F5">
@@ -113,7 +113,7 @@
             e.preventDefault();
             var keyword = $('#keywordInput').val();
             if (keyword) {
-                window.location = "/search/" + keyword + "/"; // FIXME: Use url tag!
+                window.location = "/teachers/forum/search/(%3FP" + keyword + ".*)"; // FIXME: Use url tag!
             }
         });
     });

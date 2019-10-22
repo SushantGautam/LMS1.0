@@ -1055,56 +1055,6 @@ class QuizCreateWizard(SessionWizardView):
         return context
 
 
-# ___________________________________________________FORUM____________________________________
-
-class Index(LoginRequiredMixin, ListView):
-    model = Thread
-    template_name = 'forum/index.html'
-    context_object_name = 'threads'
-
-    def get_queryset(self):
-        nodegroups = NodeGroup.objects.all()
-        threadqueryset = Thread.objects.none()
-        for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
-            for topic in topics:
-                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
-                    topic_id__in=Topic_related_to_user(self.request))[:4]
-                print("threads", threads)
-                threadqueryset |= threads
-        return threadqueryset
-
-    def get_context_data(self, **kwargs):
-        context = super(ListView, self).get_context_data(**kwargs)
-        context['panel_title'] = ('New Threads')
-        context['title'] = ('Index')
-        context['topics'] = Topic.objects.all()
-        context['show_order'] = True
-        context['get_top_thread_keywords'] = get_top_thread_keywords(
-            self.request, 10)
-        return context
-
-
-def create_thread(request, topic_pk=None, nodegroup_pk=None):
-    topic = None
-    node_group = NodeGroup.objects.all()
-    fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
-    if topic_pk:
-        topic = Topic.objects.get(pk=topic_pk)
-    topics = Topic.objects.filter(node_group=nodegroup_pk)
-    if request.method == 'POST':
-        form = ThreadForm(request.POST, user=request.user)
-        if form.is_valid():
-            t = form.save()
-            return HttpResponseRedirect(reverse('teacher_thread', kwargs={'pk': t.pk}))
-    else:
-        form = ThreadForm()
-
-    return render(request, 'teacher_module/teacher_forum/create_thread.html',
-                  {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
-                   'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
-
-
 class teacherSurveyFilterCategory(ListView):
     model = SurveyInfo
     template_name = 'survey/common/surveyinfo_expireView.html'
@@ -1132,6 +1082,61 @@ class TeacherSurveyInfoDetailView(DetailView):
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
         return context
+
+
+
+# ___________________________________________________FORUM____________________________________
+
+class Index(LoginRequiredMixin, ListView):
+    model = Thread
+    template_name = 'teacher_module/teacher_forum/forumIndex.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        nodegroups = NodeGroup.objects.all()
+        threadqueryset = Thread.objects.none()
+        for ng in nodegroups:
+            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
+            for topic in topics:
+                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
+                    topic_id__in=Topic_related_to_user(self.request))[:4]
+                print("threads", threads)
+                threadqueryset |= threads
+        return threadqueryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['panel_title'] = ('New Threads')
+        context['title'] = ('Index')
+        context['topics'] = Topic.objects.all()
+        context['show_order'] = True
+        context['get_top_thread_keywords'] = get_top_thread_keywords(
+            self.request, 10)
+        return context
+
+
+
+@login_required
+def create_thread(request, topic_pk=None, nodegroup_pk=None):
+    topic = None
+    node_group = NodeGroup.objects.all()
+    fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
+    if topic_pk:
+        topic = Topic.objects.get(pk=topic_pk)
+    topics = Topic.objects.filter(node_group=nodegroup_pk).filter(id__in=Topic_related_to_user(request))
+    if request.method == 'POST':
+        form = ThreadForm(request.POST, user=request.user)
+        if form.is_valid():
+            t = form.save()
+            return HttpResponseRedirect(reverse('teacher_thread', kwargs={'pk': t.pk}))
+    else:
+        form = ThreadForm()
+
+    return render(request, 'teacher_module/teacher_forum/create_thread.html',
+                  {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,
+                   'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
+
+
 
 
 def create_topic(request, teacher_nodegroup_pk=None):
@@ -1162,34 +1167,10 @@ def get_thread_ordering(request):
         return query_order
     return get_default_ordering()
 
-
-class SearchView(ListView):
-    model = Thread
-    paginate_by = 20
+from forum.views import SearchView
+class SearchView(SearchView):
     template_name = 'teacher_module/teacher_forum/search.html'
-    context_object_name = 'threads'
-
-    def get_queryset(self):
-        keywords = self.kwargs.get('keyword')
-        query = get_query(keywords, ['title'])
-        return Thread.objects.visible().filter(
-            query
-        ).select_related(
-            'user', 'topic'
-        ).prefetch_related(
-            'user__forum_avatar'
-        ).order_by(
-            get_thread_ordering(self.request)
-        )
-
-    def get_context_data(self, **kwargs):
-        context = super(ListView, self).get_context_data(**kwargs)
-        context['title'] = context['panel_title'] = (
-                                                        'Search: ') + self.kwargs.get('keyword')
-        context['show_order'] = True
-        return context
-
-
+    
 def search_redirect(request):
     if request.method == 'GET':
         keyword = request.GET.get('keyword')
@@ -1423,16 +1404,17 @@ def CourseForum(request, course):
     course_node_forum = None
     try:
         course_node_forum = NodeGroup.objects.get(title='Course')
-    except ObjectDoesNotExist:
+    except ObjectDoesNfotExist:
         NodeGroup.objects.create(title='Course', description='Root node for course Forum').save()
         course_node_forum = NodeGroup.objects.get(title='Course')
 
     try:
         course_forum = Topic.objects.get(course_associated_with=course)
     except ObjectDoesNotExist:
-        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum,
-                             course_associated_with=course).save()
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,
+                             center_associated_with=request.user.Center_Code, topic_icon="book").save()
         course_forum = Topic.objects.get(course_associated_with=course)
+    
     return redirect('teacher_topic', pk=course_forum.pk)
 
 
