@@ -58440,7 +58440,7 @@ a:active {
 }
 
 
-.card {
+.card1 {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     max-width: 300px;
     margin: auto;
@@ -58560,9 +58560,6 @@ a:hover {
     max-width: 100%;
 }
 
-
-}
-
 .reply-content-raw {
     margin-left: 5px;
     margin-top: 15px;
@@ -58598,4 +58595,13 @@ a:hover {
 .reply_header{
     text-align: center;
     font-size: 24px;
+}
+
+
+@media(min-width: 400px) and (max-width: 991px){
+    .card1{
+        width: 300px;
+        margin: auto;
+        text-align: center;
+    }
 }

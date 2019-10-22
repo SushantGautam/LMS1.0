@@ -33,7 +33,7 @@ from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, \
-    AssignAnswerInfo
+    AssignAnswerInfo, InningGroup
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -42,6 +42,8 @@ from .misc import get_query
 from LMS import settings
 import uuid
 from django.core.files.storage import FileSystemStorage
+from WebApp.filters import MyCourseFilter
+from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
 
 datetime_now = datetime.now()
 
@@ -142,7 +144,7 @@ class MyCoursesListView(ListView):
     model = CourseInfo
     template_name = 'student_module/myCourse.html'
 
-    paginate_by = 8
+    # paginate_by = 8
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -163,12 +165,28 @@ class MyCoursesListView(ListView):
                 course = session.Course_Group.all()
                 courses.update(course)
         context['Course'] = courses
+        filtered_qs = MyCourseFilter(
+                      self.request.GET, 
+                      queryset=course
+                  ).qs
+        paginator = Paginator(filtered_qs, 8)
+        page = self.request.GET.get('page')
+        try:
+            response = paginator.page(page)
+        except PageNotAnInteger:
+            response = paginator.page(1)
+        except EmptyPage:
+            response = paginator.page(paginator.num_pages)
+        context['response'] = response
+        context['paginator'] = paginator
+        context['page'] = page
+        # context['filtered_qs'] = filtered_qs
+
 
         return context
 
     def get_queryset(self):
         qset = self.model.objects.all()
-
         queryset = self.request.GET.get('studentmycoursequery')
         if queryset:
             queryset = queryset.strip()
@@ -251,6 +269,7 @@ class CourseInfoDetailView(DetailView):
             Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Question.objects.filter(
             course_code=self.kwargs.get('pk'))
+        context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
         return context
 
 
@@ -455,12 +474,12 @@ class Index(ListView):
         nodegroups = NodeGroup.objects.all()
         threadqueryset = Thread.objects.none()
         for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk)
+            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
             for topic in topics:
-                threads = Thread.objects.visible().filter(
-                    topic=topic.pk).order_by('pub_date')[:4]
+                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
+                    topic_id__in=Topic_related_to_user(self.request))[:4]
+                print("threads", threads)
                 threadqueryset |= threads
-
         return threadqueryset
 
     def get_context_data(self, **kwargs):
@@ -569,10 +588,12 @@ class NodeGroupView(ListView):
             'user', 'node_group'
         ).prefetch_related(
             'user__forum_avatar'
-        )
+        ).filter(id__in=Topic_related_to_user(self.request))
 
     def get_context_data(self, **kwargs):
-        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk'))
+        topics = Topic.objects.filter(node_group__id=self.kwargs.get('pk')).filter(
+            id__in=Topic_related_to_user(self.request))
+
         latest_threads = []
         for topic in topics:
             reply_count = 0
@@ -580,10 +601,10 @@ class NodeGroupView(ListView):
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
+              
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
-            # print("sabina", latest_threads)
         context = super(ListView, self).get_context_data(**kwargs)
         context['node_group'] = nodegroup = NodeGroup.objects.get(
             pk=self.kwargs.get('pk'))
@@ -775,3 +796,24 @@ def CourseForum(request, course):
 
 
 
+def Topic_related_to_user(request):
+    innings = InningInfo.objects.filter(
+        Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
+    own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
+        course_associated_with__isnull=True)
+    # print(other_center_topic,'other_center_topic')
+    assigned_topics = ''
+    if innings:
+        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+        own_courses_forum_topics = Topic.objects.filter(course_associated_with__in=courses)
+        assigned_topics = own_courses_forum_topics | own_center_general_topic
+    else:
+        assigned_topics = own_center_general_topic
+
+    print("assigned_topics", assigned_topics)
+    return assigned_topics
+
+
+def Thread_related_to_user(request):
+    print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
+    return Thread.objects.filter(topic__in=Topic_related_to_user(request))
