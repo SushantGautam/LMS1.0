@@ -7,8 +7,9 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
-from django.core.paginator import Paginator
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -39,7 +40,7 @@ from .forms import TopicForm, ReplyForm
 from .misc import get_query
 
 datetime_now = datetime.now()
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from formtools.wizard.views import SessionWizardView
 from quiz.forms import QuizForm1, QuizForm2, QuizForm3
 
@@ -48,39 +49,40 @@ from quiz.models import Progress
 from django.http import JsonResponse
 
 from WebApp.filters import MyCourseFilter
-from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
-
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 User = get_user_model()
+
 
 def start(request):
     """Start page with a documentation.
     """
     # return render(request,"start.html")
 
-    if request.user.Is_Teacher: 
+    if request.user.Is_Teacher:
         mycourse = InningGroup.objects.filter(Teacher_Code=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
         if mycourse:
             for course in mycourse:
-                session = InningInfo.objects.filter(Course_Group=course.id,End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(Course_Group=course.id, End_Date__gt=datetime_now)
                 sessions += session
-        courseID=[]
+        courseID = []
         for groups in mycourse:
             courseID.append(groups.Course_Code.id)
 
         activeassignments = []
         for course in courseID:
-            activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now)
-        
-        return render(request, "teacher_module/homepage.html",{'MyCourses':mycourse,'Session':sessions,'activeAssignments':activeassignments})
+            activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id, Course_Code=course,
+                                                               Assignment_Deadline__gte=datetime_now)
+
+        return render(request, "teacher_module/homepage.html",
+                      {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments})
 
 
 def teacher_editprofile(request):
     if not request.user.is_authenticated:
         return HttpResponse("you are not authenticated", {'error_message': 'Error Message Customize here'})
-    
+
     post = get_object_or_404(MemberInfo, pk=request.user.id)
     if request.method == "POST":
 
@@ -97,31 +99,34 @@ def teacher_editprofile(request):
     return render(request, 'teacher_module/editprofile.html', {'form': form})
 
 
-
 def Dashboard(request):
     return render(request, 'teacher_module/homepage.html', )
+
 
 class GroupMappingDetailViewTeacher(DetailView):
     model = GroupMapping
     template_name = 'teacher_module/groupmapping_detail.html'
 
+
 class QuestionInfoDeleteView(DeleteView):
     model = AssignmentQuestionInfo
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
 
-    
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+
     def post(self, request, *args, **kwargs):
-     
+
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = AssignmentQuestionInfo.objects.get(pk=self.request.POST['question_id'])
             Obj.delete()
-            return redirect('teacher_assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+            return redirect('teacher_assignmentinfo_detail', course=request.POST['course_id'],
+                            chapter=request.POST['chapter_id'], pk=request.POST['assignment_id'])
 
         except:
             messages.error(request,
                            "Fail")
-            return redirect('teacher_assignmentinfo_detail', course=request.POST['course_id'], chapter=request.POST['chapter_id'], pk =request.POST['assignment_id'])
+            return redirect('teacher_assignmentinfo_detail', course=request.POST['course_id'],
+                            chapter=request.POST['chapter_id'], pk=request.POST['assignment_id'])
             # return redirect('student_home')
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
@@ -134,7 +139,8 @@ class MyCourseListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id, Center_Code=self.request.user.Center_Code)
+        courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id,
+                                             Center_Code=self.request.user.Center_Code)
         context['courses'] = courses
         # paginator = Paginator(context['courses'], 8)
         # page = self.request.GET.get('page')
@@ -143,15 +149,15 @@ class MyCourseListView(ListView):
 
         sessions = []
         if context['courses']:
-            for course in context['courses']: 
+            for course in context['courses']:
                 # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=course.id,End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(Groups__id=course.id, End_Date__gt=datetime_now)
                 sessions += session
         context['sessions'] = sessions
         filtered_qs = MyCourseFilter(
-                      self.request.GET, 
-                      queryset=courses
-                  ).qs
+            self.request.GET,
+            queryset=courses
+        ).qs
         paginator = Paginator(filtered_qs, 8)
         page = self.request.GET.get('page')
         try:
@@ -163,7 +169,6 @@ class MyCourseListView(ListView):
         context['response'] = response
         context['paginator'] = paginator
         context['page'] = page
-      
 
         return context
 
@@ -172,18 +177,18 @@ class MyCourseListView(ListView):
 
         query = self.request.GET.get('teacher_mycoursequery')
         if query:
-            query=query.strip()
+            query = query.strip()
             qsearch = qsearch.filter(Course_Name__contains=query)
             if not len(qsearch):
                 messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qsearch = qsearch.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qsearch
 
+
 class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'teacher_module/courseinfo_list.html'
     paginate_by = 8
-
 
     def get_queryset(self):
         qs = self.model.objects.all()
@@ -196,7 +201,6 @@ class CourseInfoListView(ListView):
                 messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
-
 
     # def get_queryset(self):
     #     courses = CourseInfo.objects.filter(
@@ -223,7 +227,8 @@ class CourseInfoCreateView(CreateView):
 
     # success_url = reverse_lazy('teacher_courseinfo_list')
     def get_success_url(self, **kwargs):
-        return reverse_lazy('teacher_courseinfo_detail', kwargs = {'pk': self.object.pk})
+        return reverse_lazy('teacher_courseinfo_detail', kwargs={'pk': self.object.pk})
+
 
 class CourseInfoDetailView(DetailView):
     model = CourseInfo
@@ -242,12 +247,14 @@ class CourseInfoUpdateView(UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
     template_name = 'teacher_module/courseinfo_form.html'
+
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
     #     context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
     #     return context
     def get_success_url(self, **kwargs):
-        return reverse_lazy('teacher_courseinfo_detail', kwargs = {'pk': self.object.pk})
+        return reverse_lazy('teacher_courseinfo_detail', kwargs={'pk': self.object.pk})
+
 
 class ChapterInfoListView(ListView):
     model = ChapterInfo
@@ -258,14 +265,16 @@ class ChapterInfoListView(ListView):
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         return context
 
+
 class ChapterInfoCreateView(CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
     template_name = 'teacher_module/chapterinfo_form.html'
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('teacher_chapterinfo_detail', kwargs = {'course':self.object.Course_Code.id,'pk': self.object.pk})
-    
+        return reverse_lazy('teacher_chapterinfo_detail',
+                            kwargs={'course': self.object.Course_Code.id, 'pk': self.object.pk})
+
 
 class ChapterInfoDetailView(DetailView):
     model = ChapterInfo
@@ -273,9 +282,10 @@ class ChapterInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk')) 
+        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'))
         return context
+
 
 def ChapterInfoBuildView(request):
     return render(request, 'teacher_module/coursebuilder.html')
@@ -292,7 +302,9 @@ class ChapterInfoUpdateView(UpdateView):
         return context
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('teacher_chapterinfo_detail', kwargs = {'course':self.object.Course_Code.id,'pk': self.object.pk})
+        return reverse_lazy('teacher_chapterinfo_detail',
+                            kwargs={'course': self.object.Course_Code.id, 'pk': self.object.pk})
+
 
 class AssignmentInfoDetailView(DetailView):
     model = AssignmentInfo
@@ -300,29 +312,33 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),Register_Agent=self.request.user.id)
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),
+                                                                     Register_Agent=self.request.user.id)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
+
 class AssignmentInfoDeleteView(DeleteView):
     model = AssignmentInfo
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
 
-    
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+
     def post(self, request, *args, **kwargs):
-     
+
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = AssignmentInfo.objects.get(pk=self.request.POST['assignment_id'])
             Obj.delete()
-            return redirect('teacher_chapterinfo_detail', course=request.POST['course_id'], pk=request.POST['chapter_id'])
+            return redirect('teacher_chapterinfo_detail', course=request.POST['course_id'],
+                            pk=request.POST['chapter_id'])
 
         except:
             messages.error(request,
                            "Fail")
-            return redirect('teacher_assignmentinfo_detail',course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+            return redirect('teacher_assignmentinfo_detail', course=self.request.POST['course_id'],
+                            chapter=self.request.POST['chapter_id'], pk=self.request.POST['assignment_id'])
             # return redirect('student_home')
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
@@ -333,7 +349,8 @@ class AssignmentAnswers(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code = self.kwargs['pk'],Register_Agent=self.request.user.id)
+        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
+                                                          Register_Agent=self.request.user.id)
         context['questions'] = questions
         context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
 
@@ -342,14 +359,16 @@ class AssignmentAnswers(ListView):
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
+
 class AssignmentInfoUpdateView(UpdateView):
     model = AssignmentInfo
     form_class = AssignmentInfoForm
     template_name = 'teacher_module/assignmentinfo_form.html'
 
     def get_success_url(self, **kwargs):
-            return reverse_lazy('teacher_assignmentinfo_detail', kwargs = {'course':self.object.Course_Code.id,'chapter':self.object.Chapter_Code.id,'pk': self.object.pk})
-
+        return reverse_lazy('teacher_assignmentinfo_detail',
+                            kwargs={'course': self.object.Course_Code.id, 'chapter': self.object.Chapter_Code.id,
+                                    'pk': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -366,7 +385,7 @@ class MyAssignmentsListView(ListView):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
         context['Group'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
-        course=[]
+        course = []
         context['Assignment'] = []
         context['expiredAssignment'] = []
         context['activeAssignment'] = []
@@ -376,16 +395,22 @@ class MyAssignmentsListView(ListView):
         expiredAssignment = []
         activeAssignment = []
         for course in course:
-            Assignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course))
-            expiredAssignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__lt=datetime_now))
-            activeAssignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id,Course_Code=course,Assignment_Deadline__gte=datetime_now))
-        context['Assignment'].append(Assignment)     
-        context['activeAssignment'].append(activeAssignment)     
-        context['expiredAssignment'].append(expiredAssignment)     
+            Assignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course))
+            expiredAssignment.append(
+                AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course,
+                                              Assignment_Deadline__lt=datetime_now))
+            activeAssignment.append(
+                AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course,
+                                              Assignment_Deadline__gte=datetime_now))
+        context['Assignment'].append(Assignment)
+        context['activeAssignment'].append(activeAssignment)
+        context['expiredAssignment'].append(expiredAssignment)
         return context
+
 
 def ProfileView(request):
     return render(request, 'teacher_module/profile.html')
+
 
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
@@ -409,8 +434,10 @@ class PasswordChangeView(PasswordContextMixin, FormView):
         # except the current one.
         update_session_auth_hash(self.request, form.user)
 
-        messages.success(self.request,'Your password was successfully updated! You can login with your new credentials')
+        messages.success(self.request,
+                         'Your password was successfully updated! You can login with your new credentials')
         return super().form_valid(form)
+
 
 def makequery(request):
     # model=SurveyInfo
@@ -485,8 +512,10 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         default_kwargs['center_code_id'] = self.request.user.Center_Code.id
         return default_kwargs
 
+
 def polls_teachers(request):
     return render(request, 'teacher_module/survey/surveyinfodetail.html')
+
 
 class AjaxableResponseMixin:
     """
@@ -711,7 +740,6 @@ class MCQuestionDetailView(DetailView):
     template_name = 'teacher_module/mcquestion_detail.html'
 
 
-
 def MCQuestionDeleteView(request, pk):
     MCQuestion.objects.filter(pk=pk).delete()
     return redirect("teacher_mcquestion_list")
@@ -721,7 +749,6 @@ class MCQuestionCreateFromQuiz(CreateView):
     model = MCQuestion
     fields = ['figure', 'content', 'explanation', 'answer_order']
     template_name = 'teacher_module/mcquestion_form.html'
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -758,7 +785,6 @@ class MCQuestionUpdateFromQuiz(UpdateView):
     model = MCQuestion
     fields = ['figure', 'content', 'explanation', 'answer_order']
     template_name = 'teacher_module/mcquestion_form.html'
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -798,7 +824,6 @@ class TFQuestionListView(ListView):
     template_name = 'teacher_module/tf_question_list.html'
 
 
-
 class TFQuestionCreateView(AjaxableResponseMixin, CreateView):
     model = TF_Question
     form_class = TFQuestionForm
@@ -818,11 +843,11 @@ class TFQuestionCreateView(AjaxableResponseMixin, CreateView):
             context['course_from_quiz'] = self.request.GET["course_from_quiz"]
         return context
 
+
 class TFQuestionCreateFromQuiz(CreateView):
     model = TF_Question
     fields = ['figure', 'content', 'explanation', 'correct']
     template_name = 'teacher_module/tf_question_form.html'
-
 
     def form_valid(self, form):
         related_quiz = Quiz.objects.get(id=self.kwargs['quiz_id'])
@@ -845,7 +870,6 @@ class TFQuestionUpdateFromQuiz(UpdateView):
     model = TF_Question
     fields = ['figure', 'content', 'explanation', 'correct']
     template_name = 'teacher_module/tf_question_form.html'
-
 
     def form_valid(self, form):
         related_quiz = Quiz.objects.get(id=self.kwargs['quiz_id'])
@@ -871,11 +895,9 @@ class TFQuestionUpdateView(UpdateView):
     template_name = 'teacher_module/tf_question_form.html'
 
 
-
 class TFQuestionDetailView(DetailView):
     model = TF_Question
     template_name = 'teacher_module/tf_question_detail.html'
-
 
 
 def TFQuestionDeleteView(request, pk):
@@ -883,13 +905,11 @@ def TFQuestionDeleteView(request, pk):
     return redirect("teacher_tfquestion_list")
 
 
-
 # ------------------------- SA_Question Views------------------
 
 class SAQuestionListView(ListView):
     model = SA_Question
     template_name = 'teacher_module/sa_question_list.html'
-
 
 
 class SAQuestionCreateView(AjaxableResponseMixin, CreateView):
@@ -911,11 +931,11 @@ class SAQuestionCreateView(AjaxableResponseMixin, CreateView):
             context['course_from_quiz'] = self.request.GET["course_from_quiz"]
         return context
 
+
 class SAQuestionCreateFromQuiz(CreateView):
     model = SA_Question
     fields = ['figure', 'content', 'explanation']
     template_name = 'teacher_module/sa_question_form.html'
-
 
     def form_valid(self, form):
         related_quiz = Quiz.objects.get(id=self.kwargs['quiz_id'])
@@ -938,7 +958,6 @@ class SAQuestionUpdateFromQuiz(UpdateView):
     model = SA_Question
     fields = ['figure', 'content', 'explanation']
     template_name = 'teacher_module/sa_question_form.html'
-
 
     def form_valid(self, form):
         related_quiz = Quiz.objects.get(id=self.kwargs['quiz_id'])
@@ -964,11 +983,9 @@ class SAQuestionUpdateView(UpdateView):
     template_name = 'teacher_module/sa_question_form.html'
 
 
-
 class SAQuestionDetailView(DetailView):
     model = SA_Question
     template_name = 'teacher_module/sa_question_detail.html'
-
 
 
 def SAQuestionDeleteView(request, pk):
@@ -1038,23 +1055,23 @@ class QuizCreateWizard(SessionWizardView):
         return context
 
 
-
 # ___________________________________________________FORUM____________________________________
-class Index(ListView):
+
+class Index(LoginRequiredMixin, ListView):
     model = Thread
-    template_name = 'teacher_module/teacher_forum/forumIndex.html'
+    template_name = 'forum/index.html'
     context_object_name = 'threads'
 
     def get_queryset(self):
         nodegroups = NodeGroup.objects.all()
         threadqueryset = Thread.objects.none()
         for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk)
+            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
             for topic in topics:
-                threads = Thread.objects.visible().filter(
-                    topic=topic.pk).order_by('pub_date')[:4]
+                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
+                    topic_id__in=Topic_related_to_user(self.request))[:4]
+                print("threads", threads)
                 threadqueryset |= threads
-
         return threadqueryset
 
     def get_context_data(self, **kwargs):
@@ -1116,6 +1133,7 @@ class TeacherSurveyInfoDetailView(DetailView):
         context['submit'] = SubmitSurvey.objects.all()
         return context
 
+
 def create_topic(request, teacher_nodegroup_pk=None):
     node_group = NodeGroup.objects.filter(pk=teacher_nodegroup_pk)
     if request.method == 'POST':
@@ -1167,9 +1185,10 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
         context['title'] = context['panel_title'] = (
-            'Search: ') + self.kwargs.get('keyword')
+                                                        'Search: ') + self.kwargs.get('keyword')
         context['show_order'] = True
         return context
+
 
 def search_redirect(request):
     if request.method == 'GET':
@@ -1204,7 +1223,7 @@ class NodeGroupView(ListView):
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
-              
+
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
@@ -1316,6 +1335,7 @@ class UserPosts(ListView):
         context['panel_title'] = context['title'] = context['user'].username
         return context
 
+
 class UserThreads(ListView):
     model = Post
     paginate_by = 15
@@ -1336,8 +1356,6 @@ class UserThreads(ListView):
         context['user'] = User.objects.get(pk=self.kwargs.get('pk'))
         context['panel_title'] = context['title'] = context['user'].username
         return context
-
-
 
 
 class NotificationView(ListView):
@@ -1361,6 +1379,7 @@ class NotificationView(ListView):
         context['title'] = ("Notifications")
         return context
 
+
 def edit_thread(request, pk):
     thread = Thread.objects.get(pk=pk)
     if thread.reply_count < 0:
@@ -1375,9 +1394,8 @@ def edit_thread(request, pk):
     else:
         form = ThreadEditForm(instance=thread)
 
-    return render(request, 'teacher_module/teacher_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
-
-
+    return render(request, 'teacher_module/teacher_forum/edit_thread.html',
+                  {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
 @login_required
@@ -1395,7 +1413,8 @@ def edit_thread(request, pk):
     else:
         form = ThreadEditForm(instance=thread)
 
-    return render(request, 'teacher_module/teacher_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
+    return render(request, 'teacher_module/teacher_forum/edit_thread.html',
+                  {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
 def CourseForum(request, course):
@@ -1411,33 +1430,19 @@ def CourseForum(request, course):
     try:
         course_forum = Topic.objects.get(course_associated_with=course)
     except ObjectDoesNotExist:
-        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course).save()
+        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum,
+                             course_associated_with=course).save()
         course_forum = Topic.objects.get(course_associated_with=course)
     return redirect('teacher_topic', pk=course_forum.pk)
 
 
-
-
-
 def Topic_related_to_user(request):
-    innings = InningInfo.objects.filter(
-        Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
     own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
         course_associated_with__isnull=True)
-    # print(other_center_topic,'other_center_topic')
-    assigned_topics = ''
-    if innings:
-        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
-        own_courses_forum_topics = Topic.objects.filter(course_associated_with__in=courses)
-        assigned_topics = own_courses_forum_topics | own_center_general_topic
-    else:
-        assigned_topics = own_center_general_topic
-
-    print("assigned_topics", assigned_topics)
-    return assigned_topics
+    innings_Course_Code = InningGroup.objects.filter(Teacher_Code=request.user.id).values('Course_Code')
+    return Topic.objects.filter(course_associated_with__in=innings_Course_Code) | own_center_general_topic
 
 
 def Thread_related_to_user(request):
-    print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
+    print("asigned threads", Thread.objects.filter(topic__in=Topic_related_to_user(request)))
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
-
