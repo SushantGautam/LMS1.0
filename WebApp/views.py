@@ -37,6 +37,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
+from django.contrib import messages
 
 class Changestate(View):
     def post(self, request):
@@ -144,6 +145,15 @@ def start(request):
     # return render(request,"start.html")
 
     if request.user.is_authenticated:
+        if not request.user.Use_Flag:
+            logout(request)
+            messages.add_message(request, messages.ERROR, 'Your account is deactivated. Please contact admin.')
+            return redirect('login')
+    
+        if not request.user.Center_Code:
+            logout(request)
+            messages.add_message(request, messages.ERROR, 'No center assigned. Please contact admin.')
+            return redirect('login')
 
         if request.user.Is_CenterAdmin:
             thread = Thread.objects.order_by('-pub_date')[:5]
@@ -176,10 +186,10 @@ def start(request):
         if request.user.Is_Parent:
             return redirect('parent_home')
         else:
-            msg = "Sorry you aren't assigned to any member type. User must be assigned to a member type\
-                to go to their respective dashboard. Please request your center admin or super admin to assign you as one type of member"
-            return render(request, "WebApp/splash_page.html", {'msg': msg})
-
+            logout(request)
+            messages.add_message(request, messages.ERROR, 'You are not assigned to any member type. Please contact admin.')
+            return redirect('login')
+            
     else:
         return render(request, "WebApp/splash_page.html")
 
