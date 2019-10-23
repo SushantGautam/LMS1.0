@@ -1,6 +1,6 @@
 html,
 body {
-    height: 100%;
+    /* height: 100%; */
     font-family: "Poppins";
 }
 
@@ -13,16 +13,26 @@ body {
     padding-bottom: 40px;
 
 }
+.form-inputs{
+    margin-top:2em;
+}
 
 #CreateAcc {
-    margin-bottom: 15px;
+    margin-top: 3em;
+    margin-bottom: 1em;
 }
 
-#regImg {
-    margin-left: 43%;
+.reg-div{
+    margin-top:40%;
+    margin-left: 10%;
+    margin-right: 20%;
 }
-#regHeader {
-    margin-left: 30%;
+
+@media (max-width: 767px){
+    .reg-div{
+        margin-top:0;
+        text-align: center;
+    }
 }
 
 .form-signin {
