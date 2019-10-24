@@ -65,11 +65,7 @@
                 <td>{{ object.email }}</td>
                 <td>{{ object.Member_Phone }}</td>
                 <td style="vertical-align: middle;">
-                    {% if object.Member_Gender == 'M' %}
-                    Male
-                    {% elif object.Member_Gender == 'F' %}
-                    Female
-                    {% endif %}
+                    {{ object.get_Member_Gender_display }}
                 </td>
                 <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
                 <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>

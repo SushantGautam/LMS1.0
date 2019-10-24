@@ -30,3 +30,4 @@ django-import-export
 pyvimeo
 pandas==0.24.2
 markdown
+django-decorator-include
