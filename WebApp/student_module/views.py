@@ -815,10 +815,10 @@ def Topic_related_to_user(request):
     else:
         assigned_topics = own_center_general_topic
 
-    print("assigned_topics", assigned_topics)
+    # print("assigned_topics", assigned_topics)
     return assigned_topics
 
 
 def Thread_related_to_user(request):
-    print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
+    # print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
