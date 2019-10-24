@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block breadcrumb %} 
+<li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">QUIZ</a></li>
+<li class="breadcrumb-item"><a href="{% url 'quiz_detail' quiz.id %}">{{quiz.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">Add MCQ</li>
+
+
+
+
+{% endblock %}
+{% block content %}
+
+  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+
+  {{ form.media }}
+  <form method="post" onsubmit="return validateForm()">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div id="option_dynamic_append">
+      {{ answers_formset|crispy }}
+    </div>
+    <div class="text-danger" id="option_error"></div>
+    <div class="add-more">
+      <a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more options</a>
+    </div>
+    <hr>
+    <!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
+
+  <div style="display:none">
+    <div id="emptyOptionForm">
+      <div class="multiField">
+        {{ answers_formset.empty_form|crispy }}
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+{% block customjss %}
+
+  <script>
+      function copyEmptyOption(selector, append_after, type) {
+          var optionId = $('#id_' + type + '-TOTAL_FORMS').val();
+          var str1 = String(type + '-' + optionId);
+          var r1 = new RegExp(type + '\-__prefix__', 'g');
+          console.log($(selector).html().replace(r1, str1));
+
+          $(append_after).append($(selector).html().replace(r1, str1));
+          optionId++;
+          $('#id_' + type + '-TOTAL_FORMS').val(optionId);
+      }
+
+      $('#add_more').click(function () {
+          copyEmptyOption('#emptyOptionForm', '#option_dynamic_append', 'answer_set');
+      });
+
+      function validateForm() {
+          var is_checked = false;
+          var cnt = 0;
+          for (cnt = 0; cnt < $("#id_answer_set-TOTAL_FORMS").val(); cnt++) {
+              if ($("#id_answer_set-" + cnt + "-correct").is(':checked')) {
+                  is_checked = true;
+                  if ($("#id_answer_set-" + cnt + "-content").val().length == 0) {
+                      $("#option_error").html("Correct answer cannot be empty");
+                      return false;
+                  }
+              }
+          }
+          if (!is_checked) {
+              $("#option_error").html("Please select at least one correct answer");
+              return false;
+          }
+      }
+
+      $(".multiField").addClass("col-md-12");
+      //$('div[id^="div_id_answer_set"]').removeClass("form-group");
+      //$('div[id^="div_id_answer_set"]').addClass("form-inline");
+      //$('div[class^="controls"]').addClass("form-group");
+
+      $('div[id$="-content"]').addClass("col-md-6");
+      $('div[id$="-correct"]').addClass("col-md-3");
+      $('div[id$="-DELETE"]').addClass("col-md-3");
+      $('p[id^="hint_id_answer_set"]').remove();
+
+      //$(".control-label").after(`&nbsp;`);
+
+      $('div[id^="div_id_answer_set"]').wrapInner("<div class='col-md-12 answer_set_wrapper' ></div>");
+      $('label[for^="id_answer_set"]').wrap("<div class='col-md-3'></div>");
+      $('.answer_set_wrapper > .controls').addClass('col-md-9');
+
+      $('#div_id_content').addClass('col-md-4');
+      $('#div_id_answer_order').addClass('col-md-4');
+      $('#div_id_figure').addClass('col-md-4');
+      $('#div_id_content, #div_id_answer_order, #div_id_figure').wrapAll("<div class = col-md-12></div>");
+
+      $('label').addClass("quiz-add-label");
+
+  </script>
+{% endblock customjss %}

@@ -512,7 +512,7 @@ class QuizCreateView(CreatePopupMixin, CreateView):
 
 class QuizListView(ListView):
     model = Quiz
-    template_name = 'teacher_module/quiz_list.html'
+    template_name = 'quiz/teacher_quiz/quiz_list.html'
 
     def get_queryset(self):
         queryset = super(QuizListView, self).get_queryset()
@@ -527,7 +527,7 @@ class QuizUpdateView(UpdateView):
 class QuizDetailView(DetailView):
     model = Quiz
     slug_field = 'url'
-    template_name = 'teacher_module/quiz_detail.html'
+    template_name = 'quiz/teacher_quiz/quiz_detail.html'
 
     # def get(self, request, *args, **kwargs):
     #     self.object = self.get_object()
