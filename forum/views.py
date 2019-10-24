@@ -44,7 +44,6 @@ def Topic_related_to_user(request):
 
 
 def Thread_related_to_user(request):
-    print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
 
 
@@ -58,11 +57,11 @@ class Index(LoginRequiredMixin, ListView):
         nodegroups = NodeGroup.objects.all()
         threadqueryset = Thread.objects.none()
         for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
+            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with=self.request.user.Center_Code)
             for topic in topics:
                 threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
                     topic_id__in=Topic_related_to_user(self.request))[:4]
-                print("threads", threads)
+               
                 threadqueryset |= threads
         return threadqueryset
 
@@ -508,7 +507,7 @@ def logout_view(request):
 
 
 def get_top_thread_keywords(request, number_of_keyword):
-    obj = Thread.objects.all()
+    obj = Thread.objects.filter(topic__in=Topic_related_to_user(request))
     word_counter = {}
     for eachx in obj:
         words = TextBlob(eachx.title).noun_phrases
