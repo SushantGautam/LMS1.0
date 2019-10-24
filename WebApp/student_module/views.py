@@ -161,6 +161,7 @@ class MyCoursesListView(ListView):
                 sessions += session
         context['sessions'] = sessions
         courses = set()
+        course = InningInfo.objects.none()
         if context['sessions']:
             for session in context['sessions']:
                 course = session.Course_Group.all()
@@ -179,8 +180,8 @@ class MyCoursesListView(ListView):
         except EmptyPage:
             response = paginator.page(paginator.num_pages)
         context['response'] = response
-        context['paginator'] = paginator
-        context['page'] = page
+        # context['paginator'] = paginator
+        # context['page'] = page
         # context['filtered_qs'] = filtered_qs
 
 

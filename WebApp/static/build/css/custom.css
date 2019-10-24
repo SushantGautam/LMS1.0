@@ -1523,10 +1523,7 @@ input[type=checkbox], input[type=radio] {
     font-weight: bold !important;
     color: black;
 }
-.modal-content{
-    max-width: 862px;
-    margin: auto;
-}
+
 /* quiz results css */
 .quiz-info-detail-page{
     margin: 20px 0;
@@ -1809,3 +1806,8 @@ input[type=checkbox], input[type=radio] {
     padding-right: 20px;
 }
 /* --- */
+
+/* crispy form css */
+label .asteriskField{
+    float: right;
+}

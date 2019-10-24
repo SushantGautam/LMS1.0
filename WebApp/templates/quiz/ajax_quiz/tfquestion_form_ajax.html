@@ -1,0 +1,39 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+{{ form.media }}
+
+<form method="post" id="tfq_form_post">
+  {% csrf_token %}
+  {{ form|crispy }}
+  {% if quiz_id %}
+    <input name="quiz_id" value="{{ quiz_id }}" type="hidden">
+  {% endif %}
+  <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+
+{% block customjss %}
+  <script>
+      $("#tfq_form_post").submit(function (e) {
+          e.preventDefault(); // avoid to execute the actual submit of the form.
+          $.ajax({
+              url: "{{ post_url }}", // URL to your view that serves new info
+              data: $(this).serialize(), // get the form data
+              type: $(this).attr('method'), // GET or POST
+              success: function (response) {
+                  tfq_success(response);
+              },
+              error: function () {
+                  console.log('Error in posting form');
+              }
+          });
+      });
+
+      $("#div_id_course_code").hide();
+      $("#id_course_code").val('{{ course_from_quiz }}');
+      $("#div_id_cent_code").hide();
+      $("#id_cent_code").val('{{ request.user.Center_Code.id }}');
+  </script>
+{% endblock customjss %}
