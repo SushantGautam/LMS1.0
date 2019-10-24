@@ -38,6 +38,9 @@ from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
 from django.contrib import messages
+from django.contrib.auth.password_validation import UserAttributeSimilarityValidator, CommonPasswordValidator
+from django.core.exceptions import ValidationError
+
 
 class Changestate(View):
     def post(self, request):
@@ -291,6 +294,10 @@ class register(CreateView):
     def form_valid(self, form):
         if form.is_valid():
             self.object = form.save(commit = False)
+
+            username = self.request.POST.get('username')
+            password = self.request.POST.get('password1')
+            
             member_type = self.request.POST.get('member_type')
             if member_type == "Is_Teacher":
                 self.object.Is_Teacher = True
@@ -396,6 +403,16 @@ def validate_username(request):
     if data['is_taken']:
         data['error_message'] = 'A user with this username already exists.'
     return JsonResponse(data)
+
+def validate_password(request):
+    username = request.POST.get('username', None)
+    password = request.POST.get('password', None)
+    u = CommonPasswordValidator()
+    try:
+        u.validate(password,username)
+        return JsonResponse("", safe=False)
+    except ValidationError as e:
+        return JsonResponse(e.messages, safe=False)
 
 
 def MemberInfoActivate(request, pk):
