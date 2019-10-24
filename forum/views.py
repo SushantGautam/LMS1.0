@@ -44,7 +44,6 @@ def Topic_related_to_user(request):
 
 
 def Thread_related_to_user(request):
-    print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
 
 
@@ -62,7 +61,7 @@ class Index(LoginRequiredMixin, ListView):
             for topic in topics:
                 threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
                     topic_id__in=Topic_related_to_user(self.request))[:4]
-                print("threads", threads)
+               
                 threadqueryset |= threads
         return threadqueryset
 
