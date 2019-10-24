@@ -1,7 +1,6 @@
-{#..........................................Teacher detail page............................................#}
-
 {% extends "teacher_module/base.html" %}
 {% load static %}
+
 {% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %}
@@ -15,4 +14,20 @@
 
 {% block content %}
     {% include 'survey/common/details.html' %}
+{% endblock %}
+
+{% block customjss %}
+  <script>
+    $('#retakeSurveyBtn').on('click', function () {
+
+        $.ajax({
+            type: "GET",
+            data: {'categoryId': "{{ object.Category_Code.id }}"},
+            url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#surveyFormRetake").html(data);
+            }
+        });
+    });
+  </script>
 {% endblock %}

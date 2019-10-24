@@ -25,7 +25,7 @@ Course
     <br><br><br>
     <div class="container" id="divID">
         {% include 'WebApp/theme/alerts.html' %}
-        {% for courses in courses %}
+        {% for courses in response %}
         <div class="col-md-3 col-sm-6 col-xs-12" id="listCard">
             <div class="gridContentsList">
                 <div class="card-header">
@@ -80,28 +80,27 @@ Course
 
 
 </div>
+{% if response.has_other_pages %}
 <div class=" text-center">
-    {% if is_paginated %}
     <ul class="pagination">
-        {% if page_obj.has_previous %}
-        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+        {% if response.has_previous %}
+        <li><a href="?page={{ response.previous_page_number }}">&laquo;</a></li>
         {% else %}
         <li class="disabled"><span>&laquo;</span></li>
         {% endif %}
-        {% for i in paginator.page_range %}
-        {% if page_obj.number == i %}
+        {% for i in response.paginator.page_range %}
+        {% if response.number == i %}
         <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
         {% else %}
         <li><a href="?page={{ i }}">{{ i }}</a></li>
         {% endif %}
         {% endfor %}
-        {% if page_obj.has_next %}
-        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+        {% if response.has_next %}
+        <li><a href="?page={{ response.next_page_number }}">&raquo;</a></li>
         {% else %}
         <li class="disabled"><span>&raquo;</span></li>
         {% endif %}
     </ul>
-    {% endif %}
 </div>
-
+{% endif %}
 {% endblock %}

@@ -15,7 +15,6 @@ from django.utils.translation import ugettext as _
 from django.views.generic import ListView
 from textblob import TextBlob
 
-from WebApp.models import InningInfo, GroupMapping, InningGroup
 from .forms import ThreadForm, ThreadEditForm, AppendixForm, ForumAvatarForm, ReplyForm, TopicForm, TopicEditForm, \
     PostEditForm
 from .misc import get_query
@@ -41,21 +40,7 @@ def get_thread_ordering(request):
 
 
 def Topic_related_to_user(request):
-    innings = InningInfo.objects.filter(
-        Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
-    own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
-        course_associated_with__isnull=True)
-    # print(other_center_topic,'other_center_topic')
-    assigned_topics = ''
-    if innings:
-        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
-        own_courses_forum_topics = Topic.objects.filter(course_associated_with__in=courses)
-        assigned_topics = own_courses_forum_topics | own_center_general_topic
-    else:
-        assigned_topics = own_center_general_topic
-
-    print("assigned_topics", assigned_topics)
-    return assigned_topics
+    return Topic.objects.filter(center_associated_with=request.user.Center_Code)
 
 
 def Thread_related_to_user(request):
@@ -118,8 +103,7 @@ class NodeGroupView(LoginRequiredMixin, ListView):
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
-                # Thread.objects.filter(topic=topic.pk).aggregate(
-                #     Sum('reply_count'))['reply_count__sum']
+              
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])

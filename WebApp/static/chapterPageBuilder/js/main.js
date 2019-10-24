@@ -422,7 +422,7 @@ $(document).ready(function() {
         }
     });
 
-    function TextboxFunction(top=null, left=null, height="10%", width="20%", message="Type Something Here..."){
+    function TextboxFunction(top=null, left=null, height="20%", width="30%", message="Type Something Here..."){
         const textBox = new Textbox(top, left, height, width, message);
         
         textBox.renderDiagram();
@@ -1260,6 +1260,7 @@ $(document).ready(function() {
             return false
         }
         $('#tab'+this.value).remove();
+        $(this).parent().parent().prev().find('li')[0].click();        
         $(this).parent().parent().remove();
         displaypagenumbers();
     });
@@ -1267,8 +1268,8 @@ $(document).ready(function() {
     // clone Page function
     $('.tabs-to-click').on('click', '.clone-page-btn', function(){
         var num_tabs = $(".tabs-to-click ul li").length + 1;
-        let copy = $(this).parent().parent().clone();
 
+        let copy = $(this).parent().parent().clone();
         // for cloning page navigation tabs
         copy.find('.clone-page-btn').val(num_tabs);
         copy.find('.delete-page-btn').val(num_tabs);
@@ -1283,12 +1284,11 @@ $(document).ready(function() {
         editorcopy.empty();
         const obj=$("#tab"+this.value).children();
         $(".tabs").append(editorcopy);
-        $('.tabs-to-click > ul > div > li')[this.value].click() // li starts from 0 so. this.value is actually this.value + 1 -1 i.e. new tab
-
+        $(this).parent().parent().next().find('li')[0].click()
         $.each( obj, function( i, value ) {
             if(value.classList.contains('textdiv')){
-                var clone = $(this).children('.messageText').clone();
-                clone.find('div').remove();
+                var clone = $(this).find('.note-editable').clone();
+                // clone.find('div').remove();
                 var content_html = clone.html();
                 TextboxFunction($(this).css("top"),
                 $(this).css("left"),$(this).css("height"),$(this).css("width"),content_html);
@@ -1328,14 +1328,14 @@ $(document).ready(function() {
 
         displaypagenumbers();
 
-        alert('Clone Successful')
+        // alert('Clone Successful')
     });
     // =====================================================================================
 
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
             TextboxFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth, "10%", "25%");
+            ui.helper.position().left - sidebarWidth, "20%", "35%");
         } else if (ui.helper.hasClass('picture')) {
             PictureFunction(ui.helper.position().top,
             ui.helper.position().left - sidebarWidth);
