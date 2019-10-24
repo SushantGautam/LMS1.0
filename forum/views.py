@@ -57,7 +57,7 @@ class Index(LoginRequiredMixin, ListView):
         nodegroups = NodeGroup.objects.all()
         threadqueryset = Thread.objects.none()
         for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
+            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with=self.request.user.Center_Code)
             for topic in topics:
                 threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
                     topic_id__in=Topic_related_to_user(self.request))[:4]
