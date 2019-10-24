@@ -38,6 +38,9 @@ from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
 from django.contrib import messages
+from django.contrib.auth.password_validation import UserAttributeSimilarityValidator, CommonPasswordValidator
+from django.core.exceptions import ValidationError
+
 
 class Changestate(View):
     def post(self, request):
@@ -156,15 +159,15 @@ def start(request):
             return redirect('login')
 
         if request.user.Is_CenterAdmin:
-            thread = Thread.objects.order_by('-pub_date')[:5]
-            wordCloud = Thread.objects.all()
+            thread = Thread.objects.filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
+            wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
                 '-Register_DateTime')[:5]
             coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
-            threadcount = Thread.objects.count()
+            threadcount = Thread.objects.filter(user__Center_Code=request.user.Center_Code).count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveycount = SurveyInfo.objects.filter( Use_Flag=True,
                                                     End_Date__gte=datetime.now())[:5]
@@ -291,6 +294,10 @@ class register(CreateView):
     def form_valid(self, form):
         if form.is_valid():
             self.object = form.save(commit = False)
+
+            username = self.request.POST.get('username')
+            password = self.request.POST.get('password1')
+            
             member_type = self.request.POST.get('member_type')
             if member_type == "Is_Teacher":
                 self.object.Is_Teacher = True
@@ -396,6 +403,16 @@ def validate_username(request):
     if data['is_taken']:
         data['error_message'] = 'A user with this username already exists.'
     return JsonResponse(data)
+
+def validate_password(request):
+    username = request.POST.get('username', None)
+    password = request.POST.get('password', None)
+    u = CommonPasswordValidator()
+    try:
+        u.validate(password,username)
+        return JsonResponse("", safe=False)
+    except ValidationError as e:
+        return JsonResponse(e.messages, safe=False)
 
 
 def MemberInfoActivate(request, pk):

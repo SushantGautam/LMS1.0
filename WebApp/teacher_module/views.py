@@ -551,7 +551,7 @@ class QuizCreateView(CreatePopupMixin, CreateView):
 
 class QuizListView(ListView):
     model = Quiz
-    template_name = 'teacher_module/quiz_list.html'
+    template_name = 'quiz/teacher_quiz/quiz_list.html'
 
     def get_queryset(self):
         queryset = super(QuizListView, self).get_queryset()
@@ -566,7 +566,7 @@ class QuizUpdateView(UpdateView):
 class QuizDetailView(DetailView):
     model = Quiz
     slug_field = 'url'
-    template_name = 'teacher_module/quiz_detail.html'
+    template_name = 'quiz/teacher_quiz/quiz_detail.html'
 
     # def get(self, request, *args, **kwargs):
     #     self.object = self.get_object()
@@ -1097,7 +1097,7 @@ class Index(LoginRequiredMixin, ListView):
             for topic in topics:
                 threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
                     topic_id__in=Topic_related_to_user(self.request))[:4]
-                print("threads", threads)
+                # print("threads", threads)
                 threadqueryset |= threads
         return threadqueryset
 
@@ -1423,5 +1423,5 @@ def Topic_related_to_user(request):
 
 
 def Thread_related_to_user(request):
-    print("asigned threads", Thread.objects.filter(topic__in=Topic_related_to_user(request)))
+    # print("asigned threads", Thread.objects.filter(topic__in=Topic_related_to_user(request)))
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))

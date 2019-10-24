@@ -244,7 +244,7 @@ class NodeGroup(models.Model):
         return self.topics.count()
 
     def threadx_count(self):
-
+    
         topics = Topic.objects.filter(node_group=self.pk)
         threads = Thread.objects.filter(topic__in=topics)
         return threads.count()
