@@ -1,20 +1,5 @@
 {% load static %}
-<script src="https://player.vimeo.com/api/player.js"></script> 
-<style>
-    .modal-content{
-    max-width: 862px;
-    margin: auto;
-}
-    @media (min-width: 768px) and (max-width: 1500px)  {
-.modal-dialog{
-  width: 600px!important;
-  margin: 30px auto;
-}
-
-}
-  
-</style>
-
+<script src="https://player.vimeo.com/api/player.js"></script>
 
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true" id="create_assignment_modal">
@@ -35,8 +20,6 @@
 
 
 <div class="outerDiv">
-    {% include 'WebApp/theme/alerts.html' %}
-
     <div class="col-md-6 col-sm-12 col xs-12">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-12 col-sm-12 col-xs-12 text-center">
@@ -62,14 +45,14 @@
 
             {% if '/students' not in request.path %}
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <a style="margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
+                <a style="float: right;margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
         /teachers{{ object.get_update_url }}
     {% else %}
         {{ object.get_update_url }}
     {% endif %}"><b><u>Edit Chapter</u></b></a>
                 <span>
                     <a id="{{ object.pk }}" class="chapter-confirm-delete"
-                        style="color: rgb(255, 0, 0);cursor:pointer;float: right;margin-right: 60px;">Delete</a>
+                        style="color: rgb(255, 0, 0);cursor:pointer">Delete</a>
                 </span>
                 <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
                     id="deleteChapter{{ object.pk }}">
@@ -109,29 +92,16 @@
                     <tr>
                         <td>Pre Test Quiz</td>
                         <td>
-
                             {% for pre_quiz in pre_quizes %}
-                            <div class="col-md-12">
-                                <div class="col-md-6">
-                                    <span> {{ pre_quiz.title }} </span>
-                                </div>
-                                <div class="col-md-6">
-                                    <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                                        <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
-                                            class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
-                                        </button>
-
-                                    </a>
-
-                                </div>
-                            </div>
-                            <hr>
+                            <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
 
 
+                            </a>
 
 
-
-
+                            <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="btn btn-info "
+                                data-toggle="modal" data-target="#quizmodal">Play Quiz
+                            </button>
                             {% empty %}
                             <p>No pre quiz</p>
                             {% endfor %}
@@ -141,22 +111,10 @@
                         <td> Post Test Quiz</td>
                         <td>
                             {% for post_quiz in post_quizes %}
-
-                            <div class="col-md-12">
-                                <div class="col-md-6">
-                                    <span> {{ post_quiz.title }} </span>
-                                </div>
-                                <div class="col-md-6">
-                                    <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
-                                            class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
-                                        </button>
-
-                                    </a>
-
-                                </div>
-                            </div>
-                            <hr>
+                            <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                                {{ post_quiz.title }}
+                                <button>Play quiz</button>
+                            </a>
                             {% empty %}
                             <p>No post quiz</p>
                             {% endfor %}
@@ -173,7 +131,7 @@
                             <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change"
                                 id="radiobtn{{ pre_quiz.id }}">
                                 {% csrf_token %}
-                                <a target="_blank" href="/quiz/detail/{{ pre_quiz.id }}">{{ quiz.title }} </a><br>
+                                <a target="_blank" href="/quiz/detail/{{ pre_quiz.id }}">{{ pre_quiz.title }} </a><br>
                                 <div class="btn-group" id="status" data-toggle="buttons">
                                     <label
                                         class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"
@@ -191,7 +149,7 @@
                             {% endfor %}
                         </td>
                         {% else %}
-                        <td>No pre quiz, Add new by clicking +</td>
+                        <td>There are no pre quiz for this chapter, add one by clicking +</td>
                         {% endif %}
                         <td style="vertical-align: middle;">
                             {#                <a id="pre_test_popup" target="_blank"#}
@@ -232,7 +190,7 @@
                             {% endfor %}
                         </td>
                         {% else %}
-                        <td>No post quiz, Add new by clicking +</td>
+                        <td>There are no post quiz for this chapter, add one by clicking +</td>
 
                         {% endif %}
                         <td style="vertical-align: middle;">
@@ -643,7 +601,7 @@
                 });
             });
 
-           
+            {#sushant gautam made this#}
 
 
             setTimeout(function () {
@@ -738,7 +696,6 @@
             url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
             success: function (response) {
                 $('#create_assignment_modal_body').append(response);
-                $('#id_Assignment_Deadline').attr('min', '{{datetime|date:"Y-m-d"}}');
             },
             error: function () {
                 console.log('Error in generating assignment create form')
