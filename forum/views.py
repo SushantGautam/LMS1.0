@@ -508,7 +508,7 @@ def logout_view(request):
 
 
 def get_top_thread_keywords(request, number_of_keyword):
-    obj = Thread.objects.all()
+    obj = Thread.objects.filter(topic__in=Topic_related_to_user(request))
     word_counter = {}
     for eachx in obj:
         words = TextBlob(eachx.title).noun_phrases
