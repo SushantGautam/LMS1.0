@@ -160,15 +160,15 @@
             var lowerCaseLetters = /[a-z]/g;
             var numbers = /[0-9]/g;
 
-            if(pw1.length < 8) {
-                $("#password-error-message").text("Password must be of at least 8 characters.");
+            if(pw1.length < 8 || pw1 >12) {
+                $("#password-error-message").text("Password must be of 8-12 characters.");
                 $('#id_password1').focus();
             }
             else if(!pw1.match(lowerCaseLetters) && !pw1.match(upperCaseLetters)){
                 $("#password-error-message").text("Password cannot be only numeric.");
                 $('#id_password1').focus();
             }
-            else if(pw1.includes(username)){
+            else if(pw1.includes(username) && username != ""){
                 $("#password-error-message").text("Username and Password are similar.");
                 $('#id_password1').focus();
             }

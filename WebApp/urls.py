@@ -7,27 +7,7 @@ from rest_framework import routers
 from . import api
 from . import views
 
-router = routers.DefaultRouter()
 
-router.register(r'centerinfo', api.CenterInfoViewSet)
-router.register(r'memberinfo', api.MemberInfoViewSet)
-router.register(r'courseinfo', api.CourseInfoViewSet)
-router.register(r'chapterinfo', api.ChapterInfoViewSet)
-router.register(r'inninginfo', api.InningInfoViewSet)
-router.register(r'sessioninfo', api.SessionInfoViewSet)
-router.register(r'assignassignmentinfo', api.AssignAssignmentInfoViewSet)
-router.register(r'inninggroup', api.InningGroupViewSet)
-router.register(r'groupmapping', api.GroupMappingViewSet)
-router.register(r'assignmentinfo', api.AssignmentInfoViewSet)
-router.register(r'assignanswerinfo', api.AssignAnswerInfoViewSet)
-router.register(r'questioninfo', api.QuestionInfoViewSet)
-
-urlpatterns = (
-    # urls for Django Rest Framework API
-    path('api/v1/', include(router.urls)),
-    path('api/v1/chaptercontent/<int:chapterID>', api.ChapterContent.as_view(), name='chaptercontent'),
-    
-)
 
 urlpatterns += (
     # urls for Profile
