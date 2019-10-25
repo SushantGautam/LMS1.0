@@ -704,6 +704,8 @@
             `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
                class="select form-control">
             <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
+               class="select form-control">
+            <input type="hidden" name="today_date" id="id_today_date" value="{{datetime|date:"Y-m-d"}}"
                class="select form-control">`
         )
 
