@@ -46,6 +46,7 @@ class ThreadAdmin(admin.ModelAdmin):
     fields = (
         'user',
         'title',
+        'topic',
         'content_raw',
         'hidden',
         'closed'
@@ -83,6 +84,15 @@ class TopicAdmin(admin.ModelAdmin):
         'title',
     )
 
+    fields = (
+        'title',
+        'description',
+        'node_group',
+        'topic_icon',
+        'course_associated_with',
+        'center_associated_with'
+    )
+
 
 class NodeGroupAdmin(admin.ModelAdmin):
 
@@ -98,6 +108,10 @@ class NodeGroupAdmin(admin.ModelAdmin):
     )
     search_fields = (
         'title',
+    )
+    fields = (
+        'title',
+        'description'
     )
 
 
