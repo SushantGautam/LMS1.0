@@ -81,6 +81,13 @@
                         <div class="controls ">
                             <input type="password" name="password1" id="id_password1" class="textinput textInput form-control" required>
                         </div>
+                        {% if form.non_field_errors %}
+                            <ul class='form-errors'>
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                         <small id="password-error-message" class="input-error text-danger"></small>
                     </div>
 
@@ -147,27 +154,45 @@
         });
 
         $('#id_password1').change(function(){
+            let username = $('#id_username').val();
             pw1 = $('#id_password1').val();
             var upperCaseLetters = /[A-Z]/g;
             var lowerCaseLetters = /[a-z]/g;
             var numbers = /[0-9]/g;
 
-            if(pw1.length < 8) {
-                $("#password-error-message").text("Password must be of at least 8 characters.");
+            if(pw1.length < 8 || pw1 >12) {
+                $("#password-error-message").text("Password must be of 8-12 characters.");
                 $('#id_password1').focus();
             }
             else if(!pw1.match(lowerCaseLetters) && !pw1.match(upperCaseLetters)){
                 $("#password-error-message").text("Password cannot be only numeric.");
                 $('#id_password1').focus();
             }
-            else
+            else if(pw1.includes(username) && username != ""){
+                $("#password-error-message").text("Username and Password are similar.");
+                $('#id_password1').focus();
+            }
+            else{
                 $('#password-error-message').text('');
+                $.ajax({
+                    url: '{% url "validate_password" %}',
+                    type: "POST",
+                    data: {
+                        'csrfmiddlewaretoken': '{{csrf_token}}',
+                        'username' : username,
+                        'password': pw1,
+                    },
+                    success: function(data){
+                        $('#password-error-message').text(data);
+                    },
+                });
+            }
         });
 
         $('#id_password2').change(function(){
             pw1 = $('#id_password1').val();
             pw2 = $('#id_password2').val();
-            if(pw1 !== pw2){
+            if(pw1 != pw2){
                 $("#confirm-password-error-message").text("Password must be same as above.");
                 $('#id_password2').focus();
             }

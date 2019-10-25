@@ -7,42 +7,11 @@ from rest_framework import routers
 from . import api
 from . import views
 
-router = routers.DefaultRouter()
 
-router.register(r'centerinfo', api.CenterInfoViewSet)
-router.register(r'memberinfo', api.MemberInfoViewSet)
-router.register(r'courseinfo', api.CourseInfoViewSet)
-router.register(r'chapterinfo', api.ChapterInfoViewSet)
-router.register(r'inninginfo', api.InningInfoViewSet)
-router.register(r'sessioninfo', api.SessionInfoViewSet)
-router.register(r'assignassignmentinfo', api.AssignAssignmentInfoViewSet)
-router.register(r'inninggroup', api.InningGroupViewSet)
-router.register(r'groupmapping', api.GroupMappingViewSet)
-router.register(r'assignmentinfo', api.AssignmentInfoViewSet)
-router.register(r'assignanswerinfo', api.AssignAnswerInfoViewSet)
-router.register(r'questioninfo', api.QuestionInfoViewSet)
-
-urlpatterns = (
-    # urls for Django Rest Framework API
-    path('api/v1/', include(router.urls)),
-    path('api/v1/chaptercontent/<int:chapterID>', api.ChapterContent.as_view(), name='chaptercontent'),
-    url(r'^$', views.start, name='start'),
-    url(r'^login/$', views.login, {'template_name': 'registration/login.html',
-                                   'redirect_authenticated_user': True}, name='login'),
-
-    url(r'^.*logout/$', views.logout,
-        {'template_name': 'registration/logout.html', 'next_page': '/'}, name='logout'),
-
-#     url(r'^.*editprofile/$', views.editprofile, name='editprofile'),
-
-    url(r'^successlogin/$', views.loginsuccess, name='loginsuccess'),
-
-    url(r'^.*register/$', views.register.as_view(), name='register'),
-)
 
 urlpatterns += (
     # urls for Profile
-    path('profile/', login_required(views.ProfileView), name='user_profile'),
+    path('profile/', views.ProfileView, name='user_profile'),
 #     path('editprofile/', login_required(views.editprofile), name='user_editprofile'),
     
     # Common url and views for all account for profile edit functions 
@@ -82,7 +51,6 @@ urlpatterns += (
     path('memberinfo/update/<int:pk>/', views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
     path('memberinfo/delete/<int:pk>/', views.MemberInfoDeleteView.as_view(), name='memberinfo_delete'),
     path('importcsvajax', views.ImportCsvFile, name='csv_import_ajax'),
-    path('ajax/validate_username/', views.validate_username, name='validate_username'),
 )
 
 urlpatterns += (
