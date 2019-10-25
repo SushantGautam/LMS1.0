@@ -111,6 +111,7 @@ urlpatterns += (
     path('questioninfo/create/ajax',
          views.QuestionInfoCreateViewAjax.as_view(), name='questioninfo_create_ajax'),
     path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/', views.QuestionInfoDeleteView.as_view(), name='webapp_questioninfo_delete'),
+    path('questioninfo/edit/ajax', views.QuestionInfoEditViewAjax.as_view(), name='webapp_questioninfo_edit_ajax'),
 
 )
 

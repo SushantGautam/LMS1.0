@@ -22,10 +22,11 @@
             </label>
             <div class="controls ">
                 <input type="date" name="Assignment_Deadline" class="datetimeinput form-control"
-                    id="id_Assignment_Deadline" value="{{Object.Assignment_Deadline}}">
+                    id="id_Assignment_Deadline" value="{{Object.Assignment_Deadline}}" max="9999-12-31">
             </div>
         </div>
     </div>
+    <div class="result text-center"></div>
 
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
@@ -36,7 +37,17 @@
     </div>
 
 </form>
+<script>
+    const selectElement = document.querySelector('#id_Assignment_Deadline');
 
+    selectElement.addEventListener('change', (event) => {
+        const result = document.querySelector('.result');
+        var date = Date.parse($('#id_today_date').val());
+        var deadline = Date.parse(event.target.value);
+        var remaining = (deadline - date) / (1000 * 3600 * 24);
+        result.textContent = `Days Remaining - ${remaining} days`;
+    });
+</script>
 <script>
     $(".se-pre-con-ajax").fadeOut("fast");
 
