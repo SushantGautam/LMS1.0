@@ -23,9 +23,7 @@
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
         {{ form.Answer_Type|as_crispy_field }}
     </div>
-    {#            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">#}
-    {#                    {{ form.Question_Choices }}#}
-    {#                </div>#}
+
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         {{ form.Question_Media_File|as_crispy_field }}
     </div>
@@ -60,7 +58,7 @@
         formdata.append("Use_Flag", $('#id_Use_Flag').val());
         formdata.append("Register_Agent", $('#id_Register_Agent').val());
         formdata.append("Assignment_Code", $('#id_Assignment_Code').val());
-
+        // console.log($('#id_Question_Title').val());
 
         $.ajax({
             url: "{% url 'questioninfo_create_ajax' %}",  // URL to your view that serves new info

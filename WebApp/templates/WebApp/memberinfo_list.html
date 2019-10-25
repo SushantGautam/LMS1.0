@@ -120,11 +120,7 @@
                 <td style="vertical-align: middle;">{{ object.email }}</td>
                 <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
                 <td style="vertical-align: middle;">
-                    {% if object.Member_Gender == 'M' %}
-                    Male
-                    {% elif object.Member_Gender == 'F' %}
-                    Female
-                    {% endif %}
+                    {{ object.get_Member_Gender_display }}
                 </td>
                 <td>
                     {% if object.Is_Student == True %}

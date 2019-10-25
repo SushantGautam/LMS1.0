@@ -121,7 +121,7 @@
                             style="padding-top:30px; float:right;cursor: pointer;" id="moreArrow{{ questions.pk }}"></i>
                     </a>
                     {% if '/students' not in request.path %}
-                    <!-- <button class="btn-link" class="btn-sm btn-success" data-toggle="modal"
+                    <button class="btn-link" class="btn-sm btn-success" data-toggle="modal"
                         data-target="#editQuestionModal{{ questions.pk }}" id="editquestion-btn{{ questions.pk }}">
                         Edit Question
                     </button>
@@ -137,18 +137,19 @@
                                     </h4>
                                 </div>
                                 <div class="modal-body" id="edit_question_modal_body{{ questions.pk }}">
-                                    <form method="post" id="ajaxquestioninfoformedit" enctype="multipart/form-data">
+                                    <form method="post" id="ajaxquestioninfoformedit{{ questions.pk }}"
+                                        enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <div class="col-md-12 col-sm-12 col-xs-12 no-padding form-group has-feedback">
                                             <div
                                                 class="col-md-12 col-sm-12 col-xs-12 no-padding form-group has-feedback">
-                                                <div id="div_id_Question_Title" class="form-group">
-                                                    <label for="id_Question_Title" class="control-label ">
+                                                <div id="div_id_Question_Title_edit" class="form-group">
+                                                    <label for="id_Question_Title_edit" class="control-label ">
                                                         Question_Title
                                                     </label>
                                                     <div class="controls ">
-                                                        <input type="text" name="Question_Title" maxlength="500"
-                                                            id="id_Question_Title"
+                                                        <input type="text" name="Question_Title_edit" maxlength="500"
+                                                            id="id_Question_Title_edit"
                                                             class="textinput textInput form-control" required="required"
                                                             value="{{questions.Question_Title}}">
                                                     </div>
@@ -156,37 +157,37 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12 no-padding form-group has-feedback">
-                                            <div id="div_id_Question_Description" class="form-group">
-                                                <label for="id_Question_Description" class="control-label ">
+                                            <div id="div_id_Question_Description_edit" class="form-group">
+                                                <label for="id_Question_Description_edit" class="control-label ">
                                                     Question Description
                                                 </label>
                                                 <div class="controls ">
-                                                    <textarea name="Question_Description" rows="5" cols="40"
+                                                    <textarea name="Question_Description_edit" rows="5" cols="40"
                                                         class="textarea form-control"
-                                                        id="id_Question_Description">{{ questions.Question_Description }}</textarea>
+                                                        id="id_Question_Description_edit">{{ questions.Question_Description }}</textarea>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <div id="div_id_Question_Score" class="form-group no-padding">
-                                                <label for="id_Question_Score" class="control-label ">
+                                            <div id="div_id_Question_Score_edit" class="form-group no-padding">
+                                                <label for="id_Question_Score_edit" class="control-label ">
                                                     Question Score
                                                 </label>
                                                 <div class="controls ">
-                                                    <input type="number" name="Question_Score"
-                                                        class="numberinput form-control" id="id_Question_Score"
+                                                    <input type="number" name="Question_Score_edit"
+                                                        class="numberinput form-control" id="id_Question_Score_edit"
                                                         value="{{questions.Question_Score}}">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                                            <div id="div_id_Answer_Type" class="form-group no-padding">
-                                                <label for="id_Answer_Type" class="control-label  requiredField">
+                                            <div id="div_id_Answer_Type_edit" class="form-group no-padding">
+                                                <label for="id_Answer_Type_edit" class="control-label  requiredField">
                                                     Answer Type *
                                                 </label>
                                                 <div class="controls ">
-                                                    <select name="Answer_Type" class="select form-control" required=""
-                                                        id="id_Answer_Type">
+                                                    <select name="Answer_Type_edit" class="select form-control"
+                                                        required="" id="id_Answer_Type_edit">
                                                         <option value="" selected="{{questions.Answer_Type}}">
                                                             {{questions.Answer_Type}}</option>
                                                         <option value="S">Short Answer</option>
@@ -196,8 +197,8 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                                            <div id="div_id_Question_Media_File" class="form-group">
-                                                <label for="id_Question_Media_File" class="control-label ">
+                                            <div id="div_id_Question_Media_File_edit" class="form-group">
+                                                <label for="id_Question_Media_File_edit" class="control-label ">
                                                     Question Media File
                                                 </label>
                                                 <div class="controls ">
@@ -207,25 +208,25 @@
                                                         id="Question_Media_File-clear_id">
                                                     <label for="Question_Media_File-clear_id">Clear</label><br>
                                                     Change:
-                                                    <input type="file" name="Question_Media_File"
-                                                        id="id_Question_Media_File" class="clearablefileinput">
+                                                    <input type="file" name="Question_Media_File_edit"
+                                                        id="id_Question_Media_File_edit" class="clearablefileinput">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                                            <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                                            <input type="hidden" id="id_Use_Flag_edit" name="Use_Flag" value="True">
                                         </div>
 
                                         * are the required fields
                                         <br><br>
-                                        <div class="submitButton  col-md-12">
+                                        <!-- <div class="submitButton  col-md-12">
                                             <button class="btn btn-success" type="submit">Submit</button>
-                                        </div>
+                                        </div> -->
                                     </form>
                                 </div>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                     {% if '/teachers' in request.path %}
 
                     <span style="float: right;"><a id="{{ questions.pk }}" class="confirm-delete"
@@ -458,7 +459,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <div id="div_id_Assignment_Topic" class="form-group">
                             <label for="id_Assignment_Topic" class="control-label ">
-                                Assignment Topic
+                                Assignment Topic *
                             </label>
                             <div class="controls ">
                                 <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic"
@@ -470,11 +471,12 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <div id="div_id_Assignment_Deadline" class="form-group">
                             <label for="id_Assignment_Deadline" class="control-label ">
-                                Assignment Deadline
+                                Assignment Deadline *
                             </label>
                             <div class="controls ">
                                 <input type="date" name="Assignment_Deadline" class="datetimeinput form-control"
-                                    id="id_Assignment_Deadline" value="{{object.Assignment_Deadline|date:'Y-m-d'}}">
+                                    id="id_Assignment_Deadline" value="{{object.Assignment_Deadline|date:'Y-m-d'}}"
+                                    min="{{datetime|date:'Y-m-d'}}">
                             </div>
                         </div>
                     </div>
@@ -526,7 +528,7 @@
                 location.reload()
             },
             error: function () {
-                console.log('Error in posting assignment create form')
+                console.log('Error in posting assignment edit form')
             }
 
         });
