@@ -1,26 +1,17 @@
-<!DOCTYPE html>
-<div>
-<script src="/static/3D_Viewer/xeogl.js"></script>
-<script src="/static/3D_Viewer/k3d.js"></script>
-<script src="/static/3D_Viewer/objGeometryLoader.js"></script>
-<script>
-    var scene = xeogl.getDefaultScene();
-    xeogl.loadOBJGeometry(scene, "/{{ urlpath }}", function (miamiGeometry) {
-        // Mesh on top of the "water", instancing the geometry
-        var mesh = new xeogl.Mesh({
-            geometry: miamiGeometry,
-        });
-        // Initial camera pose
-        var camera = mesh.scene.camera;
-        // Orbit the camera
-        scene.on("tick", function () {
-            camera.orbitYaw(-0.1);
-        });
-        // Camera interaction
-        var cameraControl = new xeogl.CameraControl();
-        var cameraFlight = new xeogl.CameraFlightAnimation();
-        cameraFlight.flyTo(mesh);
-    });
-</script>
-</div>
+<html>
+<head>
+    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-orbit-controls@1.2.0/dist/aframe-orbit-controls.min.js"></script>
+{#        <script src="https://unpkg.com/aframe-supercraft-loader@1.1.3/dist/aframe-supercraft-loader.js"></script>#}
+</head>
+<body>
 
+<a-scene>
+    <a-sky color="#f8e8fa"></a-sky>
+    <a-entity camera look-controls
+              orbit-controls="target: 1.5 1.5 -0.5; minDistance: 0.5; maxDistance: 5000; initialPosition: 0 0 200"></a-entity>
+    <a-obj-model src="/{{ objpath }}" mtl="/{{ mtlpath }} "></a-obj-model>
+
+</a-scene>
+</body>
+</html>
