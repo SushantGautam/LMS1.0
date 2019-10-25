@@ -146,8 +146,11 @@
                             $('#username-error-message').text(data.error_message);
                             $('#id_username').focus();
                         }
-                        else
+                        else if(pw1.includes(username) && username != "" && pw1.length < 16){
+                            $("#password-error-message").text("Username and Password are similar.");
+                            $('#id_password1').focus();
                             $('#username-error-message').text('');
+                        }
                     },
                 });
             }
@@ -160,15 +163,15 @@
             var lowerCaseLetters = /[a-z]/g;
             var numbers = /[0-9]/g;
 
-            if(pw1.length < 8 || pw1 >12) {
-                $("#password-error-message").text("Password must be of 8-12 characters.");
+            if(pw1.length < 8) {
+                $("#password-error-message").text("Password must be of at least 8 characters.");
                 $('#id_password1').focus();
             }
             else if(!pw1.match(lowerCaseLetters) && !pw1.match(upperCaseLetters)){
                 $("#password-error-message").text("Password cannot be only numeric.");
                 $('#id_password1').focus();
             }
-            else if(pw1.includes(username) && username != ""){
+            else if(pw1.includes(username) && username != "" && pw1.length < 16){
                 $("#password-error-message").text("Username and Password are similar.");
                 $('#id_password1').focus();
             }

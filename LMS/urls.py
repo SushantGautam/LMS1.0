@@ -11,7 +11,7 @@ from LMS.decorators import authorize
 
 from rest_framework import routers
 
-from . import api
+from WebApp import api
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -60,8 +60,8 @@ router.register(r'assignmentinfo', api.AssignmentInfoViewSet)
 router.register(r'assignanswerinfo', api.AssignAnswerInfoViewSet)
 router.register(r'questioninfo', api.QuestionInfoViewSet)
 
-urlpatterns = (
+urlpatterns += [
     # urls for Django Rest Framework API
     path('api/v1/', include(router.urls)),
     path('api/v1/chaptercontent/<int:chapterID>', api.ChapterContent.as_view(), name='chaptercontent'),
-)
+]

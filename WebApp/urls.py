@@ -9,7 +9,7 @@ from . import views
 
 
 
-urlpatterns += (
+urlpatterns = (
     # urls for Profile
     path('profile/', views.ProfileView, name='user_profile'),
 #     path('editprofile/', login_required(views.editprofile), name='user_editprofile'),
