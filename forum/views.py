@@ -53,49 +53,46 @@ class Index(LoginRequiredMixin, ListView):
     template_name = 'forum/index.html'
     context_object_name = 'threads'
 
-    def get_queryset(self):
-        nodegroups = NodeGroup.objects.all()
+    # def get_queryset(self):
+    #     nodegroups = NodeGroup.objects.all()
         
-        threadqueryset = Thread.objects.none()
-        for ng in nodegroups:
-            thread_counter = 0
-            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code)
-            for topic in topics:
-                thread_counter += topic.thread_count
-                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
-                    topic_id__in=Topic_related_to_user(self.request))[:4]
+    #     threadqueryset = Thread.objects.none()
+    #     for ng in nodegroups:
+    #         thread_counter = 0
+    #         topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code)
+    #         for topic in topics:
+    #             thread_counter += topic.thread_count
+    #             threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
+    #                 topic_id__in=Topic_related_to_user(self.request))[:4]
                
-                threadqueryset |= threads
-            if thread_counter == 0:
-                nodegroups = nodegroups.exclude(pk = ng.pk)
-        return threadqueryset[:4]
+    #             threadqueryset |= threads
+    #         if thread_counter == 0:
+    #             nodegroups = nodegroups.exclude(pk = ng.pk)
+    #     return threadqueryset[:4]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-
         nodegroups = NodeGroup.objects.all()
-        
-        # threadqueryset = Thread.objects.none()
+        threads = []
+
         for ng in nodegroups:
             thread_counter = 0
             topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code)
             for topic in topics:
-                thread_counter += topic.thread_count
-                # threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
-                    # topic_id__in=Topic_related_to_user(self.request))[:4]
-               
-                # threadqueryset |= threads
+                thread_counter += topic.threads_count
             if thread_counter == 0:
                 nodegroups = nodegroups.exclude(pk = ng.pk)
-            print(nodegroups)
+            else:
+                thread = Thread.objects.filter(topic_id__in=topics).order_by('-pub_date')[:4]
+                threads += thread
 
         context['nodegroups'] = nodegroups
+        context['threads'] = threads
         context['panel_title'] = _('New Threads')
         context['title'] = _('Index')
         context['topics'] = Topic.objects.all().filter(id__in=Topic_related_to_user(self.request))
         context['show_order'] = True
-        context['get_top_thread_keywords'] = get_top_thread_keywords(
-            self.request, 10)
+        context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
         return context
 
 
