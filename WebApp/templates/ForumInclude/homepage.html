@@ -3,8 +3,6 @@
 {% load humanize %}
 {% load static %}
 
-
-
 {% block main_contain %}
 
 <div class="panel panel-default paper-shadow" data-z="0.5">
@@ -15,7 +13,6 @@
                     <h2 class="text-headline margin-none" style="color:#368BC1">
                         Recent Threads
                     </h2>
-
 
                 </div>
                 {% if request.user.is_authenticated %}
@@ -43,7 +40,6 @@
                         Ask New Question</a>
                 </div>
                 {% endif %}
-
 
             </div>
         </li>
@@ -99,7 +95,6 @@
                             {% endif %}" class="link-text-color">{{ thread.title }}</a>
                         </h4>
 
-
                         <div class="text-light text-caption">
                             Category:
                             <a href="{% if '/teachers' in request.path %}
@@ -110,7 +105,6 @@
                             {% url 'forum:nodegroup' thread.topic.node_group.pk %}
                             {% endif %}" class="link-text">{{ thread.topic.node_group.title }}</a>
                             |
-
                             Sub Category:
                             <a href="
                             {% if '/teachers' in request.path %}
@@ -120,7 +114,6 @@
                             {% elif '/forum' in request.path %}
                             {% url 'forum:topic' pk=thread.topic.pk %}
                             {% endif %}" class="link-text">{{ thread.topic.title }}</a>
-
 
                             <br>
                             posted by
@@ -146,10 +139,7 @@
                             | <i class="fa fa-clock-o fa-fw"></i> {{ thread.pub_date }} |
                             &nbsp;
                             |<i class="fa fa-clock-o fa-fw"></i> Last Replied: {{ thread.last_replied }}
-
-
                         </div>
-
                     </div>
 
 
@@ -168,49 +158,18 @@
                             <i class="fa fa-eye"></i>
                             {{ view_count }}
                             {% endblocktrans %}</span>
-
                     </div>
-     
                 </li>
                 {% endif %}
                 {% endfor %}
             </div>
             
-            {% empty %}
-                There are no threads yet.
+        {% empty %}
+            <h3 class="text-center">There are no threads yet.</h3>
         {% endfor %}
 
     </ul>
     <div class="clearfix"></div>
-
-
-    <!-- <div class=" text-center">
-        {% if is_paginated %}
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-            {% else %}
-            <li class="disabled"><span>&laquo;</span></li>
-            {% endif %}
-            {% for i in paginator.page_range %}
-            {% if page_obj.number == i %}
-            <li class="active">
-                <span>{{ i }} <span class="sr-only">(current)</span></span>
-            </li>
-            {% else %}
-            <li>
-                <a href="?page={{ i }}">{{ i }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-            {% else %}
-            <li class="disabled"><span>&raquo;</span></li>
-            {% endif %}
-        </ul>
-        {% endif %}
-    </div> -->
 
 </div>
 

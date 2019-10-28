@@ -259,15 +259,15 @@ class UserPosts(LoginRequiredMixin, ListView):
 
 class SearchView(LoginRequiredMixin, ListView):
     model = Thread
-    paginate_by = 20
+    paginate_by = 10
     template_name = 'forum/search.html'
     context_object_name = 'threads'
 
     def get_queryset(self):
         keywords = self.kwargs.get('keyword')
         query = get_query(keywords, ['title'])
-        return Thread.objects.visible().filter(
-            query
+        return Thread.objects.filter(
+            query, topic__center_associated_with_id = self.request.user.id
         ).select_related(
             'user', 'topic'
         ).prefetch_related(
