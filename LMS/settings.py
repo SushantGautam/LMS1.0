@@ -2,7 +2,9 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import django_heroku
+import sentry_sdk
 from django.contrib.messages import constants as messages
+from sentry_sdk.integrations.django import DjangoIntegration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -188,3 +190,8 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
 }
+
+sentry_sdk.init(
+    dsn="https://c929f92bf1284629815c8d96805a4dba@sentry.io/1803012",
+    integrations=[DjangoIntegration()]
+)
