@@ -200,4 +200,5 @@ sentry_sdk.init(
     release="LMS@1.0-" + str(subprocess.check_output(["git", "describe", "--always"]).strip()),
     server_name=socket.gethostname(),
     send_default_pii=True,
+    debug=True,
 )
