@@ -2,6 +2,13 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
+
+{% block breadcrumb %} 
+<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
+                
+ 
+<li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 
+{% endblock %} 
 {% block content %}
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
   <div id="" class="form_wizard wizard_horizontal">
