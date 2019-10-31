@@ -39,13 +39,19 @@
 </form>
 <script>
     const selectElement = document.querySelector('#id_Assignment_Deadline');
-
     selectElement.addEventListener('change', (event) => {
         const result = document.querySelector('.result');
         var date = Date.parse($('#id_today_date').val());
         var deadline = Date.parse(event.target.value);
         var remaining = (deadline - date) / (1000 * 3600 * 24);
-        result.textContent = `Days Remaining - ${remaining} days`;
+        if (remaining < 0) {
+            result.textContent = `Days Remaining : Invalid`;
+
+        }
+        else {
+            result.textContent = `Days Remaining : ${remaining} days`;
+
+        };
     });
 </script>
 <script>

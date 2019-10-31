@@ -4,11 +4,18 @@
 
 <li class="breadcrumb-item"><a href="{% url 'teacher_mycourses_list' %}">My Courses</a></li>
 <li class="breadcrumb-item"><a href="{% url 'teacher_myassignmentinfo_list' %}">My Assignments</a></li>
+<li class="breadcrumb-item"><a
+        href="{{Assignment.Course_Code.teacher_get_absolute_url }}">{{ Assignment.Course_Code }}</a>
+</li>
+<li class="breadcrumb-item"><a
+        href="{{Assignment.Chapter_Code.teacher_get_absolute_url }}">{{ Assignment.Chapter_Code }}</a>
+</li>
 
 {% for question in questions|slice:":1" %}
 <li class="breadcrumb-item"><a
-        href="{{question.Assignment_Code.teacher_get_absolute_url }}">{{question.Assignment_Code }}</a>
+        href="{{question.Assignment_Code.teacher_get_absolute_url }}">{{ question.Assignment_Code }}</a>
 </li>
+
 {% endfor %}
 
 <li class="breadcrumb-item active" aria-current="page">Answers</li>

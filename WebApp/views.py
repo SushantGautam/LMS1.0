@@ -779,6 +779,10 @@ class InningInfoCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        return context
 
 class InningInfoDetailView(DetailView):
     model = InningInfo
@@ -924,7 +928,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentInfo
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):   
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]

@@ -352,8 +352,7 @@ class AssignmentAnswers(ListView):
                                                           Register_Agent=self.request.user.id)
         context['questions'] = questions
         context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
-
-        # context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['Assignment'] = AssignmentInfo.objects.get(pk=self.kwargs['pk'])
         # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
