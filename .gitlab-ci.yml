@@ -11,7 +11,7 @@ test:
    - "echo \"Running unit tests…\""
    - "python manage.py migrate --noinput"
    - "coverage run --source='.' manage.py test"
-#   - "coverage report"
+   - "coverage report"
    - "python-codacy-coverage -r coverage.xml"
 
 production:
