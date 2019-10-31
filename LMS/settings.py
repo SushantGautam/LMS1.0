@@ -193,5 +193,6 @@ REST_FRAMEWORK = {
 
 sentry_sdk.init(
     dsn="https://c929f92bf1284629815c8d96805a4dba@sentry.io/1803012",
-    integrations=[DjangoIntegration()]
+    integrations=[DjangoIntegration()],
+    release="LMS@1.0"
 )
