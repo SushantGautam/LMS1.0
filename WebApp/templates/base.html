@@ -96,12 +96,12 @@
             </div>
             {% block footer %}
 
-            {% include "WebApp/theme/footer.html" %}
+                {% include "WebApp/theme/footer.html" %}
 
-        {% endblock footer %}
+            {% endblock footer %}
 
         </div>
-        
+
     </div>
 
 
@@ -157,13 +157,16 @@
     <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script> -->
 
+    <script src="https://browser.sentry-cdn.com/5.7.1/bundle.min.js"
+            integrity="sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ" crossorigin="anonymous">
 
+    </script>
     <!-- Fade out spinner image when the page is loaded -->
     <script>
         $(window).load(function () {
             $(".se-pre-con").fadeOut("fast");
         });
-        setTimeout( function(){
+        setTimeout(function () {
             $('#alert-message').fadeOut('slow');
         }, 3000);
     </script>
@@ -173,6 +176,17 @@
           src="https://docs.google.com/forms/d/e/1FAIpQLSfKpfYtiFs5YLnIMALd3rxUa2q1cgYTuM7owdcmGiNhAyhy3w/viewform?embedded=true&entry.511019843={{ request.path }}"
           frameborder="0px"></iframe>`);
         })
+    </script>
+
+
+    <script>
+        Sentry.init({dsn: 'https://c929f92bf1284629815c8d96805a4dba@sentry.io/1803012'});
+
+        Sentry.configureScope(function (scope) {
+            scope.setUser({"email": "{{ user.email }}"});
+            scope.setUser({"username": "{{ user.username }}"});
+            scope.setExtra({"center_name": "{{ user.Center_Code.Center_Name }}"});
+        });
     </script>
 
     {% block customjss %}{% endblock %}
