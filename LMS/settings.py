@@ -1,6 +1,8 @@
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import socket
+import subprocess
+
 import django_heroku
 import sentry_sdk
 from django.contrib.messages import constants as messages
@@ -194,6 +196,8 @@ REST_FRAMEWORK = {
 
 sentry_sdk.init(
     dsn="https://c929f92bf1284629815c8d96805a4dba@sentry.io/1803012",
-    integrations=[DjangoIntegration(), CeleryIntegration() ],
-    release="LMS@1.0"
+    integrations=[DjangoIntegration(), CeleryIntegration()],
+    release="LMS@1.0-" + str(subprocess.check_output(["git", "describe", "--always"]).strip()),
+    server_name=socket.gethostname(),
+    send_default_pii=True,
 )
