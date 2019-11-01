@@ -7,28 +7,27 @@
 
 <link rel="stylesheet" href="{% static 'css/forum.app.css' %}" />
 
-
-
-
-<script>
-    $(document).ready(function () {
-        $('#navSearchBtn').click(function (e) {
-            e.preventDefault();
-            var keyword = $('#keywordInput').val();
-            if (keyword) {
-                window.location = "/search/" + keyword + "/"; // FIXME: Use url tag!
-            }
-        });
-    });
-</script>
-
 {% endblock stylesheets %}
 
 
 
 {% block content %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#navSearchBtn').click(function (e) {
 
+            var keyword = $('#keywordInput').val();
+            if (keyword) {
+                //     window.location = "gthj" + keyword + "/"; // FIXME: Use url tag!
+            }
+            else {
+                e.preventDefault();
+                alert('Please Input Some Keyword')
+            }
+        });
+    });
+</script>
 
 
 <br> <br>

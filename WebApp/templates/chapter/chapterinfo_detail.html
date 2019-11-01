@@ -527,10 +527,11 @@
                         if (div == 'pic') {
                             $.each(div_value, function (css, css_value) {
                                 src = css_value['background-image']
-                                imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
+                                // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
                                 $('#page' + key).append(`
-                                <div style = 'background-image: ${src}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}'>
-                                        </div>
+                                <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}'>
+                                <img src = ${src} style = "height:${css_value.height}; width:${css_value.width}; object-fit:contain"></img>        
+                                </div>
 
                             `);
                             });
@@ -706,8 +707,6 @@
             `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
                class="select form-control">
             <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
-               class="select form-control">
-            <input type="hidden" name="today_date" id="id_today_date" value="{{datetime|date:"Y-m-d"}}"
                class="select form-control">`
         )
 
