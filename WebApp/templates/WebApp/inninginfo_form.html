@@ -77,12 +77,8 @@
 
             </div>
             <div class="modal-body" id="create_inninggroup_modal_body">
-                {#<iframe src="{% url 'inninggroup_create' %}" style="height: 600px; width: 990px; "></iframe>#}
             </div>
-            <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div> -->
+
         </div>
     </div>
 </div>
@@ -120,19 +116,31 @@
                         <br><small>Course with Teacher</small>
                     </span> </a>
             </li>
-
         </ul>
         <div class="form-wrapper" style="width: 100%!important; ">
-
             <div class="stepContainer">
                 <div id="step-1" style="display: block;height: 24em;">
-                    <div class="col-md-6 col-sm-9 col-xs-7 col-md-offset-3 text-center">
-                        <h2 class="StepTitle">Select Session Name</h2>
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            {{ form.Inning_Name|as_crispy_field }}
+                    <h2 class="StepTitle text-center">Select Session Name</h2>
+                    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                        <div class="col-md-9 col-sm-10 col-xs-12">
+                            <div class="col-md-8 col-sm-12 col-xs-12 no-padding" style="float: right;">
+                                {{ form.Inning_Name|as_crispy_field }}
+                            </div>
                         </div>
-                        <span class="text-info">These session name are already predefined by University.<br>
-                            Only if the session name is not defined previously you can create New.</span><br><br><br>
+                        <div class="col-md-3 col-sm-2 col-xs-12">
+                            <h1>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                    data-target="#exampleModal1" id="add-newsession-btn"
+                                    style="margin-top: 17px; float: left;">
+                                    + Add New
+                                </button>
+                            </h1>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                            <span class="text-info">These session name are already predefined by University.<br>
+                                Only if the session name is not defined previously you can create
+                                New.</span><br><br><br>
+                        </div>
                         <div>
                             <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222">Read More
                                 Info...</span>
@@ -148,16 +156,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-md-2 col-sm-3 col-xs-5" style="margin-top: 53px">
-                        <h1>
-                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
-                                data-target="#exampleModal1" id="add-newsession-btn">
-                                + Add New Session Name
-                            </button>
-                        </h1>
-                    </div>
                 </div>
-
                 <div id="step-2" style="display: none;">
                     <div class="col-md-6 col-sm-12 col-md-offset-3 text-center">
                         <h2 class="StepTitle">Select the duration of the Session</h2>
@@ -167,8 +166,9 @@
                                     Start Date</span>
                                 </label>
                                 <div class="controls ">
-                                    <input value="{{ object.Start_Date|date:"Y-m-d" }}" type="date" name="Start_Date"
-                                        required="" id="id_Start_Date" class="datetimeinput form-control">
+                                    <input value="{{ object.Start_Date|date:'Y-m-d' }}" type="date" name="Start_Date"
+                                        required="" id="id_Start_Date" class="datetimeinput form-control"
+                                        max="9999-12-31">
                                 </div>
                             </div>
                         </div>
@@ -176,24 +176,36 @@
                         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                             <div id="div_id_End_Date" class="form-group">
                                 <label for="id_End_Date" class="control-label  requiredField">
-                                    End Date</span>
+                                    End Date </span>
                                 </label>
                                 <div class="controls ">
-                                    <input value="{{ object.End_Date|date:"Y-m-d" }}" type="date" name="End_Date"
-                                        required="" id="id_End_Date" class="datetimeinput form-control">
+                                    <input value="{{ object.End_Date|date:'Y-m-d' }}" type="date" name="End_Date"
+                                        required="" id="id_End_Date" class="datetimeinput form-control"
+                                        min="{{datetime|date:'Y-m-d'}}" max="9999-12-31">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="step-3" style="display: none;height: 18em; ">
-                    <div class="col-md-6 col-sm-9 col-xs-7 col-md-offset-3 text-center">
-                        <h2 class="StepTitle">Choose Student Group for this Session</h2>
-
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            {{ form.Groups|as_crispy_field }}
+                    <h2 class="StepTitle text-center">Choose Student Group for this Session</h2>
+                    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <div class="col-md-8 col-sm-12 col-xs-12 no-padding" style="float: right;">
+                                {{ form.Groups|as_crispy_field }}
+                            </div>
                         </div>
-                        <div style="padding-top: 7em">
+
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <h1>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                    data-target="#exampleModal2" id="add-newgroup-btn"
+                                    style="margin-top: 17px; float: left;">
+                                    + Create New Group
+                                </button>
+                            </h1>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                             <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222">Read More
                                 Info...</span>
                             <p class="info-text"
@@ -205,28 +217,19 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-md-2 col-sm-3 col-xs-5" style="margin-top: 53px">
-                        <h1>
-                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
-                                data-target="#exampleModal2" id="add-newgroup-btn">
-                                + Create New Group
-                            </button>
-                        </h1>
-                    </div>
-
                 </div>
-                <div id="step-4" style="display: none;">
-                    <div class="col-md-6 col-sm-9 col-xs-7 col-md-offset-3 text-center">
+                <div id="step-4" style="display: none;" class="no-padding">
 
+                    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                         <h2 class="StepTitle">
                             <b> Select Courses for Session </b>
                             <button type="button" class="btn btn-sm btn-primary" id="add-inninggroup-btn"
-                                data-toggle="modal" data-target="#exampleModal3" style="margin-left:10em">
+                                data-toggle="modal" data-target="#exampleModal3" style="margin-left:5em">
                                 + Assign New Course
                             </button>
                         </h2>
 
-                        <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-2 no-padding">
                             {{ form.Course_Group }}
                         </div>
                         *You can select multiple courses by holding <code> ctrl</code> key on Windows and
@@ -240,9 +243,11 @@
                                 multiple courses,
                                 here the courses are mapped with teachers who taught them in this session, multiple
                                 teachers can be associated with the same
-                                course for particular session. Teacher allocation can be diffenent among same course in
+                                course for particular session. Teacher allocation can be diffenent among same course
+                                in
                                 different session so a convient name can
-                                be given to it. EX: For Math course taught in computer can be named as MATH COMP. and
+                                be given to it. EX: For Math course taught in computer can be named as MATH COMP.
+                                and
                                 same course can be taught by different teachers
                                 in electonics and named as MATH ELEX. It is just a grouping of a course and differnt
                                 teachers associated with it.
@@ -262,7 +267,7 @@
                         </div>
                     </div>
 
-                    <div class="submitButton col-md-12 text-center">
+                    <div class="submitButton col-md-12 col-sm-12 col-xs-12 text-center">
                         <button class="btn btn-success" type="submit"> Submit</button>
                     </div>
                 </div>
@@ -274,6 +279,28 @@
 
 {% endblock %}
 {% block customjss %}
+<!-- <script>
+    const selectElement = document.querySelector('#id_End_Date');
+
+    selectElement.addEventListener('change', (event) => {
+        const result = document.querySelector('.result');
+        var date = Date.parse($('#id_today_date').val());
+        var deadline = Date.parse(event.target.value);
+        var remaining = (deadline - date) / (1000 * 3600 * 24);
+        result.textContent = `Days Remaining - ${remaining} days`;
+    });
+</script> -->
+<script>
+    $("#id_End_Date").change(function () {
+        var startDate = document.getElementById("id_Start_Date").value;
+        var endDate = document.getElementById("id_End_Date").value;
+
+        if ((Date.parse(endDate) <= Date.parse(startDate))) {
+            alert("End date should be greater than Start date");
+            document.getElementById("id_End_Date").value = "";
+        }
+    });
+</script>
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script>
 

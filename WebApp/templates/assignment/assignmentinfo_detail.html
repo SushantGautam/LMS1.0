@@ -207,15 +207,17 @@
                                                     Question Media File
                                                 </label>
                                                 <div class="controls ">
+                                                    {% if questions.Question_Media_File %}
                                                     Currently: <a
-                                                        href="/media/questions.Question_Media_File">{{questions.Question_Media_File}}</a>
+                                                        href="{{ questions.Question_Media_File.url }}">{{questions.Question_Media_File}}</a>
                                                     <input type="checkbox" name="Question_Media_File-clear"
                                                         id="Question_Media_File-clear_id">
-                                                    <label for="Question_Media_File-clear_id">Clear</label><br>
+                                                    <label for="Question_Media_File-clear_id">Clear</label>
+                                                    <br>
                                                     Change:
+                                                    {% endif %}
                                                     <input type="file" name="Question_Media_File_edit"
                                                         id="id_Question_Media_File_edit" class="clearablefileinput">
-
                                                 </div>
                                             </div>
                                         </div>
@@ -461,29 +463,28 @@
                 </h4>
             </div>
             <div class="modal-body" id="editAssignment_modal_body">
-
                 <form method="post" id="ajaxassignmentinfoform">
                     {% csrf_token %}
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                        <div id="div_id_Assignment_Topic" class="form-group">
-                            <label for="id_Assignment_Topic" class="control-label ">
+                        <div id="div_id_Assignment_Topic_edit" class="form-group">
+                            <label for="id_Assignment_Topic_edit" class="control-label ">
                                 Assignment Topic *
                             </label>
                             <div class="controls ">
-                                <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic"
+                                <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic_edit"
                                     class="textinput textInput form-control" required="required"
                                     value="{{object.Assignment_Topic}}">
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                        <div id="div_id_Assignment_Deadline" class="form-group">
-                            <label for="id_Assignment_Deadline" class="control-label ">
+                        <div id="div_id_Assignment_Deadline_edit" class="form-group">
+                            <label for="id_Assignment_Deadline_edit" class="control-label ">
                                 Assignment Deadline *
                             </label>
                             <div class="controls ">
-                                <input type="date" name="Assignment_Deadline" class="datetimeinput form-control"
-                                    id="id_Assignment_Deadline" value="{{object.Assignment_Deadline|date:'Y-m-d'}}"
+                                <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control"
+                                    id="id_Assignment_Deadline_edit" value="{{object.Assignment_Deadline|date:'Y-m-d'}}"
                                     min="{{datetime|date:'Y-m-d'}}" max="9999-12-31">
                             </div>
                         </div>
@@ -497,7 +498,7 @@
                             class="select form-control">
                         <input type="hidden" name="Chapter_Code" id="id_Chapter_Code"
                             value="{{ object.Chapter_Code.id }}" class="select form-control">
-                        <input type="hidden" name="today_date" id="id_today_date" value="{{datetime|date:"Y-m-d"}}"
+                        <input type="hidden" name="today_date" id="id_today_date" value="{{datetime|date:'Y-m-d'}}"
                             class="select form-control">
                     </div>
 
@@ -517,13 +518,20 @@
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
 <script>
-    const selectElement = document.querySelector('#id_Assignment_Deadline');
+    const selectElement = document.querySelector('#id_Assignment_Deadline_edit');
     selectElement.addEventListener('change', (event) => {
         const result = document.querySelector('.result');
         var date = Date.parse($('#id_today_date').val());
         var deadline = Date.parse(event.target.value);
         var remaining = (deadline - date) / (1000 * 3600 * 24);
-        result.textContent = `Days Remaining - ${remaining} days`;
+        if (remaining < 0) {
+            result.textContent = `Days Remaining : Invalid`;
+
+        }
+        else {
+            result.textContent = `Days Remaining : ${remaining} days`;
+
+        };
     });
 </script>
 <script>
@@ -541,7 +549,7 @@
                 "Use_Flag": $('#id_Use_Flag_edit').val(),
                 "Register_Agent": $('#Register_Agent').val(),
                 "Assignment_Code": '{{ object.id }}'
-                // "Question_Media_File": file
+                "Question_Media_File": file
 
             },
             // get the form data
@@ -560,16 +568,15 @@
 <script>
     $("#ajaxassignmentinfoform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        // console.log($('#id_Course_Code').val());
         $.ajax({
             url: "{% url 'assignmentinfo_edit_ajax' %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
                 "Assignment_Deadline": $('#id_Assignment_Deadline_edit').val(),
-                "Course_Code": $('#id_Course_Code_edit').val(),
-                "Chapter_Code": $('#id_Chapter_Code_edit').val(),
-                "Register_Agent": $('#id_Register_Agent_edit').val(),
+                "Course_Code": $('#id_Course_Code').val(),
+                "Chapter_Code": $('#id_Chapter_Code').val(),
+                "Register_Agent": $('#id_Register_Agent').val(),
                 "Assignment_ID": '{{ object.id }}'
             },
             // get the form data

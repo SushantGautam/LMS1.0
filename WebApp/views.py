@@ -779,6 +779,10 @@ class InningInfoCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        return context
 
 class InningInfoDetailView(DetailView):
     model = InningInfo
@@ -793,6 +797,10 @@ class InningInfoUpdateView(UpdateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        return context
 
 class InningGroupListView(ListView):
     model = InningGroup
@@ -924,7 +932,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentInfo
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):   
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
@@ -1254,7 +1262,6 @@ def save_file(request):
         courseID = request.POST['courseID']
         media_type = request.POST['type']
         path = ''
-        # for x in range(int(count)):
         if request.FILES['file-0']:
             media = request.FILES['file-0']
             if media_type == 'pic':
@@ -1267,6 +1274,28 @@ def save_file(request):
             filename = fs.save(name, media)
         return JsonResponse(data={"message": "success", "media_name": name})
 
+def save_3d_file(request):
+    if request.method == "POST":
+        chapterID = request.POST['chapterID']
+        courseID = request.POST['courseID']
+        path = ''
+        if request.FILES['objfile']:
+            obj = request.FILES['objfile']
+            try:
+                mtl = request.FILES['mtlfile']
+            except:
+                mtl = None
+            path = settings.MEDIA_ROOT
+
+            name = (str(uuid.uuid4())).replace('-', '') #same name for .obj and .mtl file
+            objname = name + '.' + obj.name.split('.')[-1]
+            fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            filename = fs.save(objname, obj)
+            if mtl is not None:
+                mtlname = name + '.' + mtl.name.split('.')[-1]
+                fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+                filename = fs.save(mtlname, mtl)
+        return JsonResponse(data={"message": "success", "objname": objname})
 
 @csrf_exempt
 def save_video(request):
