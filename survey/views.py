@@ -15,6 +15,8 @@ from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInf
     QuestionInfoFormset, QuestionAnsInfoFormset, LiveSurveyInfoForm
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 
+from django.db.models import Q
+
 
 class AjaxableResponseMixin:
     """
@@ -114,7 +116,6 @@ class SurveyInfoListView(ListView):
     def get_queryset(self):
         qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
         query = self.request.GET.get('query')
-        print(query)
         if query:
             query = query.strip()
             qs = qs.filter(Survey_Title__contains=query)
@@ -193,15 +194,15 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             if qn.is_valid():
                 qn.instance = self.object
                 qn.save()
-            else:
-                print(qn.errors)
-                print('qn is invalid')
+            # else:
+            #     print(qn.errors)
+            #     print('qn is invalid')
             if qna.is_valid():
                 qna.instance = self.object
                 qna.save()
-            else:
-                print('qna is invalid')
-                print(qna.errors)
+            # else:
+            #     print('qna is invalid')
+            #     print(qna.errors)
         return redirect('surveyinfo_detail', self.object.id)
 
 
@@ -214,8 +215,8 @@ def create_questioninfo_formset(obj_instance):
         def add_fields(self, form, index):
             super().add_fields(form, index)
 
-            print(form.fields['Question_Name'].initial)
-            print(index)
+            # print(form.fields['Question_Name'].initial)
+            # print(index)
 
             my_mcqs =obj_instance.questioninfo.all().filter(Question_Type='MCQ')
             if form.is_bound:
@@ -238,7 +239,7 @@ def create_questioninfo_formset(obj_instance):
             else:
                 my_data = None
 
-            print(my_data)
+            # print(my_data)
 
                 # save the formset in the 'nested' property
             form.nested = OptionInfoFormset(
@@ -341,15 +342,15 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
             if qn.is_valid():
                 qn.instance = self.object
                 qn.save()
-            else:
-                print(qn.errors)
-                print('qn is invalid')
+            # else:
+            #     print(qn.errors)
+            #     print('qn is invalid')
             if qna.is_valid():
                 qna.instance = self.object
                 qna.save()
-            else:
-                print('qna is invalid')
-                print(qna.errors)
+            # else:
+            #     print('qna is invalid')
+            #     print(qna.errors)
         obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
         self.object.Retaken_From = obj_instance.id
         self.object.Version_No = obj_instance.Version_No + 1
@@ -597,8 +598,7 @@ class liveSurveyCreate(CreateView):
                                                     datetime.strptime(self.request.POST['End_Time'], '%H:%M').time())
             self.object.Survey_Live = True
             self.object.save()
-        print(form.is_valid())
-        print("im here")
+        # print(form.is_valid())
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         # qna = context['questionansinfo_formset']
@@ -606,15 +606,9 @@ class liveSurveyCreate(CreateView):
             if qn.is_valid():
                 qn.instance = self.object
                 qn.save()
-            else:
-                print(qn.errors)
-                print('qn is invalid')
-            # if qna.is_valid():
-            #     qna.instance = self.object
-            #     qna.save()
             # else:
-            #     print('qna is invalid')
-            #     print(qna.errors)
+            #     print(qn.errors)
+            #     print('qn is invalid')
 
         if 'teachers' in request.path:
             return redirect('liveSurveyDetail', self.object.id)
@@ -717,10 +711,9 @@ class surveyFilterCategory(ListView):
 
     def get_queryset(self):
         if self.request.GET['categoryId'] == '0':
-            return SurveyInfo.objects.all()
-
+            return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
         else:
-            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId']).filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

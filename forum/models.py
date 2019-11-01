@@ -86,6 +86,12 @@ class Thread(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Thread, self).__init__(*args, **kwargs)
+        
+        # try:
+        #     self.__original_topic = self.topic.pk
+        # except Exception as e:
+        #     self.__original_topic = None
+
         self.raw_content_hash = xxhash.xxh64(self.content_raw).hexdigest()
 
     def get_reply_count(self):
@@ -108,6 +114,19 @@ class Thread(models.Model):
             # To (re-)render the content if content changed or thread is newly created
             self.content_rendered, mentioned_users = render_content(
                 self.content_raw, sender=self.user.username)
+
+        # old = Topic.objects.filter(pk=self.__original_topic).first()
+        # if old:
+        #     if old.pk != self.topic.pk:
+        #         t = self.topic
+        #         old.thread_count = old.thread_count - 1
+        #         t.thread_count = t.thread_count + 1
+        #         old.save(update_fields=['thread_count'])
+        #         t.save(update_fields=['thread_count'])
+        # else:
+        #    t = self.topic
+        #    t.thread_count = t.thread_count + 1
+        #    t.save(update_fields=['thread_count'])
         super(Thread, self).save(*args, **kwargs)
         self.raw_content_hash = new_hash
         t = self.topic
@@ -233,8 +252,7 @@ class Appendix(models.Model):
 @python_2_unicode_compatible
 class NodeGroup(models.Model):
     title = models.CharField(max_length=30, verbose_name=_("title"))
-    description = models.TextField(
-        default='', blank=True, verbose_name=_("description"))
+    description = models.TextField(default='', blank=True, verbose_name=_("description"))
     topic_count = models.IntegerField(default=0, verbose_name=_("topic count"))
 
     def __str__(self):
@@ -244,7 +262,6 @@ class NodeGroup(models.Model):
         return self.topics.count()
 
     def threadx_count(self):
-        # print(center_id)
         topics = Topic.objects.filter(node_group=self.pk)
         threads = Thread.objects.filter(topic__in=topics)
         return threads.count()
@@ -282,6 +299,16 @@ class Topic(models.Model):
         t = self.topic
         t.topic_count = t.get_topic_count()
         t.save(update_fields=['topic_count'])
+    
+    @property
+    def threads_count(self):
+        threads = Thread.objects.filter(topic=self)
+        return threads.count()
+
+    @property
+    def visible_threads_count(self):
+        threads = Thread.objects.filter(topic=self)
+        return threads.visible().count()
 
 
 @python_2_unicode_compatible

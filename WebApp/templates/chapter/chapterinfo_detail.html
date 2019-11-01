@@ -45,7 +45,9 @@
             </div>
 
             {% if '/students' not in request.path %}
+
             <div class="col-md-12 col-sm-12 col-xs-12">
+                <br>
                 <a style="margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
         /teachers{{ object.get_update_url }}
     {% else %}
@@ -525,10 +527,11 @@
                         if (div == 'pic') {
                             $.each(div_value, function (css, css_value) {
                                 src = css_value['background-image']
-                                imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
+                                // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
                                 $('#page' + key).append(`
-                                <div style = 'background-image: ${src}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}'>
-                                        </div>
+                                <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}'>
+                                <img src = ${src} style = "height:${css_value.height}; width:${css_value.width}; object-fit:contain"></img>        
+                                </div>
 
                             `);
                             });

@@ -13,8 +13,10 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -27,6 +29,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView
 from django.views.generic.edit import FormView
 
+from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Question, Quiz
@@ -36,10 +39,6 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
-
-from django.contrib import messages
-from django.contrib.auth.password_validation import UserAttributeSimilarityValidator, CommonPasswordValidator
-from django.core.exceptions import ValidationError
 
 
 class Changestate(View):
@@ -152,7 +151,7 @@ def start(request):
             logout(request)
             messages.add_message(request, messages.ERROR, 'Your account is deactivated. Please contact admin.')
             return redirect('login')
-    
+
         if not request.user.Center_Code:
             logout(request)
             messages.add_message(request, messages.ERROR, 'No center assigned. Please contact admin.')
@@ -169,7 +168,7 @@ def start(request):
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.filter(user__Center_Code=request.user.Center_Code).count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter( Use_Flag=True,
+            surveycount = SurveyInfo.objects.filter(Use_Flag=True,
                                                     End_Date__gte=datetime.now())[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now())[:5]
@@ -190,9 +189,10 @@ def start(request):
             return redirect('parent_home')
         else:
             logout(request)
-            messages.add_message(request, messages.ERROR, 'You are not assigned to any member type. Please contact admin.')
+            messages.add_message(request, messages.ERROR,
+                                 'You are not assigned to any member type. Please contact admin.')
             return redirect('login')
-            
+
     else:
         return render(request, "WebApp/splash_page.html")
 
@@ -293,11 +293,11 @@ class register(CreateView):
 
     def form_valid(self, form):
         if form.is_valid():
-            self.object = form.save(commit = False)
+            self.object = form.save(commit=False)
 
             username = self.request.POST.get('username')
             password = self.request.POST.get('password1')
-            
+
             member_type = self.request.POST.get('member_type')
             if member_type == "Is_Teacher":
                 self.object.Is_Teacher = True
@@ -404,12 +404,13 @@ def validate_username(request):
         data['error_message'] = 'A user with this username already exists.'
     return JsonResponse(data)
 
+
 def validate_password(request):
     username = request.POST.get('username', None)
     password = request.POST.get('password', None)
     u = CommonPasswordValidator()
     try:
-        u.validate(password,username)
+        u.validate(password, username)
         return JsonResponse("", safe=False)
     except ValidationError as e:
         return JsonResponse(e.messages, safe=False)
@@ -592,23 +593,24 @@ class CourseInfoUpdateView(UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
 
+
 # class CourseInfoDeleteView(DeleteView):
 #     model = CourseInfo
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
-    
-def CourseInfoDeleteView(request,pk):
-        if request.method == 'POST':
-            try:
-                # return self.delete(request, *args, **kwargs)
-                Obj = CourseInfo.objects.get(pk=pk)
-                Obj.delete()
-                return redirect('courseinfo_list')
+# Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
 
-            except:
-                messages.error(request,
-                            "Cannot delete courses with chapters")
-                return redirect('courseinfo_detail',  pk =pk)   
-    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+def CourseInfoDeleteView(request, pk):
+    if request.method == 'POST':
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = CourseInfo.objects.get(pk=pk)
+            Obj.delete()
+            return redirect('courseinfo_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete courses with chapters")
+            return redirect('courseinfo_detail', pk=pk)
+            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 class ChapterInfoListView(ListView):
@@ -660,23 +662,27 @@ class ChapterInfoDetailView(DetailView):
 
         return context
 
+
 class ChapterInfoDeleteView(DeleteView):
     model = ChapterInfo
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
-    
+
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+
     def post(self, request, *args, **kwargs):
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = ChapterInfo.objects.get(pk= request.POST['chapter_id'])
+            Obj = ChapterInfo.objects.get(pk=request.POST['chapter_id'])
             Obj.delete()
             return redirect('courseinfo_detail', pk=request.POST['course_id'])
 
         except:
             messages.error(request,
                            "Cannot delete chapter with assignments")
-            return redirect('chapterinfo_detail',course=self.request.POST['course_id'], pk=self.request.POST['chapter_id'])
+            return redirect('chapterinfo_detail', course=self.request.POST['course_id'],
+                            pk=self.request.POST['chapter_id'])
             # return redirect('student_home')
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+
 
 def CourseForum(request, course):
     course = CourseInfo.objects.get(pk=course)
@@ -694,7 +700,7 @@ def CourseForum(request, course):
         Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,
                              center_associated_with=request.user.Center_Code, topic_icon="book").save()
         course_forum = Topic.objects.get(course_associated_with=course)
-        
+
     return redirect('forum:topic', pk=course_forum.pk)
 
 
@@ -773,6 +779,10 @@ class InningInfoCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        return context
 
 class InningInfoDetailView(DetailView):
     model = InningInfo
@@ -918,7 +928,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentInfo
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):   
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
@@ -964,8 +974,9 @@ class AssignmentInfoUpdateView(UpdateView):
 
 class AssignmentInfoDeleteView(DeleteView):
     model = AssignmentInfo
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment')) 
-    
+
+    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+
     def post(self, request, *args, **kwargs):
 
         try:
@@ -1034,7 +1045,36 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             data={'Message': 'Success'}
         )
 
+class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
+    model = AssignmentQuestionInfo
 
+    def post(self, request, *args, **kwargs):
+        Obj = AssignmentQuestionInfo()
+        Obj.Question_Title = request.POST["Question_Title"]
+        Obj.Question_Score = request.POST["Question_Score"]
+        Obj.Question_Description = request.POST["Question_Description"]
+        Obj.Answer_Type = request.POST["Answer_Type"]
+        # Obj.Question_Media_File = request.POST["Question_Media_File"]
+        if request.POST["Use_Flag"] == 'true':
+            Obj.Use_Flag = True
+        else:
+            Obj.Use_Flag = False
+        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+        Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
+        if bool(request.FILES.get('Question_Media_File', False)) == True:
+            media = request.FILES['Question_Media_File']
+            if media.size / 1024 > 2048:
+                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+            path = settings.MEDIA_ROOT
+            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            fs = FileSystemStorage(location=path + '/Question_Media_Files/')
+            filename = fs.save(name, media)
+            Obj.Question_Media_File = 'Question_Media_Files/' + name
+        Obj.save()
+
+        return JsonResponse(
+            data={'Message': 'Success'}
+        )
 
 class QuestionInfoDetailView(DetailView):
     model = AssignmentQuestionInfo
@@ -1218,7 +1258,6 @@ def save_file(request):
         courseID = request.POST['courseID']
         media_type = request.POST['type']
         path = ''
-        # for x in range(int(count)):
         if request.FILES['file-0']:
             media = request.FILES['file-0']
             if media_type == 'pic':
@@ -1231,6 +1270,28 @@ def save_file(request):
             filename = fs.save(name, media)
         return JsonResponse(data={"message": "success", "media_name": name})
 
+def save_3d_file(request):
+    if request.method == "POST":
+        chapterID = request.POST['chapterID']
+        courseID = request.POST['courseID']
+        path = ''
+        if request.FILES['objfile']:
+            obj = request.FILES['objfile']
+            try:
+                mtl = request.FILES['mtlfile']
+            except:
+                mtl = None
+            path = settings.MEDIA_ROOT
+
+            name = (str(uuid.uuid4())).replace('-', '') #same name for .obj and .mtl file
+            objname = name + '.' + obj.name.split('.')[-1]
+            fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            filename = fs.save(objname, obj)
+            if mtl is not None:
+                mtlname = name + '.' + mtl.name.split('.')[-1]
+                fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+                filename = fs.save(mtlname, mtl)
+        return JsonResponse(data={"message": "success", "objname": objname})
 
 @csrf_exempt
 def save_video(request):
@@ -1370,6 +1431,20 @@ def import_chapter(request):
 
 
 def ThreeDViewer(request, urlpath=None):
+    print(urlpath, "urlpath")
+    mtlurlpath = None
+
     if not urlpath:
         urlpath = "static/3D_Viewer/Sample.obj"
-    return render(request, '3D_Viewer/render_template.html', {'urlpath': urlpath})
+        mtlurlpath = "static/3D_Viewer/Sample.mtl"
+    else:
+        mtlpath_expected = BASE_DIR +"/" + urlpath[:-4]+".mtl"
+        print("got it mtlpath_expected", mtlpath_expected)
+        if os.path.isfile(mtlpath_expected):
+            print("file exist ", mtlpath_expected," url is:", mtlurlpath)
+            mtlurlpath = (urlpath[:-4] if urlpath else '') + ".mtl"
+        else:
+            print("MTL doesnt exist", mtlpath_expected)
+            mtlurlpath = "static/3D_Viewer/none.mtl"
+
+    return render(request, '3D_Viewer/render_template.html', {'objpath': urlpath, 'mtlpath': mtlurlpath})

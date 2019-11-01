@@ -1,12 +1,3 @@
-# from django.shortcuts import render
-#
-#
-# def start(request):
-#     """Start page with a documentation.
-#     """
-#     # return render(request,"start.html")
-#     return render(request, "student_module/homepage.html")
-
 from datetime import datetime
 
 from django.contrib import messages
@@ -24,7 +15,7 @@ from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-# Create your views here.
+
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
 from django.views.generic.edit import FormView
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
@@ -32,8 +23,7 @@ from forum.views import get_top_thread_keywords
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
-    AssignmentQuestionInfo, \
-    AssignAnswerInfo, InningGroup
+    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -54,20 +44,13 @@ User = get_user_model()
 
 def start(request):
     if request.user.Is_Student:
-        batches = GroupMapping.objects.filter(
-            Students__id=request.user.id, Center_Code=request.user.Center_Code)
+        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
         if batches:
             for batch in batches:
                 # Filtering out only active sessions
-                session = InningInfo.objects.filter(
-                    Groups__id=batch.id, End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
                 sessions += session
-        # courses = []
-        # activeassignments = []
-        # if sessions:
-        #     for session in sessions:
-        #         courses.append(session.Course_Group)
         courses = set()
         activeassignments = []
         if sessions:
@@ -145,46 +128,35 @@ class MyCoursesListView(ListView):
     model = CourseInfo
     template_name = 'student_module/myCourse.html'
 
-    # paginate_by = 8
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['batches'] = GroupMapping.objects.filter(
-            Students__id=self.request.user.id, Center_Code=self.request.user.Center_Code)
 
+        batches = GroupMapping.objects.filter(Students__id=self.request.user.id, Center_Code=self.request.user.Center_Code)
         sessions = []
-        if context['batches']:
-            for batch in context['batches']:
+        if batches:
+            for batch in batches:
                 # Filtering out only active sessions
-                session = InningInfo.objects.filter(
-                    Groups__id=batch.id, End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
                 sessions += session
-        context['sessions'] = sessions
-        courses = set()
-        course = InningInfo.objects.none()
-        if context['sessions']:
-            for session in context['sessions']:
+        courses = InningGroup.objects.none()
+        if sessions:
+            for session in sessions:
                 course = session.Course_Group.all()
-                courses.update(course)
-        context['Course'] = courses
-        filtered_qs = MyCourseFilter(
-                      self.request.GET, 
-                      queryset=course
-                  ).qs
+                courses |= course
+
+        courses = courses.distinct()
+        filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
         paginator = Paginator(filtered_qs, 8)
         page = self.request.GET.get('page')
+
         try:
             response = paginator.page(page)
         except PageNotAnInteger:
             response = paginator.page(1)
         except EmptyPage:
             response = paginator.page(paginator.num_pages)
+
         context['response'] = response
-        # context['paginator'] = paginator
-        # context['page'] = page
-        # context['filtered_qs'] = filtered_qs
-
-
         return context
 
     def get_queryset(self):

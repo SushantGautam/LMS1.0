@@ -41,10 +41,12 @@ urlpatterns = [
     path(r'login/', views.login_view, name='login'),
     path(r'reg/', views.reg_view, name='reg'),
     path(r'logout/', views.logout_view, name="logout"),
+
     path(r'search/', views.search_redirect, name='search_redirect'),
     path(r'^search/(?P<keyword>.*?)/page/(?P<page>[0-9]+)/$',
          views.SearchView.as_view(), name='search'),
     path(r'search/(?P<keyword>.*)/', views.SearchView.as_view(), name='search'),
+    
     path(r't/create/', views.create_thread, name='create_thread'),
     path(r't/create/(?P<nodegroup_pk>\d+)/',
          views.create_thread, name='create_thread'),

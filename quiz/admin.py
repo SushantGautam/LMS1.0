@@ -41,10 +41,10 @@ class QuizAdminForm(forms.ModelForm):
 class QuizAdmin(admin.ModelAdmin):
     form = QuizAdminForm
 
-    add_form_template = 'admin_add_form_with_buttons.html'
-    change_form_template = 'admin_add_form.html'
+    # add_form_template = 'admin_add_form_with_buttons.html'
+    # change_form_template = 'admin_add_form.html'
 
-    # list_display = ('title', 'category', )
+    list_display = ('title', 'url', 'course_code','chapter_code','cent_code','question_count' )
     # list_filter = ('category',)
     search_fields = ('description', 'course_code',)
 
@@ -105,12 +105,12 @@ class MCQuestionAdmin(admin.ModelAdmin):
     # filter_horizontal = ('quiz',)
 
     inlines = [AnswerInline]
-    add_form_template = 'admin_add_form.html'
+    # add_form_template = 'admin_add_form.html'
 
 
 class TFQuestionAdmin(admin.ModelAdmin):
-    change_form_template = 'admin_add_form.html'
-    change_list_template = 'custom_list.html'
+    # change_form_template = 'admin_add_form.html'
+    # change_list_template = 'custom_list.html'
 
     list_display = ('content', 'course_code', )
     list_filter = ('course_code',)
@@ -118,19 +118,19 @@ class TFQuestionAdmin(admin.ModelAdmin):
 
     search_fields = ('content', 'explanation')
     # filter_horizontal = ('quiz',)
-    add_form_template = 'admin_add_form.html'
+    # add_form_template = 'admin_add_form.html'
 
 
 class SAQuestionAdmin(admin.ModelAdmin):
-    change_form_template = 'admin_add_form.html'
-    change_list_template = 'custom_list.html'
+    # change_form_template = 'admin_add_form.html'
+    # change_list_template = 'custom_list.html'
 
     # list_display = ('content', 'category', )
     # list_filter = ('category',)
     fields = ('content', 'explanation', 'cent_code')
     search_fields = ('content', 'explanation')
     # filter_horizontal = ('quiz',)
-    add_form_template = 'admin_add_form.html'
+    # add_form_template = 'admin_add_form.html'
 
 class SittingAdminForm(forms.ModelForm):
     class Meta:

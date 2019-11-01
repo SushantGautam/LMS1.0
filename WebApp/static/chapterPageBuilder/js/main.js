@@ -76,13 +76,17 @@ $(document).ready(function() {
             if(pic == null){
                 message = "Drag and drop images here..."
             }
+            let img = '';
+            if(pic != null)
+                img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: contain;"></img>`
             let html =
-            `<div class='pic' style='background-image:${pic}; background-repeat: no-repeat; background-size: contain; background-position: center; border: 0'>
+            `<div class='pic'>
                 <div id="pic-actions">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
                     <i class="fas fa-link imagelink" id=${id}></i>
                 </div>
+                ${img}
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                     <input type='file' accept="image/*" name="userImage" style="display:none" id=${id + 1} class="imgInp" />
@@ -500,25 +504,22 @@ $(document).ready(function() {
         $('.imagelink').off().bind("click", function(e) {
             var link_id = parseInt(e.currentTarget.id) + 1
             var div = $('#' + e.currentTarget.id).parent().parent();
-            var prevlink = $(this).parent().parent().css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
-            if(prevlink == "none"){
-                prevlink = "http://";
+            // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
+            var prevlink = $(this).parent().parent().find('img').attr('src')
+            console.log(prevlink)
+            if(prevlink == undefined){
+                prevlink = "";
             }
             var link = prompt("Link of image", prevlink);
             if(link==null){
                 return false
             }else if(!link.startsWith('http://') && !link.startsWith('https://')){
-                link = 'http://'+link
+                link = ''+link
             }
             
-            div.find('p').text("");
-            div.css({
-                'background-image': 'url('+link+')',
-                'background-repeat': 'no-repeat',
-                'background-size': 'contain',
-                'background-position': 'center',
-                'border': '0'
-            });
+            PictureFunction(div.css('top'),
+            div.css('left'),link,div.css('width'),div.css('height'));
+            div.remove()
         });
 
         $('.pic').resizable({
@@ -625,13 +626,17 @@ $(document).ready(function() {
                         success: function(data) {
                             div.find('#loadingDiv').remove();
                             div.find('p').text("");
-                            div.css({
-                              'background-image': 'url('+load_file_url+'/'+data.media_name+')',
-                              'background-repeat': 'no-repeat',
-                              'background-size': 'contain',
-                              'background-position': 'center',
-                              'border': '0'
-                            });
+                            // div.css({
+                            //   'background-image': 'url('+load_file_url+'/'+data.media_name+')',
+                            //   'background-repeat': 'no-repeat',
+                            //   'background-size': 'contain',
+                            //   'background-position': 'center',
+                            //   'border': '0'
+                            // });
+                            
+                            PictureFunction(div.css('top'),
+                            div.css('left'),load_file_url+'/'+data.media_name,div.css('width'),div.css('height'));
+                            div.remove()
                         },
                         error: function(data, status, errorThrown) {
                             alert(data.responseJSON.message);
@@ -681,14 +686,7 @@ $(document).ready(function() {
     
         $('.fa-trash').click(function(e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
         });
-
-        // $(".options").hover(function(){
-        //     $('.options').css({
-        //         'display':'block'
-        //     }) 
-        // })
     
         $('.fa-link').bind("click", function(e) {
             var btn_id = parseInt(e.currentTarget.id) + 1
@@ -1154,9 +1152,18 @@ $(document).ready(function() {
             height,width);
         _3d.renderDiagram();
     
+        $('#_3dfile-link').on('change', function(e){
+            $('#mtl-file').prop('disabled', false);
+        });
+        
         $('.fa-upload').click(function(e) {
-            trigger = parseInt(e.target.id) + 1;
-            $('#' + trigger).trigger('click');
+            // trigger = parseInt(e.target.id) + 1;
+            // $('#' + trigger).trigger('click');
+            $('#_3dfile-link').val('');
+            $('#mtl-file').val('');
+            $('#mtl-file').prop('disabled', true);
+            $('#link-3d-submit').val(parseInt(e.target.id))
+            $('#link-3d-modal').modal();
         });
 
         $('.fa-trash').click(function(e) {
@@ -1177,80 +1184,83 @@ $(document).ready(function() {
             e.preventDefault();
             //   $(this).css('border',"2px solid #39F")
         });
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    let div = $(input).parent().parent().parent();
-                    var data = new FormData();
-                    
-                    $.each(input.files, function(i, file) {
-                        // console.log(Math.round((file.size / 1024))) // get image size
-                        data.append('file-' + i, file);
-                    });
-                    data.append('type', '3d');
-                    data.append('chapterID', chapterID);
-                    data.append('courseID', courseID);
-                    $.ajax({
-                        url: save_file_url,
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        enctype: 'multipart/form-data',
-                        method: 'POST',
-                        type: 'POST',
-                        beforeSend: function() {
-                            div.append(`<div class="loader" id="loadingDiv"></div>`)
-                            $('#loadingDiv').show();
-                        }, 
-                        error: function(errorThrown){
-                            alert("Failed to upload File")
-                            div.find('#loadingDiv').remove();
-                        },                     
-                        success: function(data) {
-                            div.find('#loadingDiv').remove();
-                            div.find('p iframe').remove();
-
-                            div.append(`
-                                <iframe src = "/3DViewer/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" height="100%" width="100%">
-                                </iframe>
-                            `);
-                        },
-                        error: function(data, status, errorThrown) {
-                            alert(data.responseJSON.message);
-                        }
-                    });
-
-                    $('#_3dobj-drag').css({
-                        'display': 'none'
-                    })
-                    
-                    $(div).hover(function() {
-                        $(this).css("border", "1px solid red");
-                    }, function() {
-                        $(this).css("border", '0')
-                    })
-
-                    $('._3dobj').resizable({
-                        containment: $('#tabs-for-download'),
-                        grid: [20, 20],
-                        autoHide: true,
-                        minWidth: 150,
-                        minHeight: 150
-                    });
-
-                    $('._3dobj').css({
-                        'resize':'both'
-                    })
-                }
-                reader.readAsDataURL(input.files[0]);
+        function readURL(upload_btn) {
+            if($('#_3dfile-link')[0].files.length != 0){
+                var obj = $('#_3dfile-link')[0].files[0];
             }
+            else{
+                alert("Please select a file to upload")
+                return false
+            }
+            if($('#mtl-file')[0].files.length != 0){
+                var mtl = $('#mtl-file')[0].files[0];
+            }
+            else{
+                var mtl = null
+            }
+            
+            let div = $('#'+upload_btn.val()).parent().parent();
+            var data = new FormData();
+        
+            data.append('csrfmiddlewaretoken', csrf_token);
+            data.append('objfile', obj);
+            data.append('mtlfile', mtl);
+            data.append('type', '3d');
+            data.append('chapterID', chapterID);
+            data.append('courseID', courseID);
+            $.ajax({
+                url: save_3d_url,
+                data: data,
+                contentType: false,
+                processData: false,
+                enctype: 'multipart/form-data',
+                method: 'POST',
+                type: 'POST',
+                beforeSend: function() {
+                    div.append(`<div class="loader" id="loadingDiv"></div>`)
+                    $('#loadingDiv').show();
+                }, 
+                error: function(errorThrown){
+                    alert("Failed to upload File")
+                    div.find('#loadingDiv').remove();
+                },                     
+                success: function(data) { 
+                    _3dFunction(div.css('top'),
+                        div.css('left'),'/3DViewer/media/chapterBuilder/'+courseID+'/'+chapterID+'/'+data.objname,div.css('height'),div.css('width'));
+                    div.remove()
+                },
+                error: function(data, status, errorThrown) {
+                    alert(data.responseJSON.message);
+                }
+            });
+
+            $('#_3dobj-drag').css({
+                'display': 'none'
+            })
+            
+            $(div).hover(function() {
+                $(this).css("border", "1px solid red");
+            }, function() {
+                $(this).css("border", '0')
+            })
+
+            $('._3dobj').resizable({
+                containment: $('#tabs-for-download'),
+                grid: [20, 20],
+                autoHide: true,
+                minWidth: 150,
+                minHeight: 150
+            });
+
+            $('._3dobj').css({
+                'resize':'both'
+            });
         }
 
-        $("._3dobjinp").change(function(e) {
-            readURL(this);
-
-        });
+        $("#link-3d-submit").unbind().click(function(e) {
+            $('#link-3d-modal').modal('hide');
+            readURL($(this));
+        }); 
     }
 
     // delete page function

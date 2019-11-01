@@ -72,7 +72,12 @@
                         </tr>
                         <tr>
                             <td>Status</td>
-                            <td>{{ object.Use_Flag }}</td>
+                            <td>{% if object.Use_Flag == True %}
+                                Active
+                                {% else %}
+                                Inactive
+                                {% endif %}
+                            </td>
                         </tr>
                     </table>
                 </b>
@@ -137,8 +142,7 @@
                                     </h4>
                                 </div>
                                 <div class="modal-body" id="edit_question_modal_body{{ questions.pk }}">
-                                    <form method="post" id="ajaxquestioninfoformedit{{ questions.pk }}"
-                                        enctype="multipart/form-data">
+                                    <form method="post" id="ajaxquestioninfoformedit" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <div class="col-md-12 col-sm-12 col-xs-12 no-padding form-group has-feedback">
                                             <div
@@ -188,8 +192,9 @@
                                                 <div class="controls ">
                                                     <select name="Answer_Type_edit" class="select form-control"
                                                         required="" id="id_Answer_Type_edit">
-                                                        <option value="" selected="{{questions.Answer_Type}}">
-                                                            {{questions.Answer_Type}}</option>
+                                                        <option value="{{questions.Answer_Type}}"
+                                                            selected="{{questions.Answer_Type}}">
+                                                            {{questions.get_Answer_Type_display}}</option>
                                                         <option value="S">Short Answer</option>
                                                         <option value="F">File Upload</option>
                                                     </select>
@@ -202,12 +207,15 @@
                                                     Question Media File
                                                 </label>
                                                 <div class="controls ">
+                                                    {% if questions.Question_Media_File %}
                                                     Currently: <a
-                                                        href="/media/questions.Question_Media_File">{{questions.Question_Media_File}}</a>
+                                                        href="{{ questions.Question_Media_File.url }}">{{questions.Question_Media_File}}</a>
                                                     <input type="checkbox" name="Question_Media_File-clear"
                                                         id="Question_Media_File-clear_id">
-                                                    <label for="Question_Media_File-clear_id">Clear</label><br>
+                                                    <label for="Question_Media_File-clear_id">Clear</label>
+                                                    <br>
                                                     Change:
+                                                    {% endif %}
                                                     <input type="file" name="Question_Media_File_edit"
                                                         id="id_Question_Media_File_edit" class="clearablefileinput">
                                                 </div>
@@ -215,13 +223,15 @@
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                                             <input type="hidden" id="id_Use_Flag_edit" name="Use_Flag" value="True">
+                                            <input type="hidden" name="Register_Agent_edit" id="id_Register_Agent_edit"
+                                                value="{{ request.user.id }}" class="select form-control">
                                         </div>
 
                                         * are the required fields
                                         <br><br>
-                                        <!-- <div class="submitButton  col-md-12">
+                                        <div class="submitButton  col-md-12">
                                             <button class="btn btn-success" type="submit">Submit</button>
-                                        </div> -->
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -453,33 +463,33 @@
                 </h4>
             </div>
             <div class="modal-body" id="editAssignment_modal_body">
-
                 <form method="post" id="ajaxassignmentinfoform">
                     {% csrf_token %}
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                        <div id="div_id_Assignment_Topic" class="form-group">
-                            <label for="id_Assignment_Topic" class="control-label ">
+                        <div id="div_id_Assignment_Topic_edit" class="form-group">
+                            <label for="id_Assignment_Topic_edit" class="control-label ">
                                 Assignment Topic *
                             </label>
                             <div class="controls ">
-                                <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic"
+                                <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic_edit"
                                     class="textinput textInput form-control" required="required"
                                     value="{{object.Assignment_Topic}}">
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                        <div id="div_id_Assignment_Deadline" class="form-group">
-                            <label for="id_Assignment_Deadline" class="control-label ">
+                        <div id="div_id_Assignment_Deadline_edit" class="form-group">
+                            <label for="id_Assignment_Deadline_edit" class="control-label ">
                                 Assignment Deadline *
                             </label>
                             <div class="controls ">
-                                <input type="date" name="Assignment_Deadline" class="datetimeinput form-control"
-                                    id="id_Assignment_Deadline" value="{{object.Assignment_Deadline|date:'Y-m-d'}}"
-                                    min="{{datetime|date:'Y-m-d'}}">
+                                <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control"
+                                    id="id_Assignment_Deadline_edit" value="{{object.Assignment_Deadline|date:'Y-m-d'}}"
+                                    min="{{datetime|date:'Y-m-d'}}" max="9999-12-31">
                             </div>
                         </div>
                     </div>
+                    <div class="result text-center"></div>
 
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
@@ -488,6 +498,8 @@
                             class="select form-control">
                         <input type="hidden" name="Chapter_Code" id="id_Chapter_Code"
                             value="{{ object.Chapter_Code.id }}" class="select form-control">
+                        <input type="hidden" name="today_date" id="id_today_date" value="{{datetime|date:'Y-m-d'}}"
+                            class="select form-control">
                     </div>
 
                     <div class="submitButton  col-md-12">
@@ -498,24 +510,70 @@
         </div>
     </div>
 </div>
+
 {% block customjss %}
+
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+<script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
 <script>
-    $(".se-pre-con-ajax").fadeOut("fast");
+    const selectElement = document.querySelector('#id_Assignment_Deadline_edit');
+    selectElement.addEventListener('change', (event) => {
+        const result = document.querySelector('.result');
+        var date = Date.parse($('#id_today_date').val());
+        var deadline = Date.parse(event.target.value);
+        var remaining = (deadline - date) / (1000 * 3600 * 24);
+        if (remaining < 0) {
+            result.textContent = `Days Remaining : Invalid`;
 
+        }
+        else {
+            result.textContent = `Days Remaining : ${remaining} days`;
+
+        };
+    });
+</script>
+<script>
+    $("#ajaxquestioninfoformedit").submit(function (e) {
+        e.preventDefault();
+        console.log('Success')
+        $.ajax({
+            url: "{% url 'webapp_questioninfo_edit_ajax' %}",  // URL to your view that serves new info
+            data: {
+                "csrfmiddlewaretoken": '{{ csrf_token }}',
+                "Question_Title": $('#id_Question_Title_edit').val(),
+                "Question_Score": $('#id_Question_Score_edit').val(),
+                "Question_Description": $('#id_Question_Description_edit').val(),
+                "Answer_Type": $('#id_Answer_Type_edit').val(),
+                "Use_Flag": $('#id_Use_Flag_edit').val(),
+                "Register_Agent": $('#Register_Agent').val(),
+                "Assignment_Code": '{{ object.id }}'
+                "Question_Media_File": file
+
+            },
+            // get the form data
+            type: $(this).attr('method'), // GET or POST
+            success: function (response) {
+                console.log('Success')
+                // location.reload()
+            },
+            error: function () {
+                console.log('Error in posting question edit form')
+            }
+
+        });
+    });
+</script>
+<script>
     $("#ajaxassignmentinfoform").submit(function (e) {
-
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        console.log($('#id_Course_Code').val());
         $.ajax({
             url: "{% url 'assignmentinfo_edit_ajax' %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
-                "Assignment_Topic": $('#id_Assignment_Topic').val(),
-                "Assignment_Deadline": $('#id_Assignment_Deadline').val(),
+                "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
+                "Assignment_Deadline": $('#id_Assignment_Deadline_edit').val(),
                 "Course_Code": $('#id_Course_Code').val(),
                 "Chapter_Code": $('#id_Chapter_Code').val(),
                 "Register_Agent": $('#id_Register_Agent').val(),
@@ -627,4 +685,5 @@
         $(`#questionContent${this.id}`).toggle();
     });
 </script>
+
 {% endblock %}
