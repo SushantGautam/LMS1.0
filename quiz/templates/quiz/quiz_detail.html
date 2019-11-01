@@ -57,6 +57,7 @@
           });
       });
       $('#mcq_choose_button').on('click', function () {
+          
           $.ajax({
               type: "GET",
               url: "{% url 'choose_mcq' pk=quiz.pk %}",  // URL to your view that serves new info

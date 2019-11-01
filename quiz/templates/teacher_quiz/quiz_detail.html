@@ -26,9 +26,27 @@
 </p> -->
 
 {% include "../quiz_base/quiz_detail.html" %}
-  
  
 
 
 
+{% endblock %}
+{% block customjss%}
+<script type="text/javascript">
+
+$(document).ready(function(){
+  $('#mcq_create_button').on('click', function () {
+    $.ajax({
+        type: "GET",
+        data: {'course_from_quiz': '{{ quiz.course_code.id }}', 'quiz_id': '{{ quiz.id }}'},
+        url: "{% url 'mcquestion_create' %}",  // URL to your view that serves new info
+        success: function (data) {
+            $("#question_model_title").html("Create Multiple Choice Question");
+            $("#question_form_ajax").html(data);
+        }
+    });
+});
+})
+
+</script>
 {% endblock %}
