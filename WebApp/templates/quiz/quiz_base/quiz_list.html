@@ -10,9 +10,16 @@
 					<h2>{% trans "List of quizzes"  %}</h2>
 			</div>
 			<div class="col-md-6  icon-for-quiz text-right">
+					{% if '/teachers' in request.path %}
+					<a class="icon-quiz-list" href="{% url 'teacher_quizfw' %}">
+							<i class="fa fa-plus fa-2x"></i>
+					</a>
+					{% else %}
 					<a class="icon-quiz-list" href="{% url 'quizfw' %}">
 							<i class="fa fa-plus fa-2x"></i>
 					</a>
+					{% endif %}
+				
 
 			</div>
 		</div>
@@ -67,7 +74,13 @@
 						{% endif %}	  
 				</td>
 			  <td>
-				<a href="{% url 'quiz_detail' pk=quiz.id %}">
+				<a href="
+				{% if '/teachers' in request.path %}
+					{% url 'teacher_quiz_detail' pk=quiz.id %} 
+					{% else %}
+					{% url 'quiz_detail' pk=quiz.id %} 
+					{% endif %}
+				">
 				  {% trans "View details" %}
 				</a>
 			  </td>

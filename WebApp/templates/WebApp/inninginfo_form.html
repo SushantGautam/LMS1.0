@@ -167,8 +167,9 @@
                                     Start Date</span>
                                 </label>
                                 <div class="controls ">
-                                    <input value="{{ object.Start_Date|date:"Y-m-d" }}" type="date" name="Start_Date"
-                                        required="" id="id_Start_Date" class="datetimeinput form-control">
+                                    <input value="{{ object.Start_Date|date:'Y-m-d' }}" type="date" name="Start_Date"
+                                        required="" id="id_Start_Date" class="datetimeinput form-control"
+                                        max="{{datetime|date:'Y-m-d'}}">
                                 </div>
                             </div>
                         </div>
@@ -176,11 +177,12 @@
                         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                             <div id="div_id_End_Date" class="form-group">
                                 <label for="id_End_Date" class="control-label  requiredField">
-                                    End Date</span>
+                                    End Date </span>
                                 </label>
                                 <div class="controls ">
-                                    <input value="{{ object.End_Date|date:"Y-m-d" }}" type="date" name="End_Date"
-                                        required="" id="id_End_Date" class="datetimeinput form-control">
+                                    <input value="{{ object.End_Date|date:'Y-m-d' }}" type="date" name="End_Date"
+                                        required="" id="id_End_Date" class="datetimeinput form-control"
+                                        min="{{datetime|date:'Y-m-d'}}" max="9999-12-31">
                                 </div>
                             </div>
                         </div>
@@ -274,6 +276,17 @@
 
 {% endblock %}
 {% block customjss %}
+<script>
+    const selectElement = document.querySelector('#id_End_Date');
+
+    selectElement.addEventListener('change', (event) => {
+        const result = document.querySelector('.result');
+        var date = Date.parse($('#id_today_date').val());
+        var deadline = Date.parse(event.target.value);
+        var remaining = (deadline - date) / (1000 * 3600 * 24);
+        result.textContent = `Days Remaining - ${remaining} days`;
+    });
+</script>
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script>
 
