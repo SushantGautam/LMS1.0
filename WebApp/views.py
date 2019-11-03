@@ -655,6 +655,7 @@ class ChapterInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
@@ -779,6 +780,10 @@ class InningInfoCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        return context
 
 class InningInfoDetailView(DetailView):
     model = InningInfo
@@ -792,6 +797,25 @@ class InningInfoUpdateView(UpdateView):
         kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        return context
+
+def InningInfoDeleteView(request, pk):
+    if request.method == 'POST':
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = InningInfo.objects.get(pk=pk)
+            Obj.delete()
+            return redirect('inninginfo_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete inning")
+            return redirect('inninginfo_detail', pk=pk)
+            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 class InningGroupListView(ListView):
@@ -924,7 +948,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentInfo
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):   
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
@@ -1045,29 +1069,37 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentQuestionInfo
 
     def post(self, request, *args, **kwargs):
-        Obj = AssignmentQuestionInfo()
-        Obj.Question_Title = request.POST["Question_Title"]
-        Obj.Question_Score = request.POST["Question_Score"]
-        Obj.Question_Description = request.POST["Question_Description"]
-        Obj.Answer_Type = request.POST["Answer_Type"]
-        # Obj.Question_Media_File = request.POST["Question_Media_File"]
-        if request.POST["Use_Flag"] == 'true':
-            Obj.Use_Flag = True
-        else:
-            Obj.Use_Flag = False
-        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-        Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
-        if bool(request.FILES.get('Question_Media_File', False)) == True:
-            media = request.FILES['Question_Media_File']
-            if media.size / 1024 > 2048:
-                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
-            path = settings.MEDIA_ROOT
-            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
-            fs = FileSystemStorage(location=path + '/Question_Media_Files/')
-            filename = fs.save(name, media)
-            Obj.Question_Media_File = 'Question_Media_Files/' + name
-        Obj.save()
+        try:
+            Obj = AssignmentQuestionInfo.objects.get(pk=request.POST["pk"])
+            Obj.Question_Title = request.POST["Question_Title"]
+            Obj.Question_Score = request.POST["Question_Score"]
+            Obj.Question_Description = request.POST["Question_Description"]
+            Obj.Answer_Type = request.POST["Answer_Type"]
+            if request.POST["Use_Flag"] == 'true':
+                Obj.Use_Flag = True
+            else:
+                Obj.Use_Flag = False
+          
+            Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+            Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
+            if request.POST["clear"] == 'true':
+                Obj.Question_Media_File = ''
+            else:     
+                if bool(request.FILES.get('Question_Media_File', False)) == True:
+                    media = request.FILES['Question_Media_File']
+                    if media.size / 1024 > 2048:
+                        return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+                    path = settings.MEDIA_ROOT
+                    name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+                    fs = FileSystemStorage(location=path + '/Question_Media_Files/')
+                    filename = fs.save(name, media)
+                    Obj.Question_Media_File = 'Question_Media_Files/' + name
+            Obj.save()
 
+        except:
+            return JsonResponse(
+                data={'Message': 'Cannot edit form'}
+            )
         return JsonResponse(
             data={'Message': 'Success'}
         )
@@ -1254,7 +1286,6 @@ def save_file(request):
         courseID = request.POST['courseID']
         media_type = request.POST['type']
         path = ''
-        # for x in range(int(count)):
         if request.FILES['file-0']:
             media = request.FILES['file-0']
             if media_type == 'pic':
@@ -1267,6 +1298,28 @@ def save_file(request):
             filename = fs.save(name, media)
         return JsonResponse(data={"message": "success", "media_name": name})
 
+def save_3d_file(request):
+    if request.method == "POST":
+        chapterID = request.POST['chapterID']
+        courseID = request.POST['courseID']
+        path = ''
+        if request.FILES['objfile']:
+            obj = request.FILES['objfile']
+            try:
+                mtl = request.FILES['mtlfile']
+            except:
+                mtl = None
+            path = settings.MEDIA_ROOT
+
+            name = (str(uuid.uuid4())).replace('-', '') #same name for .obj and .mtl file
+            objname = name + '.' + obj.name.split('.')[-1]
+            fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            filename = fs.save(objname, obj)
+            if mtl is not None:
+                mtlname = name + '.' + mtl.name.split('.')[-1]
+                fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+                filename = fs.save(mtlname, mtl)
+        return JsonResponse(data={"message": "success", "objname": objname})
 
 @csrf_exempt
 def save_video(request):

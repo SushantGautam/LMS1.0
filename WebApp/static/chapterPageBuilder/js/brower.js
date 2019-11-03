@@ -72,7 +72,7 @@ $("#SaveBtn").on("click",function(e){
             'left': $(this).css("left"),
             'width': $(this).css("width"),
             'height': $(this).css("height"),
-            'background-image': value.style.backgroundImage
+            'background-image': $(this).find("img").attr('src')
           }
         );
       }

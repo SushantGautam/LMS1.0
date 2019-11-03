@@ -111,7 +111,7 @@ urlpatterns += (
     path('questioninfo/create/ajax',
          views.QuestionInfoCreateViewAjax.as_view(), name='questioninfo_create_ajax'),
     path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/', views.QuestionInfoDeleteView.as_view(), name='webapp_questioninfo_delete'),
-    path('questioninfo/edit/ajax', views.QuestionInfoEditViewAjax.as_view(), name='webapp_questioninfo_edit_ajax'),
+    path('questioninfo/edit/ajax/', views.QuestionInfoEditViewAjax.as_view(), name='webapp_questioninfo_edit_ajax'),
 
 )
 
@@ -175,6 +175,8 @@ urlpatterns += (
          views.InningInfoDetailView.as_view(), name='inninginfo_detail'),
     path('inninginfo/update/<int:pk>/',
          views.InningInfoUpdateView.as_view(), name='inninginfo_update'),
+    path('innninginfo/delete/<int:pk>/', views.InningInfoDeleteView, name='inninginfo_delete'),
+
 )
 
 urlpatterns += (
@@ -244,6 +246,7 @@ urlpatterns += (
          views.chapterviewer, name='chapterviewer'),
     path('saveFile', views.save_file, name='saveFile'),
     path('saveVideo', views.save_video, name='saveVideo'),
+    path('save3d', views.save_3d_file, name='save3d'),
     path('saveJson', views.save_json, name='saveJson'),
     path('export/<int:course>/<int:chapter>/', views.export_chapter, name='exportzip'),
     path('import', views.import_chapter, name='importzip'),

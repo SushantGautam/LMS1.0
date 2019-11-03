@@ -670,12 +670,16 @@ svg{
     /* display: flex; */
     flex-direction: row;
     /* justify-content: space-between; */
-    height: 70px;
+    height: 47px;
     text-align: center;
     display: block;
-
+    padding: 13px 0!important;
 }
 
+.modal-header1 .close{
+  padding-right: 20px!important;
+  margin: 0!important;
+}
 /* The Close Button */
 .close {
   color: white;
@@ -1114,4 +1118,8 @@ span.btnlink input {
 }
 #importzipfile{
   display:none
+}
+
+.over {
+  border: solid 2px #17a2b8;
 }
