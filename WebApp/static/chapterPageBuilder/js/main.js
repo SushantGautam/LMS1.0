@@ -18,7 +18,19 @@ $(document).ready(function() {
     }
 
     // ==================For TextBoxx================================
-
+    $('#tabs-for-download').droppable({
+        tolerance: 'fit',
+        drop: function( event, ui ) {
+            $(this).removeClass("border").removeClass("over");
+        },
+        
+        over: function(event, elem) {
+            $(this).addClass("over");
+        },
+        out: function(event, elem) {
+            $(this).removeClass("over");
+        },
+     });
     class Textbox {
         constructor(top=0, left=0, height=null ,width = null, message="Type Something Here...") {
             let id = (new Date).getTime();
@@ -54,6 +66,7 @@ $(document).ready(function() {
                   
                     handle: '#draghere'
                 });
+                
 
                 var a = document.getElementsByClassName("current")[0];
                 $('#' + a.id).append(dom);
