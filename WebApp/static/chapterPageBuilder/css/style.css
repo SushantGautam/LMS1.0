@@ -1119,3 +1119,7 @@ span.btnlink input {
 #importzipfile{
   display:none
 }
+
+.over {
+  border: solid 2px #17a2b8;
+}
