@@ -58,7 +58,7 @@ urlpatterns += (
     path('update/<int:pk>/', QuizUpdateView.as_view(), name='quiz_update'),
     path('update_info/<int:pk>/', UpdateQuizBasicInfo.as_view(), name='quiz_update_info'),
     path('detail/<int:pk>/', QuizDetailView.as_view(), name='quiz_detail'),
-    path('detail/<int:pk>/', QuizDetailView.as_view(), name='teachers_quiz_detail'),
+   
     path('detail/<slug>/', QuizDetailView.as_view(), name='quiz_detail_s'),
     path('delete/<int:pk>/', QuizDeleteView, name='quiz_delete'),
 

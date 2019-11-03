@@ -498,7 +498,7 @@ body {
 }
 
 .text-caption {
-    font-size: 0.92rem;
+    font-size: 11px;
     font-weight: 400;
 }
 
@@ -517,7 +517,6 @@ body {
 
 h1,
 h2,
-h3,
 h4,
 h5,
 h6 {
@@ -58604,4 +58603,9 @@ a:hover {
         margin: auto;
         text-align: center;
     }
+}
+
+.block_content h3{
+    font-size: 20px;
+    font-style: italic;
 }

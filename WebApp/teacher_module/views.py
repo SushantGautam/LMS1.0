@@ -565,6 +565,7 @@ class QuizUpdateView(UpdateView):
 
 
 class QuizDetailView(DetailView):
+    
     model = Quiz
     slug_field = 'url'
     template_name = 'quiz/teacher_quiz/quiz_detail.html'
