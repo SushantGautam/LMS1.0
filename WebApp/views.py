@@ -24,6 +24,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views import View
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView
@@ -1457,7 +1458,7 @@ def import_chapter(request):
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
-
+@xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):
     print(urlpath, "urlpath")
     mtlurlpath = None
