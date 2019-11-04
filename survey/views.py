@@ -168,6 +168,11 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     form_class = SurveyInfoForm
     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(SurveyInfo_ajax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
