@@ -24,6 +24,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views import View
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView
@@ -158,7 +159,7 @@ def start(request):
             return redirect('login')
 
         if request.user.Is_CenterAdmin:
-            thread = Thread.objects.filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
+            thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
             wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
@@ -166,7 +167,7 @@ def start(request):
             coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
-            threadcount = Thread.objects.filter(user__Center_Code=request.user.Center_Code).count()
+            threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count()
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveycount = SurveyInfo.objects.filter(Use_Flag=True,
                                                     End_Date__gte=datetime.now())[:5]
@@ -655,7 +656,7 @@ class ChapterInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'), pk = self.kwargs.get('pk'))
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
@@ -1457,7 +1458,7 @@ def import_chapter(request):
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
-
+@xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):
     print(urlpath, "urlpath")
     mtlurlpath = None

@@ -253,10 +253,3 @@ urlpatterns += (
 
 )
 
-urlpatterns += (
-    # urls for chapterpagebuilder
-    path('3DViewer/<path:urlpath>',
-         views.ThreeDViewer, name='3DViewer'),
-    path('3DViewer/',
-         views.ThreeDViewer, name='3DViewer'),
-)

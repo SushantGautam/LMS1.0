@@ -1091,25 +1091,40 @@ class Index(LoginRequiredMixin, ListView):
     template_name = 'teacher_module/teacher_forum/forumIndex.html'
     context_object_name = 'threads'
 
-    def get_queryset(self):
-        nodegroups = NodeGroup.objects.all()
-        threadqueryset = Thread.objects.none()
-        for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
-            for topic in topics:
-                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
-                    topic_id__in=Topic_related_to_user(self.request))[:4]
-                threadqueryset |= threads
-        return threadqueryset
+    # def get_queryset(self):
+    #     nodegroups = NodeGroup.objects.all()
+    #     threadqueryset = Thread.objects.none()
+    #     for ng in nodegroups:
+    #         topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
+    #         for topic in topics:
+    #             threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
+    #                 topic_id__in=Topic_related_to_user(self.request))[:4]
+    #             threadqueryset |= threads
+    #     return threadqueryset
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        context['panel_title'] = ('New Threads')
-        context['title'] = ('Index')
-        context['topics'] = Topic.objects.all()
+        nodegroups = NodeGroup.objects.all()
+        threads = []
+
+        for ng in nodegroups:
+            thread_counter = 0
+            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code)
+            for topic in topics:
+                thread_counter += topic.threads_count
+            if thread_counter == 0:
+                nodegroups = nodegroups.exclude(pk = ng.pk)
+            else:
+                thread = Thread.objects.visible().filter(topic_id__in=topics).order_by('-pub_date')[:4]
+                threads += thread
+
+        context['nodegroups'] = nodegroups
+        context['threads'] = threads
+        context['panel_title'] = _('New Threads')
+        context['title'] = _('Index')
+        context['topics'] = Topic.objects.all().filter(id__in=Topic_related_to_user(self.request))
         context['show_order'] = True
-        context['get_top_thread_keywords'] = get_top_thread_keywords(
-            self.request, 10)
+        context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
         return context
 
 
@@ -1121,7 +1136,7 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
         topic = Topic.objects.get(pk=topic_pk)
-    topics = Topic.objects.filter(node_group=nodegroup_pk).filter(id__in=Topic_related_to_user(request))
+    topics = Topic.objects.filter(node_group=nodegroup_pk, center_associated_with=request.user.Center_Code).filter(id__in=Topic_related_to_user(request))
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
         if form.is_valid():
