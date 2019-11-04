@@ -655,6 +655,7 @@ class ChapterInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
@@ -801,6 +802,21 @@ class InningInfoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
         return context
+
+def InningInfoDeleteView(request, pk):
+    if request.method == 'POST':
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = InningInfo.objects.get(pk=pk)
+            Obj.delete()
+            return redirect('inninginfo_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete inning")
+            return redirect('inninginfo_detail', pk=pk)
+            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+
 
 class InningGroupListView(ListView):
     model = InningGroup
@@ -1053,29 +1069,37 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentQuestionInfo
 
     def post(self, request, *args, **kwargs):
-        Obj = AssignmentQuestionInfo()
-        Obj.Question_Title = request.POST["Question_Title"]
-        Obj.Question_Score = request.POST["Question_Score"]
-        Obj.Question_Description = request.POST["Question_Description"]
-        Obj.Answer_Type = request.POST["Answer_Type"]
-        # Obj.Question_Media_File = request.POST["Question_Media_File"]
-        if request.POST["Use_Flag"] == 'true':
-            Obj.Use_Flag = True
-        else:
-            Obj.Use_Flag = False
-        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-        Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
-        if bool(request.FILES.get('Question_Media_File', False)) == True:
-            media = request.FILES['Question_Media_File']
-            if media.size / 1024 > 2048:
-                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
-            path = settings.MEDIA_ROOT
-            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
-            fs = FileSystemStorage(location=path + '/Question_Media_Files/')
-            filename = fs.save(name, media)
-            Obj.Question_Media_File = 'Question_Media_Files/' + name
-        Obj.save()
+        try:
+            Obj = AssignmentQuestionInfo.objects.get(pk=request.POST["pk"])
+            Obj.Question_Title = request.POST["Question_Title"]
+            Obj.Question_Score = request.POST["Question_Score"]
+            Obj.Question_Description = request.POST["Question_Description"]
+            Obj.Answer_Type = request.POST["Answer_Type"]
+            if request.POST["Use_Flag"] == 'true':
+                Obj.Use_Flag = True
+            else:
+                Obj.Use_Flag = False
+          
+            Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+            Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
+            if request.POST["clear"] == 'true':
+                Obj.Question_Media_File = ''
+            else:     
+                if bool(request.FILES.get('Question_Media_File', False)) == True:
+                    media = request.FILES['Question_Media_File']
+                    if media.size / 1024 > 2048:
+                        return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+                    path = settings.MEDIA_ROOT
+                    name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+                    fs = FileSystemStorage(location=path + '/Question_Media_Files/')
+                    filename = fs.save(name, media)
+                    Obj.Question_Media_File = 'Question_Media_Files/' + name
+            Obj.save()
 
+        except:
+            return JsonResponse(
+                data={'Message': 'Cannot edit form'}
+            )
         return JsonResponse(
             data={'Message': 'Success'}
         )
