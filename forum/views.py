@@ -83,7 +83,7 @@ class Index(LoginRequiredMixin, ListView):
             if thread_counter == 0:
                 nodegroups = nodegroups.exclude(pk = ng.pk)
             else:
-                thread = Thread.objects.filter(topic_id__in=topics).order_by('-pub_date')[:4]
+                thread = Thread.objects.visible().filter(topic_id__in=topics).order_by('-pub_date')[:4]
                 threads += thread
 
         context['nodegroups'] = nodegroups
@@ -300,14 +300,14 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
         topic = Topic.objects.get(pk=topic_pk)
-    topics = Topic.objects.filter(node_group=nodegroup_pk, center_associated_with=request.user.Center_Code).filter(id__in=Topic_related_to_user(request))
+    topics = Topic.objects.filter(node_group=nodegroup_pk).filter(id__in=Topic_related_to_user(request))
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
         if form.is_valid():
             t = form.save()
             return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
     else:
-        form = ThreadForm()
+        form = ThreadForm(user=request.user)
 
     return render(request, 'forum/create_thread.html',
                   {'form': form, 'node_group': node_group, 'title': _('Create Thread'), 'topic': topic,
@@ -527,7 +527,7 @@ def logout_view(request):
 
 
 def get_top_thread_keywords(request, number_of_keyword):
-    obj = Thread.objects.filter(topic__in=Topic_related_to_user(request))
+    obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
     word_counter = {}
     for eachx in obj:
         words = TextBlob(eachx.title).noun_phrases

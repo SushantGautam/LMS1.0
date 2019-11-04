@@ -534,7 +534,7 @@ def get_thread_ordering(request):
 
 class SearchView(ListView):
     model = Thread
-    paginate_by = 20
+    paginate_by = 10
     template_name = 'student_module/student_forum/search.html'
     context_object_name = 'threads'
 
@@ -588,7 +588,7 @@ class NodeGroupView(ListView):
         for topic in topics:
             reply_count = 0
             try:
-                thread = Thread.objects.filter(
+                thread = Thread.objects.visible().filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
               

@@ -27,8 +27,7 @@
                 {% endif %}
 
 
-                {% if request.user.Is_CenterAdmin or request.user.Is_Teacher %}
-
+                {% if not '/students' in request.path %}
                 {#                                <a href="#" class="moderate-action move-thread-up" data-toggle="modal"#}
                 {#                                    data-target="#moderation-modal" data-pk="{{ thread.pk }}"#}
                 {#                                    data-action="move-thread-up"#}
