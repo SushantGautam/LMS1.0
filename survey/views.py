@@ -580,12 +580,17 @@ class liveSurveyCreate(CreateView):
         else:
             return render(request, 'survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm()})
 
+    # Pass request object to forms
+    def get_form_kwargs(self):
+        kwargs = super(liveSurveyCreate, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
             context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
-            # context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
-            #                                                             prefix='questionansinfo')  # SAQ
+            # context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,prefix='questionansinfo')  # SAQ
         else:
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             # context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
