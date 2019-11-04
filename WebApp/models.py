@@ -530,21 +530,22 @@ class InningInfo(models.Model):
     # Relationship Fields
     Inning_Name = ForeignKey(
         'SessionInfo',
-        related_name="inninginfos", on_delete=models.DO_NOTHING
+        related_name="inninginfos", on_delete=models.CASCADE
     )
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="inninginfos", on_delete=models.DO_NOTHING
+        related_name="inninginfos", on_delete=models.CASCADE
     )
 
     Groups = ForeignKey(
         'GroupMapping',
-        related_name="inninginfos", on_delete=models.DO_NOTHING
+        related_name="inninginfos", on_delete=models.CASCADE
     )
 
     Course_Group = models.ManyToManyField(
-        'InningGroup'
+        'InningGroup',
+        
     )
 
     class Meta:

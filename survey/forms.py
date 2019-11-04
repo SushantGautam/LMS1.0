@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
+from WebApp.models import CourseInfo, InningInfo
 
 
 class CategoryInfoForm(forms.ModelForm):
@@ -12,11 +13,20 @@ class CategoryInfoForm(forms.ModelForm):
 class SurveyInfoForm(forms.ModelForm):
     Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
     End_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
+
     class Meta:
         model = SurveyInfo
         fields = ['Survey_Title', 'Category_Code', 'Start_Date', 'End_Date',
                   'Session_Code', 'Course_Code']
 
+    # To filter out only active session and course of the center
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request",None)
+        super(SurveyInfoForm, self).__init__(*args, **kwargs)
+        self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
+                                                                          Center_Code=self.request.user.Center_Code)
+        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                         Use_Flag=True)
     #     Id = kwargs["categoryId"]
     #     if Id == 'live':
     #         self.fields['End_Date'].widget = widgets.AdminTimeWidget()
@@ -32,8 +42,15 @@ class LiveSurveyInfoForm(forms.ModelForm):
         model = SurveyInfo
         fields = ['Survey_Title', 'Category_Code',
                   'Session_Code', 'Course_Code']
-        # labels = {'End_Date': 'End Time',}
-        # setattr()
+        
+    # To filter out only active session and course of the center
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request",None)
+        super(LiveSurveyInfoForm, self).__init__(*args, **kwargs)
+        self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
+                                                                          Center_Code=self.request.user.Center_Code)
+        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                         Use_Flag=True)
 
 
 class QuestionInfoForm(forms.ModelForm):

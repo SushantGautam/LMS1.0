@@ -111,7 +111,7 @@ urlpatterns += (
     path('questioninfo/create/ajax',
          views.QuestionInfoCreateViewAjax.as_view(), name='questioninfo_create_ajax'),
     path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/', views.QuestionInfoDeleteView.as_view(), name='webapp_questioninfo_delete'),
-    path('questioninfo/edit/ajax', views.QuestionInfoEditViewAjax.as_view(), name='webapp_questioninfo_edit_ajax'),
+    path('questioninfo/edit/ajax/', views.QuestionInfoEditViewAjax.as_view(), name='webapp_questioninfo_edit_ajax'),
 
 )
 
@@ -175,6 +175,8 @@ urlpatterns += (
          views.InningInfoDetailView.as_view(), name='inninginfo_detail'),
     path('inninginfo/update/<int:pk>/',
          views.InningInfoUpdateView.as_view(), name='inninginfo_update'),
+    path('innninginfo/delete/<int:pk>/', views.InningInfoDeleteView, name='inninginfo_delete'),
+
 )
 
 urlpatterns += (
@@ -251,10 +253,3 @@ urlpatterns += (
 
 )
 
-urlpatterns += (
-    # urls for chapterpagebuilder
-    path('3DViewer/<path:urlpath>',
-         views.ThreeDViewer, name='3DViewer'),
-    path('3DViewer/',
-         views.ThreeDViewer, name='3DViewer'),
-)

@@ -168,6 +168,11 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     form_class = SurveyInfoForm
     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(SurveyInfo_ajax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
@@ -566,21 +571,17 @@ def surveyinfo_category(request, id):
 class liveSurveyCreate(CreateView):
     model = SurveyInfo
 
-    # form_class =
-    # template_name = 'survey/common/commonliveSurvey_createPage.html'
-
     def get(self, request, *args, **kwargs):
         if 'teachers' in request.path:
-            return render(request, 'teacher_module/survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm()})
+            return render(request, 'teacher_module/survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm(request = self.request)})
         else:
-            return render(request, 'survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm()})
+            return render(request, 'survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm(request = self.request)})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
             context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
-            # context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
-            #                                                             prefix='questionansinfo')  # SAQ
+            # context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,prefix='questionansinfo')  # SAQ
         else:
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             # context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
