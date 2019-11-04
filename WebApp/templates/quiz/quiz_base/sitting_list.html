@@ -44,7 +44,13 @@
                         <td>{{ sitting.end|date }}</td>
                         <td>{{ sitting.get_percent_correct }}</td>
                         <td>
-                            <a href="{% url 'quiz_marking_detail' pk=sitting.id %}">
+                            <a href="
+                            {% if '/teachers' in request.path %}
+                            {% url 'teacher_quiz_marking_detail' pk=sitting.id %} 
+                            {% else %}
+                            {% url 'quiz_marking_detail' pk=sitting.id %}
+                            {% endif %}
+                            ">
                                 {% trans "View details" %}
                             </a>
                     </tr>

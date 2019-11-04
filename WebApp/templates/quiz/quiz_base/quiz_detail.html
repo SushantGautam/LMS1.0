@@ -1,5 +1,24 @@
 
 {% load i18n %}
+<div class="edit-buttons" style="float:right">
+  <div class="col-md-12">
+    <div class="col-md-6">
+        <a href = "{% url 'quiz_update_info' quiz.id %}">
+          <button class="btn-primary">EDIT </button>
+        </a>
+    </div>
+    <div class="col-md-6">
+        <a href = "
+        {% url 'quiz_delete' quiz.id %}
+        ">
+          <button class="btn-primary">DELETE </button>
+        </a>
+    </div>
+  </div>
+ 
+   
+</div>
+
   <table class="table table-bordered ">
 
     <tbody>

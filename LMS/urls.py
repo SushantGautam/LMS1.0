@@ -65,3 +65,11 @@ urlpatterns += [
     path('api/v1/', include(router.urls)),
     path('api/v1/chaptercontent/<int:chapterID>', api.ChapterContent.as_view(), name='chaptercontent'),
 ]
+
+urlpatterns += [
+    # urls for chapterpagebuilder
+    path('3DViewer/<path:urlpath>',
+         views.ThreeDViewer, name='3DViewer'),
+    path('3DViewer/',
+         views.ThreeDViewer, name='3DViewer'),
+]

@@ -53,7 +53,7 @@ class SurveyInfo(models.Model):
 
     Session_Code = ForeignKey(
         'WebApp.InningInfo', blank=True,
-        related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
+        related_name="surveyinfo", on_delete=models.CASCADE, null=True
     )
     Course_Code = ForeignKey(
         'WebApp.CourseInfo', blank=True,

@@ -444,28 +444,44 @@ class Index(ListView):
     template_name = 'student_module/student_forum/forumIndex.html'
     context_object_name = 'threads'
 
-    def get_queryset(self):
-        nodegroups = NodeGroup.objects.all()
-        threadqueryset = Thread.objects.none()
-        for ng in nodegroups:
-            topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
-            for topic in topics:
-                threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
-                    topic_id__in=Topic_related_to_user(self.request))[:4]
-                print("threads", threads)
-                threadqueryset |= threads
-        return threadqueryset
+    # def get_queryset(self):
+    #     nodegroups = NodeGroup.objects.all()
+    #     threadqueryset = Thread.objects.none()
+    #     for ng in nodegroups:
+    #         topics = Topic.objects.filter(node_group=ng.pk).filter(id__in=Topic_related_to_user(self.request))
+    #         for topic in topics:
+    #             threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
+    #                 topic_id__in=Topic_related_to_user(self.request))[:4]
+    #             print("threads", threads)
+    #             threadqueryset |= threads
+    #     return threadqueryset
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        context['panel_title'] = ('New Threads')
-        context['title'] = ('Index')
-        context['topics'] = Topic.objects.all()
-        context['show_order'] = True
-        context['get_top_thread_keywords'] = get_top_thread_keywords(
-            self.request, 10)
-        return context
+        nodegroups = NodeGroup.objects.all()
+        threads = []
 
+        for ng in nodegroups:
+            thread_counter = 0
+            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code).filter(id__in=Topic_related_to_user(self.request))
+            for topic in topics:
+                thread_counter += topic.threads_count
+            if thread_counter == 0:
+                nodegroups = nodegroups.exclude(pk = ng.pk)
+            else:
+                thread = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
+                    topic_id__in=Topic_related_to_user(self.request))[:4]
+
+                threads += thread
+
+        context['nodegroups'] = nodegroups
+        context['threads'] = threads
+        context['panel_title'] = _('New Threads')
+        context['title'] = _('Index')
+        context['topics'] = Topic.objects.all().filter(id__in=Topic_related_to_user(self.request))
+        context['show_order'] = True
+        context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
+        return context
 
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
     topic = None
@@ -518,7 +534,7 @@ def get_thread_ordering(request):
 
 class SearchView(ListView):
     model = Thread
-    paginate_by = 20
+    paginate_by = 10
     template_name = 'student_module/student_forum/search.html'
     context_object_name = 'threads'
 
@@ -572,7 +588,7 @@ class NodeGroupView(ListView):
         for topic in topics:
             reply_count = 0
             try:
-                thread = Thread.objects.filter(
+                thread = Thread.objects.visible().filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
               
