@@ -237,18 +237,19 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    # urls for chapterpagebuilder
-    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
-         views.chapterpagebuilder, name='chapterpagebuilder'),
-    path('viewchapter',
-         views.chapterviewer, name='chapterviewer'),
-    path('saveFile', views.save_file, name='saveFile'),
-    path('saveVideo', views.save_video, name='saveVideo'),
-    path('save3d', views.save_3d_file, name='save3d'),
-    path('saveJson', views.save_json, name='saveJson'),
-    path('export/<int:course>/<int:chapter>/', views.export_chapter, name='exportzip'),
-    path('import', views.import_chapter, name='importzip'),
-
+     # urls for chapterpagebuilder
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
+          views.chapterpagebuilder, name='chapterpagebuilder'),
+     path('viewchapter',
+          views.chapterviewer, name='chapterviewer'),
+     path('saveFile', views.save_file, name='saveFile'),
+     path('saveVideo', views.save_video, name='saveVideo'),
+     path('save3d', views.save_3d_file, name='save3d'),
+     path('saveJson', views.save_json, name='saveJson'),
+     path('export/<int:course>/<int:chapter>/', views.export_chapter, name='exportzip'),
+     path('import', views.import_chapter, name='importzip'),
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
+         views.ContentsView.as_view(), name='contentviewer'),
 )
 
 urlpatterns += (
