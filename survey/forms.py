@@ -21,7 +21,7 @@ class SurveyInfoForm(forms.ModelForm):
 
     # To filter out only active session and course of the center
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request")
+        self.request = kwargs.pop("request",None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
         self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
                                                                           Center_Code=self.request.user.Center_Code)
@@ -42,12 +42,11 @@ class LiveSurveyInfoForm(forms.ModelForm):
         model = SurveyInfo
         fields = ['Survey_Title', 'Category_Code',
                   'Session_Code', 'Course_Code']
-        # labels = {'End_Date': 'End Time',}
         
     # To filter out only active session and course of the center
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request")
-        super(SurveyInfoForm, self).__init__(*args, **kwargs)
+        self.request = kwargs.pop("request",None)
+        super(LiveSurveyInfoForm, self).__init__(*args, **kwargs)
         self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
                                                                           Center_Code=self.request.user.Center_Code)
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,

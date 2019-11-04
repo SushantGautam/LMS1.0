@@ -571,20 +571,11 @@ def surveyinfo_category(request, id):
 class liveSurveyCreate(CreateView):
     model = SurveyInfo
 
-    # form_class =
-    # template_name = 'survey/common/commonliveSurvey_createPage.html'
-
     def get(self, request, *args, **kwargs):
         if 'teachers' in request.path:
-            return render(request, 'teacher_module/survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm()})
+            return render(request, 'teacher_module/survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm(request = self.request)})
         else:
-            return render(request, 'survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm()})
-
-    # Pass request object to forms
-    def get_form_kwargs(self):
-        kwargs = super(liveSurveyCreate, self).get_form_kwargs()
-        kwargs.update({'request': self.request})
-        return kwargs
+            return render(request, 'survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm(request = self.request)})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
