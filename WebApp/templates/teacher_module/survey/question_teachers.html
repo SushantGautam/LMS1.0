@@ -18,7 +18,6 @@
 
     {% for category in categories %}
         <script>
-            {#console.log('{{category.Category_Name}}');#}
             $('#category_Add_Button{{ category.id }}').on('click', function () {
 
                 $.ajax({

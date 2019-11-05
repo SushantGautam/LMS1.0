@@ -477,14 +477,12 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
     template_name = 'teacher_module/teacherSurveyInfo_ajax.html'
-    success_url = reverse_lazy('question_teachers')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
             context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
-            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
-                                                                        prefix='questionansinfo')  # SAQ
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,prefix='questionansinfo')  # SAQ
         else:
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
@@ -492,7 +490,11 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        vform = super().form_valid(form)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            self.object.Center_Code = self.request.user.Center_Code
+            self.object.Added_By = self.request.user
+            self.object.save()
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -503,12 +505,12 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             if qna.is_valid():
                 qna.instance = self.object
                 qna.save()
-        return vform
+        return redirect('surveyinfodetail', self.object.id)
 
     def get_form_kwargs(self):
-        default_kwargs = super().get_form_kwargs()
-        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
-        return default_kwargs
+        kwargs = super(TeacherSurveyInfo_ajax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 def polls_teachers(request):
