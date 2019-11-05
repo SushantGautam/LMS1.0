@@ -1,0 +1,84 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{{ wizard.form.media }}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
+
+
+  <li class="breadcrumb-item active" aria-current="page">Quiz Create</li>
+{% endblock %}
+{% block content %}
+{% include "quiz_base/step3.html" %}
+{% endblock %}
+{% block customjss %}
+  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+  <script src=" {% static '/vendorsx/nprogress/nprogress.js' %}"></script>
+  <script src=" {% static '/vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+  <script>
+      $('#mcq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
+              url: "{% url 'mcquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create Multiple Choice Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      $('#tfq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
+              url: "{% url 'tfquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create True False Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      $('#saq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
+              url: "{% url 'saquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create Short Answer Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      $('#id_form3-mcquestion').change(function () {
+          $('#selected_mcq_num').text($('#id_form3-mcquestion option:selected').length);
+      });
+      $('#id_form3-tfquestion').change(function () {
+          $('#selected_tfq_num').text($('#id_form3-tfquestion option:selected').length);
+      });
+      $('#id_form3-saquestion').change(function () {
+          $('#selected_saq_num').text($('#id_form3-saquestion option:selected').length);
+      });
+
+      function mcq_success(response) {
+          $('#id_form3-mcquestion').prepend(
+              `<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
+          $('#id_form3-mcquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
+
+      function tfq_success(response) {
+          $('#id_form3-tfquestion').prepend(
+              `<option value="${response['new_tfq_id']}" selected>${response['new_tfq_content']}</option>`);
+          $('#id_form3-tfquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
+
+      function saq_success(response) {
+          $('#id_form3-saquestion').prepend(
+              `<option value="${response['new_saq_id']}" selected>${response['new_saq_content']}</option>`);
+          $('#id_form3-saquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
+
+  </script>
+{% endblock customjss %}
