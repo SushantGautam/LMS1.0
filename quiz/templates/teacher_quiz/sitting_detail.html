@@ -9,7 +9,7 @@
 <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_marking' %}">Marking list</a></li> 
                 
  
-<li class="breadcrumb-item active" aria-current="page">Marking Detail</li> 
+<li class="breadcrumb-item active" aria-current="page">{{ sitting.quiz.title}}</li> 
 {% endblock %} 
 
 {% block content %}
