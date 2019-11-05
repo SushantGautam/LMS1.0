@@ -143,6 +143,7 @@ urlpatterns += (
          name='teacher_quiz_detail'),
     path('quiz/edit/<int:pk>/', views.QuizUpdateView.as_view(),
          name='teacher_quiz_update'),
+    path('update_info/<int:pk>/', views.UpdateQuizBasicInfo.as_view(), name='teacher_quiz_update_info'),    
      
     path('detail/<slug>', views.QuizDetailView.as_view(),
          name='teacher_quiz_detail_s'),
