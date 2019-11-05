@@ -607,7 +607,7 @@ class QuizUserProgressView(TemplateView):
 
 class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
-    template_name = 'teacher_module/sitting_list.html'
+    template_name = 'teacher_quiz/quiz_detail.html'
 
     def get_queryset(self):
         queryset = super(QuizMarkingList, self).get_queryset() \
