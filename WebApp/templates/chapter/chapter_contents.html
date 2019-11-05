@@ -61,6 +61,66 @@
 <!-- jQuery -->
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script type="text/javascript">
+    $(document).keydown(function (e) {
+        if (e.keyCode == '39') {
+            $('#next-btn').click();
+            return false
+        }
+        if (e.keyCode == '37') {
+            $('#prev-btn').click();
+            return false
+        }
+        //UP
+        if (e.keyCode == '38') {
+            $('body').animate({ scrollTop: 0 }, 100);
+            return false;
+        }
+        //DOWN
+        if (e.keyCode == '40') {
+            $('body').animate({ scrollTop: $(document).height() }, 100);
+            return false;
+        }
+
+        if (e.keyCode == '70') {
+            console.log(e.keyCode)
+            toggleFullScreen();
+            return false;
+        }
+
+        if (e.keyCode == '81') {
+            $('#course-modal').modal('hide');
+            return false;
+        }
+    });
+
+    $('#next-btn').off().click(function () {
+        $("#container > .coursepages ").each(function () {
+            if ($(this).css("display") == "block") {
+                res = this.id.match(/[0-9]+/);
+            }
+        });
+        if (res < $("#container > div ").length) {
+            $('#page' + res).css("display", "none");
+            res++;
+            $('#page' + res).css("display", "block")
+        }
+        $('#currentpage').text(res);
+    });
+
+    $('#prev-btn').off().click(function () {
+        $("#container > div ").each(function () {
+            if ($(this).css("display") == "block") {
+                res = this.id.match(/[0-9]+/);
+            }
+        });
+        if ((res - 1) > 0) {
+            $('#page' + res).css("display", "none");
+            res--;
+            $('#page' + res).css("display", "block")
+        }
+        $('#currentpage').text(res);
+    });
+
     var data = {{ data | safe}};
     console.log(data)
 
@@ -82,7 +142,7 @@
         $.each(value, function (count) {
             // Create modal
             $('#container').append(`
-            <div id="page${key}" class = 'coursepages' role="dialog">
+            <div id="page${key}" class = 'coursepages' role="dialog" style="display: none;">
 
             </div>`)
             // -------------------------------
@@ -183,6 +243,26 @@
         });
     });
 
+    $('#page1').css('display', 'block');
 
-
+    function toggleFullScreen() {
+        if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+            (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+            if (document.documentElement.requestFullScreen) {
+                document.documentElement.requestFullScreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullScreen) {
+                document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        } else {
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+        }
+    }
 </script>
