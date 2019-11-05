@@ -41,9 +41,27 @@
         <div class="text-center">
 
             <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Teacher Allocation</a>
-            <a class="btn btn-danger" href="{{ object.get_delete_url }}">Delete Teacher Allocation</a>
+            <a class="btn-sm btn-danger inninggroup-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
+                Teacher Allocation</a>
+            <form method="post" action="{% url 'inninggroup_delete' pk=object.pk %}"
+                id="deleteInningGroup{{ object.pk }}">
+                {% csrf_token %}
+                <input type="hidden" value="{{object.pk}}" name="inninggroup_id">
+            </form>
         </div>
     </div>
 
 </div>
+{% endblock %}
+{% block customjss %}
+<script>
+    $(document).on('click', '.inninggroup-confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Teacher Allocation?');
+        if (ans == true) {
+            $(`#deleteInningGroup${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+</script>
 {% endblock %}
