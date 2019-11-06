@@ -15,7 +15,6 @@ class CenterInfoViewSet(viewsets.ModelViewSet):
     queryset = models.CenterInfo.objects.all()
     serializer_class = serializers.CenterInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # This is the new  change
 
 class MemberInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the MemberInfo class"""
