@@ -32,7 +32,7 @@
                 <td>
                     {{ question.content }}
                     {% if question.figure %}
-                        <div style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
+                        <div class= "detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
                     {% endif %}
                 </td>
                 <td>{{ question|answer_choice_to_string:question.user_answer }}</td>

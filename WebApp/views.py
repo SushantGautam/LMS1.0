@@ -867,6 +867,20 @@ class InningGroupUpdateView(UpdateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+def InningGroupDeleteView(request, pk):
+    if request.method == 'POST':
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = InningGroup.objects.get(pk=pk)
+            Obj.delete()
+            return redirect('inninggroup_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete Teacher Allocation")
+            return redirect('inninggroup_detail', pk=pk)
+            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+
 
 class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
     model = GroupMapping
@@ -909,6 +923,20 @@ class GroupMappingUpdateView(UpdateView):
         kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
+def GroupMappingDeleteView(request, pk):
+    if request.method == 'POST':
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = GroupMapping.objects.get(pk=pk)
+            Obj.delete()
+            return redirect('groupmapping_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete Group Mapping")
+            return redirect('groupmapping_detail', pk=pk)
+            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 # AssignmentInfoViews

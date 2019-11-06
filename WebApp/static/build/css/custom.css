@@ -1540,14 +1540,14 @@ input[type=checkbox], input[type=radio] {
     margin: 20px 0;
 }
 .detail-page-images{
-    height: 200px;
-    width: 350px;
+    
+    width: 500px;
 
 }
 .detail-page-images img{
     height: 100%; 
     width: 100%;
-    object-fit: cover;
+   
 }
 .mcqlist-container{ 
     
