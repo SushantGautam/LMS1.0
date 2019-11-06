@@ -80,7 +80,7 @@ class QuizListView(ListView):
 
     def get_queryset(self):
         queryset = super(QuizListView, self).get_queryset()
-        return queryset.filter(draft=False, cent_code=self.request.user.Center_Code)
+        return queryset.filter(cent_code=self.request.user.Center_Code)
 
 
 class QuizUpdateView(UpdateView):
