@@ -511,6 +511,7 @@ class Quiz(models.Model):
 
         if self.exam_paper is True:
             self.single_attempt = True
+            self.answers_at_end = False
 
         if self.pass_mark is None:
             self.pass_mark = 0
@@ -538,8 +539,10 @@ class Quiz(models.Model):
 
     def has_mcqs(self):
         return (self.mcquestion.count() > 0)
+
     def has_tfqs(self):
         return (self.tfquestion.count() > 0)
+
     def has_saqs(self):
         return (self.saquestion.count() > 0)
 

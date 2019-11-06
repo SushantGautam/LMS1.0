@@ -77,6 +77,7 @@
 
           var is_checked = false;
           var cnt = 0;
+          var non_empty_count = 0;
           for (cnt = 0; cnt < $("#id_answer_set-TOTAL_FORMS").val(); cnt++) {
               if ($("#id_answer_set-" + cnt + "-correct").is(':checked')) {
                   is_checked = true;
@@ -85,6 +86,13 @@
                       return false;
                   }
               }
+              if ($("#id_answer_set-" + cnt + "-content").val().length > 0) {
+                  non_empty_count++;
+              }
+          }
+          if (non_empty_count < 2) {
+              $("#option_error").html("Please enter at least two answers");
+              return false;
           }
           if (!is_checked) {
               $("#option_error").html("Please select at least one correct answer");

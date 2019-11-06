@@ -80,7 +80,7 @@ class QuizListView(ListView):
 
     def get_queryset(self):
         queryset = super(QuizListView, self).get_queryset()
-        return queryset.filter(draft=False, cent_code=self.request.user.Center_Code)
+        return queryset.filter(cent_code=self.request.user.Center_Code)
 
 
 class QuizUpdateView(UpdateView):
@@ -284,6 +284,7 @@ class QuizTake(FormView):
         self.sitting.remove_first_question()
 
     def final_result_user(self):
+        print("im here")
         results = {
             'quiz': self.quiz,
             'score': self.sitting.get_current_score,
@@ -301,8 +302,8 @@ class QuizTake(FormView):
             results['incorrect_questions'] = \
                 self.sitting.get_incorrect_questions
 
-        if self.quiz.exam_paper is False:
-            self.sitting.delete()
+        #if self.quiz.exam_paper is False:
+        #    self.sitting.delete()
 
         return render(self.request, self.result_template_name, results)
 
