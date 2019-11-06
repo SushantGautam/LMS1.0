@@ -37,7 +37,7 @@
 				<th>{% trans "Course -> Chapter" %}</th>
 			  <th>{% trans "No. of Questions" %}</th>
 			  <th>{% trans "Type" %}</th>
-			  <th>{% trans "Url" %}</th>
+			 
 				<th>{% trans "Status" %}</th>
 				<th>{% trans "Action" %}</th>
 			</tr>
@@ -61,11 +61,7 @@
 								exam <br>
 								{% endif %}
 				 </td>
-				 <td>
-				 	<a href="{% url 'quiz_detail_s' quiz.url %}">
-				 		{{ quiz.url }}
-					</a>
-				 </td>
+			
 				<td>{% if quiz.draft is True %}
 								 Inactive 
 						{% else %}		

@@ -27,7 +27,7 @@ from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView
+from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
 
 from LMS.settings import BASE_DIR
@@ -867,6 +867,20 @@ class InningGroupUpdateView(UpdateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+def InningGroupDeleteView(request, pk):
+    if request.method == 'POST':
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = InningGroup.objects.get(pk=pk)
+            Obj.delete()
+            return redirect('inninggroup_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete Teacher Allocation")
+            return redirect('inninggroup_detail', pk=pk)
+            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
+
 
 class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
     model = GroupMapping
@@ -909,6 +923,20 @@ class GroupMappingUpdateView(UpdateView):
         kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
+def GroupMappingDeleteView(request, pk):
+    if request.method == 'POST':
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = GroupMapping.objects.get(pk=pk)
+            Obj.delete()
+            return redirect('groupmapping_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete Group Mapping")
+            return redirect('groupmapping_detail', pk=pk)
+            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 # AssignmentInfoViews
@@ -1454,7 +1482,6 @@ def import_chapter(request):
 
             continue
         zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
-    # print(data)
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
@@ -1477,3 +1504,23 @@ def ThreeDViewer(request, urlpath=None):
             mtlurlpath = "static/3D_Viewer/none.mtl"
 
     return render(request, '3D_Viewer/render_template.html', {'objpath': urlpath, 'mtlpath': mtlurlpath})
+
+class ContentsView(TemplateView):
+    template_name = 'chapter/chapter_contents.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        courseID = context['chapter'].Course_Code.id
+        chapterID = self.kwargs.get('chapter')
+        path = settings.MEDIA_ROOT
+        
+        try:
+            with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
+                    chapterID) + '.txt') as json_file:
+                context['data'] = json.load(json_file)
+        except Exception as e:
+            print(e)
+            context['data'] = ""
+        return context

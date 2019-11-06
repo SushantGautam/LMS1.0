@@ -6,6 +6,13 @@
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
 {% endblock stylesheets %}
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">QUIZ</a></li>
+
+
+
+  <li class="breadcrumb-item active" aria-current="page">{{ quiz.title }}</li>
+{% endblock %}
 
 {% block content %}
   <form action="" method="post" onsubmit="return validateForm()">

@@ -5,7 +5,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 {{ form.media }}
 
-<form method="post" id="tfq_form_post">
+<form method="post" id="tfq_form_post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form|crispy }}
   {% if quiz_id %}
@@ -19,8 +19,11 @@
       $("#tfq_form_post").submit(function (e) {
           e.preventDefault(); // avoid to execute the actual submit of the form.
           $.ajax({
+              cache: false,
+              contentType: false,
+              processData: false,
+              data: new FormData($(this)[0]),
               url: "{{ post_url }}", // URL to your view that serves new info
-              data: $(this).serialize(), // get the form data
               type: $(this).attr('method'), // GET or POST
               success: function (response) {
                   tfq_success(response);

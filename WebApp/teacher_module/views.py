@@ -30,7 +30,7 @@ from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
-from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm
+from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm, QuizBasicInfoForm
 from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
 from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
@@ -477,14 +477,12 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
     template_name = 'teacher_module/teacherSurveyInfo_ajax.html'
-    success_url = reverse_lazy('question_teachers')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
             context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
-            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
-                                                                        prefix='questionansinfo')  # SAQ
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,prefix='questionansinfo')  # SAQ
         else:
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
@@ -492,7 +490,11 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        vform = super().form_valid(form)
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            self.object.Center_Code = self.request.user.Center_Code
+            self.object.Added_By = self.request.user
+            self.object.save()
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -503,12 +505,12 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             if qna.is_valid():
                 qna.instance = self.object
                 qna.save()
-        return vform
+        return redirect('surveyinfodetail', self.object.id)
 
     def get_form_kwargs(self):
-        default_kwargs = super().get_form_kwargs()
-        default_kwargs['center_code_id'] = self.request.user.Center_Code.id
-        return default_kwargs
+        kwargs = super(TeacherSurveyInfo_ajax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 def polls_teachers(request):
@@ -552,7 +554,7 @@ class QuizCreateView(CreatePopupMixin, CreateView):
 
 class QuizListView(ListView):
     model = Quiz
-    template_name = 'quiz/teacher_quiz/quiz_list.html'
+    template_name = 'teacher_quiz/quiz_list.html'
 
     def get_queryset(self):
         queryset = super(QuizListView, self).get_queryset()
@@ -563,12 +565,26 @@ class QuizUpdateView(UpdateView):
     model = Quiz
     form_class = QuizForm
 
+class UpdateQuizBasicInfo(UpdateView):
+    model = Quiz
+    form_class = QuizBasicInfoForm
+    template_name = 'teacher_quiz/quiz_update_basic_info.html'
 
+    def get_form_kwargs(self):
+        default_kwargs = super().get_form_kwargs()
+        default_kwargs['current_obj'] = self.object
+        return default_kwargs
+
+    def get_success_url(self):
+        return reverse(
+            'teacher_quiz_detail',
+            kwargs={'pk': self.object.pk},
+        )
 class QuizDetailView(DetailView):
     
     model = Quiz
     slug_field = 'url'
-    template_name = 'quiz/teacher_quiz/quiz_detail.html'
+    template_name = 'teacher_quiz/quiz_detail.html'
 
     # def get(self, request, *args, **kwargs):
     #     self.object = self.get_object()
@@ -606,8 +622,9 @@ class QuizUserProgressView(TemplateView):
 
 
 class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
+    
     model = Sitting
-    template_name = 'teacher_module/sitting_list.html'
+    template_name = 'teacher_quiz/sitting_list.html'
 
     def get_queryset(self):
         queryset = super(QuizMarkingList, self).get_queryset() \
@@ -622,7 +639,7 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
 
 class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     model = Sitting
-    template_name = 'teacher_module/sitting_detail.html'
+    template_name = 'teacher_quiz/sitting_detail.html'
 
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()
@@ -996,9 +1013,9 @@ FORMS = [("form1", QuizForm1),
          ("form2", QuizForm2),
          ("form3", QuizForm3)]
 
-TEMPLATES = {"form1": "wizard_teacher/step1.html",
-             "form2": "wizard_teacher/step2.html",
-             "form3": "wizard_teacher/step3.html"}
+TEMPLATES = {"form1": "teacher_quiz/step1.html",
+             "form2": "teacher_quiz/step2.html",
+             "form3": "teacher_quiz/step3.html"}
 
 
 class QuizCreateWizard(SessionWizardView):

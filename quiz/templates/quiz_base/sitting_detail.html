@@ -1,11 +1,7 @@
-{% extends 'teacher_module/base.html' %}
+
 {% load i18n %}
 {% load quiz_tags %}
-{% block title %}
-    {% trans "Result of" %} {{ sitting.quiz.title }} {% trans "for" %} {{ sitting.user }}
-{% endblock %}
 
-{% block content %}
     <h2>{% trans "Quiz title" %}: {{ sitting.quiz.title }}</h2>
     <h3>{% trans "Category" %}: {{ sitting.quiz.category }}</h3>
     <p>{{ sitting.quiz.description }}</p>
@@ -36,7 +32,7 @@
                 <td>
                     {{ question.content }}
                     {% if question.figure %}
-                        <div style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
+                        <div class= "detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
                     {% endif %}
                 </td>
                 <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
@@ -61,4 +57,3 @@
         </tbody>
 
     </table>
-{% endblock %}

@@ -1123,3 +1123,14 @@ span.btnlink input {
 .over {
   border: solid 2px #17a2b8;
 }
+
+.content-title1{
+  height: 5%;
+}
+
+.content-footer1{
+  height: 3%;
+  bottom: 0px;
+  position: absolute;
+  width: 100%;
+}

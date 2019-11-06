@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
@@ -7,41 +7,14 @@
   <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
 {% endblock stylesheets %}
 {% block breadcrumb %} 
-<li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">QUIZ</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
                 
  
 <li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 
 {% endblock %}
 {% block content %}
 
-  <div id="" class="form_wizard wizard_horizontal">
-    <ul class="wizard_steps anchor">
-      <li>
-        <a href="#step-1" class="done" isdone="1" rel="1">
-          <span class="step_no">1</span>
-          <span class="step_descr">Basic  Info</span>
-        </a>
-      </li>
-      <li>
-        <a href="#step-2" class="selected" isdone="1" rel="2">
-          <span class="step_no">2</span>
-          <span class="step_descr">Select  Quiz Type</span>
-        </a>
-      </li>
-      <li>
-        <a href="#step-3" class="disabled" isdone="0" rel="3">
-          <span class="step_no">3</span>
-          <span class="step_descr">Add  Question</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <form action="" method="post" onsubmit="return validateForm()">
-    {{ wizard.form.non_field_errors }}
-    {{ wizard.management_form }}
-    {#      {{ wizard.form|crispy }}#}
-    {% crispy wizard.form %}
-  </form>
+{% include "quiz_base/step2.html" %}
 {% endblock %}
 {% block customjss %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>

@@ -8,19 +8,23 @@ from . import api
 from . import views
 
 
-
 urlpatterns = (
     # urls for Profile
     path('profile/', views.ProfileView, name='user_profile'),
-#     path('editprofile/', login_required(views.editprofile), name='user_editprofile'),
-    
-    # Common url and views for all account for profile edit functions 
-    path('editprofile/basicinfo', login_required(views.edit_basic_info_ajax), name="edit_basic_info_ajax"),
-    path('editprofile/contactinfo', login_required(views.edit_contact_info_ajax), name="edit_contact_info_ajax"),
-    path('editprofile/descriptioninfo', login_required(views.edit_description_info_ajax), name="edit_description_info_ajax"),
-    path('editprofile/upload_image', login_required(views.edit_profile_image_ajax), name="edit_profile_image_ajax"),
+    #     path('editprofile/', login_required(views.editprofile), name='user_editprofile'),
 
-    path('profile/change-password/', views.PasswordChangeView.as_view(template_name='registration/change_password.html'), name="centeradmin_change_password"),
+    # Common url and views for all account for profile edit functions
+    path('editprofile/basicinfo', login_required(views.edit_basic_info_ajax),
+         name="edit_basic_info_ajax"),
+    path('editprofile/contactinfo', login_required(views.edit_contact_info_ajax),
+         name="edit_contact_info_ajax"),
+    path('editprofile/descriptioninfo', login_required(views.edit_description_info_ajax),
+         name="edit_description_info_ajax"),
+    path('editprofile/upload_image', login_required(views.edit_profile_image_ajax),
+         name="edit_profile_image_ajax"),
+
+    path('profile/change-password/', views.PasswordChangeView.as_view(
+        template_name='registration/change_password.html'), name="centeradmin_change_password"),
     path('change-password/<int:pk>/', views.change_password_others),
 )
 
@@ -43,44 +47,61 @@ urlpatterns += (
 urlpatterns += (
     # urls for MemberInfo
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
-    path('memberinfo/inactive', views.MemberInfoListViewInactive.as_view(), name='memberinfo_list_inactive'),
-    path('memberinfo/activate/<int:pk>/', views.MemberInfoActivate, name='memberinfo_activate'),
-    path('memberinfo/deactivate/<int:pk>/', views.MemberInfoDeactivate, name='memberinfo_deactivate'),
-    path('memberinfo/create/', views.MemberInfoCreateView.as_view(), name='memberinfo_create'),
-    path('memberinfo/detail/<int:pk>/', views.MemberInfoDetailView.as_view(), name='memberinfo_detail'),
-    path('memberinfo/update/<int:pk>/', views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
-    path('memberinfo/delete/<int:pk>/', views.MemberInfoDeleteView.as_view(), name='memberinfo_delete'),
+    path('memberinfo/inactive', views.MemberInfoListViewInactive.as_view(),
+         name='memberinfo_list_inactive'),
+    path('memberinfo/activate/<int:pk>/',
+         views.MemberInfoActivate, name='memberinfo_activate'),
+    path('memberinfo/deactivate/<int:pk>/',
+         views.MemberInfoDeactivate, name='memberinfo_deactivate'),
+    path('memberinfo/create/', views.MemberInfoCreateView.as_view(),
+         name='memberinfo_create'),
+    path('memberinfo/detail/<int:pk>/',
+         views.MemberInfoDetailView.as_view(), name='memberinfo_detail'),
+    path('memberinfo/update/<int:pk>/',
+         views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
+    path('memberinfo/delete/<int:pk>/',
+         views.MemberInfoDeleteView.as_view(), name='memberinfo_delete'),
     path('importcsvajax', views.ImportCsvFile, name='csv_import_ajax'),
 )
 
 urlpatterns += (
     # urls for CourseInfo
     path('courseinfo/', views.CourseInfoListView.as_view(), name='courseinfo_list'),
-    path('courseinfo/create/', views.CourseInfoCreateView.as_view(), name='courseinfo_create'),
-    path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(), name='courseinfo_detail'),
-    path('courseinfo/edit/<int:pk>/', views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
-    path('courseinfo/delete/<int:pk>/', views.CourseInfoDeleteView, name='courseinfo_delete'),
+    path('courseinfo/create/', views.CourseInfoCreateView.as_view(),
+         name='courseinfo_create'),
+    path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(),
+         name='courseinfo_detail'),
+    path('courseinfo/edit/<int:pk>/',
+         views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
+    path('courseinfo/delete/<int:pk>/',
+         views.CourseInfoDeleteView, name='courseinfo_delete'),
 
 )
 
 urlpatterns += (
     # urls for ChapterInfo
-    path('chapterinfo/create/ajax', views.ChapterInfoCreateViewAjax.as_view(), name='chapterinfo_create_ajax'),
-    path('courseinfo/<int:course>/chapterinfo/', views.ChapterInfoListView.as_view(), name='chapterinfo_list'),
-    path('courseinfo/<int:course>/create/', views.ChapterInfoCreateView.as_view(), name='chapterinfo_create'),
+    path('chapterinfo/create/ajax', views.ChapterInfoCreateViewAjax.as_view(),
+         name='chapterinfo_create_ajax'),
+    path('courseinfo/<int:course>/chapterinfo/',
+         views.ChapterInfoListView.as_view(), name='chapterinfo_list'),
+    path('courseinfo/<int:course>/create/',
+         views.ChapterInfoCreateView.as_view(), name='chapterinfo_create'),
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/', views.ChapterInfoDetailView.as_view(),
          name='chapterinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/edit/', views.ChapterInfoUpdateView.as_view(),
          name='chapterinfo_update'),
-    path('courseinfo/<int:course>/forum/', views.CourseForum, name='Course_Forum'),
+    path('courseinfo/<int:course>/forum/',
+         views.CourseForum, name='Course_Forum'),
     path('change_quiz_test/', views.Changestate.as_view(), name='change_quiz_test'),
-    path('chapterinfo/delete/<int:pk>/', views.ChapterInfoDeleteView.as_view(), name='chapterinfo_delete'),
+    path('chapterinfo/delete/<int:pk>/',
+         views.ChapterInfoDeleteView.as_view(), name='chapterinfo_delete'),
 
 )
 
 urlpatterns += (
     # urls for Assignmentinfo
-    path('assignmentinfo/create/ajax', views.AssignmentInfoCreateViewAjax.as_view(), name='assignmentinfo_create_ajax'),
+    path('assignmentinfo/create/ajax', views.AssignmentInfoCreateViewAjax.as_view(),
+         name='assignmentinfo_create_ajax'),
 
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/', views.AssignmentInfoListView.as_view(),
          name='assignmentinfo_list'),
@@ -90,8 +111,10 @@ urlpatterns += (
          views.AssignmentInfoDetailView.as_view(), name='assignmentinfo_detail'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='assignmentinfo_update'),
-    path('assignmentinfo/edit/ajax', views.AssignmentInfoEditViewAjax.as_view(), name='assignmentinfo_edit_ajax'),
-    path('assignmentinfo/<int:pk>/', views.AssignmentInfoDeleteView.as_view(), name='assignmentinfo_delete'),
+    path('assignmentinfo/edit/ajax', views.AssignmentInfoEditViewAjax.as_view(),
+         name='assignmentinfo_edit_ajax'),
+    path('assignmentinfo/<int:pk>/',
+         views.AssignmentInfoDeleteView.as_view(), name='assignmentinfo_delete'),
 )
 
 urlpatterns += (
@@ -110,8 +133,10 @@ urlpatterns += (
         views.QuestionInfoUpdateView.as_view(), name='webapp_questioninfo_update'),
     path('questioninfo/create/ajax',
          views.QuestionInfoCreateViewAjax.as_view(), name='questioninfo_create_ajax'),
-    path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/', views.QuestionInfoDeleteView.as_view(), name='webapp_questioninfo_delete'),
-    path('questioninfo/edit/ajax/', views.QuestionInfoEditViewAjax.as_view(), name='webapp_questioninfo_edit_ajax'),
+    path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/',
+         views.QuestionInfoDeleteView.as_view(), name='webapp_questioninfo_delete'),
+    path('questioninfo/edit/ajax/', views.QuestionInfoEditViewAjax.as_view(),
+         name='webapp_questioninfo_edit_ajax'),
 
 )
 
@@ -156,7 +181,8 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for InningInfo
-    path('sessioninfo/', views.SessionInfoListView.as_view(), name='sessioninfo_list'),
+    path('sessioninfo/', views.SessionInfoListView.as_view(),
+         name='sessioninfo_list'),
     path('sessioninfo/create/', views.SessionInfoCreateView.as_view(),
          name='sessioninfo_create'),
     path('sessioninfo/<int:pk>/',
@@ -167,7 +193,8 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for InningInfo
-    path('inninginfo/inactive', views.InningInfoListViewInactive.as_view(), name='inninginfo_list_inactive'),
+    path('inninginfo/inactive', views.InningInfoListViewInactive.as_view(),
+         name='inninginfo_list_inactive'),
     path('inninginfo/', views.InningInfoListView.as_view(), name='inninginfo_list'),
     path('inninginfo/create/', views.InningInfoCreateView.as_view(),
          name='inninginfo_create'),
@@ -175,7 +202,8 @@ urlpatterns += (
          views.InningInfoDetailView.as_view(), name='inninginfo_detail'),
     path('inninginfo/update/<int:pk>/',
          views.InningInfoUpdateView.as_view(), name='inninginfo_update'),
-    path('innninginfo/delete/<int:pk>/', views.InningInfoDeleteView, name='inninginfo_delete'),
+    path('innninginfo/delete/<int:pk>/',
+         views.InningInfoDeleteView, name='inninginfo_delete'),
 
 )
 
@@ -189,6 +217,8 @@ urlpatterns += (
          views.InningGroupDetailView.as_view(), name='inninggroup_detail'),
     path('inninggroup/update/<int:pk>/',
          views.InningGroupUpdateView.as_view(), name='inninggroup_update'),
+    path('inninggroup/delete/<int:pk>/',
+         views.InningGroupDeleteView, name='inninggroup_delete'),
 )
 
 urlpatterns += (
@@ -201,6 +231,9 @@ urlpatterns += (
          views.GroupMappingDetailView.as_view(), name='groupmapping_detail'),
     path('groupmapping/update/<int:pk>/',
          views.GroupMappingUpdateView.as_view(), name='groupmapping_update'),
+    path('groupmapping/delete/<int:pk>/',
+         views.GroupMappingDeleteView, name='groupmapping_delete'),
+
     # path('admin/jsi18n', i18n.javascript_catalog),
 )
 
@@ -248,8 +281,9 @@ urlpatterns += (
     path('saveVideo', views.save_video, name='saveVideo'),
     path('save3d', views.save_3d_file, name='save3d'),
     path('saveJson', views.save_json, name='saveJson'),
-    path('export/<int:course>/<int:chapter>/', views.export_chapter, name='exportzip'),
+    path('export/<int:course>/<int:chapter>/',
+         views.export_chapter, name='exportzip'),
     path('import', views.import_chapter, name='importzip'),
-
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
+         views.ContentsView.as_view(), name='contentviewer'),
 )
-

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
@@ -6,13 +6,17 @@
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
 {% endblock stylesheets %}
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
+
+
+
+  <li class="breadcrumb-item active" aria-current="page">{{ quiz.title }}</li>
+{% endblock %}
 
 {% block content %}
-  <form action="" method="post" onsubmit="return validateForm()">
-    {{ form.non_field_errors }}
-    {#      {{ wizard.form|crispy }}#}
-    {% crispy form %}
-  </form>
+{% include "quiz_base/quiz_update_basic_info.html" %}
+  
 {% endblock %}
 
 {% block customjss %}

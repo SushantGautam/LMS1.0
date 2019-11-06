@@ -5,6 +5,16 @@ html , body{
    .tableTitleRow {
     max-width: 50%;
 }
+/* @media (min-width: 467px) and (max-width: 1400px){
+    .selector{
+        width: 0px !important;
+        float: left !important;
+    }
+} */
+.selector{
+    width: auto !important;
+    /* float: left !important; */
+}
 .footer{
     height:3em;
 }
@@ -1035,7 +1045,7 @@ article {
     padding-right: 10px;
     padding-bottom: 5px;
     background: #f5f5f5;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 
 }
 
@@ -1530,14 +1540,14 @@ input[type=checkbox], input[type=radio] {
     margin: 20px 0;
 }
 .detail-page-images{
-    height: 200px;
-    width: 350px;
+    
+    width: 500px;
 
 }
 .detail-page-images img{
     height: 100%; 
     width: 100%;
-    object-fit: cover;
+   
 }
 .mcqlist-container{ 
     
@@ -1644,11 +1654,11 @@ input[type=checkbox], input[type=radio] {
 }
 
 .box2 {
-    width: 950px;
+    width: 700px;
 }
 
 .box3 {
-    width: 1050px;
+    width: 700px;
 }
 
 /* quiz create page */
@@ -1812,3 +1822,6 @@ input[type=checkbox], input[type=radio] {
 label .asteriskField{
     float: right;
 }
+
+/* multichoice widget css */
+

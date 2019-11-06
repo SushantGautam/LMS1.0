@@ -16,6 +16,24 @@
 </li>
 {% endblock %}
 {% block content %}
+<style>
+    .selector {
+        width: auto !important;
+    }
+
+    .selector-available,
+    .selector-chosen {
+        width: 280px !important;
+    }
+
+    .selector select {
+        width: 280px !important;
+    }
+
+    .selector .selector-available input {
+        width: 210px !important;
+    }
+</style>
 <div class="headerDiv">
     <h2 class="infoFormHeader">
         {% if '/inninggroup/create/' == request.path %}
@@ -26,16 +44,13 @@
     </h2>
     <hr class="header_hr">
 </div>
-<div class="col-md-7 col-md-offset-2 col-sm-offset-1 text-center" style="margin-top: 3%">
+<div class="col-md-7 col-md-offset-2  text-center" style="margin-top: 3%">
 
     <form method="post" id="FormID">
         {% csrf_token %}
-        <!-- <div class="col-md-12 col-sm-12 col-xs-12">
-            <input type="hidden" name="InningGroup_Name" id="id_InningGroup_Name" value="{{ Course_Code }}"
-                class="select form-control">
-        </div> -->
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
+
+        <div class="col-md-12 col-sm-12 col-xs-12 ">
             {{ form.Course_Code|as_crispy_field }}
         </div>
 
@@ -51,7 +66,7 @@
             <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
                 &nbsp; {% else %} checked {% endif %}><br> <br></div>
         {% endif %}
-        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-1">
 
             {{ form.Teacher_Code }}
 
