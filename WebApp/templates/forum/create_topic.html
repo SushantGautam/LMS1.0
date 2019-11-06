@@ -8,7 +8,10 @@
 <li class="breadcrumb-item active"><a href="{% url 'forum:create_topic' %}"> Create SubCategory</a>
 </li>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" />
+
 {% endblock %}
+
 
 
 {% block main_contain %}
@@ -26,8 +29,8 @@
             {{ form|crispy }}
             <label for="id_topic_icon" class="control-label  requiredField">
                 Topic_icon<span class="asteriskField">*</span> </label>
-            <select name="topic_icon" type="text" name="topic_icon" maxlength="30"
-                class="fa textinput textInput form-control" required="" id="id_topic_icon">
+            <select name="topic_icon" type="text" maxlength="30"
+                class="fa textinput textInput form-control select_topic" required="" id="id_topic_icon">
                 <option value=""></option>
                 <option value="align-left">&#xf036; align-left</option>
                 <option value="align-right">&#xf038; align-right</option>
@@ -512,4 +515,32 @@
         </form>
     </div>
 </div>
+{% endblock %}
+{% block customjss %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.select_topic').select2();
+        $('.select2-container').click(function () {
+            $('.select2*').addClass('fa')
+            $('.select2-results__option').each(function (i, obj) {
+                $(this).addClass('fa');
+            });
+
+        })
+
+
+
+        $('input.select2-search__field').change(function () {
+            // $('.select2-results__option').each(function (i, obj) {
+            //     $(this).addClass('fa');
+
+            // });
+            // #TODO need to complete showing image on typing text
+        })
+    });
+
+</script>
+
 {% endblock %}
