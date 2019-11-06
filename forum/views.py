@@ -274,7 +274,7 @@ class SearchView(LoginRequiredMixin, ListView):
             'user__forum_avatar'
         ).order_by(
             get_thread_ordering(self.request)
-        ).filter(topic_id__in=Topic_related_to_user(self.request))
+        ).filter(topic_id__in=Topic_related_to_user(self.request))[:100]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)

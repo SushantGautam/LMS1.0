@@ -110,10 +110,14 @@
 <script>
     $(document).ready(function () {
         $('#navSearchBtn').click(function (e) {
-            e.preventDefault();
+
             var keyword = $('#keywordInput').val();
             if (keyword) {
-                window.location = "/teachers/forum/search/(%3FP" + keyword + ".*)"; // FIXME: Use url tag!
+                //     window.location = "gthj" + keyword + "/"; // FIXME: Use url tag!
+            }
+            else {
+                e.preventDefault();
+                alert('Please Input Some Keyword')
             }
         });
     });
