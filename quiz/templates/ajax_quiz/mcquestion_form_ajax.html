@@ -1,35 +1,35 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 
-  {{ form.media }}
-  <form method="post" onsubmit="return validateForm()" id="mcq_form_post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    {% if quiz_id %}
-      <input name="quiz_id" value="{{ quiz_id }}" type="hidden">
-    {% endif %}
-    <div id="option_dynamic_append">
-      {{ answers_formset|crispy }}
-    </div>
-    <div class="text-danger" id="option_error"></div>
-    <div class="add-more">
-      <a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more options</a>
-    </div>
-    <hr>
-    <!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
-    <button class="btn btn-primary" type="submit">Submit</button>
-  </form>
+{{ form.media }}
+<form method="post" id="mcq_form_post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form|crispy }}
+  {% if quiz_id %}
+    <input name="quiz_id" value="{{ quiz_id }}" type="hidden">
+  {% endif %}
+  <div id="option_dynamic_append">
+    {{ answers_formset|crispy }}
+  </div>
+  <div class="text-danger" id="option_error"></div>
+  <div class="add-more">
+    <a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more options</a>
+  </div>
+  <hr>
+  <!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
+  <button class="btn btn-primary" type="submit">Submit</button>
+</form>
 
-  <div style="display:none">
-    <div id="emptyOptionForm">
-      <div class="multiField">
-        {{ answers_formset.empty_form|crispy }}
-      </div>
+<div style="display:none">
+  <div id="emptyOptionForm">
+    <div class="multiField">
+      {{ answers_formset.empty_form|crispy }}
     </div>
   </div>
+</div>
 
 {% block customjss %}
   <script>
@@ -47,23 +47,6 @@
           copyEmptyOption('#emptyOptionForm', '#option_dynamic_append', 'answer_set');
       });
 
-      function validateForm() {
-          var is_checked = false;
-          var cnt = 0;
-          for (cnt = 0; cnt < $("#id_answer_set-TOTAL_FORMS").val(); cnt++) {
-              if ($("#id_answer_set-" + cnt + "-correct").is(':checked')) {
-                  is_checked = true;
-                  if ($("#id_answer_set-" + cnt + "-content").val().length == 0) {
-                      $("#option_error").html("Correct answer cannot be empty");
-                      return false;
-                  }
-              }
-          }
-          if (!is_checked) {
-              $("#option_error").html("Please select at least one correct answer");
-              return false;
-          }
-      }
 
       $(".multiField").addClass("col-md-12");
       $(".multiField > .form-group").addClass('col-md-3');
@@ -90,9 +73,32 @@
 
       $("#mcq_form_post").submit(function (e) {
           e.preventDefault(); // avoid to execute the actual submit of the form.
+          //form validation:
+
+          var is_checked = false;
+          var cnt = 0;
+          for (cnt = 0; cnt < $("#id_answer_set-TOTAL_FORMS").val(); cnt++) {
+              if ($("#id_answer_set-" + cnt + "-correct").is(':checked')) {
+                  is_checked = true;
+                  if ($("#id_answer_set-" + cnt + "-content").val().length == 0) {
+                      $("#option_error").html("Correct answer cannot be empty");
+                      return false;
+                  }
+              }
+          }
+          if (!is_checked) {
+              $("#option_error").html("Please select at least one correct answer");
+              return false;
+          }
+
           $.ajax({
+              //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
+              cache: false,
+              contentType: false,
+              processData: false,
+              data: new FormData($(this)[0]),
               url: "{{ post_url }}", // URL to your view that serves new info
-              data: $(this).serialize(), // get the form data
+              //data: $(this).serialize(), // get the form data
               type: $(this).attr('method'), // GET or POST
               success: function (response) {
                   mcq_success(response);

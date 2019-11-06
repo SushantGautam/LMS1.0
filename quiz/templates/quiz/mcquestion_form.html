@@ -16,7 +16,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 
   {{ form.media }}
-  <form method="post" onsubmit="return validateForm()">
+  <form method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form|crispy }}
     <div id="option_dynamic_append">
