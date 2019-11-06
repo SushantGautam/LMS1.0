@@ -512,6 +512,8 @@ class Quiz(models.Model):
         if self.exam_paper is True:
             self.single_attempt = True
             self.answers_at_end = False
+        else:
+            self.answers_at_end = True
 
         if self.pass_mark is None:
             self.pass_mark = 0
