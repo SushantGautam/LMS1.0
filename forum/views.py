@@ -40,12 +40,11 @@ def get_thread_ordering(request):
 
 
 def Topic_related_to_user(request):
-    return Topic.objects.filter(center_associated_with=request.user.Center_Code)
+    return (Topic.objects.filter(center_associated_with=request.user.Center_Code) | Topic.objects.filter(center_associated_with__isnull=True))
 
 
 def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
-
 
 # Create your views here.
 class Index(LoginRequiredMixin, ListView):
@@ -77,7 +76,7 @@ class Index(LoginRequiredMixin, ListView):
 
         for ng in nodegroups:
             thread_counter = 0
-            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code)
+            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code) | Topic.objects.filter(node_group=ng.pk, center_associated_with__isnull= True)
             for topic in topics:
                 thread_counter += topic.threads_count
             if thread_counter == 0:
