@@ -1160,7 +1160,7 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
             t = form.save()
             return HttpResponseRedirect(reverse('teacher_thread', kwargs={'pk': t.pk}))
     else:
-        form = ThreadForm()
+        form = ThreadForm(user=request.user)
 
     return render(request, 'teacher_module/teacher_forum/create_thread.html',
                   {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,

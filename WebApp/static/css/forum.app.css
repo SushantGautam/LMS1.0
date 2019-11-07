@@ -58609,3 +58609,8 @@ a:hover {
     font-size: 20px;
     font-weight: 600;
 }
+
+
+.select2-selection{
+    margin-bottom: 8px;
+}
