@@ -19,7 +19,7 @@
 {% for category in categories %}
 <script>
     $('#category_Add_Button{{ category.id }}').on('click', function () {
-
+        $('.popup-inner').append('<div class="se-pre-con-ajax"></div>');
         $.ajax({
             type: "GET",
             data: {'categoryId': '{{category.id}}'},
