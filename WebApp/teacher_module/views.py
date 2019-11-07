@@ -476,7 +476,7 @@ class SurveyInfoListView(ListView):
 class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'teacher_module/teacherSurveyInfo_ajax.html'
+    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
