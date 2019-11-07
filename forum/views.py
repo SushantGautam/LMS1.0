@@ -137,7 +137,7 @@ class NodeGroupView(LoginRequiredMixin, ListView):
 
 class TopicView(LoginRequiredMixin, ListView):
     model = Thread
-    paginate_by = 15
+    paginate_by = 20
     template_name = 'forum/topic.html'
     context_object_name = 'threads'
 
