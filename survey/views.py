@@ -572,9 +572,9 @@ class SurveyInfoUpdateView(UpdateView):
     form_class = SurveyInfoForm
 
 
-def surveyinfo_category(request, id):
-    category = SurveyInfo.objects.filter(Category_Name)
-    return JsonResponse({'category': 'category'})
+# def surveyinfo_category(request, id):
+#     category = SurveyInfo.objects.filter(Category_Name)
+#     return JsonResponse({'category': 'category'})
 
 
 class liveSurveyCreate(CreateView):
@@ -620,7 +620,7 @@ class liveSurveyCreate(CreateView):
             #     print(qn.errors)
             #     print('qn is invalid')
 
-        if 'teachers' in request.path:
+        if 'teachers' in self.request.path:
             return redirect('liveSurveyDetail', self.object.id)
         else:
             return redirect('liveSurveyDetail', self.object.id)
