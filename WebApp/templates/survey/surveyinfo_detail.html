@@ -21,6 +21,9 @@
             url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
             success: function (data) {
                 $("#surveyFormRetake").html(data);
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
             }
         });
     });

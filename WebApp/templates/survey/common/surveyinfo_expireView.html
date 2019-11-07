@@ -35,6 +35,9 @@
 
 <div class="row">
     <div class="col-md-12">
+        
+        <div class="se-pre-con-ajax"></div>
+        
         {% for object in object_list %}
             {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == False %}
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 active_survey">

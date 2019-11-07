@@ -17,9 +17,7 @@ gv mghvhgctt jcryjc itykcv
 
     {% for category in categories %}
         <script>
-            {#console.log('{{category.Category_Name}}');#}
             $('#category_Add_Button{{ category.id }}').on('click', function () {
-
                 $.ajax({
                     type: "GET",
                     data: {'categoryId': '{{category.id}}'},
@@ -46,7 +44,6 @@ gv mghvhgctt jcryjc itykcv
                 url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
                 success: function (data) {
                     $("#rowCards").html(data);
-                    {#console.log(data)#}
                 },
                 complete: function () {
                     $(".se-pre-con-ajax").fadeOut("fast");
@@ -63,7 +60,6 @@ gv mghvhgctt jcryjc itykcv
                 url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
                 success: function (data) {
                     $("#rowCards").html(data);
-                    {#console.log(data)#}
                 },
                 complete: function () {
                     $(".se-pre-con-ajax").fadeOut("fast");

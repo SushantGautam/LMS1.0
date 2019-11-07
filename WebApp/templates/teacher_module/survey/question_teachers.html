@@ -46,7 +46,6 @@ $(document).ready(function () {
         url: urls,
         success: function (data) {
             $("#rowCards").html(data);
-            {#console.log(data)#}
         },
         complete: function () {
             $(".se-pre-con-ajax").fadeOut("fast");
@@ -65,7 +64,6 @@ $('.category-name').on('click', function () {
         url: urls, // URL to your view that serves new info
         success: function (data) {
             $("#rowCards").html(data);
-            {#console.log(data)#}
         },
         complete: function () {
             $(".se-pre-con-ajax").fadeOut("fast");
