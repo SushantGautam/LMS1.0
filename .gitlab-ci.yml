@@ -1,5 +1,5 @@
 variables:
-   - CC_TEST_REPORTER_ID:"1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
+   CC_TEST_REPORTER_ID : "1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
 test:
   type: test
   before_script:
