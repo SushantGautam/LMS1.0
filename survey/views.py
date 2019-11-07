@@ -286,6 +286,11 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
     form_class = SurveyInfoForm
     template_name = 'ajax/surveyInfoRetake_ajax.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(SurveyInfoRetake_ajax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -360,7 +365,11 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
         self.object.Retaken_From = obj_instance.id
         self.object.Version_No = obj_instance.Version_No + 1
         self.object.save()
-        return redirect('surveyinfo_detail', self.object.id)
+        # check the request path and redirect as the value of path
+        if 'teachers' in self.request.path:
+            return redirect('surveyinfodetail', self.object.id)
+        else:
+            return redirect('surveyinfo_detail', self.object.id)
 
     def get_initial(self):
         obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
@@ -563,9 +572,9 @@ class SurveyInfoUpdateView(UpdateView):
     form_class = SurveyInfoForm
 
 
-def surveyinfo_category(request, id):
-    category = SurveyInfo.objects.filter(Category_Name)
-    return JsonResponse({'category': 'category'})
+# def surveyinfo_category(request, id):
+#     category = SurveyInfo.objects.filter(Category_Name)
+#     return JsonResponse({'category': 'category'})
 
 
 class liveSurveyCreate(CreateView):
@@ -611,7 +620,7 @@ class liveSurveyCreate(CreateView):
             #     print(qn.errors)
             #     print('qn is invalid')
 
-        if 'teachers' in request.path:
+        if 'teachers' in self.request.path:
             return redirect('liveSurveyDetail', self.object.id)
         else:
             return redirect('liveSurveyDetail', self.object.id)

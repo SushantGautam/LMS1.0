@@ -27,7 +27,12 @@
         </div>
     </div>
 </div>
-<form id="categoryForm" action="{% url 'surveyinfo_retake_ajax' pk=parent_pk %}" method="post">
+<form id="categoryForm" action="
+{% if 'teachers' in request.path %}
+    {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}
+{% else %}
+    {% url 'surveyinfo_retake_ajax' pk=parent_pk %}
+{% endif %}" method="post">
     {% csrf_token %}
     <div role="form">
         <div class="row setup-content" id="step-1">
