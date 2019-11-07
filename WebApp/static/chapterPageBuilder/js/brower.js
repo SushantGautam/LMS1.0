@@ -51,27 +51,32 @@ $("#SaveBtn").on("click",function(e){
     $.each( obj, function( i, value ) {
       if(value.classList.contains('textdiv')){
         var clone = $(this).find('.note-editable').clone();
-        console.log(clone)
-        // clone.find('div').remove();
         var content_html = clone.html();
-        console.log(content_html)
+        let div = $(this).clone();
+        $(div[0]).find('*').not('.note-editable').remove().html()
+        $(div[0]).append(content_html)
+        console.log(div[0].outerHTML)
         textdiv.push(
           {
             'tops': $(this).css("top"),
             'left': $(this).css("left"),
             'width': $(this).css("width"),
             'height': $(this).css("height"),
-            'content': content_html
+            'content': div[0].outerHTML,
           }
         );
       }
       if(value.classList.contains('pic')){
+        let div = $(this).clone();
+        $(div[0]).find('*').not('img').remove().html()
+        
         picdiv.push(
           {
             'tops': $(this).css("top"),
             'left': $(this).css("left"),
             'width': $(this).css("width"),
             'height': $(this).css("height"),
+            'div': div[0].outerHTML,
             'background-image': $(this).find("img").attr('src')
           }
         );

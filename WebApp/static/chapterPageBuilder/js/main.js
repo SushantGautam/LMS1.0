@@ -32,13 +32,13 @@ $(document).ready(function() {
         },
      });
     class Textbox {
-        constructor(top=0, left=0, height=null ,width = null, message="Type Something Here...") {
+        constructor(collg = null, colmd = null, colsm = null, colxs = null, height = null, width = null, message="Type Something Here...") {
             let id = (new Date).getTime();
             let position = {
-                top, left, height, width
+                height, width
             };
-            let html = `<div class='textdiv' >
-                     
+            let html = `
+                <div class='textdiv col-lg-${collg} col-md-${colmd} col-sm-${colsm} col-xs-${colxs}'>
                      <div id="editor${id}" class="messageText"></div>
                      <div id="text-actions" class = "text-actions">
                          <i class="fas fa-trash" id=${id}></i>
@@ -49,9 +49,8 @@ $(document).ready(function() {
             this.renderDiagram = function() {
                 // dom includes the html,css code with draggable property
                 let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
+                    // "position": "absolute",
+                    
                     "height": position.height,
                     "width": position.width,
                     "border": "2px dashed #000 !important"
@@ -82,9 +81,9 @@ $(document).ready(function() {
     // ===========================FOR PICTURE=====================================
 
     class picture {
-        constructor(top, left, pic=null, width=null, height=null) {
+        constructor(collg = null, colmd = null, colsm = null, colxs = null, height = null, width = null, pic = null) {
             let id = (new Date).getTime();
-            let position = { top, left, width, height };
+            let position = {width, height };
             let message = "";
             if(pic == null){
                 message = "Drag and drop images here..."
@@ -93,7 +92,7 @@ $(document).ready(function() {
             if(pic != null)
                 img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: contain;"></img>`
             let html =
-            `<div class='pic'>
+            `<div class='pic' col-lg-${collg} col-md-${colmd} col-sm-${colsm} col-xs-${colxs}>
                 <div id="pic-actions">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
@@ -115,9 +114,9 @@ $(document).ready(function() {
             // dom includes the html,css code with draggable property
                 
             let dom = $(html).css({
-                "position": "absolute",
-                "top": position.top,
-                "left": position.left,
+                // "position": "absolute",
+                // "top": position.top,
+                // "left": position.left,
                 "width": position.width,
                 "height": position.height
             }).draggable({
@@ -401,6 +400,15 @@ $(document).ready(function() {
             };
         }
     }
+    
+    class Layout1{
+        constructor(){
+            let id = (new Date).getTime();
+            let position = { top, left, width, height };
+            
+            var html = ""
+        }
+    }
 // ====================== End of initializing elements ========================
     
     // title click function
@@ -439,8 +447,8 @@ $(document).ready(function() {
         }
     });
 
-    function TextboxFunction(top=null, left=null, height="20%", width="30%", message="Type Something Here..."){
-        const textBox = new Textbox(top, left, height, width, message);
+    function TextboxFunction(collg = null, colmd = null, colsm = null, colxs = null, message="Type Something Here...", height = null, width = null){
+        const textBox = new Textbox(collg, colmd, colsm, colxs, message);
         
         textBox.renderDiagram();
     
@@ -496,12 +504,15 @@ $(document).ready(function() {
           });
     }
 
-    function PictureFunction(top=null, left=null, pic = null, width=null, height=null){
+    function PictureFunction(collg = null, colmd = null, colsm = null, colxs = null, height = null, width = null, pic=null){
         const Pic = new picture(
-            top,
-            left,
-            pic,
-            width,height);
+            collg,
+            colmd,
+            colsm,
+            colxs,
+            height,
+            width,
+            pic);
         Pic.renderDiagram();
     
         $('.fa-upload').click(function(e) {
@@ -519,7 +530,6 @@ $(document).ready(function() {
             var div = $('#' + e.currentTarget.id).parent().parent();
             // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
             var prevlink = $(this).parent().parent().find('img').attr('src')
-            console.log(prevlink)
             if(prevlink == undefined){
                 prevlink = "";
             }
@@ -639,17 +649,17 @@ $(document).ready(function() {
                         success: function(data) {
                             div.find('#loadingDiv').remove();
                             div.find('p').text("");
-                            // div.css({
+                            div.css({
                             //   'background-image': 'url('+load_file_url+'/'+data.media_name+')',
                             //   'background-repeat': 'no-repeat',
                             //   'background-size': 'contain',
                             //   'background-position': 'center',
                             //   'border': '0'
-                            // });
-                            
-                            PictureFunction(div.css('top'),
-                            div.css('left'),load_file_url+'/'+data.media_name,div.css('width'),div.css('height'));
-                            div.remove()
+                            });
+                            div.find('img').prop('src', load_file_url+'/'+data.media_name)
+                            // PictureFunction(div.css('top'),
+                            // div.css('left'),load_file_url+'/'+data.media_name,div.css('width'),div.css('height'));
+                            // div.remove()
                         },
                         error: function(data, status, errorThrown) {
                             alert(data.responseJSON.message);
@@ -1371,17 +1381,27 @@ $(document).ready(function() {
                 ui.helper.position().left - sidebarWidth);
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
-                top = 0,
-                left = 0,
+                collg = 12,
+                colmd = 12,
+                colsm = 12,
+                colxs =12,
+                // top = 0,
+                // left = 0,
+                height="50%",
+                width = "100%",
                 "",
-                width = "100%", height="50%");
+            );
             
             
             // ===============for textbox inside grid-1============
             TextboxFunction(
-                top="50%",
-                left=0,
-                height="45%", width='100% '
+                collg = 12, 
+                colmd = 12,
+                colsm = 12,
+                colxs =12,
+                // top="50%",
+                // left=0,
+                height="45%", width='100%'
             );
         } else if (ui.helper.hasClass('grid')) {
             VideoFunction(

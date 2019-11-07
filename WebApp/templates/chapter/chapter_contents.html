@@ -22,7 +22,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12">
+            <!-- <div class="col-md-12"> -->
                 <!-- <div class="col-md-1"> -->
                     <div class="button-position" style="position: relative">
                         <div class="prev-btn"
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                 <!-- </div> -->
-            </div>
+            <!-- </div> -->
         </div>
 
         <!-- For Footer -->
@@ -134,115 +134,125 @@
     console.log($('#container').height(), $('#container').width())
     console.log(data.canvasheight, data.canvaswidth)
 
-    scaleY = $('#container').height()/parseFloat(data.canvasheight);
-    scaleX = $('#container').width()/parseFloat(data.canvaswidth);
-    console.log('scaleY: ' +scaleY +' ,scaleX: '+scaleX)
+    function scaleScreen(container_height, container_width, canvasheight, canvaswidth){
+        scaleY = container_height/parseFloat(canvasheight);
+        scaleX = container_width/parseFloat(canvaswidth);
+        return {'scaleY':scaleY, 'scaleX':scaleX}
+    }
+    
+    scaleData = scaleScreen($('#container').height(),  $('#container').width(), data.canvasheight, data.canvaswidth)
 
-    $.each(data.pages, function (key, value) {
-        $.each(value, function (count) {
-            // Create modal
-            $('#container').append(`
-            <div id="page${key}" class = 'coursepages' role="dialog" style="display: none;">
+    function loaddata(data, scaleX, scaleY){
+        $.each(data.pages, function (key, value) {
+            $.each(value, function (count) {
+                // Create modal
+                $('#container').append(`
+                <div id="page${key}" class = 'coursepages' role="dialog" style="display: none;">
 
-            </div>`)
-            // -------------------------------
+                </div>`)
+                // -------------------------------
 
-            $.each(value[count], function (div, div_value) {
-                var now = Math.floor(Math.random() * 900000) + 100000;
-                if (div == 'textdiv') {
-                    $.each(div_value, function (css, css_value) {
-                        // css_string = JSON.stringify(css_value)
-                        $('#page' + key).append(`
-                        <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)*scaleY}; width:${parseFloat(css_value.width)*scaleX}">
-                            ${css_value.content}
-                        </div>
-                    `);
-                    });
-                }
-                if (div == 'pic') {
-                    $.each(div_value, function (css, css_value) {
-                        src = css_value['background-image']
-                        // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                        $('#page' + key).append(`
-                        <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)*scaleY}; width:${parseFloat(css_value.width)*scaleX}'>
-                        <img src = ${src} style = "height:${parseFloat(css_value.height)*scaleY}; width:${parseFloat(css_value.width)*scaleX}; object-fit:contain"></img>        
-                        </div>
+                $.each(value[count], function (div, div_value) {
+                    var now = Math.floor(Math.random() * 900000) + 100000;
+                    if (div == 'textdiv') {
+                        $.each(div_value, function (css, css_value) {
+                            // css_string = JSON.stringify(css_value)
+                            // $('#page' + key).append(`
+                            //     <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)*scaleY}; width:${parseFloat(css_value.width)*scaleX}">
+                            //         ${css_value.content}
+                            //     </div>
+                            // `);
+                            $('#page' + key).append(css_value.content);
 
-                    `);
-                    });
-                }
+                        });
+                    }
+                    if (div == 'pic') {
+                        $.each(div_value, function (css, css_value) {
+                            src = css_value['background-image']
+                            console.log(css_value.div)
+                            // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
+                            // $('#page' + key).append(`
+                            //     <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)*scaleY}; width:${parseFloat(css_value.width)*scaleX}'>
+                            //     <img src = ${src} style = "height:${parseFloat(css_value.height)*scaleY}; width:${parseFloat(css_value.width)*scaleX}; object-fit:contain"></img>        
+                            //     </div>
+                            // `);
+                            $('#page' + key).append(css_value.div);
+                        });
+                    }
 
-                if (div == 'btn-div') {
-                    $.each(div_value, function (css, css_value) {
-                        link = "";
-                        if (css_value.hasOwnProperty('link')) {
-                            link = "href = " + css_value.link;
-                        }
-                        $('#page' + key).append(`
-                        <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
-                            <a ${link} target="_blank"><button>${css_value.btn_name}</button</a>
-                        </div>
-                    `)
-                    });
-                }
-
-                if (div == 'pdf') {
-                    $.each(div_value, function (css, css_value) {
-                        $('#page' + key).append(`
-                        <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
-                            <object data="${css_value.link}" type="application/pdf" width="100%" height="100%">
-                                alt : <a href="${css_value.link}">${css_value.link}</a>
-                            </object>
-                        </div>
-                    `)
-                    });
-                }
-                
-                if (div == 'video') {
-                    $.each(div_value, function (css, css_value) {
-                        if (css_value.hasOwnProperty('online_link')) {
-                            var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
-                                <iframe width="100%" height="94%" src="${css_value.online_link}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-                                </div>`
-                            //     <script>
-                            //     var options = {
-                            //         url: "${css_value.link}",
-                            //         width: "${css_value.width}",
-                            //         height: "${css_value.height}"
-                            //     };
-
-                            //     var videoPlayer = new Vimeo.Player('${now}', options);
-                            // `
-                        } else {
-                            var embed = `
+                    if (div == 'btn-div') {
+                        $.each(div_value, function (css, css_value) {
+                            link = "";
+                            if (css_value.hasOwnProperty('link')) {
+                                link = "href = " + css_value.link;
+                            }
+                            $('#page' + key).append(`
                             <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
-                                <video width="100%" height="100%" controls>
-                                    <source src="${css_value.local_link}" type="video/mp4">
-                                    <source src="${css_value.local_link}" type="video/ogg">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <a ${link} target="_blank"><button>${css_value.btn_name}</button</a>
                             </div>
-                            `
-                        }
-                        $('#page' + key).append(embed)
-                    });
-                }
+                        `)
+                        });
+                    }
 
-                if (div == '_3d') {
-                    $.each(div_value, function (css, css_value) {
-                        $('#page' + key).append(`
-                        <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
-                            <iframe src="${css_value.link}" width="100%" height="100%">
-                            </iframe>
-                        </div>
-                    `)
-                    });
-                }
+                    if (div == 'pdf') {
+                        $.each(div_value, function (css, css_value) {
+                            $('#page' + key).append(`
+                            <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
+                                <object data="${css_value.link}" type="application/pdf" width="100%" height="100%">
+                                    alt : <a href="${css_value.link}">${css_value.link}</a>
+                                </object>
+                            </div>
+                        `)
+                        });
+                    }
+                    
+                    if (div == 'video') {
+                        $.each(div_value, function (css, css_value) {
+                            if (css_value.hasOwnProperty('online_link')) {
+                                var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
+                                    <iframe width="100%" height="94%" src="${css_value.online_link}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+                                    </div>`
+                                //     <script>
+                                //     var options = {
+                                //         url: "${css_value.link}",
+                                //         width: "${css_value.width}",
+                                //         height: "${css_value.height}"
+                                //     };
+
+                                //     var videoPlayer = new Vimeo.Player('${now}', options);
+                                // `
+                            } else {
+                                var embed = `
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
+                                    <video width="100%" height="100%" controls>
+                                        <source src="${css_value.local_link}" type="video/mp4">
+                                        <source src="${css_value.local_link}" type="video/ogg">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                `
+                            }
+                            $('#page' + key).append(embed)
+                        });
+                    }
+
+                    if (div == '_3d') {
+                        $.each(div_value, function (css, css_value) {
+                            $('#page' + key).append(`
+                            <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height*scaleY}; width: ${css_value.width*scaleX};">
+                                <iframe src="${css_value.link}" width="100%" height="100%">
+                                </iframe>
+                            </div>
+                        `)
+                        });
+                    }
+                });
             });
         });
-    });
+    }
 
+    loaddata(data, scaleData.scaleX, scaleData.scaleY)
     $('#page1').css('display', 'block');
 
     function toggleFullScreen() {
