@@ -1,13 +1,6 @@
-{#{% extends "base.html" %}#}
+
 {% load static %}
-{#{% block stylesheets %}#}
-<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
-{#{% endblock stylesheets %}#}
-{##}
-{#{% block breadcrumb %}#}
-{#  <li class="breadcrumb-item active" aria-current="page">Survey</li>#}
-{#{% endblock %}#}
-{% block content %}
+
 
     <div class="clearfix">
 
@@ -56,24 +49,26 @@
                             </div>
 
                             <div class="popup" data-popup="popup-1">
-                                <div class="popup-inner ">
+                                <div class="popup-inner">
+                        
                                     <article class="index-form">
                                         <div class="label_inputs">
                                             <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
                                             <div class="row">
                                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                                     <div class="x_panel">
-                                                        <div class="x_content">
-                                                            <br>
-                                                            <div id="surveyForm">
+                                                        <div class="x_content"><br>
 
+                                                            <div id="surveyForm">
                                                             </div>
+
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </article>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -118,4 +113,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
+

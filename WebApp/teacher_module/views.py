@@ -476,7 +476,7 @@ class SurveyInfoListView(ListView):
 class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'teacher_module/teacherSurveyInfo_ajax.html'
+    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1160,7 +1160,7 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
             t = form.save()
             return HttpResponseRedirect(reverse('teacher_thread', kwargs={'pk': t.pk}))
     else:
-        form = ThreadForm()
+        form = ThreadForm(user=request.user)
 
     return render(request, 'teacher_module/teacher_forum/create_thread.html',
                   {'form': form, 'node_group': node_group, 'title': ('Create Thread'), 'topic': topic,

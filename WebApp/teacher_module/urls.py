@@ -96,6 +96,8 @@ urlpatterns += (
          name='teacherliveSurveyCreate'),
     path('liveSurveyDetail/detail/<int:pk>/',
          survey_views.LiveSurveyDetail.as_view(), name='teacherliveSurveyDetail'),
+    path('surveyinforetake_ajax/<int:pk>/', survey_views.SurveyInfoRetake_ajax.as_view(),
+         name='teacher_surveyinfo_retake_ajax'),
 )
 
 urlpatterns += (

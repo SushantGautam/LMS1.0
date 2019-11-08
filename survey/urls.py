@@ -44,8 +44,8 @@ urlpatterns += (
     # path('surveyinfo/detail', views.get_survey_info,
     #     name='get_survey_info'),
 
-    path('surveyinfo/<int:category>/', views.surveyinfo_category,
-         name='surveyinfo_category'),
+#     path('surveyinfo/<int:category>/', views.surveyinfo_category,
+#          name='surveyinfo_category'),
     path('surveyinfo_ajax/', views.SurveyInfo_ajax.as_view(),
          name='surveyinfo_ajax'),
     # path('liveProgressResult/', views.liveProgressResult.as_view(),
