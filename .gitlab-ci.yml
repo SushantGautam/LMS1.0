@@ -7,6 +7,8 @@ test:
    
   before_script:
   - "pip install -r requirements.txt"
+  - "virtualenv venv"
+  - ". venv/bin/activate"
   - "pip install codacy-coverage"
   - "export CODACY_PROJECT_TOKEN=39b902b77813413692bc60f88399e7df"
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
