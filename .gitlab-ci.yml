@@ -1,19 +1,10 @@
-before_script:
-  - apt-get update -qq
-  - apt-get install -qq git
-  # Setup SSH deploy keys
-  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-  - eval $(ssh-agent -s)
-  - echo "$SSH_PRIVATE_KEY"
-  - ssh-add <(echo "$SSH_PRIVATE_KEY")
-  - mkdir -p ~/.ssh
-  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    
-    
-variables:
-   CC_TEST_REPORTER_ID : "1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
 test:
   type: test
+  
+  variables:
+   CC_TEST_REPORTER_ID : "1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
+   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+   
   before_script:
    - "pip install -r requirements.txt"
    - "pip install codacy-coverage"
@@ -22,7 +13,10 @@ test:
    - chmod +x ./cc-test-reporter
    - ./cc-test-reporter before-build
    
-  cache: ~
+  cache:
+      paths:
+        - .cache/pip
+        - venv/
   coverage: /^TOTAL.*\s+(\d+\%)$/
   image: "python:3.6"
   script:
@@ -46,6 +40,17 @@ production:
   # only:
   #   - master
   type: deploy
+  before_script:
+  - apt-get update -qq
+  - apt-get install -qq git
+  # Setup SSH deploy keys
+  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY"
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
   script:
     # - ssh ssh nsdev@210.127.211.100 -p 1022 "cd var/www/ && git checkout master && git pull origin master && exit"
     - ssh nsdev@210.127.211.100 -p 1022 "echo cd"
