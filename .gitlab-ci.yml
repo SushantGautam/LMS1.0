@@ -50,7 +50,7 @@ production:
   - ssh-keyscan -p 1022 210.127.211.100
   - mkdir -p ~/.ssh
   - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-  - ssh nsdev@210.127.211.100 -p 1022 "echo cd"
+  - ssh ubl@210.127.211.100 -p 1022 "echo cd"
 
   script:
     # - ssh ssh nsdev@210.127.211.100 -p 1022 "cd var/www/ && git checkout master && git pull origin master && exit"
