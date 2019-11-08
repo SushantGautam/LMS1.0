@@ -63,7 +63,7 @@
                         </label><br>
                         <div class="form-group" style="display: inline; float: left;">
                             <div id="div_id_Is_Student" class="checkbox">
-                                <input type="radio" name="member_type" id="id_Is_Student" value = "Is_Teacher" class="checkboxinput" checked>
+                                <input type="radio" name="member_type" id="id_Is_Student" value = "Is_Student" class="checkboxinput" checked>
                                 <label for="id_Is_Student">Student</label>
                             </div>
                         </div>
@@ -145,8 +145,9 @@
                         if(data.is_taken == true){
                             $('#username-error-message').text(data.error_message);
                             $('#id_username').focus();
-                        }
-                        else if(pw1.includes(username) && username != "" && pw1.length < 16){
+                        }else if(data.is_taken != true){
+                            $('#username-error-message').text('');
+                        }else if(pw1.includes(username) && username != "" && pw1.length < 16){
                             $("#password-error-message").text("Username and Password are similar.");
                             $('#id_password1').focus();
                             $('#username-error-message').text('');

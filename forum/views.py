@@ -82,7 +82,7 @@ class Index(LoginRequiredMixin, ListView):
             if thread_counter == 0:
                 nodegroups = nodegroups.exclude(pk = ng.pk)
             else:
-                thread = Thread.objects.visible().filter(topic_id__in=topics).order_by('-pub_date')[:4]
+                thread = Thread.objects.filter(topic_id__in=topics).order_by('-pub_date')[:4]
                 threads += thread
 
         context['nodegroups'] = nodegroups

@@ -300,6 +300,7 @@ class register(CreateView):
             password = self.request.POST.get('password1')
 
             member_type = self.request.POST.get('member_type')
+            print(self.request.POST.get('member_type'))
             if member_type == "Is_Teacher":
                 self.object.Is_Teacher = True
             elif member_type == "Is_Student":
