@@ -54,7 +54,7 @@ production:
 
   script:
     # - ssh ssh nsdev@210.127.211.100 -p 1022 "cd var/www/ && git checkout master && git pull origin master && exit"
-    - ssh nsdev@210.127.211.100 -p 1022 "echo cd"
+    - ssh ubl@210.127.211.100 -p 1022 "echo cd"
   only:
     - master
 
