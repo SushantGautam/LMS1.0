@@ -1126,13 +1126,13 @@ class Index(LoginRequiredMixin, ListView):
 
         for ng in nodegroups:
             thread_counter = 0
-            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code)
+            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code) | Topic.objects.filter(node_group=ng.pk, center_associated_with__isnull= True)
             for topic in topics:
                 thread_counter += topic.threads_count
             if thread_counter == 0:
                 nodegroups = nodegroups.exclude(pk = ng.pk)
             else:
-                thread = Thread.objects.visible().filter(topic_id__in=topics).order_by('-pub_date')[:4]
+                thread = Thread.objects.filter(topic_id__in=topics).order_by('-pub_date')[:4]
                 threads += thread
 
         context['nodegroups'] = nodegroups
