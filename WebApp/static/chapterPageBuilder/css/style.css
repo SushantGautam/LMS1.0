@@ -1134,3 +1134,24 @@ span.btnlink input {
   position: absolute;
   width: 100%;
 }
+
+.ham1, .ham2, .ham3{
+  height: 2px;
+  width: 100%;
+  background-color: #2a3f54;
+} 
+
+.ham1, .ham2{
+  margin-bottom: 3px;
+}
+
+.hamburger-content{
+  background-color: white;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 20px;
+  width: 30px;
+  padding: 4px;
+  border-radius: 5px;
+}
