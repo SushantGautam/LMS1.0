@@ -1,3 +1,14 @@
+before_script:
+  - apt-get update -qq
+  - apt-get install -qq git
+  # Setup SSH deploy keys
+  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    
+    
 variables:
    CC_TEST_REPORTER_ID : "1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
 test:
@@ -25,12 +36,18 @@ test:
    
 
 production:
+  # type: deploy
+  # script:
+  #   - apt-get update -qy
+  #   - apt-get install -y ruby-dev
+  #   - gem install dpl
+  #   - dpl --provider=heroku --app=lms-nsdev --api-key=a201737c-1888-4a15-b5b6-f79c53978c85
+  # only:
+  #   - master
   type: deploy
   script:
-    - apt-get update -qy
-    - apt-get install -y ruby-dev
-    - gem install dpl
-    - dpl --provider=heroku --app=lms-nsdev --api-key=a201737c-1888-4a15-b5b6-f79c53978c85
+    # - ssh root@example.com "cd var/www/ && git checkout master && git pull origin master && exit"
+    - echo cd
   only:
     - master
 
