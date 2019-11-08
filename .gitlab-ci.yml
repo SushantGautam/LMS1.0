@@ -5,12 +5,11 @@ test:
       CC_TEST_REPORTER_ID : "1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
       PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
    
-  before_script:
-  - "pip install virtualenv"
+  before_script: 
+  - "pip install virtualenv codacy-coverage"
   - "virtualenv .venv"
   - ". .venv/bin/activate"
   - "pip install -r requirements.txt"
-  - "pip install codacy-coverage"
   - "export CODACY_PROJECT_TOKEN=39b902b77813413692bc60f88399e7df"
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
@@ -25,8 +24,8 @@ test:
   script:
   - "echo \"Running unit tests…\""
   - "python manage.py migrate --noinput"
-  - "coverage run --source='.' manage.py test"
-  - "coverage report"
+#   - "coverage run --source='.' manage.py test"
+#   - "coverage report"
   - "coverage xml"
   - "python-codacy-coverage -r coverage.xml"
   after_script:
