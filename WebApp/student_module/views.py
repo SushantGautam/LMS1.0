@@ -461,17 +461,24 @@ class Index(ListView):
         nodegroups = NodeGroup.objects.all()
         threads = []
 
+        # innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.request.user.pk))
+        # own_courses_forum_topics = Topic.objects.none()
         for ng in nodegroups:
             thread_counter = 0
-            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code).filter(id__in=Topic_related_to_user(self.request))
-            for topic in topics:
-                thread_counter += topic.threads_count
-            if thread_counter == 0:
-                nodegroups = nodegroups.exclude(pk = ng.pk)
-            else:
-                thread = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
-                    topic_id__in=Topic_related_to_user(self.request))[:4]
+            # general_topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code, course_associated_with__isnull=True) | Topic.objects.filter(node_group=ng.pk, center_associated_with__isnull= True, course_associated_with__isnull=True)
+            # if innings:
+            #     courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+            #     own_courses_forum_topics = Topic.objects.filter(node_group=ng.pk, course_associated_with__in=courses)
+            # topics = general_topics | own_courses_forum_topics
 
+            topics = Topic_related_to_user(self.request, node_group = ng)
+            for topic in topics:
+                thread_counter += topic.visible_threads_count
+            if thread_counter == 0:
+                 nodegroups = nodegroups.exclude(pk = ng.pk)
+            else:
+                    
+                thread = Thread.objects.visible().filter(topic_id__in=topics).order_by('pub_date')[:4]
                 threads += thread
 
         context['nodegroups'] = nodegroups
@@ -789,24 +796,29 @@ def CourseForum(request, course):
 
 
 
-def Topic_related_to_user(request):
-    innings = InningInfo.objects.filter(
-        Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
-    own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
-        course_associated_with__isnull=True)
-    # print(other_center_topic,'other_center_topic')
-    assigned_topics = ''
-    if innings:
-        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
-        own_courses_forum_topics = Topic.objects.filter(course_associated_with__in=courses)
-        assigned_topics = own_courses_forum_topics | own_center_general_topic
+def Topic_related_to_user(request, node_group=None):
+    innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
+    if node_group == None:
+        own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code,
+        
+            course_associated_with__isnull=True)
+        assigned_topics = ''
+        if innings:
+            courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+            own_courses_forum_topics = Topic.objects.filter(course_associated_with__in=courses)
+            assigned_topics = own_courses_forum_topics | own_center_general_topic
+        else:
+            assigned_topics = own_center_general_topic
     else:
-        assigned_topics = own_center_general_topic
-
-    # print("assigned_topics", assigned_topics)
+        own_center_general_topic = Topic.objects.filter(node_group=node_group.pk, center_associated_with= request.user.Center_Code, course_associated_with__isnull=True) | Topic.objects.filter(node_group=node_group.pk, center_associated_with__isnull= True, course_associated_with__isnull=True)
+        if innings:
+            courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+            own_courses_forum_topics = Topic.objects.filter(node_group=node_group.pk, course_associated_with__in=courses)
+            assigned_topics = own_courses_forum_topics | own_center_general_topic
+        else:
+            assigned_topics = own_center_general_topic
     return assigned_topics
 
 
 def Thread_related_to_user(request):
-    # print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
