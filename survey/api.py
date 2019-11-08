@@ -1,6 +1,9 @@
+from rest_framework import viewsets, permissions
+from rest_framework.viewsets import ReadOnlyModelViewSet
+
+from survey.filters import SurveyFilter
 from . import models
 from . import serializers
-from rest_framework import viewsets, permissions
 
 
 class CategoryInfoViewSet(viewsets.ModelViewSet):
@@ -11,9 +14,9 @@ class CategoryInfoViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class SurveyInfoViewSet(viewsets.ModelViewSet):
+class SurveyInfoViewSet(ReadOnlyModelViewSet):
     """ViewSet for the SurveyInfo class"""
-
+    filter_class = SurveyFilter
     queryset = models.SurveyInfo.objects.all()
     serializer_class = serializers.SurveyInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -49,5 +52,3 @@ class AnswerInfoViewSet(viewsets.ModelViewSet):
     queryset = models.AnswerInfo.objects.all()
     serializer_class = serializers.AnswerInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-
