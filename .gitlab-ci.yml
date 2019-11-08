@@ -2,8 +2,8 @@ test:
   type: test
   
   variables:
-  CC_TEST_REPORTER_ID : "1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+      CC_TEST_REPORTER_ID : "1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
+      PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
    
   before_script:
   - "pip install -r requirements.txt"
