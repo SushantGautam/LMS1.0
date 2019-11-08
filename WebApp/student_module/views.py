@@ -1,16 +1,10 @@
-import uuid
 from datetime import datetime
 
 from django.contrib import messages
-from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.storage import FileSystemStorage
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
@@ -21,22 +15,29 @@ from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import FormView
 
-from LMS import settings
-from WebApp.filters import MyCourseFilter
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
+from django.views.generic.edit import FormView
+from forum.models import NodeGroup, Thread, Topic, Post, Notification
+from forum.views import get_top_thread_keywords
+from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
-from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
-from forum.models import NodeGroup, Thread, Topic, Post, Notification
-from forum.views import get_top_thread_keywords
 from quiz.models import Question, Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
+from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.contrib.auth import get_user_model
 from .misc import get_query
+from LMS import settings
+import uuid
+from django.core.files.storage import FileSystemStorage
+from WebApp.filters import MyCourseFilter
+from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist
 
 datetime_now = datetime.now()
+
 
 User = get_user_model()
 
@@ -61,8 +62,7 @@ def start(request):
                     Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id)[:7]
 
         return render(request, 'student_module/dashboard.html',
-                      {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                       'activeAssignments': activeassignments})
+                      {'GroupName': batches, 'Group': sessions, 'Course': courses, 'activeAssignments': activeassignments})
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -131,8 +131,7 @@ class MyCoursesListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        batches = GroupMapping.objects.filter(Students__id=self.request.user.id,
-                                              Center_Code=self.request.user.Center_Code)
+        batches = GroupMapping.objects.filter(Students__id=self.request.user.id, Center_Code=self.request.user.Center_Code)
         sessions = []
         if batches:
             for batch in batches:
@@ -311,18 +310,19 @@ class submitAnswer(View):
         Obj.Question_Code = AssignmentQuestionInfo.objects.get(
             pk=request.POST["Question_Code"])
         Assignment_Code = Obj.Question_Code.Assignment_Code
-        if bool(request.FILES.get('Assignment_File', False)) == True:
+        if bool(request.FILES.get('Assignment_File',False)) == True:
             media = request.FILES['Assignment_File']
             # print(media)
             if media.size / 1024 > 2048:
-                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
-            path = settings.MEDIA_ROOT
+                return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
+            path = settings.MEDIA_ROOT  
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
             filename = fs.save(name, media)
-            Obj.Question_Media_File = 'assignments/' + str(Assignment_Code.id) + name
+            Obj.Question_Media_File = 'assignments/' + str(Assignment_Code.id) + name    
             Obj.Assignment_File = media
         Obj.save()
+
 
         return JsonResponse(
             data={'Message': 'Success'}
@@ -402,6 +402,7 @@ class ParticipateSurvey(View):
         submitSurvey.save()
 
         for question in QuestionInfo.objects.filter(Survey_Code=surveyId):
+
             optionId = request.POST[str(question.id)]
             answerObject = AnswerInfo()
             answerObject.Answer_Value = optionId
@@ -437,7 +438,6 @@ class surveyFilterCategory_student(ListView):
 
         return context
 
-
 # <===============================Forum==================================================>
 class Index(ListView):
     model = Thread
@@ -463,13 +463,11 @@ class Index(ListView):
 
         for ng in nodegroups:
             thread_counter = 0
-            topics = Topic.objects.filter(node_group=ng.pk,
-                                          center_associated_with=self.request.user.Center_Code).filter(
-                id__in=Topic_related_to_user(self.request))
+            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code).filter(id__in=Topic_related_to_user(self.request))
             for topic in topics:
                 thread_counter += topic.threads_count
             if thread_counter == 0:
-                nodegroups = nodegroups.exclude(pk=ng.pk)
+                nodegroups = nodegroups.exclude(pk = ng.pk)
             else:
                 thread = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
                     topic_id__in=Topic_related_to_user(self.request))[:4]
@@ -484,7 +482,6 @@ class Index(ListView):
         context['show_order'] = True
         context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
         return context
-
 
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
     topic = None
@@ -557,10 +554,9 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
         context['title'] = context['panel_title'] = (
-                                                        'Search: ') + self.kwargs.get('keyword')
+            'Search: ') + self.kwargs.get('keyword')
         context['show_order'] = True
         return context
-
 
 def search_redirect(request):
     if request.method == 'GET':
@@ -595,7 +591,7 @@ class NodeGroupView(ListView):
                 thread = Thread.objects.visible().filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
-
+              
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
@@ -707,7 +703,6 @@ class UserPosts(ListView):
         context['panel_title'] = context['title'] = context['user'].username
         return context
 
-
 class UserThreads(ListView):
     model = Post
     paginate_by = 15
@@ -728,6 +723,8 @@ class UserThreads(ListView):
         context['user'] = User.objects.get(pk=self.kwargs.get('pk'))
         context['panel_title'] = context['title'] = context['user'].username
         return context
+
+
 
 
 class NotificationView(ListView):
@@ -751,7 +748,6 @@ class NotificationView(ListView):
         context['title'] = ("Notifications")
         return context
 
-
 @login_required
 def edit_thread(request, pk):
     thread = Thread.objects.get(pk=pk)
@@ -767,14 +763,12 @@ def edit_thread(request, pk):
     else:
         form = ThreadEditForm(instance=thread)
 
-    return render(request, 'student_module/student_forum/edit_thread.html',
-                  {'form': form, 'object': thread, 'title': ('Edit thread')})
+    return render(request, 'student_module/student_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
 def CourseForum(request, course):
     def CourseForum(request, course):
         course = CourseInfo.objects.get(pk=course)
-
     course_forum = None
     course_node_forum = None
     try:
@@ -791,6 +785,8 @@ def CourseForum(request, course):
         course_forum = Topic.objects.get(course_associated_with=course)
 
     return redirect('student_topic', pk=course_forum.pk)
+
+
 
 
 def Topic_related_to_user(request):

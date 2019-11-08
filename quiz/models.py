@@ -538,10 +538,8 @@ class Quiz(models.Model):
 
     def has_mcqs(self):
         return (self.mcquestion.count() > 0)
-
     def has_tfqs(self):
         return (self.tfquestion.count() > 0)
-
     def has_saqs(self):
         return (self.saquestion.count() > 0)
 

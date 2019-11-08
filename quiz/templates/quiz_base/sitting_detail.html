@@ -1,59 +1,59 @@
+
 {% load i18n %}
 {% load quiz_tags %}
 
-<h2>{% trans "Quiz title" %}: {{ sitting.quiz.title }}</h2>
-<h3>{% trans "Category" %}: {{ sitting.quiz.category }}</h3>
-<p>{{ sitting.quiz.description }}</p>
-<hr>
-<p>{% trans "User" %}: {{ sitting.user }}</p>
-<p>{% trans "Started" %}: {{ sitting.start|time }}{{ sitting.start|date }}</p>
-<p>{% trans "Completed" %}: {{ sitting.end|time }}{{ sitting.end|date }}</p>
-<p>{% trans "Time taken" %}: {{ sitting.duration|time }}</p>
+    <h2>{% trans "Quiz title" %}: {{ sitting.quiz.title }}</h2>
+    <h3>{% trans "Category" %}: {{ sitting.quiz.category }}</h3>
+    <p>{{ sitting.quiz.description }}</p>
+    <hr>
+    <p>{% trans "User" %}: {{ sitting.user }}</p>
+    <p>{% trans "Started" %}: {{ sitting.start|time }}{{ sitting.start|date }}</p>
+    <p>{% trans "Completed" %}: {{ sitting.end|time }}{{ sitting.end|date }}</p>
+    <p>{% trans "Time taken" %}: {{ sitting.duration|time }}</p>
 
-<p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>
+    <p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>
 
-<table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped">
 
-    <thead>
-    <tr>
-        <th>{% trans "Question" %}</th>
-        <th>{% trans "User answer" %}</th>
-        <th>{% trans "Question Marks" %}</th>
-        <th></th>
-        <th></th>
-    </tr>
-    </thead>
-
-    <tbody>
-    {% for question in questions %}
-
+        <thead>
         <tr>
-            <td>
-                {{ question.content }}
-                {% if question.figure %}
-                    <div class="detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}"
-                                                                                   alt="{{ question.figure }}"/></div>
-                {% endif %}
-            </td>
-            <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
-            <td>
-                {% if question.id in sitting.get_incorrect_questions %}
-                    <p>{% trans "incorrect" %}</p>
-                {% else %}
-                    <p>{% trans "Correct" %}</p>
-                {% endif %}
-            </td>
-            <td>
-                <form action="" method="POST">{% csrf_token %}
-                    <input type=hidden name="qid" value="{{ question.id }}">
-                    <button type="submit" class="btn btn-warning">{% trans "Toggle whether correct" %}</button>
-                </form>
-
-            </td>
+            <th>{% trans "Question" %}</th>
+            <th>{% trans "User answer" %}</th>
+            <th>{% trans "Question Marks" %}</th>
+            <th></th>
+            <th></th>
         </tr>
+        </thead>
 
-    {% endfor %}
+        <tbody>
+        {% for question in questions %}
 
-    </tbody>
+            <tr>
+                <td>
+                    {{ question.content }}
+                    {% if question.figure %}
+                        <div class= "detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
+                    {% endif %}
+                </td>
+                <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
+                <td>
+                    {% if question.id in sitting.get_incorrect_questions %}
+                        <p>{% trans "incorrect" %}</p>
+                    {% else %}
+                        <p>{% trans "Correct" %}</p>
+                    {% endif %}
+                </td>
+                <td>
+                    <form action="" method="POST">{% csrf_token %}
+                        <input type=hidden name="qid" value="{{ question.id }}">
+                        <button type="submit" class="btn btn-warning">{% trans "Toggle whether correct" %}</button>
+                    </form>
 
-</table>
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>

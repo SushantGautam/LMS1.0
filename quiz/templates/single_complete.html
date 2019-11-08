@@ -9,10 +9,10 @@
 {% block content %}
 
 
-    {% if user.is_authenticated %}
-        <p>{% trans "You have already sat this exam and only one sitting is permitted" %}.</p>
-    {% else %}
-        <p>{% trans "This exam is only accessible to signed in users" %}.</p>
-    {% endif %}
+{% if user.is_authenticated %}
+  <p>{% trans "You have already sat this exam and only one sitting is permitted" %}.</p>
+{% else %}
+  <p>{% trans "This exam is only accessible to signed in users" %}.</p>
+{% endif %}
 
 {% endblock %}

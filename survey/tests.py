@@ -204,3 +204,6 @@
 #         url = reverse('optioninfo_update', args=[optioninfo.pk,])
 #         response = self.client.post(url, data)
 #         self.assertEqual(response.status_code, 302)
+
+
+

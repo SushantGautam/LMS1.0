@@ -6,8 +6,7 @@
 <!-- <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/> -->
 <!-- <link href="{% static '/build/css/custom.css' %}" rel="stylesheet"> -->
 {{ form.media }}
-<form method="post" id="quiz_form_post"
-      action="{% url 'quiz_create_from_chapter' chapter_pk=chapter_pk test_type=test_type %}">{% csrf_token %}
-    {{ form|crispy }}
-    <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
+<form method="post" id="quiz_form_post" action="{% url 'quiz_create_from_chapter' chapter_pk=chapter_pk test_type=test_type %}">{% csrf_token %}
+  {{ form|crispy }}
+  <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
 </form>

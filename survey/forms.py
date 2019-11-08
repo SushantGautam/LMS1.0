@@ -1,7 +1,7 @@
 from django import forms
 
-from WebApp.models import CourseInfo, InningInfo
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
+from WebApp.models import CourseInfo, InningInfo
 
 
 class CategoryInfoForm(forms.ModelForm):
@@ -21,12 +21,12 @@ class SurveyInfoForm(forms.ModelForm):
 
     # To filter out only active session and course of the center
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request = kwargs.pop("request",None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
         self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
-                                                                         Center_Code=self.request.user.Center_Code)
+                                                                          Center_Code=self.request.user.Center_Code)
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
-                                                                        Use_Flag=True)
+                                                                         Use_Flag=True)
     #     Id = kwargs["categoryId"]
     #     if Id == 'live':
     #         self.fields['End_Date'].widget = widgets.AdminTimeWidget()
@@ -42,15 +42,15 @@ class LiveSurveyInfoForm(forms.ModelForm):
         model = SurveyInfo
         fields = ['Survey_Title', 'Category_Code',
                   'Session_Code', 'Course_Code']
-
+        
     # To filter out only active session and course of the center
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request = kwargs.pop("request",None)
         super(LiveSurveyInfoForm, self).__init__(*args, **kwargs)
         self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
-                                                                         Center_Code=self.request.user.Center_Code)
+                                                                          Center_Code=self.request.user.Center_Code)
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
-                                                                        Use_Flag=True)
+                                                                         Use_Flag=True)
 
 
 class QuestionInfoForm(forms.ModelForm):
@@ -76,8 +76,7 @@ class AnswerInfoForm(forms.ModelForm):
         model = AnswerInfo
         fields = '__all__'
 
-
-# fields=('Question_Name', 'Question_Type', 'Survey_Code'))
+#fields=('Question_Name', 'Question_Type', 'Survey_Code'))
 
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
@@ -96,21 +95,19 @@ AnswerInfoFormset = inlineformset_factory(
     extra=1,
 )
 
-
 class BaseQuestionInfoFormset(BaseInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
 
         # save the formset in the 'nested' property
         form.nested = OptionInfoFormset(
-            instance=form.instance,
-            data=form.data if form.is_bound else None,
-            files=form.files if form.is_bound else None,
-            prefix='optioninfo-%s-%s' % (
-                form.prefix,
-                OptionInfoFormset.get_default_prefix()),
-        )
-
+                        instance=form.instance,
+                        data=form.data if form.is_bound else None,
+                        files=form.files if form.is_bound else None,
+                        prefix='optioninfo-%s-%s' % (
+                            form.prefix,
+                            OptionInfoFormset.get_default_prefix()),
+                        )
     def is_valid(self):
         result = super().is_valid()
 
@@ -120,7 +117,7 @@ class BaseQuestionInfoFormset(BaseInlineFormSet):
                     result = result and form.nested.is_valid()
 
         return result
-
+    
     def save(self, commit=True):
 
         result = super().save(commit=commit)
@@ -131,7 +128,6 @@ class BaseQuestionInfoFormset(BaseInlineFormSet):
                     form.nested.save(commit=commit)
 
         return result
-
 
 class BaseQuestionAnsInfoFormset(BaseInlineFormSet):
     def add_fields(self, form, index):
@@ -139,14 +135,13 @@ class BaseQuestionAnsInfoFormset(BaseInlineFormSet):
 
         # save the formset in the 'nested' property
         form.nested = AnswerInfoFormset(
-            instance=form.instance,
-            data=form.data if form.is_bound else None,
-            files=form.files if form.is_bound else None,
-            prefix='answerinfo-%s-%s' % (
-                form.prefix,
-                OptionInfoFormset.get_default_prefix()),
-        )
-
+                        instance=form.instance,
+                        data=form.data if form.is_bound else None,
+                        files=form.files if form.is_bound else None,
+                        prefix='answerinfo-%s-%s' % (
+                            form.prefix,
+                            OptionInfoFormset.get_default_prefix()),
+                        )
     def is_valid(self):
         result = super().is_valid()
 
@@ -156,7 +151,7 @@ class BaseQuestionAnsInfoFormset(BaseInlineFormSet):
                     result = result and form.nested.is_valid()
 
         return result
-
+    
     def save(self, commit=True):
 
         result = super().save(commit=commit)
@@ -167,12 +162,12 @@ class BaseQuestionAnsInfoFormset(BaseInlineFormSet):
                     form.nested.save(commit=commit)
 
         return result
-
+    
 
 QuestionInfoFormset = inlineformset_factory(
     SurveyInfo,
-    QuestionInfo,
-    formset=BaseQuestionInfoFormset,
+    QuestionInfo, 
+    formset = BaseQuestionInfoFormset,
     fields=('Question_Name', 'Question_Type'),
     extra=1,
     can_delete=False,
@@ -180,8 +175,8 @@ QuestionInfoFormset = inlineformset_factory(
 
 QuestionAnsInfoFormset = inlineformset_factory(
     SurveyInfo,
-    QuestionInfo,
-    form=QuestionInfoForm,
+    QuestionInfo, 
+    form = QuestionInfoForm,
     fields=('Question_Name', 'Question_Type'),
     extra=1,
     can_delete=False,

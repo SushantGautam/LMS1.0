@@ -1,5 +1,3 @@
-import datetime
-
 from crispy_forms.bootstrap import Accordion, AccordionGroup, FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, HTML, Submit
@@ -7,6 +5,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import SelectDateWidget
+import datetime
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
@@ -16,19 +15,18 @@ class UserRegisterForm(UserCreationForm):
     # Member_Role = forms.MultipleChoiceField(choices=USER_ROLES, widget=forms.CheckboxSelectMultiple())
 
     class Meta(UserCreationForm.Meta):
-        Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1955, datetime.date.today().year - 10)))
+        Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1955, datetime.date.today().year-10)))
         model = MemberInfo
         fields = ('username', 'email', 'Member_Gender', 'Center_Code', 'Is_Student', 'Is_Teacher', 'Use_Flag')
 
 
 class UserUpdateForm(forms.ModelForm):
     # role = forms.MultipleChoiceField(choices=USER_ROLES, )
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year + 10)))
-
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
     class Meta:
         model = MemberInfo
         fields = (
-            'email', 'Member_Permanent_Address',
+              'email', 'Member_Permanent_Address',
             'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',)
 
 
@@ -49,7 +47,7 @@ class CenterInfoForm(forms.ModelForm):
 
 class MemberInfoForm(forms.ModelForm):
     Use_Flag = forms.BooleanField(initial=True, required=False)
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year + 10)))
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
     password = forms.CharField(initial='00000')
     helper = FormHelper()
     helper.layout = Layout(
@@ -103,21 +101,21 @@ class MemberInfoForm(forms.ModelForm):
         ),
         FormActions(
             Submit('submit', 'Create Member', css_class='btn btn-success'),
-            HTML(
-                ''' <button class='btn btn-primary' id="saveandnew" type="submit" formtarget="_blank"> Save and New </button> ''')
+            HTML(''' <button class='btn btn-primary' id="saveandnew" type="submit" formtarget="_blank"> Save and New </button> ''')
             # Button('cancel', 'Cancel')
         )
     )
 
+
     class Meta:
         model = MemberInfo
-        Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year + 10)))
+        Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
         fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
 
 
 class MemberUpdateForm(forms.ModelForm):
     helper = FormHelper()
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year + 10)))
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
     helper.layout = Layout(
 
         Accordion(
@@ -138,9 +136,10 @@ class MemberUpdateForm(forms.ModelForm):
                                Field('email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
+                         
                            Div(
-                               Field('Is_Teacher', 'Is_Student', wrapper_class='col-md-3 col-sm-6 col-xs-12'),
-                           ),
+                               Field('Is_Teacher','Is_Student', wrapper_class='col-md-3 col-sm-6 col-xs-12'),
+                               ),
                            css_class='collapse'),
 
             AccordionGroup('Additional Information',
@@ -166,7 +165,6 @@ class MemberUpdateForm(forms.ModelForm):
             # Button('cancel', 'Cancel')
         )
     )
-
     # helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
 
     class Meta:
@@ -198,7 +196,7 @@ class GroupMappingForm(forms.ModelForm):
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
-        js = ('/static/build/js/jsi18n.js',)
+        js = ('/static/build/js/jsi18n.js',)        
 
     class Meta:
         model = GroupMapping
@@ -218,7 +216,7 @@ class InningGroupForm(forms.ModelForm):
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
-        js = ('/static/build/js/jsi18n.js',)
+        js = ('/static/build/js/jsi18n.js',)        
 
     class Meta:
         model = InningGroup
