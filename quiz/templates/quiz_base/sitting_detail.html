@@ -1,59 +1,81 @@
-
 {% load i18n %}
 {% load quiz_tags %}
 
-    <h2>{% trans "Quiz title" %}: {{ sitting.quiz.title }}</h2>
-    <h3>{% trans "Category" %}: {{ sitting.quiz.category }}</h3>
-    <p>{{ sitting.quiz.description }}</p>
-    <hr>
-    <p>{% trans "User" %}: {{ sitting.user }}</p>
-    <p>{% trans "Started" %}: {{ sitting.start|time }}{{ sitting.start|date }}</p>
-    <p>{% trans "Completed" %}: {{ sitting.end|time }}{{ sitting.end|date }}</p>
-    <p>{% trans "Time taken" %}: {{ sitting.duration|time }}</p>
+<h2>{% trans "Quiz title" %}: {{ sitting.quiz.title }}</h2>
+<h3>{% trans "Category" %}: {{ sitting.quiz.category }}</h3>
+<p>{{ sitting.quiz.description }}</p>
+<hr>
+<p>{% trans "User" %}: {{ sitting.user }}</p>
+<p>{% trans "Started" %}: {{ sitting.start|time }}{{ sitting.start|date }}</p>
+<p>{% trans "Completed" %}: {{ sitting.end|time }}{{ sitting.end|date }}</p>
+<p>{% trans "Time taken" %}: {{ sitting.duration|time }}</p>
 
-    <p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>
+<p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>
+<p>{% trans "Negative Marking" %}: {{ sitting.quiz.negative_marking }}</p>
 
-    <table class="table table-bordered table-striped">
 
-        <thead>
-        <tr>
-            <th>{% trans "Question" %}</th>
-            <th>{% trans "User answer" %}</th>
-            <th>{% trans "Question Marks" %}</th>
-            <th></th>
-            <th></th>
-        </tr>
-        </thead>
+<table class="table table-bordered table-striped">
 
-        <tbody>
-        {% for question in questions %}
+  <thead>
+  <tr>
+    <th>{% trans "Question" %}</th>
+    <th>{% trans "User answer" %}</th>
+    <th>{% trans "Correct" %}</th>
+    <th>{% trans "Full Marks" %}</th>
+    <th>{% trans "Marks Obtained" %}</th>
+    <th>{% trans "Action" %}</th>
+  </tr>
+  </thead>
 
-            <tr>
-                <td>
-                    {{ question.content }}
-                    {% if question.figure %}
-                        <div class= "detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
-                    {% endif %}
-                </td>
-                <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
-                <td>
-                    {% if question.id in sitting.get_incorrect_questions %}
-                        <p>{% trans "incorrect" %}</p>
-                    {% else %}
-                        <p>{% trans "Correct" %}</p>
-                    {% endif %}
-                </td>
-                <td>
-                    <form action="" method="POST">{% csrf_token %}
-                        <input type=hidden name="qid" value="{{ question.id }}">
-                        <button type="submit" class="btn btn-warning">{% trans "Toggle whether correct" %}</button>
-                    </form>
+  <tbody>
+  {% for question in questions %}
 
-                </td>
-            </tr>
+    <tr>
+      <td>
+        {{ question.content }}
+        {% if question.figure %}
+          <div class="detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}"
+                                                                         alt="{{ question.figure }}"/></div>
+        {% endif %}
+      </td>
+{#      <td style="overflow: scroll">{{ question|answer_choice_to_string:question.user_answer }}</td>#}
+      <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
+      <td>
+        {% if question.id in sitting.get_incorrect_questions %}
+          <i class="fa fa-times fa-2x text-danger"></i>
+        {% elif question.is_saq %}
+          ---
+        {% else %}
+          <i class="fa fa-check fa-2x text-success"></i>
+        {% endif %}
+      </td>
+      <td>
+        {{ question.score }}
+      </td>
+      <td>
+        {{ question.score_obtained }}
+      </td>
+      {% if question.is_saq %}
+        <td>
+          <form action="" method="POST">{% csrf_token %}
+            <input type="number" name="new_score" min="0" max="{{ question.score }}" step="0.5">
+            <input type="hidden" name="saq_id" value="{{ question.id }}">
+            <button type="submit" class="btn btn-warning">{% trans "Change Score" %}</button>
+          </form>
+        </td>
+      {% else %}
+        <td>---</td>
+      {% endif %}
+    </tr>
 
-        {% endfor %}
+  {% endfor %}
+  <tr></tr>
+  <tr>
+    <td></td>
+    <td>Total</td>
+    <td>{{ total }}</td>
+    <td>{{ total_score_obtained }}</td>
+  </tr>
+  </tbody>
 
-        </tbody>
-
-    </table>
+</table>

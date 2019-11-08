@@ -231,6 +231,11 @@
 
           <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3" style="width: auto;">
             {{ form.Course_Group }}
+            {# <select name="Course_Group" required data-field-name="Courses" id="id_Course_Group" multiple class="selectfilter" data-is-stacked="0">
+                {% for value, text in form.Course_Group.field.choices %}
+                  <option value="{{ value }}">{{ text }}</option> 
+                {% endfor %}
+            </select> #}
           </div>
           <div class="col-md-12 col-sm-12 col-xs-12">
             <span id="step3Validate" class="text-danger"></span>

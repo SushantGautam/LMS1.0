@@ -108,7 +108,7 @@ class QuizForm(forms.ModelForm):
 class MCQuestionForm(forms.ModelForm):
     class Meta:
         model = MCQuestion
-        fields = ['content', 'answer_order', 'figure', 'explanation', 'course_code', 'cent_code']
+        fields = ['content', 'answer_order', 'figure', 'score', 'explanation', 'course_code', 'cent_code']
 
     # quiz = forms.ModelMultipleChoiceField(
     #     queryset=Quiz.objects.all(),
@@ -192,7 +192,7 @@ class QuizForm2(forms.ModelForm):
         model = Quiz
         fields = ['chapter_code', 'pre_test', 'post_test', 'answers_at_end', 'random_order',
                   'single_attempt', 'draft', 'exam_paper', 'duration',
-                  'pass_mark', 'success_text', 'fail_text']
+                  'pass_mark', 'success_text', 'fail_text', 'negative_marking', 'negative_percentage']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -277,6 +277,11 @@ class QuizForm2(forms.ModelForm):
                 Column('random_order', css_class='form-group col-md-4 mb-0'),
                 Column('single_attempt', css_class='form-group col-md-4 mb-0'),
                 Column('draft', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('negative_marking', css_class='form-group col-md-6 mb-0'),
+                Column('negative_percentage', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(

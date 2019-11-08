@@ -644,20 +644,37 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()
 
-        q_to_toggle = request.POST.get('qid', None)
+        q_to_toggle = request.POST.get('saq_id', None)
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
-            if int(q_to_toggle) in sitting.get_incorrect_questions:
-                sitting.remove_incorrect_question(q)
-            else:
-                sitting.add_incorrect_question(q)
+            indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
+            score_list = [float(s) for s in sitting.score_list.split(',') if s]
+            score_list[indx] = request.POST.get('new_score', 0)
+            sitting.score_list = ','.join(list(map(str, score_list)))
+            sitting.save()
+            # if int(q_to_toggle) in sitting.get_incorrect_questions:
+            #     sitting.remove_incorrect_question(q)
+            # else:
+            #     sitting.add_incorrect_question(q)
 
         return self.get(request)
 
     def get_context_data(self, **kwargs):
         context = super(QuizMarkingDetail, self).get_context_data(**kwargs)
-        context['questions'] = \
-            context['sitting'].get_questions(with_answers=True)
+        context['questions'] = context['sitting'].get_questions(with_answers=True)
+        scores = []
+        total = 0
+        total_score_obtained = 0
+        for q in context['questions']:
+            i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
+            score = [float(s) for s in context['sitting'].score_list.split(',') if s][i]
+            q.score_obtained = score
+            total += q.score
+            total_score_obtained += score
+        context['scores_obtained'] = scores
+        context['total_score_obtained'] = total_score_obtained
+        context['total'] = total
+
         return context
 
 
