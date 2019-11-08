@@ -24,8 +24,8 @@ test:
   script:
   - "echo \"Running unit tests…\""
   - "python manage.py migrate --noinput"
-#   - "coverage run --source='.' manage.py test"
-#   - "coverage report"
+  - "coverage run --source='.' manage.py test"
+  - "coverage report"
   - "coverage xml"
   - "python-codacy-coverage -r coverage.xml"
   after_script:
