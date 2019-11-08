@@ -7,8 +7,8 @@ test:
    
   before_script:
   - "pip install virtualenv"
-  - "virtualenv venv"
-  - ". venv/bin/activate"
+  - "virtualenv /venv"
+  - ". /venv/bin/activate"
   - "pip install -r requirements.txt"
   - "pip install codacy-coverage"
   - "export CODACY_PROJECT_TOKEN=39b902b77813413692bc60f88399e7df"
