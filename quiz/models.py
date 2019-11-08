@@ -804,7 +804,7 @@ class Sitting(models.Model):
         if dividend > divisor:
             return 100
 
-        correct = (dividend / divisor) * 100.0
+        correct = float('%.2f'%((dividend / divisor) * 100.0))
 
         if correct >= 1:
             return correct
