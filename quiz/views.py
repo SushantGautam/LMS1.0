@@ -176,9 +176,12 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
-            score_list = [float(s) for s in sitting.score_list.split(',') if s]
+            print(request.POST['new_score'], "new_score")
+            print(indx, "index")
+            score_list = [s for s in sitting.score_list.split(',') if s]
             score_list[indx] = request.POST.get('new_score', 0)
             sitting.score_list = ','.join(list(map(str, score_list)))
+            print(sitting.score_list, "score_list_update")
             sitting.save()
             # if int(q_to_toggle) in sitting.get_incorrect_questions:
             #     sitting.remove_incorrect_question(q)
@@ -190,16 +193,16 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(QuizMarkingDetail, self).get_context_data(**kwargs)
         context['questions'] = context['sitting'].get_questions(with_answers=True)
-        scores = []
         total = 0
         total_score_obtained = 0
         for q in context['questions']:
             i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
-            score = [float(s) for s in context['sitting'].score_list.split(',') if s][i]
+            #score_list = context['sitting'].score_list.replace("not_graded", "0")
+            score = [s for s in context['sitting'].score_list.split(',') if s][i]
             q.score_obtained = score
             total += q.score
-            total_score_obtained += score
-        context['scores_obtained'] = scores
+            if score != "not_graded":
+                total_score_obtained += float(score)
         context['total_score_obtained'] = total_score_obtained
         context['total'] = total
 
@@ -284,8 +287,13 @@ class QuizTake(FormView):
         score = self.question.score
 
         if is_correct is True:
-            self.sitting.add_to_score(score)
-            progress.update_score(self.question, score, score)
+            if type(self.question) is SA_Question:
+                score = 'not_graded'
+                self.sitting.add_to_score(0)
+                progress.update_score(self.question, 0, 1)
+            else:
+                self.sitting.add_to_score(score)
+                progress.update_score(self.question, score, score)
             score_list.append(str(score))
 
         else:
@@ -297,7 +305,6 @@ class QuizTake(FormView):
             progress.update_score(self.question, negative_score, score)
             self.sitting.add_to_score(negative_score)
             score_list.append(str(negative_score))
-            print(score_list)
 
         self.sitting.score_list = ','.join(score_list)
 

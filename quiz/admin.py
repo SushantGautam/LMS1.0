@@ -139,7 +139,7 @@ class SittingAdminForm(forms.ModelForm):
 
 class SittingAdmin(admin.ModelAdmin):
     form = SittingAdminForm
-    list_display = ['user', 'quiz', 'question_order', 'question_list', 'incorrect_questions', 'current_score', 'complete', 'user_answers', 'start', 'end']
+    list_display = ['user', 'quiz', 'question_order', 'score_list', 'question_list', 'incorrect_questions', 'current_score', 'complete', 'user_answers', 'start', 'end']
 
 class AnswerAdminForm(forms.ModelForm):
     class Meta:

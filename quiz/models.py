@@ -585,7 +585,15 @@ class Quiz(models.Model):
 
     @property
     def get_max_score(self):
-        return self.get_mcquestions().count() + self.get_tfquestions().count() + self.get_questions().count()
+        # return self.get_mcquestions().count() + self.get_tfquestions().count() + self.get_questions().count()
+        score = 0
+        for q in self.mcquestion.all():
+            score += q.score
+        for q in self.tfquestion.all():
+            score += q.score
+        for q in self.saquestion.all():
+            score += q.score
+        return score
 
     def anon_score_id(self):
         return str(self.id) + "_score"
@@ -764,7 +772,6 @@ class Sitting(models.Model):
             return
         _, others = self.question_list.split(',', 1)
         self.question_list = others
-        print(self.question_list)
         self.save()
 
     def add_to_score(self, points):
@@ -783,7 +790,9 @@ class Sitting(models.Model):
         #dividend = float(self.current_score)
         dividend = 0
         for n in self.score_list.split(','):
-            dividend += float(n)
+            if (n != "") and (n != " ") and (n != "not_graded"):
+                dividend += float(n)
+
         #divisor = len(self._question_ids())
         divisor = 0
         for x in [int(n) for n in self.question_order.split(',') if n]:
@@ -879,7 +888,12 @@ class Sitting(models.Model):
 
     @property
     def get_max_score(self):
-        return len(self._question_ids())
+        # return len(self._question_ids())
+        total = 0
+        for x in [int(n) for n in self.question_order.split(',') if n]:
+           score = Question.objects.get(id = x).score
+           total += score
+        return total
 
     def progress(self):
         """
@@ -889,3 +903,8 @@ class Sitting(models.Model):
         answered = len(json.loads(self.user_answers))
         total = self.get_max_score
         return answered, total
+
+    def get_progress(self):
+        answered = len(json.loads(self.user_answers))
+        total = len(self._question_ids())
+        return answered * 100 / total
