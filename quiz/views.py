@@ -172,19 +172,37 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()
 
-        q_to_toggle = request.POST.get('qid', None)
+        q_to_toggle = request.POST.get('saq_id', None)
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
-            if int(q_to_toggle) in sitting.get_incorrect_questions:
-                sitting.remove_incorrect_question(q)
-            else:
-                sitting.add_incorrect_question(q)
+            indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
+            score_list = [float(s) for s in sitting.score_list.split(',') if s]
+            score_list[indx] = request.POST.get('new_score', 0)
+            sitting.score_list = ','.join(list(map(str, score_list)))
+            sitting.save()
+            # if int(q_to_toggle) in sitting.get_incorrect_questions:
+            #     sitting.remove_incorrect_question(q)
+            # else:
+            #     sitting.add_incorrect_question(q)
 
         return self.get(request)
 
     def get_context_data(self, **kwargs):
         context = super(QuizMarkingDetail, self).get_context_data(**kwargs)
         context['questions'] = context['sitting'].get_questions(with_answers=True)
+        scores = []
+        total = 0
+        total_score_obtained = 0
+        for q in context['questions']:
+            i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
+            score = [float(s) for s in context['sitting'].score_list.split(',') if s][i]
+            q.score_obtained = score
+            total += q.score
+            total_score_obtained += score
+        context['scores_obtained'] = scores
+        context['total_score_obtained'] = total_score_obtained
+        context['total'] = total
+
         return context
 
 
@@ -262,13 +280,26 @@ class QuizTake(FormView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         guess = form.cleaned_data['answers']
         is_correct = self.question.check_if_correct(guess)
+        score_list = [s for s in self.sitting.score_list.split(',') if s]
+        score = self.question.score
 
         if is_correct is True:
-            self.sitting.add_to_score(1)
-            progress.update_score(self.question, 1, 1)
+            self.sitting.add_to_score(score)
+            progress.update_score(self.question, score, score)
+            score_list.append(str(score))
+
         else:
             self.sitting.add_incorrect_question(self.question)
-            progress.update_score(self.question, 0, 1)
+            if self.sitting.quiz.negative_marking:
+                negative_score = -(float(self.sitting.quiz.negative_percentage * score) / 100)
+            else:
+                negative_score = 0
+            progress.update_score(self.question, negative_score, score)
+            self.sitting.add_to_score(negative_score)
+            score_list.append(str(negative_score))
+            print(score_list)
+
+        self.sitting.score_list = ','.join(score_list)
 
         if self.quiz.answers_at_end is not True:
             self.previous = {'previous_answer': guess,
@@ -284,7 +315,6 @@ class QuizTake(FormView):
         self.sitting.remove_first_question()
 
     def final_result_user(self):
-        print("im here")
         results = {
             'quiz': self.quiz,
             'score': self.sitting.get_current_score,
@@ -302,7 +332,7 @@ class QuizTake(FormView):
             results['incorrect_questions'] = \
                 self.sitting.get_incorrect_questions
 
-        #if self.quiz.exam_paper is False:
+        # if self.quiz.exam_paper is False:
         #    self.sitting.delete()
 
         return render(self.request, self.result_template_name, results)
@@ -873,6 +903,7 @@ class QuizMCQChoosePrevious(UpdateView):
             kwargs={'pk': self.kwargs['pk']},
         )
 
+
 class QuizTFQChoosePrevious(UpdateView):
     model = Quiz
     form_class = ChooseTFQForm
@@ -888,6 +919,7 @@ class QuizTFQChoosePrevious(UpdateView):
             'quiz_detail',
             kwargs={'pk': self.kwargs['pk']},
         )
+
 
 class QuizSAQChoosePrevious(UpdateView):
     model = Quiz

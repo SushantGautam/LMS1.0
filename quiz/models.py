@@ -230,6 +230,11 @@ class Question(models.Model):
                                            "you want displayed"),
                                verbose_name=_('Question'))
 
+    score = models.IntegerField(
+        null=True, blank=True, default=1,
+        help_text=_("Full score for the question"),
+        verbose_name=_("Score"))
+
     course_code = models.ForeignKey(CourseInfo,
                                     verbose_name=_("CourseInfo"),
                                     blank=True,
@@ -256,6 +261,9 @@ class Question(models.Model):
 
     def __str__(self):
         return self.content
+
+    def is_saq(self):
+        return type(self) is SA_Question
 
 
 class MCQuestion(Question):
@@ -496,6 +504,15 @@ class Quiz(models.Model):
         verbose_name=_("Draft"),
         help_text=_("If checked, the quiz is not displayed to the student"
                     ))
+    negative_marking = models.BooleanField(
+        blank=True, default=False,
+        verbose_name=_("Negative Marking"),
+        help_text=_("If checked, incorrect answers will have negative marking")
+    )
+    negative_percentage = models.IntegerField(
+        null=True, blank=True, default=100,
+        help_text=_("Percentage of total marks to use for negative marking"),
+        verbose_name=_("Negative Marking Percentage"))
 
     def get_absolute_url(self):
         return reverse('quiz_update', args=(self.pk,))
@@ -559,10 +576,10 @@ class Quiz(models.Model):
         tfquestions = sorted(
             self.tfquestion.filter(id__in=question_ids),
             key=lambda q: question_ids.index(q.id))
-        questions = sorted(
-            self.tfquestion.filter(id__in=question_ids),
+        saquestions = sorted(
+            self.saquestion.filter(id__in=question_ids),
             key=lambda q: question_ids.index(q.id))
-        questions = mcquestions + tfquestions + questions
+        questions = mcquestions + tfquestions + saquestions
 
         return questions
 
@@ -699,6 +716,11 @@ class Sitting(models.Model):
         verbose_name=_("Question List"),
         validators=[validate_comma_separated_integer_list])
 
+    score_list = models.CharField(
+        max_length=1024,
+        verbose_name=_("Score List"),
+        validators=[validate_comma_separated_integer_list])
+
     incorrect_questions = models.CharField(
         max_length=1024,
         blank=True,
@@ -740,10 +762,8 @@ class Sitting(models.Model):
     def remove_first_question(self):
         if not self.question_list:
             return
-        print(self.question_list)
         _, others = self.question_list.split(',', 1)
         self.question_list = others
-        print("remove first question")
         print(self.question_list)
         self.save()
 
@@ -760,15 +780,22 @@ class Sitting(models.Model):
 
     @property
     def get_percent_correct(self):
-        dividend = float(self.current_score)
-        divisor = len(self._question_ids())
+        #dividend = float(self.current_score)
+        dividend = 0
+        for n in self.score_list.split(','):
+            dividend += float(n)
+        #divisor = len(self._question_ids())
+        divisor = 0
+        for x in [int(n) for n in self.question_order.split(',') if n]:
+            score = Question.objects.get(id = x).score
+            divisor += float(score)
         if divisor < 1:
             return 0  # prevent divide by zero error
 
         if dividend > divisor:
             return 100
 
-        correct = int(round((dividend / divisor) * 100))
+        correct = (dividend / divisor) * 100.0
 
         if correct >= 1:
             return correct
