@@ -49,18 +49,21 @@
           <i class="fa fa-check fa-2x text-success"></i>
         {% endif %}
       </td>
-      <td>
+      <td id="score{{ question.id }}">
         {{ question.score }}
       </td>
       <td>
         {{ question.score_obtained }}
       </td>
       {% if question.is_saq %}
-        <td>
+        <td style="text-align: center">
           <form action="" method="POST">{% csrf_token %}
-            <input type="number" name="new_score" min="0" max="{{ question.score }}" step="0.5">
+            <input type="number" name="new_score" min="0" max="{{ question.score }}" id="input{{ question.id }}"
+                   step="0.5" style="width: -webkit-fill-available;" required>
             <input type="hidden" name="saq_id" value="{{ question.id }}">
-            <button type="submit" class="btn btn-warning">{% trans "Change Score" %}</button>
+            <br>
+            <br>
+            <button type="submit" class="btn btn-warning score_submit" id="{{ question.id }}">{% trans "Change Score" %}</button>
           </form>
         </td>
       {% else %}
@@ -71,6 +74,7 @@
   {% endfor %}
   <tr></tr>
   <tr>
+    <td></td>
     <td></td>
     <td>Total</td>
     <td>{{ total }}</td>

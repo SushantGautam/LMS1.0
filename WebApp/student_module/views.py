@@ -24,7 +24,7 @@ from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
-from quiz.models import Question, Quiz
+from quiz.models import Question, Quiz, Sitting
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth import get_user_model
@@ -35,6 +35,7 @@ from django.core.files.storage import FileSystemStorage
 from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
+from quiz.models import Progress
 
 datetime_now = datetime.now()
 
@@ -822,3 +823,19 @@ def Topic_related_to_user(request, node_group=None):
 
 def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
+
+class QuizUserProgressView(TemplateView):
+    template_name = 'student_quiz/progress.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(QuizUserProgressView, self) \
+            .dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizUserProgressView, self).get_context_data(**kwargs)
+        progress, c = Progress.objects.get_or_create(user=self.request.user)
+        # context['cat_scores'] = progress.list_all_cat_scores
+        # context['exams'] = progress.show_exams()
+        context['sittings'] = Sitting.objects.all()
+        return context
