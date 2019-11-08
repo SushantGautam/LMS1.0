@@ -7,6 +7,3 @@ urlpatterns = (
     # urls for TodoTInfo
     path('', login_required(views.start), name='parent_home'),
 )
-
-
-

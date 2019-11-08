@@ -1,26 +1,20 @@
-from django.http import JsonResponse, HttpResponseRedirect
 import random
-import urllib
 
-from django_addanother.views import CreatePopupMixin
-
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render, redirect
-from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, ListView, TemplateView, FormView, CreateView, UpdateView
-from django.urls import reverse, reverse_lazy
 from django.db import transaction
-from django.db import models
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.generic import DetailView, ListView, TemplateView, FormView, CreateView, UpdateView
+from django_addanother.views import CreatePopupMixin
 
 from WebApp.models import CourseInfo, ChapterInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
     QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
-from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
-import re
-
-from django.shortcuts import render_to_response
+from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question
 
 
 class QuizMarkerMixin(object):
@@ -644,9 +638,6 @@ TEMPLATES = {"form1": "wizard/step1.html",
              "form2": "wizard/step2.html",
              "form3": "wizard/step3.html"}
 
-from django.core.exceptions import ValidationError
-from django.http import HttpResponse
-
 
 class QuizCreateWizard(SessionWizardView):
     form_list = FORMS
@@ -872,6 +863,7 @@ class QuizMCQChoosePrevious(UpdateView):
             kwargs={'pk': self.kwargs['pk']},
         )
 
+
 class QuizTFQChoosePrevious(UpdateView):
     model = Quiz
     form_class = ChooseTFQForm
@@ -887,6 +879,7 @@ class QuizTFQChoosePrevious(UpdateView):
             'quiz_detail',
             kwargs={'pk': self.kwargs['pk']},
         )
+
 
 class QuizSAQChoosePrevious(UpdateView):
     model = Quiz

@@ -1,9 +1,5 @@
-import django
 from django import forms
 from django.contrib import admin
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.utils.html import format_html
-from django.utils.translation import gettext as _
 
 from .models import Quiz, Progress, Answer, MCQuestion, TF_Question, SA_Question, Sitting
 
@@ -19,6 +15,7 @@ class QuizAdminForm(forms.ModelForm):
     django-admin-interface-using-horizontal-filter-with-
     inline-manytomany-field
     """
+
     class Meta:
         model = Quiz
         exclude = []
@@ -28,14 +25,14 @@ class QuizAdminForm(forms.ModelForm):
 
 
 # for adding widget to the quiz fields
-    # mcquestion = forms.ModelMultipleChoiceField(
-    #     queryset=MCQuestion.objects.all(),
-    #     required=False,
-    #     # label=_("Questions"),
-    #     # widget= AddAnotherWidgetWrapper(
-    #     #         forms.SelectMultiple,
-    #     #         reverse_lazy('mcquestion_create'),
-    #     widget=FilteredSelectMultiple(verbose_name=_("MCQ"), is_stacked=False))
+# mcquestion = forms.ModelMultipleChoiceField(
+#     queryset=MCQuestion.objects.all(),
+#     required=False,
+#     # label=_("Questions"),
+#     # widget= AddAnotherWidgetWrapper(
+#     #         forms.SelectMultiple,
+#     #         reverse_lazy('mcquestion_create'),
+#     widget=FilteredSelectMultiple(verbose_name=_("MCQ"), is_stacked=False))
 
 
 class QuizAdmin(admin.ModelAdmin):
@@ -44,10 +41,9 @@ class QuizAdmin(admin.ModelAdmin):
     # add_form_template = 'admin_add_form_with_buttons.html'
     # change_form_template = 'admin_add_form.html'
 
-    list_display = ('title', 'url', 'course_code','chapter_code','cent_code','question_count' )
+    list_display = ('title', 'url', 'course_code', 'chapter_code', 'cent_code', 'question_count')
     # list_filter = ('category',)
     search_fields = ('description', 'course_code',)
-
 
     # def changelist_view(self, request, extra_context=None):
     #     # Execute default logic from parent class changelist_view()
@@ -94,10 +90,9 @@ class ProgressAdmin(admin.ModelAdmin):
 
 
 class MCQuestionAdmin(admin.ModelAdmin):
-
-    #change_form_template = 'admin_add_form.html'
-    #change_list_template = 'custom_list.html'
-    list_display = ('content', 'course_code', )
+    # change_form_template = 'admin_add_form.html'
+    # change_list_template = 'custom_list.html'
+    list_display = ('content', 'course_code',)
     list_filter = ('course_code',)
     fields = ('content', 'figure', 'explanation', 'answer_order', 'cent_code')
 
@@ -112,7 +107,7 @@ class TFQuestionAdmin(admin.ModelAdmin):
     # change_form_template = 'admin_add_form.html'
     # change_list_template = 'custom_list.html'
 
-    list_display = ('content', 'course_code', )
+    list_display = ('content', 'course_code',)
     list_filter = ('course_code',)
     fields = ('content', 'figure', 'explanation', 'correct', 'cent_code')
 
@@ -132,19 +127,24 @@ class SAQuestionAdmin(admin.ModelAdmin):
     # filter_horizontal = ('quiz',)
     # add_form_template = 'admin_add_form.html'
 
+
 class SittingAdminForm(forms.ModelForm):
     class Meta:
         model = Sitting
         fields = '__all__'
 
+
 class SittingAdmin(admin.ModelAdmin):
     form = SittingAdminForm
-    list_display = ['user', 'quiz', 'question_order', 'question_list', 'incorrect_questions', 'current_score', 'complete', 'user_answers', 'start', 'end']
+    list_display = ['user', 'quiz', 'question_order', 'question_list', 'incorrect_questions', 'current_score',
+                    'complete', 'user_answers', 'start', 'end']
+
 
 class AnswerAdminForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = '__all__'
+
 
 class AnswerAdmin(admin.ModelAdmin):
     form = AnswerAdminForm

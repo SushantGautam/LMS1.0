@@ -16,6 +16,7 @@ class CenterInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CenterInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class MemberInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the MemberInfo class"""
 

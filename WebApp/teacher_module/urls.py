@@ -107,7 +107,6 @@ urlpatterns += (
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
          views.create_thread, name='teacher_create_thread'),
 
-
     path('forum/create_topic/(?P<teacher_nodegroup_pk>\d+)/',
          views.create_topic, name='teacher_create_topic'),
 
@@ -143,8 +142,8 @@ urlpatterns += (
          name='teacher_quiz_detail'),
     path('quiz/edit/<int:pk>/', views.QuizUpdateView.as_view(),
          name='teacher_quiz_update'),
-    path('update_info/<int:pk>/', views.UpdateQuizBasicInfo.as_view(), name='teacher_quiz_update_info'),    
-     
+    path('update_info/<int:pk>/', views.UpdateQuizBasicInfo.as_view(), name='teacher_quiz_update_info'),
+
     path('detail/<slug>', views.QuizDetailView.as_view(),
          name='teacher_quiz_detail_s'),
 

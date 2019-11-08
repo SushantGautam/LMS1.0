@@ -1,10 +1,6 @@
-from django.db import models
 from WebApp.models import MemberInfo
 
-
 USER_MODEL = MemberInfo
-
-
 
 # class Post(models.Model):
 #     thread = models.ForeignKey('thread', related_name='replies', verbose_name=("thread"),on_delete=models.CASCADE)

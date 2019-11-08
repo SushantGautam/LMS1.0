@@ -1,42 +1,42 @@
 {% load static %}
 {% load crispy_forms_tags %}
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-  <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 {{ form.media }}
 
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 <form method="post" id="tfq_select_form_post" action="">
-  {% csrf_token %}
-  {{ form|crispy }}
-  <div class="col-md-12">
-    <p class="quiz-counter" id="selected_tfq_num">0</p>
-  </div>
-  <button class="btn btn-primary" type="submit">Submit</button>
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="col-md-12">
+        <p class="quiz-counter" id="selected_tfq_num">0</p>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
 </form>
 {% block customjss %}
 
-  <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
+    <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
 
-  <script>
-      $("#tfq_select_form_post").submit(function (e) {
-          e.preventDefault(); // avoid to execute the actual submit of the form.
-          $('#id_tfquestion_to option').prop('selected', true);
-          $.ajax({
-              url: "{% url 'choose_tfq' pk=object.pk %}", // URL to your view that serves new info
-              data: $(this).serialize(), // get the form data
-              type: "POST", // GET or POST
-              success: function (response) {
-                  location.reload();
-              },
-              error: function () {
-                  console.log('Error in posting form');
-              }
-          });
-      });
+    <script>
+        $("#tfq_select_form_post").submit(function (e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            $('#id_tfquestion_to option').prop('selected', true);
+            $.ajax({
+                url: "{% url 'choose_tfq' pk=object.pk %}", // URL to your view that serves new info
+                data: $(this).serialize(), // get the form data
+                type: "POST", // GET or POST
+                success: function (response) {
+                    location.reload();
+                },
+                error: function () {
+                    console.log('Error in posting form');
+                }
+            });
+        });
 
-      $('#id_tfquestion').change(function () {
-          $('#selected_tfq_num').text($('#id_tfquestion option:selected').length);
-      });
-      {#$('#id_tfquestion').css("height", "50vh");#}
-  </script>
+        $('#id_tfquestion').change(function () {
+            $('#selected_tfq_num').text($('#id_tfquestion option:selected').length);
+        });
+        {#$('#id_tfquestion').css("height", "50vh");#}
+    </script>
 {% endblock customjss %}

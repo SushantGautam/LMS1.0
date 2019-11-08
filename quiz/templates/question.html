@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n%}
+{% load i18n %}
 {% load static %}
 {% load quiz_tags %}
 
@@ -7,23 +7,24 @@
 {% block description %} {{ quiz.title }} - {{ quiz.description }} {% endblock %}
 {% block breadcrumb %}
 
-{% block top_navigation %}
+    {% block top_navigation %}
 
-{% endblock top_navigation %}
+    {% endblock top_navigation %}
 
-{% block sidebar %}
+    {% block sidebar %}
 
-<style>
-.nav-md .container.body .right_col {
-    padding: 10px 20px 0;
-    margin-left: 0px!important;
-}
-.breadcrumb{
-	display: none;
-}
-</style>
+        <style>
+            .nav-md .container.body .right_col {
+                padding: 10px 20px 0;
+                margin-left: 0px !important;
+            }
 
-{% endblock sidebar %}
+            .breadcrumb {
+                display: none;
+            }
+        </style>
+
+    {% endblock sidebar %}
 
 
 
@@ -34,116 +35,116 @@
 {% endblock %}
 {% block content %}
 
-{% if previous.answers %}
+    {% if previous.answers %}
 
-  <p class="muted"><small>{% trans "The previous question" %}:</small></p>
-  <p>{{ previous.previous_question }}</p>
+        <p class="muted"><small>{% trans "The previous question" %}:</small></p>
+        <p>{{ previous.previous_question }}</p>
 
-  {% if previous.previous_outcome %}
-	<div class="alert alert-success">
-  {% else %}
-	<div class="alert alert-warning">
-  {% endif %}
-  	  <p><small>
-		{% trans "Your answer was" %} </small>
-		<strong>
-		  {{ previous.previous_outcome|yesno:"correct,incorrect" }}
-		</strong>
-	  </p>
+        {% if previous.previous_outcome %}
+            <div class="alert alert-success">
+        {% else %}
+            <div class="alert alert-warning">
+        {% endif %}
+    <p><small>
+        {% trans "Your answer was" %} </small>
+        <strong>
+            {{ previous.previous_outcome|yesno:"correct,incorrect" }}
+        </strong>
+    </p>
 
-	</div>
+    </div>
 
-	{% include 'correct_answer.html' %}
+        {% include 'correct_answer.html' %}
 
-	<p><strong>{% trans "Explanation" %}:</strong></p>
-	<div class="well " style="background-color: #fcf8e3;">
-	  <p>{{ previous.previous_question.explanation }}</p>
-	</div>
+        <p><strong>{% trans "Explanation" %}:</strong></p>
+        <div class="well " style="background-color: #fcf8e3;">
+            <p>{{ previous.previous_question.explanation }}</p>
+        </div>
 
-	<hr>
+        <hr>
 
-{% endif %}
+    {% endif %}
 
-<br />
+    <br/>
 
-{% if question %}
-{% if quiz.exam_paper %}
-		<div class="col-md-12 ">
-			<div class="pie degree" id="quiz-timer" data-timer="{{quiz.duration}}">
-				<span class="block-timer"></span>
-					<span id="time"></span>
-					<!-- <span id="time1">0</span> -->
-		</div>
-		</div>
-{% endif %}
+    {% if question %}
+        {% if quiz.exam_paper %}
+            <div class="col-md-12 ">
+                <div class="pie degree" id="quiz-timer" data-timer="{{ quiz.duration }}">
+                    <span class="block-timer"></span>
+                    <span id="time"></span>
+                    <!-- <span id="time1">0</span> -->
+                </div>
+            </div>
+        {% endif %}
 
-{% if progress %}
-<div style="float: right;">
-{% trans "Question" %} {{ progress.0|add:1 }} {% trans "of" %} {{ progress.1 }}
-</div>
-{% endif %}
-
-
-
-<p>
-  <small class="muted"><strong>
-			{% trans "Question category" %}:
-
-	</strong>
-		</small>
-  <strong>{{ question.category }}</strong>
-</p>
+        {% if progress %}
+            <div style="float: right;">
+                {% trans "Question" %} {{ progress.0|add:1 }} {% trans "of" %} {{ progress.1 }}
+            </div>
+        {% endif %}
 
 
 
+        <p>
+            <small class="muted"><strong>
+                {% trans "Question category" %}:
 
-
-
-<div class="quiz-questions">
-			<div id="step-1">
-				   <div class="privew1">
-						    <div class="questionsBox">
-										<div class="questions">{{ progress.0|add:1 }})&nbsp; {{ question.content }}</div>
-
-
-										{% if question.figure %}
-  												<div class="quiz-ques-image">
-
-																<img src="{{ question.figure.url }}" alt="{{ question.content }}" />
-
-
-
-														</div>
-
-										{% endif %}
-									<form action="" method="POST">{% csrf_token %}
-										 <input type=hidden name="question_id" value="{{ question.id }}">
-										 		<ul class="list-group">
-
-													{% for answer in form.answers %}
-														<li class="list-group-item">
-															{{ answer }}
-													</li>
-													{% endfor %}
-
-												</ul>
-										<input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block btn-warning" >
-									</form>
-
-								</div>
-					 </div>
-
-			</div>
-</div>
+            </strong>
+            </small>
+            <strong>{{ question.category }}</strong>
+        </p>
 
 
 
 
 
 
+        <div class="quiz-questions">
+            <div id="step-1">
+                <div class="privew1">
+                    <div class="questionsBox">
+                        <div class="questions">{{ progress.0|add:1 }})&nbsp; {{ question.content }}</div>
 
 
-<!-- <p class="lead">{{ question.content }}</p>
+                        {% if question.figure %}
+                            <div class="quiz-ques-image">
+
+                                <img src="{{ question.figure.url }}" alt="{{ question.content }}"/>
+
+
+                            </div>
+
+                        {% endif %}
+                        <form action="" method="POST">{% csrf_token %}
+                            <input type=hidden name="question_id" value="{{ question.id }}">
+                            <ul class="list-group">
+
+                                {% for answer in form.answers %}
+                                    <li class="list-group-item">
+                                        {{ answer }}
+                                    </li>
+                                {% endfor %}
+
+                            </ul>
+                            <input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block btn-warning"
+                            >
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        <!-- <p class="lead">{{ question.content }}</p>
 
 {% if question.figure %}
   <div class="quiz-ques-image">
@@ -171,9 +172,9 @@
   <input type="submit" value={% trans "Check" %} class="btn btn-large btn-block btn-warning" >
 </form> -->
 
-{% endif %}
+    {% endif %}
 
-<hr>
+    <hr>
 
 
 {% endblock %}

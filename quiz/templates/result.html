@@ -3,7 +3,7 @@
 
 {% load quiz_tags %}
 
-{% block title %} {{ quiz.title}} {% endblock %}
+{% block title %} {{ quiz.title }} {% endblock %}
 {% block description %} {% trans "Exam Results for" %} {{ quiz.title }} {% endblock %}
 {% block breadcrumb %}
 
@@ -14,119 +14,124 @@
 
 {% block sidebar %}
 
-<style>
-.nav-md .container.body .right_col {
-    padding: 10px 20px 0;
-    margin-left: 0px!important;
-}
-.breadcrumb{
-	display: none;
-}
-</style>
+    <style>
+        .nav-md .container.body .right_col {
+            padding: 10px 20px 0;
+            margin-left: 0px !important;
+        }
+
+        .breadcrumb {
+            display: none;
+        }
+    </style>
 
 {% endblock sidebar %}
 
 {% block content %}
 
-  {% if previous.answers %}
+    {% if previous.answers %}
 
-  <p class="muted"><small>{% trans "The previous question" %}:</small></p>
-  <p>{{ previous.previous_question }}</p>
-  <p>Your answer was
-	<strong>
-	  {{ previous.previous_outcome|yesno:"correct,incorrect" }}
-	</strong>
-  </p>
-  {% include 'correct_answer.html' %}
-  <p><strong>{% trans "Explanation" %}:</strong></p>
-  <div class="well " style="background-color: #fcf8e3;">
-    <p>{{ previous.previous_question.explanation }}</p>
-  </div>
-  <hr>
-
-  {% endif %}
-
-  {% if max_score %}
-
-  <div>
-	<h2 >
-     <div class="exam-results text-center">
-        {% trans "Exam results" %}
-     </div>
-  </h2>
-	<p>
-	  <small class="muted">{% trans "Exam title" %}: </small>
-    <strong class="quiz-capital">{{ quiz.title }}</strong></p>
-
-    <div class="quiz-card-result">
-        <p class="lead">
-            <i class="fa fa-angle-right "></i>
-          {% trans "You answered" %} <strong> {{ score }}</strong> {% trans "questions correctly out of" %} <strong>{{ max_score }}</strong>, {% trans "giving you" %} &nbsp;<strong>{{ percent }}</strong> {% trans "percent correct" %}
+        <p class="muted"><small>{% trans "The previous question" %}:</small></p>
+        <p>{{ previous.previous_question }}</p>
+        <p>Your answer was
+            <strong>
+                {{ previous.previous_outcome|yesno:"correct,incorrect" }}
+            </strong>
         </p>
-        {% if quiz.exam_paper is False %}
-        <p ><a class="try-again-button" href="{% url 'student_chapterinfo_detail' course=quiz.course_code.pk pk=quiz.chapter_code.pk %}">Try Again</a></p>
-        {% endif %}
+        {% include 'correct_answer.html' %}
+        <p><strong>{% trans "Explanation" %}:</strong></p>
+        <div class="well " style="background-color: #fcf8e3;">
+            <p>{{ previous.previous_question.explanation }}</p>
+        </div>
+        <hr>
 
-    </div>
+    {% endif %}
 
-	
+    {% if max_score %}
 
-	{% if quiz.pass_mark %}
-	<hr>
-        <p class=" sitting-message lead">{{ sitting.result_message }}</p>
-	<hr>
+        <div>
+            <h2>
+                <div class="exam-results text-center">
+                    {% trans "Exam results" %}
+                </div>
+            </h2>
+            <p>
+                <small class="muted">{% trans "Exam title" %}: </small>
+                <strong class="quiz-capital">{{ quiz.title }}</strong></p>
 
-	{% endif %}
+            <div class="quiz-card-result">
+                <p class="lead">
+                    <i class="fa fa-angle-right "></i>
+                    {% trans "You answered" %} <strong> {{ score }}</strong> {% trans "questions correctly out of" %}
+                    <strong>{{ max_score }}</strong>, {% trans "giving you" %}
+                    &nbsp;<strong>{{ percent }}</strong> {% trans "percent correct" %}
+                </p>
+                {% if quiz.exam_paper is False %}
+                    <p><a class="try-again-button"
+                          href="{% url 'student_chapterinfo_detail' course=quiz.course_code.pk pk=quiz.chapter_code.pk %}">Try
+                        Again</a></p>
+                {% endif %}
 
-	<!-- <p class="quiz-review">{% trans "- Review the questions below and try the exam again in the future"%}.</p> -->
-
-	{% if user.is_authenticated %}
-
-	  <p class="quiz-review">{% trans "- The result of this exam will be stored in your  progress  section so you can review and monitor your progression" %}.</p>
-
-	{% endif %}
-  </div>
+            </div>
 
 
-  {% endif %}
+
+            {% if quiz.pass_mark %}
+                <hr>
+                <p class=" sitting-message lead">{{ sitting.result_message }}</p>
+                <hr>
+
+            {% endif %}
+
+            <!-- <p class="quiz-review">{% trans "- Review the questions below and try the exam again in the future"%}.</p> -->
+
+            {% if user.is_authenticated %}
+
+                <p class="quiz-review">{% trans "- The result of this exam will be stored in your  progress  section so you can review and monitor your progression" %}.</p>
+
+            {% endif %}
+        </div>
 
 
-  <hr>
+    {% endif %}
 
-  {% if possible %}
 
-  <p class="lead">
-	{% trans "Your session score is" %} {{ session }} {% trans "out of a possible" %} {{ possible }}
-  </p>
+    <hr>
 
-  <hr>
+    {% if possible %}
 
-  {% endif %}
+        <p class="lead">
+            {% trans "Your session score is" %} {{ session }} {% trans "out of a possible" %} {{ possible }}
+        </p>
 
-  {% if questions %}
+        <hr>
 
-    {% for question in questions %}
+    {% endif %}
 
-      <p class="lead">
-		{{ question.content }} 
-	  </p>
+    {% if questions %}
 
-	  {% correct_answer_for_all question %}
+        {% for question in questions %}
 
-      {% if question.user_answer %}
-      <p class="quiz-ans-explain">{% trans "-Your answer" %}: {{ question|answer_choice_to_string:question.user_answer }}</p>
-      {% endif %}
+            <p class="lead">
+                {{ question.content }}
+            </p>
 
-	  <p class="quiz-review"><strong>{% trans "Explanation" %}:</strong></p>
-	  <div class="well " style="background-color: #fcf8e3;">
-		<p class="quiz-review">{{ question.explanation|safe }}</p>
-	  </div>
+            {% correct_answer_for_all question %}
 
-	  <hr>
+            {% if question.user_answer %}
+                <p class="quiz-ans-explain">{% trans "-Your answer" %}: {{ question|answer_choice_to_string:question.user_answer }}</p>
+            {% endif %}
 
-  {% endfor %}
+            <p class="quiz-review"><strong>{% trans "Explanation" %}:</strong></p>
+            <div class="well " style="background-color: #fcf8e3;">
+                <p class="quiz-review">{{ question.explanation|safe }}</p>
+            </div>
 
-  {% endif %}
+            <hr>
+
+        {% endfor %}
+
+    {% endif %}
 
 
 {% endblock %}

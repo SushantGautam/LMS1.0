@@ -1,12 +1,15 @@
+import os
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
-from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, FileField
+from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
+    FileField
 from django.urls import reverse
 from django.utils.translation import gettext as _
-import os
+
 fs = FileSystemStorage(location='LMS')
 
 USER_ROLES = (
@@ -15,6 +18,7 @@ USER_ROLES = (
     ('Student', 'Student'),
     ('Parent', 'Parent'),
 )
+
 
 class CenterInfo(models.Model):
     Center_Name = CharField(max_length=500, blank=True, null=True)
@@ -82,7 +86,8 @@ class MemberInfo(AbstractUser):
         ),
     )
 
-    Member_ID = models.CharField(max_length=150, blank=True, null=True, help_text=_('ID assigned by university/Roll No'))
+    Member_ID = models.CharField(max_length=150, blank=True, null=True,
+                                 help_text=_('ID assigned by university/Roll No'))
     password = models.CharField(_('password'), max_length=264)
     Member_Permanent_Address = models.CharField(max_length=500, blank=True, null=True)
     Member_Temporary_Address = models.CharField(max_length=500, blank=True, null=True)
@@ -129,9 +134,9 @@ class MemberInfo(AbstractUser):
         if self.Member_Avatar:
             return self.Member_Avatar.url
         else:
-            if self.Member_Gender =='F':
+            if self.Member_Gender == 'F':
                 default_avatar = "/static/images/profile/female.png"
-            elif self.Member_Gender =='M':
+            elif self.Member_Gender == 'M':
                 default_avatar = "/static/images/profile/male.jpg"
             else:
                 default_avatar = "/static/images/profile/profile.png"
@@ -162,7 +167,7 @@ class CourseInfo(models.Model):
     Course_Level = IntegerField(blank=True, null=True)
     Course_Info = TextField(blank=True, null=True)
 
-    Use_Flag = BooleanField(default=True,  verbose_name="Tick this flag if you want to prevent user from login.")
+    Use_Flag = BooleanField(default=True, verbose_name="Tick this flag if you want to prevent user from login.")
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
@@ -236,7 +241,6 @@ class ChapterInfo(models.Model):
 
 
 class ChapterContentsInfo(models.Model):
-
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -262,7 +266,7 @@ class ChapterContentsInfo(models.Model):
         return reverse('chaptercontentsinfo_update', args=(self.pk,))
 
 
-#================AssignmentModels================#
+# ================AssignmentModels================#
 class AssignmentInfo(models.Model):
     Assignment_Topic = CharField(max_length=500)
     Use_Flag = BooleanField(default=True)
@@ -290,7 +294,7 @@ class AssignmentInfo(models.Model):
 
     def teacher_get_absolute_url(self):
         return reverse('teacher_assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
-    
+
     def teacher_get_update_url(self):
         return reverse('teacher_assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
@@ -306,7 +310,6 @@ def upload_to(instance, filename):
 
 
 class AssignmentQuestionInfo(models.Model):
-    
     Question_Title = CharField(max_length=4000)
     Question_Score = IntegerField(blank=True, null=True)
     Use_Flag = BooleanField(default=True)
@@ -338,15 +341,17 @@ class AssignmentQuestionInfo(models.Model):
         return u'%s' % self.pk
 
     def get_absolute_url(self):
-        return reverse('webapp_questioninfo_detail', args=(self.Assignment_Code.Course_Code.pk,self.Assignment_Code.Chapter_Code.pk,self.Assignment_Code.pk,self.pk))
+        return reverse('webapp_questioninfo_detail', args=(
+        self.Assignment_Code.Course_Code.pk, self.Assignment_Code.Chapter_Code.pk, self.Assignment_Code.pk, self.pk))
 
     def get_update_url(self):
-        return reverse('webapp_questioninfo_update', args=(self.Assignment_Code.Course_Code.pk,self.Assignment_Code.Chapter_Code.pk,self.Assignment_Code.pk,self.pk))
-    
-    
+        return reverse('webapp_questioninfo_update', args=(
+        self.Assignment_Code.Course_Code.pk, self.Assignment_Code.Chapter_Code.pk, self.Assignment_Code.pk, self.pk))
+
     def extension(self):
         name, extension = os.path.splitext(self.Question_Media_File.name)
         return extension
+
 
 class AssignAssignmentInfo(models.Model):
     Use_Flag = BooleanField(default=True)
@@ -385,7 +390,6 @@ def assignment_upload(instance, filename):
 
 
 class AssignAnswerInfo(models.Model):
-   
     Assignment_Score = IntegerField(blank=True, null=True)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
@@ -414,6 +418,7 @@ class AssignAnswerInfo(models.Model):
 
     def get_update_url(self):
         return reverse('assignanswerinfo_update', args=(self.pk,))
+
 
 class SessionInfo(models.Model):
     Session_Name = CharField(max_length=200)
@@ -470,7 +475,7 @@ class GroupMapping(models.Model):
 
     def get_absolute_url(self):
         return reverse('groupmapping_detail', args=(self.pk,))
-    
+
     def teacher_get_absolute_url(self):
         return reverse('teacher_groupmapping_detail', args=(self.pk,))
 
@@ -479,7 +484,6 @@ class GroupMapping(models.Model):
 
 
 class InningGroup(models.Model):
-   
     # InningGroup_Name = CharField(max_length=200)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
@@ -518,7 +522,6 @@ class InningGroup(models.Model):
 
 
 class InningInfo(models.Model):
-
     Start_Date = DateTimeField()
     End_Date = DateTimeField()
 
@@ -545,7 +548,7 @@ class InningInfo(models.Model):
 
     Course_Group = models.ManyToManyField(
         'InningGroup',
-        
+
     )
 
     class Meta:
@@ -562,6 +565,7 @@ class InningInfo(models.Model):
 
     def __str__(self):
         return self.Inning_Name.Session_Name
+
 
 class MessageInfo(models.Model):
     # Fields
@@ -602,5 +606,3 @@ class Events(models.Model):
 
     def __str__(self):
         return self.event_name
-
-

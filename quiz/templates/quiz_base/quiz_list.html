@@ -1,92 +1,88 @@
-
 {% load i18n %}
 
 
-
-
 <div class=" ">
-	  <div class="row exam-results1">
-			<div class="col-md-6">
-					<h2>{% trans "List of quizzes"  %}</h2>
-			</div>
-			<div class="col-md-6  icon-for-quiz text-right">
-					{% if '/teachers' in request.path %}
-					<a class="icon-quiz-list" href="{% url 'teacher_quizfw' %}">
-							<i class="fa fa-plus fa-2x"></i>
-					</a>
-					{% else %}
-					<a class="icon-quiz-list" href="{% url 'quizfw' %}">
-							<i class="fa fa-plus fa-2x"></i>
-					</a>
-					{% endif %}
-				
+    <div class="row exam-results1">
+        <div class="col-md-6">
+            <h2>{% trans "List of quizzes" %}</h2>
+        </div>
+        <div class="col-md-6  icon-for-quiz text-right">
+            {% if '/teachers' in request.path %}
+                <a class="icon-quiz-list" href="{% url 'teacher_quizfw' %}">
+                    <i class="fa fa-plus fa-2x"></i>
+                </a>
+            {% else %}
+                <a class="icon-quiz-list" href="{% url 'quizfw' %}">
+                    <i class="fa fa-plus fa-2x"></i>
+                </a>
+            {% endif %}
 
-			</div>
-		</div>
 
+        </div>
+    </div>
 
 
 </div>
 
 <!-- <h2>{% trans "List of quizzes" %}</h2> -->
-    {% if quiz_list %}
-		<table class="table table-bordered table-striped">
+{% if quiz_list %}
+    <table class="table table-bordered table-striped">
 
-		  <thead>
-			<tr class="quiz-capital">
-				<th>{% trans "Title" %}</th>
-				<th>{% trans "Course -> Chapter" %}</th>
-			  <th>{% trans "No. of Questions" %}</th>
-			  <th>{% trans "Type" %}</th>
-				<th>{% trans "Status" %}</th>
-				<th>{% trans "Action" %}</th>
-			</tr>
-		  </thead>
+        <thead>
+        <tr class="quiz-capital">
+            <th>{% trans "Title" %}</th>
+            <th>{% trans "Course -> Chapter" %}</th>
+            <th>{% trans "No. of Questions" %}</th>
+            <th>{% trans "Type" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Action" %}</th>
+        </tr>
+        </thead>
 
-		  <tbody>
+        <tbody>
 
         {% for quiz in quiz_list %}
 
-  			<tr>
-						<td>{{ quiz.title }}</td>
-						<td>{{ quiz.course_code }} -> {{quiz.chapter_code}}</td>
-						<td>{{ quiz.question_count}}</td>
-						<td>{% if quiz.pre_test  %}
-								pre test <br>
-								{% endif %}
-								{% if quiz.post_test  %}
-								post test <br>
-								{% endif %}
-								{% if quiz.exam_paper  %}
-								exam <br>
-								{% endif %}
-				 </td>
-				 
-				<td>{% if quiz.draft is True %}
-								 Inactive 
-						{% else %}		
-								 Active
-						{% endif %}	  
-				</td>
-			  <td>
-				<a href="
+            <tr>
+                <td>{{ quiz.title }}</td>
+                <td>{{ quiz.course_code }} -> {{ quiz.chapter_code }}</td>
+                <td>{{ quiz.question_count }}</td>
+                <td>{% if quiz.pre_test %}
+                    pre test <br>
+                {% endif %}
+                    {% if quiz.post_test %}
+                        post test <br>
+                    {% endif %}
+                    {% if quiz.exam_paper %}
+                        exam <br>
+                    {% endif %}
+                </td>
+
+                <td>{% if quiz.draft is True %}
+                    Inactive
+                {% else %}
+                    Active
+                {% endif %}
+                </td>
+                <td>
+                    <a href="
 				{% if '/teachers' in request.path %}
 					{% url 'teacher_quiz_detail' pk=quiz.id %} 
 					{% else %}
 					{% url 'quiz_detail' pk=quiz.id %} 
 					{% endif %}
 				">
-				  {% trans "View details" %}
-				</a>
-			  </td>
-			</tr>
+                        {% trans "View details" %}
+                    </a>
+                </td>
+            </tr>
 
         {% endfor %}
-		  </tbody>
+        </tbody>
 
-		</table>
+    </table>
 
-	{% else %}
-        <p>{% trans "There are no available quizzes" %}.</p>
-    {% endif %}
+{% else %}
+    <p>{% trans "There are no available quizzes" %}.</p>
+{% endif %}
 

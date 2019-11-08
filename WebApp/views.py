@@ -159,7 +159,8 @@ def start(request):
             return redirect('login')
 
         if request.user.Is_CenterAdmin:
-            thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
+            thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[
+                     :5]
             wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
@@ -656,7 +657,8 @@ class ChapterInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'), pk = self.kwargs.get('pk'))
+        context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'),
+                                              pk=self.kwargs.get('pk'))
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
@@ -786,6 +788,7 @@ class InningInfoCreateView(CreateView):
         context['datetime'] = datetime.now()
         return context
 
+
 class InningInfoDetailView(DetailView):
     model = InningInfo
 
@@ -803,6 +806,7 @@ class InningInfoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
         return context
+
 
 def InningInfoDeleteView(request, pk):
     if request.method == 'POST':
@@ -867,6 +871,7 @@ class InningGroupUpdateView(UpdateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+
 def InningGroupDeleteView(request, pk):
     if request.method == 'POST':
         try:
@@ -924,6 +929,7 @@ class GroupMappingUpdateView(UpdateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+
 def GroupMappingDeleteView(request, pk):
     if request.method == 'POST':
         try:
@@ -977,7 +983,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentInfo
 
-    def post(self, request, *args, **kwargs):   
+    def post(self, request, *args, **kwargs):
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
@@ -1094,6 +1100,7 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             data={'Message': 'Success'}
         )
 
+
 class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentQuestionInfo
 
@@ -1108,12 +1115,12 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
                 Obj.Use_Flag = True
             else:
                 Obj.Use_Flag = False
-          
+
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
             Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
             if request.POST["clear"] == 'true':
                 Obj.Question_Media_File = ''
-            else:     
+            else:
                 if bool(request.FILES.get('Question_Media_File', False)) == True:
                     media = request.FILES['Question_Media_File']
                     if media.size / 1024 > 2048:
@@ -1132,6 +1139,7 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
         return JsonResponse(
             data={'Message': 'Success'}
         )
+
 
 class QuestionInfoDetailView(DetailView):
     model = AssignmentQuestionInfo
@@ -1327,6 +1335,7 @@ def save_file(request):
             filename = fs.save(name, media)
         return JsonResponse(data={"message": "success", "media_name": name})
 
+
 def save_3d_file(request):
     if request.method == "POST":
         chapterID = request.POST['chapterID']
@@ -1340,7 +1349,7 @@ def save_3d_file(request):
                 mtl = None
             path = settings.MEDIA_ROOT
 
-            name = (str(uuid.uuid4())).replace('-', '') #same name for .obj and .mtl file
+            name = (str(uuid.uuid4())).replace('-', '')  # same name for .obj and .mtl file
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
@@ -1349,6 +1358,7 @@ def save_3d_file(request):
                 fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
                 filename = fs.save(mtlname, mtl)
         return JsonResponse(data={"message": "success", "objname": objname})
+
 
 @csrf_exempt
 def save_video(request):
@@ -1485,6 +1495,7 @@ def import_chapter(request):
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
+
 @xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):
     print(urlpath, "urlpath")
@@ -1494,16 +1505,17 @@ def ThreeDViewer(request, urlpath=None):
         urlpath = "static/3D_Viewer/Sample.obj"
         mtlurlpath = "static/3D_Viewer/Sample.mtl"
     else:
-        mtlpath_expected = BASE_DIR +"/" + urlpath[:-4]+".mtl"
+        mtlpath_expected = BASE_DIR + "/" + urlpath[:-4] + ".mtl"
         print("got it mtlpath_expected", mtlpath_expected)
         if os.path.isfile(mtlpath_expected):
-            print("file exist ", mtlpath_expected," url is:", mtlurlpath)
+            print("file exist ", mtlpath_expected, " url is:", mtlurlpath)
             mtlurlpath = (urlpath[:-4] if urlpath else '') + ".mtl"
         else:
             print("MTL doesnt exist", mtlpath_expected)
             mtlurlpath = "static/3D_Viewer/none.mtl"
 
     return render(request, '3D_Viewer/render_template.html', {'objpath': urlpath, 'mtlpath': mtlurlpath})
+
 
 class ContentsView(TemplateView):
     template_name = 'chapter/chapter_contents.html'
@@ -1515,7 +1527,7 @@ class ContentsView(TemplateView):
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
         path = settings.MEDIA_ROOT
-        
+
         try:
             with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
                     chapterID) + '.txt') as json_file:

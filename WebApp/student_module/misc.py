@@ -1,5 +1,6 @@
-from django.db.models import Q
 import re
+
+from django.db.models import Q
 
 
 def normalize_query(query_string,

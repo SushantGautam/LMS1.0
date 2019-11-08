@@ -3,84 +3,83 @@
 {% block title %}{% trans "All Quizzes" %}{% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">QUIZ</li>
+    <li class="breadcrumb-item active" aria-current="page">QUIZ</li>
 {% endblock %}
 
 {% block content %}
 
 
 
-<div class=" ">
-	  <div class="row exam-results1">
-			<div class="col-md-6">
-					<h2>{% trans "List of quizzes"  %}</h2>
-			</div>
-			<div class="col-md-6  icon-for-quiz text-right">
-					<a class="icon-quiz-list" href="{% url 'quizfw' %}">
-							<i class="fa fa-plus fa-2x"></i>
-					</a>
+    <div class=" ">
+        <div class="row exam-results1">
+            <div class="col-md-6">
+                <h2>{% trans "List of quizzes" %}</h2>
+            </div>
+            <div class="col-md-6  icon-for-quiz text-right">
+                <a class="icon-quiz-list" href="{% url 'quizfw' %}">
+                    <i class="fa fa-plus fa-2x"></i>
+                </a>
 
-			</div>
-		</div>
+            </div>
+        </div>
 
 
+    </div>
 
-</div>
-
-<!-- <h2>{% trans "List of quizzes" %}</h2> -->
+    <!-- <h2>{% trans "List of quizzes" %}</h2> -->
     {% if quiz_list %}
-		<table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped">
 
-		  <thead>
-			<tr class="quiz-capital">
-				<th>{% trans "Title" %}</th>
-				<th>{% trans "Course -> Chapter" %}</th>
-			  <th>{% trans "No. of Questions" %}</th>
-			  <th>{% trans "Type" %}</th>
-			 
-				<th>{% trans "Status" %}</th>
-				<th>{% trans "Action" %}</th>
-			</tr>
-		  </thead>
+            <thead>
+            <tr class="quiz-capital">
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Course -> Chapter" %}</th>
+                <th>{% trans "No. of Questions" %}</th>
+                <th>{% trans "Type" %}</th>
 
-		  <tbody>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Action" %}</th>
+            </tr>
+            </thead>
 
-        {% for quiz in quiz_list %}
+            <tbody>
 
-  			<tr>
-						<td>{{ quiz.title }}</td>
-						<td>{{ quiz.course_code }} -> {{quiz.chapter_code}}</td>
-						<td>{{ quiz.question_count}}</td>
-						<td>{% if quiz.pre_test  %}
-								pre test <br>
-								{% endif %}
-								{% if quiz.post_test  %}
-								post test <br>
-								{% endif %}
-								{% if quiz.exam_paper  %}
-								exam <br>
-								{% endif %}
-				 </td>
-			
-				<td>{% if quiz.draft is True %}
-								 Inactive 
-						{% else %}		
-								 Active
-						{% endif %}	  
-				</td>
-			  <td>
-				<a href="{% url 'quiz_detail' pk=quiz.id %}">
-				  {% trans "View details" %}
-				</a>
-			  </td>
-			</tr>
+            {% for quiz in quiz_list %}
 
-        {% endfor %}
-		  </tbody>
+                <tr>
+                    <td>{{ quiz.title }}</td>
+                    <td>{{ quiz.course_code }} -> {{ quiz.chapter_code }}</td>
+                    <td>{{ quiz.question_count }}</td>
+                    <td>{% if quiz.pre_test %}
+                        pre test <br>
+                    {% endif %}
+                        {% if quiz.post_test %}
+                            post test <br>
+                        {% endif %}
+                        {% if quiz.exam_paper %}
+                            exam <br>
+                        {% endif %}
+                    </td>
 
-		</table>
+                    <td>{% if quiz.draft is True %}
+                        Inactive
+                    {% else %}
+                        Active
+                    {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'quiz_detail' pk=quiz.id %}">
+                            {% trans "View details" %}
+                        </a>
+                    </td>
+                </tr>
 
-	{% else %}
+            {% endfor %}
+            </tbody>
+
+        </table>
+
+    {% else %}
         <p>{% trans "There are no available quizzes" %}.</p>
     {% endif %}
 {% endblock %}
