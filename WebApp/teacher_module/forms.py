@@ -7,9 +7,9 @@ from django.conf import settings
 from django.forms import ModelForm
 from django.forms import SelectDateWidget
 from django.utils.translation import ugettext as _
-
+from forum.models import Thread, Appendix, ForumAvatar, Post, Topic
 from forum.forms import TopicForm, ThreadEditForm
-from forum.models import Thread, Post
+
 from .models import MemberInfo
 
 if 'pagedown' in settings.INSTALLED_APPS:
@@ -63,7 +63,6 @@ class ThreadForm(ModelForm):
 
 class TopicForm(TopicForm):
     pass
-
 
 class ReplyForm(ModelForm):
     if use_pagedown:

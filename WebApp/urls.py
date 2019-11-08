@@ -1,8 +1,12 @@
+from django.conf.urls import url
 # from django.contrib.auth.views import login, logout
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
 
+from . import api
 from . import views
+
 
 urlpatterns = (
     # urls for Profile

@@ -1,10 +1,11 @@
-from django import forms
 from django.contrib import admin
-
+from django import forms
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
+from WebApp.models import MemberInfo, CenterInfo
 
 
 class CategoryInfoAdminForm(forms.ModelForm):
+
     class Meta:
         model = CategoryInfo
         fields = '__all__'
@@ -20,6 +21,7 @@ admin.site.register(CategoryInfo, CategoryInfoAdmin)
 
 
 class SurveyInfoAdminForm(forms.ModelForm):
+
     class Meta:
         model = SurveyInfo
         fields = '__all__'
@@ -36,6 +38,7 @@ admin.site.register(SurveyInfo, SurveyInfoAdmin)
 
 
 class QuestionInfoAdminForm(forms.ModelForm):
+
     class Meta:
         model = QuestionInfo
         fields = '__all__'
@@ -51,6 +54,7 @@ admin.site.register(QuestionInfo, QuestionInfoAdmin)
 
 
 class OptionInfoAdminForm(forms.ModelForm):
+
     class Meta:
         model = OptionInfo
         fields = '__all__'
@@ -66,6 +70,7 @@ admin.site.register(OptionInfo, OptionInfoAdmin)
 
 
 class SubmitSurveyAdminForm(forms.ModelForm):
+
     class Meta:
         model = SubmitSurvey
         fields = '__all__'
@@ -80,6 +85,7 @@ admin.site.register(SubmitSurvey, SubmitSurveyAdmin)
 
 
 class AnswerInfoAdminForm(forms.ModelForm):
+
     class Meta:
         model = AnswerInfo
         fields = '__all__'

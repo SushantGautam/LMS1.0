@@ -4,19 +4,19 @@
 {% load quiz_tags %}
 
 {% block title %} {% trans "Progress Page" %} {% endblock %}
-{% block description %} {% trans "User Progress Page" %} {% endblock %}
-{% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="/">QUIZ</a></li>
-
-
-    <li class="breadcrumb-item active" aria-current="page">PROGRESS PAGE</li>
-{% endblock %}
+{% block description %} {% trans "User Progress Page" %} {% endblock %} 
+{% block breadcrumb %} 
+<li class="breadcrumb-item"><a href="/">QUIZ</a></li>
+                
+ 
+<li class="breadcrumb-item active" aria-current="page">PROGRESS PAGE</li> 
+{% endblock %} 
 
 {% block content %}
 
-    {% if cat_scores %}
+  {% if cat_scores %}
 
-        <!-- <h1>{% trans "Question Category Scores" %}</h1>
+  <!-- <h1>{% trans "Question Category Scores" %}</h1>
 
   <table class="table table-bordered table-striped">
 
@@ -47,50 +47,50 @@
   </table> -->
 
 
-    {% endif %}
+  {% endif %}
 
-    {% if exams %}
+  {% if exams %}
 
-        <hr>
-        <div class="exam-results text-center">
-            <h2>{% trans "Previous exam papers" %}</h2>
-        </div>
+	<hr> 
+	<div class="exam-results text-center">
+			<h2>{% trans "Previous exam papers" %}</h2>
+	 </div>
 
 
-        <p class="lead">
-            <i class="fa fa-angle-right "></i>
-            {% trans " Below are the results of exams that you have sat." %}
-        </p>
+  <p class="lead">
+			<i class="fa fa-angle-right "></i>
+	{% trans " Below are the results of exams that you have sat." %}
+  </p>
 
-        <table class="table table-bordered table-striped">
+  <table class="table table-bordered table-striped">
 
-            <thead>
-            <tr>
-                <th class="quiz-capital">{% trans "Quiz Title" %}</th>
-                <th class="quiz-capital">{% trans "Total Correct" %}</th>
-                <th class="quiz-capital">{% trans "Full Marks" %}</th>
-                <th class="quiz-capital">%</th>
-            </tr>
-            </thead>
+	<thead>
+	  <tr>
+		<th class="quiz-capital">{% trans "Quiz Title" %}</th>
+		<th class="quiz-capital">{% trans "Total Correct" %}</th>
+		<th class="quiz-capital">{% trans "Full Marks" %}</th>
+		<th class="quiz-capital">%</th>
+	  </tr>
+	</thead>
 
-            <tbody>
+	<tbody>
 
-            {% for exam in exams %}
+	  {% for exam in exams %}
 
-                <tr>
-                    <td>{{ exam.quiz.title }}</td>
-                    <td>{{ exam.current_score }}</td>
-                    <td>{{ exam.get_max_score }}</td>
-                    <td>{{ exam.get_percent_correct }}</td>
-                </tr>
+	  <tr>
+		<td>{{ exam.quiz.title }}</td>
+		<td>{{ exam.current_score }}</td>
+		<td>{{ exam.get_max_score }}</td>
+		<td>{{ exam.get_percent_correct }}</td>
+	  </tr>
 
-            {% endfor %}
+	  {% endfor %}
 
-            </tbody>
+	</tbody>
 
-        </table>
+  </table>
 
-    {% endif %}
+  {% endif %}
 
 
 {% endblock %}
