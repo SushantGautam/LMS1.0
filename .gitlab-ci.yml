@@ -24,9 +24,9 @@ test:
   script:
   - "echo \"Running unit tests…\""
   - "python manage.py migrate --noinput"
-  - "coverage run --source='.' manage.py test"
-  - "coverage report"
-  - "coverage xml"
+  - 'coverage run --source='.' manage.py test --omit="*/.venv*"'
+  - 'coverage report --omit="*/.venv*"'
+  - 'coverage xml --omit="*/.venv*"'
   - "python-codacy-coverage -r coverage.xml"
   after_script:
   - ./cc-test-reporter after-build 
