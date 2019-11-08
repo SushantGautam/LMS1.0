@@ -149,6 +149,12 @@ class MemberInfo(AbstractUser):
     def get_update_url(self):
         return reverse('memberinfo_update', args=(self.pk,))
 
+    def __str__(self):
+        if self.first_name and self.last_name:
+            return  self.first_name + " " + self.last_name
+        else:
+            return "(NaN) " + self.username
+
     # def create_user(self, username, email=None, password=None, **extra_fields):
     #     extra_fields.setdefault('is_staff', True)
     #     extra_fields.setdefault('is_superuser', True)
@@ -506,6 +512,7 @@ class InningGroup(models.Model):
 
     def __str__(self):
         return self.Course_Code.Course_Name
+        # + " - " + str(self.Teacher_Code.count())
 
     def __unicode__(self):
         return u'%s' % self.pk
