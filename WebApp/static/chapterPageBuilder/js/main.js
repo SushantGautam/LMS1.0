@@ -1,23 +1,15 @@
 $(document).ready(function() {
-    $("#import_zip_link").on('click', function(e){
-        e.preventDefault();
-        $("#importzipfile:hidden").trigger('click');
-    });
-    
-    $('#loadingDiv').hide();
 
-    function getYoutubeID(url) {
-        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        var match = url.match(regExp);
-    
-        if (match && match[2].length == 11) {
-            return match[2];
-        } else {
-            return 'error';
-        }
+    var button_html = {
+        html : 
+            `
+                <div class = "hamburger-content">
+                    <div class = "ham1"></div>
+                    <div class = "ham2"></div>
+                    <div class = "ham3"></div>                
+                </div>
+            `
     }
-
-    // ==================For TextBoxx================================
     $('#tabs-for-download').droppable({
         tolerance: 'fit',
         drop: function( event, ui ) {
@@ -31,6 +23,8 @@ $(document).ready(function() {
             $(this).removeClass("over");
         },
      });
+
+    // ==================For TextBoxx================================
     class Textbox {
         constructor(collg = null, colmd = null, colsm = null, colxs = null, height = null, width = null, message="Type Something Here...") {
             let id = (new Date).getTime();
@@ -45,7 +39,7 @@ $(document).ready(function() {
                          <i class="fas fa-arrows-alt" id="draghere" ></i>
                      </div> 
                   </div>
-                  `;
+            `;
             this.renderDiagram = function() {
                 // dom includes the html,css code with draggable property
                 let dom = $(html).css({
@@ -78,375 +72,118 @@ $(document).ready(function() {
         }
     }
 
-    // ===========================FOR PICTURE=====================================
-
-    class picture {
-        constructor(collg = null, colmd = null, colsm = null, colxs = null, height = null, width = null, pic = null) {
-            let id = (new Date).getTime();
-            let position = {width, height };
-            let message = "";
-            if(pic == null){
-                message = "Drag and drop images here..."
-            }
-            let img = '';
-            if(pic != null)
-                img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: contain;"></img>`
-            let html =
-            `<div class='pic' col-lg-${collg} col-md-${colmd} col-sm-${colsm} col-xs-${colxs}>
-                <div id="pic-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                    <i class="fas fa-link imagelink" id=${id}></i>
-                </div>
-                ${img}
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' accept="image/*" name="userImage" style="display:none" id=${id + 1} class="imgInp" />
-                </form>
-                <p id="picture-drag">${message}</p>
-                </div>
-            </div>`
-
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-                
-            let dom = $(html).css({
-                // "position": "absolute",
-                // "top": position.top,
-                // "left": position.left,
-                "width": position.width,
-                "height": position.height
-            }).draggable({
-                //Constraint   the draggable movement only within the canvas of the editor
-                containment: "#tabs-for-download",
-                scroll: false,
-                cursor: "move",
-                snap: ".gridlines",
-                snapMode: 'inner',
-                cursorAt: { bottom: 0 }
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            // console.log(a);
-            // console.log($('#' + a.id));
-            $('#' + a.id).append(dom);
-            // canvas.append(dom);
-            };
-        }
-    }
-    
-     // ====================================For Video==============================
-
-     class video {
-        constructor(top, left, link=null, height=null, width=null) {
-            let id = (new Date).getTime();
-            var now = Math.floor(Math.random() * 900000) + 100000;
-            let position = { top, left, height, width };
-            let videoobj;
-            let message = ""
-            // if(link!=null){
-            //     videoobj = `<div id='${now}'><div>
-            //  <script>
-            //     var options = {
-            //         url: '${link}',
-            //         width: "${width}",
-            //         height: "${height}"
-            //     };
-              
-            //     var videoPlayer = new Vimeo.Player('${now}', options);
-            //   </script>`
-            //  ================================   end for vimeo    ===========================================
-            if(link!=null){
-
-                // videoobj = `
-                //         <video width="100%" height="75%" controls>
-                //             <source src="https://www.youtube.com/embed/${myYoutubeId}"  type="video/mp4">
-                //         </video>
-                // `
-                if(link.startsWith('http')){
-                    videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" allowfullscreen></iframe>`
-                }else{
-                    videoobj = `
-                        <video width="100%" height="94%" controls>
-                            <source src="${link}"  type="video/mp4">
-                        </video>
-                `}
-            }else{
-                message = "drag and drop video here...";
-                videoobj = `<div class="progress">
-                <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>`;
-            }
-            let html =
-                `<div class='video-div'>
-                    <div id="video-actions">
-                        <i class="fas fa-trash" id=${id}></i>
-                        <i class="fas fa-upload" id=${id}></i>
-                        <i class="fas fa-link videolink" id=${id}></i>
-                    </div>
-                    <div>
-                        <p id="video-drag">${message}</p>
-                        
-                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
-                        </form>
-      
-                        
-                                ${videoobj}
-                    </div>
-                </div>`
-
-           
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "height": position.height,
-                    "width": position.width
-                }).draggable({
-                    //Constraint   the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    snap: ".gridlines",
-                    snapMode: 'inner',
-                    cursorAt: { bottom: 0 }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom)
-            };
-        }
-    }
-
-    // =====================For Button==============================
-
-    class Button {
-        constructor(top, left, link=null, height=null, width=null, name='Button') {
-        let id = (new Date).getTime();
-        let position = { top, left, height, width };
-        let button_link = ""
-        if(link != null){
-            button_link = 'href = '+ link
-        }
-        let html = `
-                        <div class="btn-div">
-                            <div class="options">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-link"   id=${id} ></i>
-                                <i class="fas fa-arrows-alt" id="draghanle"></i>
-                            
-                            </div> 
-                            <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank"  >${name}</a>
-                        </div>
-        
-                `;
-
-                // href = ${link}
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": position.top,
-            "left": position.left,
-            "height": position.height,
-            "width": position.width,
-            }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#tabs-for-download",
-            scroll: false,
-            grid: [50, 20],
-            cursor: "move",
-            handle: '#draghanle'
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom);
-            // canvas.append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
-
-
-    // ====For PDF======
-    class PDF {
-        constructor(top, left, link=null, height=null, width=null) {
-        let id = (new Date).getTime();
-        var pdfobj;
-        let position = { top, left, height, width };
-        if(link!=null){
-            pdfobj = `
-                <object data="${link}" type="application/pdf" width="100%" height="100%">
-                    alt : <a href="${link}"></a>
-                </object>
-            `
-        }else{
-            pdfobj = "";
-        }
-        let html = `
-            <div class='pdfdiv'>
-                <div id="pdfdiv-actions1">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                </div>
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' accept="application/pdf"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
-                    </form>
-                    <p id="pdfdiv-drag" placeholder="drag and drop files here..."></p>
-                </div>
-                ${pdfobj}
-            </div>
-        `;
-        this.RemoveElement = function () {
-            return idss;
-        }
-        this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-            let dom = $(html).css({
-            "position": "absolute",
-            "top": position.top,
-            "left": position.left,
-            "height": position.height,
-            "width": position.width
-            }).draggable({
-                //Constrain the draggable movement only within the canvas of the editor
-                containment: "#tabs-for-download",
-                scroll: false,
-                grid: [50, 20],
-                cursor: "move",
-                snap: ".gridlines",
-                snapMode: 'inner',
-                cursorAt: { bottom: 0 }
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom);
-            // Making element Resizable
-
-        };
-        }
-    }
-
-    // =====================For 3DObjects==============================
-
-    class _3Dobject {
-        constructor(top, left, file=null, height=null, width=null) {
-            let id = (new Date).getTime();
-            let position = { top, left, width, height };
-            let message = "";
-            var _3dobj;
-            if(file == null){
-                message = "Drag and drop 3D objects here..."
-            }
-            if(file!=null){
-                _3dobj = `
-                    <iframe src="${file}" width="100%" height="100%">
-                    </iframe>
-                `
-            }else{
-                _3dobj = "";
-            }
-            let html =
-            `<div class='_3dobj-div'>
-                <div id="_3dobj-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                </div>
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
-                </form>
-                <p id="_3dobj-drag">${message}</p>
-                
-                </div>
-                ${_3dobj}
-            </div>`
-
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-            // dom includes the html,css code with draggable property
-                
-            let dom = $(html).css({
-                "position": "absolute",
-                "top": position.top,
-                "left": position.left,
-                "width": position.width,
-                "height": position.height
-            }).draggable({
-                //Constraint   the draggable movement only within the canvas of the editor
-                containment: "#tabs-for-download",
-                scroll: false,
-                cursor: "move",
-                snap: ".gridlines",
-                snapMode: 'inner',
-                cursorAt: { bottom: 0 }
-            });
-
-            var a = document.getElementsByClassName("current")[0];
-            $('#' + a.id).append(dom);
-            };
-        }
-    }
-    
     class Layout1{
         constructor(){
             let id = (new Date).getTime();
-            let position = { top, left, width, height };
-            
-            var html = ""
+            let html = `
+                    <div id="layout${id}" class="layout1">
+                        <div class = "l1d1" style = "height:100%">
+                            ${button_html.html}
+                        </div>
+                    </div>
+            `;
+            this.renderDiagram = function() {
+                // dom includes the html,css code with draggable property
+                let dom = $(html).css({
+                    // "position": "absolute",
+                    
+                    // "height": position.height,
+                    // "width": position.width,
+                    // "border": "2px dashed #000 !important"
+
+                })
+                
+                var a = document.getElementsByClassName("current")[0];
+                $('#' + a.id).append(dom);
+            };
         }
     }
-// ====================== End of initializing elements ========================
-    
-    // title click function
-    $(".tlimit").on("click", function() {
-        $("#title_id").css({
-            'display': 'block'
-        });
-    });
 
-    // save button click function
-    $("#save_btn").on("click", function(e) {
-        e.preventDefault();
-        var title = $("#main_title").val();
-        $(".tlimit").html(title);
-        $("#title_id").css({
-            'display': 'none'
-        });
-    });
+    class Layout2{
+        constructor(){
+            let id = (new Date).getTime();
+            let html = `
+                    <div id="layout${id}" class="layout2">
+                        <div class = "l1d1">
+                            ${button_html.html}
+                        </div>
+                        <div class = "l1d2">
+                            ${button_html.html}
+                        </div>
+                    </div>
+            `;
+            this.renderDiagram = function() {
+                // dom includes the html,css code with draggable property
+                let dom = $(html).css({
+                    // "position": "absolute",
+                    
+                    // "height": position.height,
+                    // "width": position.width,
+                    // "border": "2px dashed #000 !important"
 
-    $("#close1").on("click", function() {
-        $("#title_id").css({
-            'display': 'none'
-        });
-    });
-
-    let sidebarWidth = $(".sidebar").width(); // get width of sidebar
-    let toolbarheight = $('.editor-toolbar').height();
-    // Making sidebar tools draggable
-    $(".draggable").draggable({
-        helper: "clone",
-        revert: "invalid",
-        cursor: "pointer",
-        cursorAt: {
-            top: 56,
-            left: 56
+                })
+                
+                var a = document.getElementsByClassName("current")[0];
+                $('#' + a.id).append(dom);
+            };
         }
-    });
+    }
 
+    class Layout3{
+        constructor(){
+            let id = (new Date).getTime();
+            let html = `
+                    <div id="layout${id}" class="layout3">
+                        <div class = "l1d1">${button_html.html}</div>
+                        <div class = "l1d2">${button_html.html}</div>
+                        <div class = "l1d3">${button_html.html}</div>
+                    </div>
+            `;
+            this.renderDiagram = function() {
+                // dom includes the html,css code with draggable property
+                let dom = $(html).css({
+                    // "position": "absolute",
+                    
+                    // "height": position.height,
+                    // "width": position.width,
+                    // "border": "2px dashed #000 !important"
+
+                })
+                
+                var a = document.getElementsByClassName("current")[0];
+                $('#' + a.id).append(dom);
+            };
+        }
+    }
+
+    class Layout4{
+        constructor(){
+            let id = (new Date).getTime();
+            let html = `
+                    <div id="layout${id}" class="layout4">
+                        <div class = "l1d1">${button_html.html}</div>
+                        <div class = "l1d2">${button_html.html}</div>
+                        <div class = "l1d3">${button_html.html}</div>
+                        <div class = "l1d4">${button_html.html}</div>
+                    </div>
+            `;
+            this.renderDiagram = function() {
+                // dom includes the html,css code with draggable property
+                let dom = $(html).css({
+                    // "position": "absolute",
+                    
+                    // "height": position.height,
+                    // "width": position.width,
+                    // "border": "2px dashed #000 !important"
+
+                })
+                
+                var a = document.getElementsByClassName("current")[0];
+                $('#' + a.id).append(dom);
+            };
+        }
+    }
+    
     function TextboxFunction(collg = null, colmd = null, colsm = null, colxs = null, message="Type Something Here...", height = null, width = null){
         const textBox = new Textbox(collg, colmd, colsm, colxs, message);
         
@@ -504,1188 +241,68 @@ $(document).ready(function() {
           });
     }
 
-    function PictureFunction(collg = null, colmd = null, colsm = null, colxs = null, height = null, width = null, pic=null){
-        const Pic = new picture(
-            collg,
-            colmd,
-            colsm,
-            colxs,
-            height,
-            width,
-            pic);
-        Pic.renderDiagram();
-    
-        $('.fa-upload').click(function(e) {
-            trigger = parseInt(e.target.id) + 1;
-            $('#' + trigger).trigger('click');
-        });
-
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
-        });
-
-        $('.imagelink').off().bind("click", function(e) {
-            var link_id = parseInt(e.currentTarget.id) + 1
-            var div = $('#' + e.currentTarget.id).parent().parent();
-            // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
-            var prevlink = $(this).parent().parent().find('img').attr('src')
-            if(prevlink == undefined){
-                prevlink = "";
-            }
-            var link = prompt("Link of image", prevlink);
-            if(link==null){
-                return false
-            }else if(!link.startsWith('http://') && !link.startsWith('https://')){
-                link = ''+link
-            }
-            
-            PictureFunction(div.css('top'),
-            div.css('left'),link,div.css('width'),div.css('height'));
-            div.remove()
-        });
-
-        $('.pic').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 150,
-            minHeight: 150
-        });
-
-        $('.pic').on('dragover', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            //   $(this).css('border',"2px solid #39F")
-        })
-    
-        $('.pic').on('drop', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            const files = e.originalEvent.dataTransfer.files;
-            var file = files[0];
-            upload(file);
-        });
-    
-        function upload(file) {
-            let div = $('#picture-drag').parent().parent();
-            const data = new FormData();
-            data.append("file-0", file);
-            data.append('chapterID', chapterID);
-            data.append('courseID', courseID);
-            data.append('type', 'pic');
-            $.ajax({
-                url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-                data: data,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST',
-                beforeSend: function() {
-                    div.append(`<div class="loader" id="loadingDiv"></div>`)
-                    $('#loadingDiv').show();
-                }, 
-                error: function(errorThrown){
-                    alert("Failed to upload PDF")
-                    div.find('#loadingDiv').remove();
-                },
-                success: function(data) {
-                    div.find('p').text("");
-                    div.find('#loadingDiv').remove();
-                    div.css({
-                        'background-image': 'url('+load_file_url+'/' + data.media_name + ')',
-                        'background-repeat': 'no-repeat',
-                        'background-size': 'contain',
-                        'background-position': 'center',
-                        'border': '0'
-                    });
-                },
-                error: function(data, status, errorThrown) {
-                    alert(data.responseJSON.message);
-                }
-            });
-            
-            $('#picture-drag').css({
-                'display': 'none'
-            })
-            
-
-            $(div).hover(function() {
-                $(this).css("border", "1px solid red");
-            }, function() {
-                $(this).css("border", '0')
-            })
-        }
-
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    let div = $(input).parent().parent().parent();
-                    var data = new FormData();
-                    $.each(input.files, function(i, file) {
-                        // console.log(Math.round((file.size / 1024))) // get image size
-                        data.append('file-' + i, file);
-                    });
-                    data.append('type', 'pic');
-                    data.append('chapterID', chapterID);
-                    data.append('courseID', courseID);
-                    $.ajax({
-                        url: save_file_url,
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        enctype: 'multipart/form-data',
-                        method: 'POST',
-                        type: 'POST',
-                        beforeSend: function() {
-                            div.append(`<div class="loader" id="loadingDiv"></div>`)
-                            $('#loadingDiv').show();
-                        }, 
-                        error: function(errorThrown){
-                            alert("Failed to upload PDF")
-                            div.find('#loadingDiv').remove();
-                        },
-                        success: function(data) {
-                            div.find('#loadingDiv').remove();
-                            div.find('p').text("");
-                            div.css({
-                            //   'background-image': 'url('+load_file_url+'/'+data.media_name+')',
-                            //   'background-repeat': 'no-repeat',
-                            //   'background-size': 'contain',
-                            //   'background-position': 'center',
-                            //   'border': '0'
-                            });
-                            div.find('img').prop('src', load_file_url+'/'+data.media_name)
-                            // PictureFunction(div.css('top'),
-                            // div.css('left'),load_file_url+'/'+data.media_name,div.css('width'),div.css('height'));
-                            // div.remove()
-                        },
-                        error: function(data, status, errorThrown) {
-                            alert(data.responseJSON.message);
-                        }
-                    });
-
-                    $('#picture-drag').css({
-                        'display': 'none'
-                    })
-                    
-                    $(div).hover(function() {
-                        $(this).css("border", "1px solid red");
-                    }, function() {
-                        $(this).css("border", '0')
-                    })
-
-                    $('.pic').resizable({
-                        containment: $('.editor-canvas'),
-                        grid: [20, 20],
-                        autoHide: true,
-                        minWidth: 150,
-                        minHeight: 150
-                    });
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $(".imgInp").change(function(e) {
-            readURL(this);
-
-        });
-    }
-
-    function ButtonFunction(top=null, left=null, link=null, height=null, width=null, name='Button'){
-        const btns = new Button(top, left, link, height, width, name);
+    function Layout1Function(){
+        const layout1 = new Layout1();
         
-        btns.renderDiagram();
-
-        // $('.btn').attr('contentEditable', true);
-
-        $('.btn').on('click',function(){
-            // alert('say me more!!')
-        })
-    
-        const div1 = $('i').parent();
-    
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-    
-        $('.fa-link').bind("click", function(e) {
-            var btn_id = parseInt(e.currentTarget.id) + 1
-            
-            $('#btn-form input[type=text]').val('');
-            $('#btn-name').val($(this).parent().parent().find('a').text());
-            var link = $(this).parent().parent().find('a').attr('href');
-            if(link != undefined){
-                link = link.replace('http://','');
-            }
-            $('#btn-link').val(link);
-
-            $('#button_id').val(btn_id);
-            $('#btn-modal').modal();
-        });
-    
-        $('.btn-button').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 50,
-            minHeight: 30,
-        }); 
-    }
-    
-    function PDFFunction(top=null, left=null, link=null, height=null, width=null){
-        const Pdf = new PDF(
-            top,
-            left, link, height, width   
-        );
-    
-        Pdf.renderDiagram();
-
-          // ==for pdf upload==
-        $('.fa-upload').click(function(e) {
-            trigger = parseInt(e.target.id) + 1;
-            $('#' + trigger).trigger('click');
-        });
-    
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-
-        $('.pdfdiv').on('dragover', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            //   $(this).css('border',"2px solid #39F")
-        })
-
-        $('.pdfdiv').on('drop', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            const files = e.originalEvent.dataTransfer.files;
-            var file = files[0];
-            upload(file);
-        });
-
-        function upload(file) {
-            const data = new FormData();
-            data.append("file-0", file);
-            data.append('chapterID', chapterID);
-            data.append('courseID', courseID);
-            data.append('type', 'pic');
-            $.ajax({
-                url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-                data: data,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST',
-                beforeSend: function() {
-                    div.append(`<div class="loader" id="loadingDiv"></div>`)
-                    $('#loadingDiv').show();
-                }, 
-                error: function(errorThrown){
-                    alert("Failed to upload PDF")
-                    div.find('#loadingDiv').remove();
-                },
-                success: function(data) {
-                    div.append(`
-                        <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
-                            alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">test.pdf</a>
-                        </object>
-                    `);
-
-                },
-                error: function(data, status, errorThrown) {
-                    alert(data.responseJSON.message);
-                }
-            });
-            let div = $('#pdf-actions1').parent();
-            $('#pdf-actions1').css({
-                'display': 'none'
-            });
-
-            $(div).hover(function() {
-                $(this).css(
-                    {
-                        "border": "1px solid red",
-
-                });
-               
-
-              
-            }, function() {
-                $(this).css("border", '0')
-            });
-
-
-            $(div).resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth:500,
-                minHeight:500
-
-
-            
-        })
-
-
-        $('.pdf').css({
-            'resize':' both'
-        })
-
-           
-
-        }
-
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    let div = $(input).parent().parent().parent();
-                    var data = new FormData();
-                    
-                    $.each(input.files, function(i, file) {
-                        // console.log(Math.round((file.size / 1024))) // get image size
-                        data.append('file-' + i, file);
-                    });
-                    data.append('type', 'pdf');
-                    data.append('chapterID', chapterID);
-                    data.append('courseID', courseID);
-                    $.ajax({
-                        url: save_file_url,
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        enctype: 'multipart/form-data',
-                        method: 'POST',
-                        type: 'POST',
-                        beforeSend: function() {
-                            div.append(`<div class="loader" id="loadingDiv"></div>`)
-                            $('#loadingDiv').show();
-                        }, 
-                        error: function(errorThrown){
-                            alert("Failed to upload PDF")
-                            div.find('#loadingDiv').remove();
-                        },                     
-                        success: function(data) {
-                            div.find('#loadingDiv').remove();
-                            div.find('p').remove();
-
-                            div.append(`
-                                <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
-                                    alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">${data.media_name}</a>
-                                </object>
-                            `);
-                        },
-                        error: function(data, status, errorThrown) {
-                            alert(data.responseJSON.message);
-                        }
-                    });
-
-                    $('#picture-drag').css({
-                        'display': 'none'
-                    })
-                    
-                    $(div).hover(function() {
-                        $(this).css("border", "1px solid red");
-                    }, function() {
-                        $(this).css("border", '0')
-                    })
-
-                    $('.pdf').resizable({
-                        containment: $('#tabs-for-download'),
-                        grid: [20, 20],
-                        autoHide: true,
-                        minWidth: 150,
-                        minHeight: 150
-                    });
-
-                    $('.pdf').css({
-                        'resize':'both'
-                    })
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $('.pdfdiv').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-          
-        });
-
-        $(".pdfInp").change(function(e) {
-            readURL(this);
-        });
+        layout1.renderDiagram();
     }
 
-    function VideoFunction(top=null, left=null, link=null, height=null, width=null){
-        const Videos = new video(top, left, link, height, width);
-        Videos.renderDiagram();
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-        $('.fa-upload').click(function(e) {
-            trigger = parseInt(e.target.id) + 1;
-            $('#' + trigger).trigger('click');
-        });
-        $('.videolink').off().bind("click", function(e) {
-            var link_id = parseInt(e.currentTarget.id) + 1
-            var div = $(this).parent().parent();
-            var prevlink = $(this).parent().parent().find('iframe').attr('src');
-            if(prevlink == undefined){
-                prevlink = "http://";
-            }
-            var link = prompt("Youtube url", prevlink);
-            if(link==null){
-                return false
-            }else if(!link.startsWith('http://') && !link.startsWith('https://')){
-                link = 'http://'+link
-            }
-            myYoutubeId = getYoutubeID(link)
-            div.find('p, iframe, video').remove();
-            div.append(`
-                <iframe width="100%" height="94%" src="https://www.youtube.com/embed/${myYoutubeId}" frameborder="0" allowfullscreen></iframe>
-            `);
-        });
-    
-        $('.video-div').on('dragover', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-        })
-    
-        $('.video-div').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 150,
-            minHeight: 150
-        });
-
-        $('.video-div').on('drop', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            
-    
-            $(this).css({
-                'padding': '5px'
-            })
-    
-            const files = e.originalEvent.dataTransfer.files;
-            var file = files[0];
-            upload(file);
-        });
-    
-        function upload(file) {
-            var data = new FormData();
-    
-            data.append("FileName", file);
-            data.append('chapterID', chapterID);
-            data.append('courseID', courseID);
-            data.append('type', 'video');
-            $.ajax({
-                xhr: function() {
-                    var xhr = new window.XMLHttpRequest();
-    
-                    xhr.upload.addEventListener("progress", function(evt) {
-                        $('#progress-bar').css("display", "block");
-    
-                        if (evt.lengthComputable) {
-                            var percentComplete = evt.loaded / evt.total;
-                            percentComplete = parseInt(percentComplete * 100);
-                            console.log(percentComplete);
-                            // $('#progress-bar-fill').css('width', percentComplete + '%');
-                                $("#progress-bar").attr('aria-valuenow',percentComplete).css('width',percentComplete+'%').text(percentComplete+'%');
-
-                            if (percentComplete === 100) {
-                                // $('#progress-bar').css("display", "none");
-                                let div = $('#video-drag').parent().parent();
-                                $('#video-drag').css({
-                                    'display': 'none'
-                                });
-    
-                                div.append(`
-                                        <video width="400" height="200" controls>
-                                        <source src="../uploads/${data.media_name}" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                `);
-    
-                                $(div).hover(function() {
-                                    $(this).css("border", "1px solid red");
-                                }, function() {
-                                    $(this).css("border", '0')
-                                })
-    
-                                $('.video-div').resizable({
-                                    containment: $('.editor-canvas'),
-                                    grid: [20, 20],
-                                    autoHide: true,
-                                    minWidth: 150,
-                                    minHeight: 150
-                                });
-                            }
-    
-                        }
-                    }, false);
-    
-                    return xhr;
-                },
-                url: save_video_url,
-                data: data,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST',
-                success: function(data) {
-                    console.log(data);
-                }
-    
-            });
-    
-        }
-    
-        function readURL(input) {
-    
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    let div = $(input).parent().parent().parent();
-                    div.find('video').remove();
-                    var data = new FormData();
-                    $.each(input.files, function(i, file) {
-                        data.append('file-' + i, file);
-                    });
-                    data.append('chapterID', chapterID);
-                    data.append('courseID', courseID);
-                    data.append('type', 'video');
-                    $.ajax({
-                        url: save_video_url,
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        method: 'POST',
-                        type: 'POST',
-                        beforeSend: function() {
-                            div.append(`<div class="loader" id="loadingDiv"></div>
-                            <p id = "percentcomplete"></p>
-                            `)
-                            $('#loadingDiv').show();
-                        }, 
-                        error: function(errorThrown){
-                            alert("Failed to upload Video"+errorThrown)
-                            console.log(errorThrown)
-                            div.find('#loadingDiv').remove();
-                            div.find('#percentcomplete').remove();
-                        },                     
-                        success: function(data) {
-                            div.find('#loadingDiv').remove();
-                            div.find('#percentcomplete').remove();
-                            div.find('p').remove();
-                            if(data.hasOwnProperty('html')){
-                                var html = $(data.html);
-                                $(html).css('height','100%')
-                                $(html).css('width','100%')
-
-                                div.append(`
-                                    <video width="100%" height="100%">
-                                        <source src="${data.link}">
-                                    </video>
-                                `);
-                            }else{
-                                div.append(`
-                                    <video width="100%" height="75%" controls>
-                                        <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
-                                    </video>
-                                `)
-                            }
-                        },
-                        xhr: function() {
-                            var xhr = new window.XMLHttpRequest();
-    
-                            xhr.upload.addEventListener("progress", function(evt) {
-                                $('#progress-bar').css("display", "block");
-    
-                                if (evt.lengthComputable) {
-                                    var percentComplete = evt.loaded / evt.total;
-                                    percentComplete = parseInt(percentComplete * 100);
-                                    console.log(percentComplete);
-                                    $('#percentcomplete').text(percentComplete+'%')
-                                    $('#progress-bar-fill').css('width', percentComplete + '%');
-    
-                                    if (percentComplete === 100) {
-                                        $('#progress-bar').css("display", "none");
-                                        let div = $('#video-drag').parent().parent();
-                                        $('#video-drag').css({
-                                            'display': 'none'
-                                        });
-    
-                                //         div.append(`
-                                //         <video width="400" height="200" controls>
-                                //         <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
-                                //          Your browser does not support the video tag.
-                                //       </video>
-                                //   `);
-    
-                                        $(div).hover(function() {
-                                            $(this).css("border", "1px solid red");
-                                        }, function() {
-                                            $(this).css("border", '0')
-                                        })
-    
-                                        $('.video-div').resizable({
-                                            containment: $('#tabs-for-download'),
-                                            grid: [20, 20],
-                                            autoHide: true,
-                                            minWidth: 150,
-                                            minHeight: 150
-                                        });
-                                        // console.log(file.name);
-                                    }
-                                }
-                            }, false);
-    
-                            return xhr;
-                        }
-    
-                    });
-    
-                    $('#video-drag').css({
-                        'display': 'none'
-                    });
-    
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    
-        $(".video-form").change(function(e) {
-            readURL(this);
-        });
-    }
-
-    function _3dFunction(top=null, left=null, file = null, height=null, width=null){
-        const _3d = new _3Dobject(
-            top,
-            left,
-            file,
-            height,width);
-        _3d.renderDiagram();
-    
-        $('#_3dfile-link').on('change', function(e){
-            $('#mtl-file').prop('disabled', false);
-        });
+    function Layout2Function(){
+        const layout2 = new Layout2();
         
-        $('.fa-upload').click(function(e) {
-            // trigger = parseInt(e.target.id) + 1;
-            // $('#' + trigger).trigger('click');
-            $('#_3dfile-link').val('');
-            $('#mtl-file').val('');
-            $('#mtl-file').prop('disabled', true);
-            $('#link-3d-submit').val(parseInt(e.target.id))
-            $('#link-3d-modal').modal();
-        });
-
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
-        });
-
-        $('._3dobj-div').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 150,
-            minHeight: 150
-        });
-
-        $('.3dobj').on('dragover', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            //   $(this).css('border',"2px solid #39F")
-        });
-        function readURL(upload_btn) {
-            if($('#_3dfile-link')[0].files.length != 0){
-                var obj = $('#_3dfile-link')[0].files[0];
-            }
-            else{
-                alert("Please select a file to upload")
-                return false
-            }
-            if($('#mtl-file')[0].files.length != 0){
-                var mtl = $('#mtl-file')[0].files[0];
-            }
-            else{
-                var mtl = null
-            }
-            
-            let div = $('#'+upload_btn.val()).parent().parent();
-            var data = new FormData();
-        
-            data.append('csrfmiddlewaretoken', csrf_token);
-            data.append('objfile', obj);
-            data.append('mtlfile', mtl);
-            data.append('type', '3d');
-            data.append('chapterID', chapterID);
-            data.append('courseID', courseID);
-            $.ajax({
-                url: save_3d_url,
-                data: data,
-                contentType: false,
-                processData: false,
-                enctype: 'multipart/form-data',
-                method: 'POST',
-                type: 'POST',
-                beforeSend: function() {
-                    div.append(`<div class="loader" id="loadingDiv"></div>`)
-                    $('#loadingDiv').show();
-                }, 
-                error: function(errorThrown){
-                    alert("Failed to upload File")
-                    div.find('#loadingDiv').remove();
-                },                     
-                success: function(data) { 
-                    _3dFunction(div.css('top'),
-                        div.css('left'),'/3DViewer/media/chapterBuilder/'+courseID+'/'+chapterID+'/'+data.objname,div.css('height'),div.css('width'));
-                    div.remove()
-                },
-                error: function(data, status, errorThrown) {
-                    alert(data.responseJSON.message);
-                }
-            });
-
-            $('#_3dobj-drag').css({
-                'display': 'none'
-            })
-            
-            $(div).hover(function() {
-                $(this).css("border", "1px solid red");
-            }, function() {
-                $(this).css("border", '0')
-            })
-
-            $('._3dobj').resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
-
-            $('._3dobj').css({
-                'resize':'both'
-            });
-        }
-
-        $("#link-3d-submit").unbind().click(function(e) {
-            $('#link-3d-modal').modal('hide');
-            readURL($(this));
-        }); 
+        layout2.renderDiagram();
     }
 
-    // delete page function
-    $('.tabs-to-click').on('click', 'div .delete-page-btn', function(){
-        var confirmation = confirm("Are you sure you want to delete?")
-        if(confirmation==false){
-            return false
-        }
-        $('#tab'+this.value).remove();
-        $(this).parent().parent().prev().find('li')[0].click();        
-        $(this).parent().parent().remove();
-        displaypagenumbers();
+    function Layout3Function(){
+        const layout3 = new Layout3();
+        
+        layout3.renderDiagram();
+    }
+
+    function Layout4Function(){
+        const layout4 = new Layout4();
+        
+        layout4.renderDiagram();
+    }
+
+    $(".draggable").draggable({
+        helper: "clone",
+        revert: "invalid",
+        cursor: "pointer",
+        cursorAt: {
+            top: 56,
+            left: 56
+        },
+        grid: [ 20, 20 ]
     });
 
-    // clone Page function
-    $('.tabs-to-click').on('click', '.clone-page-btn', function(){
-        var num_tabs = $(".tabs-to-click ul li").length + 1;
-
-        let copy = $(this).parent().parent().clone();
-        // for cloning page navigation tabs
-        copy.find('.clone-page-btn').val(num_tabs);
-        copy.find('.delete-page-btn').val(num_tabs);
-        copy.find('.pagenumber').val(num_tabs);
-        copy.find('.pagenumber').attr('onclick','openTab(event,"tab'+num_tabs+'")');
-        $(this).parent().parent().after(copy);
-        // =============================================================================
-
-        // for editor cloning
-        editorcopy = $('#tab'+this.value).clone();
-        editorcopy.attr('id','tab'+num_tabs);
-        editorcopy.empty();
-        const obj=$("#tab"+this.value).children();
-        $(".tabs").append(editorcopy);
-        $(this).parent().parent().next().find('li')[0].click()
-        $.each( obj, function( i, value ) {
-            if(value.classList.contains('textdiv')){
-                var clone = $(this).find('.note-editable').clone();
-                // clone.find('div').remove();
-                var content_html = clone.html();
-                TextboxFunction($(this).css("top"),
-                $(this).css("left"),$(this).css("height"),$(this).css("width"),content_html);
-            }
-            if(value.classList.contains('pic')){
-                PictureFunction($(this).css("top"),
-                $(this).css("left"),value.style.backgroundImage, $(this).css("width"),$(this).css("height"));
-            }
-            if(value.classList.contains('btn-div')){
-                ButtonFunction($(this).css("top"),
-                $(this).css("left"),$(this).children("a").attr('href'), $(this).css("height"),$(this).css("width"));
-            }
-            if(value.classList.contains('pdf')){
-                PDFFunction($(this).css("top"),
-                $(this).css("left"),$(this).find('object').attr('data'), $(this).css("height"),$(this).css("width"));
-            }
-            if(value.classList.contains('video-div')){
-                console.log($(this).find('video > source').attr('src'))
-                if($(this).find('iframe').length>0){
-                    var vidlink = $(this).find('iframe').attr('src');
-                }else if($(this).find('video').length){
-                    var vidlink = $(this).find('video > source').attr('src');  
-                }
-                VideoFunction($(this).css("top"),
-                $(this).css("left"),vidlink, $(this).css("height"),$(this).css("width"));
-            }
-        });
-
-        
-        // =========================================================================
-       
-        $(".editor-canvas").droppable({
-            drop: function(event, ui){
-                dropfunction(event,ui)
-            }
-        });
-
-        displaypagenumbers();
-
-        // alert('Clone Successful')
-    });
-    // =====================================================================================
+    // $(".editor-canvas").droppable({
+    //     drop: function(event, ui){
+    //         dropfunction(event,ui)
+    //     }
+    // });
 
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
-            TextboxFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth, "20%", "35%");
-        } else if (ui.helper.hasClass('picture')) {
-            PictureFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth);
-            //object of video component
-        } else if (ui.helper.hasClass('video')) {
-            VideoFunction(ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
-        } else if (ui.helper.hasClass('buttons')) {
-            ButtonFunction(ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
-        } else if (ui.helper.hasClass('grid-1')) {
-            PictureFunction(
-                collg = 12,
-                colmd = 12,
-                colsm = 12,
-                colxs =12,
-                // top = 0,
-                // left = 0,
-                height="50%",
-                width = "100%",
-                "",
-            );
-            
-            
-            // ===============for textbox inside grid-1============
-            TextboxFunction(
-                collg = 12, 
-                colmd = 12,
-                colsm = 12,
-                colxs =12,
-                // top="50%",
-                // left=0,
-                height="45%", width='100%'
-            );
-        } else if (ui.helper.hasClass('grid')) {
-            VideoFunction(
-                top = 0,
-                left = 0,
-                null,
-                height="50%",width = "100%");
-            
-            
-            // ===============for textbox inside grid-1============
-            TextboxFunction(
-                top="52%",
-                left=0,
-                height="45%", width="100%"
-            );
-        } else if (ui.helper.hasClass('title-slide')) {
-            PictureFunction(
-                top = 0,
-                left = "0%",
-                "",
-                width = "50%", height="60%");
-            PictureFunction(
-                top = 0,
-                left = "50%",
-                "",
-                width = "50%", height="60%");
-            TextboxFunction(
-                top="62%",
-                left=0,
-                height="35%", width="100%",
-                message="Your Content Here"
-            );
-        } else if (ui.helper.hasClass('title-content-details')) {
-            TextboxFunction(
-                top="0%",
-                left=0,
-                height="10%", width="100%",
-                message="Your Title Here"
-            );
-            TextboxFunction(
-                top="13%",
-                left=0,
-                height="84%", width="100%",
-                message="Your Content Here"
-            );
-        } else if (ui.helper.hasClass('pdf-text')) {
-            PDFFunction(
-                top = "0%",
-                left = 0,
-                link="",
-                height = "60%", width="100%");
-            
-            
-            // ===============for textbox inside grid-1============
-            TextboxFunction(
-                top="62%",
-                left=0,
-                height="35%", width="100%"
-            );
-        
-        } else if (ui.helper.hasClass('3dobject')) {
-            _3dFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth); 
-        }else if(ui.helper.hasClass('Pdf')){
-            PDFFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth);
+            TextboxFunction();
         }
-        $('.fa-trash').click(function(e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-    }
+        else if (ui.helper.hasClass('layouticon1')) {
+            Layout1Function();
+        }
+        else if (ui.helper.hasClass('layouticon2')) {
+            Layout2Function();
+        }
+        else if (ui.helper.hasClass('layouticon3')) {
+            Layout3Function();
+        }
+        else if (ui.helper.hasClass('layouticon4')) {
+            Layout4Function();
+        }
+    } 
 
-    $(".editor-canvas").droppable({
+    $("#tabs-for-download").droppable({
         drop: function(event, ui){
             dropfunction(event,ui)
         }
     });
-
-    $("#add-page-btn").on("click", function() {
-        newpagefunction();
-    });
-    
-    function newpagefunction(){
-        var num_tabs = $(".tabs-to-click ul li").length + 1;
-        
-        $(".tabs-to-click ul").append(`
-            <div>
-                 <p style="display:inline-block"></p> 
-                <span style="float:right ">
-                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
-                </span>
-
-                <span style="float:right ">
-                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
-                </span>
-                <li class="tabs-link pagenumber " value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')"></li>
-               
-               <hr class="white-hr"/>
-            
-
-            </div>
-        `);
-        $(".tabs").append(
-            `<p id='tab${num_tabs}' style="display:none" class="tab-content-no droppable editor-canvas ui-droppable">
-            
-            </p>`
-        );
-
-        $(".editor-canvas").droppable({
-            drop: function(event, ui){
-                dropfunction(event,ui);
-            }
-        });
-        displaypagenumbers();
-    }
-
-    $("#importzipfile").change(function(e) {
-        var confirmation = confirm('All current data will be replaced! Are you sure you want to continue?')
-        if(confirmation == false){
-          return false
-        }
-        let input = this.files[0];
-        var fileExtension = ['zip'];
-        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
-            alert(fileExtension.join(', ')+" formats allowed only");
-            return false
-        }
-        var filedata = new FormData();
-        filedata.append("filename",input);
-        filedata.append("chapterID",chapterID);
-        filedata.append("courseID",courseID);
-        filedata.append("csrfmiddlewaretoken",csrf_token);
-        $.ajax({
-            url: import_zip_url,
-            contentType: false,
-            processData: false,
-            data: filedata,
-            enctype: 'multipart/form-data',
-            method: 'POST',
-            beforeSend: function() {
-                $('#tabs-for-download').append(`<div class="loader" id="loadingDiv"></div>
-                <p id = "percentcomplete"></p>
-                `)
-                $('#loadingDiv').show();
-            }, 
-            success: function(data){
-              $('#tabs-for-download').empty();
-              $('.tabs-to-click > ul').empty();
-              display(data);
-            },
-            error: function(errorThrown){
-              $('#tabs-for-download').find('#loadingDiv').empty();                
-                console.log(errorThrown)
-                alert(errorThrown.responseJSON.message)
-            }
-        });
-    });
-
-    function display(data = ""){
-        $('#chaptertitle').text(chaptertitle);
-        $('#tabs-for-download').empty();    // empty current canvas 
-        $('.tabs-to-click > ul > li:first').remove()
-        if(data.pages == undefined){
-            $('#add-page-btn').click()
-        }
-        $.each(data.pages, function(key, value){
-            newpagefunction()   // add pages corresponding to the number of pages in json
-            $('.tabs-to-click > ul > div > li')[key-1].click()
-            $.each(value, function(count){
-                // -------------------------------
-                $.each(value[count], function(div,div_value){
-                    if(div == 'textdiv'){
-                        $.each(div_value, function(css, css_value){
-                            css_string = JSON.stringify(css_value)
-
-                            TextboxFunction(css_value.tops,
-                            css_value.left,css_value.height,css_value.width,css_value.content);
-                        });
-                    }
-                    if(div == 'pic'){
-                        $.each(div_value, function(css, css_value){
-                            css_string = JSON.stringify(css_value)
-                            PictureFunction(css_value.tops,
-                                css_value.left,css_value['background-image'],css_value.width,css_value.height);
-                        });
-                    }
-
-                    if(div == 'btn-div'){
-                        $.each(div_value, function(css, css_value){
-                            css_string = JSON.stringify(css_value)
-                            
-                            ButtonFunction(css_value.tops,
-                                css_value.left, 
-                                css_value.link,
-                                css_value.height, css_value.width, css_value.btn_name);
-                        });
-                    }
-
-                    if(div == 'pdf'){
-                        $.each(div_value, function(css, css_value){
-                            css_string = JSON.stringify(css_value)
-                            PDFFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value['link'],
-                                css_value.height,css_value.width);
-                        });
-                    }
-
-                    if(div == 'video'){
-                        $.each(div_value, function(css, css_value){
-                            css_string = JSON.stringify(css_value)
-                            let link;
-                            if(css_value.hasOwnProperty('online_link')){
-                                link = css_value.online_link
-                            }else{
-                                link = css_value.local_link
-                            }
-                            VideoFunction(
-                                css_value.tops,
-                                css_value.left,
-                                link,
-                                css_value.height,css_value.width);
-                        });
-                    }
-
-                    if(div == '_3d'){
-                        $.each(div_value, function(css, css_value){
-                            css_string = JSON.stringify(css_value)
-                            _3dFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value['link'],
-                                css_value.height,css_value.width);
-                        });
-                    }
-                });
-            });
-        });
-        $('.tabs-to-click > ul > div > li')[0].click()
-    }
-    
-    display(data);
 });
-
-function displaypagenumbers(){
-    $('.pagenumber').each(function(key,value){
-        // $(this).parent().children('p').text('')
-        $(this).parent().children('p').text(key+1);
-    })
-}
-
-// Button Form Submit
-
-$('#btn-submit').on('click', function(){
-    var btn_name = $('#btn-name').val();
-    var btn_link = $('#btn-link').val();
-    var btn_id = $('#button_id').val();
-    if(btn_link != ""){
-        $('#' + btn_id).attr({
-            "href": `http://${btn_link}`
-        });
-    }else{
-        $('#' + btn_id).removeAttr('href');
-    }
-    $('#' + btn_id).text(btn_name);
-    $('#btn-modal').modal('hide');
-})
-
-// ======================================================================
-
-function openTab(evt, tab_no) {
-    tabcontent = document.getElementsByClassName("tab-content-no");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-        tabcontent[i].className = tabcontent[i].className.replace("current", "");
-    }
-    tablinks = document.getElementsByClassName("tabs-link");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace("current", "");
-    }
-
-    document.getElementById(tab_no).style.display = "block";
-    document.getElementById(tab_no).className += " current";
-    evt.currentTarget.className += " current";
-
-}
