@@ -145,12 +145,11 @@
                         if(data.is_taken == true){
                             $('#username-error-message').text(data.error_message);
                             $('#id_username').focus();
-                        }
-                        else if(pw1.includes(username) && username != "" && pw1.length < 16){
+                        }else if(data.is_taken != true){
+                            $('#username-error-message').text('');
+                        }else if(pw1.includes(username) && username != "" && pw1.length < 16){
                             $("#password-error-message").text("Username and Password are similar.");
                             $('#id_password1').focus();
-                            $('#username-error-message').text('');
-                        }else{
                             $('#username-error-message').text('');
                         }
                     },
