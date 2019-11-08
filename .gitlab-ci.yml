@@ -19,7 +19,7 @@ test:
   cache:
       paths:
         - .cache/pip
-        - /venv/
+        - /venv
   coverage: /^TOTAL.*\s+(\d+\%)$/
   image: "python:3.6"
   script:
