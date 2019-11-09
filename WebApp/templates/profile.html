@@ -125,30 +125,30 @@
                                             <div class="row">
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                        <label for="id_username" class="col-form-label control-label">User Name</label>
+                                                        <label for="id_username" class="col-form-label control-label">User Name*</label>
                                                         <input type="text" name="username" class="form-control" value="{{ user.username}}" id="id_username" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                        <label for="id_first_name" class="col-form-label control-label">First Name</label>
+                                                        <label for="id_first_name" class="col-form-label control-label">First Name*</label>
                                                         <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" id="id_first_name" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                        <label for="id_last_name" class="col-form-label control-label">Last Name</label>
+                                                        <label for="id_last_name" class="col-form-label control-label">Last Name*</label>
                                                         <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" id="id_last_name" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                                                        <label for="id_Member_BirthDate" class="col-form-label control-label">Date of Birth</label>
+                                                        <label for="id_Member_BirthDate" class="col-form-label control-label">Date of Birth*</label>
                                                         <input type="date" class="form-control" id="id_Member_BirthDate" max="9999-12-31" value="{{ user.Member_BirthDate|date:'Y-m-d' }}" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-3">
-                                                    <label for="email" class="title-label d-block">Gender</label>
+                                                    <label for="email" class="title-label d-block">Gender*</label>
                                                     <div class="custom-control custom-radio pmd-radio custom-control-inline">
                                                         <input type="radio" id="male" value="M" name="gender" class="custom-control-input" {% if user.Member_Gender == 'M' %}checked{% endif %}>
                                                         <label class="custom-control-label pmd-radio-ripple-effect" for="male">Male</label>
@@ -208,13 +208,13 @@
                                             <div class="row">
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                        <label for="id_email" class="col-form-label control-label">Personal Email</label>
+                                                        <label for="id_email" class="col-form-label control-label">Personal Email*</label>
                                                         <input type="email" name="email" class="form-control" value="{{ user.email }}" id="id_email" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                        <label for="id_Member_Phone" class="col-form-label control-label">Phone Number</label>
+                                                        <label for="id_Member_Phone" class="col-form-label control-label">Phone Number*</label>
                                                         <input type="tel" name="Member_Phone" class="form-control" id="id_Member_Phone" value="{{ user.Member_Phone }}" required>
                                                     </div>
                                                 </div>
