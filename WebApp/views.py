@@ -385,9 +385,7 @@ class MemberInfoCreateView(CreateView):
     form_class = MemberInfoForm
 
     def form_valid(self, form):
-        print("here")
         if form.is_valid():
-            print("get")
             obj = form.save(commit=False)
             obj.Center_Code = self.request.user.Center_Code
             obj.password = make_password(obj.password)
@@ -551,12 +549,14 @@ class MemberInfoDeleteView(DeleteView):
     success_url = reverse_lazy('memberinfo_list')
 
     def post(self, request, *args, **kwargs):
+        redirect_link = self.request.POST.get('redirect','memberinfo_list')
         try:
-            return self.delete(request, *args, **kwargs)
+            self.delete(request, *args, **kwargs)
+            return redirect(redirect_link)
         except:
             messages.error(request,
                            "You can't delete this user instead you can turn off the status value which will disable the user.")
-            return redirect('memberinfo_list')
+            return redirect(redirect_link)
 
 
 class CourseInfoListView(ListView):
