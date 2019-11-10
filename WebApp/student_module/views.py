@@ -557,15 +557,16 @@ class SearchView(ListView):
             'user__forum_avatar'
         ).order_by(
             get_thread_ordering(self.request)
-        )
+        ).filter(topic_id__in=Topic_related_to_user(self.request))[:100]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        context['title'] = context['panel_title'] = (
+        context['title'] = context['panel_title'] = _(
             'Search: ') + self.kwargs.get('keyword')
         context['show_order'] = True
+        context['keyword'] = self.kwargs.get('keyword')
         return context
-
+    
 def search_redirect(request):
     if request.method == 'GET':
         keyword = request.GET.get('keyword')

@@ -1824,4 +1824,21 @@ label .asteriskField{
 }
 
 /* multichoice widget css */
+.selector {
+    width: auto !important;
+}
 
+/* session register page */
+.info-text{
+    display:none;
+    background:azure;
+    padding-top:0.6em;
+    margin:1em auto;
+    /* width: 50%; */
+}
+.button-info{
+    cursor:pointer;
+    margin: 2em auto;
+    width: 20%;
+    color:#222;
+}

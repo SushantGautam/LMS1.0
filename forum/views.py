@@ -266,7 +266,7 @@ class SearchView(LoginRequiredMixin, ListView):
         keywords = self.kwargs.get('keyword')
         query = get_query(keywords, ['title'])
         return Thread.objects.filter(
-            query, topic__center_associated_with_id = self.request.user.id
+            query
         ).select_related(
             'user', 'topic'
         ).prefetch_related(
@@ -295,14 +295,20 @@ def search_redirect(request):
 @login_required
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
     topic = None
+    topics =  Topic.objects.all()
     node_group = NodeGroup.objects.all()
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
         topic = Topic.objects.get(pk=topic_pk)
-    topics = Topic.objects.filter(node_group=nodegroup_pk).filter(id__in=Topic_related_to_user(request))
+    if nodegroup_pk:
+        topics = topics.filter(node_group=nodegroup_pk)
+    topics = topics.filter(id__in=Topic_related_to_user(request))
+    # print('topics', topics, nodegroup_pk)
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
+       
         if form.is_valid():
+          
             t = form.save()
             return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
     else:
