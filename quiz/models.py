@@ -493,10 +493,10 @@ class Quiz(models.Model):
 
     success_text = models.TextField(
         blank=True, help_text=_("Displayed if user passes."),
-        verbose_name=_("Success Text"))
+        verbose_name=_("Success Text"), default=_("Congratulations!!!."))
 
     fail_text = models.TextField(
-        verbose_name=_("Fail Text"),
+        verbose_name=_("Fail Text"), default=_("Sorry, You Failed!."),
         blank=True, help_text=_("Displayed if user fails."))
 
     draft = models.BooleanField(
