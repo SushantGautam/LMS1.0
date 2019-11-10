@@ -24,8 +24,8 @@ class ThreadForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(ThreadForm, self).__init__(*args, **kwargs)
-        self.fields['topic'].queryset = Topic.objects.filter(
-            center_associated_with=self.user.Center_Code)
+        # self.fields['topic'].queryset = Topic.objects.filter(
+        #     center_associated_with=self.user.Center_Code)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', _('Submit')))
 
