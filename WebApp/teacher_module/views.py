@@ -1216,6 +1216,7 @@ def get_thread_ordering(request):
 
 from forum.views import SearchView
 class SearchView(SearchView):
+
     template_name = 'teacher_module/teacher_forum/search.html'
     
 def search_redirect(request):
