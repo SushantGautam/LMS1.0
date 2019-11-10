@@ -49,12 +49,12 @@ class QuizForm(forms.ModelForm):
 
     # override __init__() to
     # remove "required" from question field
-    # and hide friendly url for now????
+    # and hide friendly url for now????'exam_paper', 'duration', 'pass_mark', 'negative_marking',
+    #                   'negative_percentage',
 
     class Meta:
         model = Quiz
-        fields = ['title', 'description', 'exam_paper', 'duration', 'pass_marks', 'negative_marking',
-                  'negative_percentage', 'random_order', 'mcquestion', 'tfquestion', 'saquestion']
+        fields = ['title', 'description', 'random_order', 'mcquestion', 'tfquestion', 'saquestion']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, }),
         }
