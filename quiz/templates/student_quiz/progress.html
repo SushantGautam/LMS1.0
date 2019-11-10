@@ -1,0 +1,72 @@
+{% extends "student_module/base.html" %}
+{% load i18n %}
+
+{% load quiz_tags %}
+
+{% block title %} {% trans "Progress Page" %} {% endblock %}
+{% block description %} {% trans "User Progress Page" %} {% endblock %} 
+{% block breadcrumb %}
+                
+ 
+<li class="breadcrumb-item active" aria-current="page">PROGRESS PAGE</li> 
+{% endblock %} 
+
+{% block content %}
+	<hr>
+	<div class="exam-results text-center">
+			<h2>{% trans "Below are the quizes that you have taken" %}</h2>
+	 </div>
+
+  <table class="table table-bordered table-striped">
+
+	<thead>
+	  <tr>
+		<th class="quiz-capital">{% trans "Quiz Title" %}</th>
+		<th class="quiz-capital">{% trans "Quiz Type" %}</th>
+		<th class="quiz-capital">{% trans "Full Marks" %}</th>
+		<th class="quiz-capital">{% trans "Marks Obtained" %}</th>
+		<th class="quiz-capital">{% trans "Progress" %}</th>
+		<th class="quiz-capital">{% trans "Complete" %}</th>
+	  </tr>
+	</thead>
+
+	<tbody>
+
+	  {% for sitting in sittings %}
+
+	  <tr>
+		<td>{{ sitting.quiz.title }}</td>
+		<td>
+      {% if sitting.quiz.exam_paper %}
+        Exam Paper
+      {% endif %}
+
+      {% if sitting.quiz.pre_test and sitting.quiz.post_test%}
+        Pre-Test / Post-Test
+      {% elif sitting.quiz.pre_test %}
+        Pre-Test
+      {% elif sitting.quiz.post_test %}
+        Post-Test
+      {% endif %}
+
+
+    </td>
+		<td>{{ sitting.get_max_score }}</td>
+		<td>{{ sitting.current_score }}&nbsp;&nbsp;({{ sitting.get_percent_correct }}%)</td>
+		<td>{{ sitting.get_progress }}%</td>
+    <td>
+      {% if sitting.complete %}
+        <i class="fa fa-check fa-2x text-success"></i>
+      {% else %}
+        <i class="fa fa-times fa-2x text-danger"></i>
+      {% endif %}
+    </td>
+	  </tr>
+
+	  {% endfor %}
+
+	</tbody>
+
+  </table>
+
+{% endblock %}

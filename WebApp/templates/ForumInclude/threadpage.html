@@ -192,7 +192,7 @@
                         {% elif '/forum' in request.path %}
                         {% url 'forum:user_info' post.user_id %}
                         {% endif %}
-                                                   " class="username-link">{{ post.user }}</a>
+                                                   " class="username-link">{{ post.user.username }}</a>
 
                                                 </div>
 

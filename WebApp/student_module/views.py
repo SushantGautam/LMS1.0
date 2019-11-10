@@ -24,7 +24,7 @@ from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
-from quiz.models import Question, Quiz
+from quiz.models import Question, Quiz, Sitting
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth import get_user_model
@@ -35,6 +35,7 @@ from django.core.files.storage import FileSystemStorage
 from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
+from quiz.models import Progress
 
 datetime_now = datetime.now()
 
@@ -461,17 +462,24 @@ class Index(ListView):
         nodegroups = NodeGroup.objects.all()
         threads = []
 
+        # innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.request.user.pk))
+        # own_courses_forum_topics = Topic.objects.none()
         for ng in nodegroups:
             thread_counter = 0
-            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code).filter(id__in=Topic_related_to_user(self.request))
-            for topic in topics:
-                thread_counter += topic.threads_count
-            if thread_counter == 0:
-                nodegroups = nodegroups.exclude(pk = ng.pk)
-            else:
-                thread = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
-                    topic_id__in=Topic_related_to_user(self.request))[:4]
+            # general_topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code, course_associated_with__isnull=True) | Topic.objects.filter(node_group=ng.pk, center_associated_with__isnull= True, course_associated_with__isnull=True)
+            # if innings:
+            #     courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+            #     own_courses_forum_topics = Topic.objects.filter(node_group=ng.pk, course_associated_with__in=courses)
+            # topics = general_topics | own_courses_forum_topics
 
+            topics = Topic_related_to_user(self.request, node_group = ng)
+            for topic in topics:
+                thread_counter += topic.visible_threads_count
+            if thread_counter == 0:
+                 nodegroups = nodegroups.exclude(pk = ng.pk)
+            else:
+                    
+                thread = Thread.objects.visible().filter(topic_id__in=topics).order_by('pub_date')[:4]
                 threads += thread
 
         context['nodegroups'] = nodegroups
@@ -549,15 +557,16 @@ class SearchView(ListView):
             'user__forum_avatar'
         ).order_by(
             get_thread_ordering(self.request)
-        )
+        ).filter(topic_id__in=Topic_related_to_user(self.request))[:100]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        context['title'] = context['panel_title'] = (
+        context['title'] = context['panel_title'] = _(
             'Search: ') + self.kwargs.get('keyword')
         context['show_order'] = True
+        context['keyword'] = self.kwargs.get('keyword')
         return context
-
+    
 def search_redirect(request):
     if request.method == 'GET':
         keyword = request.GET.get('keyword')
@@ -789,24 +798,45 @@ def CourseForum(request, course):
 
 
 
-def Topic_related_to_user(request):
-    innings = InningInfo.objects.filter(
-        Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
-    own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
-        course_associated_with__isnull=True)
-    # print(other_center_topic,'other_center_topic')
-    assigned_topics = ''
-    if innings:
-        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
-        own_courses_forum_topics = Topic.objects.filter(course_associated_with__in=courses)
-        assigned_topics = own_courses_forum_topics | own_center_general_topic
+def Topic_related_to_user(request, node_group=None):
+    innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
+    if node_group == None:
+        own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code,
+        
+            course_associated_with__isnull=True)
+        assigned_topics = ''
+        if innings:
+            courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+            own_courses_forum_topics = Topic.objects.filter(course_associated_with__in=courses)
+            assigned_topics = own_courses_forum_topics | own_center_general_topic
+        else:
+            assigned_topics = own_center_general_topic
     else:
-        assigned_topics = own_center_general_topic
-
-    # print("assigned_topics", assigned_topics)
+        own_center_general_topic = Topic.objects.filter(node_group=node_group.pk, center_associated_with= request.user.Center_Code, course_associated_with__isnull=True) | Topic.objects.filter(node_group=node_group.pk, center_associated_with__isnull= True, course_associated_with__isnull=True)
+        if innings:
+            courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+            own_courses_forum_topics = Topic.objects.filter(node_group=node_group.pk, course_associated_with__in=courses)
+            assigned_topics = own_courses_forum_topics | own_center_general_topic
+        else:
+            assigned_topics = own_center_general_topic
     return assigned_topics
 
 
 def Thread_related_to_user(request):
-    # print("asigned threads",Thread.objects.filter(topic__in=Topic_related_to_user(request)))
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
+
+class QuizUserProgressView(TemplateView):
+    template_name = 'student_quiz/progress.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(QuizUserProgressView, self) \
+            .dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizUserProgressView, self).get_context_data(**kwargs)
+        progress, c = Progress.objects.get_or_create(user=self.request.user)
+        # context['cat_scores'] = progress.list_all_cat_scores
+        # context['exams'] = progress.show_exams()
+        context['sittings'] = Sitting.objects.all()
+        return context

@@ -16,3 +16,22 @@
 {% include "quiz_base/sitting_detail.html" %}
     
 {% endblock %}
+
+{% block customjss %}
+  <script>
+    $(".score_submit").click(function (e) {
+        console.log(parseFloat($(`#score${this.id}`).html()));
+          var user_input = parseFloat($(`#input${this.id}`).val());
+          var full_marks = parseFloat($(`#score${this.id}`).html());
+          console.log(user_input);
+          console.log(full_marks);
+          if(user_input>full_marks){
+              e.preventDefault();
+              alert("Score cannot be greater than full marks!");
+              return false
+          }
+
+      });
+  </script>
+
+{% endblock %}

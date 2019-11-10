@@ -49,45 +49,54 @@ class QuizForm(forms.ModelForm):
 
     # override __init__() to
     # remove "required" from question field
-    # and hide friendly url for now????
+    # and hide friendly url for now????'exam_paper', 'duration', 'pass_mark', 'negative_marking',
+    #                   'negative_percentage',
+
     class Meta:
         model = Quiz
-        fields = ['title', 'description', 'random_order', 'success_text', 'fail_text', 'mcquestion', 'tfquestion',
-                  'saquestion']
+        fields = ['title', 'description', 'random_order', 'mcquestion', 'tfquestion', 'saquestion']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4, }),
+        }
+        labels = {
+            "mcquestion": "Multiple Choice Questions",
+        }
+
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n/',)
 
     def __init__(self, *args, **kwargs):
         course_id = kwargs.pop('course_id')
+        #exam_paper = kwargs.pop('exam_paper')
         mcqueryset = MCQuestion.objects.filter(course_code=course_id)
         tfqueryset = TF_Question.objects.filter(course_code=course_id)
         saqueryset = SA_Question.objects.filter(course_code=course_id)
         super().__init__(*args, **kwargs)
-        self.fields['mcquestion'].required = False
-        self.fields['tfquestion'].required = False
-        self.fields['saquestion'].required = False
-        self.fields['success_text'].initial = 'Congratulations!!!'
-        self.fields['fail_text'].initial = 'Sorry!'
-        self.fields['mcquestion'].queryset = mcqueryset
-        self.fields['tfquestion'].queryset = tfqueryset
-        self.fields['saquestion'].queryset = saqueryset
+        # self.fields['mcquestion'].required = False
+        # self.fields['tfquestion'].required = False
+        # self.fields['saquestion'].required = False
+        # self.fields['mcquestion'].queryset = mcqueryset
+        # self.fields['tfquestion'].queryset = tfqueryset
+        # self.fields['saquestion'].queryset = saqueryset
 
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            Row(
-                Column('title', css_class='form-group col-md-4 mb-0'),
-                Column('description', css_class='form-group col-md-4 mb-0'),
-                HTML('''<div class=col-md-4></div>'''),
-                css_class='form-row'
-            ),
-            Row(
-                Column('success_text', css_class='form-group col-md-6 mb-0'),
-                HTML('''<div class=col-md-6></div>'''),
-                css_class='form-row'
-            ),
-            Field(PrependedText('fail_text',
-                                mark_safe('<span class="glyphicon glyphicon-envelope"></span>'),
-                                placeholder="Enter Email")),
-            'random_order', 'mcquestion', 'tfquestion', 'saquestion'
+        self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
+            queryset=MCQuestion.objects.filter(course_code=course_id),
+            required=False,
+            label="Multiple Choice Questions",
+            widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False)
+        )
+        self.fields['saquestion'] = forms.ModelMultipleChoiceField(
+            queryset=SA_Question.objects.filter(course_code=course_id),
+            required=False,
+            label="Short Answer Type Questions",
+            widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False)
+        )
+        self.fields['tfquestion'] = forms.ModelMultipleChoiceField(
+            queryset=TF_Question.objects.filter(course_code=course_id),
+            required=False,
+            label="True/False Questions",
+            widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False)
         )
 
     # override clean() to

@@ -160,7 +160,7 @@ def start(request):
 
         if request.user.Is_CenterAdmin:
             thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
-            wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
+            wordCloud = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
                 '-Register_DateTime')[:5]
@@ -202,7 +202,8 @@ def edit_basic_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = MemberInfo.objects.get(pk=request.user.id)
-            obj.username = request.POST['username']
+            if request.POST['username']:
+                obj.username = request.POST['username']
             obj.first_name = request.POST['first_name']
             obj.last_name = request.POST['last_name']
             obj.Member_BirthDate = request.POST['Member_BirthDate']
@@ -300,6 +301,7 @@ class register(CreateView):
             password = self.request.POST.get('password1')
 
             member_type = self.request.POST.get('member_type')
+            print(self.request.POST.get('member_type'))
             if member_type == "Is_Teacher":
                 self.object.Is_Teacher = True
             elif member_type == "Is_Student":

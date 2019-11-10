@@ -35,7 +35,7 @@
           e.preventDefault(); // avoid to execute the actual submit of the form.
           $('#id_mcquestion_to option').prop('selected', true);
           $.ajax({
-              url: "{% url 'choose_mcq' pk=object.pk %}", // URL to your view that serves new info
+              url: "{% url 'quiz_create_from_chapter' chapter_pk=object.pk test_type='pre_test' %}", // URL to your view that serves new info
               data: $(this).serialize(), // get the form data
               type: "POST", // GET or POST
               success: function (response) {

@@ -5,6 +5,8 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import SelectDateWidget
+# from django.db.models.fields.reverse_related import ManyToOneRel
+# from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 import datetime
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
@@ -254,6 +256,9 @@ class InningInfoForm(forms.ModelForm):
                                                                          Use_Flag=True)
         self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                      Use_Flag=True)
+
+        # rel = ManyToOneRel(self.instance.Course_Group.model, 'id',field_name="Course Group") 
+        # self.fields['Course_Group'].widget = RelatedFieldWidgetWrapper(self.fields['Course_Group'].widget, rel, self.admin_site)
 
 
 # AssignmentInfoForms
