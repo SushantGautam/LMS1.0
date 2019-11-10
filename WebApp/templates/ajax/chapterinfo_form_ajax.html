@@ -1,7 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
-<!-- {#<link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">#} -->
-<div class="se-pre-con-ajax"></div>
+
 <form method="post" id="ajaxchapterinfoform">
     {% csrf_token %}
     <div class="col-md-3 col-sm-12 col-xs-12 text-center">
@@ -16,17 +15,14 @@
                 Summary
             </label>
             <div class="controls ">
-                <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
-                    cols="40">{{ object.Summary }}</textarea>
+                <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary" cols="40">{{ object.Summary }}</textarea>
             </div>
         </div>
         <br>
     </div>
-    <!-- {#        <div class="col-md-12 col-sm-12 col-xs-12">#}
-    {#            {{ form.Page_Num|as_crispy_field }}<br>#}
-    {#        </div>#} -->
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+    <div class="col-md-12 col-sm-12 col-xs-12" id="div_use_flag">
+        <label for="id_Use_Flag" class="control-label ">Publish</label>
+        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked>
     </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -34,19 +30,14 @@
             class="select form-control">
     </div>
 
-
-
-    <div class="col-md-12" align="center">
+    <div class="col-md-12" style="margin:2em auto;">
         <button class="btn btn-success" type="submit">Submit</button>
     </div>
 
 </form>
 
-
-<!-- {#<script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>#} -->
+<script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
 <script>
-    $(".se-pre-con-ajax").fadeOut("fast");
-
     $("#ajaxchapterinfoform").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -63,11 +54,9 @@
                 "Course_Code": $('#id_Course_Code').val()
 
             },
-
             // get the form data
             type: $(this).attr('method'), // GET or POST
             success: function (response) {
-
                 console.log('Success')
                 location.reload()
             },

@@ -239,7 +239,7 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(
-            Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
+            Course_Code=self.kwargs.get('pk'),Use_Flag=True).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Question.objects.filter(

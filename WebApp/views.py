@@ -642,8 +642,10 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Chapter_No = request.POST["Chapter_No"]
         Obj.Chapter_Name = request.POST["Chapter_Name"]
         Obj.Summary = request.POST["Summary"]
-        # print(request.POST["Use_Flag"])
-        Obj.Use_Flag = True
+        if request.POST["Use_Flag"] == 'false':
+            Obj.Use_Flag = False
+        else:
+            Obj.Use_Flag = True
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
         Obj.save()
