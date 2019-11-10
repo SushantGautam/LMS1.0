@@ -1285,8 +1285,16 @@ $(document).ready(function() {
         if(confirmation==false){
             return false
         }
+        
+        if($(this).parent().parent().prev().find('li').length != 0 )
+            $(this).parent().parent().prev().find('li')[0].click();        
+        else if($(this).parent().parent().next().find('li').length != 0)
+            $(this).parent().parent().next().find('li')[0].click()
+        else{
+            alert("cannot delete only page");
+            return false
+        }
         $('#tab'+this.value).remove();
-        $(this).parent().parent().prev().find('li')[0].click();        
         $(this).parent().parent().remove();
         displaypagenumbers();
     });
