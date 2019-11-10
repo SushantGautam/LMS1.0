@@ -202,7 +202,8 @@ def edit_basic_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = MemberInfo.objects.get(pk=request.user.id)
-            obj.username = request.POST['username']
+            if request.POST['username']:
+                obj.username = request.POST['username']
             obj.first_name = request.POST['first_name']
             obj.last_name = request.POST['last_name']
             obj.Member_BirthDate = request.POST['Member_BirthDate']
