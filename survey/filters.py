@@ -5,7 +5,7 @@ from survey.models import SurveyInfo
 
 
 class SurveyFilter(FilterSet):
-    End_Date_lte = django_filters.DateTimeFilter(field_name="End_Date", lookup_expr='gte')
+    End_Date_gte = django_filters.DateTimeFilter(field_name="End_Date", lookup_expr='gte')
     Start_Date_lte = django_filters.DateTimeFilter(field_name="Start_Date", lookup_expr='lte')
 
     class Meta:
