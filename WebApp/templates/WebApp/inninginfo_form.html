@@ -1,12 +1,26 @@
-{% extends "base.html" %} {% load static %} {% load crispy_forms_tags %}
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
 {% block stylesheets %}
 {{ form.media }}
 <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet" />
 <link href="{% static '/build/css/custom.min.css' %}" rel="stylesheet" />
-<link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard.css' %}" rel="stylesheet" />
+<!-- <link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard.css' %}" rel="stylesheet" /> -->
 <link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard_theme_dots.css' %}" rel="stylesheet" />
-
+<style>
+  .selector-available, .selector-chosen {
+      width: 280px !important;
+  }
+  .selector select {
+      width: 280px !important;
+  }
+  .selector .selector-available input {
+      width: 210px !important;
+  }
+</style>
 {% endblock stylesheets %}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item" aria-current="page">
   <a href="{% url 'inninginfo_list' %}">Session</a>
@@ -16,26 +30,8 @@
   Edit Session {% endif %}
 </li>
 {% endblock %}
+
 {% block content %}
-<style>
-  .selector {
-    width: auto !important;
-  }
-
-  .selector-available,
-  .selector-chosen {
-    width: 280px !important;
-  }
-
-  .selector select {
-    width: 280px !important;
-  }
-
-  .selector .selector-available input {
-    width: 210px !important;
-  }
-</style>
-
 <div class="headerDiv">
   <h2 class="infoFormHeader">
     {% if '/inninginfo/create/' == request.path %}
@@ -99,23 +95,15 @@
 <form class="form-horizontal form-label-left" method="post" id="FormID">
   {% csrf_token %}
 
-  <div id="smartwizard">
+  <div id="smartwizard" class="sw-theme-dots">
     <ul>
-      <li>
-        <a href="#step-1">Step 1 <br><small>Choose Session Name</small></a>
-      </li>
-      <li>
-        <a href="#step-2">Step 2<br /><small>Choose Interval</small></a>
-      </li>
-      <li>
-        <a href="#step-3">Step 3<br /><small>Choose Students</small></a>
-      </li>
-      <li>
-        <a href="#step-4">Step 4<br /><small>Choose Courses</small></a>
-      </li>
+      <li><a href="#step-1">Step 1 <br><small>Choose Session Name</small></a></li>
+      <li><a href="#step-2">Step 2<br /><small>Choose Interval</small></a></li>
+      <li><a href="#step-3">Step 3<br /><small>Choose Students</small></a></li>
+      <li><a href="#step-4">Step 4<br /><small>Choose Courses</small></a></li>
     </ul>
     <div>
-      <div id="step-1" style="display: block;height: 24em;">
+      <div id="step-1">
         <h2 class="StepTitle text-center">Select Session Name</h2>
         <div class="col-md-12 col-sm-12 col-xs-12 text-center">
           <div class="col-md-9 col-sm-10 col-xs-12">
@@ -133,34 +121,33 @@
             </h1>
           </div>
           <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-            <br>
-            <span class="text-info">These session name are already predefined by University.<br />
+            <br><span class="text-info">These session name are already predefined by University.<br>
               Only if the session name is not defined previously you can create
-              New.</span><br /><br /><br />
+              New.</span>
           </div>
           <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-            <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222">Read More Info...</span>
-            <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
+            <div class="button-info">Read More Info...</div>
+            <div class="col-md-3"></div>
+            <p class="info-text col-md-6 col-sm-12 col-xs-12">
               INFO: Session is the interval for which the particular
-              Courses(Subjects) are taught and finished within it. It is the
+              Course are taught and finished within it. It is the
               breakdown of a program. For Ex: A Computer Engineering Bachelor
-              Course can be divided into 8 Semester here each Semester can be
-              named as Session Name, If it was taught yearwise then each year
+              program can be divided into 8 Session and each Session has a fixed
+              Session Name, If it was taught yearwise then each year
               can be named as Session Name. So Session represents the breakdown
               of a particular study, where certain Courses are taught.
             </p>
           </div>
         </div>
       </div>
-      <div id="step-2" style="display: none;">
+      <div id="step-2">
+      <h2 class="StepTitle text-center">Select the duration of the Session</h2>
         <div class="col-md-12 col-sm-12 text-center">
-
           <div class="col-md-6 col-sm-12 col-md-offset-3 text-center">
-            <h2 class="StepTitle">Select the duration of the Session</h2>
             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
               <div id="div_id_Start_Date" class="form-group">
                 <label for="id_Start_Date" class="control-label">
-                  Start Date
+                  Start Date*
                 </label>
                 <div class="controls ">
                   <input value="{{ object.Start_Date|date:'Y-m-d' }}" type="date" name="Start_Date" required=""
@@ -173,7 +160,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
               <div id="div_id_End_Date" class="form-group">
                 <label for="id_End_Date" class="control-label  requiredField">
-                  End Date
+                  End Date*
                 </label>
                 <div class="controls ">
                   <input value="{{ object.End_Date | date:'Y-m-d' }}" type="date" name="End_Date" required=""
@@ -187,10 +174,8 @@
         </div>
       </div>
 
-      <div id="step-3" style="display: none;height: 18em; ">
-        <h2 class="StepTitle text-center">
-          Choose Student Group for this Session
-        </h2>
+      <div id="step-3">
+        <h2 class="StepTitle text-center">Choose Student Group for this Session</h2>
         <div class="col-md-12 col-sm-12 col-xs-12 text-center">
           <div class="col-md-9 col-sm-9 col-xs-12">
             <div class="col-md-8 col-sm-12 col-xs-12 no-padding" style="float: right;">
@@ -208,8 +193,9 @@
             </h1>
           </div>
           <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-            <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222">Read More Info...</span>
-            <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
+            <div class="button-info">Read More Info...</div>
+            <div class="col-md-3"></div>
+            <p class="info-text col-md-6 col-sm-12 col-xs-12">
               INFO: Please select the student group you have created for this
               session. The student group will consists all the students enrolled
               in this session. You can see it in detail in student group page.
@@ -219,32 +205,23 @@
           </div>
         </div>
       </div>
-      <div id="step-4" style="display: none;" class="no-padding">
+      <div id="step-4" class="no-padding">
+        <h2 class="StepTitle text-center">Select Courses for Session</h2>
         <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-          <h2 class="StepTitle">
-            <b> Select Courses for Session </b>
-            <button type="button" class="btn btn-sm btn-primary" id="add-inninggroup-btn" data-toggle="modal"
-              data-target="#exampleModal3" style="margin-left:5em">
-              + Assign New Course
-            </button>
-          </h2>
+          <button type="button" class="btn btn-sm btn-primary" id="add-inninggroup-btn" data-toggle="modal"
+            data-target="#exampleModal3" style="margin-left:5em">+ Assign New Course </button>
 
           <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3" style="width: auto;">
             {{ form.Course_Group }}
-            {# <select name="Course_Group" required data-field-name="Courses" id="id_Course_Group" multiple class="selectfilter" data-is-stacked="0">
-                {% for value, text in form.Course_Group.field.choices %}
-                  <option value="{{ value }}">{{ text }}</option> 
-                {% endfor %}
-            </select> #}
           </div>
           <div class="col-md-12 col-sm-12 col-xs-12">
             <span id="step3Validate" class="text-danger"></span>
-            <br>
-            *You can select multiple courses by holding <code> ctrl</code> key on
+            <br>*You can select multiple courses by holding <code> ctrl</code> key on
             Windows and <code> Command⌘</code> key on MAC.
-            <div class="text-center" style="padding-top: 2em">
-              <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222">Read More Info...</span>
-              <p class="info-text" style="display:none;background:azure;padding-top:0.6em;margin-top:1em;">
+            <div class="text-center">
+              <div class="button-info">Read More Info...</div>
+              <div class="col-md-3"></div>
+              <p class="info-text col-md-6 col-sm-12 col-xs-12">
                 INFO: Please select the courses that are included in this session.
                 You can assign multiple courses, here the courses are mapped with
                 teachers who taught them in this session, multiple teachers can be
@@ -280,150 +257,152 @@
   </div>
 </form>
 
-{% endblock %} {% block customjss %}
+{% endblock %}
 
-<!-- <script>
-  $("#id_End_Date").change(function () {
-    var startDate = document.getElementById("id_Start_Date").value;
-    var endDate = document.getElementById("id_End_Date").value;
+{% block customjss %}
 
-    if (Date.parse(endDate) <= Date.parse(startDate)) {
-      alert("End date should be greater than Start date");
-      document.getElementById("id_End_Date").value = "";
-    }
-  });
-</script> -->
-<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
-<script type="text/javascript">
-  $(document).ready(function () {
-    $("#smartwizard").smartWizard();
-    $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
-      if (stepNumber == 0) {
-        if ($("#id_Inning_Name").val() == "") {
+  <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+
+  <script type="text/javascript">
+
+    // Script to validate each step in wizard
+    $(document).ready(function () {
+      $("#smartwizard").smartWizard();
+      $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
+        if (stepNumber == 0) {
+          if ($("#id_Inning_Name").val() == "") {
+            e.preventDefault()
+            $("#step0Validate").html("Select an Inning Name")
+          }
+          else {
+            $("#step0Validate").html("")
+          }
+        };
+        if (stepNumber == 1) {
+          var startDate = document.getElementById("id_Start_Date").value;
+          var endDate = document.getElementById("id_End_Date").value;
+          if ($("#id_Start_Date").val() == "") {
+            e.preventDefault()
+            $("#step1aValidate").html("Insert Start Date")
+          }
+          else if ($("#id_End_Date").val() == "") {
+            e.preventDefault()
+            $("#step1aValidate").html("")
+            $("#step1bValidate").html("Insert End Date")
+          }
+          else if (Date.parse(endDate) <= Date.parse(startDate)) {
+            e.preventDefault()
+            $("#step1aValidate").html("")
+            $("#step1bValidate").html("End date should be greater than Start date")
+          }
+          else {
+            $("#step1aValidate").html("")
+            $("#step1bValidate").html("")
+          }
+        };
+        if (stepNumber == 2) {
+          if ($("#id_Groups").val() == "") {
+            e.preventDefault()
+            $("#step2Validate").html("Select a Student Group")
+          }
+          else {
+            $("#step2Validate").html("")
+          }
+        };
+
+      });
+      $("#FormID").submit(function (e) {
+        if ($("#id_Course_Group_to").has('option').length == '0') {
           e.preventDefault()
-          $("#step0Validate").html("Select an Inning Name")
+          $("#step3Validate").html("Select a Course")
         }
         else {
-          $("#step0Validate").html("")
+          $("#step3Validate").html("")
+
         }
-      };
-      if (stepNumber == 1) {
-        var startDate = document.getElementById("id_Start_Date").value;
-        var endDate = document.getElementById("id_End_Date").value;
-        if ($("#id_Start_Date").val() == "") {
-          e.preventDefault()
-          $("#step1aValidate").html("Insert Start Date")
+
+      })
+    });
+
+    // toggle read more info display
+    $(".button-info").click(function () {
+      $("p.info-text").toggle();
+    });
+
+    // Display Add new session name popup modal
+    $("#add-newsession-btn").on("click", function () {
+      $("#create_session_modal_body").empty();
+      $("#create_session_modal_body").append('<div class="se-pre-con-ajax"></div>');
+
+      $.ajax({
+        type: "GET",
+        url: "{% url 'sessioninfo_create_ajax' %}", // URL to your view that serves new info
+        success: function (response) {
+          $("#create_session_modal_body").append(response);
+        },
+        error: function () {
+          console.log("Error in generating session create form");
+        },
+        complete: function () {
+          $(".se-pre-con-ajax").fadeOut("fast");
         }
-        else if ($("#id_End_Date").val() == "") {
-          e.preventDefault()
-          $("#step1aValidate").html("")
-          $("#step1bValidate").html("Insert End Date")
-        }
-        else if (Date.parse(endDate) <= Date.parse(startDate)) {
-          e.preventDefault()
-          $("#step1aValidate").html("")
-          $("#step1bValidate").html("End date should be greater than Start date")
-        }
-        else {
-          $("#step1aValidate").html("")
-          $("#step1bValidate").html("")
-        }
-      };
-      if (stepNumber == 2) {
-        if ($("#id_Groups").val() == "") {
-          e.preventDefault()
-          $("#step2Validate").html("Select a Student Group")
-        }
-        else {
-          $("#step2Validate").html("")
-        }
-      };
+      });
 
     });
-    $("#FormID").submit(function (e) {
-      if ($("#id_Course_Group_to").has('option').length == '0') {
-        e.preventDefault()
-        $("#step3Validate").html("Select a Course")
-      }
-      else {
-        $("#step3Validate").html("")
 
-      }
+    // Display add new student group popup modal
+    $("#add-newgroup-btn").on("click", function () {
+      $("#create_groupmapping_modal_body").empty();
+      $("#create_groupmapping_modal_body").append('<div class="se-pre-con-ajax"></div>');
 
-    })
-  });
-</script>
-<script>
-  $("#myModal").on("shown.bs.modal", function () {
-    $("#myInput").trigger("focus");
-  });
+      $.ajax({
+        type: "GET",
+        url: "{% url 'group_create_ajax' %}", // URL to your view that serves new info
+        success: function (response) {
+          $("#create_groupmapping_modal_body").append(response);
+        },
+        error: function () {
+          console.log("Error in generating group create form");
+        },
+        complete: function () {
+          $(".se-pre-con-ajax").fadeOut("fast");
+        }
+      });
 
-  $(".button-info").click(function () {
-    $("p.info-text").toggle();
-  });
-
-  $("#add-newsession-btn").on("click", function () {
-    $("#create_session_modal_body").empty();
-    $.ajax({
-      type: "GET",
-      url: "{% url 'sessioninfo_create_ajax' %}", // URL to your view that serves new info
-      success: function (response) {
-        $("#create_session_modal_body").append(response);
-      },
-      error: function () {
-        console.log("Error in generating session create form");
-      },
-      complete: function () {
-        $(".se-pre-con-ajax").fadeOut("fast");
-      }
     });
-  });
 
-  $("#add-newgroup-btn").on("click", function () {
-    //$('#create_groupmapping_modal_body').load('{% url "group_create_ajax" %} script');
-    $("#create_groupmapping_modal_body").empty();
+    // Display add new teacher-course allocation popup modal
+    $("#add-inninggroup-btn").on("click", function () {
+      $("#create_inninggroup_modal_body").empty();
+      $("#create_inninggroup_modal_body").append('<div class="se-pre-con-ajax"></div>');
 
-    $.ajax({
-      type: "GET",
-      url: "{% url 'group_create_ajax' %}", // URL to your view that serves new info
-      success: function (response) {
-        $("#create_groupmapping_modal_body").append(response);
-      },
-      error: function () {
-        console.log("Error in generating group create form");
-      },
-      complete: function () {
-        $(".se-pre-con-ajax").fadeOut("fast");
-      }
-    });
-  });
-
-  $("#add-inninggroup-btn").on("click", function () {
-    $("#create_inninggroup_modal_body").empty();
-    $.ajax({
-      type: "GET",
-      url: "{% url 'inninggroup_create_ajax' %}", // URL to your view that serves new info
-      success: function (response) {
-        $("#create_inninggroup_modal_body").append(response);
-        window.addEventListener("load", function (e) {
-          $("select.selectfilter, select.selectfilterstacked").each(function () {
-            var $el = $(this),
-              data = $el.data();
-            SelectFilter.init(
-              $el.attr("id"),
-              data.fieldName,
-              parseInt(data.isStacked, 10)
-            );
+      $.ajax({
+        type: "GET",
+        url: "{% url 'inninggroup_create_ajax' %}", // URL to your view that serves new info
+        success: function (response) {
+          $("#create_inninggroup_modal_body").append(response);
+          window.addEventListener("load", function (e) {
+            $("select.selectfilter, select.selectfilterstacked").each(function () {
+              var $el = $(this),
+                data = $el.data();
+              SelectFilter.init(
+                $el.attr("id"),
+                data.fieldName,
+                parseInt(data.isStacked, 10)
+              );
+            });
           });
-        });
-      },
-      error: function () {
-        console.log("Error in generating group create form");
-      },
-      complete: function () {
-        $(".se-pre-con-ajax").fadeOut("fast");
-      }
+        },
+        error: function () {
+          console.log("Error in generating group create form");
+        },
+        complete: function () {
+          $(".se-pre-con-ajax").fadeOut("fast");
+        }
+      });
+
     });
-  });
-</script>
+
+  </script>
+
 {% endblock %}

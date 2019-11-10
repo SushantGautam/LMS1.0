@@ -11,10 +11,14 @@
  */
 
 /* SmartWizard Theme: Dots */
-.sw-theme-dots {
+
+.sw-theme-dots>.sw-container>div {
+  min-height: 30em;
 }
-.sw-theme-dots .sw-container {
-  min-height: 300px;
+.StepTitle{
+  padding:2em 0;
+  font-size: 1.5em;
+  font-weight: 600;
 }
 .sw-theme-dots .step-content {
   padding: 10px 0;

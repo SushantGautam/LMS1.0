@@ -269,7 +269,7 @@ class NodeGroup(models.Model):
 
 @python_2_unicode_compatible
 class Topic(models.Model):
-    title = models.CharField(max_length=30, verbose_name=_("title"))
+    title = models.CharField(max_length=240, verbose_name=_("title"))
     description = models.TextField(
         default='', blank=True, verbose_name=_("description"))
     node_group = models.ForeignKey(NodeGroup, verbose_name=_(

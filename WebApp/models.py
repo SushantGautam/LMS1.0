@@ -162,7 +162,7 @@ class MemberInfo(AbstractUser):
 
 
 class CourseInfo(models.Model):
-    Course_Name = CharField(max_length=500)
+    Course_Name = CharField(max_length=240)
     Course_Description = TextField(blank=True, null=True)
     Course_Cover_File = ImageField(upload_to="Course_images/", blank=True, null=True)
     Course_Level = IntegerField(blank=True, null=True)
