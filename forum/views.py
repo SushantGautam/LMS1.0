@@ -266,7 +266,7 @@ class SearchView(LoginRequiredMixin, ListView):
         keywords = self.kwargs.get('keyword')
         query = get_query(keywords, ['title'])
         return Thread.objects.filter(
-            query, topic__center_associated_with_id = self.request.user.id
+            query
         ).select_related(
             'user', 'topic'
         ).prefetch_related(
