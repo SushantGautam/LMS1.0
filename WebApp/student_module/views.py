@@ -539,9 +539,33 @@ def get_thread_ordering(request):
         return query_order
     return get_default_ordering()
 
-from forum.views import SearchView
-class SearchView(SearchView):
+
+class SearchView(ListView):
+    model = Thread
+    paginate_by = 10
     template_name = 'student_module/student_forum/search.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        keywords = self.kwargs.get('keyword')
+        query = get_query(keywords, ['title'])
+        return Thread.objects.visible().filter(
+            query
+        ).select_related(
+            'user', 'topic'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by(
+            get_thread_ordering(self.request)
+        ).filter(topic_id__in=Topic_related_to_user(self.request))[:100]
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['title'] = context['panel_title'] = _(
+            'Search: ') + self.kwargs.get('keyword')
+        context['show_order'] = True
+        context['keyword'] = self.kwargs.get('keyword')
+        return context
     
 def search_redirect(request):
     if request.method == 'GET':
