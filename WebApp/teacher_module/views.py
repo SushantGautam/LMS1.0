@@ -558,7 +558,11 @@ class QuizListView(ListView):
 
     def get_queryset(self):
         queryset = super(QuizListView, self).get_queryset()
-        return queryset.filter(cent_code=self.request.user.Center_Code)
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        return queryset.filter(
+            cent_code=self.request.user.Center_Code,
+            course_code__in=innings_Course_Code
+        )
 
 
 class QuizUpdateView(UpdateView):
@@ -633,6 +637,10 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
         user_filter = self.request.GET.get('user_filter')
         if user_filter:
             queryset = queryset.filter(user__username__icontains=user_filter)
+
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        my_quiz = Quiz.objects.filter(course_code__in=innings_Course_Code)
+        queryset = queryset.filter(quiz__in=my_quiz)
 
         return queryset
 

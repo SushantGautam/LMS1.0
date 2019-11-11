@@ -14,7 +14,7 @@ from django.db import transaction
 from django.db import models
 from django.views import View
 
-from WebApp.models import CourseInfo, ChapterInfo
+from WebApp.models import CourseInfo, ChapterInfo, InningGroup
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
     QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
@@ -163,6 +163,10 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
         if user_filter:
             queryset = queryset.filter(user__username__icontains=user_filter)
 
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        my_quiz = Quiz.objects.filter(course_code__in=innings_Course_Code)
+        queryset = queryset.filter(quiz__in=my_quiz)
+
         return queryset
 
 
@@ -197,7 +201,7 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
         total_score_obtained = 0
         for q in context['questions']:
             i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
-            #score_list = context['sitting'].score_list.replace("not_graded", "0")
+            # score_list = context['sitting'].score_list.replace("not_graded", "0")
             score = [s for s in context['sitting'].score_list.split(',') if s][i]
             q.score_obtained = score
             total += q.score
@@ -742,52 +746,60 @@ class QuizCreateWizard(SessionWizardView):
         return context
 
 
-class CreateQuizFromChapter(CreateView):
+class CreateQuizAjax(CreateView):
     model = Quiz
     form_class = QuizForm
     template_name = 'ajax_quiz/quiz_create_chapter_ajax.html'
 
     def form_valid(self, form):
-        related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
+        context = self.get_context_data()
         if form.is_valid():
+            print("form valid")
             self.object = form.save(commit=False)
             self.object.cent_code = self.request.user.Center_Code
-            self.object.course_code = related_chapter.Course_Code
-            self.object.chapter_code = related_chapter
-            self.object.pre_test = True if self.kwargs['test_type'] == 'pre_test' else False
-            self.object.post_test = True if self.kwargs['test_type'] == 'post_test' else False
-            if self.kwargs['test_type'] == 'exam_paper':
-                self.object.exam_paper = True
-                self.object.duration = self.request.POST['duration']
-                self.object.pass_mark = self.request.POST['pass_mark']
-                self.object.negative_marking = self.request.POST['negative_marking']
-                self.object.negative_percentage = self.request.POST['negative_percentage']
+            course_id = self.request.GET.get("course_id", None)
+            course_id = None if course_id == 'None' else int(course_id)
+            chapter_id = self.request.GET.get("chapter_id", None)
+            chapter_id = None if chapter_id == 'None' else int(chapter_id)
+            if course_id:
+                self.object.course_code = CourseInfo.objects.get(id=course_id)
+            if chapter_id:
+                self.object.chapter_code = ChapterInfo.objects.get(id=chapter_id)
+            self.object.pre_test = True if self.request.GET.get("test_type", None) == 'pre_test' else False
+            self.object.post_test = True if self.request.GET.get("test_type", None) == 'post_test' else False
+            self.object.exam_paper = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
             self.object.save()
         self.object.url = 'quiz' + str(self.object.id)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['chapter_pk'] = self.kwargs['chapter_pk']
-        related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
-        context['course_id'] = related_chapter.Course_Code.id
-        context['test_type'] = self.kwargs['test_type']
+        context['chapter_pk'] = self.request.GET.get("chapter_id", None)
+        context['course_id'] = self.request.GET.get("course_id", None)
+        context['test_type'] = self.request.GET.get("test_type", None)
         return context
 
     def get_success_url(self):
-        related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
-        return reverse(
-            'chapterinfo_detail',
-            kwargs={
-                'course': related_chapter.Course_Code.id,
-                'pk': related_chapter.pk,
-            },
-        )
+        context = self.get_context_data()
+        if context['test_type'] == "exam_paper":
+            return reverse(
+                'courseinfo_detail',
+                kwargs={
+                    'pk': context['course_id'],
+                },
+            )
+        else:
+            return reverse(
+                'chapterinfo_detail',
+                kwargs={
+                    'course': context['course_id'],
+                    'pk': context['chapter_pk'],
+                },
+            )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
-        kwargs.update({'course_id': related_chapter.Course_Code.id})
+        kwargs.update({'course_id': self.request.GET.get("course_id", None)})
         return kwargs
 
 

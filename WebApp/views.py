@@ -588,6 +588,7 @@ class CourseInfoDetailView(DetailView):
         context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
+        context['exam_quiz'] = Quiz.objects.filter(exam_paper=True, course_code=self.object)
         return context
 
 
