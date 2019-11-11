@@ -160,7 +160,7 @@ def start(request):
 
         if request.user.Is_CenterAdmin:
             thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
-            wordCloud = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code)
+            wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
                 '-Register_DateTime')[:5]

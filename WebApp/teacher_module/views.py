@@ -1143,7 +1143,8 @@ class Index(LoginRequiredMixin, ListView):
 
         for ng in nodegroups:
             thread_counter = 0
-            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code) | Topic.objects.filter(node_group=ng.pk, center_associated_with__isnull= True)
+            topics = Topic_related_to_user(self.request, node_group = ng)
+            # topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code) | Topic.objects.filter(node_group=ng.pk, center_associated_with__isnull= True)
             for topic in topics:
                 thread_counter += topic.threads_count
             if thread_counter == 0:
@@ -1214,10 +1215,34 @@ def get_thread_ordering(request):
         return query_order
     return get_default_ordering()
 
-from forum.views import SearchView
-class SearchView(SearchView):
 
+class SearchView(ListView):
+    model = Thread
+    paginate_by = 10
     template_name = 'teacher_module/teacher_forum/search.html'
+    context_object_name = 'threads'
+
+    def get_queryset(self):
+        keywords = self.kwargs.get('keyword')
+        query = get_query(keywords, ['title'])
+        return Thread.objects.filter(
+            query
+        ).select_related(
+            'user', 'topic'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by(
+            get_thread_ordering(self.request)
+        ).filter(topic_id__in=Topic_related_to_user(self.request))[:100]
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['title'] = context['panel_title'] = _(
+            'Search: ') + self.kwargs.get('keyword')
+        context['show_order'] = True
+        context['keyword'] = self.kwargs.get('keyword')
+        return context
+    
     
 def search_redirect(request):
     if request.method == 'GET':
@@ -1372,7 +1397,7 @@ class UserThreads(ListView):
     context_object_name = 'threads'
 
     def get_queryset(self):
-        return Thread.objects.visible().filter(
+        return Thread.objects.filter(
             user_id=self.kwargs.get('pk')
         ).select_related(
             'user', 'topic'
@@ -1452,7 +1477,7 @@ def CourseForum(request, course):
     course_node_forum = None
     try:
         course_node_forum = NodeGroup.objects.get(title='Course')
-    except ObjectDoesNfotExist:
+    except ObjectDoesNotExist:
         NodeGroup.objects.create(title='Course', description='Root node for course Forum').save()
         course_node_forum = NodeGroup.objects.get(title='Course')
 
@@ -1465,12 +1490,19 @@ def CourseForum(request, course):
     
     return redirect('teacher_topic', pk=course_forum.pk)
 
-
-def Topic_related_to_user(request):
-    own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
+def Topic_related_to_user(request, node_group=None):
+    if node_group == None:
+        own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
         course_associated_with__isnull=True)
-    innings_Course_Code = InningGroup.objects.filter(Teacher_Code=request.user.id).values('Course_Code')
-    return Topic.objects.filter(course_associated_with__in=innings_Course_Code) | own_center_general_topic
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=request.user.id).values('Course_Code')
+        assigned_topics =(Topic.objects.filter(course_associated_with__in=innings_Course_Code) | own_center_general_topic)
+        
+    else:
+        own_center_general_topic = Topic.objects.filter(node_group=node_group.pk, center_associated_with=request.user.Center_Code).filter(
+        course_associated_with__isnull=True) | Topic.objects.filter(node_group=node_group.pk, center_associated_with__isnull= True, course_associated_with__isnull=True)
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=request.user.id).values('Course_Code')
+        assigned_topics =(Topic.objects.filter(node_group=node_group.pk, course_associated_with__in=innings_Course_Code) | own_center_general_topic)
+    return assigned_topics
 
 
 def Thread_related_to_user(request):
