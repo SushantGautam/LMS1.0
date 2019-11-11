@@ -17,6 +17,10 @@ document.querySelector("#SaveBtn").addEventListener("click", function () {
 
 })
 
+function positionConvert(element, divider){ 
+  return parseFloat(element)*100/parseFloat(divider)
+}
+
 $(document).ready(function () {
 
   $("body").on('DOMSubtreeModified', ".tab-content-no", function () {
@@ -54,13 +58,12 @@ $("#SaveBtn").on("click",function(e){
         console.log(clone)
         // clone.find('div').remove();
         var content_html = clone.html();
-        console.log(content_html)
         textdiv.push(
           {
-            'tops': $(this).css("top"),
-            'left': $(this).css("left"),
-            'width': $(this).css("width"),
-            'height': $(this).css("height"),
+            'tops': positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
+            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
+            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
+            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
             'content': content_html
           }
         );
@@ -68,10 +71,10 @@ $("#SaveBtn").on("click",function(e){
       if(value.classList.contains('pic')){
         picdiv.push(
           {
-            'tops': $(this).css("top"),
-            'left': $(this).css("left"),
-            'width': $(this).css("width"),
-            'height': $(this).css("height"),
+            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
+            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
+            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
+            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
             'background-image': $(this).find("img").attr('src')
           }
         );
@@ -79,10 +82,10 @@ $("#SaveBtn").on("click",function(e){
       if(value.classList.contains('btn-div')){
         buttondiv.push(
           {
-            'tops': $(this).css("top"),
-            'left': $(this).css("left"),
-            'width': $(this).css("width"),
-            'height': $(this).css("height"),
+            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
+            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
+            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
+            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
             'link': $(this).children("a").attr('href'),
             'btn_name': $(this).children("a").text(),
           }
@@ -91,10 +94,10 @@ $("#SaveBtn").on("click",function(e){
       if(value.classList.contains('pdfdiv')){
         pdf.push(
           {
-            'tops': $(this).css("top"),
-            'left': $(this).css("left"),
-            'width': $(this).css("width"),
-            'height': $(this).css("height"),
+            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
+            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
+            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
+            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
             'link': $(this).find('object').attr('data'),
           }
         );
@@ -105,10 +108,10 @@ $("#SaveBtn").on("click",function(e){
 
         video.push(
           {
-            'tops': $(this).css("top"),
-            'left': $(this).css("left"),
-            'width': $(this).css("width"),
-            'height': $(this).css("height"),
+            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
+            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
+            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
+            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
             'online_link': online_link,
             'local_link': local_link
           }
@@ -119,10 +122,10 @@ $("#SaveBtn").on("click",function(e){
 
         _3d.push(
           {
-            'tops': $(this).css("top"),
-            'left': $(this).css("left"),
-            'width': $(this).css("width"),
-            'height': $(this).css("height"),
+            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
+            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
+            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
+            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
             'link': link,
           }
         );
@@ -132,26 +135,31 @@ $("#SaveBtn").on("click",function(e){
     pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d}]
   });
   data = {
+    'csrfmiddlewaretoken': csrf_token,
     'numberofpages': numberofpages, 
     'chaptertitle': $('#chaptertitle').text(),
     'pages': pages,
-    'canvasheight': $('.editor-canvas').css('height'),
-    'canvaswidth': $('.editor-canvas').css('width'),
+    'canvasheight': positionConvert($('.editor-canvas').css('height'),$('body').height()),
+    'canvaswidth': positionConvert($('.editor-canvas').css('width'), $('body').width()),
   };
   var json=JSON.stringify(data);
   $.ajax({
     url: save_json_url,
     type: 'post',
     data: {
+      'csrfmiddlewaretoken': csrf_token,
       'json': json,
       'htmlfile': JSON.stringify(htmlfile),
       'chapterID': chapterID,
       'courseID': courseID
     },
     success: function (data) {
-      console.log(data)
       alert('saved successfully.')
     },
+    error: function(e){
+      console.log(e)
+      alert("Failed to save data")
+    }
   });
 });
 

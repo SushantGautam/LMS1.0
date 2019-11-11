@@ -28,8 +28,13 @@
                     : {{ object.Chapter_Name }} </h2>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
-                <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
-                    data-target="#course-modal">Content Viewer &nbsp;</a>
+                <!-- <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
+                    data-target="#course-modal">
+                    Content Viewer &nbsp;
+                </a> -->
+                <a class="btn-sm btn-info" href="{% url 'contentviewer' object.Course_Code.pk object.pk %}" id="course-viewer" target="_blank">
+                    Content Viewer &nbsp;
+                </a>
 
                 {% if '/students' not in request.path %}
                 {% if '/teachers' in request.path %}
@@ -370,13 +375,28 @@
 </div>
 
 <div id="quiz_create_popup" class="modal fade">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width: fit-content">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Create Quiz</h4>
             </div>
-            <div class="modal-body" style="height: auto" id="quiz_form_ajax">
+            <div class="modal-body" id="quiz_form_ajax">
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="question_form_popup" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="question_model_title">Add Question</h4>
+            </div>
+            <div class="modal-body" id="question_form_ajax">
             </div>
             <div class="modal-footer">
             </div>
@@ -475,7 +495,8 @@
     });
 
 
-    $('#course-viewer').click(function () {
+    $('#course-viewer').click(function (e) {
+        e.preventDefault();
         $.ajax({
             type: "GET",
             url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
@@ -483,8 +504,13 @@
                 'chapterID': '{{ object.id }}'
             },
             success: function (response) {
-                // $("#model-content").append(response.data.numberofpages);
-                loaddata(response.data)
+                if (response.data == "") {
+                    alert("There are no contents available in this chapter.");
+                    return
+                }
+
+                window.open($('#course-viewer').attr('href'), '_blank');
+                // loaddata(response.data)
             },
             error: function () {
                 console.log('Error in getting chapters')
@@ -745,6 +771,9 @@
                 $("#quiz_form_ajax").html(data);
             }
         });
+    });
+    $('#qn_close').on("click", function (){
+        $("#quiz_create_popup").modal("show");
     });
 </script>
 {% endblock %}

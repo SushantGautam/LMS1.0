@@ -756,6 +756,12 @@ class CreateQuizFromChapter(CreateView):
             self.object.chapter_code = related_chapter
             self.object.pre_test = True if self.kwargs['test_type'] == 'pre_test' else False
             self.object.post_test = True if self.kwargs['test_type'] == 'post_test' else False
+            if self.kwargs['test_type'] == 'exam_paper':
+                self.object.exam_paper = True
+                self.object.duration = self.request.POST['duration']
+                self.object.pass_mark = self.request.POST['pass_mark']
+                self.object.negative_marking = self.request.POST['negative_marking']
+                self.object.negative_percentage = self.request.POST['negative_percentage']
             self.object.save()
         self.object.url = 'quiz' + str(self.object.id)
         return super().form_valid(form)
@@ -763,6 +769,8 @@ class CreateQuizFromChapter(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapter_pk'] = self.kwargs['chapter_pk']
+        related_chapter = ChapterInfo.objects.get(pk=self.kwargs['chapter_pk'])
+        context['course_id'] = related_chapter.Course_Code.id
         context['test_type'] = self.kwargs['test_type']
         return context
 

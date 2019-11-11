@@ -6,15 +6,15 @@
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
   <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
 {% endblock stylesheets %}
-{% block breadcrumb %} 
-<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
-                
- 
-<li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
+
+
+  <li class="breadcrumb-item active" aria-current="page">Quiz Create</li>
 {% endblock %}
 {% block content %}
 
-{% include "quiz_base/step2.html" %}
+  {% include "quiz_base/step2.html" %}
 {% endblock %}
 {% block customjss %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
@@ -45,6 +45,7 @@
               $("#div_id_form2-pass_mark").hide();
           }
           $("#test_error").hide();
+          $("#div_id_form2-negative_percentage").hide();
       });
 
 
@@ -59,9 +60,20 @@
           if (this.checked) {
               $("#div_id_form2-duration").show();
               $("#div_id_form2-pass_mark").show();
+              $("#div_id_form2-single_attempt").hide();
           } else {
               $("#div_id_form2-duration").hide();
               $("#div_id_form2-pass_mark").hide();
+              $("#div_id_form2-single_attempt").show();
+
+          }
+      });
+
+      $("#id_form2-negative_marking").change(function () {
+          if (this.checked) {
+              $("#div_id_form2-negative_percentage").show();
+          } else {
+              $("#div_id_form2-negative_percentage").hide();
           }
       });
 

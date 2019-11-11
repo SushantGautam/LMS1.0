@@ -202,7 +202,8 @@ def edit_basic_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         try:
             obj = MemberInfo.objects.get(pk=request.user.id)
-            obj.username = request.POST['username']
+            if request.POST['username']:
+                obj.username = request.POST['username']
             obj.first_name = request.POST['first_name']
             obj.last_name = request.POST['last_name']
             obj.Member_BirthDate = request.POST['Member_BirthDate']
@@ -384,9 +385,7 @@ class MemberInfoCreateView(CreateView):
     form_class = MemberInfoForm
 
     def form_valid(self, form):
-        print("here")
         if form.is_valid():
-            print("get")
             obj = form.save(commit=False)
             obj.Center_Code = self.request.user.Center_Code
             obj.password = make_password(obj.password)
@@ -550,12 +549,14 @@ class MemberInfoDeleteView(DeleteView):
     success_url = reverse_lazy('memberinfo_list')
 
     def post(self, request, *args, **kwargs):
+        redirect_link = self.request.POST.get('redirect','memberinfo_list')
         try:
-            return self.delete(request, *args, **kwargs)
+            self.delete(request, *args, **kwargs)
+            return redirect(redirect_link)
         except:
             messages.error(request,
                            "You can't delete this user instead you can turn off the status value which will disable the user.")
-            return redirect('memberinfo_list')
+            return redirect(redirect_link)
 
 
 class CourseInfoListView(ListView):
@@ -641,8 +642,10 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Chapter_No = request.POST["Chapter_No"]
         Obj.Chapter_Name = request.POST["Chapter_Name"]
         Obj.Summary = request.POST["Summary"]
-        # print(request.POST["Use_Flag"])
-        Obj.Use_Flag = True
+        if request.POST["Use_Flag"] == 'false':
+            Obj.Use_Flag = False
+        else:
+            Obj.Use_Flag = True
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
         Obj.save()
