@@ -160,7 +160,7 @@ def start(request):
 
         if request.user.Is_CenterAdmin:
             thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
-            wordCloud = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code)
+            wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
                 '-Register_DateTime')[:5]
@@ -589,6 +589,7 @@ class CourseInfoDetailView(DetailView):
         context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
+        context['exam_quiz'] = Quiz.objects.filter(exam_paper=True, course_code=self.object)
         return context
 
 

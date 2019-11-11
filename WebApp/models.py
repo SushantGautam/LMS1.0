@@ -7,6 +7,9 @@ from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField,
 from django.urls import reverse
 from django.utils.translation import gettext as _
 import os
+
+# from quiz.models import Quiz
+
 fs = FileSystemStorage(location='LMS')
 
 USER_ROLES = (
@@ -197,6 +200,9 @@ class CourseInfo(models.Model):
 
     def get_update_url(self):
         return reverse('courseinfo_update', args=(self.pk,))
+
+    # def get_exam_quiz(self):
+    #     return Quiz.objects.get(exam_paper=True, course_code=self.id)
 
     def __str__(self):
         return self.Course_Name
