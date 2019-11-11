@@ -86,7 +86,7 @@ class Thread(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Thread, self).__init__(*args, **kwargs)
-        
+
         # try:
         #     self.__original_topic = self.topic.pk
         # except Exception as e:
@@ -252,7 +252,8 @@ class Appendix(models.Model):
 @python_2_unicode_compatible
 class NodeGroup(models.Model):
     title = models.CharField(max_length=30, verbose_name=_("title"))
-    description = models.TextField(default='', blank=True, verbose_name=_("description"))
+    description = models.TextField(
+        default='', blank=True, verbose_name=_("description"))
     topic_count = models.IntegerField(default=0, verbose_name=_("topic count"))
 
     def __str__(self):
@@ -277,15 +278,19 @@ class Topic(models.Model):
     thread_count = models.IntegerField(
         default=0, verbose_name=_("thread count"))
     topic_icon = models.CharField(max_length=30, verbose_name=_("topic_icon"))
-    course_associated_with = models.ForeignKey(CourseInfo, on_delete=models.CASCADE, null=True, blank=True)
-    center_associated_with = models.ForeignKey(CenterInfo, on_delete=models.CASCADE, null=True, blank=True)
-
+    course_associated_with = models.ForeignKey(
+        CourseInfo, on_delete=models.CASCADE, null=True, blank=True)
+    center_associated_with = models.ForeignKey(
+        CenterInfo, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.title
 
     def get_thread_count(self):
         return self.threads.visible().count()
+
+    def get_thread_count_Center_Admin(self):
+        return self.threads.count()
 
     def save(self, *args, **kwargs):
         super(Topic, self).save(*args, **kwargs)
@@ -299,7 +304,7 @@ class Topic(models.Model):
         t = self.topic
         t.topic_count = t.get_topic_count()
         t.save(update_fields=['topic_count'])
-    
+
     @property
     def threads_count(self):
         threads = Thread.objects.filter(topic=self)

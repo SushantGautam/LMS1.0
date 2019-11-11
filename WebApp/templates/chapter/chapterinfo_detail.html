@@ -20,16 +20,21 @@
 
 
 <div class="outerDiv">
-  {% include 'WebApp/theme/alerts.html' %}
-  <div class="col-md-6 col-sm-12 col xs-12">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-      <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-        <h2 class="detailListHeader">Chapter {{ object.Chapter_No }}
-          : {{ object.Chapter_Name }} </h2>
-      </div>
-      <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
-        <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
-           data-target="#course-modal">Content Viewer &nbsp;</a>
+    {% include 'WebApp/theme/alerts.html' %}
+    <div class="col-md-6 col-sm-12 col xs-12">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                <h2 class="detailListHeader">Chapter {{ object.Chapter_No }}
+                    : {{ object.Chapter_Name }} </h2>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
+                <!-- <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
+                    data-target="#course-modal">
+                    Content Viewer &nbsp;
+                </a> -->
+                <a class="btn-sm btn-info" href="{% url 'contentviewer' object.Course_Code.pk object.pk %}" id="course-viewer" target="_blank">
+                    Content Viewer &nbsp;
+                </a>
 
         {% if '/students' not in request.path %}
           {% if '/teachers' in request.path %}
@@ -490,21 +495,27 @@
       });
 
 
-      $('#course-viewer').click(function () {
-          $.ajax({
-              type: "GET",
-              url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
-              data: {
-                  'chapterID': '{{ object.id }}'
-              },
-              success: function (response) {
-                  // $("#model-content").append(response.data.numberofpages);
-                  loaddata(response.data)
-              },
-              error: function () {
-                  console.log('Error in getting chapters')
-              }
-          });
+    $('#course-viewer').click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "GET",
+            url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
+            data: {
+                'chapterID': '{{ object.id }}'
+            },
+            success: function (response) {
+                if (response.data == "") {
+                    alert("There are no contents available in this chapter.");
+                    return
+                }
+
+                window.open($('#course-viewer').attr('href'), '_blank');
+                // loaddata(response.data)
+            },
+            error: function () {
+                console.log('Error in getting chapters')
+            }
+        });
 
           function loaddata(data) {
               if (data == "") {

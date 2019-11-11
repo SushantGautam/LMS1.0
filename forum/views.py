@@ -121,7 +121,7 @@ class NodeGroupView(LoginRequiredMixin, ListView):
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
-              
+            
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
@@ -141,7 +141,7 @@ class TopicView(LoginRequiredMixin, ListView):
     context_object_name = 'threads'
 
     def get_queryset(self):
-        return Thread.objects.visible().filter(
+        return Thread.objects.filter(
             topic__id=self.kwargs.get('pk')
         ).select_related(
             'user', 'topic'

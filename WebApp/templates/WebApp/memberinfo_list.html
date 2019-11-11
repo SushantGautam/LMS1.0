@@ -71,7 +71,7 @@
             <li><a class="navbar-brand" id="student_button" href="#">Student</a></li>
         </ul>
         <span style="float:right; margin:15px"><a href="{% url 'memberinfo_list_inactive' %}" style="color: white">View
-                Inactive Members</a></span>
+                Blocked Members</a></span>
     </nav>
     <hr class="header_hr">
     <div class="col-md-6 text-danger">{% include 'WebApp/theme/alerts.html' %}</div>
@@ -150,7 +150,14 @@
                     Not Assigned
                     {% endif %}
                 </td>
-                <td class="text-center"><a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a></td>
+                <td class="text-center">
+                    <a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
+                    <a class="btn btn-sm btn-danger confirm-delete" id="{{ object.id }}">Delete</a>
+                    <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form{{ object.id }}">
+                        {% csrf_token %}
+                        <input type="hidden">
+                    </form>
+                </td>
             </tr>
             {% endif %}
             {% endfor %}
@@ -183,6 +190,16 @@
     $(".button-info").click(function () {
         $("ul.info-text").toggle();
     });
+
+    $(document).on('click', '.confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Member? (You can deactivate the member instead of deleting)');
+        if (ans == true) {
+            $(`#delete_form${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+
 
     setTimeout(function () {
         $('#message').fadeOut('slow');

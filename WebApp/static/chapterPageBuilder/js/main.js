@@ -17,6 +17,9 @@ $(document).ready(function() {
         }
     }
 
+    function revertpositionConvert(element, multiplier){ 
+        return parseFloat(element)*parseFloat(multiplier)/100
+    }
     // ==================For TextBoxx================================
     $('#tabs-for-download').droppable({
         tolerance: 'fit',
@@ -90,8 +93,9 @@ $(document).ready(function() {
                 message = "Drag and drop images here..."
             }
             let img = '';
-            if(pic != null)
+            if(pic != null){
                 img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: contain;"></img>`
+            }
             let html =
             `<div class='pic'>
                 <div id="pic-actions">
@@ -504,7 +508,7 @@ $(document).ready(function() {
             width,height);
         Pic.renderDiagram();
     
-        $('.fa-upload').click(function(e) {
+        $('.fa-upload').off().unbind().click(function(e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
@@ -519,7 +523,6 @@ $(document).ready(function() {
             var div = $('#' + e.currentTarget.id).parent().parent();
             // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
             var prevlink = $(this).parent().parent().find('img').attr('src')
-            console.log(prevlink)
             if(prevlink == undefined){
                 prevlink = "";
             }
@@ -678,7 +681,7 @@ $(document).ready(function() {
             }
         }
 
-        $(".imgInp").change(function(e) {
+        $(".imgInp").off().change(function(e) {
             readURL(this);
 
         });
@@ -1282,8 +1285,16 @@ $(document).ready(function() {
         if(confirmation==false){
             return false
         }
+        
+        if($(this).parent().parent().prev().find('li').length != 0 )
+            $(this).parent().parent().prev().find('li')[0].click();        
+        else if($(this).parent().parent().next().find('li').length != 0)
+            $(this).parent().parent().next().find('li')[0].click()
+        else{
+            alert("cannot delete only page");
+            return false
+        }
         $('#tab'+this.value).remove();
-        $(this).parent().parent().prev().find('li')[0].click();        
         $(this).parent().parent().remove();
         displaypagenumbers();
     });
@@ -1400,14 +1411,14 @@ $(document).ready(function() {
         } else if (ui.helper.hasClass('title-slide')) {
             PictureFunction(
                 top = 0,
-                left = "0%",
-                "",
-                width = "50%", height="60%");
+                left = 0,
+                null,
+                width = "49%", height="60%");
             PictureFunction(
                 top = 0,
-                left = "50%",
-                "",
-                width = "50%", height="60%");
+                left = "51%",
+                null,
+                width = "49%", height="60%");
             TextboxFunction(
                 top="62%",
                 left=0,
@@ -1557,15 +1568,25 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
 
-                            TextboxFunction(css_value.tops,
-                            css_value.left,css_value.height,css_value.width,css_value.content);
+                            TextboxFunction(
+                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
+                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                                css_value.content
+                            );
                         });
                     }
                     if(div == 'pic'){
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
-                            PictureFunction(css_value.tops,
-                                css_value.left,css_value['background-image'],css_value.width,css_value.height);
+                            PictureFunction(
+                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
+                                css_value['background-image'],
+                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
+                            );
                         });
                     }
 
@@ -1573,10 +1594,14 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             
-                            ButtonFunction(css_value.tops,
-                                css_value.left, 
+                            ButtonFunction(
+                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
                                 css_value.link,
-                                css_value.height, css_value.width, css_value.btn_name);
+                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                                css_value.btn_name
+                            );
                         });
                     }
 
@@ -1584,10 +1609,12 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PDFFunction(
-                                css_value.tops,
-                                css_value.left,
+                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
                                 css_value['link'],
-                                css_value.height,css_value.width);
+                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                            );
                         });
                     }
 
@@ -1601,10 +1628,12 @@ $(document).ready(function() {
                                 link = css_value.local_link
                             }
                             VideoFunction(
-                                css_value.tops,
-                                css_value.left,
+                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
                                 link,
-                                css_value.height,css_value.width);
+                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                            );
                         });
                     }
 
@@ -1612,10 +1641,12 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             _3dFunction(
-                                css_value.tops,
-                                css_value.left,
+                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
                                 css_value['link'],
-                                css_value.height,css_value.width);
+                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
+                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                            );
                         });
                     }
                 });
