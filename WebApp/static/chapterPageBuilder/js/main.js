@@ -94,7 +94,7 @@ $(document).ready(function() {
             }
             let img = '';
             if(pic != null){
-                img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: contain;"></img>`
+                img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
             }
             let html =
             `<div class='pic'>
