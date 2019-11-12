@@ -139,9 +139,12 @@
             {{ quizcount.count }}
           </td>
           <td style="border-top:0; ">
-            <button type="button" class="btn qts-button" id="exam_paper_popup" data-toggle="modal"
-                    data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
-            </button>
+            {% if 'students' in request.path %}
+            {% else %}
+              <button type="button" class="btn qts-button" id="exam_paper_popup" data-toggle="modal"
+                      data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
+              </button>
+            {% endif %}
           </td>
         </tr>
         <tr>
@@ -304,13 +307,14 @@
       $('#add-newchapter-btn').on('click', function () {
           $('#create_chapter_modal_body').empty();
           $("#create_chapter_modal_body").append('<div class="se-pre-con-ajax"></div>');
-              $('#create_chapter_modal_body').append(`<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}" class="select form-control">`);
+          $('#create_chapter_modal_body').append(`<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}" class="select form-control">`);
 
           $.ajax({
               type: "GET",
               url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
               success: function (response) {
-                  $('#create_chapter_modal_body').append(response);Switchery(document.querySelector('.js-switch'));
+                  $('#create_chapter_modal_body').append(response);
+                  Switchery(document.querySelector('.js-switch'));
               },
               error: function () {
                   console.log('Error in generating chapter create form')

@@ -265,6 +265,12 @@ class Question(models.Model):
     def is_saq(self):
         return type(self) is SA_Question
 
+    def is_mcq(self):
+        return type(self) is MCQuestion
+
+    def is_tfq(self):
+        return type(self) is TF_Question
+
 
 class MCQuestion(Question):
     answer_order = models.CharField(
@@ -875,8 +881,11 @@ class Sitting(models.Model):
 
         if with_answers:
             user_answers = json.loads(self.user_answers)
-            for question in questions:
-                question.user_answer = user_answers[str(question.id)]
+            for q in questions:
+                q.user_answer = user_answers[str(q.id)]
+                i = [int(n) for n in self.question_order.split(',') if n].index(q.id)
+                score = [s for s in self.score_list.split(',') if s][i]
+                q.score_obtained = score
 
         return questions
 

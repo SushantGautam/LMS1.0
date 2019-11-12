@@ -163,10 +163,6 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
         if user_filter:
             queryset = queryset.filter(user__username__icontains=user_filter)
 
-        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
-        my_quiz = Quiz.objects.filter(course_code__in=innings_Course_Code)
-        queryset = queryset.filter(quiz__in=my_quiz)
-
         return queryset
 
 
@@ -312,15 +308,17 @@ class QuizTake(FormView):
 
         self.sitting.score_list = ','.join(score_list)
 
-        if self.quiz.answers_at_end is not True:
-            self.previous = {'previous_answer': guess,
-                             'previous_outcome': is_correct,
-                             'previous_question': self.question,
-                             'answers': self.question.get_answers(),
-                             'question_type': {self.question
-                                                   .__class__.__name__: True}}
-        else:
-            self.previous = {}
+        # if self.quiz.answers_at_end is not True:
+        #     self.previous = {'previous_answer': guess,
+        #                      'previous_outcome': is_correct,
+        #                      'previous_question': self.question,
+        #                      'answers': self.question.get_answers(),
+        #                      'question_type': {self.question
+        #                                            .__class__.__name__: True}}
+        # else:
+        #     self.previous = {}
+
+        self.previous = {}
 
         self.sitting.add_user_answer(self.question, guess)
         self.sitting.remove_first_question()

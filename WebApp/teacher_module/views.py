@@ -675,7 +675,7 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
         total_score_obtained = 0
         for q in context['questions']:
             i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
-            score = [float(s) for s in context['sitting'].score_list.split(',') if s][i]
+            score = [s for s in context['sitting'].score_list.split(',') if s][i]
             q.score_obtained = score
             total += q.score
             total_score_obtained += score
@@ -1074,7 +1074,11 @@ class QuizCreateWizard(SessionWizardView):
             step = self.steps.current
 
         if step == 'form1':
-            form.fields["course_code"].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+            innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+            form.fields["course_code"].queryset = CourseInfo.objects.filter(
+                Center_Code=self.request.user.Center_Code,
+                id__in=innings_Course_Code
+            )
 
         if step == 'form2':
             step1_data = self.get_cleaned_data_for_step('form1')

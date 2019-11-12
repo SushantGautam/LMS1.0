@@ -138,6 +138,8 @@ urlpatterns += (
          views.UserThreads.as_view(), name='student_threads'),
     path('forum/notification', views.NotificationView.as_view(),
          name='student_notification'),
+    path('quiz/progress/<int:pk>/', views.QuizUserProgressDetailView.as_view(),
+         name='student_progress_detail'),
     path('quiz/progress', views.QuizUserProgressView.as_view(),
          name='student_progress'),
 )
