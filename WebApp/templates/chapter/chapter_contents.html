@@ -25,6 +25,7 @@
             position: absolute;
             display: none;
             transition: all 1s ease;
+            -webkit-transition: all 0.3s ease;
         }
         .button-position:hover{
             cursor: pointer;
@@ -51,7 +52,7 @@
         }
 
         body{
-            background-color: black;
+            background-color: rgba(0,0,0,0.7);
         }
 
         .content-title{
@@ -59,9 +60,23 @@
             font-size: 18px;
             font-weight: 600;
             text-transform: uppercase;
-            /* display: none; */
+            display: none;
             transition: all 0.3s ease;
+            -webkit-transition: all 0.3s ease;
+            background-color: rgba(0,0,0,0.5);
         }
+        .content-title1{
+           
+            transition: all 0.3s ease;
+            -webkit-transition: all 0.3s ease;
+            position: relative;
+            top: 0;
+            left: 0;;
+        }
+        .overall-contents:hover .content-title1{
+            display: block;
+        }
+       
         .content-footer1{
         color: white;
         width: 100px;
@@ -70,8 +85,8 @@
         font-weight: 200;
         /* padding-right: 20px; */
         position: absolute;
-        bottom: 8vh;
-        left: 45vw;
+        bottom: 5%;
+        left: 45%;
         background-color: rgba(0,0,0,0.5);
         border-radius: 5px;
         z-index: 99;
@@ -79,7 +94,14 @@
         height: 30px;
         line-height: 30px;
         display: none;
+        transition: all 0.3s ease;
+        -webkit-transition: all 0.3s ease;
+       
             
+        }
+        .overall-contents:hover .content-footer1{
+            display: block;
+           
         }
         
 
@@ -89,22 +111,24 @@
 <body>
     <div class="container-fluid">
         <!-- For Title -->
-        <div class="row">
-            <div  class="content-title1 container text-center">
-                <span id="chaptertitle" class="content-title">
-                    <!-- Chapter title goes here -->
-                    {{chapter}}
-                </span>
-            </div>
-        </div>
+      
 
         <div class="row overall-contents">
+               
+                        
+                    
             <div id = "prev-btn" class="button-position" style="left:0;">
                 <i class="fa fa-backward"></i>
             </div>
         
         
             <div id="container" style="position: relative;">
+                    <div  class="content-title1  text-center">
+                            <span id="chaptertitle" class="content-title">
+                                <!-- Chapter title goes here -->
+                                {{chapter}}
+                            </span>
+                        </div>
 
             </div>
         
@@ -136,6 +160,9 @@
         'wrapAround': true
     });
 
+    document.addEventListener('visibilitychange', function(){
+        pauseAllVideos(); // change tab text for demo
+    })
     $(document).keydown(function (e) {
         if($('#lightbox').css('display') == 'none'){
             if (e.keyCode == '39') {
@@ -158,7 +185,6 @@
             }
 
             if (e.keyCode == '70') {
-            console.log(e.keyCode)
             toggleFullScreen();
             return false;
         }
@@ -289,7 +315,7 @@
                             $('#page' + key).append(`
                             <div style = "position:absolute; top: ${css_value.tops}%; left: ${css_value.left}%; height: ${css_value.height}%; width: ${css_value.width}%;">
                                 <object data="${css_value.link}" type="application/pdf" width="100%" height="100%">
-                                    alt : <a href="${css_value.link}">Click to view PDF</a>
+                                    alt : PDF File
                                 </object>
                             </div>
                         `)
