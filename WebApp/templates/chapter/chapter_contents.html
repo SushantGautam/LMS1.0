@@ -9,6 +9,8 @@
     <!-- Font Awesome -->
     <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
 
+    <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet" />
+
     <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet">
 
     <style>
@@ -79,6 +81,7 @@
         display: none;
             
         }
+        
 
     </style>
 </head>
@@ -125,36 +128,41 @@
 
 <!-- jQuery -->
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-<script type="text/javascript">
-    $(document).keydown(function (e) {
-        if (e.keyCode == '39') {
-            $('#next-btn').click();
-            return false
-        }
-        if (e.keyCode == '37') {
-            $('#prev-btn').click();
-            return false
-        }
-        //UP
-        if (e.keyCode == '38') {
-            $('body').animate({ scrollTop: 0 }, 100);
-            return false;
-        }
-        //DOWN
-        if (e.keyCode == '40') {
-            $('body').animate({ scrollTop: $(document).height() }, 100);
-            return false;
-        }
+<script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 
-        if (e.keyCode == '70') {
+<script type="text/javascript">
+    lightbox.option({
+        'resizeDuration': 200,
+        'wrapAround': true
+    });
+
+    $(document).keydown(function (e) {
+        if($('#lightbox').css('display') == 'none'){
+            if (e.keyCode == '39') {
+                $('#next-btn').click();
+                return false
+            }
+            if (e.keyCode == '37') {
+                $('#prev-btn').click();
+                return false
+            }
+            //UP
+            if (e.keyCode == '38') {
+                $('body').animate({ scrollTop: 0 }, 100);
+                return false;
+            }
+            //DOWN
+            if (e.keyCode == '40') {
+                $('body').animate({ scrollTop: $(document).height() }, 100);
+                return false;
+            }
+
+            if (e.keyCode == '70') {
             console.log(e.keyCode)
             toggleFullScreen();
             return false;
         }
 
-        if (e.keyCode == '81') {
-            $('#course-modal').modal('hide');
-            return false;
         }
     });
 
@@ -255,7 +263,7 @@
                             // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
                             $('#page' + key).append(`
                                 <div style = 'position:absolute; top: ${css_value.tops}%; left: ${css_value.left}%; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
-                                <img src = ${src} style = "height:100%; width:100%; object-fit:cover"></img>        
+                                <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = "height:100%; width:100%; object-fit:cover"></img>  </a>      
                                 </div>
                             `);
                             // $('#page' + key).append(css_value.div);
@@ -281,7 +289,7 @@
                             $('#page' + key).append(`
                             <div style = "position:absolute; top: ${css_value.tops}%; left: ${css_value.left}%; height: ${css_value.height}%; width: ${css_value.width}%;">
                                 <object data="${css_value.link}" type="application/pdf" width="100%" height="100%">
-                                    alt : <a href="${css_value.link}">${css_value.link}</a>
+                                    alt : <a href="${css_value.link}">Click to view PDF</a>
                                 </object>
                             </div>
                         `)

@@ -238,7 +238,9 @@ svg{
   line-height: 42px;
 }
 
-
+.layout{
+  z-index: 9;
+}
 
 
 
