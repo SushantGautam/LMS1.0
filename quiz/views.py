@@ -273,6 +273,7 @@ class QuizTake(FormView):
         context = super(QuizTake, self).get_context_data(**kwargs)
         context['question'] = self.question
         context['quiz'] = self.quiz
+        context['sitting_id'] = self.sitting.id
         if hasattr(self, 'previous'):
             context['previous'] = self.previous
         if hasattr(self, 'progress'):

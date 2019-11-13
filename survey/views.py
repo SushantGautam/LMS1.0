@@ -9,7 +9,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
     QuestionInfoFormset, QuestionAnsInfoFormset, LiveSurveyInfoForm
@@ -713,7 +713,7 @@ class surveyFilterCategory(ListView):
     model = SurveyInfo
     template_name = 'survey/common/surveyinfo_expireView.html'
 
-    # paginate_by = 8
+    paginate_by = 6
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

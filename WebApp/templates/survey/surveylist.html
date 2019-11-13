@@ -2,64 +2,29 @@
 {% load static %}
 gv mghvhgctt jcryjc itykcv
 {% block stylesheets %}
-    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+  <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Survey</li>
+  <li class="breadcrumb-item active" aria-current="page">Survey</li>
 {% endblock %}
 {% block content %}
-    {% include 'survey/surveyinfo_list.html' %}
+  {% include 'survey/surveyinfo_list.html' %}
 {% endblock %}
 
 
 {% block customjss %}
 
-    {% for category in categories %}
-        <script>
-            $('#category_Add_Button{{ category.id }}').on('click', function () {
-                $('.popup-inner').append('<div class="se-pre-con-ajax"></div>');
-                $.ajax({
-                    type: "GET",
-                    data: {'categoryId': '{{category.id}}'},
-                    url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
-                    success: function (data) {
-                        $("#surveyForm").html(data);
-                    },
-                    complete: function () {
-                        $(".se-pre-con-ajax").fadeOut("fast");
-                    }
-                });
-            });
-        </script>
-
-    {% endfor %}
-
+  {% for category in categories %}
     <script>
-
-        $(document).ready(function () {
-
+        $('#category_Add_Button{{ category.id }}').on('click', function () {
+            $('.popup-inner').append('<div class="se-pre-con-ajax"></div>');
             $.ajax({
                 type: "GET",
-                data: {'categoryId': 0},
-                url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+                data: {'categoryId': '{{category.id}}'},
+                url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
                 success: function (data) {
-                    $("#rowCards").html(data);
-                },
-                complete: function () {
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                }
-            });
-        });
-
-        $('.category-name').on('click', function () {
-            var categoryId = this.id;
-            $.ajax({
-                type: "GET",
-                data: {'categoryId': categoryId},
-                url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
-                success: function (data) {
-                    $("#rowCards").html(data);
+                    $("#surveyForm").html(data);
                 },
                 complete: function () {
                     $(".se-pre-con-ajax").fadeOut("fast");
@@ -67,4 +32,56 @@ gv mghvhgctt jcryjc itykcv
             });
         });
     </script>
+
+  {% endfor %}
+
+  <script>
+
+      $(document).ready(function () {
+
+          $.ajax({
+              type: "GET",
+              data: {'categoryId': 0},
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#rowCards").html(data);
+              },
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
+
+      $('.category-name').on('click', function () {
+          var categoryId = this.id;
+          $.ajax({
+              type: "GET",
+              data: {'categoryId': categoryId},
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#rowCards").html(data);
+              },
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
+
+      {#$(".survey_next").click(function (event) {#}
+      {#    event.preventDefault();#}
+      {#    alert("{% url 'surveyFilterCategory' %}" + $(this).attr('href'));#}
+      {#    var categoryId = $(".card-text.active .category-name").attr('id');#}
+      {#    $.ajax({#}
+      {#        type: "GET",#}
+      {#        data: {'categoryId': categoryId},#}
+      {#        url: "{% url 'surveyFilterCategory' %}" + $(this).attr('href'),  // URL to your view that serves new info#}
+      {#        success: function (data) {#}
+      {#            $("#rowCards").html(data);#}
+      {#        },#}
+      {#        complete: function () {#}
+      {#            $(".se-pre-con-ajax").fadeOut("fast");#}
+      {#        }#}
+      {#    });#}
+      {#});#}
+  </script>
 {% endblock %}
