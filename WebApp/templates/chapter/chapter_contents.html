@@ -104,6 +104,10 @@
 <!-- jQuery -->
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script type="text/javascript">
+    document.addEventListener('visibilitychange', function(){
+        pauseAllVideos(); // change tab text for demo
+    });
+
     $(document).keydown(function (e) {
         if (e.keyCode == '39') {
             $('#next-btn').click();
@@ -125,18 +129,13 @@
         }
 
         if (e.keyCode == '70') {
-            console.log(e.keyCode)
             toggleFullScreen();
-            return false;
-        }
-
-        if (e.keyCode == '81') {
-            $('#course-modal').modal('hide');
             return false;
         }
     });
 
     $('#next-btn').off().click(function () {
+        pauseAllVideos();
         $("#container > .coursepages ").each(function () {
             if ($(this).css("display") == "block") {
                 res = this.id.match(/[0-9]+/);
@@ -151,6 +150,7 @@
     });
 
     $('#prev-btn').off().click(function () {
+        pauseAllVideos();
         $("#container > div ").each(function () {
             if ($(this).css("display") == "block") {
                 res = this.id.match(/[0-9]+/);
@@ -184,6 +184,19 @@
     // }
     
     // scaleData = scaleScreen($('#container').height(),  $('#container').width(), data.canvasheight, data.canvaswidth)
+
+    function pauseAllVideos() 
+    { 
+        $('iframe').each(function(){
+            $(this).attr('src', $(this).attr('src'));
+            // console.log($(this)[0])
+            // $(this)[0].contentWindow.postMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
+        });
+        $('video').each(function () 
+        {
+            this.pause();
+        });
+    }
 
     function loaddata(data){
         $('#totalpages').text(data.numberofpages);
