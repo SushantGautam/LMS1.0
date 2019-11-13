@@ -70,8 +70,8 @@
     font-weight: 200;
     /* padding-right: 20px; */
     position: absolute;
-    bottom: 8vh;
-    left: 45vw;
+    bottom: 16%;
+    left: 42%;
     background-color: rgba(0,0,0,0.5);
     border-radius: 5px;
     z-index: 99;
@@ -136,6 +136,9 @@
         'wrapAround': true
     });
 
+    document.addEventListener('visibilitychange', function(){
+        pauseAllVideos(); // change tab text for demo
+    })
     $(document).keydown(function (e) {
         if($('#lightbox').css('display') == 'none'){
             if (e.keyCode == '39') {
@@ -158,7 +161,6 @@
             }
 
             if (e.keyCode == '70') {
-            console.log(e.keyCode)
             toggleFullScreen();
             return false;
         }
@@ -289,7 +291,7 @@
                             $('#page' + key).append(`
                             <div style = "position:absolute; top: ${css_value.tops}%; left: ${css_value.left}%; height: ${css_value.height}%; width: ${css_value.width}%;">
                                 <object data="${css_value.link}" type="application/pdf" width="100%" height="100%">
-                                    alt : <a href="${css_value.link}">Click to view PDF</a>
+                                    alt : PDF File
                                 </object>
                             </div>
                         `)
