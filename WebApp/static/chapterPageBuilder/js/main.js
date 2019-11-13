@@ -236,7 +236,7 @@ $(document).ready(function() {
                 //         </video>
                 // `
                 if(link.includes('www') && link.includes('.com')){
-                    videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" allowfullscreen></iframe>`
+                    videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
                 }else{
                     videoobj = `
                         <video width="100%" height="94%" controls>

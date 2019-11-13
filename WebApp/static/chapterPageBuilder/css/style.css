@@ -530,16 +530,22 @@ svg{
   width:400px;
   height:200px;
   border:2px dashed #ddd;
-  display: flex;
+  /* display: flex;
   flex-flow: column wrap;
   align-items: center;
-  justify-content: center;
-
+  justify-content: center; */
 }
 
 #video-drag{
   font-size: 17px;
   opacity: 0.3;
+}
+
+.video-text-div{
+  top: 50%;
+  position: absolute;
+  width: 100%;
+  text-align: center;
 }
 
 #video-actions{
