@@ -21,7 +21,7 @@
             padding: 5px!important;
             background-color: white;
             z-index: 999;
-            top:50vh;
+            top:50%;
             position: absolute;
             display: none;
             transition: all 1s ease;
@@ -60,7 +60,7 @@
             font-size: 18px;
             font-weight: 600;
             text-transform: uppercase;
-            display: none;
+            display: none   ;
             transition: all 0.3s ease;
             -webkit-transition: all 0.3s ease;
             background-color: rgba(0,0,0,0.5);
@@ -85,7 +85,7 @@
         font-weight: 200;
         /* padding-right: 20px; */
         position: absolute;
-        bottom: 5%;
+        bottom: 10%;
         left: 45%;
         background-color: rgba(0,0,0,0.5);
         border-radius: 5px;
@@ -117,25 +117,27 @@
                
                         
                     
-            <div id = "prev-btn" class="button-position" style="left:0;">
-                <i class="fa fa-backward"></i>
-            </div>
+           
         
         
             <div id="container" style="position: relative;">
+                    <div id = "prev-btn" class="button-position" style="left:0;">
+                            <i class="fa fa-backward"></i>
+                        </div>
                     <div  class="content-title1  text-center">
                             <span id="chaptertitle" class="content-title">
                                 <!-- Chapter title goes here -->
                                 {{chapter}}
                             </span>
                         </div>
+                        <div id = "next-btn" class="button-position" style="right:0;">
+                                <i class="fa fa-forward"></i>
+                            </div>
 
             </div>
         
         
-            <div id = "next-btn" class="button-position" style="right:0;">
-                <i class="fa fa-forward"></i>
-            </div>
+           
             <div class="content-footer1 text-center">
                 Page <span id="currentpage"></span> of <span id="totalpages"></span> 
             </div> 
