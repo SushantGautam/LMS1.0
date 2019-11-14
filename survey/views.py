@@ -9,8 +9,9 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 
+from WebApp.models import InningGroup
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
     QuestionInfoFormset, QuestionAnsInfoFormset, LiveSurveyInfoForm
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
@@ -79,6 +80,7 @@ class SurveyList(ListView):
     #     print(surveys)
     #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
 
+
 class SurveyInfoListView(ListView):
     model = SurveyInfo
     template_name = 'survey/surveylist.html'
@@ -107,9 +109,6 @@ class SurveyInfoListView(ListView):
         # context['surveyForm'] = {'categoryName': list(categoryName)}
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
         # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
-
-
-
 
     # ......................................Survey Search ..............................................
 
@@ -211,7 +210,6 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return redirect('surveyinfo_detail', self.object.id)
 
 
-
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 
@@ -223,7 +221,7 @@ def create_questioninfo_formset(obj_instance):
             # print(form.fields['Question_Name'].initial)
             # print(index)
 
-            my_mcqs =obj_instance.questioninfo.all().filter(Question_Type='MCQ')
+            my_mcqs = obj_instance.questioninfo.all().filter(Question_Type='MCQ')
             if form.is_bound:
                 my_op_initial = None
             elif index is not None:
@@ -246,12 +244,12 @@ def create_questioninfo_formset(obj_instance):
 
             # print(my_data)
 
-                # save the formset in the 'nested' property
+            # save the formset in the 'nested' property
             form.nested = OptionInfoFormset(
                 instance=form.instance,
-                initial = my_op_initial,
-                data = form.data if form.is_bound else None,
-                files = form.files if form.is_bound else None,
+                initial=my_op_initial,
+                data=form.data if form.is_bound else None,
+                files=form.files if form.is_bound else None,
                 prefix='optioninfo-%s-%s' % (
                     form.prefix,
                     OptionInfoFormset.get_default_prefix()),
@@ -582,9 +580,11 @@ class liveSurveyCreate(CreateView):
 
     def get(self, request, *args, **kwargs):
         if 'teachers' in request.path:
-            return render(request, 'teacher_module/survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm(request = self.request)})
+            return render(request, 'teacher_module/survey/liveSurvey_createPage.html',
+                          {'form': LiveSurveyInfoForm(request=self.request)})
         else:
-            return render(request, 'survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm(request = self.request)})
+            return render(request, 'survey/liveSurvey_createPage.html',
+                          {'form': LiveSurveyInfoForm(request=self.request)})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -625,6 +625,7 @@ class liveSurveyCreate(CreateView):
         else:
             return redirect('liveSurveyDetail', self.object.id)
 
+
 class LiveSurveyDetail(DetailView):
     model = SurveyInfo
     template_name = 'survey/common/../WebApp/templates/survey/liveSurvey_detailPage.html'
@@ -636,6 +637,7 @@ class LiveSurveyDetail(DetailView):
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
         return context
+
 
 class QuestionInfoListView(ListView):
     model = QuestionInfo
@@ -713,17 +715,16 @@ class surveyFilterCategory(ListView):
     model = SurveyInfo
     template_name = 'survey/common/surveyinfo_expireView.html'
 
-    # paginate_by = 8
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.GET = None
+    paginate_by = 6
 
     def get_queryset(self):
-        if self.request.GET['categoryId'] == '0':
+        category_id = int(self.request.GET['categoryId'])
+        print("category id:", category_id)
+        if category_id == 0:
             return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
         else:
-            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId']).filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
+            return SurveyInfo.objects.filter(Category_Code=category_id).filter(
+                Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

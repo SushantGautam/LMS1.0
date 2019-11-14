@@ -4,18 +4,34 @@
 {{ form.media }}
 <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
-<form method="post" id="quiz_form_post"
-      action="{% url 'quiz_create_from_chapter' chapter_pk=chapter_pk test_type=test_type %}">{% csrf_token %}
+<form method="post" id="quiz_form_post" onsubmit="return validateForm()"
+      action="{% url 'quiz_create_ajax'%}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">{% csrf_token %}
   {{ form|crispy }}
   <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
 </form>
-
+<script src=" {% static '/duration_picker/bootstrap-duration-picker.js' %}"></script>
 <script>
+
+    $(document).ready(function () {
+        $("#div_id_negative_percentage").hide();
+    });
+
     $("#quiz_form_post").submit(function () {
         $('#id_mcquestion_to option').prop('selected', true);
         $('#id_saquestion_to option').prop('selected', true);
         $('#id_tfquestion_to option').prop('selected', true);
     });
+    if ("{{ test_type }}" === "exam_paper") {
+        $("#div_id_duration").show();
+        $("#div_id_pass_mark").show();
+        $("#div_id_negative_marking").show();
+    } else {
+        $("#div_id_exam_paper").hide();
+        $("#div_id_duration").hide();
+        $("#div_id_pass_mark").hide();
+        $("#div_id_negative_marking").hide();
+        $("#div_id_negative_percentage").hide();
+    }
 
     $("label[for='id_mcquestion']").after(`<button type="button" class="btn qts-button " id="mcq_create_button" data-toggle="modal"
                     data-target="#question_form_popup" style='float:right'>Add Multiple Choice Question
@@ -83,7 +99,11 @@
         $('#id_mcquestion_to').prepend(
             `<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
         $('#id_mcquestion_to').change();
-        SelectBox.add_to_cache("id_mcquestion_to", {value: String(response['new_mcq_id']), text: response['new_mcq_content'], displayed: 1});
+        SelectBox.add_to_cache("id_mcquestion_to", {
+            value: String(response['new_mcq_id']),
+            text: response['new_mcq_content'],
+            displayed: 1
+        });
         $('#question_form_popup').modal('toggle');
     }
 
@@ -92,7 +112,11 @@
         $('#id_tfquestion_to').prepend(
             `<option value="${response['new_tfq_id']}" selected>${response['new_tfq_content']}</option>`);
         $('#id_tfquestion_to').change();
-        SelectBox.add_to_cache("id_tfquestion_to", {value: String(response['new_tfq_id']), text: response['new_tfq_content'], displayed: 1});
+        SelectBox.add_to_cache("id_tfquestion_to", {
+            value: String(response['new_tfq_id']),
+            text: response['new_tfq_content'],
+            displayed: 1
+        });
         $('#question_form_popup').modal('toggle');
     }
 
@@ -101,11 +125,53 @@
         $('#id_saquestion_to').prepend(
             `<option value="${response['new_saq_id']}" selected>${response['new_saq_content']}</option>`);
         $('#id_saquestion_to').change();
-        SelectBox.add_to_cache("id_saquestion_to", {value: String(response['new_saq_id']), text: response['new_saq_content'], displayed: 1});
+        SelectBox.add_to_cache("id_saquestion_to", {
+            value: String(response['new_saq_id']),
+            text: response['new_saq_content'],
+            displayed: 1
+        });
         $('#question_form_popup').modal('toggle');
     }
 
-    console.log($(".selector").html());
+    $('#id_duration').durationPicker({
+        showDays: false,
+        onChanged: function (newVal) {
+        }
+    });
+
+    $("#id_negative_marking").change(function () {
+        if (this.checked) {
+            $("#div_id_negative_percentage").show();
+        } else {
+            $("#div_id_negative_percentage").hide();
+        }
+    });
+
+    function validateForm() {
+        if ("{{ test_type }}" === "exam_paper") {
+            $("#div_id_duration").removeClass("has-error");
+            $("#id_duration").removeClass("form-control-danger");
+            $("#error_1_id_duration").remove();
+            $("#div_id_pass_mark").removeClass("has-error");
+            $("#id_pass_mark").removeClass("form-control-danger");
+            $("#error_1_id_pass_mark").remove();
+            if ($("#id_duration").val() === "0") {
+                alert("Duration cannot be empty");
+                $("#div_id_duration").addClass("has-error");
+                $("#id_duration").addClass("form-control-danger");
+                $('div .bdp-input').after(`<span id="error_1_id_duration" class="help-block"><strong>Please Enter Quiz Duration</strong></span>`);
+
+                return false;
+            }
+            if ($("#id_pass_mark").val() === "0") {
+                alert("Pass Mark cannot be empty");
+                $("#div_id_pass_mark").addClass("has-error");
+                $("#id_pass_mark").addClass("form-control-danger");
+                $("#id_pass_mark").after(`<span id="error_1_id_pass_mark" class="help-block"><strong>Please Enter Pass Marks</strong></span>`)
+                return false;
+            }
+        }
+    }
 
 </script>
 <style>

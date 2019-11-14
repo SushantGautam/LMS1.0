@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -558,7 +559,11 @@ class QuizListView(ListView):
 
     def get_queryset(self):
         queryset = super(QuizListView, self).get_queryset()
-        return queryset.filter(cent_code=self.request.user.Center_Code)
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        return queryset.filter(
+            cent_code=self.request.user.Center_Code,
+            course_code__in=innings_Course_Code
+        )
 
 
 class QuizUpdateView(UpdateView):
@@ -634,6 +639,10 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
         if user_filter:
             queryset = queryset.filter(user__username__icontains=user_filter)
 
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        my_quiz = Quiz.objects.filter(course_code__in=innings_Course_Code)
+        queryset = queryset.filter(quiz__in=my_quiz)
+
         return queryset
 
 
@@ -648,9 +657,12 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
-            score_list = [float(s) for s in sitting.score_list.split(',') if s]
+            print(request.POST['new_score'], "new_score")
+            print(indx, "index")
+            score_list = [s for s in sitting.score_list.split(',') if s]
             score_list[indx] = request.POST.get('new_score', 0)
             sitting.score_list = ','.join(list(map(str, score_list)))
+            print(sitting.score_list, "score_list_update")
             sitting.save()
             # if int(q_to_toggle) in sitting.get_incorrect_questions:
             #     sitting.remove_incorrect_question(q)
@@ -662,16 +674,16 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(QuizMarkingDetail, self).get_context_data(**kwargs)
         context['questions'] = context['sitting'].get_questions(with_answers=True)
-        scores = []
         total = 0
         total_score_obtained = 0
         for q in context['questions']:
             i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
-            score = [float(s) for s in context['sitting'].score_list.split(',') if s][i]
+            # score_list = context['sitting'].score_list.replace("not_graded", "0")
+            score = [s for s in context['sitting'].score_list.split(',') if s][i]
             q.score_obtained = score
             total += q.score
-            total_score_obtained += score
-        context['scores_obtained'] = scores
+            if score != "not_graded":
+                total_score_obtained += float(score)
         context['total_score_obtained'] = total_score_obtained
         context['total'] = total
 
@@ -1066,7 +1078,11 @@ class QuizCreateWizard(SessionWizardView):
             step = self.steps.current
 
         if step == 'form1':
-            form.fields["course_code"].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+            innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+            form.fields["course_code"].queryset = CourseInfo.objects.filter(
+                Center_Code=self.request.user.Center_Code,
+                id__in=innings_Course_Code
+            )
 
         if step == 'form2':
             step1_data = self.get_cleaned_data_for_step('form1')
@@ -1092,12 +1108,30 @@ class teacherSurveyFilterCategory(ListView):
     model = SurveyInfo
     template_name = 'survey/common/surveyinfo_expireView.html'
 
-    def get_queryset(self):
-        if self.request.GET['categoryId'] == '0':
-            return SurveyInfo.objects.all()
-        else:
-            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+    paginate_by = 6
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
+
+    def get_queryset(self):
+        category_id = int(self.request.GET['categoryId'])
+        print("category id:", category_id)
+        if category_id == 0:
+            return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
+        else:
+            category_obj = CategoryInfo.objects.get(id=category_id)
+
+            if category_obj.Category_Name.lower() == "course":
+                innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values(
+                    'Course_Code')
+                return SurveyInfo.objects.filter(
+                    Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code),
+                    Course_Code__in=innings_Course_Code
+                )
+            else:
+                return SurveyInfo.objects.filter(Category_Code=category_id).filter(
+                    Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()

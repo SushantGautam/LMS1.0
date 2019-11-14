@@ -265,6 +265,12 @@ class Question(models.Model):
     def is_saq(self):
         return type(self) is SA_Question
 
+    def is_mcq(self):
+        return type(self) is MCQuestion
+
+    def is_tfq(self):
+        return type(self) is TF_Question
+
 
 class MCQuestion(Question):
     answer_order = models.CharField(
@@ -787,16 +793,16 @@ class Sitting(models.Model):
 
     @property
     def get_percent_correct(self):
-        #dividend = float(self.current_score)
+        # dividend = float(self.current_score)
         dividend = 0
         for n in self.score_list.split(','):
             if (n != "") and (n != " ") and (n != "not_graded"):
                 dividend += float(n)
 
-        #divisor = len(self._question_ids())
+        # divisor = len(self._question_ids())
         divisor = 0
         for x in [int(n) for n in self.question_order.split(',') if n]:
-            score = Question.objects.get(id = x).score
+            score = Question.objects.get(id=x).score
             divisor += float(score)
         if divisor < 1:
             return 0  # prevent divide by zero error
@@ -804,7 +810,7 @@ class Sitting(models.Model):
         if dividend > divisor:
             return 100
 
-        correct = float('%.2f'%((dividend / divisor) * 100.0))
+        correct = float('%.2f' % ((dividend / divisor) * 100.0))
 
         if correct >= 1:
             return correct
@@ -875,8 +881,15 @@ class Sitting(models.Model):
 
         if with_answers:
             user_answers = json.loads(self.user_answers)
-            for question in questions:
-                question.user_answer = user_answers[str(question.id)]
+            for q in questions:
+                # q.user_answer = user_answers[str(q.id)]
+                q.user_answer = user_answers.get(str(q.id), False)
+                i = [int(n) for n in self.question_order.split(',') if n].index(q.id)
+                if i < len([s for s in self.score_list.split(',') if s]):
+                    score = [s for s in self.score_list.split(',') if s][i]
+                else:
+                    score = "not_graded"
+                q.score_obtained = score
 
         return questions
 
@@ -891,8 +904,8 @@ class Sitting(models.Model):
         # return len(self._question_ids())
         total = 0
         for x in [int(n) for n in self.question_order.split(',') if n]:
-           score = Question.objects.get(id = x).score
-           total += score
+            score = Question.objects.get(id=x).score
+            total += score
         return total
 
     def progress(self):
