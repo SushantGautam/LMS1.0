@@ -55,13 +55,13 @@ $(document).ready(function () {
 
 $('.category-name').on('click', function () {
     var categoryId = this.id;
-    var urls = "{% if 'teachers' in request.path %}{% url 'teacherSurveyFilterCategory' %}{%  else %}{% url 'surveyFilterCategory' %}{%  endif %}";
-    urls = urls.trim();
+    //var urls = "{% if 'teachers' in request.path %}{% url 'teacherSurveyFilterCategory' %}{%  else %}{% url 'surveyFilterCategory' %}{%  endif %}";
+    //urls = urls.trim();
     console.log('categoryId');
     $.ajax({
         type: "GET",
         data: {'categoryId': categoryId},
-        url: urls, // URL to your view that serves new info
+        url: "{% url 'teacherSurveyFilterCategory' %}", // URL to your view that serves new info
         success: function (data) {
             $("#rowCards").html(data);
         },

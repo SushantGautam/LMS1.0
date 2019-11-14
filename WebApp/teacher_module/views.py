@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -1107,12 +1108,30 @@ class teacherSurveyFilterCategory(ListView):
     model = SurveyInfo
     template_name = 'survey/common/surveyinfo_expireView.html'
 
-    def get_queryset(self):
-        if self.request.GET['categoryId'] == '0':
-            return SurveyInfo.objects.all()
-        else:
-            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+    paginate_by = 6
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
+
+    def get_queryset(self):
+        category_id = int(self.request.GET['categoryId'])
+        print("category id:", category_id)
+        if category_id == 0:
+            return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
+        else:
+            category_obj = CategoryInfo.objects.get(id=category_id)
+
+            if category_obj.Category_Name.lower() == "course":
+                innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values(
+                    'Course_Code')
+                return SurveyInfo.objects.filter(
+                    Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code),
+                    Course_Code__in=innings_Course_Code
+                )
+            else:
+                return SurveyInfo.objects.filter(Category_Code=category_id).filter(
+                    Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
