@@ -114,26 +114,21 @@
       
 
         <div class="row overall-contents">
-               
-                        
-                    
-           
-        
-        
+
             <div id="container" style="position: relative;">
                     <div id = "prev-btn" class="button-position" style="left:0;">
                             <i class="fa fa-backward"></i>
                         </div>
-                    <div  class="content-title1  text-center">
-                            <span id="chaptertitle" class="content-title">
-                                <!-- Chapter title goes here -->
-                                {{chapter}}
-                            </span>
-                        </div>
-                        <div id = "next-btn" class="button-position" style="right:0;">
-                                <i class="fa fa-forward"></i>
-                            </div>
-
+                    <div class="content-title1  text-center">
+                        <span id="chaptertitle" class="content-title">
+                            <!-- Chapter title goes here -->
+                            {{chapter}}
+                        </span>
+                    </div>
+                    <div id = "next-btn" class="button-position" style="right:0;">
+                        <i class="fa fa-forward"></i>
+                    </div>
+                    <div id="page-contents"></div>
             </div>
         
         
@@ -196,12 +191,12 @@
 
     $('#next-btn').off().click(function () {
         pauseAllVideos();
-        $("#container > .coursepages ").each(function () {
+        $("#page-contents > .coursepages ").each(function () {
             if ($(this).css("display") == "block") {
                 res = this.id.match(/[0-9]+/);
             }
         });
-        if (res < $("#container > div ").length) {
+        if (res < $("#page-contents > div ").length) {
             $('#page' + res).css("display", "none");
             res++;
             $('#page' + res).css("display", "block")
@@ -211,7 +206,7 @@
 
     $('#prev-btn').off().click(function () {
         pauseAllVideos();
-        $("#container > div ").each(function () {
+        $("#page-contents > div ").each(function () {
             if ($(this).css("display") == "block") {
                 res = this.id.match(/[0-9]+/);
             }
@@ -264,7 +259,7 @@
         $.each(data.pages, function (key, value) {
             $.each(value, function (count) {
                 // Create modal
-                $('#container').append(`
+                $('#page-contents').append(`
                 <div id="page${key}" class = 'coursepages' role="dialog" style="display: none;">
 
                 </div>`)
