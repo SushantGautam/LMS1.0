@@ -31,7 +31,7 @@ body{
   background:#CCC;
   margin:5px;
   display: none;
-
+  z-index: 90;
 }
 
 .pdfdiv:hover #pdfdiv-actions1{
@@ -270,6 +270,7 @@ svg{
   width: 100%;
   position: absolute;
   bottom: 0;
+  z-index: 90;
 }
 
 
@@ -374,7 +375,7 @@ svg{
     background:#CCC;
     margin:5px;
     display: none;
-        
+    z-index: 90;
 }
 
 .pic:hover #pic-actions{
@@ -539,6 +540,11 @@ svg{
 #video-drag{
   font-size: 17px;
   opacity: 0.3;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  z-index: 99;
 }
 
 .video-text-div{
@@ -554,9 +560,9 @@ svg{
   left:0;
   top:0;
   background:#CCC;
- margin:5px;
+  margin:5px;
   display: none;
-
+  z-index: 90;
 }
 
 ._3dobj-div{
@@ -583,7 +589,7 @@ svg{
   background:#CCC;
   margin:5px;
   display: none;
-
+  z-index: 90;
 }
 
 ._3dobj-div:hover #_3dobj-actions{

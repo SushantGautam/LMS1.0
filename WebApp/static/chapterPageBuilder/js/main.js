@@ -245,7 +245,7 @@ $(document).ready(function() {
                 `}
             }else{
                 message = "drag and drop video here...";
-                videoobj = `<div class="progress">
+                videoobj = `<div class="progress video-text-div">
                 <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
             </div>`;
             }
@@ -262,9 +262,7 @@ $(document).ready(function() {
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                         <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
                         </form>
-      
-                        
-                                ${videoobj}
+                        ${videoobj}
                     </div>
                 </div>`
 
@@ -1140,6 +1138,7 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
                             div.find('p').remove();
+                            div.find('.progress').remove();
                             if(data.hasOwnProperty('html')){
                                 var html = $(data.html);
                                 $(html).css('height','100%')
@@ -1152,7 +1151,7 @@ $(document).ready(function() {
                                 `);
                             }else{
                                 div.append(`
-                                    <video width="100%" height="75%" controls>
+                                    <video width="100%" height="100%" controls>
                                         <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
                                     </video>
                                 `)
