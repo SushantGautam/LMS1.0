@@ -1333,6 +1333,19 @@ class ThreadView(ListView):
             )
 
 
+def ThreadList_LoadMoreViewAjax(request, pk, count ):
+    return render(request, 'ForumInclude/LoadMoreAjax.html', {
+        'MoreReply' : Post.objects.filter(
+            thread_id=pk
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date')[5*count:(1+count)*5]
+    
+    })
+
+
 class TopicView(ListView):
     model = Thread
     paginate_by = 20
@@ -1493,7 +1506,7 @@ def CourseForum(request, course):
 def Topic_related_to_user(request, node_group=None):
     if node_group == None:
         own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
-        course_associated_with__isnull=True)
+        course_associated_with__isnull=True) | Topic.objects.filter(center_associated_with__isnull= True, course_associated_with__isnull=True)
         innings_Course_Code = InningGroup.objects.filter(Teacher_Code=request.user.id).values('Course_Code')
         assigned_topics =(Topic.objects.filter(course_associated_with__in=innings_Course_Code) | own_center_general_topic)
         

@@ -1,0 +1,97 @@
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% for post in MoreReply %}
+
+<li class="list-group-reply reply-item">
+
+
+    <div class="thread-meta row">
+
+        <div class="">
+            <div class="reply-content">
+
+                <div class="profile_pic">
+                    <img src="
+                                            {% if post.user.Member_Avatar %}
+                                                {{ post.user.Member_Avatar.url }}
+                                            {% elif post.user.Member_Gender == 'M' %}
+                                                {% static 'images/profile/male.jpg' %}
+                                            {% elif post.user.Member_Gender == 'F' %}
+                                                {% static 'images/profile/female.png' %}
+                                            {% else %}
+                                                {% static 'images/profile/profile.png' %}
+                                            {% endif %}" alt="..." class="img-circle profile_img_forum" />
+                    <a href="
+                    {% if '/teachers' in request.path %}
+{% url 'teacher_info' post.user_id %}
+{% elif '/students' in request.path %}
+{% url 'student_info' post.user_id %}
+{% elif '/forum' in request.path %}
+{% url 'forum:user_info' post.user_id %}
+{% endif %}
+                   " class="username-link">{{ post.user.username }}</a>
+
+                </div>
+
+
+            </div>
+            <div class="thread_date">
+                <span class="pull-right">{{ post.pub_date | naturaltime }}</span>
+            </div>
+            <div class="reply-content-detail">
+
+
+                <span> {{ post.content_raw | safe }} </span>
+            </div>
+
+
+        </div>
+
+    </div>
+    <br>
+
+    <div class="top_button">
+
+        {% if request.user.is_superuser %}
+        {% if not request.user.Is_Student %}
+        {% if not post.hidden %}
+
+        <a href="#" class="moderate-action hide-reply" data-toggle="modal" data-target="#moderation-modal"
+            data-pk="{{ thread.pk }}" data-action="hide-reply" data-api-url="{% url 'forum:post-detail' post.pk %}">
+
+            <p class="moderation-links">
+
+                <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i>
+                    Hide </span>
+
+            </p>
+
+        </a>
+
+        {% else %}
+
+        <a href="#" class="moderate-action hide-reply" data-toggle="modal" data-target="#moderation-modal"
+            data-pk="{{ thread.pk }}" data-action="unhide-reply" data-api-url="{% url 'forum:post-detail' post.pk %}">
+            <div class="hide_button">
+                <p class="moderation-links">
+
+                    <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i>
+                        UnHide </span>
+
+                </p>
+            </div>
+        </a>
+        {% endif %}
+        {% endif %}
+
+        {% endif %}
+
+
+    </div>
+
+</li>
+{% endfor %}

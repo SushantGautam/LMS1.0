@@ -219,7 +219,7 @@ class UserThreads(LoginRequiredMixin, ListView):
     context_object_name = 'threads'
 
     def get_queryset(self):
-        return Thread.objects.visible().filter(
+        return Thread.objects.filter(
             user_id=self.kwargs.get('pk')
         ).select_related(
             'user', 'topic'

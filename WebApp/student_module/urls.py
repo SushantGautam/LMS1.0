@@ -131,6 +131,8 @@ urlpatterns += (
          views.NodeGroupView.as_view(), name='student_nodegroup'),
     path('forum/thread/<int:pk>/',
          views.ThreadView.as_view(), name='student_thread'),
+    path('forum/ThreadListLoadMoreViewAjax/<int:pk>/<int:count>',
+         views.ThreadList_LoadMoreViewAjax, name='Load_More'),
     path('forum/topic/<int:pk>/', views.TopicView.as_view(), name='student_topic'),
     path('forum/info/<int:pk>/', views.user_info, name='student_info'),
     path('forum/posts/<int:pk>/', views.UserPosts.as_view(), name='student_posts'),

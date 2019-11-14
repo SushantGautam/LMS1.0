@@ -15,10 +15,10 @@
         <ul class="list-unstyled user_data">
             <li><a class="btn-white btn-flat" href="{% url 'student_threads' request.user.pk %}"><i
                         class="fa fa-question-circle fa-lg"></i> Questions
-                    Asked: {{ request.user.threads.count }}</a>
+                    Asked: {{ request.user.threads.visible.count }}</a>
             </li>
             <li><a class="btn-white btn-flat reply_count" href="{% url 'student_posts' request.user.pk %}">
-                    <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.count }}</a>
+                    <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.visible.count }}</a>
             </li>
 
             <li>
