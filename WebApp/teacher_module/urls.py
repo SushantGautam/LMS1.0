@@ -88,7 +88,7 @@ urlpatterns += (
     # path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
     path('surveyinfodetail/detail/<int:pk>/',
          views.TeacherSurveyInfoDetailView.as_view(), name='surveyinfodetail'),
-    path('surveyFilterCategory/', survey_views.surveyFilterCategory.as_view(),
+    path('surveyFilterCategory/', views.teacherSurveyFilterCategory.as_view(),
          name='teacherSurveyFilterCategory'),
     path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
          name='TeacherSurveyInfo_ajax'),

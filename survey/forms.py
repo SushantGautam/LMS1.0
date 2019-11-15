@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
-from WebApp.models import CourseInfo, InningInfo
+from WebApp.models import CourseInfo, InningInfo, InningGroup
 
 
 class CategoryInfoForm(forms.ModelForm):
@@ -21,12 +21,28 @@ class SurveyInfoForm(forms.ModelForm):
 
     # To filter out only active session and course of the center
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request",None)
+        request = kwargs.pop("request", None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
-        self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
-                                                                          Center_Code=self.request.user.Center_Code)
-        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
-                                                                         Use_Flag=True)
+
+
+        
+        if "teachers" in request.path:
+            print(request.path)
+            innings_Course_Code = InningGroup.objects.filter(Teacher_Code=request.user.id).values('Course_Code')
+            self.fields['Course_Code'].queryset = CourseInfo.objects.filter(
+                Center_Code=request.user.Center_Code,
+                Use_Flag=True,
+                id__in=innings_Course_Code,
+            )
+            self.fields['Session_Code'].queryset = InningInfo.objects.filter(
+                Course_Group__in=InningGroup.objects.filter(Teacher_Code=request.user.id)
+            )
+        else:
+            self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=request.user.Center_Code,
+                                                                            Use_Flag=True)
+            self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
+                                                                             Center_Code=request.user.Center_Code)
+
     #     Id = kwargs["categoryId"]
     #     if Id == 'live':
     #         self.fields['End_Date'].widget = widgets.AdminTimeWidget()

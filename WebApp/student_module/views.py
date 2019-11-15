@@ -5,6 +5,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
@@ -417,15 +418,51 @@ class surveyFilterCategory_student(ListView):
     model = SurveyInfo
     template_name = 'student_module/questions_student_listView.html'
 
-    def get_queryset(self):
-        # print(self.request.GET['categoryId'])
-        # print(SurveyInfo.objects.filter(Category_Code = self.request.GET['categoryId']))
-        if self.request.GET['categoryId'] == '0':
+    paginate_by = 6
 
-            return SurveyInfo.objects.all()
-            # filter(Center_Code = self.request.user.Center_Code)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
+
+    def get_queryset(self):
+        category_id = int(self.request.GET['categoryId'])
+        # print("im here id:", category_id)
+        if category_id == 0:
+            return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
         else:
-            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+            category_obj = CategoryInfo.objects.get(id=category_id)
+            # print("im here", category_obj.Category_Name.lower())
+            if category_obj.Category_Name.lower() == "course":
+                student_course = InningGroup.objects.filter(
+                    inninginfo__in=InningInfo.objects.filter(
+                        Groups__in=self.request.user.groupmapping_set.all()
+                    )
+                ).values("Course_Code")
+                # print(innings_Course_Code)
+                # print(SurveyInfo.objects.filter(
+                #     Center_Code=self.request.user.Center_Code,
+                #     Course_Code__in=innings_Course_Code
+                # ))
+                return SurveyInfo.objects.filter(
+                    Center_Code=self.request.user.Center_Code,
+                    Course_Code__in=student_course
+                )
+
+            if category_obj.Category_Name.lower() == "session":
+                session = InningInfo.objects.filter(
+                    Groups__in=self.request.user.groupmapping_set.all()
+                )
+                # print(session)
+                # print(SurveyInfo.objects.filter(
+                #     Center_Code=self.request.user.Center_Code,
+                #     Session_Code__in=session))
+                return SurveyInfo.objects.filter(
+                    Center_Code=self.request.user.Center_Code,
+                    Session_Code__in=session
+                )
+            else:
+                return SurveyInfo.objects.filter(Category_Code=category_id).filter(
+                    Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
