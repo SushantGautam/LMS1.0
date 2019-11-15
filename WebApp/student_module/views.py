@@ -434,10 +434,10 @@ class surveyFilterCategory_student(ListView):
             student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
 
             # Predefined category name "general, session, course, system"
-            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general", Center_Code=self.request.user.Center_Code)
-            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session", Session_Code__in=student_session)
-            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course", Course_Code__in=student_course)
-            system_survey = SurveyInfo.objects.filter(Center_Code=None)
+            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general", Center_Code=self.request.user.Center_Code, Use_Flag=True)
+            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session", Session_Code__in=student_session, Use_Flag=True)
+            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course", Course_Code__in=student_course, Use_Flag=True)
+            system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
             if category_id == 0:
                 all_survey = general_survey | session_survey | course_survey | system_survey
