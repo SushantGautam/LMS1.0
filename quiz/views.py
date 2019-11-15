@@ -522,6 +522,8 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
         if context['quiz_id'] is not None:
             get_object_or_404(Quiz, id=context['quiz_id']).mcquestion.add(self.object)
         with transaction.atomic():
+            for f in ans:
+                print("is changed: ", f.has_changed())
             if ans.is_valid():
                 ans.instance = self.object
                 ans.save()

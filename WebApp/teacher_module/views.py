@@ -492,21 +492,29 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return context
 
     def form_valid(self, form):
+
         if form.is_valid():
             self.object = form.save(commit=False)
             self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
-            self.object.save()
+            super().form_valid(form)
+        print("im here form valid")
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
         with transaction.atomic():
+            for f in qn:
+                print("is changed: ", f.has_changed())
             if qn.is_valid():
                 qn.instance = self.object
                 qn.save()
+            else:
+                print("qn is invalid", qn.errors)
             if qna.is_valid():
                 qna.instance = self.object
                 qna.save()
+            else:
+                print("qna is invalid", qna.errors)
         return redirect('surveyinfodetail', self.object.id)
 
     def get_form_kwargs(self):
