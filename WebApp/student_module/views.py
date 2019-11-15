@@ -425,44 +425,36 @@ class surveyFilterCategory_student(ListView):
         self.GET = None
 
     def get_queryset(self):
-        category_id = int(self.request.GET['categoryId'])
-        # print("im here id:", category_id)
-        if category_id == 0:
-            return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
-        else:
-            category_obj = CategoryInfo.objects.get(id=category_id)
-            # print("im here", category_obj.Category_Name.lower())
-            if category_obj.Category_Name.lower() == "course":
-                student_course = InningGroup.objects.filter(
-                    inninginfo__in=InningInfo.objects.filter(
-                        Groups__in=self.request.user.groupmapping_set.all()
-                    )
-                ).values("Course_Code")
-                # print(innings_Course_Code)
-                # print(SurveyInfo.objects.filter(
-                #     Center_Code=self.request.user.Center_Code,
-                #     Course_Code__in=innings_Course_Code
-                # ))
-                return SurveyInfo.objects.filter(
-                    Center_Code=self.request.user.Center_Code,
-                    Course_Code__in=student_course
-                )
+        try:
+            category_id = int(self.request.GET['categoryId'])
+            # student related data
+            student_group = self.request.user.groupmapping_set.all()
+            student_session = InningInfo.objects.filter(Groups__in=student_group)
+            active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+            student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
 
-            if category_obj.Category_Name.lower() == "session":
-                session = InningInfo.objects.filter(
-                    Groups__in=self.request.user.groupmapping_set.all()
-                )
-                # print(session)
-                # print(SurveyInfo.objects.filter(
-                #     Center_Code=self.request.user.Center_Code,
-                #     Session_Code__in=session))
-                return SurveyInfo.objects.filter(
-                    Center_Code=self.request.user.Center_Code,
-                    Session_Code__in=session
-                )
+            # Predefined category name "general, session, course, system"
+            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general", Center_Code=self.request.user.Center_Code)
+            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session", Session_Code__in=student_session)
+            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course", Course_Code__in=student_course)
+            system_survey = SurveyInfo.objects.filter(Center_Code=None)
+
+            if category_id == 0:
+                all_survey = general_survey | session_survey | course_survey | system_survey
+                return all_survey
             else:
-                return SurveyInfo.objects.filter(Category_Code=category_id).filter(
-                    Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
+                category_name = CategoryInfo.objects.get(id=category_id).Category_Name.lower()
+                if category_name == "general":
+                  return general_survey
+                elif category_name == "session":
+                    return session_survey
+                elif category_name == "course":
+                    return course_survey
+                elif category_name == "system":
+                    return system_survey
+        except:
+            return None
+            # print("Error occured")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
