@@ -1354,7 +1354,6 @@ article {
 }
 
 .questions:after {
-    background: url(../img/icon.png) no-repeat left 0;
     display: block;
     position: absolute;
     top: 100%;
