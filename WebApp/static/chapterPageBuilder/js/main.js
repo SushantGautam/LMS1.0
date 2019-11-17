@@ -84,6 +84,10 @@ $(document).ready(function() {
     function revertpositionConvert(element, multiplier){ 
         return parseFloat(element)*parseFloat(multiplier)/100
     }
+
+    function positionConvert(element, divider){
+        return parseFloat(element)*100/parseFloat(divider)
+    }
     // ==================For TextBoxx================================
     $('#tabs-for-download').droppable({
         tolerance: 'fit',
@@ -97,7 +101,7 @@ $(document).ready(function() {
         out: function(event, elem) {
             $(this).removeClass("over");
         },
-     });
+    });
     class Textbox {
         constructor(top=0, left=0, height=null ,width = null, message="Type Something Here...") {
             let id = (new Date).getTime();
@@ -131,7 +135,17 @@ $(document).ready(function() {
                     snapMode: 'inner',
                     cursorAt: { bottom: 0 },
                   
-                    handle: '#draghere'
+                    handle: '#draghere',
+                    stop: function () {
+                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%" ;
+                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%" ;
+                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%" ;
+                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%" ;
+                        $(this).css("left", l);
+                        $(this).css("top", t);
+                        $(this).css("height", h);
+                        $(this).css("width", w);
+                    }
                 });
                 
 
@@ -150,6 +164,7 @@ $(document).ready(function() {
 
     class picture {
         constructor(top, left, pic=null, width=null, height=null) {
+
             let id = (new Date).getTime();
             let position = { top, left, width, height };
             let message = "";
@@ -195,7 +210,17 @@ $(document).ready(function() {
                 cursor: "move",
                 snap: ".gridlines",
                 snapMode: 'inner',
-                cursorAt: { bottom: 0 }
+                cursorAt: { bottom: 0 },
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%" ;
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%" ;
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%" ;
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%" ;
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
             });
 
             var a = document.getElementsByClassName("current")[0];
@@ -285,7 +310,17 @@ $(document).ready(function() {
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
-                    cursorAt: { bottom: 0 }
+                    cursorAt: { bottom: 0 },
+                    stop: function () {
+                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%" ;
+                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%" ;
+                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%" ;
+                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%" ;
+                        $(this).css("left", l);
+                        $(this).css("top", t);
+                        $(this).css("height", h);
+                        $(this).css("width", w);
+                    }
                 });
 
                 var a = document.getElementsByClassName("current")[0];
@@ -327,12 +362,22 @@ $(document).ready(function() {
             "height": position.height,
             "width": position.width,
             }).draggable({
-            //Constrain the draggable movement only within the canvas of the editor
-            containment: "#tabs-for-download",
-            scroll: false,
-            grid: [50, 20],
-            cursor: "move",
-            handle: '#draghanle'
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                grid: [50, 20],
+                cursor: "move",
+                handle: '#draghanle',
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%" ;
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%" ;
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%" ;
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%" ;
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
             });
 
             var a = document.getElementsByClassName("current")[0];
@@ -394,7 +439,17 @@ $(document).ready(function() {
                 cursor: "move",
                 snap: ".gridlines",
                 snapMode: 'inner',
-                cursorAt: { bottom: 0 }
+                cursorAt: { bottom: 0 },
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%" ;
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%" ;
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%" ;
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%" ;
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
             });
 
             var a = document.getElementsByClassName("current")[0];
@@ -459,7 +514,17 @@ $(document).ready(function() {
                 cursor: "move",
                 snap: ".gridlines",
                 snapMode: 'inner',
-                cursorAt: { bottom: 0 }
+                cursorAt: { bottom: 0 },
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%" ;
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%" ;
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%" ;
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%" ;
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
             });
 
             var a = document.getElementsByClassName("current")[0];
@@ -502,6 +567,16 @@ $(document).ready(function() {
         cursorAt: {
             top: 56,
             left: 56
+        },
+        stop: function () {
+            var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%" ;
+            var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%" ;
+            // var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%" ;
+            // var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%" ;
+            $(this).css("left", l);
+            $(this).css("top", t);
+            // $(this).css("height", h);
+            // $(this).css("width", w);
         }
     });
 
@@ -539,7 +614,15 @@ $(document).ready(function() {
             grid: [20, 20],
             autoHide: true,
             minWidth: 75,
-            minHeight: 25
+            minHeight: 25,
+            autoHide: true,
+            stop: function(e, ui) {
+                //   var parent = ui.element.parent();
+                  ui.element.css({
+                       width: positionConvert(ui.element.width(), $('#tabs-for-download').width())+"%",
+                       height: positionConvert(ui.element.height(), $('#tabs-for-download').height())+"%"
+                  });
+            }
         });
         $('.note-editing-area').on('focusin', function(e){
             $(e.currentTarget).parent().find('.note-popover .popover-content,.panel-heading.note-toolbar').css('display','block')
@@ -605,7 +688,14 @@ $(document).ready(function() {
             grid: [20, 20],
             autoHide: true,
             minWidth: 150,
-            minHeight: 150
+            minHeight: 150,
+            stop: function(e, ui) {
+                // var parent = ui.element.parent();
+                ui.element.css({
+                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width())+"%",
+                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height())+"%"
+               });
+          }
         });
 
         $('.pic').on('dragover', function(e) {
@@ -787,6 +877,13 @@ $(document).ready(function() {
             autoHide: true,
             minWidth: 50,
             minHeight: 30,
+            stop: function(e, ui) {
+                // var parent = ui.element.parent();
+                ui.element.css({
+                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width())+"%",
+                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height())+"%"
+               });
+          },
         }); 
     }
     
@@ -969,7 +1066,13 @@ $(document).ready(function() {
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
-          
+            stop: function(e, ui) {
+                // var parent = ui.element.parent();
+                ui.element.css({
+                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width())+"%",
+                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height())+"%"
+               });
+            },
         });
 
         $(".pdfInp").change(function(e) {
@@ -1015,7 +1118,14 @@ $(document).ready(function() {
             grid: [20, 20],
             autoHide: true,
             minWidth: 150,
-            minHeight: 150
+            minHeight: 150,
+            stop: function(e, ui) {
+                // var parent = ui.element.parent();
+                ui.element.css({
+                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width())+"%",
+                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height())+"%"
+               });
+            },
         });
 
         $('.video-div').on('drop', function(e) {
@@ -1253,7 +1363,14 @@ $(document).ready(function() {
             grid: [20, 20],
             autoHide: true,
             minWidth: 150,
-            minHeight: 150
+            minHeight: 150,
+            stop: function(e, ui) {
+                var parent = ui.element.parent();
+                ui.element.css({
+                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width())+"%",
+                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height())+"%"
+               });
+            },
         });
 
         $('.3dobj').on('dragover', function(e) {
@@ -1429,22 +1546,32 @@ $(document).ready(function() {
 
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
-            TextboxFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth, "20%", "35%");
+            TextboxFunction(
+                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height()))+'%',
+                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width()))+'%',
+                "20%", "35%");
         } else if (ui.helper.hasClass('picture')) {
-            PictureFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth);
-            //object of video component
+            PictureFunction(
+                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height()))+'%',
+                (positionConvert(ui.helper.position().left, $('#tabs-for-download').width()))+'%',
+                null, '40%','30%'
+            );
         } else if (ui.helper.hasClass('video')) {
-            VideoFunction(ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
+            VideoFunction(
+                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height()))+'%',
+                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width()))+'%',
+                null, '30%','40%'
+            );
         } else if (ui.helper.hasClass('buttons')) {
-            ButtonFunction(ui.helper.position().top,
-                ui.helper.position().left - sidebarWidth);
+            ButtonFunction(
+                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height()))+'%',
+                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width()))+'%',
+                null, '15%','20%'
+            );
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
-                top = 0,
-                left = 0,
+                top = 0+'%',
+                left = 0+'%',
                 "",
                 width = "100%", height="50%");
             
@@ -1452,13 +1579,13 @@ $(document).ready(function() {
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="50%",
-                left=0,
+                left=0+'%',
                 height="45%", width='100% '
             );
         } else if (ui.helper.hasClass('grid')) {
             VideoFunction(
-                top = 0,
-                left = 0,
+                top = 0+'%',
+                left = 0+'%',
                 null,
                 height="50%",width = "100%");
             
@@ -1466,43 +1593,43 @@ $(document).ready(function() {
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="52%",
-                left=0,
+                left=0+'%',
                 height="45%", width="100%"
             );
         } else if (ui.helper.hasClass('title-slide')) {
             PictureFunction(
-                top = 0,
-                left = 0,
+                top = 0+'%',
+                left = 0+'%',
                 null,
                 width = "49%", height="60%");
             PictureFunction(
-                top = 0,
+                top = 0+'%',
                 left = "51%",
                 null,
                 width = "49%", height="60%");
             TextboxFunction(
                 top="62%",
-                left=0,
+                left=0+'%',
                 height="35%", width="100%",
                 message="Your Content Here"
             );
         } else if (ui.helper.hasClass('title-content-details')) {
             TextboxFunction(
                 top="0%",
-                left=0,
+                left=0+'%',
                 height="10%", width="100%",
                 message="Your Title Here"
             );
             TextboxFunction(
                 top="13%",
-                left=0,
+                left=0+'%',
                 height="84%", width="100%",
                 message="Your Content Here"
             );
         } else if (ui.helper.hasClass('pdf-text')) {
             PDFFunction(
                 top = "0%",
-                left = 0,
+                left = 0+'%',
                 link="",
                 height = "60%", width="100%");
             
@@ -1510,16 +1637,22 @@ $(document).ready(function() {
             // ===============for textbox inside grid-1============
             TextboxFunction(
                 top="62%",
-                left=0,
+                left=0+'%',
                 height="35%", width="100%"
             );
         
         } else if (ui.helper.hasClass('3dobject')) {
-            _3dFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth); 
+            _3dFunction(
+                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height()))+'%',
+                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width()))+'%',
+                null, '30%','40%'
+            ); 
         }else if(ui.helper.hasClass('Pdf')){
-            PDFFunction(ui.helper.position().top,
-            ui.helper.position().left - sidebarWidth);
+            PDFFunction(
+                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height()))+'%',
+                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width()))+'%',
+                null, '30%','40%'
+            );
         }
         $('.fa-trash').click(function(e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
@@ -1630,10 +1763,10 @@ $(document).ready(function() {
                             css_string = JSON.stringify(css_value)
 
                             TextboxFunction(
-                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
-                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                                css_value.tops+"%",
+                                css_value.left+"%",
+                                css_value.height+"%",
+                                css_value.width+"%",
                                 css_value.content
                             );
                         });
@@ -1642,11 +1775,11 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PictureFunction(
-                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
+                                css_value.tops+"%",
+                                css_value.left+"%",
                                 css_value['background-image'],
-                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
-                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
+                                css_value.width+"%",
+                                css_value.height+"%",
                             );
                         });
                     }
@@ -1656,11 +1789,11 @@ $(document).ready(function() {
                             css_string = JSON.stringify(css_value)
                             
                             ButtonFunction(
-                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
+                                css_value.tops+"%",
+                                css_value.left+"%",
                                 css_value.link,
-                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                                css_value.height+"%",
+                                css_value.width+"%",
                                 css_value.btn_name
                             );
                         });
@@ -1670,11 +1803,11 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PDFFunction(
-                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
+                                css_value.tops+"%",
+                                css_value.left+"%",
                                 css_value['link'],
-                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                                css_value.height+"%",
+                                css_value.width+"%",
                             );
                         });
                     }
@@ -1689,11 +1822,11 @@ $(document).ready(function() {
                                 link = css_value.local_link
                             }
                             VideoFunction(
-                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
+                                css_value.tops+"%",
+                                css_value.left+"%",
                                 link,
-                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                                css_value.height+"%",
+                                css_value.width+"%",
                             );
                         });
                     }
@@ -1702,11 +1835,11 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             _3dFunction(
-                                revertpositionConvert(css_value.tops,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.left,$('.editor-canvas').css('width')),
+                                css_value.tops+"%",
+                                css_value.left+"%",
                                 css_value['link'],
-                                revertpositionConvert(css_value.height,$('.editor-canvas').css('height')),
-                                revertpositionConvert(css_value.width,$('.editor-canvas').css('width')),
+                                css_value.height+"%",
+                                css_value.width+"%",
                             );
                         });
                     }
