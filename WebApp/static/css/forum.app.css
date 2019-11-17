@@ -19159,7 +19159,7 @@ ul.img-grid li img {
     border: none;
     border-bottom: 1px solid #efefef;
     height: 48px;
-    line-height: 48px;
+    line-height: 35px;
     padding-top: 0;
     padding-bottom: 0;
     font-size: 1.23rem;
@@ -58620,4 +58620,13 @@ a:hover {
     display: flex;
     justify-content: center;
     padding-top: 15px;
+}
+
+#pictureBtn{
+    margin-top: -5px;
+}
+
+#Undobtn{
+margin-left: -76px;
+    margin-top: -5px;
 }

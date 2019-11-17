@@ -31,6 +31,8 @@ urlpatterns = [
     path(r'^t/(?P<pk>\d+)/page/(?P<page>[0-9]+)/$',
          views.ThreadView.as_view(), name='thread'),
     path(r't/<int:pk>/', views.ThreadView.as_view(), name='thread'),
+    path('forum/ThreadListLoadMoreViewAjax/<int:pk>/<int:count>',
+         views.ThreadList_LoadMoreViewAjax, name='Show_More'),
     path(r'u/<int:pk>/', views.user_info, name='user_info'),
     path(r'^u/(?P<pk>\d+)/threads/page/(?P<page>[0-9]+)/$',
          views.UserThreads.as_view(), name='user_threads'),
@@ -46,7 +48,7 @@ urlpatterns = [
     path(r'^search/(?P<keyword>.*?)/page/(?P<page>[0-9]+)/$',
          views.SearchView.as_view(), name='search'),
     path(r'search/(?P<keyword>.*)/', views.SearchView.as_view(), name='search'),
-    
+
     path(r't/create/', views.create_thread, name='create_thread'),
     path(r't/create/(?P<nodegroup_pk>\d+)/',
          views.create_thread, name='create_thread'),

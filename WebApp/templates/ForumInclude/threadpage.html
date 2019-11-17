@@ -162,7 +162,6 @@
 
 
                                 <hr>
-                                <div id="LoadReplies">
                                     {% for post in posts %}
 
                                     <li class="list-group-reply reply-item">
@@ -266,12 +265,14 @@
                                     </li>
                                     {% endfor %}
 
+                                <div id="LoadReplies">
+
                                 </div>
                                 <div class="LoadButton">
                                     {% if total_reply_count > 5 %}
-                                    <button id="LoadBack" style="display: none;" class="btn btn-info"> <i
-                                            class="fa fa-angle-left"></i> Back</button>
-                                    <button id="LoadMore" class="btn btn-info">Load More</button>
+                                    <button id="ShowLess" style="display: none;" class="btn btn-info"> <i
+                                            class="fa fa-angle-left"></i>  Show Less </button>
+                                    <button id="LoadMore" class="btn btn-info">Show More</button>
                                     {% endif %}
                                 </div>
 
@@ -372,7 +373,7 @@
                                                 data-edit="insertImage" />
                                         </div>
 
-                                        <div class="btn-group">
+                                        <div class="btn-group" id="Undobtn">
                                             <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i
                                                     class="fa fa-undo"></i></a>
                                             <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i
@@ -608,36 +609,34 @@
             type: "GET",
             url: "/students/forum/ThreadListLoadMoreViewAjax/{{ thread.pk }}/" + MoreCount,
             success: function (data) {
-                $("#LoadReplies").html(data);
+                $("#LoadReplies").append(data);
                 MoreCount = MoreCount + 1; RefreshBackButton();
             },
 
         });
     });
 
-    $('#LoadBack').click(function () {
+    $('#ShowLess').click(function () {
         $.ajax({
             type: "GET",
             url: "/students/forum/ThreadListLoadMoreViewAjax/{{ thread.pk }}/" + (MoreCount - 1),
             success: function (data) {
-                $("#LoadReplies").html(data);
-                MoreCount = MoreCount - 1; RefreshBackButton();
-                if (MoreCount < 0) { MoreCount = 0 }
+                $("#LoadReplies").html('');
+                MoreCount = 1; RefreshBackButton() ;
             },
 
         });
     });
     function RefreshBackButton() {
 
-        if (MoreCount) {
-            $('#LoadBack').css('display', 'inline-block');
+        if (MoreCount>1) {
+            $('#ShowLess').css('display', 'inline-block');
         }
         else {
-            $('#LoadBack').css('display', 'none');
+            $('#ShowLess').css('display', 'none');
         }
 
-        if (((MoreCount + 1) * 5) >= {{ total_reply_count }
-    } ) {
+        if (((MoreCount) * 5) >= {{ total_reply_count }} ) {
         $('#LoadMore').css('display', 'none');
     }else {
         $('#LoadMore').css('display', 'inline-block');

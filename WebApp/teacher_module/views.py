@@ -1337,7 +1337,7 @@ class ThreadView(ListView):
             'user'
         ).prefetch_related(
             'user__forum_avatar'
-        ).order_by('pub_date')
+        ).order_by('pub_date')[:5]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
@@ -1347,6 +1347,14 @@ class ThreadView(ListView):
         context['title'] = context['thread'].title
         context['topic'] = context['thread'].topic
         context['form'] = ReplyForm()
+        context['total_reply_count'] = Post.objects.filter(
+            thread_id=self.kwargs.get('pk')
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date').count()
+
         return context
 
     @method_decorator(login_required)
@@ -1378,7 +1386,6 @@ def ThreadList_LoadMoreViewAjax(request, pk, count ):
         ).order_by('pub_date')[5*count:(1+count)*5]
     
     })
-
 
 class TopicView(ListView):
     model = Thread
