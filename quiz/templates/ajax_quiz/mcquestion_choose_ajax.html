@@ -1,7 +1,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+
 {{ form.media }}
 <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
@@ -18,7 +18,7 @@
 {#  <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>#}
 
   <script>
-      $(".modal-dialog").css("width", "auto");
+      // $(".modal-dialog").css("width", "auto");
       //$("#div_id_mcquestion").css("width", "auto");
       //$(".selector-chosen").css("width", "auto");
     //   $("div.selector").css("width", "50%");
@@ -51,4 +51,5 @@
           $('#selected_mcq_num').text($('#id_mcquestion option:selected').length);
       });
       {#$('#id_mcquestion').css("height", "50vh");#}
+      $('.modal-dialog').css("width", "fit-content");
   </script>
