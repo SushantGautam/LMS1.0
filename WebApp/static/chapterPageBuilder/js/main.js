@@ -1763,10 +1763,10 @@ $(document).ready(function() {
                             css_string = JSON.stringify(css_value)
 
                             TextboxFunction(
-                                css_value.tops+"%",
-                                css_value.left+"%",
-                                css_value.height+"%",
-                                css_value.width+"%",
+                                css_value.tops,
+                                css_value.left,
+                                css_value.height,
+                                css_value.width,
                                 css_value.content
                             );
                         });
@@ -1775,11 +1775,11 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PictureFunction(
-                                css_value.tops+"%",
-                                css_value.left+"%",
+                                css_value.tops,
+                                css_value.left,
                                 css_value['background-image'],
-                                css_value.width+"%",
-                                css_value.height+"%",
+                                css_value.width,
+                                css_value.height,
                             );
                         });
                     }
@@ -1789,11 +1789,11 @@ $(document).ready(function() {
                             css_string = JSON.stringify(css_value)
                             
                             ButtonFunction(
-                                css_value.tops+"%",
-                                css_value.left+"%",
+                                css_value.tops,
+                                css_value.left,
                                 css_value.link,
-                                css_value.height+"%",
-                                css_value.width+"%",
+                                css_value.height,
+                                css_value.width,
                                 css_value.btn_name
                             );
                         });
@@ -1803,11 +1803,11 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             PDFFunction(
-                                css_value.tops+"%",
-                                css_value.left+"%",
+                                css_value.tops,
+                                css_value.left,
                                 css_value['link'],
-                                css_value.height+"%",
-                                css_value.width+"%",
+                                css_value.height,
+                                css_value.width,
                             );
                         });
                     }
@@ -1822,11 +1822,11 @@ $(document).ready(function() {
                                 link = css_value.local_link
                             }
                             VideoFunction(
-                                css_value.tops+"%",
-                                css_value.left+"%",
+                                css_value.tops,
+                                css_value.left,
                                 link,
-                                css_value.height+"%",
-                                css_value.width+"%",
+                                css_value.height,
+                                css_value.width,
                             );
                         });
                     }
@@ -1835,11 +1835,11 @@ $(document).ready(function() {
                         $.each(div_value, function(css, css_value){
                             css_string = JSON.stringify(css_value)
                             _3dFunction(
-                                css_value.tops+"%",
-                                css_value.left+"%",
+                                css_value.tops,
+                                css_value.left,
                                 css_value['link'],
-                                css_value.height+"%",
-                                css_value.width+"%",
+                                css_value.height,
+                                css_value.width,
                             );
                         });
                     }
