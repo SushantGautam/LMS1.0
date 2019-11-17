@@ -156,7 +156,7 @@ class MemberInfo(AbstractUser):
         if self.first_name and self.last_name:
             return  self.first_name + " " + self.last_name
         else:
-            return "(NaN) " + self.username
+            return "-- " + self.username
 
     # def create_user(self, username, email=None, password=None, **extra_fields):
     #     extra_fields.setdefault('is_staff', True)
