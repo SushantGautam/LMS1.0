@@ -1355,7 +1355,7 @@ class ThreadView(ListView):
             'user'
         ).prefetch_related(
             'user__forum_avatar'
-        ).order_by('pub_date')
+        ).order_by('pub_date')[:5]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
@@ -1365,6 +1365,14 @@ class ThreadView(ListView):
         context['title'] = context['thread'].title
         context['topic'] = context['thread'].topic
         context['form'] = ReplyForm()
+        context['total_reply_count'] = Post.objects.filter(
+            thread_id=self.kwargs.get('pk')
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date').count()
+
         return context
 
     @method_decorator(login_required)
@@ -1384,6 +1392,18 @@ class ThreadView(ListView):
                 reverse('teacher_thread', kwargs={'pk': thread_id})
             )
 
+
+def ThreadList_LoadMoreViewAjax(request, pk, count ):
+    return render(request, 'ForumInclude/LoadMoreAjax.html', {
+        'MoreReply' : Post.objects.filter(
+            thread_id=pk
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date')[5*count:(1+count)*5]
+    
+    })
 
 class TopicView(ListView):
     model = Thread
@@ -1546,7 +1566,7 @@ def CourseForum(request, course):
 def Topic_related_to_user(request, node_group=None):
     if node_group == None:
         own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
-            course_associated_with__isnull=True)
+        course_associated_with__isnull=True) | Topic.objects.filter(center_associated_with__isnull= True, course_associated_with__isnull=True)
         innings_Course_Code = InningGroup.objects.filter(Teacher_Code=request.user.id).values('Course_Code')
         assigned_topics = (
                 Topic.objects.filter(course_associated_with__in=innings_Course_Code) | own_center_general_topic)
@@ -1564,5 +1584,25 @@ def Topic_related_to_user(request, node_group=None):
 
 
 def Thread_related_to_user(request):
-    # print("asigned threads", Thread.objects.filter(topic__in=Topic_related_to_user(request)))
+    
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
+
+
+def ThreadSearchAjax(request, topic_id, threadkeywordList):
+
+    threadkeywordList = threadkeywordList.split("_")
+
+    RelevantThread=[]
+    if topic_id:
+        RelevantThread = Thread.objects.filter(topic=topic_id)
+        pass
+    else:
+        RelevantTopics = Topic_related_to_user(request).values_list('pk')
+        RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
+        pass
+    
+
+    return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
+
+
+    pass

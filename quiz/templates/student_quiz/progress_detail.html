@@ -13,13 +13,27 @@
 {% endblock %}
 
 {% block content %}
-  <div class="row well well-lg">
-    <div class="col-md-12" style="text-align: center"><h2 >{{ object.quiz.title }}</h2></div>
-    <div class="col-md-6">Taken Date: {{ object.start }}</div>
-    <div class="col-md-6">Finished Date: {{ object.end }}</div>
-    <div class="col-md-4">Full Marks: {{ object.get_max_score }}</div>
-    <div class="col-md-4">Marks Obtained: {{ object.current_score }}</div>
-    <div class="col-md-4">Percentage: {{ object.get_percent_correct }}</div>
+  <div class="row well">
+     <span class="" style="text-transform: uppercase; font-weight: 600; font-size: 20px; ">
+      {{ object.quiz.title }}</span>
+      <div class="hr2">
+
+      </div>
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-6 col-sm-6 col-xs-12 text-left"> <span class="text-bold"> Taken Date:</span> &nbsp; {{ object.start }}</div>
+     
+     
+        <div class="col-md-6 col-sm-6 col-xs-12 text-right"><span class="text-bold"> Finished Date:</span> &nbsp;{{ object.end }}</div>
+
+    </div>
+    <div class="row" style="margin-bottom: 10px;"> 
+        <div class="col-md-4 col-sm-4 col-xs-12 text-left"><span class="text-bold"> Full Marks:</span> &nbsp;{{ object.get_max_score }}</div>
+        <div class="col-md-4 col-sm-4 col-xs-12 text-center"><span class="text-bold"> Marks Obtained:</span> &nbsp;{{ object.current_score }}</div>
+        <div class="col-md-4 col-sm-4 col-xs-12  text-right"><span class="text-bold"> Percentage:</span>&nbsp; {{ object.get_percent_correct }}</div>
+
+    </div>
+   
+    
 
 
   </div>
@@ -87,10 +101,17 @@
             </ul>
           {% endif %}
           {% if q.is_saq %}
-            {{ q.user_answer }}
+          <div class="col-md-12" style="margin-bottom: 10px;  ">
+            <div class="sa-ans-only" style="background-color: white; padding: 5px 2px;">
+                {{ q.user_answer }}
+            </div>
+             
+
+          </div>
+            
           {% endif %}
           <div class="panel-footer">
-            Total Score: {{ q.score }} Score Obtained: {{ q.score_obtained }}
+           <span class="total-score-progress ">Total Score: {{ q.score }}</span>  <span class="score-obtained-progress "> Score Obtained: {{ q.score_obtained }}</span> 
           </div>
         </div>
       </div>

@@ -19159,7 +19159,7 @@ ul.img-grid li img {
     border: none;
     border-bottom: 1px solid #efefef;
     height: 48px;
-    line-height: 48px;
+    line-height: 35px;
     padding-top: 0;
     padding-bottom: 0;
     font-size: 1.23rem;
@@ -58428,9 +58428,9 @@ a:active {
 
 .thread_replies {
     font-weight: bold;
-    text-align: center;
     font-size: 1.3em;
     color: #009999;
+    margin-left: 30px;
 }
 
 .thread_date {
@@ -58457,7 +58457,7 @@ a:active {
 .list-group-reply {
     position: relative;
     display: block;
-    padding: 12px 5px;
+    padding: 11px 5px 0px 0px;
     background-color: #fff;
 
 }
@@ -58592,8 +58592,8 @@ a:hover {
     font-size: 14px;
 }
 .reply_header{
-    text-align: center;
-    font-size: 24px;
+    text-align: right;
+    font-size: 16px;
 }
 
 
@@ -58613,4 +58613,20 @@ a:hover {
 
 .select2-selection{
     margin-bottom: 8px;
+}
+
+
+.LoadButton{
+    display: flex;
+    justify-content: center;
+    padding-top: 15px;
+}
+
+#pictureBtn{
+    margin-top: -5px;
+}
+
+#Undobtn{
+margin-left: -76px;
+    margin-top: -5px;
 }
