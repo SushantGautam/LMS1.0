@@ -646,7 +646,6 @@ class NodeGroupView(ListView):
 
 class ThreadView(ListView):
     model = Post
-    paginate_by = 15
     template_name = 'student_module/student_forum/thread.html'
     context_object_name = 'posts'
 
@@ -657,7 +656,7 @@ class ThreadView(ListView):
             'user'
         ).prefetch_related(
             'user__forum_avatar'
-        ).order_by('pub_date')
+        ).order_by('pub_date')[:5]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
@@ -667,6 +666,14 @@ class ThreadView(ListView):
         context['title'] = context['thread'].title
         context['topic'] = context['thread'].topic
         context['form'] = ReplyForm()
+        context['total_reply_count'] = Post.objects.filter(
+            thread_id=self.kwargs.get('pk')
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date').count()
+
         return context
 
     @method_decorator(login_required)
@@ -686,6 +693,18 @@ class ThreadView(ListView):
                 reverse('student_thread', kwargs={'pk': thread_id})
             )
 
+def ThreadList_LoadMoreViewAjax(request, pk, count ):
+    return render(request, 'ForumInclude/LoadMoreAjax.html', {
+        'MoreReply' : Post.objects.filter(
+            thread_id=pk
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date')[5*count:(1+count)*5]
+    
+    })
+    
 
 class TopicView(ListView):
     model = Thread
@@ -833,8 +852,8 @@ def Topic_related_to_user(request, node_group=None):
     innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
     if node_group == None:
         own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code,
-
-                                                        course_associated_with__isnull=True)
+        
+            course_associated_with__isnull=True) | Topic.objects.filter(center_associated_with__isnull= True, course_associated_with__isnull=True)
         assigned_topics = ''
         if innings:
             courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')

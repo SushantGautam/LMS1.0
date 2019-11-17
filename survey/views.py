@@ -85,7 +85,7 @@ class SurveyInfoListView(ListView):
     model = SurveyInfo
     template_name = 'survey/surveylist.html'
 
-    paginate_by = 8
+    paginate_by = 6
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -170,6 +170,8 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super(SurveyInfo_ajax, self).get_form_kwargs()
         kwargs.update({'request': self.request})
+        if self.request.POST:
+            print("post post post")
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -181,7 +183,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         else:
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
-            context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+            context['category_name'] = self.request.GET['category_name']
         return context
 
     def form_valid(self, form):
@@ -191,6 +193,8 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
             self.object.save()
+            if self.request.GET['category_name'] == "live":
+                self.object.Survey_Live = True
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -333,7 +337,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
                 initial=my_saq_initial,
                 prefix='questionansinfo'
             )  # SAQ
-            context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+            context['category_name'] = self.request.GET['category_name']
             context['parent_pk'] = obj_instance.pk
         return context
 
@@ -718,12 +722,12 @@ class surveyFilterCategory(ListView):
     paginate_by = 6
 
     def get_queryset(self):
-        category_id = int(self.request.GET['categoryId'])
-        print("category id:", category_id)
-        if category_id == 0:
+        category_name = self.request.GET['category_name']
+        print("category id:", category_name)
+        if category_name.lower() == "all_survey":
             return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
         else:
-            return SurveyInfo.objects.filter(Category_Code=category_id).filter(
+            return SurveyInfo.objects.filter(Category_Code__Category_Name__iexact=category_name).filter(
                 Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
 
     def get_context_data(self, **kwargs):

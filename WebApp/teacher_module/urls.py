@@ -124,6 +124,8 @@ urlpatterns += (
          views.NodeGroupView.as_view(), name='teacher_nodegroup'),
     path('forum/thread/<int:pk>/',
          views.ThreadView.as_view(), name='teacher_thread'),
+    path('forum/ThreadListLoadMoreViewAjax/<int:pk>/<int:count>',
+         views.ThreadList_LoadMoreViewAjax, name='teacher_Load_More'),
     path('forum/topic/<int:pk>/', views.TopicView.as_view(), name='teacher_topic'),
     path('forum/info/<int:pk>/', views.user_info, name='teacher_info'),
     path('forum/posts/<int:pk>/', views.UserPosts.as_view(), name='teacher_posts'),
@@ -132,6 +134,8 @@ urlpatterns += (
     path('forum/notification', views.NotificationView.as_view(),
          name='teacher_notification'),
     path('forum/edit/<int:pk>/', views.edit_thread, name='teacher_edit_thread'),
+    path('forum/create_thread/threadsearchAjax/<int:topic_id>/<slug:threadkeywordList>/',
+         views.ThreadSearchAjax, name='thread_search'),
 
 )
 
@@ -145,8 +149,9 @@ urlpatterns += (
          name='teacher_quiz_detail'),
     path('quiz/edit/<int:pk>/', views.QuizUpdateView.as_view(),
          name='teacher_quiz_update'),
-    path('update_info/<int:pk>/', views.UpdateQuizBasicInfo.as_view(), name='teacher_quiz_update_info'),    
-     
+    path('update_info/<int:pk>/', views.UpdateQuizBasicInfo.as_view(),
+         name='teacher_quiz_update_info'),
+
     path('detail/<slug>', views.QuizDetailView.as_view(),
          name='teacher_quiz_detail_s'),
 

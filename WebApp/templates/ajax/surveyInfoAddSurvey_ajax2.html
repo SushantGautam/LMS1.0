@@ -6,7 +6,7 @@
 <div class="form-group">
 
   <label class="control-label " id="categoryTitle" for="first-name">Category :
-    <span class="Label">{{ categoryObject.Category_Name }}</span>
+    <span class="Label">{{ category_name }}</span>
   </label>
 
 </div>
@@ -29,9 +29,9 @@
 </div>
 <form id="categoryForm"
       action="{% if "teachers" in request.path %}
-        {% url 'TeacherSurveyInfo_ajax' %}
+        {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
       {% else %}
-        {% url 'surveyinfo_ajax' %}
+        {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
       {% endif %}"
       method="post">
   {% csrf_token %}
@@ -265,56 +265,56 @@
 
       // ......................................HIDING THE FORM................................................
 
-      var categoryName = "{{ categoryObject.Category_Name }}".toLowerCase();
-      if (categoryName == 'general') {
-          console.log(categoryName);
-          $("#div_id_Survey_Cover").hide();
-          $("#div_id_Use_Flag").hide();
+      {#var categoryName = "{{ categoryObject.Category_Name }}".toLowerCase();#}
+      {#if (categoryName == 'general') {#}
+      {#    console.log(categoryName);#}
+      {#    $("#div_id_Survey_Cover").hide();#}
+      {#    $("#div_id_Use_Flag").hide();#}
           {#$("#div_id_Center_Code").hide();#}
           {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
-          $("#div_id_Session_Code").hide();
-          $("#div_id_Added_By").hide();
-          $("#id_Added_By").val("{{request.user.id}}");
-          $("#div_id_Category_Code").hide();
-          $("#id_Category_Code").val("{{categoryObject.id}}");
-          $("#div_id_Course_Code").hide();
-      } else if (categoryName == 'session') {
-          console.log(categoryName);
-          $("#div_id_Survey_Cover").hide();
-          $("#div_id_Use_Flag").hide();
+      {#    $("#div_id_Session_Code").hide();#}
+      {#    $("#div_id_Added_By").hide();#}
+      {#    $("#id_Added_By").val("{{request.user.id}}");#}
+      {#    $("#div_id_Category_Code").hide();#}
+      {#    $("#id_Category_Code").val("{{categoryObject.id}}");#}
+      {#    $("#div_id_Course_Code").hide();#}
+      {#} else if (categoryName == 'session') {#}
+      {#    console.log(categoryName);#}
+      {#    $("#div_id_Survey_Cover").hide();#}
+      {#    $("#div_id_Use_Flag").hide();#}
           {#$("#div_id_Center_Code").hide();#}
           {#$("#id_Center_Code").val("{{  request.user.Center_Code.id }}");#}
-          $("#div_id_Session_Code").show();
-          $("#div_id_Added_By").hide();
-          $("#id_Added_By").val("{{request.user.id}}");
-          $("#div_id_Category_Code").hide();
-          $("#id_Category_Code").val("{{categoryObject.id}}");
-          $("#div_id_Course_Code").hide();
-      } else if (categoryName == 'course') {
-          console.log(categoryName);
-          $("#div_id_Survey_Cover").hide();
-          $("#div_id_Use_Flag").hide();
+      {#    $("#div_id_Session_Code").show();#}
+      {#    $("#div_id_Added_By").hide();#}
+      {#    $("#id_Added_By").val("{{request.user.id}}");#}
+      {#    $("#div_id_Category_Code").hide();#}
+      {#    $("#id_Category_Code").val("{{categoryObject.id}}");#}
+      {#    $("#div_id_Course_Code").hide();#}
+      {#} else if (categoryName == 'course') {#}
+      {#    console.log(categoryName);#}
+      {#    $("#div_id_Survey_Cover").hide();#}
+      {#    $("#div_id_Use_Flag").hide();#}
           {#$("#div_id_Center_Code").hide();#}
           {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
-          $("#div_id_Session_Code").show();
-          $("#div_id_Added_By").hide();
-          $("#id_Added_By").val("{{request.user.id}}");
-          $("#div_id_Category_Code").hide();
-          $("#id_Category_Code").val("{{categoryObject.id}}");
-          $("#div_id_Course_Code").show();
-      } else if (categoryName == 'system') {
-          console.log(categoryName);
-          $("#div_id_Survey_Cover").hide();
-          $("#div_id_Use_Flag").hide();
+      {#    $("#div_id_Session_Code").hide();#}
+      {#    $("#div_id_Added_By").hide();#}
+      {#    $("#id_Added_By").val("{{request.user.id}}");#}
+      {#    $("#div_id_Category_Code").hide();#}
+      {#    $("#id_Category_Code").val("{{categoryObject.id}}");#}
+      {#    $("#div_id_Course_Code").show();#}
+      {#} else if (categoryName == 'system') {#}
+      {#    console.log(categoryName);#}
+      {#    $("#div_id_Survey_Cover").hide();#}
+      {#    $("#div_id_Use_Flag").hide();#}
           {#$("#div_id_Center_Code").hide();#}
           {#<!--$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");-->#}
-          $("#div_id_Session_Code").hide();
-          $("#div_id_Added_By").hide();
-          $("#id_Added_By").val("{{request.user.id}}");
-          $("#div_id_Category_Code").hide();
-          $("#id_Category_Code").val("{{categoryObject.id}}");
-          $("#div_id_Course_Code").hide();
-      }
+      {#    $("#div_id_Session_Code").hide();#}
+      {#    $("#div_id_Added_By").hide();#}
+      {#    $("#id_Added_By").val("{{request.user.id}}");#}
+      {#    $("#div_id_Category_Code").hide();#}
+      {#    $("#id_Category_Code").val("{{categoryObject.id}}");#}
+      {#    $("#div_id_Course_Code").hide();#}
+      {#}#}
 
       {#$("#div_id_questioninfo-0-Question_Type").hide();#}
       {#$("#id_questioninfo-0-Question_Type").val("MCQ");#}

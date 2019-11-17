@@ -245,10 +245,10 @@
       $(".survey_next").click(function (event) {
           event.preventDefault();
           {#alert("{% url 'surveyFilterCategory' %}" + $(this).attr('href'));#}
-          var categoryId = $(".card-text.active .category-name").attr('id');
+          var category_name = $(".card-text.active .category-name").id;
           $.ajax({
               type: "GET",
-              data: {'categoryId': categoryId},
+              data: {'category_name': category_name},
               url: "{% url 'surveyFilterCategory' %}" + $(this).attr('href'),  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);
