@@ -11,6 +11,25 @@ html , body{
         float: left !important;
     }
 } */
+.hr2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 0;
+    border-top: 2px solid white;
+}
+.total-score-progress , .score-obtained-progress{
+  margin-right: 10px;
+    margin-bottom: 10px;;
+    text-align: center;
+    background-color: #4183d7;
+    color: white;
+    padding: 6px;
+    border-radius: 5px;
+}
+.text-bold{
+    font-weight: 600; 
+    font-size: 15px;
+}
 .selector{
     width: auto !important;
     /* float: left !important; */
