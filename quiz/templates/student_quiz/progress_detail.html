@@ -45,7 +45,7 @@
   <div class="panel-group row" id="accordion">
     {% for q in object.questions_with_user_answers %}
      {% if q.user_answer %}
-      <div class="panel panel-default" style="margin-bottom: 10px; margin-top: 10px; border: 1px solid black">
+      <div class="panel panel-default" style="margin-bottom: 10px; margin-top: 10px;">
         <div class="panel-heading">
           <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}" class="hover_me">
             <h4 class="panel-title">

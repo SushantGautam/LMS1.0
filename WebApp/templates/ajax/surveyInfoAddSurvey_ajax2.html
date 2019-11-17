@@ -27,7 +27,13 @@
     </div>
   </div>
 </div>
-<form id="categoryForm" action="{% url 'surveyinfo_ajax' %}" method="post">
+<form id="categoryForm"
+      action="{% if "teachers" in request.path %}
+        {% url 'TeacherSurveyInfo_ajax' %}
+      {% else %}
+        {% url 'surveyinfo_ajax' %}
+      {% endif %}"
+      method="post">
   {% csrf_token %}
   <div role="form">
     <div class="row setup-content" id="step-1">
@@ -76,8 +82,9 @@
                           {% endfor %}
                         </div>
 
-                        <button onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                                class="btn btn-success">Add option
+                        <button
+                            onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
+                            class="btn btn-success">Add option
                         </button>
 
                       {% endif %}
@@ -129,7 +136,7 @@
     {{ questioninfo_formset.empty_form|crispy }}
     {{ questioninfo_formset.empty_form.nested.management_form }}
     {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-      {#                {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
+                    {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}
 
     <div id="optionContainer_id" style="margin-left: 40px;">
 
@@ -244,7 +251,7 @@
           copyEmptyShortAnsQuestion('#emptyQnAnsInfoForm', 'div.qnansinfo_dynamic_append', 'questionansinfo');
       });
 
-      $('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({"display": "none"});
+      {#$('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({"display": "none"});#}
 
       {#..............................................For MCQ ...........................................#}
       $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
@@ -309,19 +316,19 @@
           $("#div_id_Course_Code").hide();
       }
 
-      $("#div_id_questioninfo-0-Question_Type").hide();
-      $("#id_questioninfo-0-Question_Type").val("MCQ");
+      {#$("#div_id_questioninfo-0-Question_Type").hide();#}
+      {#$("#id_questioninfo-0-Question_Type").val("MCQ");#}
 
-      $("#div_id_questionansinfo-0-Question_Type").hide();
-      $("#id_questionansinfo-0-Question_Type").val("SAQ");
+      {#$("#div_id_questionansinfo-0-Question_Type").hide();#}
+      {#$("#id_questionansinfo-0-Question_Type").val("SAQ");#}
 
-      $("#div_id_questioninfo-__prefix__-Question_Type").hide();
-      $("#id_questioninfo-__prefix__-Question_Type option[value=SAQ]").removeAttr("selected");
-      $("#id_questioninfo-__prefix__-Question_Type option[value=MCQ]").attr("selected", "selected");
+      {#$("#div_id_questioninfo-__prefix__-Question_Type").hide();#}
+      {#$("#id_questioninfo-__prefix__-Question_Type option[value=SAQ]").removeAttr("selected");#}
+      {#$("#id_questioninfo-__prefix__-Question_Type option[value=MCQ]").attr("selected", "selected");#}
 
-      $("#div_id_questionansinfo-__prefix__-Question_Type").hide();
-      $("#id_questionansinfo-__prefix__-Question_Type option[value=MCQ]").removeAttr("selected");
-      $("#id_questionansinfo-__prefix__-Question_Type option[value=SAQ]").attr("selected", "selected");
+      {#$("#div_id_questionansinfo-__prefix__-Question_Type").hide();#}
+      {#$("#id_questionansinfo-__prefix__-Question_Type option[value=MCQ]").removeAttr("selected");#}
+      {#$("#id_questionansinfo-__prefix__-Question_Type option[value=SAQ]").attr("selected", "selected");#}
 
 
       // ......................................HIDING THE FORM................................................

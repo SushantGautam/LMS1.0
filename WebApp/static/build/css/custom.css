@@ -1702,7 +1702,14 @@ input[type=checkbox], input[type=radio] {
     border: none;
     border-radius: 5px
 }
-
+.qts-button2 {
+    padding: 10px 20px;
+    color: white;
+    background-color: #007fbe;
+    text-align: center;
+    border: none;
+    border-radius: 5px
+}
 .questions-only {
     text-align: right;
     padding: 0 0 10px 0;
