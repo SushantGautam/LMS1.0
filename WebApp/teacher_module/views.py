@@ -498,7 +498,6 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
             super().form_valid(form)
-        print("im here form valid")
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -1129,7 +1128,7 @@ class teacherSurveyFilterCategory(ListView):
             category_id = int(self.request.GET['categoryId'])
             # teacher related data
             teacher_course_group = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
-            teacher_session = InningInfo.objects.filter(Course_Group__in=teacher_course_group)
+            teacher_session = InningInfo.objects.filter(Course_Group__in=teacher_course_group).distinct()
             teacher_course = teacher_course_group.values('Course_Code')
 
             # Predefined category name "general, session, course, system"

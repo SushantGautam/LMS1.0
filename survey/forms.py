@@ -1,7 +1,10 @@
 from django import forms
+from django.contrib.admin.widgets import AdminTimeWidget
 
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 from WebApp.models import CourseInfo, InningInfo, InningGroup
+from django.utils import timezone
+from datetime import timedelta
 
 
 class CategoryInfoForm(forms.ModelForm):
@@ -13,6 +16,7 @@ class CategoryInfoForm(forms.ModelForm):
 class SurveyInfoForm(forms.ModelForm):
     Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
     End_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
+    End_Time = forms.DateTimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
 
     class Meta:
         model = SurveyInfo
@@ -23,6 +27,38 @@ class SurveyInfoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         request = kwargs.pop("request", None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
+        category_name = request.GET["category_name"].lower()
+        self.fields['Start_Date'].initial = timezone.now()
+        self.fields['End_Date'].initial = timezone.now()+timedelta(days=30)
+        self.fields['Category_Code'].widget = forms.HiddenInput()
+        self.fields['End_Time'].initial = timezone.now()+timedelta(hours=1)
+
+        if category_name == "live":
+            self.fields['Start_Date'].widget = forms.HiddenInput()
+            self.fields['End_Date'].widget = forms.HiddenInput()
+            self.fields['Session_Code'].widget = forms.HiddenInput()
+            self.fields['Course_Code'].widget = forms.HiddenInput()
+            self.fields['Category_Code'].initial = CategoryInfo.objects.get(
+                Category_Name__iexact="course"
+            ).id
+        elif category_name == "general":
+            self.fields['Session_Code'].widget = forms.HiddenInput()
+            self.fields['Course_Code'].widget = forms.HiddenInput()
+            self.fields['Category_Code'].initial = CategoryInfo.objects.get(
+                Category_Name__iexact=category_name
+            ).id
+            self.fields['End_Time'].widget = forms.HiddenInput()
+        elif category_name == "session":
+            self.fields['Course_Code'].widget = forms.HiddenInput()
+            self.fields['Category_Code'].initial = CategoryInfo.objects.get(
+                Category_Name__iexact=category_name
+            ).id
+            self.fields['End_Time'].widget = forms.HiddenInput()
+        else:
+            self.fields['Category_Code'].initial = CategoryInfo.objects.get(
+                Category_Name__iexact=category_name
+            ).id
+            self.fields['End_Time'].widget = forms.HiddenInput()
 
         if "teachers" in request.path:
             print(request.path)
@@ -34,7 +70,7 @@ class SurveyInfoForm(forms.ModelForm):
             )
             self.fields['Session_Code'].queryset = InningInfo.objects.filter(
                 Course_Group__in=InningGroup.objects.filter(Teacher_Code=request.user.id)
-            )
+            ).distinct()
         else:
             self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=request.user.Center_Code,
                                                                             Use_Flag=True)
@@ -51,20 +87,24 @@ class SurveyInfoForm(forms.ModelForm):
 
 class LiveSurveyInfoForm(forms.ModelForm):
     # End_Date = forms.DateTimeField(label='End Time', widget=forms.DateInput(attrs={'type': 'time'}))
+    End_Time = forms.TimeField()
 
     class Meta:
         model = SurveyInfo
-        fields = ['Survey_Title', 'Category_Code',
-                  'Session_Code', 'Course_Code']
+        fields = ['Survey_Title',]
+        help_texts = {
+            'End_Time': 'Survey Duration',
+        }
 
     # To filter out only active session and course of the center
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        request = kwargs.pop("request", None)
         super(LiveSurveyInfoForm, self).__init__(*args, **kwargs)
-        self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
-                                                                         Center_Code=self.request.user.Center_Code)
-        self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
-                                                                        Use_Flag=True)
+        self.fields['End_Time'].widget = AdminTimeWidget()
+        # self.fields['Session_Code'].queryset = InningInfo.objects.filter(Use_Flag=True,
+        #                                                                  Center_Code=request.user.Center_Code)
+        # self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=request.user.Center_Code,
+        #                                                                 Use_Flag=True)
 
 
 class QuestionInfoForm(forms.ModelForm):
