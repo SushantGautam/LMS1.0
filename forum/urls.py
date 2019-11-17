@@ -31,7 +31,7 @@ urlpatterns = [
     path(r'^t/(?P<pk>\d+)/page/(?P<page>[0-9]+)/$',
          views.ThreadView.as_view(), name='thread'),
     path(r't/<int:pk>/', views.ThreadView.as_view(), name='thread'),
-    path('forum/ThreadListLoadMoreViewAjax/<int:pk>/<int:count>',
+    path('ThreadListLoadMoreViewAjax/<int:pk>/<int:count>',
          views.ThreadList_LoadMoreViewAjax, name='Show_More'),
     path(r'u/<int:pk>/', views.user_info, name='user_info'),
     path(r'^u/(?P<pk>\d+)/threads/page/(?P<page>[0-9]+)/$',
@@ -54,6 +54,7 @@ urlpatterns = [
          views.create_thread, name='create_thread'),
     path(r' t/create/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
          views.create_thread, name='create_thread'),
+
     path(r'topic/create/', views.create_topic, name='create_topic'),
     path(r'topic/create/(?P<nodegroup_pk>\d+)',
          views.create_topic, name='create_topic'),

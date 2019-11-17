@@ -1585,5 +1585,25 @@ def Topic_related_to_user(request, node_group=None):
 
 
 def Thread_related_to_user(request):
-    # print("asigned threads", Thread.objects.filter(topic__in=Topic_related_to_user(request)))
+    
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
+
+
+def ThreadSearchAjax(request, topic_id, threadkeywordList):
+
+    threadkeywordList = threadkeywordList.split("_")
+
+    RelevantThread=[]
+    if topic_id:
+        RelevantThread = Thread.objects.filter(topic=topic_id)
+        pass
+    else:
+        RelevantTopics = Topic_related_to_user(request).values_list('pk')
+        RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
+        pass
+    
+
+    return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
+
+
+    pass

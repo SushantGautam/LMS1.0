@@ -339,6 +339,9 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
 
 
+
+
+
 @login_required
 def create_topic(request, nodegroup_pk=None):
     node_group = NodeGroup.objects.filter(pk=nodegroup_pk)

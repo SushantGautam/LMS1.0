@@ -209,6 +209,7 @@
 
 </div>
 <script>
+{% include 'ForumInclude/threadSearch.html' %}
     $('#submit-id-submit').click(function () {
         $('#id_content_raw').val($('.editor-wrapper').html());
     });
@@ -237,6 +238,23 @@
                 }
             });
         });
+    });
+
+
+    $('#id_title').change(function () {
+        var topicId = $('#id_topic').val() ? $('#id_topic').val() : 0;
+        var threadTitleText = $('#id_title').val()? $('#id_title').val(): "";
+        threadTitleText = threadTitleText.removeStopWords().replace("/","").replace("\\","").replace("_","").replace("?","").replace(","," ");
+        threadTitleText= threadTitleText..replace(" ","_");
+
+
+        $.ajax({
+            type: "GET",
+            url: "/teachers/forum/create_thread/threadsearchAjax/"+ topicId+"/"+threadTitleText,
+            success: function (data) {
+                $("#id_title").html(data);
+
+            });
     });
 
 </script>

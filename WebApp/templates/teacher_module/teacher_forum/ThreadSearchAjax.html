@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+
+
+{% for thread in RelevantThread %}
+<div id="ThreadSearch">
+    <a href="/teachers/forum/thread/{{ thread.pk }}">{{ thread.title }}</a><br>
+</div>
+
+
+{% endfor %}
