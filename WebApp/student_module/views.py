@@ -5,6 +5,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
@@ -417,15 +418,43 @@ class surveyFilterCategory_student(ListView):
     model = SurveyInfo
     template_name = 'student_module/questions_student_listView.html'
 
-    def get_queryset(self):
-        # print(self.request.GET['categoryId'])
-        # print(SurveyInfo.objects.filter(Category_Code = self.request.GET['categoryId']))
-        if self.request.GET['categoryId'] == '0':
+    paginate_by = 6
 
-            return SurveyInfo.objects.all()
-            # filter(Center_Code = self.request.user.Center_Code)
-        else:
-            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
+
+    def get_queryset(self):
+        try:
+            category_id = int(self.request.GET['categoryId'])
+            # student related data
+            student_group = self.request.user.groupmapping_set.all()
+            student_session = InningInfo.objects.filter(Groups__in=student_group)
+            active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+            student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+
+            # Predefined category name "general, session, course, system"
+            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general", Center_Code=self.request.user.Center_Code, Use_Flag=True)
+            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session", Session_Code__in=student_session, Use_Flag=True)
+            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course", Course_Code__in=student_course, Use_Flag=True)
+            system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+
+            if category_id == 0:
+                all_survey = general_survey | session_survey | course_survey | system_survey
+                return all_survey
+            else:
+                category_name = CategoryInfo.objects.get(id=category_id).Category_Name.lower()
+                if category_name == "general":
+                  return general_survey
+                elif category_name == "session":
+                    return session_survey
+                elif category_name == "course":
+                    return course_survey
+                elif category_name == "system":
+                    return system_survey
+        except:
+            return None
+            # print("Error occured")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
