@@ -203,6 +203,8 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
          admin_views.chapterpagebuilder, name='teachers_chapterpagebuilder'),
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
+         admin_views.ContentsView.as_view(), name='teacher_contentviewer'),
 )

@@ -568,16 +568,6 @@ $(document).ready(function() {
             top: 56,
             left: 56
         },
-        stop: function () {
-            var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%" ;
-            var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%" ;
-            // var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%" ;
-            // var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%" ;
-            $(this).css("left", l);
-            $(this).css("top", t);
-            // $(this).css("height", h);
-            // $(this).css("width", w);
-        }
     });
 
     function TextboxFunction(top=null, left=null, height="20%", width="30%", message="Type Something Here..."){
@@ -801,9 +791,14 @@ $(document).ready(function() {
                             //   'background-position': 'center',
                             //   'border': '0'
                             // });
-                            
-                            PictureFunction(div.css('top'),
-                            div.css('left'),load_file_url+'/'+data.media_name,div.css('width'),div.css('height'));
+                            PictureFunction(
+                                
+                                $(div)[0].style.top,
+                                $(div)[0].style.left,
+                                load_file_url+'/'+data.media_name,
+                                $(div)[0].style.width,
+                                $(div)[0].style.height,
+                            );
                             div.remove()
                         },
                         error: function(data, status, errorThrown) {

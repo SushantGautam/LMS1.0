@@ -57,7 +57,6 @@ $("#SaveBtn").on("click",function(e){
         var clone = $(this).find('.note-editable').clone();
         // clone.find('div').remove();
         var content_html = clone.html();
-        console.log($(this)[0].style.height, $(this)[0].style.width, $('#tabs-for-download').css('height'))
         textdiv.push(
           {
             'tops': $(this)[0].style.top,
@@ -69,6 +68,8 @@ $("#SaveBtn").on("click",function(e){
         );
       }
       if(value.classList.contains('pic')){
+        console.log($(this)[0].style.height, $(this)[0].style.width, $('#tabs-for-download').css('height'))
+
         picdiv.push(
           {
             'tops': $(this)[0].style.top,

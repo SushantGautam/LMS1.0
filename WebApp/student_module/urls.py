@@ -3,6 +3,7 @@ from django.urls import path
 from django.urls import path
 
 from WebApp.student_module import views
+from WebApp.views import ContentsView
 from survey import views as surveyViews
 
 #
@@ -140,4 +141,9 @@ urlpatterns += (
          name='student_notification'),
     path('quiz/progress', views.QuizUserProgressView.as_view(),
          name='student_progress'),
+)
+
+urlpatterns += (
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
+         ContentsView.as_view(), name='student_contentviewer'),
 )
