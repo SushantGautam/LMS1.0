@@ -1,0 +1,34 @@
+[
+    {
+        "model": "survey.categoryinfo",
+        "pk": 1,
+        "fields": {
+            "Category_Name": "System",
+            "Category_Icon": "cog"
+        }
+    },
+    {
+        "model": "survey.categoryinfo",
+        "pk": 2,
+        "fields": {
+            "Category_Name": "Course",
+            "Category_Icon": "book"
+        }
+    },
+    {
+        "model": "survey.categoryinfo",
+        "pk": 3,
+        "fields": {
+            "Category_Name": "Session",
+            "Category_Icon": "institution"
+        }
+    },
+    {
+        "model": "survey.categoryinfo",
+        "pk": 4,
+        "fields": {
+            "Category_Name": "General",
+            "Category_Icon": "home"
+        }
+    }
+]

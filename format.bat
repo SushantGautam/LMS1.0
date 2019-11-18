@@ -17,7 +17,9 @@ del db.sqlite3
 pip install -r requirements.txt
 python manage.py makemigrations WebApp forum quiz survey
 python manage.py migrate
-python manage.py createsuperuserwithpassword    --username nsdevil --password nsdevil --email admin@example.org    --preserve
+python manage.py loaddata WebApp\intial-fixtures-data\initial-fixtures-WebApp.json
+python manage.py loaddata WebApp\intial-fixtures-data\initial-fixtures-survey.json
+python manage.py loaddata WebApp\intial-fixtures-data\initial-fixtures-forum.json
 python manage.py runserver 0.0.0.0:8000
 
 
