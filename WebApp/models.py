@@ -6,7 +6,6 @@ from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, FileField
 from django.urls import reverse
 from django.utils.translation import gettext as _
-import os
 
 # from quiz.models import Quiz
 
@@ -128,18 +127,17 @@ class MemberInfo(AbstractUser):
 
     @property
     def Avatar(self):
-
         if self.Member_Avatar:
             return self.Member_Avatar.url
         else:
             if self.Member_Gender =='F':
-                default_avatar = "/static/images/profile/female.png"
+                default_avatar = 'images/profile/female.png'
             elif self.Member_Gender =='M':
-                default_avatar = "/static/images/profile/male.jpg"
+                default_avatar = 'images/profile/male.jpg'
             else:
-                default_avatar = "/static/images/profile/profile.png"
+                default_avatar ='images/profile/profile.png'
             return default_avatar
-
+            
     class Meta:
         ordering = ('-pk',)
 

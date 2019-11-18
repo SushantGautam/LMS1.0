@@ -6,7 +6,7 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="profile_pic">
-            <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" />
+            <img src="{% static request.user.Avatar %}" alt="..." class="img-circle profile_img" />
         </div>
 
         <a href="{% url 'forum:user_info' request.user.pk %}">

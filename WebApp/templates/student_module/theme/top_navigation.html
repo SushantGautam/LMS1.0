@@ -20,7 +20,7 @@
 
             <li class="">
                 <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ request.user.Avatar }}" alt="">
+                    <img src="{% static request.user.Avatar %}" alt="">
                     {{ request.user.username }}
                     <span class="fa fa-angle-down" id="topNavSpan"></span>
                 </a>
