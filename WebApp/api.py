@@ -17,13 +17,17 @@ class CenterInfoViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+from url_filter.integrations.drf import DjangoFilterBackend
+
+
 class MemberInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the MemberInfo class"""
 
     queryset = models.MemberInfo.objects.all()
     serializer_class = serializers.MemberInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filterset_fields = ('id', 'username')
+    filter_backends = [DjangoFilterBackend]
+    filter_fields  = ['id', 'username']
 
 
 class CourseInfoViewSet(viewsets.ModelViewSet):
@@ -32,6 +36,8 @@ class CourseInfoViewSet(viewsets.ModelViewSet):
     queryset = models.CourseInfo.objects.all()
     serializer_class = serializers.CourseInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filter_fields  = ['id',]
 
 
 class ChapterInfoViewSet(viewsets.ModelViewSet):
