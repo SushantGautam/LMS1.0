@@ -23,6 +23,7 @@
             z-index: 999;
             top:50%;
             position: absolute;
+           
             display: none;
             transition: all 1s ease;
             -webkit-transition: all 0.3s ease;
@@ -109,25 +110,28 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid" >
         <!-- For Title -->
-      
+        
 
-        <div class="row overall-contents">
 
-            <div id="container" style="position: relative;">
-                    <div id = "prev-btn" class="button-position" style="left:0;">
-                            <i class="fa fa-backward"></i>
+        <div class="row overall-contents"> 
+                <div id = "prev-btn" class="button-position" style="left:0;">
+                        <i class="fa fa-backward"></i>
+                    </div>
+                    <div id = "next-btn" class="button-position" style="right:0;">
+                            <i class="fa fa-forward"></i>
                         </div>
+               
+            <div id="container" style="position: relative;">
+                  
                     <div class="content-title1  text-center">
                         <span id="chaptertitle" class="content-title">
                             <!-- Chapter title goes here -->
                             {{chapter}}
                         </span>
                     </div>
-                    <div id = "next-btn" class="button-position" style="right:0;">
-                        <i class="fa fa-forward"></i>
-                    </div>
+                   
                     <div id="page-contents"></div>
             </div>
         
