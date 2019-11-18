@@ -96,6 +96,8 @@ class InningGroupViewSet(viewsets.ModelViewSet):
     queryset = models.InningGroup.objects.all()
     serializer_class = serializers.InningGroupSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filter_fields  = ['id',]
 
 
 class GroupMappingViewSet(viewsets.ModelViewSet):
