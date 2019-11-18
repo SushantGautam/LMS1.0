@@ -100,9 +100,14 @@
         </div>
       {% endif %}
 
-      {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == True %}
+{#      {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == True %}#}
+      {% if object.Survey_Live == True %}
         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 live_survey " style="display: none;">
-          <a href=" {% url 'liveSurveyDetail' object.pk %}">
+          <a href=" {% if '/teachers' in request.path %}
+                                {% url 'surveyinfodetail' object.pk %}
+                             {% else %}
+                                 {% url 'surveyinfo_detail' object.pk %}
+                             {% endif %}">
             <div class="box-part text-center">
               {% if object.id in submittedSurvey %}
                 <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>

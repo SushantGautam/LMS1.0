@@ -136,7 +136,7 @@
     {{ questioninfo_formset.empty_form|crispy }}
     {{ questioninfo_formset.empty_form.nested.management_form }}
     {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-                    {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}
+    {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}
 
     <div id="optionContainer_id" style="margin-left: 40px;">
 
@@ -151,7 +151,7 @@
 </div>
 
 <script src=" {% static 'build/js/survey.js' %}"></script>
-
+<script src=" {% static '/duration_picker/bootstrap-duration-picker.js' %}"></script>
 {% block customjss %}
   <script>
       function cloneMore(selector, append_after, type) {
@@ -263,75 +263,15 @@
       $('#first_sa_que_div').prepend(`<p>1</p>`);
       $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
-      // ......................................HIDING THE FORM................................................
+      $('#id_End_Time').durationPicker({
+          showSeconds: true,
+          showDays: false,
+          onChanged: function (newVal) {
+          }
+      });
 
-      {#var categoryName = "{{ categoryObject.Category_Name }}".toLowerCase();#}
-      {#if (categoryName == 'general') {#}
-      {#    console.log(categoryName);#}
-      {#    $("#div_id_Survey_Cover").hide();#}
-      {#    $("#div_id_Use_Flag").hide();#}
-          {#$("#div_id_Center_Code").hide();#}
-          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
-      {#    $("#div_id_Session_Code").hide();#}
-      {#    $("#div_id_Added_By").hide();#}
-      {#    $("#id_Added_By").val("{{request.user.id}}");#}
-      {#    $("#div_id_Category_Code").hide();#}
-      {#    $("#id_Category_Code").val("{{categoryObject.id}}");#}
-      {#    $("#div_id_Course_Code").hide();#}
-      {#} else if (categoryName == 'session') {#}
-      {#    console.log(categoryName);#}
-      {#    $("#div_id_Survey_Cover").hide();#}
-      {#    $("#div_id_Use_Flag").hide();#}
-          {#$("#div_id_Center_Code").hide();#}
-          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id }}");#}
-      {#    $("#div_id_Session_Code").show();#}
-      {#    $("#div_id_Added_By").hide();#}
-      {#    $("#id_Added_By").val("{{request.user.id}}");#}
-      {#    $("#div_id_Category_Code").hide();#}
-      {#    $("#id_Category_Code").val("{{categoryObject.id}}");#}
-      {#    $("#div_id_Course_Code").hide();#}
-      {#} else if (categoryName == 'course') {#}
-      {#    console.log(categoryName);#}
-      {#    $("#div_id_Survey_Cover").hide();#}
-      {#    $("#div_id_Use_Flag").hide();#}
-          {#$("#div_id_Center_Code").hide();#}
-          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
-      {#    $("#div_id_Session_Code").hide();#}
-      {#    $("#div_id_Added_By").hide();#}
-      {#    $("#id_Added_By").val("{{request.user.id}}");#}
-      {#    $("#div_id_Category_Code").hide();#}
-      {#    $("#id_Category_Code").val("{{categoryObject.id}}");#}
-      {#    $("#div_id_Course_Code").show();#}
-      {#} else if (categoryName == 'system') {#}
-      {#    console.log(categoryName);#}
-      {#    $("#div_id_Survey_Cover").hide();#}
-      {#    $("#div_id_Use_Flag").hide();#}
-          {#$("#div_id_Center_Code").hide();#}
-          {#<!--$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");-->#}
-      {#    $("#div_id_Session_Code").hide();#}
-      {#    $("#div_id_Added_By").hide();#}
-      {#    $("#id_Added_By").val("{{request.user.id}}");#}
-      {#    $("#div_id_Category_Code").hide();#}
-      {#    $("#id_Category_Code").val("{{categoryObject.id}}");#}
-      {#    $("#div_id_Course_Code").hide();#}
-      {#}#}
+      $(".bdp-block:visible").addClass("col-md-4")
 
-      {#$("#div_id_questioninfo-0-Question_Type").hide();#}
-      {#$("#id_questioninfo-0-Question_Type").val("MCQ");#}
-
-      {#$("#div_id_questionansinfo-0-Question_Type").hide();#}
-      {#$("#id_questionansinfo-0-Question_Type").val("SAQ");#}
-
-      {#$("#div_id_questioninfo-__prefix__-Question_Type").hide();#}
-      {#$("#id_questioninfo-__prefix__-Question_Type option[value=SAQ]").removeAttr("selected");#}
-      {#$("#id_questioninfo-__prefix__-Question_Type option[value=MCQ]").attr("selected", "selected");#}
-
-      {#$("#div_id_questionansinfo-__prefix__-Question_Type").hide();#}
-      {#$("#id_questionansinfo-__prefix__-Question_Type option[value=MCQ]").removeAttr("selected");#}
-      {#$("#id_questionansinfo-__prefix__-Question_Type option[value=SAQ]").attr("selected", "selected");#}
-
-
-      // ......................................HIDING THE FORM................................................
 
   </script>
 {% endblock customjss %}

@@ -16,7 +16,7 @@ class CategoryInfoForm(forms.ModelForm):
 class SurveyInfoForm(forms.ModelForm):
     Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
     End_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
-    End_Time = forms.DateTimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    End_Time = forms.DurationField()
 
     class Meta:
         model = SurveyInfo
@@ -31,7 +31,7 @@ class SurveyInfoForm(forms.ModelForm):
         self.fields['Start_Date'].initial = timezone.now()
         self.fields['End_Date'].initial = timezone.now()+timedelta(days=30)
         self.fields['Category_Code'].widget = forms.HiddenInput()
-        self.fields['End_Time'].initial = timezone.now()+timedelta(hours=1)
+        self.fields['End_Time'].initial = timedelta(hours=1)
 
         if category_name == "live":
             self.fields['Start_Date'].widget = forms.HiddenInput()
