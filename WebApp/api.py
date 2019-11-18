@@ -54,6 +54,8 @@ class InningInfoViewSet(viewsets.ModelViewSet):
     queryset = models.InningInfo.objects.all()
     serializer_class = serializers.InningInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filter_fields  = ['Groups',]
 
 
 class SessionInfoViewSet(viewsets.ModelViewSet):
@@ -102,6 +104,8 @@ class GroupMappingViewSet(viewsets.ModelViewSet):
     queryset = models.GroupMapping.objects.all()
     serializer_class = serializers.GroupMappingSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filter_fields  = ['Students',]
 
 
 class AssignmentInfoViewSet(viewsets.ModelViewSet):
