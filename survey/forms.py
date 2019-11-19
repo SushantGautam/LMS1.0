@@ -16,7 +16,7 @@ class CategoryInfoForm(forms.ModelForm):
 class SurveyInfoForm(forms.ModelForm):
     Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
     End_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
-    End_Time = forms.DateTimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    End_Time = forms.DurationField()
 
     class Meta:
         model = SurveyInfo
@@ -26,12 +26,20 @@ class SurveyInfoForm(forms.ModelForm):
     # To filter out only active session and course of the center
     def __init__(self, *args, **kwargs):
         request = kwargs.pop("request", None)
+        survey_object = kwargs.pop("object", None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
+
+        if survey_object:
+            print(survey_object, "survey_obj")
+            print(survey_object.Course_Code, "survey_course")
+            self.fields['Session_Code'].initial = survey_object.Session_Code if survey_object.Session_Code else None
+            self.fields['Course_Code'].initial = survey_object.Course_Code if survey_object.Course_Code else None
+
         category_name = request.GET["category_name"].lower()
         self.fields['Start_Date'].initial = timezone.now()
         self.fields['End_Date'].initial = timezone.now()+timedelta(days=30)
         self.fields['Category_Code'].widget = forms.HiddenInput()
-        self.fields['End_Time'].initial = timezone.now()+timedelta(hours=1)
+        self.fields['End_Time'].initial = timedelta(hours=1)
 
         if category_name == "live":
             self.fields['Start_Date'].widget = forms.HiddenInput()
@@ -49,6 +57,19 @@ class SurveyInfoForm(forms.ModelForm):
             ).id
             self.fields['End_Time'].widget = forms.HiddenInput()
         elif category_name == "session":
+            self.fields['Course_Code'].widget = forms.HiddenInput()
+            self.fields['Category_Code'].initial = CategoryInfo.objects.get(
+                Category_Name__iexact=category_name
+            ).id
+            self.fields['End_Time'].widget = forms.HiddenInput()
+        elif category_name == "course":
+            self.fields['Session_Code'].widget = forms.HiddenInput()
+            self.fields['Category_Code'].initial = CategoryInfo.objects.get(
+                Category_Name__iexact=category_name
+            ).id
+            self.fields['End_Time'].widget = forms.HiddenInput()
+        elif category_name == "system":
+            self.fields['Session_Code'].widget = forms.HiddenInput()
             self.fields['Course_Code'].widget = forms.HiddenInput()
             self.fields['Category_Code'].initial = CategoryInfo.objects.get(
                 Category_Name__iexact=category_name
@@ -140,7 +161,7 @@ OptionInfoFormset = inlineformset_factory(
     OptionInfo,
     fields=('Option_Name',),
     can_delete=False,
-    extra=1,
+    extra=0,
 )
 
 AnswerInfoFormset = inlineformset_factory(
@@ -159,6 +180,8 @@ class BaseQuestionInfoFormset(BaseInlineFormSet):
         #     form.fields['Question_Name'].initial = "hello"
 
         # save the formset in the 'nested' property
+        form.fields['Question_Type'].initial = "MCQ"
+        form.fields['Question_Type'].widget = forms.HiddenInput()
         form.nested = OptionInfoFormset(
             instance=form.instance,
             data=form.data if form.is_bound else None,

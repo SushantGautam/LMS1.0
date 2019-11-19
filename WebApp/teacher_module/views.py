@@ -1,5 +1,6 @@
 # from django.core.checks import messages
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 from django.conf import settings
 # from django.core.checks import messages
@@ -52,6 +53,7 @@ from django.http import JsonResponse
 
 from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 User = get_user_model()
 
@@ -488,7 +490,7 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         else:
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
-            context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+            context['category_name'] = self.request.GET['category_name']
         return context
 
     def form_valid(self, form):
@@ -497,6 +499,10 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             self.object = form.save(commit=False)
             self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
+            if self.request.GET['category_name'] == "live":
+                self.object.Survey_Live = True
+                self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
+                self.object.save()
             super().form_valid(form)
         context = self.get_context_data()
         qn = context['questioninfo_formset']
@@ -520,6 +526,7 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         kwargs = super(TeacherSurveyInfo_ajax, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
 
 
 def polls_teachers(request):
@@ -1124,34 +1131,37 @@ class teacherSurveyFilterCategory(ListView):
         self.GET = None
 
     def get_queryset(self):
-        try:
-            category_id = int(self.request.GET['categoryId'])
-            # teacher related data
-            teacher_course_group = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
-            teacher_session = InningInfo.objects.filter(Course_Group__in=teacher_course_group).distinct()
-            teacher_course = teacher_course_group.values('Course_Code')
+        # try:
+        category_name = self.request.GET['category_name'].lower()
+        # teacher related data
+        teacher_course_group = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
+        teacher_session = InningInfo.objects.filter(Course_Group__in=teacher_course_group).distinct()
+        teacher_course = teacher_course_group.values('Course_Code')
 
-            # Predefined category name "general, session, course, system"
-            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general", Center_Code=self.request.user.Center_Code)
-            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session", Session_Code__in=teacher_session)
-            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course", Course_Code__in=teacher_course)
-            system_survey = SurveyInfo.objects.filter(Center_Code=None)
+        # Predefined category name "general, session, course, system"
+        general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
+                                                   Center_Code=self.request.user.Center_Code)
+        session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
+                                                   Session_Code__in=teacher_session)
+        course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
+                                                  Course_Code__in=teacher_course)
+        system_survey = SurveyInfo.objects.filter(Center_Code=None)
 
-            if category_id == 0:
-                all_survey = general_survey | session_survey | course_survey | system_survey
-                return all_survey
-            else:
-                category_name = CategoryInfo.objects.get(id=category_id).Category_Name.lower()
-                if category_name == "general":
-                  return general_survey
-                elif category_name == "session":
-                    return session_survey
-                elif category_name == "course":
-                    return course_survey
-                elif category_name == "system":
-                    return system_survey
-        except:
-            return None
+        if category_name == "all_survey":
+            all_survey = general_survey | session_survey | course_survey | system_survey
+            return all_survey
+        else:
+            if category_name == "general":
+                return general_survey
+            elif category_name == "session":
+                return session_survey
+            elif category_name == "course":
+                return course_survey
+            elif category_name == "system":
+                return system_survey
+
+    # except:
+    #     return None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1393,17 +1403,18 @@ class ThreadView(ListView):
             )
 
 
-def ThreadList_LoadMoreViewAjax(request, pk, count ):
+def ThreadList_LoadMoreViewAjax(request, pk, count):
     return render(request, 'ForumInclude/LoadMoreAjax.html', {
-        'MoreReply' : Post.objects.filter(
+        'MoreReply': Post.objects.filter(
             thread_id=pk
         ).select_related(
             'user'
         ).prefetch_related(
             'user__forum_avatar'
-        ).order_by('pub_date')[5*count:(1+count)*5]
-    
+        ).order_by('pub_date')[5 * count:(1 + count) * 5]
+
     })
+
 
 class TopicView(ListView):
     model = Thread
@@ -1566,7 +1577,8 @@ def CourseForum(request, course):
 def Topic_related_to_user(request, node_group=None):
     if node_group == None:
         own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code).filter(
-        course_associated_with__isnull=True) | Topic.objects.filter(center_associated_with__isnull= True, course_associated_with__isnull=True)
+            course_associated_with__isnull=True) | Topic.objects.filter(center_associated_with__isnull=True,
+                                                                        course_associated_with__isnull=True)
         innings_Course_Code = InningGroup.objects.filter(Teacher_Code=request.user.id).values('Course_Code')
         assigned_topics = (
                 Topic.objects.filter(course_associated_with__in=innings_Course_Code) | own_center_general_topic)
@@ -1584,15 +1596,13 @@ def Topic_related_to_user(request, node_group=None):
 
 
 def Thread_related_to_user(request):
-    
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
 
 
 def ThreadSearchAjax(request, topic_id, threadkeywordList):
-
     threadkeywordList = threadkeywordList.split("_")
 
-    RelevantThread=[]
+    RelevantThread = []
     if topic_id:
         RelevantThread = Thread.objects.filter(topic=topic_id)
         pass
@@ -1600,9 +1610,7 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
         RelevantTopics = Topic_related_to_user(request).values_list('pk')
         RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
         pass
-    
 
-    return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
-
+    return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread': RelevantThread})
 
     pass
