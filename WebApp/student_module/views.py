@@ -893,7 +893,7 @@ class QuizUserProgressView(TemplateView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         # context['cat_scores'] = progress.list_all_cat_scores
         # context['exams'] = progress.show_exams()
-        context['sittings'] = Sitting.objects.all()
+        context['sittings'] = Sitting.objects.filter(user=self.request.user)
         return context
 
 

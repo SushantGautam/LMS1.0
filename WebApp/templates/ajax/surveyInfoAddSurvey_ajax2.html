@@ -76,9 +76,10 @@
 
                         <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic' style="margin-left:40px;">
                           {% for option_form in questioninfo_form.nested.forms %}
-
-                            {{ option_form|crispy }}
-
+                            <div style="display:flex;">
+                              <p>{{ forloop.counter }} &nbsp;</p>
+                              {{ option_form|crispy }}
+                            </div>
                           {% endfor %}
                         </div>
 
@@ -136,7 +137,7 @@
     {{ questioninfo_formset.empty_form|crispy }}
     {{ questioninfo_formset.empty_form.nested.management_form }}
     {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-    {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}
+    {#    {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
 
     <div id="optionContainer_id" style="margin-left: 40px;">
 
@@ -218,9 +219,10 @@
               '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
           );
           {#var option_counter = parseInt(optionId)+ 1;#}
-          var counter_el = `<p>${optionId}</p>`;
+          var counter_el = `<p>${parseInt(optionId) + 1}</p>`;
           {#$(newel_id).find('label').before(counter_el);#}
           $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex;'></div>`);
+          console.log(optionId);
           $('#new_op_div' + questionId + optionId).prepend(counter_el);
           optionId++;
           $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
@@ -263,14 +265,16 @@
       $('#first_sa_que_div').prepend(`<p>1</p>`);
       $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
-      $('#id_End_Time').durationPicker({
-          showSeconds: true,
-          showDays: false,
-          onChanged: function (newVal) {
-          }
-      });
+      if ("{{ category_name }}" === "live") {
+          $('#id_End_Time').durationPicker({
+              showSeconds: true,
+              showDays: false,
+              onChanged: function (newVal) {
+              }
+          });
 
-      $(".bdp-block:visible").addClass("col-md-4")
+          $(".bdp-block:visible").addClass("col-md-4")
+      }
 
 
   </script>

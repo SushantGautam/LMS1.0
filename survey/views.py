@@ -17,7 +17,8 @@ from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInf
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 
 from django.db.models import Q
-
+from django import forms
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 class AjaxableResponseMixin:
     """
@@ -170,8 +171,6 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super(SurveyInfo_ajax, self).get_form_kwargs()
         kwargs.update({'request': self.request})
-        if self.request.POST:
-            print("post post post")
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -196,6 +195,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             if self.request.GET['category_name'] == "live":
                 self.object.Survey_Live = True
                 self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
+                self.object.save()
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -215,7 +215,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return redirect('surveyinfo_detail', self.object.id)
 
 
-from django.forms.models import inlineformset_factory, BaseInlineFormSet
+
 
 
 def create_questioninfo_formset(obj_instance):
@@ -225,7 +225,8 @@ def create_questioninfo_formset(obj_instance):
 
             # print(form.fields['Question_Name'].initial)
             # print(index)
-
+            form.fields['Question_Type'].initial = "MCQ"
+            form.fields['Question_Type'].widget = forms.HiddenInput()
             my_mcqs = obj_instance.questioninfo.all().filter(Question_Type='MCQ')
             if form.is_bound:
                 my_op_initial = None
@@ -287,11 +288,12 @@ def create_questioninfo_formset(obj_instance):
 class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'ajax/surveyInfoRetake_ajax.html'
+    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
         kwargs = super(SurveyInfoRetake_ajax, self).get_form_kwargs()
         kwargs.update({'request': self.request})
+        kwargs.update({'object': SurveyInfo.objects.get(id=self.kwargs["pk"])})
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -390,8 +392,8 @@ class SurveyInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
-        context['options'] = OptionInfo.objects.all()
-        context['submit'] = SubmitSurvey.objects.all()
+        context['options'] = OptionInfo.objects.filter(Question_Code__in=context['questions']).order_by('pk')
+        context['submit'] = SubmitSurvey.objects.filter(Survey_Code=self.kwargs.get('pk'))
         return context
 
 
@@ -502,7 +504,7 @@ class surveyFilterCategory(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
-
+        context['category_name'] = self.request.GET['category_name'].lower()
         return context
 
     # ....................................Pagination.............................................................

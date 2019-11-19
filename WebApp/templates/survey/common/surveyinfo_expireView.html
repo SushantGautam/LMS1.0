@@ -32,7 +32,7 @@
 </div>
 
 <div class="hR"></div>
-
+{{ page_obj.per_page }}
 <div class="row">
   <div class="col-md-12">
 
@@ -40,7 +40,7 @@
 
     {% for object in object_list %}
       {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == False %}
-        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 active_survey">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 active_survey survey_card">
           <a href="{% if '/teachers' in request.path %}
                                 {% url 'surveyinfodetail' object.pk %}
                              {% else %}
@@ -71,7 +71,7 @@
       {% endif %}
 
       {% if object.End_Date|date:'y m d' < currentDate|date:'y m d' and object.Survey_Live == False %}
-        <div class=" col-lg-4 col-md-6 col-sm-6 col-xs-12 expire_survey " style="display: none;">
+        <div class=" col-lg-4 col-md-4 col-sm-6 col-xs-12 expire_survey survey_card" style="display: none;">
           <a href=" {% if '/teachers' in request.path %}
                                 {% url 'surveyinfodetail' object.pk %}
                              {% else %}
@@ -102,7 +102,7 @@
 
 {#      {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == True %}#}
       {% if object.Survey_Live == True %}
-        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 live_survey " style="display: none;">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 live_survey survey_card" style="display: none;">
           <a href=" {% if '/teachers' in request.path %}
                                 {% url 'surveyinfodetail' object.pk %}
                              {% else %}
@@ -177,23 +177,28 @@
               $("#short_que").show(100);
               $("#mcq_que").hide();
           });
+
+          $(".active_survey").show();
+          //$(this).css('color', 'white');
+          $(".expire_survey").hide();
+          $(".live_survey").hide();
       });
 
       // -----------------------------ACTIVE AND EPIRE -------------------------------------
       $("#ActiveButton").on("click", function () {
-          $(".active_survey").show(200);
+          $(".active_survey").show();
           //$(this).css('color', 'white');
           $(".expire_survey").hide();
           $(".live_survey").hide();
       });
       $("#ExpireButton").on("click", function () {
-          $(".expire_survey").show(200);
+          $(".expire_survey").show();
           // $(this).css('color', 'white');
           $(".active_survey").hide();
           $(".live_survey").hide();
       });
       $("#LiveButton").on("click", function () {
-          $(".live_survey").show(200);
+          $(".live_survey").show();
           $(".expire_survey").hide();
           // $(this).css('color', 'white');
           $(".active_survey").hide();
@@ -250,7 +255,8 @@
       $(".survey_next").click(function (event) {
           event.preventDefault();
           {#alert("{% url 'surveyFilterCategory' %}" + $(this).attr('href'));#}
-          var category_name = $(".card-text.active .category-name").id;
+          {#var category_name = $(".card-text.active .category-name").id;#}
+          var category_name = "{{ category_name }}";
           $.ajax({
               type: "GET",
               data: {'category_name': category_name},
@@ -263,6 +269,7 @@
               }
           });
       });
+
 
   </script>
 {% endblock %}

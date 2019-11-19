@@ -53,6 +53,7 @@ from django.http import JsonResponse
 
 from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 User = get_user_model()
 
@@ -501,6 +502,7 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             if self.request.GET['category_name'] == "live":
                 self.object.Survey_Live = True
                 self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
+                self.object.save()
             super().form_valid(form)
         context = self.get_context_data()
         qn = context['questioninfo_formset']
@@ -524,6 +526,7 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         kwargs = super(TeacherSurveyInfo_ajax, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
 
 
 def polls_teachers(request):

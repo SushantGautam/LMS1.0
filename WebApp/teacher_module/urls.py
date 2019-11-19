@@ -92,6 +92,8 @@ urlpatterns += (
          name='teacherSurveyFilterCategory'),
     path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
          name='TeacherSurveyInfo_ajax'),
+    path('surveyinforetake_ajax/<int:pk>/', survey_views.SurveyInfoRetake_ajax.as_view(),
+         name='teacher_surveyinfo_retake_ajax'),
 
 )
 
@@ -103,7 +105,6 @@ urlpatterns += (
          views.create_thread, name='teacher_create_thread'),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
          views.create_thread, name='teacher_create_thread'),
-
 
     path('forum/create_topic/(?P<teacher_nodegroup_pk>\d+)/',
          views.create_topic, name='teacher_create_topic'),
