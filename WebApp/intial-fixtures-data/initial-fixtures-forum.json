@@ -1,0 +1,29 @@
+[
+    {
+        "model": "forum.nodegroup",
+        "pk": 1,
+        "fields": {
+            "title": "Consortium",
+            "description": "This is the public forum group all the center has access to it",
+            "topic_count": 0
+        }
+    },
+    {
+        "model": "forum.nodegroup",
+        "pk": 2,
+        "fields": {
+            "title": "General",
+            "description": "The general node will consits general subtopic which will be accessible to all within the center",
+            "topic_count": 0
+        }
+    },
+    {
+        "model": "forum.nodegroup",
+        "pk": 3,
+        "fields": {
+            "title": "Course",
+            "description": "This node will have only course related topic to discuss and only teacher and student assigned to them can view it",
+            "topic_count": 0
+        }
+    }
+]
