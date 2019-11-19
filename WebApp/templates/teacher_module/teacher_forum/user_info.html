@@ -29,7 +29,7 @@
 {#        {% for thread in threads %}#}
 {#        <li class="list-group-item thread-entry">#}
 {#            <div class="entry media"><a href="{% url 'teacher_info' pk=thread.user.pk %}">#}
-{#                    <img src="{% static request.user.Avatar %}" alt="..." alt=""#}
+{#                    <img src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}" alt="..." alt=""#}
 {#                        class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />#}
 {#                </a>#}
 {#                <h2 class="thread_title">#}
@@ -87,7 +87,7 @@
 {#                                <div id="reply_{{ reply.thread.pk }}_{{ reply.pk }}">#}
 {#                                    <li class="list-group-item reply-entry reply-entry-content">#}
 {#                                        <a href="{% url 'teacher_info' pk=reply.user.pk %}">#}
-{#                                            <img src="{% static request.user.Avatar %}" alt=""#}
+{#                                            <img src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}" alt=""#}
 {#                                                class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />#}
 {#                                        </a>#}
 {#                                        <h5>#}
@@ -147,7 +147,7 @@
 {#                    <p>#}
 {#                        <h2>#}
 {#                            <div class="content_reply">#}
-{#                                <img src="{% static request.user.Avatar %}" alt="..."#}
+{#                                <img src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}" alt="..."#}
 {#                                    class="image avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />#}
 {#                                <div class="pull-left reply_username"> {{ reply.user.username }}</div>#}
 {##}

@@ -127,16 +127,13 @@ class MemberInfo(AbstractUser):
 
     @property
     def Avatar(self):
-        if self.Member_Avatar:
-            return self.Member_Avatar.url
+        if self.Member_Gender =='F':
+            default_avatar = 'images/profile/female.png'
+        elif self.Member_Gender =='M':
+            default_avatar = 'images/profile/male.jpg'
         else:
-            if self.Member_Gender =='F':
-                default_avatar = 'images/profile/female.png'
-            elif self.Member_Gender =='M':
-                default_avatar = 'images/profile/male.jpg'
-            else:
-                default_avatar ='images/profile/profile.png'
-            return default_avatar
+            default_avatar ='images/profile/profile.png'
+        return default_avatar
             
     class Meta:
         ordering = ('-pk',)
