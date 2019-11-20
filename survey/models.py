@@ -42,8 +42,8 @@ class SurveyInfo(models.Model):
     Survey_Live = BooleanField(default=False, blank=True, null=True)
 
     Center_Code = ForeignKey(
-        'WebApp.CenterInfo',
-        related_name="surveyinfo", on_delete=models.DO_NOTHING
+        'WebApp.CenterInfo', blank=True,
+        related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
     )
 
     Category_Code = ForeignKey(
@@ -101,7 +101,7 @@ class QuestionInfo(models.Model):
     )
 
     class Meta:
-        ordering = ('-pk',)
+        ordering = ('pk',)
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -132,7 +132,7 @@ class OptionInfo(models.Model):
     )
 
     class Meta:
-        ordering = ('-pk',)
+        ordering = ('pk',)
 
     def __unicode__(self):
         return u'%s' % self.pk

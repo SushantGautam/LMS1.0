@@ -64,8 +64,11 @@
 
 {% endif %}
 
-<br />
 
+<div class="" style="text-align:right; margin-bottom: 10px;">
+	
+		<a href="{% url 'student_progress_detail' pk=sitting_id %}" class=""><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
+</div>
 {% if question %}
 {% if quiz.exam_paper %}
 		<div class="col-md-12 ">
@@ -127,7 +130,10 @@
 													{% endfor %}
 
 												</ul>
+												
 										<input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block btn-warning" >
+									
+                    
 									</form>
 
 								</div>
@@ -135,6 +141,13 @@
 
 			</div>
 </div>
+
+		
+			
+
+
+		
+
 
 
 

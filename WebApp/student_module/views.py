@@ -5,6 +5,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
@@ -33,12 +34,11 @@ from LMS import settings
 import uuid
 from django.core.files.storage import FileSystemStorage
 from WebApp.filters import MyCourseFilter
-from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from quiz.models import Progress
 
 datetime_now = datetime.now()
-
 
 User = get_user_model()
 
@@ -63,7 +63,8 @@ def start(request):
                     Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id)[:7]
 
         return render(request, 'student_module/dashboard.html',
-                      {'GroupName': batches, 'Group': sessions, 'Course': courses, 'activeAssignments': activeassignments})
+                      {'GroupName': batches, 'Group': sessions, 'Course': courses,
+                       'activeAssignments': activeassignments})
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -132,7 +133,8 @@ class MyCoursesListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        batches = GroupMapping.objects.filter(Students__id=self.request.user.id, Center_Code=self.request.user.Center_Code)
+        batches = GroupMapping.objects.filter(Students__id=self.request.user.id,
+                                              Center_Code=self.request.user.Center_Code)
         sessions = []
         if batches:
             for batch in batches:
@@ -239,7 +241,7 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(
-            Course_Code=self.kwargs.get('pk'),Use_Flag=True).order_by('Chapter_No')
+            Course_Code=self.kwargs.get('pk'), Use_Flag=True).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Question.objects.filter(
@@ -311,19 +313,18 @@ class submitAnswer(View):
         Obj.Question_Code = AssignmentQuestionInfo.objects.get(
             pk=request.POST["Question_Code"])
         Assignment_Code = Obj.Question_Code.Assignment_Code
-        if bool(request.FILES.get('Assignment_File',False)) == True:
+        if bool(request.FILES.get('Assignment_File', False)) == True:
             media = request.FILES['Assignment_File']
             # print(media)
             if media.size / 1024 > 2048:
-                return JsonResponse(data={'status':'Fail',"msg": "File size exceeds 2MB"}, status=500)
-            path = settings.MEDIA_ROOT  
+                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+            path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
             filename = fs.save(name, media)
-            Obj.Question_Media_File = 'assignments/' + str(Assignment_Code.id) + name    
+            Obj.Question_Media_File = 'assignments/' + str(Assignment_Code.id) + name
             Obj.Assignment_File = media
         Obj.save()
-
 
         return JsonResponse(
             data={'Message': 'Success'}
@@ -403,7 +404,6 @@ class ParticipateSurvey(View):
         submitSurvey.save()
 
         for question in QuestionInfo.objects.filter(Survey_Code=surveyId):
-
             optionId = request.POST[str(question.id)]
             answerObject = AnswerInfo()
             answerObject.Answer_Value = optionId
@@ -418,15 +418,43 @@ class surveyFilterCategory_student(ListView):
     model = SurveyInfo
     template_name = 'student_module/questions_student_listView.html'
 
-    def get_queryset(self):
-        # print(self.request.GET['categoryId'])
-        # print(SurveyInfo.objects.filter(Category_Code = self.request.GET['categoryId']))
-        if self.request.GET['categoryId'] == '0':
+    paginate_by = 6
 
-            return SurveyInfo.objects.all()
-            # filter(Center_Code = self.request.user.Center_Code)
-        else:
-            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId'])
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.GET = None
+
+    def get_queryset(self):
+        try:
+            category_id = int(self.request.GET['categoryId'])
+            # student related data
+            student_group = self.request.user.groupmapping_set.all()
+            student_session = InningInfo.objects.filter(Groups__in=student_group)
+            active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+            student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+
+            # Predefined category name "general, session, course, system"
+            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general", Center_Code=self.request.user.Center_Code, Use_Flag=True)
+            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session", Session_Code__in=student_session, Use_Flag=True)
+            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course", Course_Code__in=student_course, Use_Flag=True)
+            system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+
+            if category_id == 0:
+                all_survey = general_survey | session_survey | course_survey | system_survey
+                return all_survey
+            else:
+                category_name = CategoryInfo.objects.get(id=category_id).Category_Name.lower()
+                if category_name == "general":
+                  return general_survey
+                elif category_name == "session":
+                    return session_survey
+                elif category_name == "course":
+                    return course_survey
+                elif category_name == "system":
+                    return system_survey
+        except:
+            return None
+            # print("Error occured")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -438,6 +466,7 @@ class surveyFilterCategory_student(ListView):
             el.Survey_Code.id for el in submitSurveyQuerySet]
 
         return context
+
 
 # <===============================Forum==================================================>
 class Index(ListView):
@@ -472,13 +501,13 @@ class Index(ListView):
             #     own_courses_forum_topics = Topic.objects.filter(node_group=ng.pk, course_associated_with__in=courses)
             # topics = general_topics | own_courses_forum_topics
 
-            topics = Topic_related_to_user(self.request, node_group = ng)
+            topics = Topic_related_to_user(self.request, node_group=ng)
             for topic in topics:
                 thread_counter += topic.visible_threads_count
             if thread_counter == 0:
-                 nodegroups = nodegroups.exclude(pk = ng.pk)
+                nodegroups = nodegroups.exclude(pk=ng.pk)
             else:
-                    
+
                 thread = Thread.objects.visible().filter(topic_id__in=topics).order_by('pub_date')[:4]
                 threads += thread
 
@@ -490,6 +519,7 @@ class Index(ListView):
         context['show_order'] = True
         context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
         return context
+
 
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
     topic = None
@@ -566,7 +596,8 @@ class SearchView(ListView):
         context['show_order'] = True
         context['keyword'] = self.kwargs.get('keyword')
         return context
-    
+
+
 def search_redirect(request):
     if request.method == 'GET':
         keyword = request.GET.get('keyword')
@@ -600,7 +631,7 @@ class NodeGroupView(ListView):
                 thread = Thread.objects.visible().filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
-              
+
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
@@ -615,7 +646,6 @@ class NodeGroupView(ListView):
 
 class ThreadView(ListView):
     model = Post
-    paginate_by = 15
     template_name = 'student_module/student_forum/thread.html'
     context_object_name = 'posts'
 
@@ -626,7 +656,7 @@ class ThreadView(ListView):
             'user'
         ).prefetch_related(
             'user__forum_avatar'
-        ).order_by('pub_date')
+        ).order_by('pub_date')[:5]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
@@ -636,6 +666,14 @@ class ThreadView(ListView):
         context['title'] = context['thread'].title
         context['topic'] = context['thread'].topic
         context['form'] = ReplyForm()
+        context['total_reply_count'] = Post.objects.filter(
+            thread_id=self.kwargs.get('pk')
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date').count()
+
         return context
 
     @method_decorator(login_required)
@@ -655,6 +693,18 @@ class ThreadView(ListView):
                 reverse('student_thread', kwargs={'pk': thread_id})
             )
 
+def ThreadList_LoadMoreViewAjax(request, pk, count ):
+    return render(request, 'ForumInclude/LoadMoreAjax.html', {
+        'MoreReply' : Post.objects.filter(
+            thread_id=pk
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date')[5*count:(1+count)*5]
+    
+    })
+    
 
 class TopicView(ListView):
     model = Thread
@@ -712,6 +762,7 @@ class UserPosts(ListView):
         context['panel_title'] = context['title'] = context['user'].username
         return context
 
+
 class UserThreads(ListView):
     model = Post
     paginate_by = 15
@@ -732,8 +783,6 @@ class UserThreads(ListView):
         context['user'] = User.objects.get(pk=self.kwargs.get('pk'))
         context['panel_title'] = context['title'] = context['user'].username
         return context
-
-
 
 
 class NotificationView(ListView):
@@ -757,6 +806,7 @@ class NotificationView(ListView):
         context['title'] = ("Notifications")
         return context
 
+
 @login_required
 def edit_thread(request, pk):
     thread = Thread.objects.get(pk=pk)
@@ -772,12 +822,14 @@ def edit_thread(request, pk):
     else:
         form = ThreadEditForm(instance=thread)
 
-    return render(request, 'student_module/student_forum/edit_thread.html', {'form': form, 'object': thread, 'title': ('Edit thread')})
+    return render(request, 'student_module/student_forum/edit_thread.html',
+                  {'form': form, 'object': thread, 'title': ('Edit thread')})
 
 
 def CourseForum(request, course):
     def CourseForum(request, course):
         course = CourseInfo.objects.get(pk=course)
+
     course_forum = None
     course_node_forum = None
     try:
@@ -796,14 +848,12 @@ def CourseForum(request, course):
     return redirect('student_topic', pk=course_forum.pk)
 
 
-
-
 def Topic_related_to_user(request, node_group=None):
     innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
     if node_group == None:
         own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code,
         
-            course_associated_with__isnull=True)
+            course_associated_with__isnull=True) | Topic.objects.filter(center_associated_with__isnull= True, course_associated_with__isnull=True)
         assigned_topics = ''
         if innings:
             courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
@@ -812,10 +862,14 @@ def Topic_related_to_user(request, node_group=None):
         else:
             assigned_topics = own_center_general_topic
     else:
-        own_center_general_topic = Topic.objects.filter(node_group=node_group.pk, center_associated_with= request.user.Center_Code, course_associated_with__isnull=True) | Topic.objects.filter(node_group=node_group.pk, center_associated_with__isnull= True, course_associated_with__isnull=True)
+        own_center_general_topic = Topic.objects.filter(node_group=node_group.pk,
+                                                        center_associated_with=request.user.Center_Code,
+                                                        course_associated_with__isnull=True) | Topic.objects.filter(
+            node_group=node_group.pk, center_associated_with__isnull=True, course_associated_with__isnull=True)
         if innings:
             courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
-            own_courses_forum_topics = Topic.objects.filter(node_group=node_group.pk, course_associated_with__in=courses)
+            own_courses_forum_topics = Topic.objects.filter(node_group=node_group.pk,
+                                                            course_associated_with__in=courses)
             assigned_topics = own_courses_forum_topics | own_center_general_topic
         else:
             assigned_topics = own_center_general_topic
@@ -824,6 +878,7 @@ def Topic_related_to_user(request, node_group=None):
 
 def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
+
 
 class QuizUserProgressView(TemplateView):
     template_name = 'student_quiz/progress.html'
@@ -838,5 +893,14 @@ class QuizUserProgressView(TemplateView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         # context['cat_scores'] = progress.list_all_cat_scores
         # context['exams'] = progress.show_exams()
-        context['sittings'] = Sitting.objects.all()
+        context['sittings'] = Sitting.objects.filter(user=self.request.user)
         return context
+
+
+class QuizUserProgressDetailView(DetailView):
+    template_name = 'student_quiz/progress_detail.html'
+    model = Sitting
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)

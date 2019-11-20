@@ -127,7 +127,8 @@
                                 <span>{% blocktrans with view_count=thread.view_count %} <i class="fa fa-eye"></i>
                                     viewed
                                     {{ view_count }}
-                                    times{% endblocktrans %}</span> | <span>{% if thread.reply_count %}
+                                    times{% endblocktrans %}</span> | <span> {% if thread.reply_count %}
+                                    <i class="fa fa-comments-o"></i>
                                     {% blocktrans count reply_count=thread.reply_count %}{{ reply_count }} Reply
                                     {% plural %}{{ reply_count }} Replies{% endblocktrans %}
                                     {% else %}
@@ -140,7 +141,7 @@
                             </h4>
 
                             <ul class="list-comment reply-lists">
-                                {% if thread.reply_count > 2 %}
+                                {% if thread.reply_count > 3 %}
                                 <div class="reply_header">
                                     <a href="#Goto_Reply">Post a Reply</a>
                                 </div>
@@ -150,9 +151,9 @@
                                 <h2 class="thread_replies">
                                     {% if thread.reply_count %}
                                     <i class="fa fa-comments-o"></i>
-                                    {% blocktrans count reply_count=thread.reply_count %} ({{ reply_count }})
-                                    Reply
-                                    {% plural %}({{ reply_count }})Replies {% endblocktrans %}
+                                    {% blocktrans count reply_count=thread.reply_count %}
+                                    Reply ({{ reply_count }})
+                                    {% plural %} Replies ({{ reply_count }}) {% endblocktrans %}
                                     {% else %}
                                     <i class="fa fa-comments-o"></i> {% trans "No Replies" %}
                                     {% endif %}
@@ -161,19 +162,18 @@
 
 
                                 <hr>
+                                    {% for post in posts %}
 
-                                {% for post in posts %}
-
-                                <li class="list-group-reply reply-item">
+                                    <li class="list-group-reply reply-item">
 
 
-                                    <div class="thread-meta row">
+                                        <div class="thread-meta row">
 
-                                        <div class="">
-                                            <div class="reply-content">
+                                            <div class="">
+                                                <div class="reply-content">
 
-                                                <div class="profile_pic">
-                                                    <img src="
+                                                    <div class="profile_pic">
+                                                        <img src="
                                                                             {% if post.user.Member_Avatar %}
                                                                                 {{ post.user.Member_Avatar.url }}
                                                                             {% elif post.user.Member_Gender == 'M' %}
@@ -183,8 +183,8 @@
                                                                             {% else %}
                                                                                 {% static 'images/profile/profile.png' %}
                                                                             {% endif %}" alt="..."
-                                                        class="img-circle profile_img_forum" />
-                                                    <a href="
+                                                            class="img-circle profile_img_forum" />
+                                                        <a href="
                                                     {% if '/teachers' in request.path %}
                         {% url 'teacher_info' post.user_id %}
                         {% elif '/students' in request.path %}
@@ -194,78 +194,88 @@
                         {% endif %}
                                                    " class="username-link">{{ post.user.username }}</a>
 
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="thread_date">
+                                                    <span class="pull-right">{{ post.pub_date | naturaltime }}</span>
+                                                </div>
+                                                <div class="reply-content-detail">
+
+
+                                                    <span> {{ post.content_raw | safe }} </span>
                                                 </div>
 
 
                                             </div>
-                                            <div class="thread_date">
-                                                <span class="pull-right">{{ post.pub_date | naturaltime }}</span>
-                                            </div>
-                                            <div class="reply-content-detail">
-
-
-                                                <span> {{ post.content_raw | safe }} </span>
-                                            </div>
-
-
-
-
-
 
                                         </div>
-                                    </div>
-                                    <br>
-                                    <!-- <div class="left">
+                                        <br>
+                                        <!-- <div class="left">
                                         <p class="reply-link">
                                             <a href="#" data-username="{{ post.user.username }}" class="reply-to"
                                                 style="color: darkblue">{% trans "Reply" %}</a>
                                         </p>
                                     </div> -->
-                                    <div class="top_button">
+                                        <div class="top_button">
 
-                                        {% if request.user.is_superuser %}
-                                        {% if not request.user.Is_Student %}
-                                        {% if not post.hidden %}
+                                            {% if request.user.is_superuser %}
+                                            {% if not request.user.Is_Student %}
+                                            {% if not post.hidden %}
 
-                                        <a href="#" class="moderate-action hide-reply" data-toggle="modal"
-                                            data-target="#moderation-modal" data-pk="{{ thread.pk }}"
-                                            data-action="hide-reply"
-                                            data-api-url="{% url 'forum:post-detail' post.pk %}">
+                                            <a href="#" class="moderate-action hide-reply" data-toggle="modal"
+                                                data-target="#moderation-modal" data-pk="{{ thread.pk }}"
+                                                data-action="hide-reply"
+                                                data-api-url="{% url 'forum:post-detail' post.pk %}">
 
-                                            <p class="moderation-links">
-
-                                                <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i>
-                                                    Hide </span>
-
-                                            </p>
-
-                                        </a>
-
-                                        {% else %}
-
-                                        <a href="#" class="moderate-action hide-reply" data-toggle="modal"
-                                            data-target="#moderation-modal" data-pk="{{ thread.pk }}"
-                                            data-action="unhide-reply"
-                                            data-api-url="{% url 'forum:post-detail' post.pk %}">
-                                            <div class="hide_button">
                                                 <p class="moderation-links">
 
                                                     <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i>
-                                                        UnHide </span>
+                                                        Hide </span>
 
                                                 </p>
-                                            </div>
-                                        </a>
-                                        {% endif %}
-                                        {% endif %}
 
-                                        {% endif %}
+                                            </a>
+
+                                            {% else %}
+
+                                            <a href="#" class="moderate-action hide-reply" data-toggle="modal"
+                                                data-target="#moderation-modal" data-pk="{{ thread.pk }}"
+                                                data-action="unhide-reply"
+                                                data-api-url="{% url 'forum:post-detail' post.pk %}">
+                                                <div class="hide_button">
+                                                    <p class="moderation-links">
+
+                                                        <span class="btn btn-danger btn-xs"><i
+                                                                class="fa fa-eye-slash"></i>
+                                                            UnHide </span>
+
+                                                    </p>
+                                                </div>
+                                            </a>
+                                            {% endif %}
+                                            {% endif %}
+
+                                            {% endif %}
 
 
-                                    </div>
+                                        </div>
 
-                                </li>
-                                {% endfor %}
+                                    </li>
+                                    {% endfor %}
+
+                                <div id="LoadReplies">
+
+                                </div>
+                                <div class="LoadButton">
+                                    {% if total_reply_count > 5 %}
+                                    <button id="ShowLess" style="display: none;" class="btn btn-info"> <i
+                                            class="fa fa-angle-left"></i>  Show Less </button>
+                                    <button id="LoadMore" class="btn btn-info">Show More</button>
+                                    {% endif %}
+                                </div>
+
                             </ul>
 
                             <br>
@@ -363,7 +373,7 @@
                                                 data-edit="insertImage" />
                                         </div>
 
-                                        <div class="btn-group">
+                                        <div class="btn-group" id="Undobtn">
                                             <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i
                                                     class="fa fa-undo"></i></a>
                                             <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i
@@ -399,33 +409,6 @@
     </div>
 
 
-    <div class=" text-center">
-        {% if is_paginated %}
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-            {% else %}
-            <li class="disabled"><span>&laquo;</span></li>
-            {% endif %}
-            {% for i in paginator.page_range %}
-            {% if page_obj.number == i %}
-            <li class="active">
-                <span>{{ i }} <span class="sr-only">(current)</span></span>
-            </li>
-            {% else %}
-            <li>
-                <a href="?page={{ i }}">{{ i }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-            {% else %}
-            <li class="disabled"><span>&raquo;</span></li>
-            {% endif %}
-        </ul>
-        {% endif %}
-    </div>
 
 </div>
 
@@ -589,15 +572,11 @@
 
 
 <script>
-    $("#submitButton").click(function () {
+    $('#submitButton').click(function () {
         $('#id_content_raw').val($('.editor-wrapper').html());
         var content_raw = document.getElementById("id_content_raw").value
         var data = { "content_raw": content_raw, "user": "{{ request.user.pk }}", "thread": "{{ thread.pk }}" };
-
-
-
         console.log(data);
-
         $.ajax({
             url: '/forum/api/v1/post/',
             type: 'POST',
@@ -609,7 +588,7 @@
                 // alert("data entry success" + Session_Code + " " + Course_Code);
             }
         }).done(function (server_data) {
-            console.log(server_data)
+            console.log(server_data);
             location.reload();
         }).fail(function (res) {
             console.log(res);
@@ -619,13 +598,54 @@
 
 
     });
+</script>
 
 
+<script>
+    var MoreCount = 1;
+    $('#LoadMore').click(function () {
+        console.log("onclick");
+        $.ajax({
+            type: "GET",
+            url: "/students/forum/ThreadListLoadMoreViewAjax/{{ thread.pk }}/" + MoreCount,
+            success: function (data) {
+                $("#LoadReplies").append(data);
+                MoreCount = MoreCount + 1; RefreshBackButton();
+            },
 
+        });
+    });
+
+    $('#ShowLess').click(function () {
+        $.ajax({
+            type: "GET",
+            url: "/students/forum/ThreadListLoadMoreViewAjax/{{ thread.pk }}/" + (MoreCount - 1),
+            success: function (data) {
+                $("#LoadReplies").html('');
+                MoreCount = 1; RefreshBackButton() ;
+            },
+
+        });
+    });
+    function RefreshBackButton() {
+
+        if (MoreCount>1) {
+            $('#ShowLess').css('display', 'inline-block');
+        }
+        else {
+            $('#ShowLess').css('display', 'none');
+        }
+
+        if (((MoreCount) * 5) >= {{ total_reply_count }} ) {
+        $('#LoadMore').css('display', 'none');
+    }else {
+        $('#LoadMore').css('display', 'inline-block');
+    }
+
+    };
 
 
 </script>
-
 
 
 {% endblock %}

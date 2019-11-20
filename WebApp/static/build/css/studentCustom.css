@@ -562,9 +562,9 @@ form {
   margin-left: 20px;
 }
 #retakeSurveyBtn {
-  float: right;
+  margin-top: 24px;
   /*height: 5vh;*/
-  margin-right: 20px;
+ 
   background-color: #26b99a;
 }
 #retakeSurveyBtn:hover {

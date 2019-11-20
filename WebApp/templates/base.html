@@ -30,8 +30,8 @@
         <!-- Styling Checkbox as Switch -->
         <link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">
         <!-- Custom Theme Style -->
-        <link href="{% static '/build/css/theme.min.css' %}" rel="stylesheet">
-        <link href="{% static '/build/css/custom.css' %}" rel="stylesheet">
+        <link href="{% static 'build/css/theme.min.css' %}" rel="stylesheet">
+        <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
 
         <!-- bootstrap-daterangepicker -->
         <!-- <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet"> -->
@@ -78,10 +78,6 @@
 
             <div class="right_col" role="main">
 
-                {#                <div class="page-title">#}
-                {##}
-                {##}
-                {#                </div>#}
                 <ol aria-label="breadcrumb" class="breadcrumb navClass">
                     <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
                     {% block breadcrumb %}
@@ -89,7 +85,6 @@
                     {% endblock %}
                 </ol>
                 {% block content %}
-                    {#                     {{ content }} #}
                 {% endblock content %}
 
 

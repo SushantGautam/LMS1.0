@@ -1,0 +1,49 @@
+[
+    {
+        "model": "WebApp.centerinfo",
+        "pk": 1,
+        "fields": {
+            "Center_Name": "TEST",
+            "Center_Address": null,
+            "Use_Flag": true,
+            "Register_Agent": "superadmin",
+            "Register_DateTime": "2019-11-18T15:33:29.386Z",
+            "Updated_DateTime": "2019-11-18T15:33:29.386Z"
+        }
+    },
+    {
+        "model": "WebApp.memberinfo",
+        "pk": 1,
+        "fields": {
+            "last_login": "2019-11-18T15:33:04Z",
+            "date_joined": "2019-11-18T15:32:16Z",
+            "username": "nsdevil",
+            "first_name": "",
+            "last_name": "",
+            "email": "admin@example.org",
+            "is_staff": true,
+            "is_superuser": true,
+            "is_active": true,
+            "Member_ID": null,
+            "password": "pbkdf2_sha256$150000$Zu7Z2wZYIQvK$5WYyMaH8nMKdHnMP6VZZfrkMoo/fu+QQYWQ8dYMtv9o=",
+            "Member_Permanent_Address": null,
+            "Member_Temporary_Address": null,
+            "Member_BirthDate": null,
+            "Member_Phone": null,
+            "Use_Flag": true,
+            "Register_DateTime": "2019-11-18T15:32:16.275Z",
+            "Register_Agent": "superadmin",
+            "Updated_DateTime": "2019-11-18T15:33:35.334Z",
+            "Member_Memo": "",
+            "Member_Avatar": "",
+            "Is_Teacher": true,
+            "Is_Student": true,
+            "Is_CenterAdmin": true,
+            "Is_Parent": false,
+            "Member_Gender": "M",
+            "Center_Code": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]

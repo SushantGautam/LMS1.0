@@ -121,7 +121,7 @@ class NodeGroupView(LoginRequiredMixin, ListView):
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
-              
+            
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
@@ -141,7 +141,7 @@ class TopicView(LoginRequiredMixin, ListView):
     context_object_name = 'threads'
 
     def get_queryset(self):
-        return Thread.objects.visible().filter(
+        return Thread.objects.filter(
             topic__id=self.kwargs.get('pk')
         ).select_related(
             'user', 'topic'
@@ -172,7 +172,7 @@ class ThreadView(LoginRequiredMixin, ListView):
             'user'
         ).prefetch_related(
             'user__forum_avatar'
-        ).order_by('pub_date')
+        ).order_by('pub_date')[:5]
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
@@ -182,6 +182,14 @@ class ThreadView(LoginRequiredMixin, ListView):
         context['title'] = context['thread'].title
         context['topic'] = context['thread'].topic
         context['form'] = ReplyForm()
+
+        context['total_reply_count'] = Post.objects.filter(
+            thread_id=self.kwargs.get('pk')
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date').count()
         return context
 
     @method_decorator(login_required)
@@ -201,6 +209,18 @@ class ThreadView(LoginRequiredMixin, ListView):
                 reverse('forum:thread', kwargs={'pk': thread_id})
             )
 
+def ThreadList_LoadMoreViewAjax(request, pk, count ):
+    return render(request, 'ForumInclude/LoadMoreAjax.html', {
+        'MoreReply' : Post.objects.filter(
+            thread_id=pk
+        ).select_related(
+            'user'
+        ).prefetch_related(
+            'user__forum_avatar'
+        ).order_by('pub_date')[5*count:(1+count)*5]
+    
+    })
+
 
 def user_info(request, pk):
     u = User.objects.get(pk=pk)
@@ -219,7 +239,7 @@ class UserThreads(LoginRequiredMixin, ListView):
     context_object_name = 'threads'
 
     def get_queryset(self):
-        return Thread.objects.visible().filter(
+        return Thread.objects.filter(
             user_id=self.kwargs.get('pk')
         ).select_related(
             'user', 'topic'
@@ -317,6 +337,9 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     return render(request, 'forum/create_thread.html',
                   {'form': form, 'node_group': node_group, 'title': _('Create Thread'), 'topic': topic,
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
+
+
+
 
 
 @login_required
