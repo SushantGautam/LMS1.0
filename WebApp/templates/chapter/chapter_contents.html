@@ -322,8 +322,7 @@
         }
     });
 
-    $('#next-btn').off().click(function () {
-        getProgressWidth();
+    $('#next-btn').off().click(function () {  
         pauseAllVideos();
         $("#page-contents > .coursepages ").each(function () {
             if ($(this).css("display") == "block") {
@@ -331,6 +330,7 @@
             }
         });
         if (res < $("#page-contents > div ").length) {
+            getProgressWidth();
             $('#page' + res).css("display", "none");
             res++;
             $('#page' + res).css("display", "block")
