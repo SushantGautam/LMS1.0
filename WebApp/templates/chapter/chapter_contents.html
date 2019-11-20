@@ -437,7 +437,7 @@
                                 <object data="${css_value.link}#toolbar=0" type="application/pdf" width="100%" height="100%">
                                     alt : PDF File
                                 </object>
-                                <div class = "iframefullscreenbtn"><button>CLick to fullscreen iframe</button></div>
+                                <div class = "iframefullscreenbtn">CLick to fullscreen</div>
                             </div>
                         `)
                         });
@@ -480,6 +480,7 @@
                             <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                 <iframe src="${css_value.link}" width="100%" height="100%">
                                 </iframe>
+                                <div class = "iframefullscreenbtn">CLick to fullscreen</div>
                             </div>
                         `)
                         });
@@ -680,13 +681,32 @@
         $('.progress-bar').css('width', w+'%')
     }
    
-    $('.iframefullscreenbtn').on('click', function(){
-        iframefullscreen();
-    });
-
-    function iframefullscreen(){
-        alert("sdfodsn")
-    }
+    $(document).ready(function(){
+        $('.iframefullscreenbtn').on('click', function(){
+            // check if fullscreen mode is available
+            if (document.fullscreenEnabled || 
+                document.webkitFullscreenEnabled || 
+                document.mozFullScreenEnabled ||
+                document.msFullscreenEnabled) {
+                
+                // which element will be fullscreen
+                var iframe = $(this).parent().find('object')[0] || $(this).parent().find('iframe')[0];
+                // Do fullscreen
+                if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+                } else if (iframe.mozRequestFullScreen) {
+                iframe.mozRequestFullScreen();
+                } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+                }
+            }
+            else {
+                document.querySelector('.error').innerHTML = 'Your browser is not supported';
+            }
+        });
+    })
 </script>
 
 
