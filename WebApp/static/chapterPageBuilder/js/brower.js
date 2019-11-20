@@ -143,7 +143,6 @@ $("#SaveBtn").on("click",function(e){
     'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
     'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
   };
-  console.log(pages)
   var json=JSON.stringify(data);
   $.ajax({
     url: save_json_url,

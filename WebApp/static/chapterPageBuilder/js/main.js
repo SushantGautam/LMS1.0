@@ -1018,14 +1018,14 @@ $(document).ready(function() {
                             div.find('#loadingDiv').remove();
                         },                     
                         success: function(data) {
-                            div.find('#loadingDiv').remove();
-                            div.find('p').remove();
-
-                            div.append(`
-                                <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
-                                    alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">${data.media_name}</a>
-                                </object>
-                            `);
+                            PDFFunction(
+                                $(div)[0].style.top,
+                                $(div)[0].style.left,
+                                `/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}`,
+                                $(div)[0].style.height,
+                                $(div)[0].style.width,
+                            );
+                            div.remove();
                         },
                         error: function(data, status, errorThrown) {
                             alert(data.responseJSON.message);
