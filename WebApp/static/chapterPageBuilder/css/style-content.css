@@ -84,7 +84,7 @@ small, .small {
 
 .chat-message{
     background: #f9f9f9;
-    max-height: 50vh;
+    min-height: 50vh;
     overflow: auto;
 }
 
