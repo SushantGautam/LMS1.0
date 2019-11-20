@@ -131,12 +131,12 @@ $("#SaveBtn").on("click",function(e){
           }
         );
       }
+      
     });
-    
-    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d}]
+    thumbnail = ($(value)[0].style['background-image'])
+    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'thumbnail': thumbnail}]
   });
   data = {
-    // 'csrfmiddlewaretoken': csrf_token,
     'numberofpages': numberofpages, 
     'chaptertitle': $('#chaptertitle').text(),
     'pages': pages,

@@ -281,7 +281,7 @@ $(document).ready(function() {
                         <i class="fas fa-upload" id=${id}></i>
                         <i class="fas fa-link videolink" id=${id}></i>
                     </div>
-                    <div>
+                    <div style="background-image: url(${video_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
                         <p id="video-drag">${message}</p>
                         
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -668,8 +668,13 @@ $(document).ready(function() {
                 link = ''+link
             }
             
-            PictureFunction(div.css('top'),
-            div.css('left'),link,div.css('width'),div.css('height'));
+            PictureFunction(
+                $(div)[0].style.top,
+                $(div)[0].style.left,
+                link,
+                $(div)[0].style.width,
+                $(div)[0].style.height,
+            );
             div.remove()
         });
 
@@ -725,15 +730,17 @@ $(document).ready(function() {
                     div.find('#loadingDiv').remove();
                 },
                 success: function(data) {
-                    div.find('p').text("");
                     div.find('#loadingDiv').remove();
-                    div.css({
-                        'background-image': 'url('+load_file_url+'/' + data.media_name + ')',
-                        'background-repeat': 'no-repeat',
-                        'background-size': 'contain',
-                        'background-position': 'center',
-                        'border': '0'
-                    });
+                    div.find('p').text("");
+                    
+                    PictureFunction(
+                        $(div)[0].style.top,
+                        $(div)[0].style.left,
+                        load_file_url+'/'+data.media_name,
+                        $(div)[0].style.width,
+                        $(div)[0].style.height,
+                    );
+                    div.remove()
                 },
                 error: function(data, status, errorThrown) {
                     alert(data.responseJSON.message);
@@ -784,13 +791,7 @@ $(document).ready(function() {
                         success: function(data) {
                             div.find('#loadingDiv').remove();
                             div.find('p').text("");
-                            // div.css({
-                            //   'background-image': 'url('+load_file_url+'/'+data.media_name+')',
-                            //   'background-repeat': 'no-repeat',
-                            //   'background-size': 'contain',
-                            //   'background-position': 'center',
-                            //   'border': '0'
-                            // });
+                            
                             PictureFunction(
                                 
                                 $(div)[0].style.top,
@@ -1235,7 +1236,6 @@ $(document).ready(function() {
                         }, 
                         error: function(errorThrown){
                             alert("Failed to upload Video"+errorThrown)
-                            console.log(errorThrown)
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
                         },                     
@@ -1874,6 +1874,11 @@ $('#btn-submit').on('click', function(){
 // ======================================================================
 
 function openTab(evt, tab_no) {
+    try{
+        setThumbnails()
+    }catch(err){
+        console.log(err)
+    }
     tabcontent = document.getElementsByClassName("tab-content-no");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
@@ -1883,9 +1888,31 @@ function openTab(evt, tab_no) {
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace("current", "");
     }
-
     document.getElementById(tab_no).style.display = "block";
     document.getElementById(tab_no).className += " current";
     evt.currentTarget.className += " current";
+}
 
+// document.addEventListener('visibilitychange', function(){
+//     setThumbnails();
+// });
+
+
+function setThumbnails(){
+    let id = $('.current')[0].id.replace ( /[^\d.]/g, '' );
+    
+    html2canvas($('.current')[0]).then(canvas => {
+        $('.pagenumber').each(function(){
+            if(id == this.value){
+                if(canvas.toDataURL().startsWith('data:image')){
+                    $(this).css({
+                        'background-image': 'url("'+canvas.toDataURL()+'")', 
+                        'background-position': 'center',
+                        'background-size': 'contain',
+                        'background-repeat': 'no-repeat',
+                    });
+                }
+            }
+        });
+    });
 }

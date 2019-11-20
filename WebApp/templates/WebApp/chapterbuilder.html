@@ -94,6 +94,12 @@
     justify-content: flex-start;
   }
 
+  .pagenumber > canvas{
+    height: 100%;
+    width: 100%;
+    border: brown;
+  }
+
   .right-sidebar-content::-webkit-scrollbar {
     display: none;
   }
@@ -465,6 +471,7 @@
     var save_json_url = "{% url 'saveJson' %}";
     var import_zip_url = '{% url "importzip" %}';
     var csrf_token = '{{csrf_token}}'
+    var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}'
 
     $('#chapterlist').val(chapterID);
 
@@ -510,6 +517,7 @@
   </script>
   <script src="https://player.vimeo.com/api/player.js"></script>
   <script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
+  <script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
 
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
