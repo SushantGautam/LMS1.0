@@ -6,7 +6,9 @@ from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, FileField
 from django.urls import reverse
 from django.utils.translation import gettext as _
-import os
+
+# from quiz.models import Quiz
+
 fs = FileSystemStorage(location='LMS')
 
 USER_ROLES = (
@@ -125,18 +127,14 @@ class MemberInfo(AbstractUser):
 
     @property
     def Avatar(self):
-
-        if self.Member_Avatar:
-            return self.Member_Avatar.url
+        if self.Member_Gender =='F':
+            default_avatar = 'images/profile/female.png'
+        elif self.Member_Gender =='M':
+            default_avatar = 'images/profile/male.jpg'
         else:
-            if self.Member_Gender =='F':
-                default_avatar = "/static/images/profile/female.png"
-            elif self.Member_Gender =='M':
-                default_avatar = "/static/images/profile/male.jpg"
-            else:
-                default_avatar = "/static/images/profile/profile.png"
-            return default_avatar
-
+            default_avatar ='images/profile/profile.png'
+        return default_avatar
+            
     class Meta:
         ordering = ('-pk',)
 
@@ -153,7 +151,7 @@ class MemberInfo(AbstractUser):
         if self.first_name and self.last_name:
             return  self.first_name + " " + self.last_name
         else:
-            return "(NaN) " + self.username
+            return "-- " + self.username
 
     # def create_user(self, username, email=None, password=None, **extra_fields):
     #     extra_fields.setdefault('is_staff', True)
@@ -197,6 +195,9 @@ class CourseInfo(models.Model):
 
     def get_update_url(self):
         return reverse('courseinfo_update', args=(self.pk,))
+
+    # def get_exam_quiz(self):
+    #     return Quiz.objects.get(exam_paper=True, course_code=self.id)
 
     def __str__(self):
         return self.Course_Name

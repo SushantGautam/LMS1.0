@@ -88,16 +88,13 @@ urlpatterns += (
     # path('polls_teachers/', views.polls_teachers, name='polls_teachers'),
     path('surveyinfodetail/detail/<int:pk>/',
          views.TeacherSurveyInfoDetailView.as_view(), name='surveyinfodetail'),
-    path('surveyFilterCategory/', survey_views.surveyFilterCategory.as_view(),
+    path('surveyFilterCategory/', views.teacherSurveyFilterCategory.as_view(),
          name='teacherSurveyFilterCategory'),
     path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
          name='TeacherSurveyInfo_ajax'),
-    path('liveSurveyCreate/', survey_views.liveSurveyCreate.as_view(),
-         name='teacherliveSurveyCreate'),
-    path('liveSurveyDetail/detail/<int:pk>/',
-         survey_views.LiveSurveyDetail.as_view(), name='teacherliveSurveyDetail'),
     path('surveyinforetake_ajax/<int:pk>/', survey_views.SurveyInfoRetake_ajax.as_view(),
          name='teacher_surveyinfo_retake_ajax'),
+
 )
 
 urlpatterns += (
@@ -108,7 +105,6 @@ urlpatterns += (
          views.create_thread, name='teacher_create_thread'),
     path('forum/create_thread/(?P<nodegroup_pk>\d+)/(?P<topic_pk>\d+)/',
          views.create_thread, name='teacher_create_thread'),
-
 
     path('forum/create_topic/(?P<teacher_nodegroup_pk>\d+)/',
          views.create_topic, name='teacher_create_topic'),
@@ -124,6 +120,8 @@ urlpatterns += (
          views.NodeGroupView.as_view(), name='teacher_nodegroup'),
     path('forum/thread/<int:pk>/',
          views.ThreadView.as_view(), name='teacher_thread'),
+    path('forum/ThreadListLoadMoreViewAjax/<int:pk>/<int:count>',
+         views.ThreadList_LoadMoreViewAjax, name='teacher_Load_More'),
     path('forum/topic/<int:pk>/', views.TopicView.as_view(), name='teacher_topic'),
     path('forum/info/<int:pk>/', views.user_info, name='teacher_info'),
     path('forum/posts/<int:pk>/', views.UserPosts.as_view(), name='teacher_posts'),
@@ -132,6 +130,8 @@ urlpatterns += (
     path('forum/notification', views.NotificationView.as_view(),
          name='teacher_notification'),
     path('forum/edit/<int:pk>/', views.edit_thread, name='teacher_edit_thread'),
+    path('forum/create_thread/threadsearchAjax/<int:topic_id>/<slug:threadkeywordList>/',
+         views.ThreadSearchAjax, name='thread_search'),
 
 )
 
@@ -145,8 +145,9 @@ urlpatterns += (
          name='teacher_quiz_detail'),
     path('quiz/edit/<int:pk>/', views.QuizUpdateView.as_view(),
          name='teacher_quiz_update'),
-    path('update_info/<int:pk>/', views.UpdateQuizBasicInfo.as_view(), name='teacher_quiz_update_info'),    
-     
+    path('update_info/<int:pk>/', views.UpdateQuizBasicInfo.as_view(),
+         name='teacher_quiz_update_info'),
+
     path('detail/<slug>', views.QuizDetailView.as_view(),
          name='teacher_quiz_detail_s'),
 

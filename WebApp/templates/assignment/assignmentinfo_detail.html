@@ -328,60 +328,17 @@
                     <div class="x_content">
                         {% for answer in Answers %}
                         {% if questions.id == answer.Question_Code.id  %}
-                        {% if answer.Assignment_Answer != 'undefined' %}
+                        {% if answer.Assignment_Answer != '' %}
                         <p style="margin: 0;color:#000000;">{{answer.Assignment_Answer}}</p>
                         {% else %}
-                        <p style="margin: 0;color:#000000;">{{answer.Assignment_File}}</p>
+                        <p style="margin: 0;color:#000000;">File has been Submitted</p>
 
                         <a href="{{answer.Assignment_File.url }}" target="_blank"><b style="color:#017a9b">Click
-                                to view uploaded file</b></a>
+                                to view Submitted file</b></a>
                         {% endif %}
                         {% endif %}
                         {% endfor %}
-                        {% if not Answers %}
-                        <form method="post" id="{{ questions.id }}" data-parsley-validate=""
-                            class="form-horizontal form-label-left submitAnswer" novalidate=""
-                            data-id="{{ questions.id }}">
-                            {% csrf_token %}
-                            {% if questions.Answer_Type == 'S' %}
-                            <div class="form-group">
-                                <textarea class="form-control rounded-0" rows="5" cols="100" name="Assignment_Answer"
-                                    id="id_Assignment_Answer{{questions.id}}" placeholder="Enter your Answer"
-                                    required></textarea>
-                                <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
-                                    id="id_Student_Code{{questions.id}}">
-                                <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                    id="id_Question_Code{{questions.id}}">
-
-                            </div>
-                            <div class="form-group text-center">
-                                <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
-                                Cancel
-                            </button> -->
-                                <button class="btn btn-primary" type="reset">Reset</button>
-                                <button type="submit" class="btn btn-success submitAnswer"
-                                    id="answer{{questions.id}}">Submit</button>
-                            </div>
-                            {% elif questions.Answer_Type == 'F' %}
-
-                            <div class="form-group">
-                                <input type="file" name="Assignment_File" id="id_Assignment_File{{questions.id}}"
-                                    required />
-                                <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
-                                    id="id_Student_Code{{questions.id}}">
-                                <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                    id="id_Question_Code{{questions.id}}">
-                            </div>
-                            <div class="form-group text-center">
-                                <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
-                                    Cancel
-                                </button>
-                                <button type="submit" class="btn btn-success submitAnswer"
-                                    id="answer{{questions.id}}">Submit</button>
-                            </div>
-                            {% endif %}
-                        </form>
-                        {% else %}
+                        
                         {% for answer in notAnswered %}
                         {% if  questions.id == answer  %}
                         <form enctype="multipart/form-data" method="post" id="{{ questions.id }}"
@@ -393,8 +350,6 @@
                                 <textarea class="form-control rounded-0" rows="5" cols="100" name="Assignment_Answer"
                                     id="id_Assignment_Answer{{questions.id}}" placeholder="Enter your Answer"
                                     required></textarea>
-                                <input type="hidden" name="Assignment_File" id="id_Assignment_File{{questions.id}}"
-                                    required value="0" />
                                 <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
                                     id="id_Student_Code{{questions.id}}">
                                 <input type="hidden" value="{{ questions.id }}" name="Question_Code"
@@ -431,7 +386,6 @@
                         </form>
                         {% endif %}
                         {% endfor %}
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -653,40 +607,45 @@
 
     $(".submitAnswer").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        // console.log(this.id)
         var answerdata = new FormData();
         if ($(`#id_Assignment_File${this.id}`).val()) {
             var answer_file = $(`#id_Assignment_File${this.id}`)[0].files[0];
-            // console.log('asdas');
-        }
-        else {
+        }else {
             var answer_file = 0;
-            // console.log('asdasd');
         }
-        console.log($(`#id_Assignment_File${this.id}`).val())
-        answerdata.append("Assignment_File", answer_file);
-        answerdata.append("csrfmiddlewaretoken", '{{csrf_token}}');
-        answerdata.append("Assignment_Answer", $(`#id_Assignment_Answer${this.id}`).val());
-        answerdata.append("Question_Code", $(`#id_Question_Code${this.id}`).val());
-        answerdata.append("Student_Code", $(`#id_Student_Code${this.id}`).val());
 
-        // console.log("Assignment_Answer")
-        $.ajax({
-            url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
-            data: answerdata,
-            // get the form data
-            type: $(this).attr('method'), // GET or POST
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                console.log('Success')
-                location.reload()
-            },
-            error: function () {
-                console.log('Error in posting chapter create form')
-            }
-        });
+        if ($(`#id_Assignment_Answer${this.id}`).val()){
+            var answer_text = $(`#id_Assignment_Answer${this.id}`).val();
+        }else{
+            var answer_text = '';
+        }
+
+        if (answer_file == 0 && answer_text == ''){
+            console.log('empty');
+        }else{
+            answerdata.append("Assignment_File", answer_file);
+            answerdata.append("csrfmiddlewaretoken", '{{csrf_token}}');
+            answerdata.append("Assignment_Answer", answer_text);
+            answerdata.append("Question_Code", $(`#id_Question_Code${this.id}`).val());
+            answerdata.append("Student_Code", $(`#id_Student_Code${this.id}`).val());
+            
+            $.ajax({
+                url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
+                data: answerdata,
+                // get the form data
+                type: $(this).attr('method'), // GET or POST
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log('Success')
+                    location.reload()
+                },
+                error: function () {
+                    console.log('Error in posting chapter create form')
+                }
+            });
+        }
     });
 </script>
 

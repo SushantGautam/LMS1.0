@@ -395,6 +395,7 @@ $(document).ready(function() {
         constructor(top, left, link=null, height=null, width=null) {
         let id = (new Date).getTime();
         var pdfobj;
+        var message;
         let position = { top, left, height, width };
         if(link!=null){
             pdfobj = `
@@ -402,7 +403,9 @@ $(document).ready(function() {
                     alt : <a href="${link}"></a>
                 </object>
             `
+            message = ''
         }else{
+            message = "drag and drop files here...";
             pdfobj = "";
         }
         let html = `
@@ -415,7 +418,7 @@ $(document).ready(function() {
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                     <input type='file' accept="application/pdf"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
                     </form>
-                    <p id="pdfdiv-drag" placeholder="drag and drop files here..."></p>
+                    <p id="pdfdiv-drag" placeholder="drag and drop files here...">${message}</p>
                 </div>
                 ${pdfobj}
             </div>
@@ -1567,7 +1570,7 @@ $(document).ready(function() {
             PictureFunction(
                 top = 0+'%',
                 left = 0+'%',
-                "",
+                null,
                 width = "100%", height="50%");
             
             
@@ -1625,7 +1628,7 @@ $(document).ready(function() {
             PDFFunction(
                 top = "0%",
                 left = 0+'%',
-                link="",
+                link=null,
                 height = "60%", width="100%");
             
             

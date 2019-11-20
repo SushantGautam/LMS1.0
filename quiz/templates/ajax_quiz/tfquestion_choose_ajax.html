@@ -1,7 +1,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-  <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+ 
 {{ form.media }}
 
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
@@ -38,5 +38,6 @@
           $('#selected_tfq_num').text($('#id_tfquestion option:selected').length);
       });
       {#$('#id_tfquestion').css("height", "50vh");#}
+      $('.modal-dialog').css("width", "fit-content"); 
   </script>
 {% endblock customjss %}

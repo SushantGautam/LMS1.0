@@ -14,7 +14,7 @@ from .views import QuizListView, QuizCreateView, CategoriesListView, \
     QuizUserProgressView, \
     QuizTake, MCQuestionCreateView, TFQuestionCreateView, MCQuestionUpdateView, TFQuestionUpdateView, \
     QuizDetailView, QuizUpdateView, QuizDeleteView, QuizMarkingList, QuizMarkingDetail, SAQuestionCreateView, \
-    SAQuestionUpdateView, CreateQuizFromChapter, UpdateQuizBasicInfo
+    SAQuestionUpdateView, UpdateQuizBasicInfo, CreateQuizAjax
 
 router = routers.DefaultRouter()
 router.register(r'quiz', api.QuizViewSet)
@@ -53,8 +53,8 @@ urlpatterns = (
 urlpatterns += (
 
     path('', QuizListView.as_view(), name='quiz_list'),
-    path('create/', QuizCreateView.as_view(), name='quiz_create'),
-    path('create/<int:chapter_pk>/<slug:test_type>/', CreateQuizFromChapter.as_view(), name='quiz_create_from_chapter'),
+    # path('create/', QuizCreateView.as_view(), name='quiz_create'),
+    path('create/', CreateQuizAjax.as_view(), name='quiz_create_ajax'),
     path('update/<int:pk>/', QuizUpdateView.as_view(), name='quiz_update'),
     path('update_info/<int:pk>/', UpdateQuizBasicInfo.as_view(), name='quiz_update_info'),
     path('detail/<int:pk>/', QuizDetailView.as_view(), name='quiz_detail'),

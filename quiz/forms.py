@@ -54,7 +54,8 @@ class QuizForm(forms.ModelForm):
 
     class Meta:
         model = Quiz
-        fields = ['title', 'description', 'random_order', 'mcquestion', 'tfquestion', 'saquestion']
+        fields = ['title', 'description', 'duration', 'pass_mark', 'negative_marking',
+                  'negative_percentage', 'random_order', 'mcquestion', 'tfquestion', 'saquestion']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, }),
         }
@@ -68,6 +69,7 @@ class QuizForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         course_id = kwargs.pop('course_id')
+        print(course_id)
         #exam_paper = kwargs.pop('exam_paper')
         mcqueryset = MCQuestion.objects.filter(course_code=course_id)
         tfqueryset = TF_Question.objects.filter(course_code=course_id)

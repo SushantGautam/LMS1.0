@@ -22,7 +22,7 @@
 
         $.ajax({
             type: "GET",
-            data: {'categoryId': "{{ object.Category_Code.id }}"},
+            data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
             url: "{% url 'teacher_surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
             success: function (data) {
                 $("#surveyFormRetake").html(data);

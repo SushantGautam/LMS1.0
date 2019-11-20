@@ -1,11 +1,10 @@
 {% load static %}
-{% load staticfiles %}
 {% load crispy_forms_tags %}
 
 <div class="courseInfoListClass">
   <h2 class="tableHeader">List of Courses</h2>
 
-  <hr class="header_hr" />
+  <hr class="header_hr">
   {% if 'teachers' in request.path %}
   <div class="col-md-8 col-sm-6 col-xs-12">
     <form method="get" action="">
@@ -43,6 +42,7 @@
     </form>
   </div>
   {% endif %}
+
   {% if 'students' not in request.path %}
   <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
     <a class="btn btn-success" style="float: right;" href="
@@ -70,9 +70,9 @@
                             {% endif %}">
             <img id="courseListImage" class="card-img-top" src="
                             {% if object.Course_Cover_File %}
-                                /media/{{ object.Course_Cover_File }}
+                                {{ object.Course_Cover_File.url }}
                             {% else %}
-                                {% static '/images/course.jpg' %}
+                                {% static 'images/course.jpg' %}
                             {% endif %}" alt="Card image cap" width="100%" height="180px" style="object-fit: cover" />
           </a>
         </div>

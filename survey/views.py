@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from django.contrib import messages
 from django.db import transaction
@@ -9,13 +9,16 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 
+from WebApp.models import InningGroup
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
     QuestionInfoFormset, QuestionAnsInfoFormset, LiveSurveyInfoForm
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 
 from django.db.models import Q
+from django import forms
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 
 class AjaxableResponseMixin:
@@ -79,11 +82,12 @@ class SurveyList(ListView):
     #     print(surveys)
     #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
 
+
 class SurveyInfoListView(ListView):
     model = SurveyInfo
     template_name = 'survey/surveylist.html'
 
-    paginate_by = 8
+    paginate_by = 6
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -107,9 +111,6 @@ class SurveyInfoListView(ListView):
         # context['surveyForm'] = {'categoryName': list(categoryName)}
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
         # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
-
-
-
 
     # ......................................Survey Search ..............................................
 
@@ -182,7 +183,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         else:
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
-            context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+            context['category_name'] = self.request.GET['category_name']
         return context
 
     def form_valid(self, form):
@@ -192,6 +193,10 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
             self.object.save()
+            if self.request.GET['category_name'] == "live":
+                self.object.Survey_Live = True
+                self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
+                self.object.save()
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -211,10 +216,6 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return redirect('surveyinfo_detail', self.object.id)
 
 
-
-from django.forms.models import inlineformset_factory, BaseInlineFormSet
-
-
 def create_questioninfo_formset(obj_instance):
     class BaseQuestionInfoFormset(BaseInlineFormSet):
         def add_fields(self, form, index):
@@ -222,8 +223,9 @@ def create_questioninfo_formset(obj_instance):
 
             # print(form.fields['Question_Name'].initial)
             # print(index)
-
-            my_mcqs =obj_instance.questioninfo.all().filter(Question_Type='MCQ')
+            form.fields['Question_Type'].initial = "MCQ"
+            form.fields['Question_Type'].widget = forms.HiddenInput()
+            my_mcqs = obj_instance.questioninfo.all().filter(Question_Type='MCQ')
             if form.is_bound:
                 my_op_initial = None
             elif index is not None:
@@ -246,12 +248,12 @@ def create_questioninfo_formset(obj_instance):
 
             # print(my_data)
 
-                # save the formset in the 'nested' property
+            # save the formset in the 'nested' property
             form.nested = OptionInfoFormset(
                 instance=form.instance,
-                initial = my_op_initial,
-                data = form.data if form.is_bound else None,
-                files = form.files if form.is_bound else None,
+                initial=my_op_initial,
+                data=form.data if form.is_bound else None,
+                files=form.files if form.is_bound else None,
                 prefix='optioninfo-%s-%s' % (
                     form.prefix,
                     OptionInfoFormset.get_default_prefix()),
@@ -284,11 +286,12 @@ def create_questioninfo_formset(obj_instance):
 class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'ajax/surveyInfoRetake_ajax.html'
+    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
         kwargs = super(SurveyInfoRetake_ajax, self).get_form_kwargs()
         kwargs.update({'request': self.request})
+        kwargs.update({'object': SurveyInfo.objects.get(id=self.kwargs["pk"])})
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -335,7 +338,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
                 initial=my_saq_initial,
                 prefix='questionansinfo'
             )  # SAQ
-            context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
+            context['category_name'] = self.request.GET['category_name']
             context['parent_pk'] = obj_instance.pk
         return context
 
@@ -362,7 +365,10 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
             #     print('qna is invalid')
             #     print(qna.errors)
         obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
-        self.object.Retaken_From = obj_instance.id
+        if (obj_instance.Retaken_From):
+            self.object.Retaken_From = obj_instance.Retaken_From
+        else:
+            self.object.Retaken_From = self.kwargs["pk"]
         self.object.Version_No = obj_instance.Version_No + 1
         self.object.save()
         # check the request path and redirect as the value of path
@@ -381,173 +387,6 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
                              )
 
 
-class CopySurvey(View):
-    def get(self):
-        oso = SurveyInfo.objects.get(id=self.GET["pk"])
-        nso = SurveyInfo.objects.get(id=self.GET["pk"])
-        nso.id = None
-        nso.save()
-        for mcq in oso.questioninfo.all().filter(Question_Type='MCQ'):
-            omcq_id = mcq.id
-            mcq.id = None
-            mcq.Survey_Code = nso
-            mcq.save()
-            omcq = QuestionInfo.objects.get(id=omcq_id)
-            for ops in omcq.optioninfo.all():
-                ops.id = None
-                ops.Question_Code = mcq
-                ops.save()
-        for saq in oso.questioninfo.all().filter(Question_Type='SAQ'):
-            osaq_id = saq.id
-            saq.id = None
-            saq.Survey_Code = nso
-            saq.save()
-
-        return HttpResponseRedirect(
-            reverse(
-                'surveyinfo_retake_ajax',
-                kwargs={'pk': nso.pk},
-            )
-        )
-
-
-# class SurveyInfoRetake_ajax(UpdateView):
-#     model = SurveyInfo
-#     form_class = SurveyInfoForm
-#     template_name = 'ajax/surveyInfoRetake_ajax.html'
-#
-#     # new_object = None
-#
-#     # def get_object(self, queryset=None):
-#     #     print("oooooooooooooooooooooooooooooo before ooooooooooooooooooooooooooo")
-#     #     if self.new_object is None:
-#     #         oso = SurveyInfo.objects.get(id=self.kwargs["pk"])
-#     #         nso = SurveyInfo.objects.get(id=self.kwargs["pk"])
-#     #         nso.id = None
-#     #         nso.save()
-#     #         for mcq in oso.questioninfo.all().filter(Question_Type='MCQ'):
-#     #             omcq_id = mcq.id
-#     #             mcq.id = None
-#     #             mcq.Survey_Code = nso
-#     #             mcq.save()
-#     #             omcq = QuestionInfo.objects.get(id=omcq_id)
-#     #             for ops in omcq.optioninfo.all():
-#     #                 ops.id = None
-#     #                 ops.Question_Code = mcq
-#     #                 ops.save()
-#     #         for saq in oso.questioninfo.all().filter(Question_Type='SAQ'):
-#     #             osaq_id = saq.id
-#     #             saq.id = None
-#     #             saq.Survey_Code = nso
-#     #             saq.save()
-#     #         print("oooooooooooooooooooooooooooooo new object ooooooooooooooooooooooooooo")
-#     #         print(nso.id)
-#     #         self.new_object = nso
-#     #         return self.new_object
-#     #
-#     #     else:
-#     #         return self.new_object
-#
-#     def get(self, request, *args, **kwargs):
-#         oso = SurveyInfo.objects.get(id=self.kwargs["pk"])
-#         nso = SurveyInfo.objects.get(id=self.kwargs["pk"])
-#         nso.id = None
-#         nso.save()
-#         for mcq in oso.questioninfo.all().filter(Question_Type='MCQ'):
-#             omcq_id = mcq.id
-#             mcq.id = None
-#             mcq.Survey_Code = nso
-#             mcq.save()
-#             omcq = QuestionInfo.objects.get(id=omcq_id)
-#             for ops in omcq.optioninfo.all():
-#                 ops.id = None
-#                 ops.Question_Code = mcq
-#                 ops.save()
-#         for saq in oso.questioninfo.all().filter(Question_Type='SAQ'):
-#             osaq_id = saq.id
-#             saq.id = None
-#             saq.Survey_Code = nso
-#             saq.save()
-#         self.kwargs['pk'] = nso.pk
-#         return super().get(self, request, *args, **kwargs)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         print("oooooooooooooooooooooooooooooo self.object ooooooooooooooooooooooooooo")
-#         print(self.object.id)
-#         if self.request.POST:
-#             context['questioninfo_formset'] = QuestionInfoFormset(
-#                 self.request.POST,
-#                 instance=self.object,
-#                 queryset=self.object.questioninfo.all().filter(Question_Type='MCQ').order_by('pk'),
-#                 prefix='questioninfo'
-#             )  # MCQ
-#             context['questionansinfo_formset'] = QuestionAnsInfoFormset(
-#                 self.request.POST,
-#                 instance=self.object,
-#                 queryset=self.object.questioninfo.all().filter(Question_Type='SAQ').order_by('pk'),
-#                 prefix='questionansinfo'
-#             )  # SAQ
-#         else:
-#             context['questioninfo_formset'] = QuestionInfoFormset(
-#                 instance=self.object,
-#                 queryset=self.object.questioninfo.all().filter(Question_Type='MCQ').order_by('pk'),
-#                 prefix='questioninfo'
-#             )  # MCQ
-#             context['questionansinfo_formset'] = QuestionAnsInfoFormset(
-#                 instance=self.object,
-#                 queryset=self.object.questioninfo.all().filter(Question_Type='SAQ').order_by('pk'),
-#                 prefix='questionansinfo'
-#             )  # SAQ
-#             context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
-#         return context
-#
-#     def form_valid(self, form):
-#         # vform = super().form_valid(form)
-#
-#         # if form.is_valid():
-#         #     print("oooooooooooooooooooooooooooooo form_valid ooooooooooooooooooooooooooo")
-#         #     self.object = form.save(commit=False)
-#         #     print(self.object.id)
-#
-#         # self.object = form.save(commit=False)
-#         # self.object.id = None
-#         vform = super().form_valid(form)
-#
-#         context = self.get_context_data()
-#         qn = context['questioninfo_formset']
-#         qna = context['questionansinfo_formset']
-#         with transaction.atomic():
-#             if qn.is_valid():
-#                 qn.instance = self.object
-#                 qn.save()
-#             else:
-#                 print(qn.errors)
-#                 print('qn is invalid')
-#             if qna.is_valid():
-#                 qna.instance = self.object
-#                 qna.save()
-#             else:
-#                 print('qna is invalid')
-#                 print(qna.errors)
-#         obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
-#         self.object.Retaken_From = obj_instance.id
-#         self.object.Version_No = obj_instance.Version_No + 1
-#         self.object.save()
-#         return vform
-#         # return redirect('surveyinfo_list')
-
-
-# def get_initial(self):
-#     obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
-#     return model_to_dict(obj_instance,
-#                          fields=['Survey_Title', 'Start_Date',
-#                                  'End_Date', 'Center_Code',
-#                                  'Category_Code', 'Session_code',
-#                                  'Added_By']
-#                          )
-
-
 class SurveyInfoDetailView(DetailView):
     model = SurveyInfo
 
@@ -555,8 +394,17 @@ class SurveyInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
-        context['options'] = OptionInfo.objects.all()
-        context['submit'] = SubmitSurvey.objects.all()
+        context['options'] = OptionInfo.objects.filter(Question_Code__in=context['questions']).order_by('pk')
+        context['submit'] = SubmitSurvey.objects.filter(Survey_Code=self.kwargs.get('pk'))
+        if self.object.Retaken_From:
+            context['history'] = SurveyInfo.objects.filter(id=self.object.Retaken_From)
+            context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.Retaken_From).order_by(
+                'Version_No')
+
+        else:
+            context['history'] = SurveyInfo.objects.filter(id=self.object.id)
+            context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.id).order_by(
+                'Version_No')
         return context
 
 
@@ -576,66 +424,6 @@ class SurveyInfoUpdateView(UpdateView):
 #     category = SurveyInfo.objects.filter(Category_Name)
 #     return JsonResponse({'category': 'category'})
 
-
-class liveSurveyCreate(CreateView):
-    model = SurveyInfo
-
-    def get(self, request, *args, **kwargs):
-        if 'teachers' in request.path:
-            return render(request, 'teacher_module/survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm(request = self.request)})
-        else:
-            return render(request, 'survey/liveSurvey_createPage.html', {'form': LiveSurveyInfoForm(request = self.request)})
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST, prefix='questioninfo')  # MCQ
-            # context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,prefix='questionansinfo')  # SAQ
-        else:
-            context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
-            # context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
-            # context['categoryObject'] = CategoryInfo.objects.get(id=self.request.GET['categoryId'])
-        return context
-
-    def form_valid(self, form):
-        # vform = super().form_valid(form)
-        if form.is_valid():
-            self.object = form.save(commit=False)
-            self.object.Center_Code = self.request.user.Center_Code
-            self.object.Added_By = self.request.user
-            self.object.Start_Date = timezone.now()
-            self.object.End_Date = datetime.combine(date.today(),
-                                                    datetime.strptime(self.request.POST['End_Time'], '%H:%M').time())
-            self.object.Survey_Live = True
-            self.object.save()
-        # print(form.is_valid())
-        context = self.get_context_data()
-        qn = context['questioninfo_formset']
-        # qna = context['questionansinfo_formset']
-        with transaction.atomic():
-            if qn.is_valid():
-                qn.instance = self.object
-                qn.save()
-            # else:
-            #     print(qn.errors)
-            #     print('qn is invalid')
-
-        if 'teachers' in self.request.path:
-            return redirect('liveSurveyDetail', self.object.id)
-        else:
-            return redirect('liveSurveyDetail', self.object.id)
-
-class LiveSurveyDetail(DetailView):
-    model = SurveyInfo
-    template_name = 'survey/common/../WebApp/templates/survey/liveSurvey_detailPage.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['questions'] = QuestionInfo.objects.filter(
-            Survey_Code=self.kwargs.get('pk')).order_by('pk')
-        context['options'] = OptionInfo.objects.all()
-        context['submit'] = SubmitSurvey.objects.all()
-        return context
 
 class QuestionInfoListView(ListView):
     model = QuestionInfo
@@ -713,22 +501,21 @@ class surveyFilterCategory(ListView):
     model = SurveyInfo
     template_name = 'survey/common/surveyinfo_expireView.html'
 
-    # paginate_by = 8
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.GET = None
+    paginate_by = 6
 
     def get_queryset(self):
-        if self.request.GET['categoryId'] == '0':
+        category_name = self.request.GET['category_name'].lower()
+        print("category id:", category_name)
+        if category_name.lower() == "all_survey":
             return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
         else:
-            return SurveyInfo.objects.filter(Category_Code=self.request.GET['categoryId']).filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
+            return SurveyInfo.objects.filter(Category_Code__Category_Name__iexact=category_name).filter(
+                Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
-
+        context['category_name'] = self.request.GET['category_name'].lower()
         return context
 
     # ....................................Pagination.............................................................

@@ -6,7 +6,7 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="profile_pic">
-            <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" />
+            <img src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}" alt="..." class="img-circle profile_img" />
         </div>
 
         <a href="{% url 'student_info' request.user.pk %}">
@@ -15,10 +15,10 @@
         <ul class="list-unstyled user_data">
             <li><a class="btn-white btn-flat" href="{% url 'student_threads' request.user.pk %}"><i
                         class="fa fa-question-circle fa-lg"></i> Questions
-                    Asked: {{ request.user.threads.count }}</a>
+                    Asked: {{ request.user.threads.visible.count }}</a>
             </li>
             <li><a class="btn-white btn-flat reply_count" href="{% url 'student_posts' request.user.pk %}">
-                    <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.count }}</a>
+                    <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.visible.count }}</a>
             </li>
 
             <li>
