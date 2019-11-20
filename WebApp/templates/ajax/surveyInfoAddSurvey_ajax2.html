@@ -27,12 +27,21 @@
     </div>
   </div>
 </div>
+{{ object }}
 <form id="categoryForm"
       action="{% if "teachers" in request.path %}
-        {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
-      {% else %}
-        {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
-      {% endif %}"
+                {% if "retake" in request.path %}
+                  {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
+                {% else %}
+                  {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
+                {% endif %}
+              {% else %}
+                {% if "retake" in request.path %}
+                  {% url 'surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
+                {% else %}
+                  {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
+                {% endif %}
+              {% endif %}"
       method="post">
   {% csrf_token %}
   <div role="form">
@@ -107,6 +116,7 @@
                 </div>
                 <input class="add-mcq" type="button" value="Add Question" id="add_more_sa_qn">
               </div>
+              <div class="text-danger question_error"></div>
             </div>
           </div>
           <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
@@ -122,6 +132,7 @@
             on
             submit
             button to finish.</h3>
+          <div class="text-danger question_error"></div>
           <button class="btn btn-primary" type="submit">Submit</button>
         </div>
       </div>
@@ -276,6 +287,32 @@
           $(".bdp-block:visible").addClass("col-md-4")
       }
 
+      $("div[id$='Question_Type']").hide();
+
+      $("#categoryForm").submit(function (e) {
+          var non_empty_count = 0;
+          var non_empty_op_count = 0;
+          for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {
+              if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {
+                  non_empty_count++;
+                  for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {
+                      if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {
+                          non_empty_op_count++;
+                      }
+                  }
+                  if (non_empty_op_count < 2) {
+                      $(".question_error").html("Enter at least two option for each questions");
+                      console.log("question op error: " + cnt);
+                      return false;
+                  }
+                  non_empty_op_count = 0;
+              }
+          }
+          if (non_empty_count < 1) {
+              $(".question_error").html("Please enter at least one question");
+              return false;
+          }
+      });
 
   </script>
 {% endblock customjss %}

@@ -20,6 +20,7 @@ from django.db.models import Q
 from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
+
 class AjaxableResponseMixin:
     """
     Mixin to add AJAX support to a form.
@@ -215,9 +216,6 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         return redirect('surveyinfo_detail', self.object.id)
 
 
-
-
-
 def create_questioninfo_formset(obj_instance):
     class BaseQuestionInfoFormset(BaseInlineFormSet):
         def add_fields(self, form, index):
@@ -367,7 +365,10 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
             #     print('qna is invalid')
             #     print(qna.errors)
         obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
-        self.object.Retaken_From = obj_instance.id
+        if (obj_instance.Retaken_From):
+            self.object.Retaken_From = obj_instance.Retaken_From
+        else:
+            self.object.Retaken_From = self.kwargs["pk"]
         self.object.Version_No = obj_instance.Version_No + 1
         self.object.save()
         # check the request path and redirect as the value of path
@@ -385,6 +386,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
                                      'Added_By']
                              )
 
+
 class SurveyInfoDetailView(DetailView):
     model = SurveyInfo
 
@@ -394,6 +396,15 @@ class SurveyInfoDetailView(DetailView):
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
         context['options'] = OptionInfo.objects.filter(Question_Code__in=context['questions']).order_by('pk')
         context['submit'] = SubmitSurvey.objects.filter(Survey_Code=self.kwargs.get('pk'))
+        if self.object.Retaken_From:
+            context['history'] = SurveyInfo.objects.filter(id=self.object.Retaken_From)
+            context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.Retaken_From).order_by(
+                'Version_No')
+
+        else:
+            context['history'] = SurveyInfo.objects.filter(id=self.object.id)
+            context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.id).order_by(
+                'Version_No')
         return context
 
 
