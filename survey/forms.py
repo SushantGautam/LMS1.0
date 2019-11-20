@@ -58,12 +58,14 @@ class SurveyInfoForm(forms.ModelForm):
             self.fields['End_Time'].widget = forms.HiddenInput()
         elif category_name == "session":
             self.fields['Course_Code'].widget = forms.HiddenInput()
+            self.fields['Session_Code'].required = True
             self.fields['Category_Code'].initial = CategoryInfo.objects.get(
                 Category_Name__iexact=category_name
             ).id
             self.fields['End_Time'].widget = forms.HiddenInput()
         elif category_name == "course":
             self.fields['Session_Code'].widget = forms.HiddenInput()
+            self.fields['Course_Code'].required = True
             self.fields['Category_Code'].initial = CategoryInfo.objects.get(
                 Category_Name__iexact=category_name
             ).id
