@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.conf.urls import handler400, handler404, handler403, handler500
 from django.contrib import admin
 from django.urls import path
 from django.conf import settings
@@ -73,3 +74,15 @@ urlpatterns += [
     path('3DViewer/',
          views.ThreeDViewer, name='3DViewer'),
 ]
+
+urlpatterns += [
+     path('test404/', views.error_404, name="error_404"),
+     path('test500/', views.error_500, name="error_500"),
+     path('test403/', views.error_403, name="error_403"),
+     path('test400/', views.error_400, name="error_400"),
+]
+
+handler400 = 'WebApp.views.error_400'
+handler403 = 'WebApp.views.error_403'
+handler404 = 'WebApp.views.error_404'
+handler500 = 'WebApp.views.error_500'

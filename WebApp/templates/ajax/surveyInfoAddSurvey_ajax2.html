@@ -6,7 +6,7 @@
 <div class="form-group">
 
   <label class="control-label " id="categoryTitle" for="first-name">Category :
-    <span class="Label">{{ categoryObject.Category_Name }}</span>
+    <span class="Label">{{ category_name }}</span>
   </label>
 
 </div>
@@ -27,12 +27,21 @@
     </div>
   </div>
 </div>
+{{ object }}
 <form id="categoryForm"
       action="{% if "teachers" in request.path %}
-        {% url 'TeacherSurveyInfo_ajax' %}
-      {% else %}
-        {% url 'surveyinfo_ajax' %}
-      {% endif %}"
+                {% if "retake" in request.path %}
+                  {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
+                {% else %}
+                  {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
+                {% endif %}
+              {% else %}
+                {% if "retake" in request.path %}
+                  {% url 'surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
+                {% else %}
+                  {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
+                {% endif %}
+              {% endif %}"
       method="post">
   {% csrf_token %}
   <div role="form">
@@ -76,9 +85,10 @@
 
                         <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic' style="margin-left:40px;">
                           {% for option_form in questioninfo_form.nested.forms %}
-
-                            {{ option_form|crispy }}
-
+                            <div style="display:flex;">
+                              <p>{{ forloop.counter }} &nbsp;</p>
+                              {{ option_form|crispy }}
+                            </div>
                           {% endfor %}
                         </div>
 
@@ -106,6 +116,7 @@
                 </div>
                 <input class="add-mcq" type="button" value="Add Question" id="add_more_sa_qn">
               </div>
+              <div class="text-danger question_error"></div>
             </div>
           </div>
           <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
@@ -121,6 +132,7 @@
             on
             submit
             button to finish.</h3>
+          <div class="text-danger question_error"></div>
           <button class="btn btn-primary" type="submit">Submit</button>
         </div>
       </div>
@@ -136,7 +148,7 @@
     {{ questioninfo_formset.empty_form|crispy }}
     {{ questioninfo_formset.empty_form.nested.management_form }}
     {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-                    {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}
+    {#    {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
 
     <div id="optionContainer_id" style="margin-left: 40px;">
 
@@ -151,7 +163,7 @@
 </div>
 
 <script src=" {% static 'build/js/survey.js' %}"></script>
-
+<script src=" {% static '/duration_picker/bootstrap-duration-picker.js' %}"></script>
 {% block customjss %}
   <script>
       function cloneMore(selector, append_after, type) {
@@ -218,9 +230,10 @@
               '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
           );
           {#var option_counter = parseInt(optionId)+ 1;#}
-          var counter_el = `<p>${optionId}</p>`;
+          var counter_el = `<p>${parseInt(optionId) + 1}</p>`;
           {#$(newel_id).find('label').before(counter_el);#}
           $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex;'></div>`);
+          console.log(optionId);
           $('#new_op_div' + questionId + optionId).prepend(counter_el);
           optionId++;
           $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
@@ -263,75 +276,43 @@
       $('#first_sa_que_div').prepend(`<p>1</p>`);
       $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
-      // ......................................HIDING THE FORM................................................
+      if ("{{ category_name }}" === "live") {
+          $('#id_End_Time').durationPicker({
+              showSeconds: true,
+              showDays: false,
+              onChanged: function (newVal) {
+              }
+          });
 
-      var categoryName = "{{ categoryObject.Category_Name }}".toLowerCase();
-      if (categoryName == 'general') {
-          console.log(categoryName);
-          $("#div_id_Survey_Cover").hide();
-          $("#div_id_Use_Flag").hide();
-          {#$("#div_id_Center_Code").hide();#}
-          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
-          $("#div_id_Session_Code").hide();
-          $("#div_id_Added_By").hide();
-          $("#id_Added_By").val("{{request.user.id}}");
-          $("#div_id_Category_Code").hide();
-          $("#id_Category_Code").val("{{categoryObject.id}}");
-          $("#div_id_Course_Code").hide();
-      } else if (categoryName == 'session') {
-          console.log(categoryName);
-          $("#div_id_Survey_Cover").hide();
-          $("#div_id_Use_Flag").hide();
-          {#$("#div_id_Center_Code").hide();#}
-          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id }}");#}
-          $("#div_id_Session_Code").show();
-          $("#div_id_Added_By").hide();
-          $("#id_Added_By").val("{{request.user.id}}");
-          $("#div_id_Category_Code").hide();
-          $("#id_Category_Code").val("{{categoryObject.id}}");
-          $("#div_id_Course_Code").hide();
-      } else if (categoryName == 'course') {
-          console.log(categoryName);
-          $("#div_id_Survey_Cover").hide();
-          $("#div_id_Use_Flag").hide();
-          {#$("#div_id_Center_Code").hide();#}
-          {#$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");#}
-          $("#div_id_Session_Code").show();
-          $("#div_id_Added_By").hide();
-          $("#id_Added_By").val("{{request.user.id}}");
-          $("#div_id_Category_Code").hide();
-          $("#id_Category_Code").val("{{categoryObject.id}}");
-          $("#div_id_Course_Code").show();
-      } else if (categoryName == 'system') {
-          console.log(categoryName);
-          $("#div_id_Survey_Cover").hide();
-          $("#div_id_Use_Flag").hide();
-          {#$("#div_id_Center_Code").hide();#}
-          {#<!--$("#id_Center_Code").val("{{  request.user.Center_Code.id}}");-->#}
-          $("#div_id_Session_Code").hide();
-          $("#div_id_Added_By").hide();
-          $("#id_Added_By").val("{{request.user.id}}");
-          $("#div_id_Category_Code").hide();
-          $("#id_Category_Code").val("{{categoryObject.id}}");
-          $("#div_id_Course_Code").hide();
+          $(".bdp-block:visible").addClass("col-md-4")
       }
 
-      {#$("#div_id_questioninfo-0-Question_Type").hide();#}
-      {#$("#id_questioninfo-0-Question_Type").val("MCQ");#}
+      $("div[id$='Question_Type']").hide();
 
-      {#$("#div_id_questionansinfo-0-Question_Type").hide();#}
-      {#$("#id_questionansinfo-0-Question_Type").val("SAQ");#}
-
-      {#$("#div_id_questioninfo-__prefix__-Question_Type").hide();#}
-      {#$("#id_questioninfo-__prefix__-Question_Type option[value=SAQ]").removeAttr("selected");#}
-      {#$("#id_questioninfo-__prefix__-Question_Type option[value=MCQ]").attr("selected", "selected");#}
-
-      {#$("#div_id_questionansinfo-__prefix__-Question_Type").hide();#}
-      {#$("#id_questionansinfo-__prefix__-Question_Type option[value=MCQ]").removeAttr("selected");#}
-      {#$("#id_questionansinfo-__prefix__-Question_Type option[value=SAQ]").attr("selected", "selected");#}
-
-
-      // ......................................HIDING THE FORM................................................
+      $("#categoryForm").submit(function (e) {
+          var non_empty_count = 0;
+          var non_empty_op_count = 0;
+          for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {
+              if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {
+                  non_empty_count++;
+                  for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {
+                      if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {
+                          non_empty_op_count++;
+                      }
+                  }
+                  if (non_empty_op_count < 2) {
+                      $(".question_error").html("Enter at least two option for each questions");
+                      console.log("question op error: " + cnt);
+                      return false;
+                  }
+                  non_empty_op_count = 0;
+              }
+          }
+          if (non_empty_count < 1) {
+              $(".question_error").html("Please enter at least one question");
+              return false;
+          }
+      });
 
   </script>
 {% endblock customjss %}
