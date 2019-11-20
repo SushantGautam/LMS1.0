@@ -179,7 +179,7 @@
     <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
     </div>
 
-    <div>
+    <div id="closechatopen">
         <a class="float">
             <i class="fa fa-file-text my-float"></i>
         </a>
@@ -191,7 +191,7 @@
     </div>
 
 
-    <div class="chatonly">
+    <div class="chatonly" style="display: none">
         <div class="container bootstrap snippet">
             <div class="row">
 
@@ -249,10 +249,11 @@
                     </div>
                     <div class="chat-box bg-white">
                         <div class="input-group">
-                            <input id="chatmessageinput"  class="form-control border no-shadow no-rounded"
-                                   placeholder="Type your message here">
+                            <input id="chatmessageinput" class="form-control border no-shadow no-rounded"
+                                   placeholder="Type your message here" required>
                             <span class="input-group-btn">
-            			<button class="btn btn-success no-rounded" type="button">Send</button>
+            			<button class="btn btn-success no-rounded" type="button"
+                                onclick="sendMessageWritten()">Send</button>
             		</span>
                         </div><!-- /input-group -->
                     </div>
@@ -267,7 +268,7 @@
                             <span>Sound <input id="forceScreen" type="checkbox"></span>
                         </div>
                         <div class="col-sm-4 text-danger danger">
-                            <span>Close <i class="fa fa-close"></i></span>
+                            <span id="closechatbox">Close <i class="fa fa-close"></i></span>
                         </div>
 
                     </div>
@@ -396,6 +397,18 @@
 
         }
     });
+
+
+    $('#closechatbox').off().click(function () {
+        $('.chatonly').hide();
+        $('#closechatopen').show();
+    });
+
+        $('#closechatopen').off().click(function () {
+        $('.chatonly').show();
+        $('#closechatopen').hide();
+    });
+
 
     $('#next-btn').off().click(function () {
         pauseAllVideos();
@@ -713,9 +726,9 @@
         getProgressWidth();
     });
 
-    $('#chatmessageinput').keypress(function (event) {
-        if (event.keyCode == 13 && $('#chatmessageinput').val() && !event.shiftKey) {
 
+    function sendMessageWritten() {
+        if ($('#chatmessageinput').val()) {
             chatSocket.send(
                 JSON.stringify({
                     chat_message: $('#chatmessageinput').val(),
@@ -724,6 +737,12 @@
                     sender_icon: "{{  user.Member_Avatar }}",
                 })
             );
+        }
+    };
+
+    $('#chatmessageinput').keypress(function (event) {
+        if (event.keyCode == 13 && !event.shiftKey) {
+            sendMessageWritten();
         }
     });
 
