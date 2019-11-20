@@ -523,11 +523,14 @@ class Index(ListView):
 
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
     topic = None
+    topics =  Topic.objects.all()
     node_group = NodeGroup.objects.all()
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
         topic = Topic.objects.get(pk=topic_pk)
-    topics = Topic.objects.filter(node_group=nodegroup_pk).filter(id__in=Topic_related_to_user(request))
+    if nodegroup_pk:
+        topics = topics.filter(node_group=nodegroup_pk)
+    topics = Topic.objects.filter(id__in=Topic_related_to_user(request))
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
         if form.is_valid():
@@ -539,6 +542,26 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     return render(request, 'student_module/student_forum/create_thread.html',
                   {'form': form, 'node_group': node_group, 'title': _('Create Thread'), 'topic': topic,
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
+
+                   
+import operator
+from django.db.models import Q
+from functools import reduce
+from operator import or_
+def ThreadSearchAjax(request, topic_id, threadkeywordList):
+
+    threadkeywordList = threadkeywordList.split("_")
+    RelevantThread=[]
+    if topic_id:
+        RelevantThread = Thread.objects.filter(topic=topic_id)
+        pass
+    else:
+        RelevantTopics = Topic_related_to_user(request).values_list('pk')
+        RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
+        pass
+    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList )))[:5]
+    return render(request, 'student_module/student_forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
+
 
 
 def create_topic(request, student_nodegroup_pk=None):
