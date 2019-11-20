@@ -275,7 +275,6 @@
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 
 <script type="text/javascript">
-<<<<<<< HEAD
     var roomName = "ChapterChat{{chapter.id}}";
     var chatSocket = new WebSocket("ws://"+location.host+"/ws/" + roomName + '/');
     chatSocket.onclose = function (e) {
@@ -294,12 +293,6 @@
     document.addEventListener('visibilitychange', function () {
         pauseAllVideos(); // change tab text for demo
     })
-=======
-    document.addEventListener('visibilitychange', function(){
-        pauseAllVideos(); // change tab text for demo
-    });
-
->>>>>>> master
     $(document).keydown(function (e) {
         if ($('#lightbox').css('display') == 'none') {
             if (e.keyCode == '39') {
@@ -321,7 +314,6 @@
                 return false;
             }
 
-<<<<<<< HEAD
             if (e.keyCode == '70') {
                 var hasFocus = $('#chatmessageinput').is(':focus');
                 if(hasFocus){
@@ -338,17 +330,6 @@
     $('#next-btn').off().click(function () {  
         pauseAllVideos();
         $("#page-contents > .coursepages ").each(function () {
-=======
-        if (e.keyCode == '70') {
-            toggleFullScreen();
-            return false;
-        }
-    });
-
-    $('#next-btn').off().click(function () {
-        pauseAllVideos();
-        $("#container > .coursepages ").each(function () {
->>>>>>> master
             if ($(this).css("display") == "block") {
                 res = this.id.match(/[0-9]+/);
             }
@@ -364,11 +345,7 @@
 
     $('#prev-btn').off().click(function () {
         pauseAllVideos();
-<<<<<<< HEAD
         $("#page-contents > div ").each(function () {
-=======
-        $("#container > div ").each(function () {
->>>>>>> master
             if ($(this).css("display") == "block") {
                 res = this.id.match(/[0-9]+/);
             }
@@ -386,54 +363,21 @@
     var data = {{ data | safe}};
     // console.log(data)
 
-<<<<<<< HEAD
     container_height = $('body').height() - $('.content-title1').height() - $('.content-footer1').height()
     $('#container').css('height', container_height * 100 / $('body').height() + "%")
 
     function pauseAllVideos() {
         $('iframe').each(function () {
-=======
-    container_height = $('body').height()-$('.content-title1').height()-$('.content-footer1').height()
-    // console.log($('body').height(), $('.content-title1').height(), $('.content-footer1').height())
-    $('#container').css('height', container_height*100/$('body').height()+"%")
-    // $('#container').css('background-color',"red")
-    // container_width = $('body').width()-$('#prev-btn').width()-$('#next-btn').width()
-    // console.log($('#prev-btn').width(), $('body').width())
-    // $('#container').width(container_width)
-    // console.log($('#container').height(), $('#container').width())
-    // console.log(data.canvasheight, data.canvaswidth)
-
-    // function scaleScreen(container_height, container_width, canvasheight, canvaswidth){
-    //     scaleY = container_height/parseFloat(canvasheight);
-    //     scaleX = container_width/parseFloat(canvaswidth);
-    //     return {'scaleY':scaleY, 'scaleX':scaleX}
-    // }
-    
-    // scaleData = scaleScreen($('#container').height(),  $('#container').width(), data.canvasheight, data.canvaswidth)
-
-    function pauseAllVideos() 
-    { 
-        $('iframe').each(function(){
->>>>>>> master
             $(this).attr('src', $(this).attr('src'));
             // console.log($(this)[0])
             // $(this)[0].contentWindow.postMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
         });
-<<<<<<< HEAD
         $('video').each(function () {
-=======
-        $('video').each(function () 
-        {
->>>>>>> master
             this.pause();
         });
     }
 
-<<<<<<< HEAD
     function loaddata(data) {
-=======
-    function loaddata(data){
->>>>>>> master
         $('#totalpages').text(data.numberofpages);
         $('#currentpage').text(1);
         $.each(data.pages, function (key, value) {
