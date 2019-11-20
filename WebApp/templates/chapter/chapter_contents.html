@@ -323,7 +323,7 @@
         }
     });
 
-    $('#next-btn').off().click(function () {  
+    $('#next-btn').off().click(function () {
         pauseAllVideos();
         $("#page-contents > .coursepages ").each(function () {
             if ($(this).css("display") == "block") {
@@ -671,13 +671,15 @@
     });
 
 
+
+
     chatSocket.onmessage = function (e) {
         var data = JSON.parse(e.data);
         if ("page" in data) {
 
 
             {% if  "students" in request.path %}
-                HandlePageInStudents();
+                HandlePageInStudents(data);
             {% endif %}
 
 
