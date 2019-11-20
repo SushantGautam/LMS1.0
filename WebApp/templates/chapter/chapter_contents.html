@@ -12,6 +12,12 @@
     <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
     <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 
     <style>
         .button-position {
@@ -115,13 +121,13 @@
             display: block;
         }
 
-        .page-slide{
+        .page-slide {
             position: absolute;
-            
+
         }
 
-        .progress{
-            margin-top:5px;
+        .progress {
+            margin-top: 5px;
             height: 5px;
         }
 
@@ -130,148 +136,323 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <!-- For Title -->
+<div class="container-fluid">
+    <!-- For Title -->
 
 
-        <div class="row overall-contents">
-            <div id="prev-btn" class="button-position" style="left:0;">
-                <i class="fa fa-backward"></i>
-            </div>
-            <div id="next-btn" class="button-position" style="right:0;">
-                <i class="fa fa-forward"></i>
-            </div>
-            
-            <div id="container" style="position: relative;">
+    <div class="row overall-contents">
+        <div id="prev-btn" class="button-position" style="left:0;">
+            <i class="fa fa-backward"></i>
+        </div>
+        <div id="next-btn" class="button-position" style="right:0;">
+            <i class="fa fa-forward"></i>
+        </div>
 
-                <div class="content-title1  text-center">
+        <div id="container" style="position: relative;">
+
+            <div class="content-title1  text-center">
                     <span id="chaptertitle" class="content-title">
                         <!-- Chapter title goes here -->
                         {{ chapter }}
                     </span>
-                </div>
-
-                <div id="page-contents"></div>
-                
-            </div>
-            <div class="progress">
-                <div class="progress-bar progress-bar-striped bg-success" style="width: 0%;" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
 
-            <div class="content-footer1 text-center">
-                Page <span id="currentpage"></span> of <span id="totalpages"></span>
-            </div>
+            <div id="page-contents"></div>
 
         </div>
-        {% if "teachers" in request.path %}
-            {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
-        {% elif "students" in request.path %}
-            {% include "chapter/Content_Viewer_WebSocket_students.html" %}
-        {% endif %}
-
-        <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped bg-success" style="width: 0%;" role="progressbar"
+                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
-
-        <!-- For Footer -->
-        
-        <div class="row page-slide">
-            
+        <div class="content-footer1 text-center">
+            Page <span id="currentpage"></span> of <span id="totalpages"></span>
         </div>
-
-        <style>
-            .chat-box {
-                font: normal normal 11px/1.4 Tahoma, Verdana, Sans-Serif;
-                color: #333;
-                width: 200px; /* Chatbox width */
-                border: 1px solid #344150;
-                border-bottom: none;
-                background-color: white;
-                position: fixed;
-                right: 10px;
-                bottom: 0;
-                z-index: 9999;
-                -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
-                -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
-                box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
-            }
-
-            .chat-box > input[type="checkbox"] {
-                display: block;
-                margin: 0 0;
-                padding: 0 0;
-                position: absolute;
-                top: 0;
-                right: 0;
-                left: 0;
-                width: 100%;
-                height: 26px;
-                z-index: 4;
-                cursor: pointer;
-                opacity: 0;
-                filter: alpha(opacity=0);
-            }
-
-            .chat-box > label {
-                display: block;
-                height: 24px;
-                line-height: 24px;
-                background-color: #344150;
-                color: white;
-                font-weight: bold;
-                padding: 0 1em 1px;
-            }
-
-            .chat-box > label:before {
-                content: attr(data-collapsed)
-            }
-
-            .chat-box .chat-box-content {
-                padding: 10px;
-                display: none;
-            }
-
-            /* hover state */
-            .chat-box > input[type="checkbox"]:hover + label {
-                background-color: #404D5A
-            }
-
-            /* checked state */
-            .chat-box > input[type="checkbox"]:checked + label {
-                background-color: #212A35
-            }
-
-            .chat-box > input[type="checkbox"]:checked + label:before {
-                content: attr(data-expanded)
-            }
-
-            .chat-box > input[type="checkbox"]:checked ~ .chat-box-content {
-                display: block;
-                overflow-y: scroll;
-                max-height: 50vh;
-
-            }
-        </style>
-
-        <div class="chat-box">
-            <input type="checkbox"/>
-            <label data-expanded="Close Chatbox" data-collapsed="Open Chatbox"></label>
-            <div id="chat-box-content" class="chat-box-content">
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-9">
-                        <input id="chatmessageinput" type="text" width=""/>
-                    </div>
-                    <div class="col-md-3">
-                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
     </div>
+    {% if "teachers" in request.path %}
+        {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
+    {% elif "students" in request.path %}
+        {% include "chapter/Content_Viewer_WebSocket_students.html" %}
+    {% endif %}
+
+    <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
+    </div>
+
+
+    <!-- For Footer -->
+
+    <div class="row page-slide">
+
+    </div>
+
+
+    <div class="chatonly">
+        <div class="container bootstrap snippet">
+            <div class="row">
+
+
+                <div class="col-md-8 bg-white ">
+                    <div class="row upbarchat">
+
+                        <div class="col-sm-4">
+                        <span> Quick Quiz  <i class="fa fa-pencil"></i></span>
+                        </div>
+                        <div class="col-sm-4">
+                        <span> Quick Survey  <i class="fa fa-pencil"></i></span>
+                        </div>
+                        <div class="col-sm-4">
+                        <span> Force Screen Sync <input id="forceScreen" type="checkbox"></span>
+                        </div>
+
+
+                    </div>
+                    <div class="chat-message">
+                        <ul class="chat">
+                            <li class="left clearfix">
+                    	<span class="chat-img pull-left">
+                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">John Doe</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="right clearfix">
+                    	<span class="chat-img pull-right">
+                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">Sarah</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum
+                                        ornare dolor, quis ullamcorper ligula sodales at.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="left clearfix">
+                        <span class="chat-img pull-left">
+                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">John Doe</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="right clearfix">
+                        <span class="chat-img pull-right">
+                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">Sarah</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum
+                                        ornare dolor, quis ullamcorper ligula sodales at.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="left clearfix">
+                        <span class="chat-img pull-left">
+                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">John Doe</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="right clearfix">
+                        <span class="chat-img pull-right">
+                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">Sarah</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum
+                                        ornare dolor, quis ullamcorper ligula sodales at.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="right clearfix">
+                        <span class="chat-img pull-right">
+                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">Sarah</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum
+                                        ornare dolor, quis ullamcorper ligula sodales at.
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="chat-box bg-white">
+                        <div class="input-group">
+                            <input class="form-control border no-shadow no-rounded"
+                                   placeholder="Type your message here">
+                            <span class="input-group-btn">
+            			<button class="btn btn-success no-rounded" type="button">Send</button>
+            		</span>
+                        </div><!-- /input-group -->
+                    </div>
+                </div>
+                <div class="col-md-4 bg-white ">
+                    <div class="row upbarchat">
+
+                        <div class="col-sm-4">
+                            <span> Notification <input id="forceScreen" type="checkbox"></span>
+                        </div>
+                        <div class="col-sm-4">
+                            <span>Sound <input id="forceScreen" type="checkbox"></span>
+                        </div>
+                        <div class="col-sm-4 text-danger danger">
+                            <span>Close <i class="fa fa-close"></i></span>
+                        </div>
+
+                    </div>
+
+                    <!-- =============================================================== -->
+                    <!-- member list -->
+                    <div style="
+    height: 55vh;
+">
+                        <ul class="friend-list">
+                            <li class="active bounceInDown">
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>John Doe</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Hello, Are you there?</div>
+                                    <small class="time text-muted">Just now</small>
+                                    <small class="chat-alert label label-danger">1</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Jane Doe</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">5 mins ago</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Kate</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">Yesterday</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Kate</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">Yesterday</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Kate</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">Yesterday</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_6.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Kate</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">Yesterday</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_5.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Kate</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">Yesterday</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Jane Doe</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">5 mins ago</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!--=========================================================-->
+                <!-- selected chat -->
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
 </body>
 </html>
 
@@ -281,11 +462,11 @@
 
 <script type="text/javascript">
     var roomName = "ChapterChat{{chapter.id}}";
-    var chatSocket = new WebSocket("ws://"+location.host+"/ws/" + roomName + '/');
+    var chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
     chatSocket.onclose = function (e) {
         console.error("Chat socket closed unexpectedly");
         setTimeout(function () {
-            chatSocket = new WebSocket("ws://"+location.host+"/ws/"  + roomName + '/');
+            chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
         }, 5000);
     };
 
@@ -321,7 +502,7 @@
 
             if (e.keyCode == '70') {
                 var hasFocus = $('#chatmessageinput').is(':focus');
-                if(hasFocus){
+                if (hasFocus) {
                     return false
                 }
 
@@ -332,7 +513,7 @@
         }
     });
 
-    $('#next-btn').off().click(function () {  
+    $('#next-btn').off().click(function () {
         pauseAllVideos();
         $("#page-contents > .coursepages ").each(function () {
             if ($(this).css("display") == "block") {
@@ -356,8 +537,8 @@
             }
         });
         if ((res - 1) > 0) {
-            let w = (parseFloat($('.progress-bar')[0].style.width))-(100/parseFloat('{{data.numberofpages}}'));
-            $('.progress-bar').css('width', w+'%')
+            let w = (parseFloat($('.progress-bar')[0].style.width)) - (100 / parseFloat('{{data.numberofpages}}'));
+            $('.progress-bar').css('width', w + '%')
             $('#page' + res).css("display", "none");
             res--;
             $('#page' + res).css("display", "block")
@@ -638,7 +819,7 @@
                 $('#page-contents').empty();
                 loaddata(data)
             }
-            
+
             $('#page1').css('display', 'block');
         }
 
@@ -667,8 +848,13 @@
         var data = JSON.parse(e.data);
         if ("page" in data) {
 
-            if (data.page === "next") $('#next-btn').click();
-            else if (data.page === "previous") $('#prev-btn').click();
+
+            {% if "students" in request.path %}
+                HandlePageInStudents(data);
+            {% endif %}
+
+
+
         } else if ("chat_message" in data) {
             $("#chatmessageinput").val("");
             $("#chat-box-content").append("<h4>" + data.sender_name + data.sender_id + ": " + data.chat_message + "</h4>");
@@ -681,40 +867,37 @@
         }
     };
 
-    function getProgressWidth(){
-        let w = (parseFloat($('.progress-bar')[0].style.width))+(100/parseFloat('{{data.numberofpages}}'));
-        $('.progress-bar').css('width', w+'%')
+    function getProgressWidth() {
+        let w = (parseFloat($('.progress-bar')[0].style.width)) + (100 / parseFloat('{{data.numberofpages}}'));
+        $('.progress-bar').css('width', w + '%')
     }
-   
-    $(document).ready(function(){
-        $('.iframefullscreenbtn').on('click', function(){
+
+    $(document).ready(function () {
+        $('.iframefullscreenbtn').on('click', function () {
             // check if fullscreen mode is available
-            if (document.fullscreenEnabled || 
-                document.webkitFullscreenEnabled || 
+            if (document.fullscreenEnabled ||
+                document.webkitFullscreenEnabled ||
                 document.mozFullScreenEnabled ||
                 document.msFullscreenEnabled) {
-                
+
                 // which element will be fullscreen
                 var iframe = $(this).parent().find('object')[0] || $(this).parent().find('iframe')[0];
                 // Do fullscreen
                 if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
+                    iframe.requestFullscreen();
                 } else if (iframe.webkitRequestFullscreen) {
-                iframe.webkitRequestFullscreen();
+                    iframe.webkitRequestFullscreen();
                 } else if (iframe.mozRequestFullScreen) {
-                iframe.mozRequestFullScreen();
+                    iframe.mozRequestFullScreen();
                 } else if (iframe.msRequestFullscreen) {
-                iframe.msRequestFullscreen();
+                    iframe.msRequestFullscreen();
                 }
-            }
-            else {
+            } else {
                 document.querySelector('.error').innerHTML = 'Your browser is not supported';
             }
         });
     })
 </script>
-
-
 
 
 

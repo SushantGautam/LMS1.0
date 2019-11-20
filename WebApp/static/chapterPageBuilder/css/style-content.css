@@ -2,16 +2,22 @@
 
 .bg-white {
   background-color: #fff;
-  /* height: 50vh; */
+  height: -webkit-fill-available;
 }
+
+.chat-box.bg-white {}
 
 .friend-list {
   list-style: none;
-margin-left: -40px;
+  margin-left: -40px;
+  overflow: auto;
+  height: -webkit-fill-available;
+  overflow: auto;
 }
 
 .friend-list li {
   border-bottom: 1px solid #eee;
+  overflow: auto;
 }
 
 .friend-list li a img {
@@ -73,6 +79,7 @@ small, .small {
 .chat {
     list-style: none;
     margin: 0;
+    overflow: auto;
 }
 
 .chat-message{
@@ -187,4 +194,14 @@ a:hover, a:active, a:focus {
 position: absolute;
 
 bottom: 0;
+
+border-radius: 5px;
+
+border: 2px solid #8a3b89;
+}
+
+
+.upbarchat{
+
+background-color: bisque;
 }
