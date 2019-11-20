@@ -80,6 +80,7 @@ small, .small {
     list-style: none;
     margin: 0;
     overflow: auto;
+    max-height: 50vh;
 }
 
 .chat-message{
@@ -170,7 +171,7 @@ img {
 
 .chat li.right .chat-body {
   margin-right: 70px;
-  background-color: #fff;
+  background-color: #cfdcf0;
 }
 
 .chat-box {
@@ -204,6 +205,10 @@ border: 2px solid #8a3b89;
 .upbarchat{
 
 background-color: bisque;
+
+max-height: 3vh;
+
+overflow: hidden;
 }
 
 

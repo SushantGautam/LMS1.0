@@ -12,12 +12,11 @@
     <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
     <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet">
+
     <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
-
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
     <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 
     <style>
         .button-position {
@@ -199,20 +198,33 @@
                 <div class="col-md-8 bg-white ">
                     <div class="row upbarchat">
 
-                        <div class="col-sm-4">
-                            <span> Quick Quiz  <i class="fa fa-pencil"></i></span>
-                        </div>
-                        <div class="col-sm-4">
-                            <span> Quick Survey  <i class="fa fa-pencil"></i></span>
-                        </div>
-                        <div class="col-sm-4">
-                            <span> Force Screen Sync <input id="forceScreen" type="checkbox"></span>
-                        </div>
+
+                        {% if "teachers" in request.path %}
+                            <div class="col-sm-4">
+                                <span> Quick Quiz  <i class="fa fa-pencil"></i></span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span> Quick Survey  <i class="fa fa-pencil"></i></span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span> Force Screen Sync <input id="forceScreen" type="checkbox"></span>
+                            </div>
+                        {% elif "students" in request.path %}
+                            <div class="col-sm-4">
+                                <div id="google_translate_element"></div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span onclick="history.go(0)"> Reload Content  <i class="fa fa-refresh"></i></span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span> Follow Teacher <i class="fa fa-book"> </i></span>
+                            </div>
+                        {% endif %}
 
 
                     </div>
-                    <div class="chat-message" id="chat-box-content">
-                        <ul class="chat">
+                    <div class="chat-message">
+                        <ul class="chat" id="chat-box-content">
                             <li class="left clearfix">
                     	<span class="chat-img pull-left">
                     		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
@@ -249,7 +261,8 @@
                     </div>
                     <div class="chat-box bg-white">
                         <div class="input-group">
-                            <input id="chatmessageinput" class="form-control border no-shadow no-rounded"
+                            <input id="chatmessageinput"
+                                   class="form-control border no-shadow no-rounded"
                                    placeholder="Type your message here" required>
                             <span class="input-group-btn">
             			<button class="btn btn-success no-rounded" type="button"
@@ -262,10 +275,10 @@
                     <div class="row upbarchat">
 
                         <div class="col-sm-4">
-                            <span> Notification <input id="forceScreen" type="checkbox"></span>
+                            <span> Notify <input id="notificationOnChat" type="checkbox"></span>
                         </div>
                         <div class="col-sm-4">
-                            <span>Sound <input id="forceScreen" type="checkbox"></span>
+                            <span>Sound <input id="chatsound" type="checkbox"></span>
                         </div>
                         <div class="col-sm-4 text-danger danger">
                             <span id="closechatbox">Close <i class="fa fa-close"></i></span>
@@ -288,6 +301,39 @@
                                     <div class="last-message text-muted">Hello, Are you there?</div>
                                     <small class="time text-muted">Just now</small>
                                     <small class="chat-alert label label-danger">1</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Jane Doe</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">5 mins ago</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Kate</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">Yesterday</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="clearfix">
+                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                                    <div class="friend-name">
+                                        <strong>Kate</strong>
+                                    </div>
+                                    <div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
+                                    <small class="time text-muted">Yesterday</small>
+                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
                                 </a>
                             </li>
                             <li>
@@ -404,7 +450,7 @@
         $('#closechatopen').show();
     });
 
-        $('#closechatopen').off().click(function () {
+    $('#closechatopen').off().click(function () {
         $('.chatonly').show();
         $('#closechatopen').hide();
     });
@@ -728,21 +774,26 @@
 
 
     function sendMessageWritten() {
-        if ($('#chatmessageinput').val()) {
-            chatSocket.send(
-                JSON.stringify({
-                    chat_message: $('#chatmessageinput').val(),
-                    sender_id: "{{  user.id }}",
-                    sender_name: "{{  user.First_Name }} {{  user.Last_Name }}",
-                    sender_icon: "{{  user.Member_Avatar }}",
-                })
-            );
-        }
+
+        chatSocket.send(
+            JSON.stringify({
+                chat_message: $('#chatmessageinput').val(),
+                sender_id: "{{  user.id }}",
+                sender_name: "{{  user.First_Name }} {{  user.Last_Name }}",
+                sender_icon: "{{  user.Member_Avatar }}",
+            })
+        );
+        $('#chatmessageinput').val("");
+
     };
 
     $('#chatmessageinput').keypress(function (event) {
         if (event.keyCode == 13 && !event.shiftKey) {
-            sendMessageWritten();
+            if ($('#chatmessageinput').val()) {
+                sendMessageWritten();
+
+            }
+            ;
         }
     });
 
@@ -760,13 +811,26 @@
 
         } else if ("chat_message" in data) {
             $("#chatmessageinput").val("");
-            $("#chat-box-content").append("<h4>" + data.sender_name + data.sender_id + ": " + data.chat_message + "</h4>");
-            $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + data.sender_id + ": " + data.chat_message + '</h3>');
-            $("#messageChatUp").animate({
-                top: -300,
-                opacity: 0
-            }, 3000, "linear", function () {
-            })
+            {#$("#chat-box-content").append("<h4>" + data.sender_name + data.sender_id + ": " + data.chat_message + "</h4>");#}
+
+            if (data.sender_id =={{ user.id }}) {
+                AddSelfMessageToChat(data);
+            } else {
+
+                AddOtherMessageToChat(data);
+            }
+
+            if ($('#notificationOnChat').prop('checked')) {
+                $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + data.sender_id + ": " + data.chat_message + '</h3>');
+
+                $("#messageChatUp").animate({
+                    top: -300,
+                    opacity: 0
+                }, 3000, "linear", function () {
+                })
+            }
+
+
         }
     };
 
@@ -801,6 +865,76 @@
         });
     })
 </script>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'id,zh-CN,cs,ko,nl,en,et,fr,ne'
+        }, 'google_translate_element');
+    }
+
+
+</script>
+
+<script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
+
+
+<script>
+
+    function AddOtherMessageToChat(data) {
+        $("#chat-box-content").append(`<li class="left clearfix">
+                    	<span class="chat-img pull-left">
+                    		<img src="` + data.sender_icon + `" alt="` + data.sender_id + `">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font"> ` + data.sender_name + "&nbsp;" + ` </strong>
+                                       <small class="pull-right text-muted ">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time>    </small>
+                                    </div>
+                                    <p>
+                                        ` + data.chat_message + `
+                                    </p>
+                                </div>
+                            </li>`);
+        $('time.timeago').timeago();
+
+
+    }
+
+
+    function AddSelfMessageToChat(data) {
+        $("#chat-box-content").append(`<li class="right clearfix">
+                    	<span class="chat-img pull-right">
+                    		<img src="/` + data.sender_icon + `" alt="` + data.sender_id + `">
+                    	</span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font"> ` + data.sender_name + "&nbsp;" + ` </strong>
+                                       <small class="pull-right text-muted ">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time>    </small>
+                                    </div>
+                                    <p>
+                                        ` + data.chat_message + `
+                                    </p>
+                                </div>
+                            </li>`);
+        $('time.timeago').timeago();
+
+    }
+
+    jQuery(document).ready(function () {
+        $('time.timeago').timeago();
+
+
+    });
+
+
+</script>
+
+
 
 
 
