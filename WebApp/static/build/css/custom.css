@@ -1670,6 +1670,7 @@ input[type=checkbox], input[type=radio] {
 /*bootstrap modalcss*/
 .modal-body {
     overflow-y: auto;
+    height: 60em;
 }
 
 .box2 {
