@@ -9,145 +9,255 @@
     <!-- Font Awesome -->
     <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
 
-    <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet" />
+    <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
     <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet">
 
     <style>
-        .button-position{
+        .button-position {
             height: 20px;
             width: 20px;
             margin: 5px;
-            padding: 5px!important;
+            padding: 5px !important;
             background-color: white;
             z-index: 999;
-            top:50%;
+            top: 50%;
             position: absolute;
-           
+
             display: none;
             transition: all 1s ease;
             -webkit-transition: all 0.3s ease;
         }
-        .button-position:hover{
+
+        .button-position:hover {
             cursor: pointer;
         }
-        
-        .overall-contents:hover .button-position{display: block;}
 
-        .overall-contents:hover .content-title{display: block;}
+        .overall-contents:hover .button-position {
+            display: block;
+        }
 
-        .overall-contents{
-            width: 100vw; 
-            height: 56.25vw; 
+        .overall-contents:hover .content-title {
+            display: block;
+        }
+
+        .overall-contents {
+            width: 100vw;
+            height: 56.25vw;
             max-height: 100vh;
-            max-width: 177.78vh; 
+            max-width: 177.78vh;
             margin: auto;
             position: absolute;
-            top:0;bottom:0; 
-            left:0;right:0;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
         }
-        #container{
+
+        #container {
             background-color: white;
             color: black;
-            
+
         }
 
-        body{
-            background-color: rgba(0,0,0,0.7);
+        body {
+            background-color: rgba(0, 0, 0, 0.7);
         }
 
-        .content-title{
+        .content-title {
             color: white;
             font-size: 18px;
             font-weight: 600;
             text-transform: uppercase;
-            display: none   ;
+            display: none;
             transition: all 0.3s ease;
             -webkit-transition: all 0.3s ease;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
         }
-        .content-title1{
-           
+
+        .content-title1 {
+
             transition: all 0.3s ease;
             -webkit-transition: all 0.3s ease;
             position: relative;
             top: 0;
             left: 0;;
         }
-        .overall-contents:hover .content-title1{
+
+        .overall-contents:hover .content-title1 {
             display: block;
         }
-       
-        .content-footer1{
-        color: white;
-        width: 100px;
-        /* padding-top: 10px; */
-        font-size: 1.2rem;
-        font-weight: 200;
-        /* padding-right: 20px; */
-        position: absolute;
-        bottom: 10%;
-        left: 45%;
-        background-color: rgba(0,0,0,0.5);
-        border-radius: 5px;
-        z-index: 99;
-        /* padding: 10px; */
-        height: 30px;
-        line-height: 30px;
-        display: none;
-        transition: all 0.3s ease;
-        -webkit-transition: all 0.3s ease;
-       
-            
+
+        .content-footer1 {
+            color: white;
+            width: 100px;
+            /* padding-top: 10px; */
+            font-size: 1.2rem;
+            font-weight: 200;
+            /* padding-right: 20px; */
+            position: absolute;
+            bottom: 10%;
+            left: 45%;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            z-index: 99;
+            /* padding: 10px; */
+            height: 30px;
+            line-height: 30px;
+            display: none;
+            transition: all 0.3s ease;
+            -webkit-transition: all 0.3s ease;
+
+
         }
-        .overall-contents:hover .content-footer1{
+
+        .overall-contents:hover .content-footer1 {
             display: block;
-           
+
         }
-        
+
 
     </style>
+
 </head>
 
 <body>
-    <div class="container-fluid" >
-        <!-- For Title -->
-        
+<div class="container-fluid">
+    <!-- For Title -->
 
 
-        <div class="row overall-contents"> 
-                <div id = "prev-btn" class="button-position" style="left:0;">
-                        <i class="fa fa-backward"></i>
-                    </div>
-                    <div id = "next-btn" class="button-position" style="right:0;">
-                            <i class="fa fa-forward"></i>
-                        </div>
-               
-            <div id="container" style="position: relative;">
-                  
-                    <div class="content-title1  text-center">
-                        <span id="chaptertitle" class="content-title">
-                            <!-- Chapter title goes here -->
-                            {{chapter}}
-                        </span>
-                    </div>
-                   
-                    <div id="page-contents"></div>
-            </div>
-        
-        
-           
-            <div class="content-footer1 text-center">
-                Page <span id="currentpage"></span> of <span id="totalpages"></span> 
-            </div> 
-
+    <div class="row overall-contents">
+        <div id="prev-btn" class="button-position" style="left:0;">
+            <i class="fa fa-backward"></i>
+        </div>
+        <div id="next-btn" class="button-position" style="right:0;">
+            <i class="fa fa-forward"></i>
         </div>
 
-        <!-- For Footer -->
-        
-                 
-           
+        <div id="container" style="position: relative;">
+
+            <div class="content-title1  text-center">
+                        <span id="chaptertitle" class="content-title">
+                            <!-- Chapter title goes here -->
+                            {{ chapter }}
+                        </span>
+            </div>
+
+            <div id="page-contents"></div>
+        </div>
+
+
+        <div class="content-footer1 text-center">
+            Page <span id="currentpage"></span> of <span id="totalpages"></span>
+        </div>
+
     </div>
+    {% if "teachers" in request.path %}
+        {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
+    {% elif "students" in request.path %}
+        {% include "chapter/Content_Viewer_WebSocket_students.html" %}
+    {% endif %}
+
+    <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
+    </div>
+
+
+    <!-- For Footer -->
+
+
+    <style>
+        .chat-box {
+            font: normal normal 11px/1.4 Tahoma, Verdana, Sans-Serif;
+            color: #333;
+            width: 200px; /* Chatbox width */
+            border: 1px solid #344150;
+            border-bottom: none;
+            background-color: white;
+            position: fixed;
+            right: 10px;
+            bottom: 0;
+            z-index: 9999;
+            -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
+        }
+
+        .chat-box > input[type="checkbox"] {
+            display: block;
+            margin: 0 0;
+            padding: 0 0;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            width: 100%;
+            height: 26px;
+            z-index: 4;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+
+        .chat-box > label {
+            display: block;
+            height: 24px;
+            line-height: 24px;
+            background-color: #344150;
+            color: white;
+            font-weight: bold;
+            padding: 0 1em 1px;
+        }
+
+        .chat-box > label:before {
+            content: attr(data-collapsed)
+        }
+
+        .chat-box .chat-box-content {
+            padding: 10px;
+            display: none;
+        }
+
+        /* hover state */
+        .chat-box > input[type="checkbox"]:hover + label {
+            background-color: #404D5A
+        }
+
+        /* checked state */
+        .chat-box > input[type="checkbox"]:checked + label {
+            background-color: #212A35
+        }
+
+        .chat-box > input[type="checkbox"]:checked + label:before {
+            content: attr(data-expanded)
+        }
+
+        .chat-box > input[type="checkbox"]:checked ~ .chat-box-content {
+            display: block;
+            overflow-y: scroll;
+            max-height: 50vh;
+
+        }
+    </style>
+
+    <div class="chat-box">
+        <input type="checkbox"/>
+        <label data-expanded="Close Chatbox" data-collapsed="Open Chatbox"></label>
+        <div id="chat-box-content" class="chat-box-content">
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-9">
+                    <input id="chatmessageinput" type="text" width=""/>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
 </body>
 </html>
 
@@ -156,16 +266,28 @@
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 
 <script type="text/javascript">
+
+
+    var roomName = "ChapterChat{{chapter.id}}";
+    var chatSocket = new WebSocket("ws://"+location.host+"/ws/" + roomName + '/');
+    chatSocket.onclose = function (e) {
+        console.error("Chat socket closed unexpectedly");
+        setTimeout(function () {
+            chatSocket = new WebSocket("ws://"+location.host+"/ws/"  + roomName + '/');
+        }, 5000);
+    };
+
+
     lightbox.option({
         'resizeDuration': 200,
         'wrapAround': true
     });
 
-    document.addEventListener('visibilitychange', function(){
+    document.addEventListener('visibilitychange', function () {
         pauseAllVideos(); // change tab text for demo
     })
     $(document).keydown(function (e) {
-        if($('#lightbox').css('display') == 'none'){
+        if ($('#lightbox').css('display') == 'none') {
             if (e.keyCode == '39') {
                 $('#next-btn').click();
                 return false
@@ -176,19 +298,19 @@
             }
             //UP
             if (e.keyCode == '38') {
-                $('body').animate({ scrollTop: 0 }, 100);
+                $('body').animate({scrollTop: 0}, 100);
                 return false;
             }
             //DOWN
             if (e.keyCode == '40') {
-                $('body').animate({ scrollTop: $(document).height() }, 100);
+                $('body').animate({scrollTop: $(document).height()}, 100);
                 return false;
             }
 
             if (e.keyCode == '70') {
-            toggleFullScreen();
-            return false;
-        }
+                toggleFullScreen();
+                return false;
+            }
 
         }
     });
@@ -226,9 +348,9 @@
     var data = {{ data | safe}};
     // console.log(data)
 
-    container_height = $('body').height()-$('.content-title1').height()-$('.content-footer1').height()
+    container_height = $('body').height() - $('.content-title1').height() - $('.content-footer1').height()
     // console.log($('body').height(), $('.content-title1').height(), $('.content-footer1').height())
-    $('#container').css('height', container_height*100/$('body').height()+"%")
+    $('#container').css('height', container_height * 100 / $('body').height() + "%")
     // $('#container').css('background-color',"red")
     // container_width = $('body').width()-$('#prev-btn').width()-$('#next-btn').width()
     // console.log($('#prev-btn').width(), $('body').width())
@@ -241,23 +363,21 @@
     //     scaleX = container_width/parseFloat(canvaswidth);
     //     return {'scaleY':scaleY, 'scaleX':scaleX}
     // }
-    
+
     // scaleData = scaleScreen($('#container').height(),  $('#container').width(), data.canvasheight, data.canvaswidth)
 
-    function pauseAllVideos() 
-    { 
-        $('iframe').each(function(){
+    function pauseAllVideos() {
+        $('iframe').each(function () {
             $(this).attr('src', $(this).attr('src'));
             // console.log($(this)[0])
             // $(this)[0].contentWindow.postMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
         });
-        $('video').each(function () 
-        {
+        $('video').each(function () {
             this.pause();
         });
     }
 
-    function loaddata(data){
+    function loaddata(data) {
         $('#totalpages').text(data.numberofpages);
         $('#currentpage').text(1);
         $.each(data.pages, function (key, value) {
@@ -322,7 +442,7 @@
                         `)
                         });
                     }
-                    
+
                     if (div == 'video') {
                         $.each(div_value, function (css, css_value) {
                             if (css_value.hasOwnProperty('online_link')) {
@@ -373,7 +493,7 @@
     // $('#page1').css('display', 'block');
 
     // for small screen sizes
-    function loadsmalldata(data){
+    function loadsmalldata(data) {
         $('#totalpages').text(data.numberofpages);
         $('#currentpage').text(1);
         $.each(data.pages, function (key, value) {
@@ -437,7 +557,7 @@
                         `)
                         });
                     }
-                    
+
                     if (div == 'video') {
                         $.each(div_value, function (css, css_value) {
                             if (css_value.hasOwnProperty('online_link')) {
@@ -505,14 +625,13 @@
         }
     }
 
-    
 
-    $(document).ready(function(){
-        function Layout(x){
+    $(document).ready(function () {
+        function Layout(x) {
             if (x.matches) {
                 $('#page-contents').empty();
                 loadsmalldata(data)
-            }else{
+            } else {
                 $('#page-contents').empty();
                 loaddata(data)
             }
@@ -524,5 +643,44 @@
         x.addListener(Layout) // Attach listener function on state changes
 
     });
+
+    $('#chatmessageinput').keypress(function (event) {
+        if (event.keyCode == 13 && $('#chatmessageinput').val() && !event.shiftKey) {
+
+            chatSocket.send(
+                JSON.stringify({
+                    chat_message: $('#chatmessageinput').val(),
+                    sender_id: "{{  user.id }}",
+                    sender_name: "{{  user.First_Name }} {{  user.Last_Name }}",
+                    sender_icon: "{{  user.Member_Avatar }}",
+                })
+            );
+        }
+    });
+
+
+    chatSocket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        if ("page" in data) {
+
+            if (data.page === "next") $('#next-btn').click();
+            else if (data.page === "previous") $('#prev-btn').click();
+        } else if ("chat_message" in data) {
+            $("#chatmessageinput").val("");
+            $("#chat-box-content").append("<h4>" + data.sender_name + data.sender_id + ": " + data.chat_message + "</h4>");
+            $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + data.sender_id + ": " + data.chat_message + '</h3>');
+            $("#messageChatUp").animate({
+                top: -300,
+                opacity: 0
+            }, 3000, "linear", function () {
+            })
+        }
+    };
+
+
 </script>
+
+
+
+
 

@@ -1,0 +1,30 @@
+<script>
+ window.addEventListener('load', function() {
+    // chatSocket.onmessage = function (e) {
+      //   var data = JSON.parse(e.data);
+         //handle data here
+     //};
+
+
+     $('#next-btn').click(function () {
+         chatSocket.send(
+             JSON.stringify({
+                 page: "next",
+             })
+         );
+     });
+
+     $('#prev-btn').click(function () {
+         chatSocket.send(
+             JSON.stringify({
+                 page: "previous",
+             })
+         );
+     });
+
+
+
+ });
+
+
+</script>
