@@ -340,6 +340,7 @@ a:hover, a:active, a:focus {
 
 body {
     background-color: rgba(0, 0, 0, 0.7);
+    top: 0px !important;
 }
 
 .content-title {
@@ -420,4 +421,28 @@ body {
     position: relative;
     top: -300px;
     opacity: 0;
+}
+
+.goog-logo-link {
+    display: none !important;
+}
+
+.goog-te-gadget {
+    height: 28px !important;
+    overflow: hidden;
+}
+
+
+#goog-gt-tt, .goog-te-balloon-frame {
+    display: none !important;
+}
+
+.goog-text-highlight {
+    background: none !important;
+    box-shadow: none !important;
+}
+
+
+.goog-te-banner-frame {
+    display: none !important;
 }
