@@ -37,6 +37,7 @@ from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from quiz.models import Progress
+from django.core.exceptions import PermissionDenied
 
 datetime_now = datetime.now()
 
@@ -397,14 +398,17 @@ class ParticipateSurvey(View):
     def post(self, request, *args, **kwargs):
         surveyId = request.POST["surveyInfoId"]
         userId = self.request.user.id
-        # print(request.POST)
+        print(len(SubmitSurvey.objects.filter(Survey_Code__id=surveyId, Student_Code__id=userId)))
+        if len(SubmitSurvey.objects.filter(Survey_Code__id=surveyId, Student_Code__id=userId)) > 0:
+            raise PermissionDenied("You can not participate multiple times")
+
         submitSurvey = SubmitSurvey()
         submitSurvey.Survey_Code = SurveyInfo.objects.get(id=surveyId)
         submitSurvey.Student_Code = MemberInfo.objects.get(id=userId)
         submitSurvey.save()
 
         for question in QuestionInfo.objects.filter(Survey_Code=surveyId):
-            optionId = request.POST[str(question.id)]
+            optionId = request.POST.get(str(question.id), None)
             answerObject = AnswerInfo()
             answerObject.Answer_Value = optionId
             answerObject.Question_Code = question
@@ -434,9 +438,12 @@ class surveyFilterCategory_student(ListView):
             student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
 
             # Predefined category name "general, session, course, system"
-            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general", Center_Code=self.request.user.Center_Code, Use_Flag=True)
-            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session", Session_Code__in=student_session, Use_Flag=True)
-            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course", Course_Code__in=student_course, Use_Flag=True)
+            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
+                                                       Center_Code=self.request.user.Center_Code, Use_Flag=True)
+            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
+                                                       Session_Code__in=student_session, Use_Flag=True)
+            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
+                                                      Course_Code__in=student_course, Use_Flag=True)
             system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
             if category_id == 0:
@@ -445,7 +452,7 @@ class surveyFilterCategory_student(ListView):
             else:
                 category_name = CategoryInfo.objects.get(id=category_id).Category_Name.lower()
                 if category_name == "general":
-                  return general_survey
+                    return general_survey
                 elif category_name == "session":
                     return session_survey
                 elif category_name == "course":
@@ -693,18 +700,19 @@ class ThreadView(ListView):
                 reverse('student_thread', kwargs={'pk': thread_id})
             )
 
-def ThreadList_LoadMoreViewAjax(request, pk, count ):
+
+def ThreadList_LoadMoreViewAjax(request, pk, count):
     return render(request, 'ForumInclude/LoadMoreAjax.html', {
-        'MoreReply' : Post.objects.filter(
+        'MoreReply': Post.objects.filter(
             thread_id=pk
         ).select_related(
             'user'
         ).prefetch_related(
             'user__forum_avatar'
-        ).order_by('pub_date')[5*count:(1+count)*5]
-    
+        ).order_by('pub_date')[5 * count:(1 + count) * 5]
+
     })
-    
+
 
 class TopicView(ListView):
     model = Thread
@@ -852,8 +860,9 @@ def Topic_related_to_user(request, node_group=None):
     innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=request.user.pk))
     if node_group == None:
         own_center_general_topic = Topic.objects.filter(center_associated_with=request.user.Center_Code,
-        
-            course_associated_with__isnull=True) | Topic.objects.filter(center_associated_with__isnull= True, course_associated_with__isnull=True)
+
+                                                        course_associated_with__isnull=True) | Topic.objects.filter(
+            center_associated_with__isnull=True, course_associated_with__isnull=True)
         assigned_topics = ''
         if innings:
             courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')

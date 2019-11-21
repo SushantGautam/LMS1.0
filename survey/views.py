@@ -3,7 +3,7 @@ from datetime import datetime, date, timedelta
 from django.contrib import messages
 from django.db import transaction
 from django.forms import model_to_dict
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -213,7 +213,12 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             # else:
             #     print('qna is invalid')
             #     print(qna.errors)
-        return redirect('surveyinfo_detail', self.object.id)
+        response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
+                    'teacher_url': self.request.build_absolute_uri(
+                        reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
+                    'student_url': self.request.build_absolute_uri(
+                        reverse('questions_student_detail', kwargs={'pk': self.object.id}))}
+        return JsonResponse(response)
 
 
 def create_questioninfo_formset(obj_instance):
@@ -372,10 +377,16 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
         self.object.Version_No = obj_instance.Version_No + 1
         self.object.save()
         # check the request path and redirect as the value of path
-        if 'teachers' in self.request.path:
-            return redirect('surveyinfodetail', self.object.id)
-        else:
-            return redirect('surveyinfo_detail', self.object.id)
+        # if 'teachers' in self.request.path:
+        #     return redirect('surveyinfodetail', self.object.id)
+        # else:
+        #     return redirect('surveyinfo_detail', self.object.id)
+        response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
+                    'teacher_url': self.request.build_absolute_uri(
+                        reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
+                    'student_url': self.request.build_absolute_uri(
+                        reverse('questions_student_detail', kwargs={'pk': self.object.id}))}
+        return JsonResponse(response)
 
     def get_initial(self):
         obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
