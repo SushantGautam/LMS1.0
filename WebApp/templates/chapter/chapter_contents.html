@@ -238,27 +238,26 @@
 
             <div class="row" style="
                       margin-right: 0px!important;
-                      margin-left: 0px!important;"
-            " >
-            <div class="chat-box bg-white">
-                <div class="input-group">
-                    <input id="chatmessageinput"
-                           class="form-control border no-shadow no-rounded"
-                           placeholder="Type your message here" required>
-                    <span class="input-group-btn">
+                      margin-left: 0px!important;">
+                <div class="chat-box bg-white">
+                    <div class="input-group">
+                        <input id="chatmessageinput"
+                               class="form-control border no-shadow no-rounded"
+                               placeholder="Type your message here" required>
+                        <span class="input-group-btn">
                                     <button class="btn btn-success no-rounded" type="button"
                                             onclick="sendMessageWritten()">Send</button>
                                 </span>
-                </div><!-- /input-group -->
+                    </div><!-- /input-group -->
+                </div>
             </div>
+
+
+            <!--=========================================================-->
+            <!-- selected chat -->
+
         </div>
-
-
-        <!--=========================================================-->
-        <!-- selected chat -->
-
     </div>
-</div>
 </div>
 
 
@@ -714,7 +713,7 @@
                 $("#messageChatUp").animate({
                     top: -300,
                     opacity: 0
-                }, 3000, "linear", function () {
+                }, 5000, "linear", function () {
                 })
             }
 
