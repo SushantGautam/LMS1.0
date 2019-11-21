@@ -130,7 +130,7 @@
             margin-top: 5px;
             height: 5px;
         }
-
+        
     </style>
 
 </head>
@@ -195,185 +195,200 @@
         <div class="container bootstrap snippet">
             <div class="row">
 
-
-                <div class="col-md-8 bg-white ">
-                    <div class="row upbarchat">
-
-
+                <div class="col-md-12 upbarchat">
+                  <div class="col-md-7"> 
+                    
                         {% if "teachers" in request.path %}
-                            <div class="col-sm-4">
+                            <div class=" col-md-4 col-sm-4">
                                 <span> Quick Quiz  <i class="fa fa-pencil"></i></span>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4 col-sm-4">
                                 <span> Quick Survey  <i class="fa fa-pencil"></i></span>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4 col-sm-4">
                                 <span> Force Screen Sync <input id="forceScreen" type="checkbox"></span>
                             </div>
                         {% else %}
-                            <div class="col-sm-4">
+                            <div class="col-md-4 col-sm-4">
                                 <div id="google_translate_element"></div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4 col-sm-4">
                                 <span onclick="history.go(0)"> Reload Content  <i class="fa fa-refresh"></i></span>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4 col-sm-4">
                                 <span> Follow Teacher <i class="fa fa-book"> </i></span>
                             </div>
                         {% endif %}
 
+                  </div>
+                  <div class="col-md-5">
+                        <div class="col-sm-4">
+                                <span> Notify <input id="notificationOnChat" type="checkbox" checked></span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>Sound <input id="chatsound" type="checkbox" checked></span>
+                            </div>
+                            <div class="col-sm-4 text-danger danger">
+                                <span id="closechatbox">Close <i class="fa fa-close"></i></span>
+                            </div>
 
-                    </div>
-                    <div class="chat-message">
-                        <ul class="chat" id="chat-box-content">
-                            <li class="left clearfix">
-                    	<span class="chat-img pull-left">
-                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                    	</span>
-                                <div class="chat-body clearfix">
-                                    <div class="header">
-                                        <strong class="primary-font">UBL BOT</strong>
-                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
-                                            ago</small>
-                                    </div>
-                                    <p>
-                                        Hello! Try sending a message to everyone online now.
-                                    </p>
-                                </div>
-                            </li>
-                            <li class="right clearfix">
-                    	<span class="chat-img pull-right">
-                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                    	</span>
-                                <div class="chat-body clearfix">
-                                    <div class="header">
-                                        <strong class="primary-font">You</strong>
-                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                                            ago</small>
-                                    </div>
-                                    <p>
-                                       Sure.
-                                    </p>
-                                </div>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <div class="chat-box bg-white">
-                        <div class="input-group">
-                            <input id="chatmessageinput"
-                                   class="form-control border no-shadow no-rounded"
-                                   placeholder="Type your message here" required>
-                            <span class="input-group-btn">
-            			<button class="btn btn-success no-rounded" type="button"
-                                onclick="sendMessageWritten()">Send</button>
-            		</span>
-                        </div><!-- /input-group -->
+                  </div>
+                        
                     </div>
                 </div>
-                <div class="col-md-4 bg-white ">
-                    <div class="row upbarchat">
-
-                        <div class="col-sm-4">
-                            <span> Notify <input id="notificationOnChat" type="checkbox" checked></span>
-                        </div>
-                        <div class="col-sm-4">
-                            <span>Sound <input id="chatsound" type="checkbox" checked></span>
-                        </div>
-                        <div class="col-sm-4 text-danger danger">
-                            <span id="closechatbox">Close <i class="fa fa-close"></i></span>
-                        </div>
-
-                    </div>
-
-                    <!-- =============================================================== -->
-                    <!-- member list -->
-                    <div style="
-    height: 55vh;
-">
-                        <ul class="friend-list">
-                            <li class="active bounceInDown">
-                                <a href="#" class="clearfix">
-                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                    <div class="friend-name">
-                                        <strong>Online Students</strong>
-                                    </div>
-                                    <div class="last-message text-muted">Page3</div>
-                                    <small class="time text-muted">Just now</small>
-                                    <small class="chat-alert label label-danger">1</small>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="clearfix">
-                                    <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                                    <div class="friend-name">
-                                        <strong>Will Appear</strong>
-                                    </div>
-                                    <div class="last-message text-muted">Page X</div>
-                                    <small class="time text-muted">5 mins ago</small>
-                                    <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="clearfix">
-                                    <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                                    <div class="friend-name">
-                                        <strong>Here</strong>
-                                    </div>
-                                    <div class="last-message text-muted">Page X</div>
-                                    <small class="time text-muted">Yesterday</small>
-                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="clearfix">
-                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                    <div class="friend-name">
-                                        <strong>Kate</strong>
-                                    </div>
-                                    <div class="last-message text-muted">Page X</div>
-                                    <small class="time text-muted">Yesterday</small>
-                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="clearfix">
-                                    <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                                    <div class="friend-name">
-                                        <strong>Jane Doe</strong>
-                                    </div>
-                                    <div class="last-message text-muted">Page X</div>
-                                    <small class="time text-muted">5 mins ago</small>
-                                    <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="clearfix">
-                                    <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                                    <div class="friend-name">
-                                        <strong>Kate</strong>
-                                    </div>
-                                    <div class="last-message text-muted">Page X</div>
-                                    <small class="time text-muted">Yesterday</small>
-                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="clearfix">
-                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                    <div class="friend-name">
-                                        <strong>Kate</strong>
-                                    </div>
-                                    <div class="last-message text-muted">Page X</div>
-                                    <small class="time text-muted">Yesterday</small>
-                                    <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
+                <div class="col-md-12">
+                        <div class="col-md-8 bg-white ">
+                                <div class="row upbarchat">
+            
+            
+            
+            
+                                </div>
+                                <div class="chat-message">
+                                    <ul class="chat" id="chat-box-content">
+                                        <li class="left clearfix">
+                                    <span class="chat-img pull-left">
+                                        <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                                    </span>
+                                            <div class="chat-body clearfix">
+                                                <div class="header">
+                                                    <strong class="primary-font">UBL BOT</strong>
+                                                    <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
+                                                        ago</small>
+                                                </div>
+                                                <p>
+                                                    Hello! Try sending a message to everyone online now.
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="right clearfix">
+                                    <span class="chat-img pull-right">
+                                        <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                                    </span>
+                                            <div class="chat-body clearfix">
+                                                <div class="header">
+                                                    <strong class="primary-font">You</strong>
+                                                    <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
+                                                        ago</small>
+                                                </div>
+                                                <p>
+                                                   Sure.
+                                                </p>
+                                            </div>
+                                        </li>
+            
+                                    </ul>
+                                </div>
+                                <div class="chat-box bg-white">
+                                    <div class="input-group">
+                                        <input id="chatmessageinput"
+                                               class="form-control border no-shadow no-rounded"
+                                               placeholder="Type your message here" required>
+                                        <span class="input-group-btn">
+                                    <button class="btn btn-success no-rounded" type="button"
+                                            onclick="sendMessageWritten()">Send</button>
+                                </span>
+                                    </div><!-- /input-group -->
+                                </div>
+                            </div>
+                            <div class="col-md-4 bg-white ">
+                                <div class="row upbarchat">
+            
+                                 
+            
+                                </div>
+            
+                                <!-- =============================================================== -->
+                                <!-- member list -->
+                                <div style="
+                height: 55vh;
+            ">
+                                    <ul class="friend-list">
+                                        <li class="active bounceInDown">
+                                            <a href="#" class="clearfix">
+                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                                                <div class="friend-name">
+                                                    <strong>Online Students</strong>
+                                                </div>
+                                                <div class="last-message text-muted">Page3</div>
+                                                <small class="time text-muted">Just now</small>
+                                                <small class="chat-alert label label-danger">1</small>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="clearfix">
+                                                <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
+                                                <div class="friend-name">
+                                                    <strong>Will Appear</strong>
+                                                </div>
+                                                <div class="last-message text-muted">Page X</div>
+                                                <small class="time text-muted">5 mins ago</small>
+                                                <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="clearfix">
+                                                <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
+                                                <div class="friend-name">
+                                                    <strong>Here</strong>
+                                                </div>
+                                                <div class="last-message text-muted">Page X</div>
+                                                <small class="time text-muted">Yesterday</small>
+                                                <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="clearfix">
+                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                                                <div class="friend-name">
+                                                    <strong>Kate</strong>
+                                                </div>
+                                                <div class="last-message text-muted">Page X</div>
+                                                <small class="time text-muted">Yesterday</small>
+                                                <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="clearfix">
+                                                <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
+                                                <div class="friend-name">
+                                                    <strong>Jane Doe</strong>
+                                                </div>
+                                                <div class="last-message text-muted">Page X</div>
+                                                <small class="time text-muted">5 mins ago</small>
+                                                <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="clearfix">
+                                                <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
+                                                <div class="friend-name">
+                                                    <strong>Kate</strong>
+                                                </div>
+                                                <div class="last-message text-muted">Page X</div>
+                                                <small class="time text-muted">Yesterday</small>
+                                                <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="clearfix">
+                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                                                <div class="friend-name">
+                                                    <strong>Kate</strong>
+                                                </div>
+                                                <div class="last-message text-muted">Page X</div>
+                                                <small class="time text-muted">Yesterday</small>
+                                                <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
+                                            </a>
+                                        </li>
+            
+                                    </ul>
+                                </div>
+            
+                            </div>
 
                 </div>
+                
 
                 <!--=========================================================-->
                 <!-- selected chat -->
@@ -450,7 +465,7 @@
         $('#closechatopen').show();
     });
 
-    $('#closechatopen').off().click(function () {
+    $('#closechatopen').hover(function () {
         $('.chatonly').show();
         $('#closechatopen').hide();
     });
