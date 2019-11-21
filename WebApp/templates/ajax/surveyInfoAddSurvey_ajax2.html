@@ -1,6 +1,8 @@
 {% load static %}
 
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard_theme_dots.css' %}" rel="stylesheet"/>
+
 {% load crispy_forms_tags %}
 
 <div class="form-group">
@@ -10,26 +12,7 @@
   </label>
 
 </div>
-
-<div class="stepwizard">
-  <div class="stepwizard-row setup-panel">
-    <div class="stepwizard-step">
-      <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
-      <p>Survey Information</p>
-    </div>
-    <div class="stepwizard-step">
-      <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
-      <p>Add Question</p>
-    </div>
-    <div class="stepwizard-step">
-      <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
-      <p>Finish</p>
-    </div>
-  </div>
-</div>
-{{ object }}
-<form id="categoryForm"
-      action="{% if "teachers" in request.path %}
+<form id="categoryForm" action="{% if "teachers" in request.path %}
                 {% if "retake" in request.path %}
                   {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
@@ -44,97 +27,90 @@
               {% endif %}"
       method="post">
   {% csrf_token %}
-  <div role="form">
-    <div class="row setup-content" id="step-1">
-      <div class="col-xs-12">
-        <div class="col-md-12">
-          {{ form|crispy }}
-          <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
-                  type="button">Next
-          </button>
+  <div id="smartwizard" class="sw-theme-dots">
+    <ul>
+      <li><a href="#step-1">Step 1 <br><small>Survey Information</small></a></li>
+      <li><a href="#step-2">Step 2<br/><small>Add question</small></a></li>
+    </ul>
+    <div>
+      <div id="step-1">
+        <h2 class="StepTitle text-center">Survey Information</h2>
+        <div class="col-xs-12">
+          <div class="col-md-12">
+            {{ form|crispy }}
+          </div>
+          <div class="text-danger survey_error"></div>
         </div>
       </div>
-    </div>
-    <div class="row setup-content" id="step-2">
-      <div class="col-xs-12">
-        <div class="col-md-12">
-          <div class="selectQuestionType">
-            <div class="btn-group" id="switchButtons" data-toggle="buttons">
-              <label class="mcq_question btn btn-default btn-on btn-md active">
-                <input type="radio" value="1" name="multifeatured_module[module_id][switchButtons]"
-                       checked="checked">MCQ</label>
-              <label class="short_question btn btn-default btn-off btn-md ">
-                <input type="radio" value="0"
-                       name="multifeatured_module[module_id][switchButtons]">SAQ</label>
-            </div>
-
-            <div class="questionContainer">
-              <div id="mcq_que">
-                {{ questioninfo_formset.management_form }}
-                {{ questioninfo_formset.non_form_errors }}
-
-                <div class='qninfo_dynamic_append'>
-                  {% for questioninfo_form in questioninfo_formset.forms %}
-
-                    <div class='qninfo_dynamic'>
-                      {{ questioninfo_form|crispy }}
-
-                      {% if questioninfo_form.nested %}
-                        {{ questioninfo_form.nested.management_form }}
-                        {{ questioninfo_form.nested.non_form_errors }}
-
-                        <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic' style="margin-left:40px;">
-                          {% for option_form in questioninfo_form.nested.forms %}
-                            <div style="display:flex;">
-                              <p>{{ forloop.counter }} &nbsp;</p>
-                              {{ option_form|crispy }}
-                            </div>
-                          {% endfor %}
-                        </div>
-
-                        <button
-                            onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                            class="btn btn-success">Add option
-                        </button>
-
-                      {% endif %}
-                    </div>
-                  {% endfor %}
-                </div>
-                <input class="add-mcq" type="button" value="Add Question" id="add_more_qn">
+      <div id="step-2">
+        <h2 class="StepTitle text-center">Add question</h2>
+        <div class="col-xs-12">
+          <div class="col-md-12">
+            <div class="selectQuestionType">
+              <div class="btn-group" id="switchButtons" data-toggle="buttons">
+                <label class="mcq_question btn btn-default btn-on btn-md active">
+                  <input type="radio" value="1" name="multifeatured_module[module_id][switchButtons]"
+                         checked="checked">MCQ</label>
+                <label class="short_question btn btn-default btn-off btn-md ">
+                  <input type="radio" value="0"
+                         name="multifeatured_module[module_id][switchButtons]">SAQ</label>
               </div>
 
-              <div id="short_que" style="display: none;">
-                <div class="queContainer">
-                  {{ questionansinfo_formset.management_form }}
-                  {{ questionansinfo_formset.non_form_errors }}
-                  <div class='qnansinfo_dynamic_append'>
-                    {% for questionansinfo_form in questionansinfo_formset.forms %}
-                      {{ questionansinfo_form|crispy }}
+              <div class="questionContainer">
+                <div id="mcq_que">
+                  {{ questioninfo_formset.management_form }}
+                  {{ questioninfo_formset.non_form_errors }}
+
+                  <div class='qninfo_dynamic_append'>
+                    {% for questioninfo_form in questioninfo_formset.forms %}
+
+                      <div class='qninfo_dynamic'>
+                        {{ questioninfo_form|crispy }}
+
+                        {% if questioninfo_form.nested %}
+                          {{ questioninfo_form.nested.management_form }}
+                          {{ questioninfo_form.nested.non_form_errors }}
+
+                          <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic'
+                               style="margin-left:40px;">
+                            {% for option_form in questioninfo_form.nested.forms %}
+                              <div style="display:flex;">
+                                <p>{{ forloop.counter }} &nbsp;</p>
+                                {{ option_form|crispy }}
+                              </div>
+                            {% endfor %}
+                          </div>
+
+                          <button
+                              onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
+                              class="btn btn-success">Add option
+                          </button>
+
+                        {% endif %}
+                      </div>
                     {% endfor %}
                   </div>
+                  <input class="add-mcq" type="button" value="Add Question" id="add_more_qn">
                 </div>
-                <input class="add-mcq" type="button" value="Add Question" id="add_more_sa_qn">
+
+                <div id="short_que" style="display: none;">
+                  <div class="queContainer">
+                    {{ questionansinfo_formset.management_form }}
+                    {{ questionansinfo_formset.non_form_errors }}
+                    <div class='qnansinfo_dynamic_append'>
+                      {% for questionansinfo_form in questionansinfo_formset.forms %}
+                        {{ questionansinfo_form|crispy }}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <input class="add-mcq" type="button" value="Add Question" id="add_more_sa_qn">
+                </div>
+                <div class="text-danger question_error"></div>
               </div>
-              <div class="text-danger question_error"></div>
             </div>
           </div>
-          <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
-                  type="button">Next
-          </button>
         </div>
-      </div>
-    </div>
-    <div class="row setup-content" id="step-3">
-      <div class="col-xs-12">
-        <div class="col-md-12">
-          <h3> Successfully completed form fill in. Click
-            on
-            submit
-            button to finish.</h3>
-          <div class="text-danger question_error"></div>
-          <button class="btn btn-primary" type="submit">Submit</button>
-        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
       </div>
     </div>
   </div>
@@ -165,6 +141,62 @@
 <script src=" {% static 'build/js/survey.js' %}"></script>
 <script src=" {% static '/duration_picker/bootstrap-duration-picker.js' %}"></script>
 {% block customjss %}
+  <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+  <script>
+      $(document).ready(function () {
+          $("#smartwizard").smartWizard();
+      });
+      $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
+          if (stepNumber == 0) {
+              if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) > new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
+                  $(".survey_error").html("End Date must be greater than Start Date");
+                  e.preventDefault();
+              }
+              if ($("#id_Survey_Title").val() === ""){
+                  $(".survey_error").html("Survey Title cannot be empty");
+                  e.preventDefault();
+              }
+              if ($("#id_Course_Code").val() === "" && $("#id_Course_Code").prop("required")){
+                  $(".survey_error").html("Please Select a Course");
+                  e.preventDefault();
+              }
+              if ($("#id_Session_Code").val() === "" && $("#id_Session_Code").prop("required")){
+                  $(".survey_error").html("Please Select a Session");
+                  e.preventDefault();
+              }
+          }
+          if (stepNumber == 1) {
+              var non_empty_count = 0;
+              var non_empty_op_count = 0;
+              for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {
+                  if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {
+                      non_empty_count++;
+                      for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {
+                          if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {
+                              non_empty_op_count++;
+                          }
+                      }
+                      if (non_empty_op_count < 2) {
+                          $(".question_error").html("Enter at least two option for each questions");
+                          console.log("question op error: " + cnt);
+                          e.preventDefault()
+                      }
+                      non_empty_op_count = 0;
+                  }
+              }
+              for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {
+                  if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {
+                      non_empty_count++;
+                  }
+              }
+              if (non_empty_count < 1) {
+                  $(".question_error").html("Please enter at least one question");
+                  e.preventDefault()
+              }
+          }
+
+      });
+  </script>
   <script>
       function cloneMore(selector, append_after, type) {
           var newElement = $(selector).clone(true);
@@ -308,8 +340,18 @@
                   non_empty_op_count = 0;
               }
           }
+          for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {
+              if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {
+                  non_empty_count++;
+              }
+          }
           if (non_empty_count < 1) {
               $(".question_error").html("Please enter at least one question");
+              return false;
+          }
+
+          if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) > new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
+              $(".question_error").html("End Date must be greater than Start Date");
               return false;
           }
       });

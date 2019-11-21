@@ -50,6 +50,7 @@ class ThreadForm(ModelForm):
 
 
 class TopicForm(TopicForm):
+    pass
 
 
 class ReplyForm(ModelForm):

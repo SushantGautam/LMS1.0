@@ -379,7 +379,7 @@
 .note-editor.note-frame .note-editing-area .note-editable {
     height: 97%;
     padding: 10px;
-    overflow: auto;
+    overflow: hidden;
     color: #000;
     word-wrap: break-word;
     background-color: #fff
