@@ -101,13 +101,14 @@
                     <ul class="chat-nav " style="padding-left: 0px;">
                         {% if ifteacher %}
                             <li id="QuickQuiz"> Quick Quiz <i class="fa fa-pencil"></i></li>
-                            <li id="QuickSurvey ">Quick Survey <i class="fa fa-pencil"></i></li>
+                            <li id="QuickSurvey">Quick Survey <i class="fa fa-pencil"></i></li>
                             <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>
                         {% else %}
                             <li>Follow Teacher <i class="fa fa-book"> </i></li>
                         {% endif %}
                         <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
                         <li>Sound <input id="chatsound" type="checkbox" checked></li>
+                        <li id="speakContent"><i class="fa fa-music"> </i> Read </li>
 
                     </ul>
                 </div>
@@ -192,7 +193,7 @@
                                         <small class="time text-muted" style="font-size: 12px;">Just now</small>
 
                                         <small class="chat-alert label label-danger">1</small>
-                                        <h5>sss</h5>
+                                        <h5>BOT</h5>
 
                                     </a>
 
@@ -779,7 +780,7 @@
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en',
-            includedLanguages: 'id,zh-CN,cs,ko,nl,en,et,fr,ne'
+            includedLanguages: 'id,zh-CN,cs,ko,nl,en,et,fr,ne,ru,vi'
         }, 'google_translate_element');
     }
 
@@ -855,7 +856,26 @@
 
     $('#reloadcontent').click(function () {
         jQuery('#\\:1\\.container').contents().find('#\\:1\\.restore').click();
+        setTimeout(function () {
+            history.go(0);
+        }, 1000);
+
+
     });
+
+
+    $('#speakContent').click(function () {
+        speechSynthesis.cancel()
+        var text = $('#container').children(":visible").text()
+        var msg = new SpeechSynthesisUtterance();
+        var voices = window.speechSynthesis.getVoices();
+        msg.voice = voices[1];
+        msg.rate = 1;
+        msg.pitch = 1;
+        msg.text = text;
+        speechSynthesis.speak(msg);
+
+    })
 </script>
 
 
