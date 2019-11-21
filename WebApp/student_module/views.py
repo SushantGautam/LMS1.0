@@ -38,6 +38,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from quiz.models import Progress
 
+
 datetime_now = datetime.now()
 
 User = get_user_model()

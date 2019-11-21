@@ -212,10 +212,13 @@
     $('#submit-id-submit').click(function () {
         $('#id_content_raw').val($('.editor-wrapper').html());
     });
+
+
     $(document).ready(function () {
         $("#id_node_group").on("change", function () {
             var levelClass = $("#id_node_group").find('option:selected').attr('id');
             console.log(levelClass);
+            $('#id_topic').val('')
             $('#id_topic option').each(function () {
                 var self = $(this);
                 if (self.hasClass(levelClass) || typeof (levelClass) == "undefined") {
@@ -234,7 +237,13 @@
 
 
     $('#id_title').keydown(function (e) {
-        if (e.keyCode == 32) {
+
+        if ($("#id_title").val() === "") {
+            $("#threadList").html('');
+
+        }
+
+        else if (e.keyCode == 32) {
             var topicId = $('#id_topic').val() ? $('#id_topic').val() : 0;
             var threadTitleText = $('#id_title').val() ? $('#id_title').val() : "";
             threadTitleText = threadTitleText.removeStopWords().replace("/", "").replace("\\", "").replace("_", "").replace("?", "").replace(",", " ");
@@ -245,10 +254,15 @@
                 type: "GET",
                 url: "/teachers/forum/create_thread/threadsearchAjax/" + topicId + "/" + threadTitleText,
                 success: function (data) {
-                    $("#threadList").html("Related Threads");
-                    $("#threadList").append(data);
 
-                }
+                    if (data.length !== 9) {
+                        $("#threadList").html("Related Threads");
+                        $("#threadList").append(data);
+                    }
+
+                },
+
+
             });
         }
     });

@@ -60,5 +60,8 @@ urlpatterns = [
          views.create_topic, name='create_topic'),
     path(r'notifications/', views.NotificationView.as_view(), name='notifications'),
     path(r'avatar/', views.upload_avatar, name="upload_avatar"),
+
+    path('t/create/threadsearchAjax/<int:topic_id>/<slug:threadkeywordList>/',
+         views.ThreadSearchAjax, name='Admin_thread_search'),
     path(r'api/v1/', include(router.urls)),
 ]
