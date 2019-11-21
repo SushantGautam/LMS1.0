@@ -10,9 +10,8 @@
 {% for thread in RelevantThread %}
 <h5>
     <div id="ThreadSearch">
-        <a style="color: #1F618D;" href="/teachers/forum/thread/{{ thread.pk }}">{{ thread.title }}</a><br>
+        <a style="color: #1F618D;" href="/forum/t/{{ thread.pk }}">{{ thread.title }}</a><br>
     </div>
 </h5>
-
 
 {% endfor %}

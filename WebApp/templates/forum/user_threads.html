@@ -41,7 +41,7 @@
             <div class="entry media">
 
                 <a>
-                    <img src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}" alt="..."
+                    <img src="{{ request.user.Avatar }}" alt="..."
                         class=" avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default " />
                 </a>
 

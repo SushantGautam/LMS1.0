@@ -520,7 +520,12 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
                 qna.save()
             else:
                 print("qna is invalid", qna.errors)
-        return redirect('surveyinfodetail', self.object.id)
+        response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
+                    'teacher_url': self.request.build_absolute_uri(
+                        reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
+                    'student_url': self.request.build_absolute_uri(
+                        reverse('questions_student_detail', kwargs={'pk': self.object.id}))}
+        return JsonResponse(response)
 
     def get_form_kwargs(self):
         kwargs = super(TeacherSurveyInfo_ajax, self).get_form_kwargs()
@@ -1177,8 +1182,17 @@ class TeacherSurveyInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
-        context['options'] = OptionInfo.objects.all()
-        context['submit'] = SubmitSurvey.objects.all()
+        context['options'] = OptionInfo.objects.filter(Question_Code__in=context['questions']).order_by('pk')
+        context['submit'] = SubmitSurvey.objects.filter(Survey_Code=self.kwargs.get('pk'))
+        if self.object.Retaken_From:
+            context['history'] = SurveyInfo.objects.filter(id=self.object.Retaken_From)
+            context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.Retaken_From).order_by(
+                'Version_No')
+
+        else:
+            context['history'] = SurveyInfo.objects.filter(id=self.object.id)
+            context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.id).order_by(
+                'Version_No')
         return context
 
 
@@ -1231,11 +1245,13 @@ class Index(LoginRequiredMixin, ListView):
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
     topic = None
     node_group = NodeGroup.objects.all()
+    topics =  Topic.objects.all()
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
         topic = Topic.objects.get(pk=topic_pk)
-    topics = Topic.objects.filter(node_group=nodegroup_pk, center_associated_with=request.user.Center_Code).filter(
-        id__in=Topic_related_to_user(request))
+    if nodegroup_pk:
+        topics = topics.filter(node_group=nodegroup_pk)
+    topics = topics.filter(id__in=Topic_related_to_user(request))
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
         if form.is_valid():
@@ -1599,10 +1615,13 @@ def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
 
 
+import operator
+from django.db.models import Q
+from functools import reduce
+from operator import or_
 def ThreadSearchAjax(request, topic_id, threadkeywordList):
     threadkeywordList = threadkeywordList.split("_")
-
-    RelevantThread = []
+    RelevantThread=[]
     if topic_id:
         RelevantThread = Thread.objects.filter(topic=topic_id)
         pass
@@ -1610,7 +1629,6 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
         RelevantTopics = Topic_related_to_user(request).values_list('pk')
         RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
         pass
+    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList )))[:5]
+    return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
 
-    return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread': RelevantThread})
-
-    pass
