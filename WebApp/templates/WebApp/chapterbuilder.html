@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
   <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
@@ -25,6 +25,17 @@
 </head>
 
 <style>
+  /* #tabs-for-download{
+    width: 100vw; 
+    height: 56.25vw; 
+    max-height: 100vh;
+    max-width: 177.78vh; 
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0; 
+    left:0;right:0;
+  } */
+
   .tlimit {
     zoom: 80%;
     min-width: 130px;
@@ -83,6 +94,12 @@
     justify-content: flex-start;
   }
 
+  .pagenumber > canvas{
+    height: 100%;
+    width: 100%;
+    border: brown;
+  }
+
   .right-sidebar-content::-webkit-scrollbar {
     display: none;
   }
@@ -101,7 +118,7 @@
     <div class="editor row">
 
       <!-- Preview Bar must be here... -->
-      <div class=" col-sm-2 col-md-2  col-lg-2 col-xl-2 sidebar">
+      <div class=" col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 sidebar">
 
         <br>
 
@@ -454,6 +471,7 @@
     var save_json_url = "{% url 'saveJson' %}";
     var import_zip_url = '{% url "importzip" %}';
     var csrf_token = '{{csrf_token}}'
+    var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}'
 
     $('#chapterlist').val(chapterID);
 
@@ -499,6 +517,7 @@
   </script>
   {# <script src="https://player.vimeo.com/api/player.js"></script> #}
   <script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
+  <script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
 
   <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
   <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>

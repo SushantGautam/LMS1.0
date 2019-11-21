@@ -55,26 +55,27 @@ $("#SaveBtn").on("click",function(e){
     $.each( obj, function( i, value ) {
       if(value.classList.contains('textdiv')){
         var clone = $(this).find('.note-editable').clone();
-        console.log(clone)
         // clone.find('div').remove();
         var content_html = clone.html();
         textdiv.push(
           {
-            'tops': positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
-            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
-            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
-            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
+            'tops': $(this)[0].style.top,
+            'left': $(this)[0].style.left,
+            'width': $(this)[0].style.width,
+            'height': $(this)[0].style.height,
             'content': content_html
           }
         );
       }
       if(value.classList.contains('pic')){
+        console.log($(this)[0].style.height, $(this)[0].style.width, $('#tabs-for-download').css('height'))
+
         picdiv.push(
           {
-            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
-            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
-            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
-            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
+            'tops': $(this)[0].style.top,
+            'left': $(this)[0].style.left,
+            'width': $(this)[0].style.width,
+            'height': $(this)[0].style.height,
             'background-image': $(this).find("img").attr('src')
           }
         );
@@ -82,10 +83,10 @@ $("#SaveBtn").on("click",function(e){
       if(value.classList.contains('btn-div')){
         buttondiv.push(
           {
-            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
-            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
-            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
-            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
+            'tops': $(this)[0].style.top,
+            'left': $(this)[0].style.left,
+            'width': $(this)[0].style.width,
+            'height': $(this)[0].style.height,
             'link': $(this).children("a").attr('href'),
             'btn_name': $(this).children("a").text(),
           }
@@ -94,10 +95,10 @@ $("#SaveBtn").on("click",function(e){
       if(value.classList.contains('pdfdiv')){
         pdf.push(
           {
-            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
-            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
-            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
-            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
+            'tops': $(this)[0].style.top,
+            'left': $(this)[0].style.left,
+            'width': $(this)[0].style.width,
+            'height': $(this)[0].style.height,
             'link': $(this).find('object').attr('data'),
           }
         );
@@ -108,10 +109,10 @@ $("#SaveBtn").on("click",function(e){
 
         video.push(
           {
-            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
-            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
-            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
-            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
+            'tops': $(this)[0].style.top,
+            'left': $(this)[0].style.left,
+            'width': $(this)[0].style.width,
+            'height': $(this)[0].style.height,
             'online_link': online_link,
             'local_link': local_link
           }
@@ -122,25 +123,25 @@ $("#SaveBtn").on("click",function(e){
 
         _3d.push(
           {
-            'tops':  positionConvert($(this).css("top"),$('.editor-canvas').css('height')),
-            'left': positionConvert($(this).css("left"),$('.editor-canvas').css('width')),
-            'width': positionConvert($(this).css("width"),$('.editor-canvas').css('width')),
-            'height': positionConvert($(this).css("height"),$('.editor-canvas').css('height')),
+            'tops': $(this)[0].style.top,
+            'left': $(this)[0].style.left,
+            'width': $(this)[0].style.width,
+            'height': $(this)[0].style.height,
             'link': link,
           }
         );
       }
+      
     });
-    
-    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d}]
+    thumbnail = ($(value)[0].style['background-image'])
+    pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'thumbnail': thumbnail}]
   });
   data = {
-    'csrfmiddlewaretoken': csrf_token,
     'numberofpages': numberofpages, 
     'chaptertitle': $('#chaptertitle').text(),
     'pages': pages,
-    'canvasheight': positionConvert($('.editor-canvas').css('height'),$('body').height()),
-    'canvaswidth': positionConvert($('.editor-canvas').css('width'), $('body').width()),
+    'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
+    'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
   };
   var json=JSON.stringify(data);
   $.ajax({

@@ -62,7 +62,7 @@
                 <div class="controls"><select name="topic" id="id_topic" required="" class="select form-control">
                         {% if not fixed_nodegroup %}
                         <option value="" selected="">---------</option>
-                        {% for c in form.fields.topic.queryset %}
+                        {% for c in topics %}
                         <option class="{{ c.node_group.id }}" value="{{ c.id|capfirst }}" style="display: none;">{{ c }}
                         </option>
                         {% endfor %}
@@ -91,10 +91,14 @@
 
 
 
+
             <div id="div_id_title" class="form-group"><label for="id_title" class="control-label  requiredField">
                     Title<span class="asteriskField">*</span> </label>
-                <div class="controls "><input type="text" name="title" id="id_title" required=""
+                <div class="controls "><input type="text" autocomplete="off" name="title" id="id_title" required=""
                         class="textinput textInput form-control" maxlength="120"></div>
+            </div>
+
+            <div id="threadList">
             </div>
 
             <div class="x_panel">
@@ -215,19 +219,7 @@
     $(document).ready(function () {
         $("#id_node_group").on("change", function () {
             var levelClass = $("#id_node_group").find('option:selected').attr('id');
-            $('#id_topic option').each(function () {
-                var self = $(this);
-                if (self.hasClass(levelClass) || typeof (levelClass) == "undefined") {
-                    self.show();
-                } else {
-                    self.hide();
-                }
-            });
-        });
-    });
-    $(function () {
-        $("#id_node_group").on("change", function () {
-            var levelClass = $("#id_node_group").find('option:selected').attr('id');
+            $('#id_topic').val('')
             $('#id_topic option').each(function () {
                 var self = $(this);
                 if (self.hasClass(levelClass) || typeof (levelClass) == "undefined") {
@@ -240,6 +232,44 @@
     });
 
 </script>
+
+{% include 'ForumInclude/threadSearch.html' %}
+
+<script>
+
+
+    $('#id_title').keydown(function (e) {
+
+
+        if ($("#id_title").val() === "") {
+            $("#threadList").html('');
+
+        }
+
+
+        else if (e.keyCode == 32) {
+            var topicId = $('#id_topic').val() ? $('#id_topic').val() : 0;
+            var threadTitleText = $('#id_title').val() ? $('#id_title').val() : "";
+            threadTitleText = threadTitleText.removeStopWords().replace("/", "").replace("\\", "").replace("_", "").replace("?", "").replace(",", " ");
+            threadTitleText = threadTitleText.replace(" ", "_");
+
+
+            $.ajax({
+                type: "GET",
+                url: "/students/forum/create_thread/threadsearchAjax/" + topicId + "/" + threadTitleText,
+                success: function (data) {
+                    if (data.length !== 9) {
+                        $("#threadList").html("Related Threads");
+                        $("#threadList").append(data);
+                    }
+
+                }
+            });
+        }
+    });
+
+</script>
+
 
 
 
