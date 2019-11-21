@@ -131,261 +131,267 @@
             height: 5px;
         }
         
+        .thumbnail-container{
+            text-align: center;
+        }
+
         .thumbnails{
             height: 50px;
             width: 50px;
             display: inline-block;
+        }
+
+        .thumbnails img{
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 
 </head>
 
 <body>
-<div class="container-fluid">
-    <!-- For Title -->
+    <div class="container-fluid">
+        <!-- For Title -->
 
 
-    <div class="row overall-contents">
-        <div id="prev-btn" class="button-position" style="left:0;">
-            <i class="fa fa-backward"></i>
-        </div>
-        <div id="next-btn" class="button-position" style="right:0;">
-            <i class="fa fa-forward"></i>
-        </div>
-
-        <div id="container" style="position: relative;">
-
-            <div class="content-title1  text-center">
-                    <span id="chaptertitle" class="content-title">
-                        <!-- Chapter title goes here -->
-                        {{ chapter }}
-                    </span>
+        <div class="row overall-contents">
+            <div id="prev-btn" class="button-position" style="left:0;">
+                <i class="fa fa-backward"></i>
+            </div>
+            <div id="next-btn" class="button-position" style="right:0;">
+                <i class="fa fa-forward"></i>
             </div>
 
-            <div id="page-contents"></div>
+            <div id="container" style="position: relative;">
 
-        </div>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped bg-success" style="width: 0%;" role="progressbar"
-                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
+                <div class="content-title1  text-center">
+                        <span id="chaptertitle" class="content-title">
+                            <!-- Chapter title goes here -->
+                            {{ chapter }}
+                        </span>
+                </div>
 
-        <div class = "thumbnail-slider">
-            <div class="thumbnail-container">
-                <!-- Thumbnail goes here -->
+                <div id="page-contents"></div>
+
             </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped bg-success" style="width: 0%;" role="progressbar"
+                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
+            <div class = "thumbnail-slider">
+                <div class="thumbnail-container">
+                    <!-- Thumbnail goes here -->
+                </div>
+            </div>
+
+            <div class="content-footer1 text-center">
+                Page <span id="currentpage"></span> of <span id="totalpages"></span>
+            </div>
+
+        </div>
+        {% if "teachers" in request.path %}
+            {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
+        {% elif "students" in request.path %}
+            {% include "chapter/Content_Viewer_WebSocket_students.html" %}
+        {% endif %}
+
+        <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
         </div>
 
-        <div class="content-footer1 text-center">
-            Page <span id="currentpage"></span> of <span id="totalpages"></span>
+        <div id="closechatopen">
+            <a class="float">
+                <i class="fa fa-file-text my-float"></i>
+            </a>
+        </div>
+        <!-- For Footer -->
+
+        <div class="row page-slide">
+
         </div>
 
-    </div>
-    {% if "teachers" in request.path %}
-        {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
-    {% elif "students" in request.path %}
-        {% include "chapter/Content_Viewer_WebSocket_students.html" %}
-    {% endif %}
 
-    <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
-    </div>
-
-    <div id="closechatopen">
-        <a class="float">
-            <i class="fa fa-file-text my-float"></i>
-        </a>
-    </div>
-    <!-- For Footer -->
-
-    <div class="row page-slide">
-
-    </div>
-
-
-    <div class="chatonly" style="display: none">
-        <div class=" full-chat-container  bootstrap snippet">
-           
-               
-                    <div class="row upbarchat">
-                            <div class="col-md-7 col-sm-11 col-xs-11">
-                                    <ul class="chat-nav "  style="padding-left: 0px;">
-                                            {% if "teachers" in request.path %}
-                                                <li> Quick Quiz  <i class="fa fa-pencil"></i></li>
-                                                <li>Quick Survey  <i class="fa fa-pencil"></i></li>
-                                                <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>
-                                            {% else %}
-                                                
-                                               
-                                               
-                                                <li>Follow Teacher <i class="fa fa-book"> </i></li>
-                                            {% endif %}   
-                                            <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
-                                            <li>Sound <input id="chatsound" type="checkbox" checked></li>
-                                           
-                                    </ul>
-                               </div>
-                               <div class="col-md-5 col-sm-1 col-xs-1 text-right">
-                                    <span onclick="history.go(0)"> Reload Content  <i class="fa fa-refresh"></i></span>
-                                    <span id="closechatbox"> <i class="fa fa-close"></i></span>
-                                    <div>
-                                            <span  id="google_translate_element"></span>
-                                    </div>
+        <div class="chatonly" style="display: none">
+            <div class=" full-chat-container  bootstrap snippet">
             
-                               </div>
-
-                    </div>
-                  
-
-                      <div class="row" style="
-                      margin-right: 0px!important;
-                      margin-left: 0px!important;
-                  ">
-                          <div class="col-md-8  bg-white ">
-                                  <div class="row upbarchat">
-              
-              
-              
-              
-                                  </div>
-                                  <div class="chat-message">
-                                      <ul class="chat" id="chat-box-content">
-                                          <li class="left clearfix">
-                                      <span class="chat-img pull-left">
-                                          <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                                      </span>
-                                              <div class="chat-body clearfix">
-                                                  <div class="header">
-                                                      <strong class="primary-font">UBL BOT</strong>
-                                                      <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
-                                                          ago</small>
-                                                  </div>
-                                                  <p>
-                                                      Hello! Try sending a message to everyone online now.
-                                                  </p>
-                                              </div>
-                                          </li>
-                                          <li class="right clearfix">
-                                      <span class="chat-img pull-right">
-                                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                                      </span>
-                                              <div class="chat-body clearfix">
-                                                  <div class="header">
-                                                      <strong class="primary-font">You</strong>
-                                                      <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                                                          ago</small>
-                                                  </div>
-                                                  <p>
-                                                     Sure.
-                                                  </p>
-                                              </div>
-                                          </li>
-              
-                                      </ul>
-                                  </div>
-                                
-                              </div>
-                              <div class="col-md-4 bg-white ">
-                                  <div class="row upbarchat">
-              
-                                   
-              
-                                  </div>
-              
-                                  <!-- =============================================================== -->
-                                  <!-- member list -->
-                                  <div class="friend-list-height">
-                  
-             
-                                      <ul class="friend-list">
-                                          <li class="active ">
-                                              <a href="#" class="clearfix">
-                                                  <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                                 
-                                                  
-                                                  <small class="time text-muted" style="font-size: 12px;">Just now</small>
-                                                  
-                                                  <small class="chat-alert label label-danger">1</small>
-                                                  <h5>sss</h5>
-                                                
-                                              </a>
-                                              
-                                             
-                                          </li>
-                                          <li class=" ">
-                                                  <a href="#" class="clearfix">
-                                                      <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle"><br>
-                                                     
-                                                    
-                                                      <small class="time text-muted" style="font-size: 12px;">Just now</small>
-                                                      
-                                                      <small class="chat-alert label label-danger">1</small>
-                                                      
-                                                     
-                                                    
-                                                  </a>
-                                                 
-                                              </li>
-                                              <li class=" ">
-                                                      <a href="#" class="clearfix">
-                                                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                                         
-                                                       
-                                                          <small class="time text-muted" style="font-size: 12px;">Just now</small>
-                                                          
-                                                          <small class="chat-alert label label-danger">1</small>
-                                                        
-                                                      </a>
-                                                     
-                                                  </li>
-                                                  <li class=" ">
-                                                          <a href="#" class="clearfix">
-                                                              <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-  
-                                                             
-                                                             
-                                                              <small class="time text-muted" style="font-size: 12px;">Just now</small>
-                                                              
-                                                              <small class="chat-alert label label-danger">1</small>
-                                                            
-                                                          </a>
-                                                         
-                                                      </li>
-                                         
-              
-                                      </ul>
-                                  </div>
-                                  
-              
-                              </div>
-
-                      </div>
-                         
-                      <div class="row" style="
-                      margin-right: 0px!important;
-                      margin-left: 0px!important;"" >
-                            <div class="chat-box bg-white">
-                                    <div class="input-group">
-                                        <input id="chatmessageinput"
-                                               class="form-control border no-shadow no-rounded"
-                                               placeholder="Type your message here" required>
-                                        <span class="input-group-btn">
-                                    <button class="btn btn-success no-rounded" type="button"
-                                            onclick="sendMessageWritten()">Send</button>
-                                </span>
-                                    </div><!-- /input-group -->
-                                </div>
-                    </div>
                 
+                        <div class="row upbarchat">
+                                <div class="col-md-7 col-sm-11 col-xs-11">
+                                        <ul class="chat-nav "  style="padding-left: 0px;">
+                                                {% if "teachers" in request.path %}
+                                                    <li> Quick Quiz  <i class="fa fa-pencil"></i></li>
+                                                    <li>Quick Survey  <i class="fa fa-pencil"></i></li>
+                                                    <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>
+                                                {% else %}
+                                                    
+                                                
+                                                
+                                                    <li>Follow Teacher <i class="fa fa-book"> </i></li>
+                                                {% endif %}   
+                                                <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
+                                                <li>Sound <input id="chatsound" type="checkbox" checked></li>
+                                            
+                                        </ul>
+                                </div>
+                                <div class="col-md-5 col-sm-1 col-xs-1 text-right">
+                                        <span onclick="history.go(0)"> Reload Content  <i class="fa fa-refresh"></i></span>
+                                        <span id="closechatbox"> <i class="fa fa-close"></i></span>
+                                        <div>
+                                                <span  id="google_translate_element"></span>
+                                        </div>
+                
+                                </div>
 
-                <!--=========================================================-->
-                <!-- selected chat -->
+                        </div>
+                    
 
-            </div>
+                        <div class="row" style="
+                        margin-right: 0px!important;
+                        margin-left: 0px!important;
+                    ">
+                            <div class="col-md-8  bg-white ">
+                                    <div class="row upbarchat">
+                
+                
+                
+                
+                                    </div>
+                                    <div class="chat-message">
+                                        <ul class="chat" id="chat-box-content">
+                                            <li class="left clearfix">
+                                        <span class="chat-img pull-left">
+                                            <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                                        </span>
+                                                <div class="chat-body clearfix">
+                                                    <div class="header">
+                                                        <strong class="primary-font">UBL BOT</strong>
+                                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
+                                                            ago</small>
+                                                    </div>
+                                                    <p>
+                                                        Hello! Try sending a message to everyone online now.
+                                                    </p>
+                                                </div>
+                                            </li>
+                                            <li class="right clearfix">
+                                        <span class="chat-img pull-right">
+                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                                        </span>
+                                                <div class="chat-body clearfix">
+                                                    <div class="header">
+                                                        <strong class="primary-font">You</strong>
+                                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
+                                                            ago</small>
+                                                    </div>
+                                                    <p>
+                                                        Sure.
+                                                    </p>
+                                                </div>
+                                            </li>
+                
+                                        </ul>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-4 bg-white ">
+                                    <div class="row upbarchat">
+                
+                                    
+                
+                                    </div>
+                
+                                    <!-- =============================================================== -->
+                                    <!-- member list -->
+                                    <div class="friend-list-height">
+                    
+                
+                                        <ul class="friend-list">
+                                            <li class="active ">
+                                                <a href="#" class="clearfix">
+                                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                                                    
+                                                    
+                                                    <small class="time text-muted" style="font-size: 12px;">Just now</small>
+                                                    
+                                                    <small class="chat-alert label label-danger">1</small>
+                                                    <h5>sss</h5>
+                                                    
+                                                </a>
+                                                
+                                                
+                                            </li>
+                                            <li class=" ">
+                                                    <a href="#" class="clearfix">
+                                                        <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle"><br>
+                                                        
+                                                        
+                                                        <small class="time text-muted" style="font-size: 12px;">Just now</small>
+                                                        
+                                                        <small class="chat-alert label label-danger">1</small>
+                                                        
+                                                        
+                                                        
+                                                    </a>
+                                                    
+                                                </li>
+                                                <li class=" ">
+                                                        <a href="#" class="clearfix">
+                                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                                                            
+                                                        
+                                                            <small class="time text-muted" style="font-size: 12px;">Just now</small>
+                                                            
+                                                            <small class="chat-alert label label-danger">1</small>
+                                                            
+                                                        </a>
+                                                        
+                                                    </li>
+                                                    <li class=" ">
+                                                            <a href="#" class="clearfix">
+                                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+    
+                                                                
+                                                                
+                                                                <small class="time text-muted" style="font-size: 12px;">Just now</small>
+                                                                
+                                                                <small class="chat-alert label label-danger">1</small>
+                                                                
+                                                            </a>
+                                                            
+                                                        </li>
+                                            
+                
+                                        </ul>
+                                    </div>
+                                    
+                
+                                </div>
+
+                        </div>
+                            
+                        <div class="row" style="
+                        margin-right: 0px!important;
+                        margin-left: 0px!important;"" >
+                                <div class="chat-box bg-white">
+                                        <div class="input-group">
+                                            <input id="chatmessageinput"
+                                                class="form-control border no-shadow no-rounded"
+                                                placeholder="Type your message here" required>
+                                            <span class="input-group-btn">
+                                        <button class="btn btn-success no-rounded" type="button"
+                                                onclick="sendMessageWritten()">Send</button>
+                                    </span>
+                                        </div><!-- /input-group -->
+                                    </div>
+                        </div>
+                    
+
+                    <!--=========================================================-->
+                    <!-- selected chat -->
+
+                </div>
         </div>
     </div>
-
-
-</div>
 </body>
 </html>
 
@@ -636,6 +642,10 @@
                 $('#page-contents').empty();
                 loaddata(data, window.currentpage)
             }
+            $('.thumbnails').removeAttr('style')
+            $('.thumbnails[value='+window.currentpage+']').css({
+                'border': '1px solid red'
+            })
         }
         setThumbnails();            
         var x = window.matchMedia("(max-width: 767px)")
@@ -672,7 +682,8 @@
             $('#currentpage').text(this.value);
             getProgressWidth();
         }); 
-});
+    });
+    
     function sendMessageWritten() {
 
         chatSocket.send(
