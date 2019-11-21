@@ -113,7 +113,7 @@
         <button class="btn btn-primary" type="submit">Submit</button>
       </div>
     </div>
-  </div>
+  </div><lm></lm>
 
 </form>
 
@@ -322,6 +322,7 @@
       $("div[id$='Question_Type']").hide();
 
       $("#categoryForm").submit(function (e) {
+          e.preventDefault();
           var non_empty_count = 0;
           var non_empty_op_count = 0;
           for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {
@@ -354,6 +355,23 @@
               $(".question_error").html("End Date must be greater than Start Date");
               return false;
           }
+
+          $.ajax({
+              //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
+              cache: false,
+              contentType: false,
+              processData: false,
+              data: new FormData($(this)[0]),
+              url: $(this).prop("action"), // URL to your view that serves new info
+              //data: $(this).serialize(), // get the form data
+              type: $(this).attr('method'), // GET or POST
+              success: function (response) {
+                  survey_create_content(response);
+              },
+              error: function () {
+                  console.log('Error in posting form');
+              }
+          });
       });
 
   </script>

@@ -339,7 +339,23 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
 
 
+import operator
+from django.db.models import Q
+from functools import reduce
+from operator import or_
+def ThreadSearchAjax(request, topic_id, threadkeywordList):
 
+    threadkeywordList = threadkeywordList.split("_")
+    RelevantThread=[]
+    if topic_id:
+        RelevantThread = Thread.objects.filter(topic=topic_id)
+        pass
+    else:
+        RelevantTopics = Topic_related_to_user(request).values_list('pk')
+        RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
+        pass
+    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList )))[:5]
+    return render(request, 'forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
 
 
 @login_required

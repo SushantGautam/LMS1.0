@@ -127,12 +127,15 @@ class MemberInfo(AbstractUser):
 
     @property
     def Avatar(self):
-        if self.Member_Gender =='F':
-            default_avatar = 'images/profile/female.png'
-        elif self.Member_Gender =='M':
-            default_avatar = 'images/profile/male.jpg'
+        if self.Member_Avatar:
+            default_avatar = self.Member_Avatar.url
         else:
-            default_avatar ='images/profile/profile.png'
+            if self.Member_Gender =='F':
+                default_avatar = '/static/images/profile/female.png'
+            elif self.Member_Gender =='M':
+                default_avatar = '/static/images/profile/male.jpg'
+            else:
+                default_avatar ='/static/images/profile/profile.png'
         return default_avatar
             
     class Meta:
