@@ -1,7 +1,7 @@
 {% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
   <!-- iCheck -->
-  <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+    <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
@@ -98,6 +98,9 @@
                 </div> -->
         </div>
 
+        <div class="text-danger" style="display: none" id="survey_already_taken">You have already taken this survey.
+        </div>
+
         <form id="surveyform" method="post" action="{% url 'ParticipateSurvey' %}">
           {% csrf_token %}
           {% for question in questions %}
@@ -115,10 +118,8 @@
                     {% for option in options %}
                       {% if option.Question_Code.pk == question.pk %}
                         <div class="radio">
-                          <label>
-                            <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"
-                                   value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }} &nbsp;
-                          </label>
+                          <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"
+                                 value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}
                         </div>
                       {% endif %}
                     {% endfor %}
@@ -133,7 +134,7 @@
                       <strong>{{ question.Question_Name }}</strong>
                     </h2>
                     <h5>
-                      {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}
+                      {#                      {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}#}
                     </h5>
                   </div>
                   <div style="
@@ -158,7 +159,7 @@
           <input type="hidden" name="userId" value="{{ request.user.id }}">
           {#                <!-- {{ request.user.id }} -->#}
           <div class="text-center">
-            <button class="btn btn-success" style="margin-top:4em">Submit</button>
+            <button id="survey_submit_button" class="btn btn-success" style="margin-top:4em">Submit</button>
           </div>
         </form>
       </div>
@@ -170,7 +171,7 @@
 {% block javascripts %}
 
   <!-- iCheck -->
-  <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script>
+    <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script>
 
   <script>
       $('#retakeSurveyBtn').on('click', function () {
@@ -185,37 +186,25 @@
       });
       // categoryAddButton({{ categoryName }});
 
-      $('#surveyform').submit(function (e) {
-          // e.preventDefault();
-          var canSubmit = true;
-          {% for x in object.submitsurvey.all %}
-              console.log('{{x.id}}');
-              console.log('{{ x.Student_Code.id }}');
-              console.log('{{ request.user.id }}');
-              {% if x.Student_Code.id == request.user.id %}
-                  canSubmit = false;
-              {% endif %}
-          {% endfor %}
-          console.log(canSubmit);
-          if (canSubmit) {
-              $.ajax({
-                  type: $(this).attr('method'),
-                  data: $(this).serialize(),
-                  url: "{% url 'ParticipateSurvey' %}",  // URL to your view that serves new info
-                  success: function () {
-                      $('#participatedSurvey').replaceWith(`<i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="truess"></i>`);
-                  },
-                  error: function () {
-                      console.log('Error Already submitted')
-                  }
+      // e.preventDefault();
+      var canSubmit = true;
+      {% for x in object.submitsurvey.all %}
+          console.log('{{x.id}}');
+          console.log('{{ x.Student_Code.id }}');
+          console.log('{{ request.user.id }}');
+          {% if x.Student_Code.id == request.user.id %}
+              canSubmit = false;
+          {% endif %}
+      {% endfor %}
+      console.log(canSubmit);
+      if (canSubmit) {
 
-              });
-          } else {
-              alert('You cannot submit');
-              e.preventDefault();
-          }
+      } else {
+          $("#survey_already_taken").show();
+          $("#surveyform :input").prop("readonly", true);
+          $("#surveyform :input").prop("disabled", true);
+      }
 
-      });
 
   </script>
 
