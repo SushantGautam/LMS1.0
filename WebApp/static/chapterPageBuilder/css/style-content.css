@@ -37,11 +37,11 @@
     position: relative;
     display: block;
     padding: 10px 10px;
-    /*transition: all .2s ease;*/
-    /*-webkit-transition: all .2s ease;*/
-    /*-moz-transition: all .2s ease;*/
-    /*-ms-transition: all .2s ease;*/
-    /*-o-transition: all .2s ease;*/
+    transition: all .2s ease;
+    -webkit-transition: all .2s ease;
+    -moz-transition: all .2s ease;
+    -ms-transition: all .2s ease;
+    -o-transition: all .2s ease;
 }
 
 .friend-list li.active {
@@ -149,11 +149,11 @@ img {
     border-top: 1px solid #f1f5fc;
     border-left: 1px solid #f1f5fc;
     content: '';
-    /*transform: rotate(-45deg);*/
-    /*-webkit-transform: rotate(-45deg);*/
-    /*-moz-transform: rotate(-45deg);*/
-    /*-ms-transform: rotate(-45deg);*/
-    /*-o-transform: rotate(-45deg);*/
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
 }
 
 .chat li.right .chat-body:before {
@@ -167,11 +167,11 @@ img {
     border-top: 1px solid #f1f5fc;
     border-right: 1px solid #f1f5fc;
     content: '';
-    /*transform: rotate(45deg);*/
-    /*-webkit-transform: rotate(45deg);*/
-    /*-moz-transform: rotate(45deg);*/
-    /*-ms-transform: rotate(45deg);*/
-    /*-o-transform: rotate(45deg);*/
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
 }
 
 .chat li {
@@ -185,9 +185,9 @@ img {
 
 .chat-box {
 
-    /*-moz-transition: all .5s ease;*/
-    /*-ms-transition: all .5s ease;*/
-    /*-o-transition: all .5s ease;*/
+    -moz-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    -o-transition: all .5s ease;
 }
 
 .primary-font {
@@ -201,17 +201,17 @@ a:hover, a:active, a:focus {
 
 .chatonly {
 
-    position: absolute;
+position: absolute;
 
-    bottom: 0;
+bottom: 0;
 
-    right: 0;
+right: 5;
 
-    border-radius: 5px;
+border-radius: 5px;
 
-    border: 2px solid #3c8dbc;
+border: 2px solid #3c8dbc;
 
-    /*transition: all 0.3s ease;*/
+transition: all 0.3s ease;
 }
 
 .full-chat-container {
@@ -239,8 +239,8 @@ a:hover, a:active, a:focus {
     color: #FFF;
     border-radius: 50px;
     text-align: center;
-    /* box-shadow: 2px 2px 3px #999; */
-    /*transition: all 0.3s ease;*/
+     box-shadow: 2px 2px 3px #999;
+    transition: all 0.3s ease;
 }
 
 .my-float {
@@ -303,8 +303,8 @@ a:hover, a:active, a:focus {
     position: absolute;
 
     display: none;
-    /*transition: all 1s ease;*/
-    /*-webkit-transition: all 0.3s ease;*/
+    transition: all 1s ease;
+    -webkit-transition: all 0.3s ease;
 }
 
 .button-position:hover {
@@ -348,15 +348,15 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     display: none;
-    /*transition: all 0.3s ease;*/
-    /*-webkit-transition: all 0.3s ease;*/
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
 .content-title1 {
 
-    /*transition: all 0.3s ease;*/
-    /*-webkit-transition: all 0.3s ease;*/
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
     position: relative;
     top: 0;
     left: 0;
@@ -384,8 +384,8 @@ body {
     height: 30px;
     line-height: 30px;
     display: none;
-    /*transition: all 0.3s ease;*/
-    /*-webkit-transition: all 0.3s ease;*/
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
 
 
 }
