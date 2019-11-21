@@ -131,6 +131,11 @@
             height: 5px;
         }
         
+        .thumbnails{
+            height: 50px;
+            width: 50px;
+            display: inline-block;
+        }
     </style>
 
 </head>
@@ -163,6 +168,12 @@
         <div class="progress">
             <div class="progress-bar progress-bar-striped bg-success" style="width: 0%;" role="progressbar"
                  aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class = "thumbnail-slider">
+            <div class="thumbnail-container">
+                <!-- Thumbnail goes here -->
+            </div>
         </div>
 
         <div class="content-footer1 text-center">
@@ -407,7 +418,7 @@
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 
 <script type="text/javascript">
-    var roomName = "ChapterChat{{chapter.id}}";
+    var roomName = "ChapterChat{{course.id}}";
     var chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
     chatSocket.onclose = function (e) {
         console.error("Chat socket closed unexpectedly");
@@ -629,7 +640,15 @@
                         `)
                         });
                     }
+                    
                 });
+                // console.log(value[0]['thumbnail'])
+                $('.thumbnail-container').append(`
+                    <li class = 'thumbnails' value = ${key}>  
+                        <img src = "${value[0]['thumbnail']}"></img>    
+                    </li> 
+                `);
+               
             });
         });
     }
@@ -742,7 +761,7 @@
                         });
                     }
                 });
-            });
+            });            
         });
     }
 

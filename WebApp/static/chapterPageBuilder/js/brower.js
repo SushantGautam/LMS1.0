@@ -133,7 +133,7 @@ $("#SaveBtn").on("click",function(e){
       }
       
     });
-    thumbnail = ($(value)[0].style['background-image'])
+    thumbnail = ($(value)[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
     pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'thumbnail': thumbnail}]
   });
   data = {
