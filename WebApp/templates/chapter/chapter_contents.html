@@ -108,7 +108,7 @@
                         {% endif %}
                         <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
                         <li>Sound <input id="chatsound" type="checkbox" checked></li>
-                        <li id="speakContent"><i class="fa fa-music"> </i> Read </li>
+                        <li id="speakContent"><i class="fa fa-music"> </i> Read</li>
 
                     </ul>
                 </div>
@@ -865,11 +865,12 @@
 
 
     $('#speakContent').click(function () {
+
         speechSynthesis.cancel()
         var text = $('#container').children(":visible").text()
         var msg = new SpeechSynthesisUtterance();
         var voices = window.speechSynthesis.getVoices();
-        msg.voice = voices[1];
+        msg.voice = voices[10];
         msg.rate = 1;
         msg.pitch = 1;
         msg.text = text;
