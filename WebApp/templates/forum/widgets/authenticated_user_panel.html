@@ -6,7 +6,7 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="profile_pic">
-            <img src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}" alt="..." class="img-circle profile_img" />
+            <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" />
         </div>
 
         <a href="{% url 'forum:user_info' request.user.pk %}">
