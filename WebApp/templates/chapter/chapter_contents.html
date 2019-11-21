@@ -501,20 +501,6 @@
             $('#currentpage').text(currentpage);
             getProgressWidth()
         }
-
-        // $("#page-contents > div ").each(function () {
-        //     if ($(this).css("display") == "block") {
-        //         res = this.id.match(/[0-9]+/);
-        //     }
-        // });
-        // if ((res - 1) > 0) {
-        //     let w = (parseFloat($('.progress-bar')[0].style.width)) - (100 / parseFloat('{{data.numberofpages}}'));
-        //     $('.progress-bar').css('width', w + '%')
-        //     $('#page' + res).css("display", "none");
-        //     res--;
-        //     $('#page' + res).css("display", "block")
-        // }
-        // $('#currentpage').text(res);
     });
 
     var data = {{ data | safe}};
@@ -536,7 +522,7 @@
     function loaddata(data, currentpage = 1) {
         window.currentpage = currentpage
         $('#totalpages').text(data.numberofpages);
-        $('#currentpage').text(1);
+        $('#currentpage').text(window.currentpage);
         $.each(data.pages, function (key, value) {
             if(key == window.currentpage){
                 $.each(value, function (count) {
@@ -656,13 +642,13 @@
     function loadsmalldata(data, currentpage = 1) {
         window.currentpage = currentpage
         $('#totalpages').text(data.numberofpages);
-        $('#currentpage').text(1);
+        $('#currentpage').text(window.currentpage);
         $.each(data.pages, function (key, value) {
             if(key == window.currentpage){
                 $.each(value, function (count) {
                 // Create modal
                 $('#page-contents').append(`
-                <div id="page${key}" class = 'coursepages' role="dialog" style="display: none;">
+                <div id="page${key}" class = 'coursepages' role="dialog">
 
                 </div>`)
                 // -------------------------------
@@ -801,7 +787,10 @@
         function Layout(x) {
             if (x.matches) {
                 $('#page-contents').empty();
-                loadsmalldata(data, currentpage)
+                loaddata(data, currentpage);
+                $('#page-contents div').each(function(){
+                    $(this).removeAttr('style')
+                })
             } else {
                 $('#page-contents').empty();
                 loaddata(data, currentpage)
