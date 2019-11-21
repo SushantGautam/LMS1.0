@@ -2,17 +2,23 @@
 
 .bg-white {
   background-color: #fff;
-  height: -webkit-fill-available;
+  padding: 0!important;
 }
+
 
 .chat-box.bg-white {}
 
 .friend-list {
+  width: 153px;
   list-style: none;
-  margin-left: -40px;
   overflow: auto;
   height: -webkit-fill-available;
   overflow: auto;
+  /* padding: 0px!important; */
+  min-height: 50vh;
+  margin: 0;
+  padding-right: 10px!important;
+  padding-left: 0;
 }
 
 .friend-list li {
@@ -22,15 +28,15 @@
 
 .friend-list li a img {
   float: left;
-  width: 45px;
-  height: 45px;
+  width: 30px;
+  height: 30px;
   margin-right: 0px;
 }
 
  .friend-list li a {
   position: relative;
   display: block;
-  padding: 10px;
+  padding: 10px 10px;
   transition: all .2s ease;
   -webkit-transition: all .2s ease;
   -moz-transition: all .2s ease;
@@ -38,7 +44,7 @@
   -o-transition: all .2s ease;
 }
 
-.friend-list li.active a {
+.friend-list li.active {
   background-color: #f1f5fc;
 }
 
@@ -80,18 +86,22 @@ small, .small {
     list-style: none;
     margin: 0;
     overflow: auto;
-    max-height: 50vh;
+    max-height: 50vh; 
+    padding: 0px!important ;
 }
 
 .chat-message{
     background: #f9f9f9;
     min-height: 50vh;
     overflow: auto;
+    /* width: 200px; */
+    /* margin-right: 10px; */
+    padding: 10px;
 }
 
 .chat li img {
-  width: 45px;
-  height: 45px;
+  width: 30px;
+  height: 30px;
   border-radius: 50em;
   -moz-border-radius: 50em;
   -webkit-border-radius: 50em;
@@ -106,7 +116,7 @@ img {
 }
 
 .chat li.left .chat-body {
-  margin-left: 70px;
+  margin-left: 40px;
   background-color: #fff;
 }
 
@@ -196,20 +206,26 @@ position: absolute;
 
 bottom: 0;
 
+right: 0;
+
 border-radius: 5px;
 
-border: 2px solid #8a3b89; 
+border: 2px solid #3c8dbc;
 
+transition: all 0.3s ease;
+}
+.full-chat-container{
+  width: 440px;
 }
 
 
 .upbarchat{
 
-background-color: bisque;
+background-color:#3c8dbc;
 
-max-height: 3vh;
+color: white;
 
-overflow: hidden;
+margin: 0!important;
 }
 
 
@@ -220,13 +236,24 @@ overflow: hidden;
 	height:60px;
 	bottom:20px;
 	right:20px;
-	background-color:#0C9;
+	background-color: #337ab7;
 	color:#FFF;
 	border-radius:50px;
 	text-align:center;
-	box-shadow: 2px 2px 3px #999;
+	/* box-shadow: 2px 2px 3px #999; */
+	transition: all 0.3s ease;
 }
 
 .my-float{
 	margin-top:22px;
 }
+
+.chat-nav li{
+  display: inline-block;
+  font-size: 13px;
+  margin: 27px;
+  margin: 0 10px;
+}
+/* .friend-list-height{
+  height: 55vh;
+} */
