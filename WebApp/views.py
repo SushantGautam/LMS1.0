@@ -1002,6 +1002,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj = AssignmentInfo()
         Obj.Assignment_Topic = request.POST["Assignment_Topic"]
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
+        Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
@@ -1020,10 +1021,12 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
             Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
+            Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
             Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
             Obj.save()
+
             return JsonResponse(
                 data={'Message': 'Success'}
             )
