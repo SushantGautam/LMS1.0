@@ -1897,21 +1897,48 @@ function openTab(evt, tab_no) {
 // });
 
 
+function resizeImage(url, width, height, callback, dive) {
+    var sourceImage = new Image();
+
+    sourceImage.onload = function () {
+        // Create a canvas with the desired dimensions
+        var canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        // Scale and draw the source image to the canvas
+        canvas.getContext("2d").drawImage(sourceImage, 0, 0, width, height);
+
+        // Convert the canvas to a data URL in PNG format
+        callback(canvas.toDataURL(), dive);
+    }
+
+    sourceImage.src = url;
+}
+
+
 function setThumbnails() {
     let id = $('.current')[0].id.replace(/[^\d.]/g, '');
-
     html2canvas($('.current')[0],).then(canvas => {
         $('.pagenumber').each(function () {
             if (id == this.value) {
-                if (canvas.toDataURL('image/png', 0.01,).startsWith('data:image')) {
-                    $(this).css({
-                        'background-image': 'url("' + canvas.toDataURL('image/png', 0.01) + '")',
-                        'background-position': 'center',
-                        'background-size': 'contain',
-                        'background-repeat': 'no-repeat',
-                    });
+                if (canvas.toDataURL('image/png', 0.0,).startsWith('data:image')) {
+                    resizeImage(canvas.toDataURL('image/png', 0.0), 60, 30, setThumbnailscallback, $(this));
+
                 }
             }
         });
     });
+
+
+}
+
+function setThumbnailscallback(data, dive) {
+    dive.css({
+        'background-image': 'url("' + data + '")',
+        'background-position': 'center',
+        'background-size': 'contain',
+        'background-repeat': 'no-repeat',
+    });
+
 }
