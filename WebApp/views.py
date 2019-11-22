@@ -1545,3 +1545,24 @@ class ContentsView(TemplateView):
             print(e)
             context['data'] = ""
         return context
+
+
+def AchievementPage_Student(request, student_id):
+    student = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
+    pass
+
+from WebApp.forms import AchievementPage_All_form
+def AchievementPage_All(request):
+    studentfilter = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
+    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now())
+    Coursefilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code)
+    form = AchievementPage_All_form(initial={"studentfilter":studentfilter, "Inningsfilter":Inningsfilter, "Coursefilter":Coursefilter} )
+    return render(request, 'WebApp/Achievement_all.html', {'form':form})
+
+def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, Coursefilter=None):
+    studentfilter = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
+    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now())
+    Coursefilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code)
+    
+    return render(request, 'WebApp/AchievementPage_All_Ajax.html', { 'studentfilter':studentfilter})
+

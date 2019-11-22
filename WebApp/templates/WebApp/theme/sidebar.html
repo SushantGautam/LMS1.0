@@ -17,7 +17,8 @@
     <div class="profile clearfix">
         {% if request.user.is_authenticated %}
         <div class="profile_pic">
-            <img src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}" alt="..." class="img-circle profile_img" />
+            <img src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}"
+                alt="..." class="img-circle profile_img" />
         </div>
 
         <div class="profile_info">
@@ -123,6 +124,11 @@
                 </li> -->
                 <li>
                     <a href=" {% url 'surveylist' %}"><i class="fa fa-bar-chart"></i>Survey</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'AchievementPage_All' %}"><i class="fa fa-trophy"></i> Achievement <span></span>
+                    </a>
                 </li>
             </ul>
         </div>

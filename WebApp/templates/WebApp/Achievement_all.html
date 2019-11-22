@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+
+{% block content %}
+<div class="x_panel">
+    {{ form.as_p }}
+
+    <div class="pull-right">
+        <button type="button" id="SearchAchievement" class="btn btn-primary">Search</button>
+        <button type="button" id="ResetBtn" class="btn btn-danger">Reset</button>
+    </div>
+</div>
+
+
+<div class="x_panel">
+    <div class="x_title">
+        <h2>
+            Detail of Category</h2>
+        <br>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered  nowrap">
+            <thead class="thead-light bg-primary">
+                <tr class="tableTitleRow">
+                    <td>Student</td>
+                    <td>Progress
+                    </td>
+                </tr>
+            </thead>
+
+            <tbody id="Student_List_toappend">
+                <tr role="row" class="odd">
+
+                    <td class="sorting_1">
+
+                    </td>
+
+                    <td>Progress
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}
+{% block customjss %}
+<script>
+
+
+    $('#SearchAchievement').click(function () {
+        if ($('#id_Inningsfilter').val() || $('#id_studentfilter').val() || $('#id_Coursefilter').val()) {
+            var id_Inningsfilter = $('#id_Inningsfilter').val() ? $('#id_Inningsfilter').val() : 0;
+            var id_studentfilter = $('#id_studentfilter').val() ? $('#id_studentfilter').val() : 0;
+            var id_Coursefilter = $('#id_Coursefilter').val() ? $('#id_Coursefilter').val() : 0;
+
+            $.ajax({
+                type: "GET",
+                url: "/AchievementPage_All_Ajax/" + id_Inningsfilter + '/' + id_studentfilter + '/' + id_Coursefilter,
+                success: function (data) {
+                    $("#Student_List_toappend").html(data);
+
+                },
+
+            });
+        }
+    });
+
+    $('#ResetBtn').click(function () {
+        $('#id_Inningsfilter').val('');
+        $('#id_studentfilter').val('');
+        $('#id_Coursefilter').val('');
+
+    });
+
+
+</script>
+{% endblock %}
