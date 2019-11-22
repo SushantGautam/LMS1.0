@@ -367,6 +367,33 @@
             this.pause();
         });
     }
+    
+    $(document).ready(function () {
+        
+        $('#page-contents').on('click', '.iframefullscreenbtn', function () {
+            // check if fullscreen mode is available
+            if (document.fullscreenEnabled ||
+                document.webkitFullscreenEnabled ||
+                document.mozFullScreenEnabled ||
+                document.msFullscreenEnabled) {
+
+                // which element will be fullscreen
+                var iframe = $(this).parent().find('object')[0] || $(this).parent().find('iframe')[0];
+                // Do fullscreen
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                    iframe.webkitRequestFullscreen();
+                } else if (iframe.mozRequestFullScreen) {
+                    iframe.mozRequestFullScreen();
+                } else if (iframe.msRequestFullscreen) {
+                    iframe.msRequestFullscreen();
+                }
+            } else {
+                document.querySelector('.error').innerHTML = 'Your browser is not supported';
+            }
+        });
+    });
 
     function loaddata(data, currentpage = 1) {
         window.currentpage = currentpage
@@ -545,7 +572,6 @@
             if(currentpage < data.numberofpages){
                 currentpage += 1;
                 getProgressWidth();
-                // loaddata(data,currentpage)
                 Layout(x)
                 $('#currentpage').text(currentpage);
             }
@@ -555,7 +581,6 @@
             pauseAllVideos();
             if(currentpage != 1){
                 currentpage -= 1;
-                // loaddata(data,currentpage)
                 Layout(x)
                 $('#currentpage').text(currentpage);
                 getProgressWidth()
@@ -638,31 +663,6 @@
         $('.progress-bar').css('width', w + '%')
     }
 
-    $(document).ready(function () {
-        $('.iframefullscreenbtn').on('click', function () {
-            // check if fullscreen mode is available
-            if (document.fullscreenEnabled ||
-                document.webkitFullscreenEnabled ||
-                document.mozFullScreenEnabled ||
-                document.msFullscreenEnabled) {
-
-                // which element will be fullscreen
-                var iframe = $(this).parent().find('object')[0] || $(this).parent().find('iframe')[0];
-                // Do fullscreen
-                if (iframe.requestFullscreen) {
-                    iframe.requestFullscreen();
-                } else if (iframe.webkitRequestFullscreen) {
-                    iframe.webkitRequestFullscreen();
-                } else if (iframe.mozRequestFullScreen) {
-                    iframe.mozRequestFullScreen();
-                } else if (iframe.msRequestFullscreen) {
-                    iframe.msRequestFullscreen();
-                }
-            } else {
-                document.querySelector('.error').innerHTML = 'Your browser is not supported';
-            }
-        });
-    })
 </script>
 
 <script type="text/javascript">
