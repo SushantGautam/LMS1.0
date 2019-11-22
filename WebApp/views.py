@@ -1314,13 +1314,18 @@ def chapterviewer(request):
         chapterID = request.GET['chapterID']
         chapterobj = ChapterInfo.objects.get(id=chapterID)
         courseID = chapterobj.Course_Code.id
-        try:
-            with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
-                    chapterID) + '.txt') as json_file:
-                data = json.load(json_file)
-        except Exception as e:
-            print(e)
-            data = ""
+        file_path = path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(chapterID) + '.txt'
+
+        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+            data = 1
+        else:
+            data = 0
+        # try:
+        #     with open() as json_file:
+        #         data = json.load(json_file)
+        # except Exception as e:
+        #     print(e)
+        #     data = ""
         return JsonResponse({'data': data})
 
 
