@@ -74,13 +74,13 @@
     <div class="content-footer1 text-center">
       Page <span id="currentpage"></span> of <span id="totalpages"></span>
     </div>
-    <a class="float">
-        <div class="closechatopen" id="closechatopen" style=" z-index: 500!important;">
+  
+        <div class="closechatopen float" id="closechatopen" style=" z-index: 500!important;">
             
                 <i class="fa fa-file-text my-float"></i>
         
         </div>
-    </a>
+ 
     <!-- For Footer -->
 
   <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
@@ -349,12 +349,12 @@
     });
 
 
-    $('#closechatbox').hover(function () {
+    $('#closechatbox').on('click mouseover', function () {
         $('.chatonly').hide();
         $('#closechatopen').show();
     });
 
-    $('#closechatopen').hover(function () {
+    $('#closechatopen').on('click mouseover', function() {
         $('.chatonly').show();
         $('#closechatopen').hide();
     });
