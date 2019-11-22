@@ -39,7 +39,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from quiz.models import Progress
 from django.core.exceptions import PermissionDenied
 
-
 datetime_now = datetime.now()
 
 User = get_user_model()
@@ -373,8 +372,18 @@ class questions_student_detail(DetailView):
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
 
-        context['options'] = OptionInfo.objects.all()
-        context['submit'] = SubmitSurvey.objects.all()
+        context['options'] = OptionInfo.objects.filter(
+            Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.object.id)
+        )
+        try:
+            context['submit_survey'] = SubmitSurvey.objects.get(
+                Survey_Code__id=self.object.id,
+                Student_Code__id=self.request.user.id
+            )
+        except SubmitSurvey.DoesNotExist:
+            context['submit_survey'] = None
+
+
 
         return context
 
@@ -531,7 +540,7 @@ class Index(ListView):
 
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
     topic = None
-    topics =  Topic.objects.all()
+    topics = Topic.objects.all()
     node_group = NodeGroup.objects.all()
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
@@ -551,15 +560,16 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
                   {'form': form, 'node_group': node_group, 'title': _('Create Thread'), 'topic': topic,
                    'fixed_nodegroup': fixed_nodegroup, 'topics': topics})
 
-                   
+
 import operator
 from django.db.models import Q
 from functools import reduce
 from operator import or_
-def ThreadSearchAjax(request, topic_id, threadkeywordList):
 
+
+def ThreadSearchAjax(request, topic_id, threadkeywordList):
     threadkeywordList = threadkeywordList.split("_")
-    RelevantThread=[]
+    RelevantThread = []
     if topic_id:
         RelevantThread = Thread.objects.filter(topic=topic_id)
         pass
@@ -567,9 +577,8 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
         RelevantTopics = Topic_related_to_user(request).values_list('pk')
         RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
         pass
-    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList )))[:5]
-    return render(request, 'student_module/student_forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
-
+    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList)))[:5]
+    return render(request, 'student_module/student_forum/ThreadSearchAjax.html', {'RelevantThread': RelevantThread})
 
 
 def create_topic(request, student_nodegroup_pk=None):

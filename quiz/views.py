@@ -771,7 +771,13 @@ class CreateQuizAjax(CreateView):
             self.object.exam_paper = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
             self.object.save()
         self.object.url = 'quiz' + str(self.object.id)
-        return super().form_valid(form)
+        super().form_valid(form)
+        response = {'url': self.request.build_absolute_uri(reverse('quiz_detail', kwargs={'pk': self.object.id})),
+                    'teacher_url': self.request.build_absolute_uri(
+                        reverse('teacher_quiz_detail', kwargs={'pk': self.object.id})),
+                    'student_url': self.request.build_absolute_uri(
+                        reverse('quiz_question', kwargs={'quiz_name': self.object.url}))}
+        return JsonResponse(response)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
