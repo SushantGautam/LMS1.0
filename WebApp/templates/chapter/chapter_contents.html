@@ -721,14 +721,14 @@
 
 
     function CheckIfToScrollChat() {
-        if (document.getElementById('chat-box-content').scrollHeight === $("#chat-box-content").height())
-            $("#chat-box-content").animate({
-                scrollTop: $("#chat-box-content").height()
-            }, 300);
-
+        var isScrolledToBottom = 0;
+        var out = document.getElementById("chat-box-content");
+        isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+        return isScrolledToBottom;
     }
 
     function AddOtherMessageToChat(data) {
+        var CheckIfToScrollChatx = CheckIfToScrollChat()
         $("#chat-box-content").append(`<li class="left clearfix">
                     	<span class="chat-img pull-left">
                     		<img src="` + data.sender_icon + `" alt="` + data.sender_id + `">
@@ -746,13 +746,19 @@
         $('time.timeago').timeago();
 
         if ($('#chatsound').prop('checked')) soundAlert.play();
-        CheckIfToScrollChat();
+        $('time.timeago').timeago();
+        if (CheckIfToScrollChatx) {
+            var out = document.getElementById("chat-box-content");
+            out.scrollTop = out.scrollHeight - out.clientHeight;
+        }
 
 
     }
 
 
     function AddSelfMessageToChat(data) {
+        var CheckIfToScrollChatx = CheckIfToScrollChat()
+        alert("this" + CheckIfToScrollChatx)
         $("#chat-box-content").append(`<li class="right clearfix">
                     	<span class="chat-img pull-right">
                     		<img src="` + data.sender_icon + `" alt="` + data.sender_id + `">
@@ -768,7 +774,11 @@
                                 </div>
                             </li>`);
         $('time.timeago').timeago();
-        CheckIfToScrollChat();
+        if (CheckIfToScrollChatx) {
+            var out = document.getElementById("chat-box-content");
+            out.scrollTop = out.scrollHeight - out.clientHeight;
+
+        }
     }
 
     jQuery(document).ready(function () {
