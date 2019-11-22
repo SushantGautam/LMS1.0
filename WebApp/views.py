@@ -413,6 +413,7 @@ class MemberInfoListViewInactive(ListView):
 class MemberInfoCreateView(CreateView):
     model = MemberInfo
     form_class = MemberInfoForm
+    success_url = reverse_lazy('memberinfo_list')
 
     def form_valid(self, form):
         if form.is_valid():
@@ -421,8 +422,10 @@ class MemberInfoCreateView(CreateView):
             obj.password = make_password(obj.password)
             obj.Use_Flag = True
             obj.save()
+            messages.success(self.request, 'New Member created successfully')
             return super().form_valid(form)
         else:
+            messages.error(self.request, 'Error in creating member')
             print(form.errors)
 
 
