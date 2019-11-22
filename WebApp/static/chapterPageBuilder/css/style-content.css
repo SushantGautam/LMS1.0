@@ -264,7 +264,7 @@ a:hover, a:active, a:focus {
     border: 3px solid green;
     padding: 10px;
     height: 10vh;
-    bottom: 0;
+    bottom: 5;
     display: block;
     width: 80%;
     background: whitesmoke;
@@ -345,12 +345,33 @@ a:hover, a:active, a:focus {
         left: 0;
         right: 0;
     }
+
+    .image-fitting{
+        object-fit: contain!important;
+        height: auto!important;
+    }
+
+
 }
 
-#container {
+.container12 {
     background-color: white;
     color: black;
     overflow: auto;
+
+    width: 100vw;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    max-width: 177.78vh;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.image-fitting{
+    object-fit: cover;
 }
 
 body {
@@ -424,8 +445,12 @@ body {
 }
 
 .progress {
-    margin-top: 5px;
-    height: 5px;
+    margin-bottom: 0px;
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 
 .thumbnails {

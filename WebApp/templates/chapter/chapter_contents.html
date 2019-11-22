@@ -438,7 +438,7 @@
                                 // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
                                 $('#page' + key).append(`
                                     <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
-                                    <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = " width:100%; " class="image-fitting"></img>  </a>
+                                    <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = "height:100%; width:100%;" class="image-fitting"></img>  </a>
                                     </div>
                                 `);
                                 // $('#page' + key).append(css_value.div);
