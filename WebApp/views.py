@@ -225,10 +225,13 @@ def edit_basic_info_ajax(request):
             obj.Member_BirthDate = request.POST['Member_BirthDate']
             obj.Member_Gender = request.POST['Member_Gender']
             obj.save()
+            messages.success(request, 'Profile basic info updated.')
             return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
         except MemberInfo.DoesNotExist:
+            messages.error(request, "Object doesn't exist")
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
     else:
+        messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
@@ -241,10 +244,13 @@ def edit_contact_info_ajax(request):
             obj.Member_Temporary_Address = request.POST['Member_Temporary_Address']
             obj.Member_Permanent_Address = request.POST['Member_Permanent_Address']
             obj.save()
+            messages.success(request, 'Profile Contact details updated.')
             return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
         except MemberInfo.DoesNotExist:
+            messages.error(request, "Object doesn't exist")
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
     else:
+        messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
@@ -254,10 +260,13 @@ def edit_description_info_ajax(request):
             obj = MemberInfo.objects.get(pk=request.user.id)
             obj.Member_Memo = request.POST['Member_Memo']
             obj.save()
+            messages.success(request, 'Profile Description updated.')
             return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
         except MemberInfo.DoesNotExist:
+            messages.error(request, "Object doesn't exist")
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
     else:
+        messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
@@ -267,6 +276,7 @@ def edit_profile_image_ajax(request):
             obj = MemberInfo.objects.get(pk=request.user.id)
             media = request.FILES['Member_Avatar']
             if media.size / 1024 > 2048:
+                messages.error(request, "Can't upload File size exceeds 2MB")
                 return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
@@ -274,12 +284,16 @@ def edit_profile_image_ajax(request):
             filename = fs.save(name, media)
             obj.Member_Avatar = 'Member_images/' + name
             obj.save()
+            messages.success(request, 'Profile picture updated.')
             return JsonResponse({'status': 'Success', 'msg': 'Profile Picture Uploaded successfully'})
         except MemberInfo.DoesNotExist:
+            messages.error(request, "Object doesn't exist")
             return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
         except:
+            messages.error(request, "Error Occured try agian")
             return JsonResponse({'status': "Fail", 'msg': "Some error occured try again"})
     else:
+        messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 

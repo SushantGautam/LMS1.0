@@ -269,10 +269,10 @@ a:hover, a:active, a:focus {
     width: 80%;
     background: whitesmoke;
     margin-left: 10%;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden;
     display: none;
-    scrollbar-width: thin;
+    /* scrollbar-width: thin; */
 }
 
 .thumb-img {
