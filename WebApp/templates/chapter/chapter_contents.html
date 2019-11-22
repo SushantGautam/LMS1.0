@@ -64,10 +64,16 @@
         {% endif %}
 
         <div class="thumbnail-slider">
-            <ul class="thumbnail-container">
+            <ul id="thumbnail-slider" class="thumbnail-container">
                 <!-- Thumbnail goes here -->
             </ul>
+        </div>
 
+        <div id="thumb-next-btn" class="thumb-nav-button" style="right:9%; display: none">
+            <i class="fa fa-forward"></i>
+        </div>
+        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:9%; display: none">
+            <i class="fa fa-backward"></i>
         </div>
 
         <div class="content-footer1 text-center">
@@ -552,8 +558,7 @@
 
     function setThumbnails() {
         $.each(data.pages, function (key, value) {
-            $('.thumbnail-container').append(`
-                <li class = 'thumbnails' value = ${key}>
+            $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
                     <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
                 </li>
             `);
@@ -572,10 +577,10 @@
                 $('#page-contents').empty();
                 loaddata(data, window.currentpage)
             }
-            $('.thumbnails').removeAttr('style')
+            $('.thumbnails').removeAttr('style').removeClass('active');
             $('.thumbnails[value=' + window.currentpage + ']').css({
                 'border': '1px solid red'
-            })
+            }).addClass('active');
         }
 
         setThumbnails();
@@ -591,6 +596,7 @@
                 getProgressWidth();
                 Layout(x)
                 $('#currentpage').text(currentpage);
+                changeThumbScroll(currentpage);
             }
         });
 
@@ -601,6 +607,7 @@
                 Layout(x)
                 $('#currentpage').text(currentpage);
                 getProgressWidth()
+                changeThumbScroll(currentpage);
             }
         });
 
@@ -636,6 +643,12 @@
             ;
         }
     });
+
+
+    function changeThumbScroll(pageID) {
+        document.querySelector("#thumbnail-slider > li.thumbnails.active").scrollIntoView();
+
+    };
 
 
     chatSocket.onmessage = function (e) {
@@ -775,6 +788,17 @@
             history.go(0);
         }, 1000);
 
+
+    });
+
+    $('#thumb-next-btn').hover(function () {
+
+        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() + 300);
+        console.log("hi")
+    });
+    $('#thumb-prev-btn').hover(function () {
+        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() - 300);
+        console.log("hi")
 
     });
 
