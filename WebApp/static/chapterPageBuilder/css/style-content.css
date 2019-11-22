@@ -269,7 +269,7 @@ a:hover, a:active, a:focus {
     width: 80%;
     background: whitesmoke;
     margin-left: 10%;
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: hidden;
     display: none;
     /* scrollbar-width: thin; */
