@@ -2,7 +2,7 @@
 <div class="error" id="alert-message" style="padding: 5px;">
 
     {% for message in messages %}
-    <div class="text-center errorMessage" id="message">
+    <div class="text-center errorMessage bg-{{ message.tags|title|lower }}" id="message">
         <strong>
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
             ERROR

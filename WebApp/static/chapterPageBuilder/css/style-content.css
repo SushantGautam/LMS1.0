@@ -269,10 +269,10 @@ a:hover, a:active, a:focus {
     width: 80%;
     background: whitesmoke;
     margin-left: 10%;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden;
     display: none;
-    scrollbar-width: thin;
+    /* scrollbar-width: thin; */
 }
 
 .thumb-img {
@@ -332,10 +332,25 @@ a:hover, a:active, a:focus {
     right: 0;
 }
 
+@media only screen and (max-width: 767px){
+    .overall-contents{
+        width: 100vw;
+        height: auto;
+        max-height: 100vh;
+        max-width: 177.78vh;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+}
+
 #container {
     background-color: white;
     color: black;
-
+    overflow: auto;
 }
 
 body {
@@ -417,6 +432,10 @@ body {
     display: inline-block;
 }
 
+/* .thumbnails img {
+    height: 50px;
+    width: 50px;
+} */
 .messageChatUp {
     position: relative;
     top: -300px;
@@ -447,4 +466,9 @@ body {
 
 .goog-te-banner-frame {
     display: none !important;
+}
+@media only screen and (max-width: 600px){
+    .full-chat-container {
+        width: 310px;
+    }
 }
