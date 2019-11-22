@@ -17,18 +17,22 @@ class UserRegisterForm(UserCreationForm):
     # Member_Role = forms.MultipleChoiceField(choices=USER_ROLES, widget=forms.CheckboxSelectMultiple())
 
     class Meta(UserCreationForm.Meta):
-        Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1955, datetime.date.today().year-10)))
+        Member_BirthDate = forms.DateField(widget=SelectDateWidget(
+            years=range(1955, datetime.date.today().year-10)))
         model = MemberInfo
-        fields = ('username', 'email', 'Member_Gender', 'Center_Code', 'Is_Student', 'Is_Teacher', 'Use_Flag')
+        fields = ('username', 'email', 'Member_Gender',
+                  'Center_Code', 'Is_Student', 'Is_Teacher', 'Use_Flag')
 
 
 class UserUpdateForm(forms.ModelForm):
     # role = forms.MultipleChoiceField(choices=USER_ROLES, )
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(
+        years=range(1985, datetime.date.today().year+10)))
+
     class Meta:
         model = MemberInfo
         fields = (
-              'email', 'Member_Permanent_Address',
+            'email', 'Member_Permanent_Address',
             'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',)
 
 
@@ -44,12 +48,14 @@ class UserUpdateFormForAdmin(forms.ModelForm):
 class CenterInfoForm(forms.ModelForm):
     class Meta:
         model = CenterInfo
-        fields = ['Center_Name', 'Center_Address', 'Use_Flag', 'Register_Agent']
+        fields = ['Center_Name', 'Center_Address',
+                  'Use_Flag', 'Register_Agent']
 
 
 class MemberInfoForm(forms.ModelForm):
     Use_Flag = forms.BooleanField(initial=True, required=False)
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(
+        years=range(1985, datetime.date.today().year+10)))
     password = forms.CharField(initial='00000')
     helper = FormHelper()
     helper.layout = Layout(
@@ -58,46 +64,61 @@ class MemberInfoForm(forms.ModelForm):
             AccordionGroup('Basic Information',
 
                            Div(
-                               Field('Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Member_Gender', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Gender', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('first_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('last_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'first_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'last_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('password', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'password', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                HTML('''<div class='col-md-6'></div>'''),
                                css_class='row'),
 
                            Div(
-                               Field('Is_Teacher', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Is_Student', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Is_Teacher', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Is_Student', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
                            css_class='collapse'),
 
             AccordionGroup('Additional Information',
 
                            Div(
-                               Field('Member_Permanent_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Member_Temporary_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Permanent_Address',
+                                     wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Temporary_Address',
+                                     wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('Member_BirthDate', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Member_Phone', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_BirthDate',
+                                     wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Phone', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Member_Memo', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Memo', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
                            )
         ),
@@ -108,57 +129,71 @@ class MemberInfoForm(forms.ModelForm):
         )
     )
 
-
     class Meta:
         model = MemberInfo
-        Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
+        Member_BirthDate = forms.DateField(widget=SelectDateWidget(
+            years=range(1985, datetime.date.today().year+10)))
         fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
 
 
 class MemberUpdateForm(forms.ModelForm):
     helper = FormHelper()
-    Member_BirthDate = forms.DateField(widget=SelectDateWidget(years=range(1985, datetime.date.today().year+10)))
+    Member_BirthDate = forms.DateField(widget=SelectDateWidget(
+        years=range(1985, datetime.date.today().year+10)))
     helper.layout = Layout(
 
         Accordion(
             AccordionGroup('Basic Information',
 
                            Div(
-                               Field('Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Member_Gender', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Gender', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('first_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('last_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'first_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'last_name', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
-                         
+
                            Div(
-                               Field('Is_Teacher','Is_Student', wrapper_class='col-md-3 col-sm-6 col-xs-12'),
-                               ),
+                               Field('Is_Teacher', 'Is_Student',
+                                     wrapper_class='col-md-3 col-sm-6 col-xs-12'),
+                           ),
                            css_class='collapse'),
 
             AccordionGroup('Additional Information',
 
                            Div(
-                               Field('Member_Permanent_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Member_Temporary_Address', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Permanent_Address',
+                                     wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_Temporary_Address',
+                                     wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('Member_BirthDate', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Member_Phone', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
-                               Field('Member_Memo', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field('Member_BirthDate',
+                                     wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Phone', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Memo', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
-                               Field('Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Avatar', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
                            )
         ),
@@ -198,7 +233,7 @@ class GroupMappingForm(forms.ModelForm):
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
-        js = ('/static/build/js/jsi18n.js',)        
+        js = ('/static/build/js/jsi18n.js',)
 
     class Meta:
         model = GroupMapping
@@ -218,7 +253,7 @@ class InningGroupForm(forms.ModelForm):
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
-        js = ('/static/build/js/jsi18n.js',)        
+        js = ('/static/build/js/jsi18n.js',)
 
     class Meta:
         model = InningGroup
@@ -257,7 +292,7 @@ class InningInfoForm(forms.ModelForm):
         self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                      Use_Flag=True)
 
-        # rel = ManyToOneRel(self.instance.Course_Group.model, 'id',field_name="Course Group") 
+        # rel = ManyToOneRel(self.instance.Course_Group.model, 'id',field_name="Course Group")
         # self.fields['Course_Group'].widget = RelatedFieldWidgetWrapper(self.fields['Course_Group'].widget, rel, self.admin_site)
 
 
@@ -297,3 +332,17 @@ class ChangeOthersPasswordForm(forms.Form):
         "type": "password"
     }
     password = forms.CharField(widget=forms.TextInput(attrs=attrs))
+
+
+class AchievementPage_All_form(forms.Form):
+    studentfilter = forms.ModelChoiceField(queryset=MessageInfo.objects.none())
+    Inningsfilter = forms.ModelChoiceField(queryset=MessageInfo.objects.none())
+    Coursefilter = forms.ModelChoiceField(queryset=MessageInfo.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        super(AchievementPage_All_form, self).__init__(*args, **kwargs)
+        self.fields['studentfilter'].queryset = kwargs['initial']['studentfilter']
+        self.fields['Inningsfilter'].queryset = kwargs['initial']['Inningsfilter']
+        self.fields['Coursefilter'].queryset = kwargs['initial']['Coursefilter']
+
+        # (choice.pk, choice) for choice in studentfilter]
