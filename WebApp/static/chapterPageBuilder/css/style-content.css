@@ -504,14 +504,33 @@ a:hover, a:active, a:focus {
 body {
     background-color: rgba(0, 0, 0, 0.7);
     top: 0px !important;
-    background-image: url(/static/images/uLMS2019_Loading_SVG.svg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
 }
+
+
+.se-pre-con {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url(/static/images/uLMS2019_Loading_SVG.svg) center no-repeat #fff;
+}
+
 
 .thumb-nav-button {
     position: absolute;
     bottom: 5vh;
 
+}
+
+.no-js #loader {
+    display: none;
+}
+
+.js #loader {
+    display: block;
+    position: absolute;
+    left: 100px;
+    top: 0;
 }

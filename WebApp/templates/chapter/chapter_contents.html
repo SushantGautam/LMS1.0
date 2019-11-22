@@ -11,6 +11,10 @@
 
 <html>
 <head>
+
+    <link rel="icon"
+          type="image/png"
+          href="/static/images/logo.png"/>
     <meta name="viewport" content="width=device-width, intial-scale=1.0">
 
     <!-- Bootstrap -->
@@ -30,6 +34,7 @@
 </head>
 
 <body>
+<div class="se-pre-con"></div>
 <div class="container-fluid">
     <!-- For Title -->
 
@@ -303,6 +308,8 @@
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
 
 
 <script type="text/javascript">
@@ -413,8 +420,8 @@
             }
         });
 
-        $("body").css("background-image", "none");
     });
+
 
     function loaddata(data, currentpage = 1) {
         window.currentpage = currentpage
@@ -823,6 +830,12 @@
         $('#closechatopen').show();
     });
 
+
+    $(window).load(function () {
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("slow");
+        ;
+    });
 </script>
 
 
