@@ -798,12 +798,12 @@
 
     });
 
-    $('#thumb-next-btn').hover(function () {
+    $('#thumb-next-btn').on('click mouseover', function () {
 
         $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() + 300);
         console.log("hi")
     });
-    $('#thumb-prev-btn').hover(function () {
+    $('#thumb-prev-btn').on('click mouseover', function () {
         $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() - 300);
         console.log("hi")
 
