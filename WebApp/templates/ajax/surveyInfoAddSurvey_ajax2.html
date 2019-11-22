@@ -12,11 +12,16 @@
   </label>
 
 </div>
-<form id="categoryForm" action="{% if "teachers" in request.path %}
+<form id="categoryForm" action="
+              {% if "teachers" in request.path %}
                 {% if "retake" in request.path %}
                   {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
-                  {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
+                  {% if category_name == 'live' %}
+                    {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}&course_code={{ course_code }}
+                  {% else %}
+                    {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
+                  {% endif %}
                 {% endif %}
               {% else %}
                 {% if "retake" in request.path %}
@@ -148,8 +153,12 @@
       });
       $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
           if (stepNumber == 0) {
-              if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) > new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
+              if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
                   $(".survey_error").html("End Date must be greater than Start Date");
+                  e.preventDefault();
+              }
+              if (new Date() >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
+                  $(".survey_error").html("End Date must be greater than Current Date");
                   e.preventDefault();
               }
               if ($("#id_Survey_Title").val() === ""){
@@ -351,7 +360,7 @@
               return false;
           }
 
-          if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) > new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
+          if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
               $(".question_error").html("End Date must be greater than Start Date");
               return false;
           }

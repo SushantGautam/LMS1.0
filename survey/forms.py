@@ -4,7 +4,7 @@ from django.contrib.admin.widgets import AdminTimeWidget
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 from WebApp.models import CourseInfo, InningInfo, InningGroup
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 class CategoryInfoForm(forms.ModelForm):
@@ -14,8 +14,9 @@ class CategoryInfoForm(forms.ModelForm):
 
 
 class SurveyInfoForm(forms.ModelForm):
-    Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
-    End_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
+    Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date', 'max': '9999-12-31'}))
+    End_Date = forms.DateTimeField(widget=forms.DateInput(
+        attrs={'type': 'date', 'max': '9999-12-31', 'min': datetime.now().date()}))
     End_Time = forms.DurationField()
 
     class Meta:

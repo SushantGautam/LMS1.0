@@ -1,7 +1,7 @@
 {% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
   <!-- iCheck -->
-    <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+  <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
@@ -118,8 +118,12 @@
                     {% for option in options %}
                       {% if option.Question_Code.pk == question.pk %}
                         <div class="radio">
+                        {% if can_submit %}
                           <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"
                                  value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}
+                          {% elif sub %}
+
+                          {% endif %}
                         </div>
                       {% endif %}
                     {% endfor %}
@@ -171,7 +175,7 @@
 {% block javascripts %}
 
   <!-- iCheck -->
-    <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script>
+  <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script>
 
   <script>
       $('#retakeSurveyBtn').on('click', function () {
@@ -184,27 +188,11 @@
               }
           });
       });
-      // categoryAddButton({{ categoryName }});
-
-      // e.preventDefault();
-      var canSubmit = true;
-      {% for x in object.submitsurvey.all %}
-          console.log('{{x.id}}');
-          console.log('{{ x.Student_Code.id }}');
-          console.log('{{ request.user.id }}');
-          {% if x.Student_Code.id == request.user.id %}
-              canSubmit = false;
-          {% endif %}
-      {% endfor %}
-      console.log(canSubmit);
-      if (canSubmit) {
-
-      } else {
+      {% if can_submit == False %}
           $("#survey_already_taken").show();
           $("#surveyform :input").prop("readonly", true);
           $("#surveyform :input").prop("disabled", true);
-      }
-
+      {% endif %}
 
   </script>
 

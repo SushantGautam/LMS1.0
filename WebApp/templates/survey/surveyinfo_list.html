@@ -22,6 +22,7 @@
                         survey</a>
                     </h5>
                     {% for category in categories %}
+
                       <div class="row card-text">
                         <div class="col-md-8 ">
                           <a href="#" class="category-name" id="{{ category.Category_Name }}"><i
@@ -30,11 +31,15 @@
                             {{ category.Category_Name }}
                           </a>
                         </div>
-                        <button class=" {{ category.Category_Name }} btn btn-success"
-                                id="category_Add_Button{{ category.Category_Name }}" style="margin: 0;"
-                                data-popup-open="popup-1">Add
-                        </button>
+                        {% if category.Category_Name|lower == "general" and "teachers" in request.path or category.Category_Name|lower == "system" and "teachers" in request.path %}
+                        {% else %}
+                          <button class=" {{ category.Category_Name }} btn btn-success"
+                                  id="category_Add_Button{{ category.Category_Name }}" style="margin: 0;"
+                                  data-popup-open="popup-1">Add
+                          </button>
+                        {% endif %}
                       </div>
+
                     {% endfor %}
                   </div>
                 </div>
