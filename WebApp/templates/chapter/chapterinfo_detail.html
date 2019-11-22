@@ -20,19 +20,19 @@
 
 
 <div class="outerDiv">
-    {% include 'WebApp/theme/alerts.html' %}
-    <div class="col-md-6 col-sm-12 col xs-12">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                <h2 class="detailListHeader">Chapter {{ object.Chapter_No }}
-                    : {{ object.Chapter_Name }} </h2>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
-                <!-- <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
-                    data-target="#course-modal">
-                    Content Viewer &nbsp;
-                </a> -->
-                <a class="btn-sm btn-info" href="
+  {% include 'WebApp/theme/alerts.html' %}
+  <div class="col-md-6 col-sm-12 col xs-12">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+        <h2 class="detailListHeader">Chapter {{ object.Chapter_No }}
+          : {{ object.Chapter_Name }} </h2>
+      </div>
+      <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
+        <!-- <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
+            data-target="#course-modal">
+            Content Viewer &nbsp;
+        </a> -->
+        <a class="btn-sm btn-info" href="
                 {% if '/teachers' in request.path %}
                     {% url 'teacher_contentviewer' object.Course_Code.pk object.pk %}
                 {% elif '/students' in request.path %}
@@ -42,8 +42,8 @@
                 {% endif %}
                 
                 " id="course-viewer" target="_blank">
-                    Content Viewer &nbsp;
-                </a>
+          Content Viewer &nbsp;
+        </a>
 
         {% if '/students' not in request.path %}
           {% if '/teachers' in request.path %}
@@ -504,27 +504,27 @@
       });
 
 
-    $('#course-viewer').click(function (e) {
-        e.preventDefault();
-        $.ajax({
-            type: "GET",
-            url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
-            data: {
-                'chapterID': '{{ object.id }}'
-            },
-            success: function (response) {
-                if (response.data == "") {
-                    alert("There are no contents available in this chapter.");
-                    return
-                }
+      $('#course-viewer').click(function (e) {
+          e.preventDefault();
+          $.ajax({
+              type: "GET",
+              url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
+              data: {
+                  'chapterID': '{{ object.id }}'
+              },
+              success: function (response) {
+                  if (response.data == "") {
+                      alert("There are no contents available in this chapter.");
+                      return
+                  }
 
-                window.open($('#course-viewer').attr('href'), '_blank');
-                // loaddata(response.data)
-            },
-            error: function () {
-                console.log('Error in getting chapters')
-            }
-        });
+                  window.open($('#course-viewer').attr('href'), '_blank');
+                  // loaddata(response.data)
+              },
+              error: function () {
+                  console.log('Error in getting chapters')
+              }
+          });
 
           function loaddata(data) {
               if (data == "") {
@@ -764,7 +764,11 @@
       $('#pre_test_popup').on('click', function () {
           $.ajax({
               type: "GET",
-              data: {'course_id': '{{ object.Course_Code.id }}', 'chapter_id': {{ object.id }}, 'test_type': 'pre_test',},
+              data: {
+                  'course_id': '{{ object.Course_Code.id }}',
+                  'chapter_id': {{ object.id }},
+                  'test_type': 'pre_test',
+              },
               url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
               success: function (data) {
                   $("#quiz_form_ajax").html(data);
@@ -774,7 +778,11 @@
       $('#post_test_popup').on('click', function () {
           $.ajax({
               type: "GET",
-              data: {'course_id': '{{ object.Course_Code.id }}', 'chapter_id': {{ object.id }}, 'test_type': 'post_test',},
+              data: {
+                  'course_id': '{{ object.Course_Code.id }}',
+                  'chapter_id': {{ object.id }},
+                  'test_type': 'post_test',
+              },
               url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
               success: function (data) {
                   $("#quiz_form_ajax").html(data);
@@ -784,5 +792,12 @@
       $('#qn_close').on("click", function () {
           $("#quiz_create_popup").modal("show");
       });
+
+      function quiz_create_content(response) {
+          console.log(response['url']);
+          console.log(response['teacher_url']);
+          console.log(response['student_url']);
+          location.reload();
+      }
   </script>
 {% endblock %}

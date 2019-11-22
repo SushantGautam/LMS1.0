@@ -7,7 +7,7 @@
             <div class="d-flex d-flex-row align-items-center mobile-view">
                 <div class="profile-img-container">
 
-                    <img alt="Profile-Pic" src="{% if request.user.Member_Avatar %}{{ request.user.Member_Avatar.url }}{% else %}{% static request.user.Avatar %}{% endif %}" class="profile-pic rounded-circle pmd-z-depth-light-2-1 mr-md-4 mr-sm-0" height="200" width="200">
+                    <img alt="Profile-Pic" src="{{ request.user.Avatar }}" class="profile-pic rounded-circle pmd-z-depth-light-2-1 mr-md-4 mr-sm-0" height="200" width="200">
                     <div class="overlay rounded-circle">
                         <a href="#" class="icon" title="Upload Picture">
                             <i class="fa fa-upload fa-2x"></i>

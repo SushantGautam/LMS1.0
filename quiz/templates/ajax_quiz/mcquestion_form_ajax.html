@@ -7,7 +7,9 @@
 {{ form.media }}
 <form method="post" id="mcq_form_post" enctype="multipart/form-data">
   {% csrf_token %}
-  {{ form|crispy }}
+  <div class="row">
+    {{ form|crispy }}
+  </div>
   {% if quiz_id %}
     <input name="quiz_id" value="{{ quiz_id }}" type="hidden">
   {% endif %}

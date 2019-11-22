@@ -5,8 +5,10 @@
 <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 <form method="post" id="quiz_form_post" onsubmit="return validateForm()"
-      action="{% url 'quiz_create_ajax'%}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">{% csrf_token %}
-  {{ form|crispy }}
+      action="{% url 'quiz_create_ajax' %}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">{% csrf_token %}
+  <div class="row">
+    {{ form|crispy }}
+  </div>
   <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
 </form>
 <script src=" {% static '/duration_picker/bootstrap-duration-picker.js' %}"></script>
@@ -16,10 +18,27 @@
         $("#div_id_negative_percentage").hide();
     });
 
-    $("#quiz_form_post").submit(function () {
+    $("#quiz_form_post").submit(function (e) {
+        e.preventDefault();
         $('#id_mcquestion_to option').prop('selected', true);
         $('#id_saquestion_to option').prop('selected', true);
         $('#id_tfquestion_to option').prop('selected', true);
+        $.ajax({
+            //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: new FormData($(this)[0]),
+            url: $(this).prop("action"), // URL to your view that serves new info
+            //data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            success: function (response) {
+                quiz_create_content(response);
+            },
+            error: function () {
+                console.log('Error in posting form');
+            }
+        });
     });
     if ("{{ test_type }}" === "exam_paper") {
         $("#div_id_duration").show();

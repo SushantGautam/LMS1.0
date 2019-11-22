@@ -491,6 +491,9 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
             context['category_name'] = self.request.GET['category_name']
+            if context['category_name'].lower() == 'live':
+                context['course_code'] = self.request.GET['course_code']
+
         return context
 
     def form_valid(self, form):
@@ -500,6 +503,7 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
             if self.request.GET['category_name'] == "live":
+                self.object.Course_Code = get_object_or_404(CourseInfo, id=self.request.GET['course_code'])
                 self.object.Survey_Live = True
                 self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
                 self.object.save()
@@ -520,7 +524,12 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
                 qna.save()
             else:
                 print("qna is invalid", qna.errors)
-        return redirect('surveyinfodetail', self.object.id)
+        response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
+                    'teacher_url': self.request.build_absolute_uri(
+                        reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
+                    'student_url': self.request.build_absolute_uri(
+                        reverse('questions_student_detail', kwargs={'pk': self.object.id}))}
+        return JsonResponse(response)
 
     def get_form_kwargs(self):
         kwargs = super(TeacherSurveyInfo_ajax, self).get_form_kwargs()
@@ -1177,8 +1186,17 @@ class TeacherSurveyInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
-        context['options'] = OptionInfo.objects.all()
-        context['submit'] = SubmitSurvey.objects.all()
+        context['options'] = OptionInfo.objects.filter(Question_Code__in=context['questions']).order_by('pk')
+        context['submit'] = SubmitSurvey.objects.filter(Survey_Code=self.kwargs.get('pk'))
+        if self.object.Retaken_From:
+            context['history'] = SurveyInfo.objects.filter(id=self.object.Retaken_From)
+            context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.Retaken_From).order_by(
+                'Version_No')
+
+        else:
+            context['history'] = SurveyInfo.objects.filter(id=self.object.id)
+            context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.id).order_by(
+                'Version_No')
         return context
 
 

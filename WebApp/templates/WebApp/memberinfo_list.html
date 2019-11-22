@@ -13,6 +13,7 @@
 
 {% block content %}
 
+{% include 'WebApp/theme/alerts.html' %}
 <!-- Model for Import CSV file -->
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -74,7 +75,6 @@
                 Blocked Members</a></span>
     </nav>
     <hr class="header_hr">
-    <div class="col-md-6 text-danger">{% include 'WebApp/theme/alerts.html' %}</div>
     <div class="col-md-12 col-sm-12 col-xs-12">
         <nav id="navbar_parent" class="navbar navbar-dark">
 

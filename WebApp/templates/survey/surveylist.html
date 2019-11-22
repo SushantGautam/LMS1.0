@@ -84,4 +84,11 @@
 
 
   </script>
+  <script>
+    function survey_create_content(response) {
+        //location.reload();
+        console.log(response['url']);
+        window.location.href = String(response['url']);
+    }
+  </script>
 {% endblock %}

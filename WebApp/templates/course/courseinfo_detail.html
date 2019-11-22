@@ -227,7 +227,7 @@
 
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <hr style="margin-top: 5px; margin-bottom: 5px;">
-                <p>{{ o.Summary }}</p>
+                <p>{{ o.Summary|truncatewords:40 }}</p>
               </div>
             </div>
             <script> var lastchapter = {{ o.Chapter_No }};</script>
@@ -342,5 +342,11 @@
       $('#qn_close').on("click", function () {
           $("#quiz_create_popup").modal("show");
       });
+      function quiz_create_content(response) {
+          console.log(response['url']);
+          console.log(response['teacher_url']);
+          console.log(response['student_url']);
+          location.reload();
+      }
   </script>
 {% endblock %}

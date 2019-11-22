@@ -1,413 +1,301 @@
 {% load staticfiles %}
+{% load define_action %}
+
+
+{% if  "teachers" in request.path %}
+  {% define 1 as ifteacher %}
+{% else %}
+  {% define 0 as ifteacher %}
+{% endif %}
+
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+  <meta name="viewport" content="width=device-width, intial-scale=1.0">
 
-    <!-- Bootstrap -->
-    <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+  <!-- Bootstrap -->
+  <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
 
-    <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
+  <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
-    <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet">
 
-    <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
-    <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-
-    <style>
-        .button-position {
-            height: 20px;
-            width: 20px;
-            margin: 5px;
-            padding: 5px !important;
-            background-color: white;
-            z-index: 999;
-            top: 50%;
-            position: absolute;
-
-            display: none;
-            transition: all 1s ease;
-            -webkit-transition: all 0.3s ease;
-        }
-
-        .button-position:hover {
-            cursor: pointer;
-        }
-
-        .overall-contents:hover .button-position {
-            display: block;
-        }
-
-        .overall-contents:hover .content-title {
-            display: block;
-        }
-
-        .overall-contents {
-            width: 100vw;
-            height: 56.25vw;
-            max-height: 100vh;
-            max-width: 177.78vh;
-            margin: auto;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
-
-        #container {
-            background-color: white;
-            color: black;
-
-        }
-
-        body {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        .content-title {
-            color: white;
-            font-size: 18px;
-            font-weight: 600;
-            text-transform: uppercase;
-            display: none;
-            transition: all 0.3s ease;
-            -webkit-transition: all 0.3s ease;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .content-title1 {
-
-            transition: all 0.3s ease;
-            -webkit-transition: all 0.3s ease;
-            position: relative;
-            top: 0;
-            left: 0;
-            z-index: 500;
-        }
-
-        .overall-contents:hover .content-title1 {
-            display: block;
-        }
-
-        .content-footer1 {
-            color: white;
-            width: 100px;
-            /* padding-top: 10px; */
-            font-size: 1.2rem;
-            font-weight: 200;
-            /* padding-right: 20px; */
-            position: absolute;
-            bottom: 10%;
-            left: 45%;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 5px;
-            z-index: 99;
-            /* padding: 10px; */
-            height: 30px;
-            line-height: 30px;
-            display: none;
-            transition: all 0.3s ease;
-            -webkit-transition: all 0.3s ease;
+  <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 
-        }
-
-        .overall-contents:hover .content-footer1 {
-            display: block;
-        }
-
-        .page-slide {
-            position: absolute;
-
-        }
-
-        .progress {
-            margin-top: 5px;
-            height: 5px;
-        }
-        
-    </style>
 
 </head>
 
 <body>
 <div class="container-fluid">
-    <!-- For Title -->
+  <!-- For Title -->
 
 
-    <div class="row overall-contents">
-        <div id="prev-btn" class="button-position" style="left:0;">
-            <i class="fa fa-backward"></i>
-        </div>
-        <div id="next-btn" class="button-position" style="right:0;">
-            <i class="fa fa-forward"></i>
-        </div>
+  <div class="row overall-contents">
+    <div id="prev-btn" class="button-position" style="left:0;">
+      <i class="fa fa-backward"></i>
+    </div>
+    <div id="next-btn" class="button-position" style="right:0;">
+      <i class="fa fa-forward"></i>
+    </div>
 
-        <div id="container" style="position: relative;">
+    <div id="container" style="position: relative;">
 
-            <div class="content-title1  text-center">
+      <div class="content-title1  text-center">
                     <span id="chaptertitle" class="content-title">
                         <!-- Chapter title goes here -->
                         {{ chapter }}
                     </span>
-            </div>
+      </div>
 
-            <div id="page-contents"></div>
-
-        </div>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped bg-success" style="width: 0%;" role="progressbar"
-                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-
-        <div class="content-footer1 text-center">
-            Page <span id="currentpage"></span> of <span id="totalpages"></span>
-        </div>
+      <div id="page-contents"></div>
 
     </div>
-    {% if "teachers" in request.path %}
-        {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
-    {% elif "students" in request.path %}
-        {% include "chapter/Content_Viewer_WebSocket_students.html" %}
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped bg-success" style="width: 0%;" role="progressbar"
+           aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    {% if ifteacher %}
+      {% include "chapter/content-viewer-moules/QuickSurvey.html" %}
     {% endif %}
 
-    <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
-    </div>
-
-    <div id="closechatopen">
-        <a class="float">
-            <i class="fa fa-file-text my-float"></i>
-        </a>
-    </div>
-    <!-- For Footer -->
-
-    <div class="row page-slide">
+    <div class="thumbnail-slider">
+      <ul class="thumbnail-container">
+        <!-- Thumbnail goes here -->
+      </ul>
 
     </div>
 
+    <div class="content-footer1 text-center">
+      Page <span id="currentpage"></span> of <span id="totalpages"></span>
+    </div>
 
-    <div class="chatonly" style="display: none">
-        <div class="container bootstrap snippet">
-            <div class="row">
+  </div>
+  {% if "teachers" in request.path %}
+    {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
+  {% elif "students" in request.path %}
+    {% include "chapter/Content_Viewer_WebSocket_students.html" %}
+  {% endif %}
 
-                <div class="col-md-12 upbarchat">
-                  <div class="col-md-7"> 
-                    
-                        {% if "teachers" in request.path %}
-                            <div class=" col-md-4 col-sm-4">
-                                <span> Quick Quiz  <i class="fa fa-pencil"></i></span>
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                <span> Quick Survey  <i class="fa fa-pencil"></i></span>
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                <span> Force Screen Sync <input id="forceScreen" type="checkbox"></span>
-                            </div>
-                        {% else %}
-                            <div class="col-md-4 col-sm-4">
-                                <div id="google_translate_element"></div>
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                <span onclick="history.go(0)"> Reload Content  <i class="fa fa-refresh"></i></span>
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                <span> Follow Teacher <i class="fa fa-book"> </i></span>
-                            </div>
-                        {% endif %}
+  <div style="position: absolute; bottom: 0; min-height: 20px; padding: 20px;" id="fadeOutUp">
+  </div>
 
+  <div class="closechatopen" id="closechatopen" style=" z-index: 500!important;">
+    <a class="float">
+      <i class="fa fa-file-text my-float"></i>
+    </a>
+  </div>
+  <!-- For Footer -->
+
+  <div class="row page-slide">
+
+  </div>
+
+
+  <div class="chatonly" style="display: none">
+    <div class=" full-chat-container  bootstrap snippet">
+
+
+      <div class="row upbarchat">
+        <div class="col-md-7 col-sm-7 col-xs-7" style="padding-left: 0px!important;">
+          <ul class="chat-nav " style="padding-left: 0px;">
+            {% if ifteacher %}
+              <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz <i
+                  class="fa fa-pencil"></i></li>
+
+              <li id="QuickSurvey" data-toggle="modal" data-target="#survey_content_modal">Quick Survey
+
+                <i class="fa fa-pencil"></i></li>
+              <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>
+            {% else %}
+              <li>Follow Teacher <i class="fa fa-book"> </i></li>
+            {% endif %}
+            <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
+            <li>Sound <input id="chatsound" type="checkbox" checked></li>
+            <li id="speakContent"><i class="fa fa-music"> </i> Read</li>
+
+          </ul>
+        </div>
+        <div class="col-md-5 col-sm-5 col-xs-5 " style="padding-right: 9px!important; padding-left:0px!important">
+          <span id="reloadcontent text-center"> <i class="fa fa-refresh"> Reload Content  </i></span>
+          <span id="closechatbox" style="float:right; "> <i class="fa fa-close"></i></span>
+          <div>
+            <span id="google_translate_element"></span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="row" style="
+                      margin-right: 0px!important;
+                      margin-left: 0px!important;
+                  ">
+
+
+        <div class="{{ ifteacher|yesno:"col-md-8,col-md-12" }}  bg-white ">
+          <div class="row upbarchat">
+
+
+          </div>
+          <div class="chat-message">
+            <ul class="chat" id="chat-box-content">
+              <li class="left clearfix">
+                                      <span class="chat-img pull-left">
+                                          <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                                      </span>
+                <div class="chat-body clearfix">
+                  <div class="header">
+                    <strong class="primary-font">UBL BOT</strong>
+                    <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
+                      ago</small>
                   </div>
-                  <div class="col-md-5">
-                        <div class="col-sm-4">
-                                <span> Notify <input id="notificationOnChat" type="checkbox" checked></span>
-                            </div>
-                            <div class="col-sm-4">
-                                <span>Sound <input id="chatsound" type="checkbox" checked></span>
-                            </div>
-                            <div class="col-sm-4 text-danger danger">
-                                <span id="closechatbox">Close <i class="fa fa-close"></i></span>
-                            </div>
-
-                  </div>
-                        
-                    </div>
+                  <p>
+                    Hello! Try sending a message to everyone online now.
+                  </p>
                 </div>
-                <div class="col-md-12">
-                        <div class="col-md-8 bg-white ">
-                                <div class="row upbarchat">
-            
-            
-            
-            
-                                </div>
-                                <div class="chat-message">
-                                    <ul class="chat" id="chat-box-content">
-                                        <li class="left clearfix">
-                                    <span class="chat-img pull-left">
-                                        <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                                    </span>
-                                            <div class="chat-body clearfix">
-                                                <div class="header">
-                                                    <strong class="primary-font">UBL BOT</strong>
-                                                    <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
-                                                        ago</small>
-                                                </div>
-                                                <p>
-                                                    Hello! Try sending a message to everyone online now.
-                                                </p>
-                                            </div>
-                                        </li>
-                                        <li class="right clearfix">
-                                    <span class="chat-img pull-right">
-                                        <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                                    </span>
-                                            <div class="chat-body clearfix">
-                                                <div class="header">
-                                                    <strong class="primary-font">You</strong>
-                                                    <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                                                        ago</small>
-                                                </div>
-                                                <p>
-                                                   Sure.
-                                                </p>
-                                            </div>
-                                        </li>
-            
-                                    </ul>
-                                </div>
-                                <div class="chat-box bg-white">
-                                    <div class="input-group">
-                                        <input id="chatmessageinput"
-                                               class="form-control border no-shadow no-rounded"
-                                               placeholder="Type your message here" required>
-                                        <span class="input-group-btn">
+              </li>
+              <li class="right clearfix">
+                                      <span class="chat-img pull-right">
+                                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                                      </span>
+                <div class="chat-body clearfix">
+                  <div class="header">
+                    <strong class="primary-font">UBL BOT</strong>
+                    <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
+                      ago</small>
+                  </div>
+                  <p>
+                    Your messages history are cleared on page reload for now.
+                  </p>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+
+        </div>
+        {% if "teachers" in request.path %}
+          <div class="col-md-4 bg-white ">
+            <div class="row upbarchat">
+
+
+            </div>
+
+            <!-- =============================================================== -->
+            <!-- member list -->
+            <div class="friend-list-height">
+
+
+              <ul class="friend-list">
+                <li class="active ">
+                  <a href="#" class="clearfix">
+                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+
+
+                    <small class="time text-muted" style="font-size: 12px;">Just now</small>
+
+                    <small class="chat-alert label label-danger">1</small>
+                    <h5>BOT</h5>
+
+                  </a>
+
+
+                </li>
+                <li class=" ">
+                  <a href="#" class="clearfix">
+                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle"><br>
+
+
+                    <small class="time text-muted" style="font-size: 12px;">Just now</small>
+
+                    <small class="chat-alert label label-danger">1</small>
+
+
+                  </a>
+
+                </li>
+                <li class=" ">
+                  <a href="#" class="clearfix">
+                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+
+
+                    <small class="time text-muted" style="font-size: 12px;">Just now</small>
+
+                    <small class="chat-alert label label-danger">1</small>
+
+                  </a>
+
+                </li>
+                <li class=" ">
+                  <a href="#" class="clearfix">
+                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+
+
+                    <small class="time text-muted" style="font-size: 12px;">Just now</small>
+
+                    <small class="chat-alert label label-danger">1</small>
+
+                  </a>
+
+                </li>
+
+
+              </ul>
+            </div>
+
+
+          </div>
+        {% endif %}
+
+
+      </div>
+
+      <div class="row" style="
+                      margin-right: 0px!important;
+                      margin-left: 0px!important;">
+        <div class="chat-box bg-white">
+          <div class="input-group">
+            <input id="chatmessageinput"
+                   class="form-control border no-shadow no-rounded"
+                   placeholder="Type your message here" required>
+            <span class="input-group-btn">
                                     <button class="btn btn-success no-rounded" type="button"
                                             onclick="sendMessageWritten()">Send</button>
                                 </span>
-                                    </div><!-- /input-group -->
-                                </div>
-                            </div>
-                            <div class="col-md-4 bg-white ">
-                                <div class="row upbarchat">
-            
-                                 
-            
-                                </div>
-            
-                                <!-- =============================================================== -->
-                                <!-- member list -->
-                                <div style="
-                height: 55vh;
-            ">
-                                    <ul class="friend-list">
-                                        <li class="active bounceInDown">
-                                            <a href="#" class="clearfix">
-                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                                <div class="friend-name">
-                                                    <strong>Online Students</strong>
-                                                </div>
-                                                <div class="last-message text-muted">Page3</div>
-                                                <small class="time text-muted">Just now</small>
-                                                <small class="chat-alert label label-danger">1</small>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="clearfix">
-                                                <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                                                <div class="friend-name">
-                                                    <strong>Will Appear</strong>
-                                                </div>
-                                                <div class="last-message text-muted">Page X</div>
-                                                <small class="time text-muted">5 mins ago</small>
-                                                <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="clearfix">
-                                                <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                                                <div class="friend-name">
-                                                    <strong>Here</strong>
-                                                </div>
-                                                <div class="last-message text-muted">Page X</div>
-                                                <small class="time text-muted">Yesterday</small>
-                                                <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="clearfix">
-                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                                <div class="friend-name">
-                                                    <strong>Kate</strong>
-                                                </div>
-                                                <div class="last-message text-muted">Page X</div>
-                                                <small class="time text-muted">Yesterday</small>
-                                                <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="clearfix">
-                                                <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                                                <div class="friend-name">
-                                                    <strong>Jane Doe</strong>
-                                                </div>
-                                                <div class="last-message text-muted">Page X</div>
-                                                <small class="time text-muted">5 mins ago</small>
-                                                <small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="clearfix">
-                                                <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                                                <div class="friend-name">
-                                                    <strong>Kate</strong>
-                                                </div>
-                                                <div class="last-message text-muted">Page X</div>
-                                                <small class="time text-muted">Yesterday</small>
-                                                <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="clearfix">
-                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                                <div class="friend-name">
-                                                    <strong>Kate</strong>
-                                                </div>
-                                                <div class="last-message text-muted">Page X</div>
-                                                <small class="time text-muted">Yesterday</small>
-                                                <small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                                            </a>
-                                        </li>
-            
-                                    </ul>
-                                </div>
-            
-                            </div>
-
-                </div>
-                
-
-                <!--=========================================================-->
-                <!-- selected chat -->
-
-            </div>
+          </div><!-- /input-group -->
         </div>
+      </div>
+
+
+      <!--=========================================================-->
+      <!-- selected chat -->
+
     </div>
+  </div>
 
 
 </div>
+
+
 </body>
 </html>
 
 <!-- jQuery -->
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
+<script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+
 
 <script type="text/javascript">
-    var roomName = "ChapterChat{{chapter.id}}";
+    var currentpage = 1;
+    var roomName = "ChapterChat{{course.id}}";
     var chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
     chatSocket.onclose = function (e) {
         console.error("Chat socket closed unexpectedly");
@@ -460,7 +348,7 @@
     });
 
 
-    $('#closechatbox').off().click(function () {
+    $('#closechatbox').hover(function () {
         $('.chatonly').hide();
         $('#closechatopen').show();
     });
@@ -470,42 +358,7 @@
         $('#closechatopen').hide();
     });
 
-
-    $('#next-btn').off().click(function () {
-        pauseAllVideos();
-        $("#page-contents > .coursepages ").each(function () {
-            if ($(this).css("display") == "block") {
-                res = this.id.match(/[0-9]+/);
-            }
-        });
-        if (res < $("#page-contents > div ").length) {
-            getProgressWidth();
-            $('#page' + res).css("display", "none");
-            res++;
-            $('#page' + res).css("display", "block")
-        }
-        $('#currentpage').text(res);
-    });
-
-    $('#prev-btn').off().click(function () {
-        pauseAllVideos();
-        $("#page-contents > div ").each(function () {
-            if ($(this).css("display") == "block") {
-                res = this.id.match(/[0-9]+/);
-            }
-        });
-        if ((res - 1) > 0) {
-            let w = (parseFloat($('.progress-bar')[0].style.width)) - (100 / parseFloat('{{data.numberofpages}}'));
-            $('.progress-bar').css('width', w + '%')
-            $('#page' + res).css("display", "none");
-            res--;
-            $('#page' + res).css("display", "block")
-        }
-        $('#currentpage').text(res);
-    });
-
     var data = {{ data | safe}};
-    // console.log(data)
 
     container_height = $('body').height() - $('.content-title1').height() - $('.content-footer1').height()
     $('#container').css('height', container_height * 100 / $('body').height() + "%")
@@ -514,238 +367,159 @@
         $('iframe').each(function () {
             $(this).attr('src', $(this).attr('src'));
             // console.log($(this)[0])
-            // $(this)[0].contentWindow.postMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
+            // $(this)[0].contentWindow.
+            // stMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
         });
         $('video').each(function () {
             this.pause();
         });
     }
 
-    function loaddata(data) {
+    $(document).ready(function () {
+
+        $('#page-contents').on('click', '.iframefullscreenbtn', function () {
+            // check if fullscreen mode is available
+            if (document.fullscreenEnabled ||
+                document.webkitFullscreenEnabled ||
+                document.mozFullScreenEnabled ||
+                document.msFullscreenEnabled) {
+
+                // which element will be fullscreen
+                var iframe = $(this).parent().find('object')[0] || $(this).parent().find('iframe')[0];
+                // Do fullscreen
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                    iframe.webkitRequestFullscreen();
+                } else if (iframe.mozRequestFullScreen) {
+                    iframe.mozRequestFullScreen();
+                } else if (iframe.msRequestFullscreen) {
+                    iframe.msRequestFullscreen();
+                }
+            } else {
+                document.querySelector('.error').innerHTML = 'Your browser is not supported';
+            }
+        });
+    });
+
+    function loaddata(data, currentpage = 1) {
+        window.currentpage = currentpage
         $('#totalpages').text(data.numberofpages);
-        $('#currentpage').text(1);
+        $('#currentpage').text(window.currentpage);
         $.each(data.pages, function (key, value) {
-            $.each(value, function (count) {
-                // Create modal
-                $('#page-contents').append(`
-                <div id="page${key}" class = 'coursepages' role="dialog" style="display: none;">
+            if(key == window.currentpage){
+                $.each(value, function (count) {
+                    // Create modal
+                    $('#page-contents').empty();
+                    $('#page-contents').append(`
+                    <div id="page${key}" class = 'coursepages' role="dialog">
 
-                </div>`)
-                // -------------------------------
+                    </div>`)
+                    // -------------------------------
 
-                $.each(value[count], function (div, div_value) {
-                    var now = Math.floor(Math.random() * 900000) + 100000;
-                    if (div == 'textdiv') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
-                            $('#page' + key).append(`
-                                <div style = "overflow:hidden; font-size:1.5rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px">
-                                    ${css_value.content}
-                                </div>
-                            `);
-                            // $('#page' + key).append(css_value.content);
+                    $.each(value[count], function (div, div_value) {
+                        var now = Math.floor(Math.random() * 900000) + 100000;
+                        if (div == 'textdiv') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                $('#page' + key).append(`
+                                    <div style = "overflow:hidden; font-size:1.5rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px">
+                                        ${css_value.content}
+                                    </div>
+                                `);
+                                // $('#page' + key).append(css_value.content);
 
-                        });
-                    }
-                    if (div == 'pic') {
-                        $.each(div_value, function (css, css_value) {
-                            src = css_value['background-image']
-                            // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                            $('#page' + key).append(`
-                                <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
-                                <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = "height:100%; width:100%; object-fit:cover"></img>  </a>      
-                                </div>
-                            `);
-                            // $('#page' + key).append(css_value.div);
-                        });
-                    }
+                            });
+                        }
+                        if (div == 'pic') {
+                            $.each(div_value, function (css, css_value) {
+                                src = css_value['background-image']
+                                // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
+                                $('#page' + key).append(`
+                                    <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
+                                    <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = "height:100%; width:100%; object-fit:cover"></img>  </a>
+                                    </div>
+                                `);
+                                // $('#page' + key).append(css_value.div);
+                            });
+                        }
 
-                    if (div == 'btn-div') {
-                        $.each(div_value, function (css, css_value) {
-                            link = "";
-                            if (css_value.hasOwnProperty('link')) {
-                                link = "href = " + css_value.link;
-                            }
-                            $('#page' + key).append(`
-                            <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                <a ${link} target="_blank"><button>${css_value.btn_name}</button</a>
-                            </div>
-                        `)
-                        });
-                    }
-
-                    if (div == 'pdf') {
-                        $.each(div_value, function (css, css_value) {
-                            $('#page' + key).append(`
-                            <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                <object data="${css_value.link}#toolbar=0" type="application/pdf" width="100%" height="100%">
-                                    alt : PDF File
-                                </object>
-                                <div class = "iframefullscreenbtn">CLick to fullscreen</div>
-                            </div>
-                        `)
-                        });
-                    }
-
-                    if (div == 'video') {
-                        $.each(div_value, function (css, css_value) {
-                            if (css_value.hasOwnProperty('online_link')) {
-                                var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <iframe width="100%" height="94%" src="${css_value.online_link}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-                                    </div>`
-                                //     <script>
-                                //     var options = {
-                                //         url: "${css_value.link}",
-                                //         width: "${css_value.width}",
-                                //         height: "${css_value.height}"
-                                //     };
-
-                                //     var videoPlayer = new Vimeo.Player('${now}', options);
-                                // `
-                            } else {
-                                var embed = `
+                        if (div == 'btn-div') {
+                            $.each(div_value, function (css, css_value) {
+                                link = "";
+                                if (css_value.hasOwnProperty('link')) {
+                                    link = "href = " + css_value.link;
+                                }
+                                $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <video width="100%" height="100%" controlsList="nodownload" controls>
-                                        <source src="${css_value.local_link}" type="video/mp4">
-                                        <source src="${css_value.local_link}" type="video/ogg">
-                                        Your browser does not support the video tag.
-                                    </video>
+                                    <a ${link} target="_blank"><button>${css_value.btn_name}</button</a>
                                 </div>
-                                `
-                            }
-                            $('#page' + key).append(embed)
-                        });
-                    }
+                            `)
+                            });
+                        }
 
-                    if (div == '_3d') {
-                        $.each(div_value, function (css, css_value) {
-                            $('#page' + key).append(`
-                            <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                <iframe src="${css_value.link}" width="100%" height="100%">
-                                </iframe>
-                                <div class = "iframefullscreenbtn">CLick to fullscreen</div>
-                            </div>
-                        `)
-                        });
-                    }
+                        if (div == 'pdf') {
+                            $.each(div_value, function (css, css_value) {
+                                $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                    <object data="${css_value.link}#toolbar=0" type="application/pdf" width="100%" height="100%">
+                                        alt : PDF File
+                                    </object>
+                                    <div class = "iframefullscreenbtn">CLick to fullscreen</div>
+                                </div>
+                            `)
+                            });
+                        }
+
+                        if (div == 'video') {
+                            $.each(div_value, function (css, css_value) {
+                                if (css_value.hasOwnProperty('online_link')) {
+                                    var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                        <iframe width="100%" height="94%" src="${css_value.online_link}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+                                        </div>`
+                                    //     <script>
+                                    //     var options = {
+                                    //         url: "${css_value.link}",
+                                    //         width: "${css_value.width}",
+                                    //         height: "${css_value.height}"
+                                    //     };
+
+                                    //     var videoPlayer = new Vimeo.Player('${now}', options);
+                                    // `
+                                } else {
+                                    var embed = `
+                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                        <video width="100%" height="100%" controlsList="nodownload" controls>
+                                            <source src="${css_value.local_link}" type="video/mp4">
+                                            <source src="${css_value.local_link}" type="video/ogg">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    `
+                                }
+                                $('#page' + key).append(embed)
+                            });
+                        }
+
+                        if (div == '_3d') {
+                            $.each(div_value, function (css, css_value) {
+                                $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                    <iframe src="${css_value.link}" width="100%" height="100%">
+                                    </iframe>
+                                    <div class = "iframefullscreenbtn">CLick to fullscreen</div>
+                                </div>
+                            `)
+                            });
+                        }
+
+                    });
+
                 });
-            });
+            }
         });
     }
-
-    // for small screen sizes
-    function loadsmalldata(data) {
-        $('#totalpages').text(data.numberofpages);
-        $('#currentpage').text(1);
-        $.each(data.pages, function (key, value) {
-            $.each(value, function (count) {
-                // Create modal
-                $('#page-contents').append(`
-                <div id="page${key}" class = 'coursepages' role="dialog" style="display: none;">
-
-                </div>`)
-                // -------------------------------
-
-                $.each(value[count], function (div, div_value) {
-                    var now = Math.floor(Math.random() * 900000) + 100000;
-                    if (div == 'textdiv') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
-                            $('#page' + key).append(`
-                                <div style = "font-size:1.5rem;">
-                                    ${css_value.content}
-                                </div>
-                            `);
-                            // $('#page' + key).append(css_value.content);
-
-                        });
-                    }
-                    if (div == 'pic') {
-                        $.each(div_value, function (css, css_value) {
-                            src = css_value['background-image']
-                            // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                            $('#page' + key).append(`
-                                <div>
-                                <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = "height:100%; width:100%; object-fit:cover"></img>  </a>      
-                                </div>
-                            `);
-                            // $('#page' + key).append(css_value.div);
-                        });
-                    }
-
-                    if (div == 'btn-div') {
-                        $.each(div_value, function (css, css_value) {
-                            link = "";
-                            if (css_value.hasOwnProperty('link')) {
-                                link = "href = " + css_value.link;
-                            }
-                            $('#page' + key).append(`
-                            <div>
-                                <a ${link} target="_blank"><button>${css_value.btn_name}</button</a>
-                            </div>
-                        `)
-                        });
-                    }
-
-                    if (div == 'pdf') {
-                        $.each(div_value, function (css, css_value) {
-                            $('#page' + key).append(`
-                            <div>
-                                <object data="${css_value.link}" type="application/pdf" width="100%" height="100%">
-                                    alt : PDF File
-                                </object>
-                            </div>
-                        `)
-                        });
-                    }
-
-                    if (div == 'video') {
-                        $.each(div_value, function (css, css_value) {
-                            if (css_value.hasOwnProperty('online_link')) {
-                                var embed = `<div id = '${now}'>
-                                    <iframe width="100%" height="94%" src="${css_value.online_link}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-                                    </div>`
-                                //     <script>
-                                //     var options = {
-                                //         url: "${css_value.link}",
-                                //         width: "${css_value.width}",
-                                //         height: "${css_value.height}"
-                                //     };
-
-                                //     var videoPlayer = new Vimeo.Player('${now}', options);
-                                // `
-                            } else {
-                                var embed = `
-                                <div>
-                                    <video width="100%" height="100%" controlsList="nodownload" controls>
-                                        <source src="${css_value.local_link}" type="video/mp4">
-                                        <source src="${css_value.local_link}" type="video/ogg">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                                `
-                            }
-                            $('#page' + key).append(embed)
-                        });
-                    }
-
-                    if (div == '_3d') {
-                        $.each(div_value, function (css, css_value) {
-                            $('#page' + key).append(`
-                            <div>
-                                <iframe src="${css_value.link}" width="100%" height="100%">
-                                </iframe>
-                            </div>
-                        `)
-                        });
-                    }
-                });
-            });
-        });
-    }
-
     function toggleFullScreen() {
         if ((document.fullScreenElement && document.fullScreenElement !== null) ||
             (!document.mozFullScreen && !document.webkitIsFullScreen)) {
@@ -767,25 +541,67 @@
         }
     }
 
+    function setThumbnails() {
+        $.each(data.pages, function (key, value) {
+            $('.thumbnail-container').append(`
+                <li class = 'thumbnails' value = ${key}>
+                    <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
+                </li>
+            `);
+        });
+    }
 
     $(document).ready(function () {
         function Layout(x) {
             if (x.matches) {
                 $('#page-contents').empty();
-                loadsmalldata(data)
+                loaddata(data, window.currentpage);
+                $('#page-contents div').each(function(){
+                    $(this).removeAttr('style')
+                })
             } else {
                 $('#page-contents').empty();
-                loaddata(data)
+                loaddata(data, window.currentpage)
             }
-
-            $('#page1').css('display', 'block');
+            $('.thumbnails').removeAttr('style')
+            $('.thumbnails[value='+window.currentpage+']').css({
+                'border': '1px solid red'
+            })
         }
-
+        setThumbnails();
         var x = window.matchMedia("(max-width: 767px)")
         Layout(x)
         x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
+
+        $('#next-btn').off().click(function () {
+            pauseAllVideos();
+            if(currentpage < data.numberofpages){
+                currentpage += 1;
+                getProgressWidth();
+                Layout(x)
+                $('#currentpage').text(currentpage);
+            }
+        });
+
+        $('#prev-btn').off().click(function () {
+            pauseAllVideos();
+            if(currentpage != 1){
+                currentpage -= 1;
+                Layout(x)
+                $('#currentpage').text(currentpage);
+                getProgressWidth()
+            }
+        });
+
+        $('.thumbnails').on('click', function(){
+            currentpage = this.value
+            Layout(x)
+            $('#currentpage').text(this.value);
+            getProgressWidth();
+        });
     });
+
 
 
     function sendMessageWritten() {
@@ -794,8 +610,8 @@
             JSON.stringify({
                 chat_message: $('#chatmessageinput').val(),
                 sender_id: "{{  user.id }}",
-                sender_name: "{{  user.First_Name }} {{  user.Last_Name }}",
-                sender_icon: "{{  user.Member_Avatar }}",
+                sender_name: "{{  user.first_name }} {{  user.last_name }}",
+                sender_icon: "{{  user.Avatar }}",
             })
         );
         $('#chatmessageinput').val("");
@@ -836,7 +652,7 @@
             }
 
             if ($('#notificationOnChat').prop('checked')) {
-                $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + data.sender_id + ": " + data.chat_message + '</h3>');
+                $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + ": " + data.chat_message + '</h3>');
 
                 $("#messageChatUp").animate({
                     top: -300,
@@ -850,42 +666,17 @@
     };
 
     function getProgressWidth() {
-        let w = (parseFloat($('.progress-bar')[0].style.width)) + (100 / parseFloat('{{data.numberofpages}}'));
+        let w = (window.currentpage / parseFloat('{{data.numberofpages}}')) * 100;
         $('.progress-bar').css('width', w + '%')
     }
 
-    $(document).ready(function () {
-        $('.iframefullscreenbtn').on('click', function () {
-            // check if fullscreen mode is available
-            if (document.fullscreenEnabled ||
-                document.webkitFullscreenEnabled ||
-                document.mozFullScreenEnabled ||
-                document.msFullscreenEnabled) {
-
-                // which element will be fullscreen
-                var iframe = $(this).parent().find('object')[0] || $(this).parent().find('iframe')[0];
-                // Do fullscreen
-                if (iframe.requestFullscreen) {
-                    iframe.requestFullscreen();
-                } else if (iframe.webkitRequestFullscreen) {
-                    iframe.webkitRequestFullscreen();
-                } else if (iframe.mozRequestFullScreen) {
-                    iframe.mozRequestFullScreen();
-                } else if (iframe.msRequestFullscreen) {
-                    iframe.msRequestFullscreen();
-                }
-            } else {
-                document.querySelector('.error').innerHTML = 'Your browser is not supported';
-            }
-        });
-    })
 </script>
 
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en',
-            includedLanguages: 'id,zh-CN,cs,ko,nl,en,et,fr,ne'
+            includedLanguages: 'id,zh-CN,cs,ko,nl,en,et,fr,ne,ru,vi'
         }, 'google_translate_element');
     }
 
@@ -917,6 +708,8 @@
                             </li>`);
         $('time.timeago').timeago();
 
+        if ($('#chatsound').prop('checked')) soundAlert.play();
+
 
     }
 
@@ -924,7 +717,7 @@
     function AddSelfMessageToChat(data) {
         $("#chat-box-content").append(`<li class="right clearfix">
                     	<span class="chat-img pull-right">
-                    		<img src="/` + data.sender_icon + `" alt="` + data.sender_id + `">
+                    		<img src="` + data.sender_icon + `" alt="` + data.sender_id + `">
                     	</span>
                                 <div class="chat-body clearfix">
                                     <div class="header">
@@ -947,7 +740,47 @@
     });
 
 
+    window.soundAlert = new Audio('data:audio/ogg;base64,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')
+
+
+    {% if ifteacher %}
+
+        $('#forceScreen').change(function () {
+            alert("Not Implemented Yet! Will be soon added.")
+        });
+    {% endif %}
+
+    $('#reloadcontent').click(function () {
+        jQuery('#\\:1\\.container').contents().find('#\\:1\\.restore').click();
+        setTimeout(function () {
+            history.go(0);
+        }, 1000);
+
+
+    });
+
+
+    $('#speakContent').click(function () {
+
+        speechSynthesis.cancel()
+        var text = $('#container').children(":visible").text()
+        var msg = new SpeechSynthesisUtterance();
+        var voices = window.speechSynthesis.getVoices();
+        msg.voice = voices[10];
+        msg.rate = 1;
+        msg.pitch = 1;
+        msg.text = text;
+        speechSynthesis.speak(msg);
+
+    });
+
+
+    $('#container').click(function () {
+        $('.chatonly').hide();
+        $('#closechatopen').show();
+    });
 </script>
+
 
 
 
