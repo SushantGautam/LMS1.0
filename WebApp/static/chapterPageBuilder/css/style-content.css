@@ -467,3 +467,8 @@ body {
 .goog-te-banner-frame {
     display: none !important;
 }
+@media only screen and (max-width: 600px){
+    .full-chat-container {
+        width: 310px;
+    }
+}
