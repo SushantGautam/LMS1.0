@@ -308,8 +308,7 @@
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+<script src="{% static 'js/modernizr.js' %}"></script>
 
 
 <script type="text/javascript">
@@ -486,7 +485,7 @@
                                     <object data="${css_value.link}#toolbar=0" type="application/pdf" width="100%" height="100%">
                                         alt : PDF File
                                     </object>
-                                    <div class = "iframefullscreenbtn">CLick to fullscreen</div>
+                                    <div class = "iframefullscreenbtn"><i class="icon-fullscreen"></i></div>
                                 </div>
                             `)
                             });
