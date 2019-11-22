@@ -1,465 +1,475 @@
 {% load static %}
 
 <head>
-  <meta charset="UTF-8">
-  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-  <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}" />
-  <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
-  <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
-  <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/responsive.css' %}">
-  <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/offline-language-english.min.css' %}">
-  <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/offline-theme-default.css' %}">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
-  <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
-  <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
+    <link rel="icon"
+          type="image/png"
+          href="/static/images/logo.png"/>
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
 
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <title>Course Builder</title>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}"/>
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/offline-language-english.min.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/offline-theme-default.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
+    <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
+    <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/modernizr.js' %}"></script>
+
+    <title>Course Builder</title>
 </head>
 
 <style>
-  /* #tabs-for-download{
-    width: 100vw; 
-    height: 56.25vw; 
-    max-height: 100vh;
-    max-width: 177.78vh; 
-    margin: auto;
-    position: absolute;
-    top:0;bottom:0; 
-    left:0;right:0;
-  } */
+    /* #tabs-for-download{
+      width: 100vw;
+      height: 56.25vw;
+      max-height: 100vh;
+      max-width: 177.78vh;
+      margin: auto;
+      position: absolute;
+      top:0;bottom:0;
+      left:0;right:0;
+    } */
 
-  .tlimit {
-    zoom: 80%;
-    min-width: 130px;
-    color: rgba(0, 0, 0, 0.6);
-    font-size: 25px;
-  }
+    .tlimit {
+        zoom: 80%;
+        min-width: 130px;
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 25px;
+    }
 
-  .preview-bar {
-    zoom: 75%;
-    width: 20%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: flex-start;
-    min-height: 100%;
-    background-color: whitesmoke;
-    overflow: hidden
-  }
+    .preview-bar {
+        zoom: 75%;
+        width: 20%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: flex-start;
+        min-height: 100%;
+        background-color: whitesmoke;
+        overflow: hidden
+    }
 
-  .icon-bar {
-    width: 100%;
-    background-color: #05678e;
-    overflow: auto;
-  }
+    .icon-bar {
+        width: 100%;
+        background-color: #05678e;
+        overflow: auto;
+    }
 
-  .icon-bar a {
-    float: left;
-    width: 20%;
-    text-align: center;
-    padding: 12px 0;
-    transition: all 0.3s ease;
-    color: white;
-    font-size: 20px;
-  }
+    .icon-bar a {
+        float: left;
+        width: 20%;
+        text-align: center;
+        padding: 12px 0;
+        transition: all 0.3s ease;
+        color: white;
+        font-size: 20px;
+    }
 
-  .icon-bar a:hover {
-    background-color: #ccc;
-  }
+    .icon-bar a:hover {
+        background-color: #ccc;
+    }
 
-  .right-sidebar {
-    top: 0;
-    left: 0;
-    bottom: 0;
-  }
+    .right-sidebar {
+        top: 0;
+        left: 0;
+        bottom: 0;
+    }
 
-  .right-sidebar-content {
-    position: relative;
-    /* top: 80px; */
-    bottom: 20;
-    color: #444;
-    overflow-y: scroll;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
+    .right-sidebar-content {
+        position: relative;
+        /* top: 80px; */
+        bottom: 20;
+        color: #444;
+        overflow-y: scroll;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
 
-  .pagenumber > canvas{
-    height: 100%;
-    width: 100%;
-    border: brown;
-  }
+    .pagenumber > canvas {
+        height: 100%;
+        width: 100%;
+        border: brown;
+    }
 
-  .right-sidebar-content::-webkit-scrollbar {
-    display: none;
-  }
+    .right-sidebar-content::-webkit-scrollbar {
+        display: none;
+    }
 
-  .imgclass {
-    border-radius: 25px;
-    border: 2px solid #73AD21;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    margin-bottom: 5px;
-  }
+    .imgclass {
+        border-radius: 25px;
+        border: 2px solid #73AD21;
+        padding-right: 10px;
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+    }
 </style>
 
 <body>
-  <div class="container-fluid full-width ">
+<div class="se-pre-con"></div>
+
+<div class="container-fluid full-width ">
     <div class="editor row">
 
-      <!-- Preview Bar must be here... -->
-      <div class=" col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 sidebar">
+        <!-- Preview Bar must be here... -->
+        <div class=" col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 sidebar">
 
-        <br>
+            <br>
 
-        <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
-          <li><a data-toggle="tab" href="#menu1">Layout</a></li>
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
+                <li><a data-toggle="tab" href="#menu1">Layout</a></li>
 
-        </ul>
+            </ul>
 
-        <div class="tab-content">
+            <div class="tab-content">
 
-          <div id="home" class="tab-pane fade in active">
+                <div id="home" class="tab-pane fade in active">
 
-            <div class="home-tab-1 ">
+                    <div class="home-tab-1 ">
 
-              <div class="draggable builder textbox draggable-style ">
-                <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
+                        <div class="draggable builder textbox draggable-style ">
+                            <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
 
-                <span>Text Box</span>
-              </div>
+                            <span>Text Box</span>
+                        </div>
 
-              <div class="draggable builder picture draggable-style ">
-                <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
+                        <div class="draggable builder picture draggable-style ">
+                            <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
 
-                <span>Picture</span>
-              </div>
+                            <span>Picture</span>
+                        </div>
 
-              <div class="draggable builder video draggable-style ">
-                <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
+                        <div class="draggable builder video draggable-style ">
+                            <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
 
-                <span>Video</span>
-              </div>
+                            <span>Video</span>
+                        </div>
 
-              <div class="draggable builder buttons draggable-style">
-                <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
+                        <div class="draggable builder buttons draggable-style">
+                            <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
 
-                <span>Button</span>
-              </div>
+                            <span>Button</span>
+                        </div>
 
-              <div class="draggable builder 3dobject draggable-style">
+                        <div class="draggable builder 3dobject draggable-style">
 
-                <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
-                <span>3D Object</span>
-              </div>
+                            <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
+                            <span>3D Object</span>
+                        </div>
 
-              <div class="draggable builder Pdf draggable-style">
+                        <div class="draggable builder Pdf draggable-style">
 
-                <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
-                <span>PDF</span>
-              </div>
+                            <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
+                            <span>PDF</span>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div id="menu1" class="tab-pane fade">
+                    <div class="home-tab-2">
+                        <div class="draggable  layout grid">
+                            <!-- <svg aria-hidden="true" data-prefix="fal" data-icon="columns"
+                              class="svg-inline--fa fa-columns fa-w-16 fa-3x " role="img" xmlns="http://www.w3.org/2000/svg"
+                              viewbox="0 0 512 512">
+                              <path fill="currentColor"
+                                d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM240 448H48c-8.837 0-16-7.163-16-16V96h208v352zm240-16c0 8.837-7.163 16-16 16H272V96h208v336z">
+                              </path>
+                            </svg> -->
+
+                            <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}" alt="like this">
+
+                        </div>
+
+                        <div class="draggable  layout grid-1">
+
+                            <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}" alt="like this">
+
+                        </div>
+
+                        <div class="draggable  layout title-slide">
+
+                            <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}" alt="like this">
+                        </div>
+
+                        <div class="draggable  layout title-content-details">
+
+                            <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}" alt="like this">
+                        </div>
+
+                        <div class="draggable layout pdf-text">
+                            <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}" alt="like this">
+                        </div>
+
+                        <div class="draggable  layout title-content-details">
+
+                            <!-- <img src="images/saveimg5.png" alt="like this"  > -->
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
 
-          </div>
-          <div id="menu1" class="tab-pane fade">
-            <div class="home-tab-2">
-              <div class="draggable  layout grid">
-                <!-- <svg aria-hidden="true" data-prefix="fal" data-icon="columns"
-                  class="svg-inline--fa fa-columns fa-w-16 fa-3x " role="img" xmlns="http://www.w3.org/2000/svg"
-                  viewbox="0 0 512 512">
-                  <path fill="currentColor"
-                    d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM240 448H48c-8.837 0-16-7.163-16-16V96h208v352zm240-16c0 8.837-7.163 16-16 16H272V96h208v336z">
-                  </path>
-                </svg> -->
+            <h3 style="margin-top:80px; font-size:1.8rem">Media Items </h3>
+            <hr>
 
-                <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}" alt="like this">
+            <div class="media-items-tabs">
+                <!-- Tab links -->
+                <div class="tab">
+                    <button class="tablinks" onclick="openCity(event, 'London')">Images</button>
+                    <button class="tablinks" onclick="openCity(event, 'Paris')">Videos</button>
 
-              </div>
+                </div>
 
-              <div class="draggable  layout grid-1">
+                <!-- Tab content -->
+                <div id="London" class="tabcontent">
+                    <h3>Images</h3>
+                    <p>Nothing to show here images</p>
+                </div>
 
-                <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}" alt="like this">
+                <div id="Paris" class="tabcontent">
+                    <h3>Videos</h3>
+                    <p>Nothing to show for videos here...</p>
+                </div>
 
-              </div>
-
-              <div class="draggable  layout title-slide">
-
-                <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}" alt="like this">
-              </div>
-
-              <div class="draggable  layout title-content-details">
-
-                <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}" alt="like this">
-              </div>
-
-              <div class="draggable layout pdf-text">
-                <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}" alt="like this">
-              </div>
-
-              <div class="draggable  layout title-content-details">
-
-                <!-- <img src="images/saveimg5.png" alt="like this"  > -->
-              </div>
             </div>
 
-          </div>
-
         </div>
 
-        <h3 style="margin-top:80px; font-size:1.8rem">Media Items </h3>
-        <hr>
-
-        <div class="media-items-tabs">
-          <!-- Tab links -->
-          <div class="tab">
-            <button class="tablinks" onclick="openCity(event, 'London')">Images</button>
-            <button class="tablinks" onclick="openCity(event, 'Paris')">Videos</button>
-
-          </div>
-
-          <!-- Tab content -->
-          <div id="London" class="tabcontent">
-            <h3>Images</h3>
-            <p>Nothing to show here images</p>
-          </div>
-
-          <div id="Paris" class="tabcontent">
-            <h3>Videos</h3>
-            <p>Nothing to show for videos here...</p>
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="  col-sm-8  col-md-7col-lg-8 col-xl-8 canvas">
-        <div id="navbar-title">
-          <a href="
+        <div class="  col-sm-8  col-md-7col-lg-8 col-xl-8 canvas">
+            <div id="navbar-title">
+                <a href="
                       {% if 'teachers' in request.path %}
                       {% url 'teacher_chapterinfo_detail' course chapter %}
                       {% else %}
                       {% url 'chapterinfo_detail' course chapter %}
                       {% endif %}
                       " id="goBackBtn"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i>
-          </a>
-          <h2 class="tlimit" id="chaptertitle">
-          </h2>
+                </a>
+                <h2 class="tlimit" id="chaptertitle">
+                </h2>
 
-          <nav class="navbar">
-            <a href="#" id="SaveBtn"><i class="far fa-save"></i><br />Save</a>
+                <nav class="navbar">
+                    <a href="#" id="SaveBtn"><i class="far fa-save"></i><br/>Save</a>
 
-            <input id="importzipfile" name="importfile" type="file"
-              accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" />
-            <a href="#" id="import_zip_link"><i class="fas fa-file-import"></i><br />Import</a>
+                    <input id="importzipfile" name="importfile" type="file"
+                           accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
+                    <a href="#" id="import_zip_link"><i class="fas fa-file-import"></i><br/>Import</a>
 
-            <a href="{% url 'exportzip' course chapter %}" target="_blank"
-              onclick="return confirm('Have you saved the latest change?')"><i
-                class="fas fa-file-export"></i><br />Export</a>
- 
-            <a href="#" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br />Save and Exit</a>
-          </nav>
-        </div>
+                    <a href="{% url 'exportzip' course chapter %}" target="_blank"
+                       onclick="return confirm('Have you saved the latest change?')"><i
+                            class="fas fa-file-export"></i><br/>Export</a>
 
-        <!-- editable title -->
-
-        <div>
-          <!-- Editor -->
-          <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
-            <div class="editor-canvas" id="element-container">
-              <p id="tab1" class="tab-content-no   droppable editor-canvas current "></p>
+                    <a href="#" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br/>Save and Exit</a>
+                </nav>
             </div>
-          </div>
-        </div>
-      </div>
-      <!-- sidebar must be here.... -->
 
-      <div class=" col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar">
+            <!-- editable title -->
 
-        <div class="chapter-select ">
-          <h3>Chapter Lists</h3>
-
-          <div class="selection">
-            <select name="chapter-lists" id="chapterlist">
-              {% for chapter in chapterlist %}
-              <option value="{{chapter.id}}">
-                {{chapter.Chapter_No}}. {{chapter.Chapter_Name}}
-              </option>
-              {% endfor %}
-            </select>
-            <div class="chapter-description" id="chapter-description">
-              <p>
-
-              </p>
-            </div>
-          </div>
-        </div>
-
-        
-        <div class="silde-div">
-          <div class="add-new-page">
-            <!-- <h3>Preview</h3> -->
-
-            <!-- <i id="add-page-btn" class="fas fa-plus-square fas-5x"></i> -->
-          </div>
-
-          <div class="right-sidebar">
-            <div class="right-sidebar-content text-left">
-              <i id="add-page-btn" class="fas fa-plus-square "></i>
-              <hr class="white-hr">
-              <div class="img1 showSingle" target="1">
-                <div class="tabs-to-click">
-                  <ul>
-                    <li class="tabs-link current pagenumber" onclick="openTab(event,'tab1')"></li>
-                  </ul>
+            <div>
+                <!-- Editor -->
+                <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
+                    <div class="editor-canvas" id="element-container">
+                        <p id="tab1" class="tab-content-no   droppable editor-canvas current "></p>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
+        <!-- sidebar must be here.... -->
 
-      </div>
+        <div class=" col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar">
+
+            <div class="chapter-select ">
+                <h3>Chapter Lists</h3>
+
+                <div class="selection">
+                    <select name="chapter-lists" id="chapterlist">
+                        {% for chapter in chapterlist %}
+                            <option value="{{ chapter.id }}">
+                                {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="chapter-description" id="chapter-description">
+                        <p>
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="silde-div">
+                <div class="add-new-page">
+                    <!-- <h3>Preview</h3> -->
+
+                    <!-- <i id="add-page-btn" class="fas fa-plus-square fas-5x"></i> -->
+                </div>
+
+                <div class="right-sidebar">
+                    <div class="right-sidebar-content text-left">
+                        <i id="add-page-btn" class="fas fa-plus-square "></i>
+                        <hr class="white-hr">
+                        <div class="img1 showSingle" target="1">
+                            <div class="tabs-to-click">
+                                <ul>
+                                    <li class="tabs-link current pagenumber" onclick="openTab(event,'tab1')"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
     </div>
-  </div>
+</div>
 
-  <!-- Modal -->
-  <div id="btn-modal" class="modal fade" role="dialog">
+<!-- Modal -->
+<div id="btn-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-      <!-- Modal content-->
-      <div id="button-link-chapter" class="  modal-content ">
-        <form id="btn-form">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Modal Header</h4>
-          </div>
-          <div class="modal-body">
-            <!-- Modal Contents Here -->
-            <label>Display Name</label>
-            <input type="text" name="btn-name" id="btn-name">
-            <br>
-            <label>Link</label>
-            <span class="btnlink">
+        <!-- Modal content-->
+        <div id="button-link-chapter" class="  modal-content ">
+            <form id="btn-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+                    <label>Display Name</label>
+                    <input type="text" name="btn-name" id="btn-name">
+                    <br>
+                    <label>Link</label>
+                    <span class="btnlink">
               http://
               <input type="text" name="btn-link" id="btn-link">
             </span>
-          </div>
-          <div class="modal-footer">
-            <input type="hidden" id="button_id" value="">
-            <button type="button" id="btn-submit" class="#">Submit</button>
-            <button type="button" class="#" data-dismiss="modal">Close</button>
-          </div>
-        </form>
-      </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="button_id" value="">
+                    <button type="button" id="btn-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
 
     </div>
-  </div>
+</div>
 
-  <!-- Link Modal -->
-  <div id="link-video-modal" class="modal fade" role="dialog">
+<!-- Link Modal -->
+<div id="link-video-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Link</h4>
-        </div>
-        <div class="modal-body">
-          <!-- Modal Contents Here -->
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Link</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Modal Contents Here -->
 
-          <label>Link to video</label>
-          <span class="btnlink">
+                <label>Link to video</label>
+                <span class="btnlink">
             http://
             <input type="text" name="link" id="video-link">
           </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="link-video-submit" class="#">Submit</button>
+                <button type="button" class="#" data-dismiss="modal">Close</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" id="link-video-submit" class="#">Submit</button>
-          <button type="button" class="#" data-dismiss="modal">Close</button>
-        </div>
-      </div>
 
     </div>
-  </div>
+</div>
 
-  <!-- End of link modal -->
+<!-- End of link modal -->
 
-  <!-- Link Image Modal -->
-  <div id="link-image-modal" class="modal fade" role="dialog">
+<!-- Link Image Modal -->
+<div id="link-image-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Link</h4>
-        </div>
-        <div class="modal-body">
-          <!-- Modal Contents Here -->
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Link</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Modal Contents Here -->
 
-          <label>Image Link</label>
-          <span class="btnlink">
+                <label>Image Link</label>
+                <span class="btnlink">
             http://
             <input type="text" name="link" id="image-link">
           </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="link-image-submit" class="#">Submit</button>
+                <button type="button" class="#" data-dismiss="modal">Close</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" id="link-image-submit" class="#">Submit</button>
-          <button type="button" class="#" data-dismiss="modal">Close</button>
-        </div>
-      </div>
 
     </div>
-  </div>
+</div>
 
-  <!-- End of link modal -->
+<!-- End of link modal -->
 
-  <!-- Link Modal -->
-  <div id="link-3d-modal" class="modal fade" role="dialog">
+<!-- Link Modal -->
+<div id="link-3d-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Link</h4>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Link</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Modal Contents Here -->
+                <div>
+                    <label>Upload 3D file</label>
+                    <input type="file" name="_3dfile" id="_3dfile-link" accept=".obj"/>
+                </div>
+                <div>
+                    <label>Upload 3D file (MTL)</label>
+                    <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="link-3d-submit" class="#">Submit</button>
+                <button type="button" class="#" data-dismiss="modal">Close</button>
+            </div>
         </div>
-        <div class="modal-body">
-          <!-- Modal Contents Here -->
-          <div>
-            <label>Upload 3D file</label>
-              <input type="file" name="_3dfile" id="_3dfile-link" accept=".obj" />
-          </div>
-          <div>
-            <label>Upload 3D file (MTL)</label>
-              <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" id="link-3d-submit" class="#">Submit</button>
-          <button type="button" class="#" data-dismiss="modal">Close</button>
-        </div>
-      </div>
 
     </div>
-  </div>
+</div>
 
-  <!-- End of link modal -->
+<!-- End of link modal -->
 
-  <script>
+<script>
     var data = {{ data | safe}};
     var courseID = '{{course}}';
     var chapterID = '{{chapter}}';
@@ -478,51 +488,60 @@
     var previous;
     (function () {
 
-      $("select").on('focus', function () {
-        // Store the current value on focus and on change
-        previous = this.value;
-      }).change(function () {
-        // Do something with the previous value after the change
-        var confirmation = confirm("Are you sure you want to leave?")
-        if (confirmation == false) {
-          $('#chapterlist').val(previous)
-          return false
-        } else {
-          let chapter = $('#chapterlist').val()
-          location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
-        }
-      });
+        $("select").on('focus', function () {
+            // Store the current value on focus and on change
+            previous = this.value;
+        }).change(function () {
+            // Do something with the previous value after the change
+            var confirmation = confirm("Are you sure you want to leave?")
+            if (confirmation == false) {
+                $('#chapterlist').val(previous)
+                return false
+            } else {
+                let chapter = $('#chapterlist').val()
+                location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+            }
+        });
     })();
 
     $('#save-and-exit-btn').click(function (e) {
-      e.preventDefault();
+        e.preventDefault();
 
-      window.alert = function () { };
-      window.onbeforeunload = function () { };
-      $('#SaveBtn').click();
-      var href = $('#goBackBtn').attr('href');
-      location.href = href;
+        window.alert = function () {
+        };
+        window.onbeforeunload = function () {
+        };
+        $('#SaveBtn').click();
+        var href = $('#goBackBtn').attr('href');
+        location.href = href;
     });
 
     $(document).ready(function () {
-      let trunc = truncateString(`{{chapterdetails.Summary}}`);
-      $('#chapter-description').find('p').text(trunc);
+        let trunc = truncateString(`{{chapterdetails.Summary}}`);
+        $('#chapter-description').find('p').text(trunc);
     });
 
     const truncateString = (string, maxLength = 30) => {
-      if (!string) return null;
-      const showDots = string.length > maxLength;
-      return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+        if (!string) return null;
+        const showDots = string.length > maxLength;
+        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
     };
-  </script>
-  {# <script src="https://player.vimeo.com/api/player.js"></script> #}
-  <script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
-  <script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
 
-  <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
-  <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
-  <script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
-  <script src="{% static 'chapterPageBuilder/js/offline.min.js' %}"></script>
-  <script src="{% static 'chapterPageBuilder/js/offline.js' %}"></script>
-  <script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
+    $(window).load(function () {
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("slow");
+        ;
+    });
+
+</script>
+{# <script src="https://player.vimeo.com/api/player.js"></script> #}
+<script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
+
+<script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/offline.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/offline.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
 </body>
