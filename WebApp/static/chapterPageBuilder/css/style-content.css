@@ -534,3 +534,11 @@ body {
     left: 100px;
     top: 0;
 }
+
+.iframefullscreenbtn {
+    display: none;
+}
+
+.iframefullscreen:hover .iframefullscreenbtn {
+    display: block;
+}
