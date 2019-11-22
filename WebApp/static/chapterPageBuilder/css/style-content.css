@@ -332,8 +332,8 @@ a:hover, a:active, a:focus {
     right: 0;
 }
 
-@media only screen and (max-width: 767px){
-    .overall-contents{
+@media only screen and (max-width: 767px) {
+    .overall-contents {
         width: 100vw;
         height: auto;
         max-height: 100vh;
@@ -346,9 +346,9 @@ a:hover, a:active, a:focus {
         right: 0;
     }
 
-    .image-fitting{
-        object-fit: contain!important;
-        height: auto!important;
+    .image-fitting {
+        object-fit: contain !important;
+        height: auto !important;
     }
 
 
@@ -370,7 +370,8 @@ a:hover, a:active, a:focus {
     left: 0;
     right: 0;
 }
-.image-fitting{
+
+.image-fitting {
     object-fit: cover;
 }
 
@@ -487,13 +488,24 @@ body {
 }
 
 
-
-
 .goog-te-banner-frame {
     display: none !important;
 }
-@media only screen and (max-width: 600px){
+
+@media only screen and (max-width: 600px) {
     .full-chat-container {
         width: 310px;
     }
+}
+
+.a-enter-vr-button {
+    display: none;
+}
+
+
+body {
+    background-image: url('/static/images/uLMS2019_Loading_SVG.svg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
 }
