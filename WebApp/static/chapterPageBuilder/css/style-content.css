@@ -233,7 +233,7 @@ a:hover, a:active, a:focus {
     position: fixed;
     width: 60px;
     height: 60px;
-    bottom: 20px;
+    bottom: 20vh;
     right: 20px;
     background-color: #337ab7;
     color: #FFF;
@@ -348,6 +348,9 @@ a:hover, a:active, a:focus {
     .image-fitting {
         object-fit: contain !important;
         height: auto !important;
+    }
+    .friend-list-height{
+        display: none;
     }
 
 
