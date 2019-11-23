@@ -74,10 +74,12 @@
             </ul>
         </div>
 
-        <div id="thumb-next-btn" class="thumb-nav-button" style="right:9%;">
+        <div id="thumb-next-btn" class="thumb-nav-button" style="right:9%; padding-top: 5vh;
+    padding-left: 5vh;">
             <i class=" fa fa-forward"></i>
         </div>
-        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:9%; ">
+        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:9%;padding-top: 5vh;
+    padding-right: 5vh; ">
             <i class=" fa fa-backward"></i>
         </div>
 
@@ -846,20 +848,9 @@
 
     });
 
-    $('#container').mouseenter(function () {
-        $(".content-title1").show();
-        $('.thumbnail-slider').show();
-        $('.thumb-nav-button').show();
-        $('.content-footer1').show();
-        $('.button-position').show();
 
-    });
     $('#container').mouseleave(function () {
-        $(".content-title1").hide();
-        $('.thumbnail-slider').hide();
-        $('.thumb-nav-button').hide();
-        $('.content-footer1').hide();
-        $('.button-position').hide();
+
         $('.closechatopen').show();
     });
 
