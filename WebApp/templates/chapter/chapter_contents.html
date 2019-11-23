@@ -47,7 +47,7 @@
             <i class="fa fa-forward"></i>
         </div>
 
-        <div id="container" class="container12" style="position: relative; padding:20px!important">
+        <div id="container" class="container12" style="">
 
             <div class="content-title1  text-center">
                     <span id="chaptertitle" class="content-title">
@@ -56,7 +56,7 @@
                     </span>
             </div>
 
-            <div id="page-contents"></div>
+            <div id="page-contents" class="page-contents"></div>
 
         </div>
         <div class="progress">
@@ -808,11 +808,11 @@
 
     $('#thumb-next-btn').on('click mouseover', function () {
 
-        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() + 300);
+        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() + 100);
         console.log("hi")
     });
     $('#thumb-prev-btn').on('click mouseover', function () {
-        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() - 300);
+        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() - 100);
         console.log("hi")
 
     });

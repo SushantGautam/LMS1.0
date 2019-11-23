@@ -332,6 +332,10 @@ a:hover, a:active, a:focus {
 }
 
 @media only screen and (max-width: 767px) {
+
+    .page-contents{
+        padding-top: 10px!important;
+    }
     .overall-contents {
         width: 100vw;
         height: auto;
@@ -366,11 +370,13 @@ a:hover, a:active, a:focus {
     max-height: 100vh;
     max-width: 177.78vh;
     margin: auto;
-    position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+    position: relative;
+    padding:20px!important;
+    padding-top:0!important;
 }
 
 .image-fitting {
