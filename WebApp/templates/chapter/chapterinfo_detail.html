@@ -89,158 +89,129 @@
 
           <tr>
             <td>Status</td>
-            <td>{% if object.Use_Flag is True %}
-              Active
-            {% elif object.Use_Flag is False %}
-              Inactive
-            {% endif %}
-            </td>
+            <td>{% if object.Use_Flag is True %}Active{% elif object.Use_Flag is False %}Inactive{% endif %}</td>
           </tr>
+
           <tr>
             <td>Register Agent</td>
             <td>{{ object.Register_Agent }}</td>
           </tr>
+
           <tr>
             <td>Course Code</td>
             <td>{{ object.Course_Code }}</td>
           </tr>
 
-          {% if 'students' in request.path %}
-            <tr>
-              <td>Pre Test Quiz</td>
-
+          <!-- Pre Quiz Start -->
+          <tr>            
+            <td>Pre Test Quiz</td>
+            {% if 'students' in request.path %}
               <td>
-
-                {% for pre_quiz in pre_quizes %}
-                  <div class="col-md-12">
-                    <div class="col-md-6">
-                      <span> {{ pre_quiz.title }} </span>
-                    </div>
-                    <div class="col-md-6">
-                      <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                        <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
-                                class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
-                        </button>
-                      </a>
-                    </div>
+              {% for pre_quiz in pre_quizes %}
+                  <div class="col-md-9">
+                    <span> {{ pre_quiz.title }} </span>
                   </div>
-                  <hr>
-                {% empty %}
-                  <p>No pre quiz</p>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <td> Post Test Quiz</td>
-              <td>
-                {% for post_quiz in post_quizes %}
-                  <div class="col-md-12">
-                    <div class="col-md-6">
-                      <span> {{ post_quiz.title }} </span>
-                    </div>
-                    <div class="col-md-6">
-                      <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
-                                class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
-                        </button>
-                      </a>
-                    </div>
+                  <div class="col-md-3">
+                    <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                      <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class=" qts-button " data-toggle="modal" data-target="#quizmodal">
+                        Play Quiz
+                      </button>
+                    </a>
                   </div>
-                  <hr>
-                {% empty %}
-                  <p>No post quiz</p>
-                {% endfor %}
+              {% empty %}
+                <p>No pre quiz</p>
+              {% endfor %}
               </td>
-            </tr>
-          {% else %}
-            <tr>
-              <td style="vertical-align: middle;">
-                Pre Test Quiz
+            {% else %}
+              <td width="60%">       
+              {% for pre_quiz in pre_quizes %}
+                <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change" id="radiobtn{{ pre_quiz.id }}">
+                  {% csrf_token %}
+                  <a target="_blank" href="
+                          {% if 'teachers' in request.path %}
+                            {% url 'teacher_quiz_detail' pre_quiz.id %}
+                          {% else %}
+                            {% url 'quiz_detail' pre_quiz.id %}
+                          {% endif %}
+                        ">{{ pre_quiz.title }} </a><br>
+                  <div class="btn-group" id="status" data-toggle="buttons">
+                    <label class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}" id="ActiveButton">
+                      <input type="radio" value="1" name="pre-test-radio" id="id_pre-test-radio" {% if pre_quiz.draft == False %}checked{% endif %}>ON
+                    </label>
+                    <label class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}" id="ExpireButton">
+                      <input type="radio" value="0" name="pre-test-radio" {% if pre_quiz.draft == True %}checked{% endif %}>OFF
+                    </label>
+                  </div>
+                  <input type="hidden" name="quiz_id" value="{{ pre_quiz.id }}">
+                </form>
+              {% empty %}
+                No pre quiz, Add new by clicking +
+              {% endfor %}
               </td>
-              {% if pre_quizes %}
-                <td>
-                  {% for pre_quiz in pre_quizes %}
-                    <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change"
-                          id="radiobtn{{ pre_quiz.id }}">
-                      {% csrf_token %}
-                      <a target="_blank" href="/quiz/detail/{{ pre_quiz.id }}">{{ pre_quiz.title }} </a><br>
-                      <div class="btn-group" id="status" data-toggle="buttons">
-                        <label
-                            class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"
-                            id="ActiveButton">
-                          <input type="radio" value="1" name="pre-test-radio" id="id_pre-test-radio"
-                                 {% if pre_quiz.draft == False %}checked{% endif %}>ON</label>
-                        <label
-                            class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}"
-                            id="ExpireButton">
-                          <input type="radio" value="0" name="pre-test-radio"
-                                 {% if pre_quiz.draft == True %}checked{% endif %}>OFF</label>
-                      </div>
-                      <input type="hidden" name="quiz_id" value="{{ pre_quiz.id }}">
-                    </form>
-                  {% endfor %}
-                </td>
-              {% else %}
-                <td>No pre quiz, Add new by clicking +</td>
-              {% endif %}
-              <td style="vertical-align: middle;">
-                {#                <a id="pre_test_popup" target="_blank"#}
-                {#                   href={% url 'quiz_create_from_chapter' chapter_pk=object.pk test_type='pre_test' %}><i#}
-                {#                    class="fa fa-plus"></i></a>#}
-                <button type="button" class="btn qts-button" id="pre_test_popup" data-toggle="modal"
-                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i>
+              <td width="20%">
+                <button type="button" class="btn qts-button" id="pre_test_popup" data-toggle="modal" data-target="#quiz_create_popup">
+                  <i class="fa fa-plus"></i>
                 </button>
               </td>
-            </tr>
-            <tr>
-              <td style="vertical-align: middle;">
-                Post Test Quiz
+            {% endif %}
+          <hr></tr>
+          <!--Pre Quiz End  -->
+
+          <!-- Post Quiz Start -->
+          <tr>
+            <td> Post Test Quiz</td>
+            {% if 'students' in request.path %}
+              <td>
+              {% for post_quiz in post_quizes %}            
+                  <div class="col-md-6">
+                    <span> {{ post_quiz.title }} </span>
+                  </div>
+                  <div class="col-md-6">
+                    <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                      <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
+                              class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
+                      </button>
+                    </a>
+                  </div>
+              {% empty %}
+                <p>No post quiz</p>
+              {% endfor %}
               </td>
-              {% if post_quizes %}
-
-                <td>
-                  {% for post_quiz in post_quizes %}
-                    <form method="post" action="{% url 'change_quiz_test' %}" class="post_test_change"
-                          id="radiobtn{{ post_quiz.id }}">
-                      {% csrf_token %}
-                      <a href="/quiz/detail/{{ post_quiz.id }}">{{ post_quiz.title }} </a>
-                      <br>
-                      <div class="btn-group" id="status2" data-toggle="buttons">
-                        <label
-                            class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}"
-                            id="ActiveButton">
-                          <input type="radio" value="1" name="post-test-radio" id="id_post-test-radio"
-                                 {% if post_quiz.draft == False %}checked{% endif %}>ON</label>
-                        <label
-                            class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}"
-                            id="ExpireButton">
-                          <input type="radio" value="0" name="post-test-radio"
-                                 {% if post_quiz.draft == True %}checked{% endif %}>OFF</label>
-                      </div>
-                      <input type="hidden" name="quiz_id" value="{{ post_quiz.id }}">
-                    </form>
-                  {% endfor %}
-                </td>
-              {% else %}
-                <td>No post quiz, Add new by clicking +</td>
-
-              {% endif %}
-              <td style="vertical-align: middle;">
-                {#                <a target="_blank" id="post_test_popup"#}
-                {#                   href="{% url 'quiz_create_from_chapter' chapter_pk=object.pk test_type='post_test' %}"><i#}
-                {#                    class="fa fa-plus"></i></a>#}
-                <button type="button" class="btn qts-button" id="post_test_popup" data-toggle="modal"
-                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i>
-                </button>
+            {% else %}
+              <td width="60%">
+              {% for post_quiz in post_quizes %}
+                <form method="post" action="{% url 'change_quiz_test' %}" class="post_test_change" id="radiobtn{{ post_quiz.id }}">
+                  {% csrf_token %}
+                  <a href="/quiz/detail/{{ post_quiz.id }}">{{ post_quiz.title }} </a><br>
+                  <div class="btn-group" id="status2" data-toggle="buttons">
+                    <label class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}" id="ActiveButton">
+                      <input type="radio" value="1" name="post-test-radio" id="id_post-test-radio" {% if post_quiz.draft == False %}checked{% endif %}>ON
+                    </label>
+                    <label class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}" id="ExpireButton">
+                      <input type="radio" value="0" name="post-test-radio" {% if post_quiz.draft == True %}checked{% endif %}>OFF
+                    </label>
+                  </div>
+                  <input type="hidden" name="quiz_id" value="{{ post_quiz.id }}">
+                </form>
+              {% empty %}
+                No post quiz, Add new by clicking +
+              {% endfor %}
               </td>
-            </tr>
+              <td width="20%">
+              <button type="button" class="btn qts-button" id="post_test_popup" data-toggle="modal" data-target="#quiz_create_popup">
+                <i class="fa fa-plus"></i>
+              </button>
+            {% endif %}
+            </div>
+            <hr>
+          </tr>
+          <!-- Post Quiz End -->
 
-
-          {% endif %}
         </table>
       </div>
     </div>
   </div>
+  
   <div class="col-md-6 col-sm-12 xol-xs-12">
 
     <div class="col-md-12 col-sm-12 col-xs-12 ">
