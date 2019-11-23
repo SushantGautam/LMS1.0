@@ -265,7 +265,6 @@ a:hover, a:active, a:focus {
     padding: 10px;
     height: 10vh;
     bottom: 5;
-    display: block;
     width: 80%;
     background: whitesmoke;
     margin-left: 10%;
@@ -312,11 +311,11 @@ a:hover, a:active, a:focus {
 }
 
 .overall-contents:hover .button-position {
-    display: block;
+    display: block!important;
 }
 
 .overall-contents:hover .content-title {
-    display: block;
+    display: block!important;
 }
 
 .overall-contents {
@@ -434,7 +433,7 @@ a:hover, a:active, a:focus {
 
 
 .overall-contents:hover .thumb-nav-button {
-    display: block !important;
+    display: block ;
 }
 
 .page-slide {
@@ -521,6 +520,8 @@ body {
 .thumb-nav-button {
     position: absolute;
     bottom: 5vh;
+    display: none;
+
 
 }
 

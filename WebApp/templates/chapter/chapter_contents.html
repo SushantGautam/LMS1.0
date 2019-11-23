@@ -74,11 +74,11 @@
             </ul>
         </div>
 
-        <div id="thumb-next-btn" class="thumb-nav-button" style="right:9%; display: none">
-            <i class="fa fa-forward"></i>
+        <div id="thumb-next-btn" class="thumb-nav-button" style="right:9%;">
+            <i class=" fa fa-forward"></i>
         </div>
-        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:9%; display: none">
-            <i class="fa fa-backward"></i>
+        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:9%; ">
+            <i class=" fa fa-backward"></i>
         </div>
 
         <div class="content-footer1 text-center">
@@ -837,6 +837,21 @@
     $('#container').click(function () {
         $('.chatonly').hide();
         $('#closechatopen').show();
+
+        $(".content-title1").toggle();
+        $('.thumbnail-slider').toggle();
+        $('.thumb-nav-button').toggle();
+        $('.content-footer1').toggle();
+        $('.button-position').toggle();
+
+    });
+
+    $('#container').mouseenter(function () {
+        $(".content-title1").show();
+        $('.thumbnail-slider').show();
+        $('.thumb-nav-button').show();
+        $('.content-footer1').show();
+        $('.button-position').show();
     });
 
 
