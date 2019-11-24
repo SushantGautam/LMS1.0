@@ -1,3 +1,5 @@
+var firstload = true;
+
 $(document).ready(function () {
     $("#import_zip_link").on('click', function (e) {
         e.preventDefault();
@@ -272,13 +274,13 @@ $(document).ready(function () {
             </div>`;
             }
             let html =
-                `<div class='video-div'>
+                `<div class='video-div' style="background-image: url(${video_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
                     <div id="video-actions">
                         <i class="fas fa-trash" id=${id}></i>
                         <i class="fas fa-upload" id=${id}></i>
                         <i class="fas fa-link videolink" id=${id}></i>
                     </div>
-                    <div style="background-image: url(${video_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
+                    <div>
                         <p id="video-drag">${message}</p>
                         
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -1207,7 +1209,6 @@ $(document).ready(function () {
         }
 
         function readURL(input) {
-
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
@@ -1837,13 +1838,23 @@ $(document).ready(function () {
                             );
                         });
                     }
+
+                    if(div == 'thumbnail'){
+                        $($('.tabs-to-click').find('li')[key-1]).css({
+                            'background-image': 'url("' + div_value + '")',
+                            'background-position': 'center',
+                            'background-size': 'contain',
+                            'background-repeat': 'no-repeat',
+                        })
+                    }
                 });
             });
         });
         $('.tabs-to-click > ul > div > li')[0].click()
     }
-
+    
     display(data);
+    window.firstload = false
 });
 
 function displaypagenumbers() {
@@ -1874,9 +1885,10 @@ $('#btn-submit').on('click', function () {
 
 function openTab(evt, tab_no) {
     try {
-        setThumbnails()
+        if(!window.firstload)
+            setThumbnails()
     } catch (err) {
-        console.log(err)
+        console.log('')
     }
     tabcontent = document.getElementsByClassName("tab-content-no");
     for (i = 0; i < tabcontent.length; i++) {
@@ -1922,9 +1934,8 @@ function setThumbnails() {
     html2canvas($('.current')[0],).then(canvas => {
         $('.pagenumber').each(function () {
             if (id == this.value) {
-                if (canvas.toDataURL('image/png', 0.0,).startsWith('data:image')) {
-                    resizeImage(canvas.toDataURL('image/png', 0.0), 60, 30, setThumbnailscallback, $(this));
-
+                if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
+                    resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
                 }
             }
         });
