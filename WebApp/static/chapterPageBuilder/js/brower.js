@@ -68,8 +68,6 @@ $("#SaveBtn").on("click",function(e){
         );
       }
       if(value.classList.contains('pic')){
-        console.log($(this)[0].style.height, $(this)[0].style.width, $('#tabs-for-download').css('height'))
-
         picdiv.push(
           {
             'tops': $(this)[0].style.top,
@@ -177,9 +175,7 @@ $("#loadBtn").on("click",function(){
       "width":list.html.width,
       "height":list.html.height,
       "content":list.html.content
-    });
-    console.log(html);
-  
+    });  
 });
 
 });

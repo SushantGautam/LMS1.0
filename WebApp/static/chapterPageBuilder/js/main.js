@@ -408,7 +408,7 @@ $(document).ready(function () {
                 pdfobj = "";
             }
             let html = `
-            <div class='pdfdiv'>
+            <div class='pdfdiv' style="background-image: url(${pdf_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
                 <div id="pdfdiv-actions1">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
@@ -482,7 +482,7 @@ $(document).ready(function () {
                 _3dobj = "";
             }
             let html =
-                `<div class='_3dobj-div'>
+                `<div class='_3dobj-div' style="background-image: url(${_3d_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
                 <div id="_3dobj-actions">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
@@ -868,7 +868,7 @@ $(document).ready(function () {
             $('#btn-link').val(link);
 
             $('#button_id').val(btn_id);
-            $('#btn-modal').modal();
+            $('#btn-modal').modal('show');
         });
 
         $('.btn-button').resizable({
