@@ -6,6 +6,9 @@
         <h4 class="modal-title">Create Survey</h4>
       </div>
       <div class="modal-body" id="survey_form_ajax">
+        <div>
+          <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+        </div>
       </div>
       <div class="modal-footer">
       </div>
@@ -21,6 +24,9 @@
         <h4 class="modal-title">Create Quiz</h4>
       </div>
       <div class="modal-body" id="quiz_form_ajax">
+        <div>
+          <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+        </div>
       </div>
       <div class="modal-footer">
       </div>
@@ -36,6 +42,9 @@
         <h4 class="modal-title" id="question_model_title">Add Question</h4>
       </div>
       <div class="modal-body" id="question_form_ajax">
+        <div>
+          <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+        </div>
       </div>
       <div class="modal-footer">
       </div>
@@ -46,7 +55,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         $('#QuickQuiz').click(function () {
-            $("#quiz_form_ajax").html("");
             $.ajax({
                 type: "GET",
                 data: {
@@ -61,7 +69,6 @@
             });
         });
         $('#QuickSurvey').click(function () {
-            $("#survey_form_ajax").html("");
             console.log("survey_create");
             $.ajax({
                 type: "GET",
@@ -102,6 +109,7 @@
         console.log(response['teacher_url']);
         console.log(response['student_url']);
         close_quick_model("survey_content_modal");
+        document.getElementById("chatmessageinput").innerHTML = response['student_url'];
         window.open(response['teacher_url'], '_blank');
 
         //window.location.href = String(response['url']);
@@ -113,6 +121,7 @@
         console.log(response['teacher_url']);
         console.log(response['student_url']);
         close_quick_model("quiz_create_popup");
+        document.getElementById("chatmessageinput").innerHTML = response['student_url'];
         window.open(response['teacher_url'], '_blank');
 
         //window.location.href = String(response['url']);
