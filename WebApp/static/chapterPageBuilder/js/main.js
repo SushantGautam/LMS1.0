@@ -1501,18 +1501,17 @@ $(document).ready(function () {
             }
             if (value.classList.contains('pic')) {
                 PictureFunction($(this).css("top"),
-                    $(this).css("left"), value.style.backgroundImage, $(this).css("width"), $(this).css("height"));
+                    $(this).css("left"), $(value).find('img')[0].src, $(this).css("width"), $(this).css("height"));
             }
             if (value.classList.contains('btn-div')) {
                 ButtonFunction($(this).css("top"),
                     $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
             }
-            if (value.classList.contains('pdf')) {
+            if (value.classList.contains('pdfdiv')) {
                 PDFFunction($(this).css("top"),
                     $(this).css("left"), $(this).find('object').attr('data'), $(this).css("height"), $(this).css("width"));
             }
             if (value.classList.contains('video-div')) {
-                console.log($(this).find('video > source').attr('src'))
                 if ($(this).find('iframe').length > 0) {
                     var vidlink = $(this).find('iframe').attr('src');
                 } else if ($(this).find('video').length) {
@@ -1520,6 +1519,10 @@ $(document).ready(function () {
                 }
                 VideoFunction($(this).css("top"),
                     $(this).css("left"), vidlink, $(this).css("height"), $(this).css("width"));
+            }
+            if (value.classList.contains('_3dobj-div')) {
+                _3dFunction($(this).css("top"),
+                $(this).css("left"), $(this).find('iframe').attr('src'), $(this).css("height"), $(this).css("width"));
             }
         });
 
