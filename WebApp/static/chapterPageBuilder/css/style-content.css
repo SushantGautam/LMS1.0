@@ -105,6 +105,7 @@ small, .small {
     border-radius: 50em;
     -moz-border-radius: 50em;
     -webkit-border-radius: 50em;
+    max-width: -webkit-fill-available;
 }
 
 img {

@@ -648,14 +648,18 @@
 
     };
 
-    $('.note-editable').keypress(function (event) {
-        if (event.keyCode == 13 && !event.shiftKey) {
-            if ($('.note-editable').html()) {
-                sendMessageWritten();
+    $(document).keydown(function (event) {
+        if ($('.note-editable').is(":focus")) {
+            if (event.keyCode == 13 && !event.shiftKey) {
+                if ($('.note-editable').html()) {
+                    sendMessageWritten();
+                    alert("hi");
 
+                }
+                ;
             }
-            ;
         }
+
     });
 
 
