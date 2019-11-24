@@ -27,6 +27,8 @@
     <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet">
 
     <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
+
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -309,6 +311,7 @@
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/modernizr.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
 
 
 <script type="text/javascript">
@@ -353,9 +356,9 @@
             }
 
             if (e.keyCode == '70') {
-                var hasFocus = $('#chatmessageinput').is(':focus');
+                var hasFocus = $('.note-editable').is(':focus');
                 if (hasFocus) {
-                    return false
+                    return
                 }
 
                 toggleFullScreen();
@@ -623,6 +626,11 @@
             $('#currentpage').text(this.value);
             getProgressWidth();
         });
+
+
+        $('#chatmessageinput').summernote({
+            toolbar: []
+        });
     });
 
 
@@ -630,19 +638,19 @@
 
         chatSocket.send(
             JSON.stringify({
-                chat_message: $('#chatmessageinput').val(),
+                chat_message: $('.note-editable').html(),
                 sender_id: "{{  user.id }}",
                 sender_name: "{{  user.first_name }} {{  user.last_name }}",
                 sender_icon: "{{  user.Avatar }}",
             })
         );
-        $('#chatmessageinput').val("");
+        $('.note-editable').html("");
 
     };
 
-    $('#chatmessageinput').keypress(function (event) {
+    $('.note-editable').keypress(function (event) {
         if (event.keyCode == 13 && !event.shiftKey) {
-            if ($('#chatmessageinput').val()) {
+            if ($('.note-editable').html()) {
                 sendMessageWritten();
 
             }
@@ -807,13 +815,10 @@
     });
 
     $('#thumb-next-btn').on('click mouseover', function () {
-
         $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() + 100);
-        console.log("hi")
     });
     $('#thumb-prev-btn').on('click mouseover', function () {
         $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() - 100);
-        console.log("hi")
 
     });
 

@@ -101,7 +101,7 @@ small, .small {
 
 .chat li img {
     width: 30px;
-    height: 30px;
+    /* height: 30px; */
     border-radius: 50em;
     -moz-border-radius: 50em;
     -webkit-border-radius: 50em;
