@@ -1,3 +1,5 @@
+var firstload = true;
+
 $(document).ready(function () {
     $("#import_zip_link").on('click', function (e) {
         e.preventDefault();
@@ -278,7 +280,7 @@ $(document).ready(function () {
                         <i class="fas fa-upload" id=${id}></i>
                         <i class="fas fa-link videolink" id=${id}></i>
                     </div>
-                    <div style="background-image: url(${video_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
+                    <div>
                         <p id="video-drag">${message}</p>
                         
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -866,7 +868,7 @@ $(document).ready(function () {
             $('#btn-link').val(link);
 
             $('#button_id').val(btn_id);
-            $('#btn-modal').modal();
+            $('#btn-modal').modal('show');
         });
 
         $('.btn-button').resizable({
@@ -894,7 +896,7 @@ $(document).ready(function () {
         Pdf.renderDiagram();
 
         // ==for pdf upload==
-        $('.fa-upload').click(function (e) {
+        $('.fa-upload').off().click(function (e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
@@ -1081,7 +1083,7 @@ $(document).ready(function () {
         $('.fa-trash').click(function (e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
-        $('.fa-upload').off().click(function (e) {
+        $('.fa-upload').off().unbind().click(function (e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
@@ -1207,7 +1209,6 @@ $(document).ready(function () {
         }
 
         function readURL(input) {
-
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
@@ -1337,7 +1338,7 @@ $(document).ready(function () {
             $('#mtl-file').prop('disabled', false);
         });
 
-        $('.fa-upload').click(function (e) {
+        $('._3dobj-div').off().on('click', '.fa-upload' ,function (e) {
             // trigger = parseInt(e.target.id) + 1;
             // $('#' + trigger).trigger('click');
             $('#_3dfile-link').val('');
@@ -1500,18 +1501,17 @@ $(document).ready(function () {
             }
             if (value.classList.contains('pic')) {
                 PictureFunction($(this).css("top"),
-                    $(this).css("left"), value.style.backgroundImage, $(this).css("width"), $(this).css("height"));
+                    $(this).css("left"), $(value).find('img')[0].src, $(this).css("width"), $(this).css("height"));
             }
             if (value.classList.contains('btn-div')) {
                 ButtonFunction($(this).css("top"),
                     $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
             }
-            if (value.classList.contains('pdf')) {
+            if (value.classList.contains('pdfdiv')) {
                 PDFFunction($(this).css("top"),
                     $(this).css("left"), $(this).find('object').attr('data'), $(this).css("height"), $(this).css("width"));
             }
             if (value.classList.contains('video-div')) {
-                console.log($(this).find('video > source').attr('src'))
                 if ($(this).find('iframe').length > 0) {
                     var vidlink = $(this).find('iframe').attr('src');
                 } else if ($(this).find('video').length) {
@@ -1519,6 +1519,10 @@ $(document).ready(function () {
                 }
                 VideoFunction($(this).css("top"),
                     $(this).css("left"), vidlink, $(this).css("height"), $(this).css("width"));
+            }
+            if (value.classList.contains('_3dobj-div')) {
+                _3dFunction($(this).css("top"),
+                $(this).css("left"), $(this).find('iframe').attr('src'), $(this).css("height"), $(this).css("width"));
             }
         });
 
@@ -1837,13 +1841,23 @@ $(document).ready(function () {
                             );
                         });
                     }
+
+                    if(div == 'thumbnail'){
+                        $($('.tabs-to-click').find('li')[key-1]).css({
+                            'background-image': 'url("' + div_value + '")',
+                            'background-position': 'center',
+                            'background-size': 'contain',
+                            'background-repeat': 'no-repeat',
+                        })
+                    }
                 });
             });
         });
         $('.tabs-to-click > ul > div > li')[0].click()
     }
-
+    
     display(data);
+    window.firstload = false
 });
 
 function displaypagenumbers() {
@@ -1874,7 +1888,8 @@ $('#btn-submit').on('click', function () {
 
 function openTab(evt, tab_no) {
     try {
-        setThumbnails()
+        if(!window.firstload)
+            setThumbnails()
     } catch (err) {
         console.log(err)
     }
@@ -1919,18 +1934,54 @@ function resizeImage(url, width, height, callback, dive) {
 
 function setThumbnails() {
     let id = $('.current')[0].id.replace(/[^\d.]/g, '');
+    $('.current').find('.pdfdiv').each(function(){
+        $(this).css({
+            'background-image': `url('${pdf_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    })
+    $('.current').find('.video-div').each(function(){
+        $(this).css({
+            'background-image': `url('${video_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    });
+    $('.current').find('._3dobj-div').each(function(){
+        $(this).css({
+            'background-image': `url('${_3d_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    })
     html2canvas($('.current')[0],).then(canvas => {
         $('.pagenumber').each(function () {
             if (id == this.value) {
-                if (canvas.toDataURL('image/png', 0.0,).startsWith('data:image')) {
-                    resizeImage(canvas.toDataURL('image/png', 0.0), 60, 30, setThumbnailscallback, $(this));
-
+                if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
+                    resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
                 }
             }
         });
     });
-
-
+    $('.current').find('.pdfdiv').each(function(){
+        $(this).css({
+            'background-image': `none`,
+        })
+    });
+    $('.current').find('.video-div').each(function(){
+        $(this).css({
+            'background-image': `none`,
+        })
+    });
+    $('.current').find('._3dobj-div').each(function(){
+        $(this).css({
+            'background-image': `none`,
+        })
+    })
 }
 
 function setThumbnailscallback(data, dive) {

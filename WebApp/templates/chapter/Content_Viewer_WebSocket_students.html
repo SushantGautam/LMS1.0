@@ -1,19 +1,23 @@
 <script>
+    var StoreTeacherPage = 0;
 
-
-        function HandlePageInStudents(data) {
-        if (data.page === "next") $('#next-btn').click();
-        else if (data.page === "previous") $('#prev-btn').click();
+    function HandlePageInStudents(data) {
+        StoreTeacherPage = data.page;
+        if (parseInt(data.force)) ChangePageTo(data.page);
     };
 
 
     window.addEventListener('load', function () {
-
-
-
-
+        document.getElementById("followteacher").onclick = function () {
+            ChangePageTo(StoreTeacherPage)
+        };
 
     });
+
+    function ChangePageTo(PageNum) {
+        //
+
+    }
 
 
 </script>
