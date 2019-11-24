@@ -274,7 +274,7 @@ $(document).ready(function () {
             </div>`;
             }
             let html =
-                `<div class='video-div' style="background-image: url(${video_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
+                `<div class='video-div'>
                     <div id="video-actions">
                         <i class="fas fa-trash" id=${id}></i>
                         <i class="fas fa-upload" id=${id}></i>
@@ -408,7 +408,7 @@ $(document).ready(function () {
                 pdfobj = "";
             }
             let html = `
-            <div class='pdfdiv' style="background-image: url(${pdf_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
+            <div class='pdfdiv'>
                 <div id="pdfdiv-actions1">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
@@ -482,7 +482,7 @@ $(document).ready(function () {
                 _3dobj = "";
             }
             let html =
-                `<div class='_3dobj-div' style="background-image: url(${_3d_icon}); background-position: center;background-size: contain;background-repeat: no-repeat">
+                `<div class='_3dobj-div'>
                 <div id="_3dobj-actions">
                     <i class="fas fa-trash" id=${id}></i>
                     <i class="fas fa-upload" id=${id}></i>
@@ -896,7 +896,7 @@ $(document).ready(function () {
         Pdf.renderDiagram();
 
         // ==for pdf upload==
-        $('.fa-upload').click(function (e) {
+        $('.fa-upload').off().click(function (e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
@@ -1083,7 +1083,7 @@ $(document).ready(function () {
         $('.fa-trash').click(function (e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
-        $('.fa-upload').off().click(function (e) {
+        $('.fa-upload').off().unbind().click(function (e) {
             trigger = parseInt(e.target.id) + 1;
             $('#' + trigger).trigger('click');
         });
@@ -1338,7 +1338,7 @@ $(document).ready(function () {
             $('#mtl-file').prop('disabled', false);
         });
 
-        $('.fa-upload').click(function (e) {
+        $('._3dobj-div').off().on('click', '.fa-upload' ,function (e) {
             // trigger = parseInt(e.target.id) + 1;
             // $('#' + trigger).trigger('click');
             $('#_3dfile-link').val('');
@@ -1891,7 +1891,7 @@ function openTab(evt, tab_no) {
         if(!window.firstload)
             setThumbnails()
     } catch (err) {
-        console.log('')
+        console.log(err)
     }
     tabcontent = document.getElementsByClassName("tab-content-no");
     for (i = 0; i < tabcontent.length; i++) {
@@ -1934,6 +1934,30 @@ function resizeImage(url, width, height, callback, dive) {
 
 function setThumbnails() {
     let id = $('.current')[0].id.replace(/[^\d.]/g, '');
+    $('.current').find('.pdfdiv').each(function(){
+        $(this).css({
+            'background-image': `url('${pdf_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    })
+    $('.current').find('.video-div').each(function(){
+        $(this).css({
+            'background-image': `url('${video_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    });
+    $('.current').find('._3dobj-div').each(function(){
+        $(this).css({
+            'background-image': `url('${_3d_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    })
     html2canvas($('.current')[0],).then(canvas => {
         $('.pagenumber').each(function () {
             if (id == this.value) {
@@ -1943,8 +1967,21 @@ function setThumbnails() {
             }
         });
     });
-
-
+    $('.current').find('.pdfdiv').each(function(){
+        $(this).css({
+            'background-image': `none`,
+        })
+    });
+    $('.current').find('.video-div').each(function(){
+        $(this).css({
+            'background-image': `none`,
+        })
+    });
+    $('.current').find('._3dobj-div').each(function(){
+        $(this).css({
+            'background-image': `none`,
+        })
+    })
 }
 
 function setThumbnailscallback(data, dive) {

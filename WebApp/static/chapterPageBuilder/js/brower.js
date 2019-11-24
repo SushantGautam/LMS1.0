@@ -32,7 +32,7 @@ $(document).ready(function () {
 })
 
 $("#SaveBtn").on("click",function(e){
-  
+  setThumbnails()
   pages = {}
   var numberofpages = 0
   htmlfile = {};
