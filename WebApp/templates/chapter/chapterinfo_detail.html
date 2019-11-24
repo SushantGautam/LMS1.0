@@ -14,7 +14,7 @@
       </div>
       <input type="hidden" name="today_date" id="id_today_date" value="{{datetime|date:"Y-m-d"}}"
             class="select form-control">
-      <div class="modal-body" id="create_assignment_modal_body">
+      <div class="modal-body modal-auto" id="create_assignment_modal_body">
       </div>
     </div>
   </div>
@@ -201,6 +201,7 @@
               <button type="button" class="btn qts-button" id="post_test_popup" data-toggle="modal" data-target="#quiz_create_popup">
                 <i class="fa fa-plus"></i>
               </button>
+              </td>
             {% endif %}
             </div>
             <hr>

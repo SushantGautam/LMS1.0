@@ -1869,3 +1869,10 @@ label .asteriskField{
     width: 20%;
     color:#222;
 }
+
+/* Auto height and overflow hidden modal class */
+
+.modal-auto{
+    height: auto!important;
+    overflow: hidden!important;
+}
