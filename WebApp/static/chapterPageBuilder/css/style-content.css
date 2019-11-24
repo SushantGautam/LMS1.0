@@ -312,11 +312,11 @@ a:hover, a:active, a:focus {
 }
 
 .overall-contents:hover .button-position {
-    display: block!important;
+    display: block !important;
 }
 
 .overall-contents:hover .content-title {
-    display: block!important;
+    display: block !important;
 }
 
 .overall-contents {
@@ -334,9 +334,10 @@ a:hover, a:active, a:focus {
 
 @media only screen and (max-width: 767px) {
 
-    .page-contents{
-        padding-top: 10px!important;
+    .page-contents {
+        padding-top: 10px !important;
     }
+
     .overall-contents {
         width: 100vw;
         height: auto;
@@ -354,7 +355,8 @@ a:hover, a:active, a:focus {
         object-fit: contain !important;
         height: auto !important;
     }
-    .friend-list-height{
+
+    .friend-list-height {
         display: none;
     }
 
@@ -376,8 +378,8 @@ a:hover, a:active, a:focus {
     left: 0;
     right: 0;
     position: relative;
-    padding:20px!important;
-    padding-top:0!important;
+    padding: 20px !important;
+    padding-top: 0 !important;
 }
 
 .image-fitting {
@@ -443,7 +445,7 @@ a:hover, a:active, a:focus {
 
 
 .overall-contents:hover .thumb-nav-button {
-    display: block ;
+    display: block;
 }
 
 .page-slide {
@@ -553,4 +555,14 @@ body {
 
 .iframefullscreen:hover .iframefullscreenbtn {
     display: block;
+}
+
+.panel {
+    margin-bottom: 0px !important;
+}
+
+
+.note-editor.note-frame .note-editing-area .note-editable {
+
+    overflow: auto !important;
 }
