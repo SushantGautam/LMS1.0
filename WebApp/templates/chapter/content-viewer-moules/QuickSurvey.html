@@ -52,6 +52,8 @@
   </div>
 </div>
 
+{#<script src="/static/vendorsx/jquery/dist/jquery.min.js"></script>#}
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         $('#QuickQuiz').click(function () {
@@ -104,22 +106,24 @@
     }
 
     function survey_create_content(response) {
-        //location.reload();
-        console.log(response['url']);
-        console.log(response['teacher_url']);
-        console.log(response['student_url']);
-        close_quick_model("survey_content_modal");
-        document.getElementById("chatmessageinput").innerHTML = response['student_url'];
-        window.open(response['teacher_url'], '_blank');
+            //location.reload();
+            console.log(response['url']);
+            console.log(response['teacher_url']);
+            console.log(response['student_url']);
+            $(".note-editable").append(`<a href="${response['student_url']}">Take Quick Survey</a>`);
+            close_quick_model("survey_content_modal");
+            document.getElementById("chatmessageinput").innerHTML = response['student_url'];
+            window.open(response['teacher_url'], '_blank');
 
-        //window.location.href = String(response['url']);
-    }
+            //window.location.href = String(response['url']);
+        }
 
     function quiz_create_content(response) {
         //location.reload();
         console.log(response['url']);
         console.log(response['teacher_url']);
         console.log(response['student_url']);
+        $(".note-editable").append(`<a href="${response['student_url']}">Take Quick Quiz</a>`);
         close_quick_model("quiz_create_popup");
         document.getElementById("chatmessageinput").innerHTML = response['student_url'];
         window.open(response['teacher_url'], '_blank');

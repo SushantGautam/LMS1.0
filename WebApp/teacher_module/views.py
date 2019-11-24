@@ -501,9 +501,12 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
 
         if form.is_valid():
             self.object = form.save(commit=False)
-            self.object.Center_Code = self.request.user.Center_Code
+            if self.request.GET['category_name'].lower() == "system":
+                self.object.Center_Code = None
+            else:
+                self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
-            if self.request.GET['category_name'] == "live":
+            if self.request.GET['category_name'].lower() == "live":
                 self.object.Course_Code = get_object_or_404(CourseInfo, id=self.request.GET['course_code'])
                 self.object.Survey_Live = True
                 self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))

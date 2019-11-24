@@ -190,10 +190,13 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         # vform = super().form_valid(form)
         if form.is_valid():
             self.object = form.save(commit=False)
-            self.object.Center_Code = self.request.user.Center_Code
+            if self.request.GET['category_name'].lower() == "system":
+                self.object.Center_Code = None
+            else:
+                self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
             self.object.save()
-            if self.request.GET['category_name'] == "live":
+            if self.request.GET['category_name'].lower() == "live":
                 self.object.Survey_Live = True
                 self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
                 self.object.save()
@@ -348,9 +351,10 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
         return context
 
     def form_valid(self, form):
+        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
         if form.is_valid():
             self.object = form.save(commit=False)
-            self.object.Center_Code = self.request.user.Center_Code
+            self.object.Center_Code = obj_instance.Center_Code
             self.object.Added_By = self.request.user
             self.object.save()
         context = self.get_context_data()
@@ -369,8 +373,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
             # else:
             #     print('qna is invalid')
             #     print(qna.errors)
-        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
-        if (obj_instance.Retaken_From):
+        if obj_instance.Retaken_From:
             self.object.Retaken_From = obj_instance.Retaken_From
         else:
             self.object.Retaken_From = self.kwargs["pk"]

@@ -33,4 +33,11 @@
         });
     });
   </script>
+  <script>
+    function survey_create_content(response) {
+        //location.reload();
+        console.log(response['teacher_url']);
+        window.location.href = String(response['teacher_url']);
+    }
+  </script>
 {% endblock %}
