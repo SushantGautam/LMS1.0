@@ -579,26 +579,26 @@
         });
     }
 
-    $(document).ready(function () {
-        function Layout(x) {
-            if (x.matches) {
-                $('#page-contents').empty();
-                loaddata(data, window.currentpage);
-                $('#page-contents div').each(function () {
-                    $(this).removeAttr('style')
-                })
-            } else {
-                $('#page-contents').empty();
-                loaddata(data, window.currentpage)
-            }
-            $('.thumbnails').removeAttr('style').removeClass('active');
-            $('.thumbnails[value=' + window.currentpage + ']').css({
-                'border': '1px solid red'
-            }).addClass('active');
-        }
+    var x = window.matchMedia("(max-width: 767px)")
 
+    function Layout(x) {
+        if (x.matches) {
+            $('#page-contents').empty();
+            loaddata(data, window.currentpage);
+            $('#page-contents div').each(function () {
+                $(this).removeAttr('style')
+            })
+        } else {
+            $('#page-contents').empty();
+            loaddata(data, window.currentpage)
+        }
+        $('.thumbnails').removeAttr('style').removeClass('active');
+        $('.thumbnails[value=' + window.currentpage + ']').css({
+            'border': '1px solid red'
+        }).addClass('active');
+    }
+    $(document).ready(function () {
         setThumbnails();
-        var x = window.matchMedia("(max-width: 767px)")
         Layout(x)
         x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
@@ -607,16 +607,7 @@
             pauseAllVideos();
             if (currentpage < data.numberofpages) {
                 currentpage += 1;
-                getProgressWidth();
-                Layout(x)
-                $('#currentpage').text(currentpage);
-                changeThumbScroll(currentpage);
-
-                {% if ifteacher %}
-                    updatePageByTeacher();
-                {% else %}
-                    updatePageByStudent();// TBI
-                {% endif %}
+                changePage(currentpage)
 
             }
         });
@@ -625,24 +616,15 @@
             pauseAllVideos();
             if (currentpage != 1) {
                 currentpage -= 1;
-                Layout(x)
-                $('#currentpage').text(currentpage);
-                getProgressWidth()
-                changeThumbScroll(currentpage);
-                {% if ifteacher %}
-                    updatePageByTeacher();
-                {% else %}
-                    updatePageByStudent(); //TBI
-                {% endif %}
+                changePage(currentpage)
             }
         });
 
         $('.thumbnails').on('click', function () {
             currentpage = this.value
-            Layout(x)
-            $('#currentpage').text(this.value);
-            getProgressWidth();
+            changePage(currentpage)
         });
+
 
 
         $('#chatmessageinput').summernote({
@@ -651,6 +633,17 @@
     });
 
 
+    function changePage(page_number){
+        Layout(x)
+        $('#currentpage').text(page_number);
+        getProgressWidth();
+        changeThumbScroll();
+        {% if ifteacher %}
+            updatePageByTeacher();
+        {% else %}
+            // updatePageByStudent(); //TBI
+        {% endif %}
+    }
     function sendMessageWritten() {
 
         chatSocket.send(
@@ -679,7 +672,7 @@
     });
 
 
-    function changeThumbScroll(pageID) {
+    function changeThumbScroll() {
         document.querySelector("#thumbnail-slider > li.thumbnails.active").scrollIntoView();
 
     };
@@ -690,7 +683,7 @@
         if ("page" in data) {
 
 
-            {% if "students" in request.path %}
+            {% if not  ifteacher %}
                 HandlePageInStudents(data);
             {% endif %}
 

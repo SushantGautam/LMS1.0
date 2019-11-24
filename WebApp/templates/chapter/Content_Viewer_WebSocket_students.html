@@ -3,6 +3,7 @@
 
     function HandlePageInStudents(data) {
         StoreTeacherPage = data.page;
+        console.log(data.page)
         if (parseInt(data.force)) ChangePageTo(data.page);
     };
 
@@ -11,13 +12,13 @@
         document.getElementById("followteacher").onclick = function () {
             ChangePageTo(StoreTeacherPage)
         };
-
     });
 
     function ChangePageTo(PageNum) {
-        //
-
+        currentpage = PageNum
+        changePage(currentpage)
     }
+
 
 
 </script>
