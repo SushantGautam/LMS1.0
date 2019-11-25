@@ -202,12 +202,11 @@ class MyAssignmentsListView(ListView):
 
             for assignment in context['Course']:
                 Assignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id))
+                    Course_Code__id=assignment.Course_Code.id, Use_Flag=True))
                 activeAssignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__gte=datetime_now))
+                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True))
                 expiredAssignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__lte=datetime_now))
-                # print(context['Assignment'])
+                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True))
             context['Assignment'].append(Assignment)
             context['activeAssignment'].append(activeAssignment)
             context['expiredAssignment'].append(expiredAssignment)
