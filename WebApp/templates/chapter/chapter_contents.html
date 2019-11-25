@@ -209,7 +209,7 @@
                             <div class="friend-list-height">
 
 
-                                <ul class="friend-list">
+                                <ul id="friend-list" class="friend-list">
                                     <li class="active ">
                                         <a href="#" class="clearfix">
                                             <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""
@@ -378,6 +378,10 @@
     $('#closechatopen').on('click mouseover', function () {
         $('.chatonly').show();
         $('#closechatopen').hide();
+
+        {%  if ifteacher %}
+            updatePageByTeacher();
+        {% endif  %}
     });
 
     var data = {{ data | safe}};
@@ -690,12 +694,19 @@
 
 
     chatSocket.onmessage = function (e) {
+
+
         var data = JSON.parse(e.data);
+
+        {% if ifteacher %}
+            updateStudentOnlineBox(data);
+        {% endif %}
         if ("page" in data) {
 
 
             {% if not  ifteacher %}
                 HandlePageInStudents(data);
+
             {% endif %}
 
 
@@ -704,7 +715,6 @@
 
             {% if ifteacher %}
             {%  else %}
-                print(data);
                 if ("isteacher" in data) teacherOnline();
 
             {%  endif %}
@@ -717,7 +727,6 @@
             }
 
             displayNotif(data);
-
 
         }
     };
@@ -791,6 +800,7 @@
         $('time.timeago').timeago();
         if (CheckIfToScrollChatx) {
             var out = document.getElementById("chat-box-content");
+            var out = document.getElementById("chat-box-content");
             out.scrollTop = out.scrollHeight - out.clientHeight;
         }
 
@@ -807,7 +817,7 @@
                                 <div class="chat-body clearfix">
                                     <div class="header">
                                         <strong class="primary-font"> You </strong>
-                                       <small class="pull-right text-muted ">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time>    </small>
+                                       <i class="fa fa-clock-o"></i> <time   class="pull-right text-muted timeago" datetime= ` + new Date().toISOString() + `></time>
                                     </div>
                                     <p>
                                         ` + data.chat_message + `
@@ -892,6 +902,47 @@
         $(".se-pre-con").fadeOut("slow");
         ;
     });
+
+
+    {% if ifteacher %}
+
+        $('#forceScreen').change(function () {
+            updatePageByTeacher();
+        });
+
+        var OnlineMem = [];
+        function updateStudentOnlineBox(Newdata) {
+            print(Newdata.sender_id)
+            OnlineMem[Newdata.sender_id] = {
+                sender_name: Newdata.sender_name,
+                sender_icon: Newdata.sender_icon,
+                isteacher: Newdata.isteacher,
+                lastUpdate: new Date().toISOString(),
+            };
+
+            $('#friend-list').html('');
+            for (var eachuser in OnlineMem) {
+                console.log(eachuser)
+                $('#friend-list').append(`<li class=" ">
+                                        <a href="#" class="clearfix">
+                                            <img src="` + OnlineMem[eachuser].sender_icon + `" alt="" class="img-circle"><br>
+
+` + OnlineMem[eachuser].sender_name + `
+                                            <time class="time text-muted" style="font-size: 12px;">Just now</small>
+                             <time   class="timeago" datetime= "` + OnlineMem[eachuser].lastUpdate + `"> </time>
+                                            <small class="chat-alert label label-danger">1</small>
+
+
+                                        </a>
+
+                                    </li>`)
+            }
+
+        }
+
+    {%  endif %}
+
+
 </script>
 
 
