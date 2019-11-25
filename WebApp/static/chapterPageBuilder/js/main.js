@@ -1551,7 +1551,7 @@ $(document).ready(function () {
         } else if (ui.helper.hasClass('picture')) {
             PictureFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert(ui.helper.position().left, $('#tabs-for-download').width())) + '%',
+                (positionConvert(ui.helper.position().left - sidebarWidth, $('#tabs-for-download').width())) + '%',
                 null, '40%', '30%'
             );
         } else if (ui.helper.hasClass('video')) {
