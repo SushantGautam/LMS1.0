@@ -1869,3 +1869,18 @@ label .asteriskField{
     width: 20%;
     color:#222;
 }
+
+
+/* =================================AchivementPage================================= */
+.AchievementPage_Btn{
+    margin-top: 22px;
+    margin-right: 16%;
+}
+
+.filter_list{
+    padding-top: 10px;
+    padding-bottom: 72px;
+    /* border-style: ridge; */
+    /* background-color: lightgrey; */
+    margin-bottom: 30px;
+}

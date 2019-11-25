@@ -2,82 +2,171 @@
 {% load i18n %}
 {% load forum_tags %}
 {% load humanize %}
+{% load static %}
 
 {% block content %}
-<div class="x_panel">
-    {{ form.as_p }}
 
-    <div class="pull-right">
-        <button type="button" id="SearchAchievement" class="btn btn-primary">Search</button>
+<div class="form-row filter_list">
+    <div class="form-group col-md-6">
+        <p><label for="id_Inningsfilter">Filter by Innings</label> <select class="form-control" name="Inningsfilter"
+                required="" id="id_Inningsfilter">
+                <option value="">---------</option>
+                {% for i in Inningsfilter %}
+                <option value="{{ i.id }}"
+                    data-courseGroup="{% for cg in i.Course_Group.all %}{{ cg.id }},{% endfor %}">
+                    {{ i }}</option>
+                {% endfor %}
+
+
+            </select></p>
+    </div>
+    <div class="form-group col-md-6">
+        <p><label for="id_CourseFilter">Filter by Course</label> <select class="form-control" name="CourseFilter"
+                required="" id="id_CourseFilter">
+                <option value="">---------</option>
+                {% for i in CourseFilter %}
+
+                <option value="{{ i.id }}">{{ i }}</option>
+
+                <!-- Linked relation between course and session -->
+                {% comment %}
+                <option value="{{ i.id }}" data-group="
+            {% for key,value in Courses.items %}
+                {% if i.id == key %}
+                    {{ value }}
+                {% endif %}
+            {% endfor %}" style="display: none;">{{ i }}</option>
+                {% endcomment %}
+                {% endfor %}
+
+
+
+            </select></p>
+    </div>
+    <!-- <div class="pull-right AchievementPage_Btn">
+        <button type="button" id="SearchAchievement" class="btn btn-primary">Search<i class="fa fa-search"></i></button>
         <button type="button" id="ResetBtn" class="btn btn-danger">Reset</button>
-    </div>
+    </div> -->
+
+</div>
+
+<div class="membertable col-md-12 col-sm-12 col-xs-12 table-responsive">
+
+
+    <table class="table table-striped dt-responsive table-bordered bg-white nowrap dataTable no-footer dtr-inline"
+        id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info" style="width: 1197px;">
+        <thead class="thead-light bg-primary">
+            <tr class="tableTitleRow" role="row">
+                <td class="text-center sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+                    colspan="1" style="width: 41.0104px;" aria-sort="ascending"
+                    aria-label="S. No.: activate to sort column descending">S. No.</td>
+                <td class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                    style="width: 101.01px;" aria-label="Username: activate to sort column ascending">Student</td>
+                <td class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                    style="width: 84.0104px;" aria-label="Member ID: activate to sort column ascending">Progress
+                </td>
+
+
+            </tr>
+        </thead>
+
+
+        <tbody id="Student_List_toappend">
+
+
+        </tbody>
+    </table>
 </div>
 
 
-<div class="x_panel">
-    <div class="x_title">
-        <h2>
-            Detail of Category</h2>
-        <br>
-        <div class="clearfix"></div>
-    </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered  nowrap">
-            <thead class="thead-light bg-primary">
-                <tr class="tableTitleRow">
-                    <td>Student</td>
-                    <td>Progress
-                    </td>
-                </tr>
-            </thead>
-
-            <tbody id="Student_List_toappend">
-                <tr role="row" class="odd">
-
-                    <td class="sorting_1">
-
-                    </td>
-
-                    <td>Progress
-                    </td>
-                </tr>
-            </tbody>
-
-        </table>
-    </div>
-
-</div>
 {% endblock %}
 {% block customjss %}
+<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.table').DataTable({
+            dom: 'lBfrtip',
+            buttons: []
+
+        });
+    });
+</script>
 <script>
 
 
-    $('#SearchAchievement').click(function () {
-        if ($('#id_Inningsfilter').val() || $('#id_studentfilter').val() || $('#id_Coursefilter').val()) {
+    function UpdateAjax() {
+        $("#Student_List_toappend").html('');
+        if ($('#id_Inningsfilter').val() || $('#id_studentfilter').val() || $('#id_CourseFilter').val()) {
             var id_Inningsfilter = $('#id_Inningsfilter').val() ? $('#id_Inningsfilter').val() : 0;
             var id_studentfilter = $('#id_studentfilter').val() ? $('#id_studentfilter').val() : 0;
-            var id_Coursefilter = $('#id_Coursefilter').val() ? $('#id_Coursefilter').val() : 0;
+            var id_CourseFilter = $('#id_CourseFilter').val() ? $('#id_CourseFilter').val() : 0;
 
             $.ajax({
                 type: "GET",
-                url: "/AchievementPage_All_Ajax/" + id_Inningsfilter + '/' + id_studentfilter + '/' + id_Coursefilter,
+                url: "/AchievementPage_All_Ajax/" + id_Inningsfilter + '/' + id_studentfilter + '/' + id_CourseFilter,
                 success: function (data) {
+
                     $("#Student_List_toappend").html(data);
 
                 },
 
             });
         }
+    }
+
+
+    $('#id_Inningsfilter').on("change", function () {
+        $('#id_CourseFilter').val('');
+        UpdateAjax();
+
     });
 
-    $('#ResetBtn').click(function () {
+    $('#id_CourseFilter').on("change", function () {
         $('#id_Inningsfilter').val('');
-        $('#id_studentfilter').val('');
-        $('#id_Coursefilter').val('');
+        UpdateAjax();
 
     });
 
+    $(document).ready(function () {
+        // Linked relation between Session and Course
+        // $("#id_Inningsfilter").on("change", function () {
+        // var levelClass = $("#id_Inningsfilter").find('option:selected').attr('data-courseGroup');
+        // var session_Cg = levelClass.slice(0, -1).split(',');
+        // $('#id_CourseFilter').val('');
+        // $('#id_CourseFilter option').each(function () {
+        // var group = $(this).attr('data-group');
+        // var group_Cg = $.trim(group).slice(1, -1).split(',');
 
+        // if (findCommonElement(session_Cg, group_Cg)) {
+        // $(this).show();
+        // } else {
+        // $(this).hide();
+        // }
+        // });
+        // });
+
+        function findCommonElement(array1, array2) {
+            for (let i = 0; i < array1.length; i++) {
+                for (let j = 0; j < array2.length; j++) {
+                    if (array1[i] === array2[j]) {
+                        return
+                        true;
+                    }
+                }
+            } return false;
+        }
+    }); 
 </script>
 {% endblock %}

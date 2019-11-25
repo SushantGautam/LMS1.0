@@ -335,14 +335,14 @@ class ChangeOthersPasswordForm(forms.Form):
 
 
 class AchievementPage_All_form(forms.Form):
-    studentfilter = forms.ModelChoiceField(queryset=MessageInfo.objects.none())
-    Inningsfilter = forms.ModelChoiceField(queryset=MessageInfo.objects.none())
-    Coursefilter = forms.ModelChoiceField(queryset=MessageInfo.objects.none())
+    studentfilter = forms.CharField()
+    Inningsfilter = forms.ModelChoiceField(queryset=InningInfo.objects.none())
+    GroupMappingFilter = forms.ModelChoiceField(
+        queryset=GroupMapping.objects.none())
 
     def __init__(self, *args, **kwargs):
         super(AchievementPage_All_form, self).__init__(*args, **kwargs)
-        self.fields['studentfilter'].queryset = kwargs['initial']['studentfilter']
         self.fields['Inningsfilter'].queryset = kwargs['initial']['Inningsfilter']
-        self.fields['Coursefilter'].queryset = kwargs['initial']['Coursefilter']
+        self.fields['GroupMappingFilter'].queryset = kwargs['initial']['GroupMappingFilter']
 
         # (choice.pk, choice) for choice in studentfilter]
