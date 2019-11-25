@@ -569,10 +569,17 @@
 
     function setThumbnails() {
         $.each(data.pages, function (key, value) {
-            $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
-                    <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
+            if(value[0]['thumbnail'] == ""){
+                $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
+                    <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}"></img>
                 </li>
             `);
+            }else{
+                $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
+                        <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
+                    </li>
+                `);
+            }
         });
     }
 
