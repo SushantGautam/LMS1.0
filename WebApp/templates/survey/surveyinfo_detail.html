@@ -56,14 +56,40 @@
               }
           });
       });
+      $('#update_progress').on('click', function () {
+
+          $.ajax({
+              type: "GET",
+              url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
+              success: function (data) {
+                  console.log(data);
+                  obj = JSON.parse(data);
+                  console.log(obj);
+                  console.log(obj[0]["fields"]);
+                  console.log(obj[0].pk);
+                  for (var i = 0; i < obj.length; i++) {
+                      $("#progress" + obj[i].pk).css('width',  obj[i]["fields"]["Vote_Count"] + "%");
+                      console.log($("#progress" + obj[i].pk).css('width'));
+                      $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
+                      console.log($("#progress_span" + obj[i].pk).html());
+                      console.log(obj[i].pk)
+                  }
+              },
+
+
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
   </script>
 
   <script>
-    function survey_create_content(response) {
-        //location.reload();
-        console.log(response['url']);
-        window.location.href = String(response['url']);
-    }
+      function survey_create_content(response) {
+          //location.reload();
+          console.log(response['url']);
+          window.location.href = String(response['url']);
+      }
   </script>
 
 {% endblock %}
