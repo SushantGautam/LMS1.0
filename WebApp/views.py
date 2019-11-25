@@ -620,7 +620,7 @@ class CourseInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'))
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
         context['exam_quiz'] = Quiz.objects.filter(exam_paper=True, course_code=self.object)
         return context
@@ -1002,6 +1002,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj = AssignmentInfo()
         Obj.Assignment_Topic = request.POST["Assignment_Topic"]
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
+        Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
@@ -1020,10 +1021,12 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
             Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
+            Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
             Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
             Obj.save()
+
             return JsonResponse(
                 data={'Message': 'Success'}
             )
@@ -1314,13 +1317,18 @@ def chapterviewer(request):
         chapterID = request.GET['chapterID']
         chapterobj = ChapterInfo.objects.get(id=chapterID)
         courseID = chapterobj.Course_Code.id
-        try:
-            with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
-                    chapterID) + '.txt') as json_file:
-                data = json.load(json_file)
-        except Exception as e:
-            print(e)
-            data = ""
+        file_path = path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(chapterID) + '.txt'
+
+        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+            data = 1
+        else:
+            data = 0
+        # try:
+        #     with open() as json_file:
+        #         data = json.load(json_file)
+        # except Exception as e:
+        #     print(e)
+        #     data = ""
         return JsonResponse({'data': data})
 
 

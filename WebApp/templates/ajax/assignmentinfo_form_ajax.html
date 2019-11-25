@@ -28,11 +28,18 @@
     </div>
     <div class="result text-center"></div>
 
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <label>
+            Publish
+        </label><br>
+        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked><br> <br>
+    </div>
+
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
             class="select form-control">
     </div>
-    <div class="submitButton  col-md-12">
+    <div class="submitButton text-center col-md-12">
         <button class="btn btn-success" type="submit">Submit</button>
     </div>
 
@@ -66,6 +73,7 @@
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic').val(),
                 "Assignment_Deadline": $('#id_Assignment_Deadline').val(),
+                "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Course_Code": $('#id_Course_Code').val(),
                 "Chapter_Code": $('#id_Chapter_Code').val(),
                 "Register_Agent": $('#id_Register_Agent').val()

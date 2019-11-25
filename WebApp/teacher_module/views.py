@@ -236,7 +236,7 @@ class CourseInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'))
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
         return context
 
@@ -281,7 +281,8 @@ class ChapterInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
-        context['quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'))
+        context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
+        context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = datetime.now()
 
         return context
@@ -500,9 +501,12 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
 
         if form.is_valid():
             self.object = form.save(commit=False)
-            self.object.Center_Code = self.request.user.Center_Code
+            if self.request.GET['category_name'].lower() == "system":
+                self.object.Center_Code = None
+            else:
+                self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
-            if self.request.GET['category_name'] == "live":
+            if self.request.GET['category_name'].lower() == "live":
                 self.object.Course_Code = get_object_or_404(CourseInfo, id=self.request.GET['course_code'])
                 self.object.Survey_Live = True
                 self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
@@ -535,7 +539,6 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         kwargs = super(TeacherSurveyInfo_ajax, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
-
 
 
 def polls_teachers(request):
@@ -1142,6 +1145,7 @@ class teacherSurveyFilterCategory(ListView):
     def get_queryset(self):
         # try:
         category_name = self.request.GET['category_name'].lower()
+        date_filter = self.request.GET['date_filter'].lower()
         # teacher related data
         teacher_course_group = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
         teacher_session = InningInfo.objects.filter(Course_Group__in=teacher_course_group).distinct()
@@ -1156,25 +1160,39 @@ class teacherSurveyFilterCategory(ListView):
                                                   Course_Code__in=teacher_course)
         system_survey = SurveyInfo.objects.filter(Center_Code=None)
 
+        my_queryset = None
         if category_name == "all_survey":
             all_survey = general_survey | session_survey | course_survey | system_survey
-            return all_survey
+            my_queryset = all_survey
         else:
             if category_name == "general":
-                return general_survey
+                my_queryset = general_survey
             elif category_name == "session":
-                return session_survey
+                my_queryset = session_survey
             elif category_name == "course":
-                return course_survey
+                my_queryset = course_survey
             elif category_name == "system":
-                return system_survey
+                my_queryset = system_survey
 
+        if date_filter == "active":
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            print(date_filter, "query", len(my_queryset))
+        elif date_filter == "expire":
+            my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
+            print(date_filter, "query", len(my_queryset))
+        elif date_filter == "live":
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+            print(date_filter, "query", len(my_queryset))
+
+        return my_queryset
     # except:
     #     return None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
+        context['category_name'] = self.request.GET['category_name'].lower()
+        context['date_filter'] = self.request.GET['date_filter'].lower()
         return context
 
 
@@ -1249,7 +1267,7 @@ class Index(LoginRequiredMixin, ListView):
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
     topic = None
     node_group = NodeGroup.objects.all()
-    topics =  Topic.objects.all()
+    topics = Topic.objects.all()
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
         topic = Topic.objects.get(pk=topic_pk)
@@ -1623,9 +1641,11 @@ import operator
 from django.db.models import Q
 from functools import reduce
 from operator import or_
+
+
 def ThreadSearchAjax(request, topic_id, threadkeywordList):
     threadkeywordList = threadkeywordList.split("_")
-    RelevantThread=[]
+    RelevantThread = []
     if topic_id:
         RelevantThread = Thread.objects.filter(topic=topic_id)
         pass
@@ -1633,6 +1653,5 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
         RelevantTopics = Topic_related_to_user(request).values_list('pk')
         RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
         pass
-    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList )))[:5]
-    return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
-
+    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList)))[:5]
+    return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread': RelevantThread})

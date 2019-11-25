@@ -1,3 +1,13 @@
+<div style="position: sticky; width: 100%; top: 0; z-index: 1">
+    <div class="progress">
+      <div id="dynamic" class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar"
+           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+        <span id="current-progress"></span>
+      </div>
+    </div>
+    LIVE:
+    <input type="checkbox" id="chk" checked>
+  </div>
 <div class="clearfix"></div>
 
 <div class="container">
@@ -32,13 +42,17 @@
           </div>
         </div>
         <div class="col-md-3 col-sm-3" style="text-align:right">
-          <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-popup-open="popup-2">
+          <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn"
+                  data-toggle="modal"
+                  data-target="#survey_form_modal">
             Retake survey
           </button>
         </div>
       </div>
     </div>
-    <div class="horizontalBar"></div>
+    <div class=" horizontalBar
+          ">
+    </div>
     <div class="row">
       <div class="col-md-12">
         <div class="col-md-9">
@@ -84,7 +98,7 @@
                       </div>
                     {% endfor %}
                   </div>
-                
+
                 </div>
               </div>
             {% else %}
@@ -131,7 +145,8 @@
                 <h4 class="text-danger text-center">{{ survey.Created_Date }}</h4>
                 <h4 class="text-danger text-center">{{ survey.Updated_Date }}</h4>
               {% else %}
-                <h4 class="text-info text-center"><a href="{{survey.get_absolute_url}}">{{ survey.Survey_Title }}</a></h4>
+                <h4 class="text-info text-center"><a
+                    href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
                 <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
                 <h4 class="text-info text-center">{{ survey.Created_Date }}</h4>
                 <h4 class="text-info text-center">{{ survey.Updated_Date }}</h4>
@@ -140,43 +155,32 @@
             </div>
           {% endfor %}
         </div>
-        <div class="popup" data-popup="popup-2">
-          <div class="popup-inner ">
-            <article class="index-form">
-              <div class="label_inputs">
-                <a class="popup-close" data-popup-close="popup-2" href="#">x</a>
-                <div class="row">
-                  <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="x_panel">
-                      <div class="x_content">
-                        <br>
-
-                        <div class="form-group">
-                          <label class="control-label " id="categoryTitle" for="first-name">
-                            {% for category in categories %}
-                              <span class="generalLabel">{{ category.Category_Name }}</span>
-                            {% endfor %}
-                          </label>
-                        </div>
-                        <div class="se-pre-con-ajax"></div>
-
-                        <div id="surveyFormRetake">
-
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
-        </div>
       </div>
     </div>
-
-
   </div>
 </div>
 
-
+<div id="survey_form_modal" class="modal fade" style="height: -webkit-fill-available;">
+  <div class="modal-dialog" style="width: fit-content">
+    <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create Survey</h4>
+        <div class="form-group">
+          <label class="control-label " id="categoryTitle" for="first-name">
+            {% for category in categories %}
+              <span class="generalLabel">{{ category.Category_Name }}</span>
+            {% endfor %}
+          </label>
+        </div>
+      </div>
+      <div class="modal-body" id="surveyForm">
+        <div>
+          <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>

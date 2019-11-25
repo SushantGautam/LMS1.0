@@ -17,7 +17,7 @@
   {% for category in categories %}
     <script>
         $('#category_Add_Button{{ category.Category_Name }}').on('click', function () {
-            $('.popup-inner').append('<div class="se-pre-con-ajax"></div>');
+            $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
             $.ajax({
                 type: "GET",
                 data: {'category_name': '{{category.Category_Name}}'},
@@ -34,21 +34,21 @@
 
   {% endfor %}
   <script>
-        $('#category_Add_Button_live').on('click', function () {
-            $('.popup-inner').append('<div class="se-pre-con-ajax"></div>');
-            $.ajax({
-                type: "GET",
-                data: {'category_name': 'live'},
-                url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
-                success: function (data) {
-                    $("#surveyForm").html(data);
-                },
-                complete: function () {
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                }
-            });
-        });
-    </script>
+      $('#category_Add_Button_live').on('click', function () {
+          $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
+          $.ajax({
+              type: "GET",
+              data: {'category_name': 'live'},
+              url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#surveyForm").html(data);
+              },
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
+  </script>
 
   <script>
 
@@ -56,7 +56,10 @@
 
           $.ajax({
               type: "GET",
-              data: {'category_name': "all_survey"},
+              data: {
+                  'category_name': "all_survey",
+                  'date_filter': $("input[name='survey_filter_radio']:checked").val(),
+              },
               url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);
@@ -71,7 +74,63 @@
           var category_name = this.id;
           $.ajax({
               type: "GET",
-              data: {'category_name': category_name},
+              data: {
+                  'category_name': category_name,
+                  'date_filter': $("input[name='survey_filter_radio']:checked").val(),
+              },
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#rowCards").html(data);
+              },
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
+
+      // -----------------------------ACTIVE AND EPIRE -------------------------------------
+      $("#ActiveButton").on("click", function () {
+          var category_name = $(".card-text.active .category-name").attr('id');
+          $.ajax({
+              type: "GET",
+              data: {
+                  'category_name': category_name,
+                  'date_filter': 'active',
+              },
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#rowCards").html(data);
+              },
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
+      $("#ExpireButton").on("click", function () {
+         var category_name = $(".card-text.active .category-name").attr('id');
+          $.ajax({
+              type: "GET",
+              data: {
+                  'category_name': category_name,
+                  'date_filter': 'expire',
+              },
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#rowCards").html(data);
+              },
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
+      $("#LiveButton").on("click", function () {
+          var category_name = $(".card-text.active .category-name").attr('id');
+          $.ajax({
+              type: "GET",
+              data: {
+                  'category_name': category_name,
+                  'date_filter': 'live',
+              },
               url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);
@@ -85,10 +144,10 @@
 
   </script>
   <script>
-    function survey_create_content(response) {
-        //location.reload();
-        console.log(response['url']);
-        window.location.href = String(response['url']);
-    }
+      function survey_create_content(response) {
+          //location.reload();
+          console.log(response['url']);
+          window.location.href = String(response['url']);
+      }
   </script>
 {% endblock %}

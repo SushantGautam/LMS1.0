@@ -16,7 +16,7 @@ from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInf
     QuestionInfoFormset, QuestionAnsInfoFormset, LiveSurveyInfoForm
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 
-from django.db.models import Q
+from django.db.models import Q, F
 from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
@@ -190,10 +190,13 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         # vform = super().form_valid(form)
         if form.is_valid():
             self.object = form.save(commit=False)
-            self.object.Center_Code = self.request.user.Center_Code
+            if self.request.GET['category_name'].lower() == "system":
+                self.object.Center_Code = None
+            else:
+                self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
             self.object.save()
-            if self.request.GET['category_name'] == "live":
+            if self.request.GET['category_name'].lower() == "live":
                 self.object.Survey_Live = True
                 self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
                 self.object.save()
@@ -348,9 +351,10 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
         return context
 
     def form_valid(self, form):
+        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
         if form.is_valid():
             self.object = form.save(commit=False)
-            self.object.Center_Code = self.request.user.Center_Code
+            self.object.Center_Code = obj_instance.Center_Code
             self.object.Added_By = self.request.user
             self.object.save()
         context = self.get_context_data()
@@ -369,8 +373,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
             # else:
             #     print('qna is invalid')
             #     print(qna.errors)
-        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
-        if (obj_instance.Retaken_From):
+        if obj_instance.Retaken_From:
             self.object.Retaken_From = obj_instance.Retaken_From
         else:
             self.object.Retaken_From = self.kwargs["pk"]
@@ -516,17 +519,32 @@ class surveyFilterCategory(ListView):
 
     def get_queryset(self):
         category_name = self.request.GET['category_name'].lower()
+        date_filter = self.request.GET['date_filter'].lower()
         print("category id:", category_name)
-        if category_name.lower() == "all_survey":
-            return SurveyInfo.objects.filter(Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
-        else:
-            return SurveyInfo.objects.filter(Category_Code__Category_Name__iexact=category_name).filter(
-                Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
+        print("date filter:", date_filter)
+        my_queryset = SurveyInfo.objects.filter(
+            Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
+        print("all survey query", len(my_queryset))
+        if category_name != "all_survey":
+            my_queryset = my_queryset.filter(Category_Code__Category_Name__iexact=category_name)
+            print(category_name, "query", len(my_queryset))
+        if date_filter == "active":
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            print(date_filter, "query", len(my_queryset))
+        elif date_filter == "expire":
+            my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
+            print(date_filter, "query", len(my_queryset))
+        elif date_filter == "live":
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+            print(date_filter, "query", len(my_queryset))
+
+        return my_queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
         context['category_name'] = self.request.GET['category_name'].lower()
+        context['date_filter'] = self.request.GET['date_filter'].lower()
         return context
 
     # ....................................Pagination.............................................................

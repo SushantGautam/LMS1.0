@@ -73,9 +73,9 @@
                         <tr>
                             <td>Status</td>
                             <td>{% if object.Use_Flag == True %}
-                                Active
+                                <span class="text-success">Active</span>
                                 {% else %}
-                                Inactive
+                                <span class="text-danger">Inactive</span>
                                 {% endif %}
                             </td>
                         </tr>
@@ -405,7 +405,7 @@
                     </button>
                 </h4>
             </div>
-            <div class="modal-body" id="add_question_modal_body">
+            <div class="modal-body modal-auto" id="add_question_modal_body">
             </div>
         </div>
     </div>
@@ -423,7 +423,7 @@
                     </button>
                 </h4>
             </div>
-            <div class="modal-body" id="editAssignment_modal_body">
+            <div class="modal-body modal-auto" id="editAssignment_modal_body">
                 <form method="post" id="ajaxassignmentinfoform">
                     {% csrf_token %}
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
@@ -450,6 +450,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <label>Publish</label><br>
+                        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
+                        &nbsp; {% elif object.Use_Flag == True %} checked {% endif %}><br> <br>
+                    </div>
                     <div class="result text-center"></div>
 
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
@@ -463,7 +468,7 @@
                             class="select form-control">
                     </div>
 
-                    <div class="submitButton  col-md-12">
+                    <div class="submitButton text-center col-md-12">
                         <button class="btn btn-success" type="submit">Submit</button>
                     </div>
                 </form>
@@ -541,6 +546,7 @@
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
                 "Assignment_Deadline": $('#id_Assignment_Deadline_edit').val(),
+                "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Course_Code": $('#id_Course_Code').val(),
                 "Chapter_Code": $('#id_Chapter_Code').val(),
                 "Register_Agent": $('#id_Register_Agent').val(),

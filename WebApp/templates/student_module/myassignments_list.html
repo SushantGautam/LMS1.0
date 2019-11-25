@@ -47,7 +47,12 @@
 
         <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
             <hr style="margin-top: 1px; margin-bottom: 10px;">
-            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+            <p class="text-danger">Submission Deadline - 
+                    {% if "0" in a.Assignment_Deadline|timeuntil %}
+                       Expired
+                    {% else %} 
+                        {{ a.Assignment_Deadline|timeuntil }} left
+                    {% endif %}</p>
         </div>
     </div>
     {% endfor %}
@@ -87,7 +92,7 @@
 
         <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
             <hr style="margin-top: 1px; margin-bottom: 10px;">
-            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+            <p class="text-danger">Submission Deadline - {{ a.Assignment_Deadline|timeuntil }} left</p>
         </div>
     </div>
     {% endfor %}

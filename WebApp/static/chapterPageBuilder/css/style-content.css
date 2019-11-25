@@ -101,10 +101,11 @@ small, .small {
 
 .chat li img {
     width: 30px;
-    height: 30px;
+    /* height: 30px; */
     border-radius: 50em;
     -moz-border-radius: 50em;
     -webkit-border-radius: 50em;
+    max-width: -webkit-fill-available;
 }
 
 img {
@@ -233,7 +234,7 @@ a:hover, a:active, a:focus {
     position: fixed;
     width: 60px;
     height: 60px;
-    bottom: 20px;
+    bottom: 20vh;
     right: 20px;
     background-color: #337ab7;
     color: #FFF;
@@ -264,8 +265,7 @@ a:hover, a:active, a:focus {
     border: 3px solid green;
     padding: 10px;
     height: 10vh;
-    bottom: 0;
-    display: block;
+    bottom: 5;
     width: 80%;
     background: whitesmoke;
     margin-left: 10%;
@@ -277,8 +277,8 @@ a:hover, a:active, a:focus {
 
 .thumb-img {
     height: -webkit-fill-available;
-    padding-left: 10px;
-    padding-right: 10px;
+    /* padding-left: 10px; */
+    /* padding-right: 10px; */
 }
 
 
@@ -312,11 +312,11 @@ a:hover, a:active, a:focus {
 }
 
 .overall-contents:hover .button-position {
-    display: block;
+    display: block !important;
 }
 
 .overall-contents:hover .content-title {
-    display: block;
+    display: block !important;
 }
 
 .overall-contents {
@@ -332,8 +332,13 @@ a:hover, a:active, a:focus {
     right: 0;
 }
 
-@media only screen and (max-width: 767px){
-    .overall-contents{
+@media only screen and (max-width: 767px) {
+
+    .page-contents {
+        padding-top: 10px !important;
+    }
+
+    .overall-contents {
         width: 100vw;
         height: auto;
         max-height: 100vh;
@@ -345,18 +350,42 @@ a:hover, a:active, a:focus {
         left: 0;
         right: 0;
     }
+
+    .image-fitting {
+        object-fit: contain !important;
+        height: auto !important;
+    }
+
+    .friend-list-height {
+        display: none;
+    }
+
+
 }
 
-#container {
+.container12 {
     background-color: white;
     color: black;
     overflow: auto;
+
+    width: 100vw;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    max-width: 177.78vh;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: relative;
+    padding: 20px !important;
+    padding-top: 0 !important;
 }
 
-body {
-    background-color: rgba(0, 0, 0, 0.7);
-    top: 0px !important;
+.image-fitting {
+    object-fit: cover;
 }
+
 
 .content-title {
     color: white;
@@ -414,8 +443,9 @@ body {
     display: block;
 }
 
-.thumbnail-slider:hover .chatonly {
-    display: none;
+
+.overall-contents:hover .thumb-nav-button {
+    display: block;
 }
 
 .page-slide {
@@ -424,12 +454,17 @@ body {
 }
 
 .progress {
-    margin-top: 5px;
-    height: 5px;
+    margin-bottom: 0px;
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 
 .thumbnails {
     display: inline-block;
+    margin-right: 10px;
 }
 
 /* .thumbnails img {
@@ -462,13 +497,84 @@ body {
 }
 
 
-
-
 .goog-te-banner-frame {
     display: none !important;
 }
-@media only screen and (max-width: 600px){
+
+@media only screen and (max-width: 600px) {
     .full-chat-container {
         width: 310px;
     }
+}
+
+.a-enter-vr-button {
+    display: none;
+}
+
+
+body {
+    background-color: rgba(0, 0, 0, 0.7);
+    top: 0px !important;
+}
+
+
+.se-pre-con {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url(/static/images/uLMS2019_Loading_SVG.svg) center no-repeat #fff;
+}
+
+
+.thumb-nav-button {
+    position: absolute;
+    bottom: 5vh;
+    display: none;
+}
+
+.no-js #loader {
+    display: none;
+}
+
+.js #loader {
+    display: block;
+    position: absolute;
+    left: 100px;
+    top: 0;
+}
+
+.iframefullscreenbtn {
+    display: none;
+    position: fixed;
+    margin-top: 5vh;
+    margin-left: 3vh;
+}
+
+.iframefullscreen:hover .iframefullscreenbtn {
+    display: block;
+}
+
+.panel {
+    margin-bottom: 0px !important;
+}
+
+
+.note-editor.note-frame .note-editing-area .note-editable {
+
+    overflow: auto !important;
+}
+
+
+.chat-avatar {
+    max-width: 100% !important;
+}
+
+.followteacher {
+    color: #79f979;
+}
+.offline-followteacher {
+    color: #620806;
 }

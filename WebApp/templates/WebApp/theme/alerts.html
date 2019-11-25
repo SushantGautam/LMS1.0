@@ -1,13 +1,13 @@
 {% if messages %}
-<div class="error" id="alert-message" style="padding: 5px;">
+<div class="error" id="alert-message">
 
     {% for message in messages %}
-    <div class="text-center errorMessage bg-{{ message.tags|title|lower }}" id="message">
+    <div class="text-center errorMessage text-{{ message.tags|title|lower }} h5" id="message">
         <strong>
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            ERROR
+              ERROR
             {% else %}
-            {{ message.tags|title }}
+              {{ message.tags|title }}
             {% endif %}
         </strong>
         {{ message }}

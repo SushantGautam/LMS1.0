@@ -12,7 +12,9 @@
           </button>
         </h4>
       </div>
-      <div class="modal-body" id="create_assignment_modal_body">
+      <input type="hidden" name="today_date" id="id_today_date" value="{{datetime|date:"Y-m-d"}}"
+            class="select form-control">
+      <div class="modal-body modal-auto" id="create_assignment_modal_body">
       </div>
     </div>
   </div>
@@ -39,9 +41,7 @@
                     {% url 'student_contentviewer' object.Course_Code.pk object.pk %}
                 {% else %}
                     {% url 'contentviewer' object.Course_Code.pk object.pk %}
-                {% endif %}
-                
-                " id="course-viewer" target="_blank">
+                {% endif %}" id="course-viewer" target="_blank">
           Content Viewer &nbsp;
         </a>
 
@@ -89,158 +89,130 @@
 
           <tr>
             <td>Status</td>
-            <td>{% if object.Use_Flag is True %}
-              Active
-            {% elif object.Use_Flag is False %}
-              Inactive
-            {% endif %}
-            </td>
+            <td>{% if object.Use_Flag is True %}Active{% elif object.Use_Flag is False %}Inactive{% endif %}</td>
           </tr>
+
           <tr>
             <td>Register Agent</td>
             <td>{{ object.Register_Agent }}</td>
           </tr>
+
           <tr>
             <td>Course Code</td>
             <td>{{ object.Course_Code }}</td>
           </tr>
 
-          {% if 'students' in request.path %}
-            <tr>
-              <td>Pre Test Quiz</td>
-
+          <!-- Pre Quiz Start -->
+          <tr>            
+            <td>Pre Test Quiz</td>
+            {% if 'students' in request.path %}
               <td>
-
-                {% for pre_quiz in pre_quizes %}
-                  <div class="col-md-12">
-                    <div class="col-md-6">
-                      <span> {{ pre_quiz.title }} </span>
-                    </div>
-                    <div class="col-md-6">
-                      <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                        <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
-                                class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
-                        </button>
-                      </a>
-                    </div>
+              {% for pre_quiz in pre_quizes %}
+                  <div class="col-md-9">
+                    <span> {{ pre_quiz.title }} </span>
                   </div>
-                  <hr>
-                {% empty %}
-                  <p>No pre quiz</p>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <td> Post Test Quiz</td>
-              <td>
-                {% for post_quiz in post_quizes %}
-                  <div class="col-md-12">
-                    <div class="col-md-6">
-                      <span> {{ post_quiz.title }} </span>
-                    </div>
-                    <div class="col-md-6">
-                      <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
-                                class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
-                        </button>
-                      </a>
-                    </div>
+                  <div class="col-md-3">
+                    <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                      <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class=" qts-button " data-toggle="modal" data-target="#quizmodal">
+                        Play Quiz
+                      </button>
+                    </a>
                   </div>
-                  <hr>
-                {% empty %}
-                  <p>No post quiz</p>
-                {% endfor %}
+              {% empty %}
+                <p>No pre quiz</p>
+              {% endfor %}
               </td>
-            </tr>
-          {% else %}
-            <tr>
-              <td style="vertical-align: middle;">
-                Pre Test Quiz
+            {% else %}
+              <td width="60%">       
+              {% for pre_quiz in pre_quizes %}
+                <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change" id="radiobtn{{ pre_quiz.id }}">
+                  {% csrf_token %}
+                  <a target="_blank" href="
+                          {% if 'teachers' in request.path %}
+                            {% url 'teacher_quiz_detail' pre_quiz.id %}
+                          {% else %}
+                            {% url 'quiz_detail' pre_quiz.id %}
+                          {% endif %}
+                        ">{{ pre_quiz.title }} </a><br>
+                  <div class="btn-group" id="status" data-toggle="buttons">
+                    <label class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}" id="ActiveButton">
+                      <input type="radio" value="1" name="pre-test-radio" id="id_pre-test-radio" {% if pre_quiz.draft == False %}checked{% endif %}>ON
+                    </label>
+                    <label class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}" id="ExpireButton">
+                      <input type="radio" value="0" name="pre-test-radio" {% if pre_quiz.draft == True %}checked{% endif %}>OFF
+                    </label>
+                  </div>
+                  <input type="hidden" name="quiz_id" value="{{ pre_quiz.id }}">
+                </form>
+              {% empty %}
+                No pre quiz, Add new by clicking +
+              {% endfor %}
               </td>
-              {% if pre_quizes %}
-                <td>
-                  {% for pre_quiz in pre_quizes %}
-                    <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change"
-                          id="radiobtn{{ pre_quiz.id }}">
-                      {% csrf_token %}
-                      <a target="_blank" href="/quiz/detail/{{ pre_quiz.id }}">{{ pre_quiz.title }} </a><br>
-                      <div class="btn-group" id="status" data-toggle="buttons">
-                        <label
-                            class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"
-                            id="ActiveButton">
-                          <input type="radio" value="1" name="pre-test-radio" id="id_pre-test-radio"
-                                 {% if pre_quiz.draft == False %}checked{% endif %}>ON</label>
-                        <label
-                            class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}"
-                            id="ExpireButton">
-                          <input type="radio" value="0" name="pre-test-radio"
-                                 {% if pre_quiz.draft == True %}checked{% endif %}>OFF</label>
-                      </div>
-                      <input type="hidden" name="quiz_id" value="{{ pre_quiz.id }}">
-                    </form>
-                  {% endfor %}
-                </td>
-              {% else %}
-                <td>No pre quiz, Add new by clicking +</td>
-              {% endif %}
-              <td style="vertical-align: middle;">
-                {#                <a id="pre_test_popup" target="_blank"#}
-                {#                   href={% url 'quiz_create_from_chapter' chapter_pk=object.pk test_type='pre_test' %}><i#}
-                {#                    class="fa fa-plus"></i></a>#}
-                <button type="button" class="btn qts-button" id="pre_test_popup" data-toggle="modal"
-                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i>
+              <td width="20%">
+                <button type="button" class="btn qts-button" id="pre_test_popup" data-toggle="modal" data-target="#quiz_create_popup">
+                  <i class="fa fa-plus"></i>
                 </button>
               </td>
-            </tr>
-            <tr>
-              <td style="vertical-align: middle;">
-                Post Test Quiz
+            {% endif %}
+          <hr></tr>
+          <!--Pre Quiz End  -->
+
+          <!-- Post Quiz Start -->
+          <tr>
+            <td> Post Test Quiz</td>
+            {% if 'students' in request.path %}
+              <td>
+              {% for post_quiz in post_quizes %}            
+                  <div class="col-md-6">
+                    <span> {{ post_quiz.title }} </span>
+                  </div>
+                  <div class="col-md-6">
+                    <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                      <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
+                              class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play Quiz
+                      </button>
+                    </a>
+                  </div>
+              {% empty %}
+                <p>No post quiz</p>
+              {% endfor %}
               </td>
-              {% if post_quizes %}
-
-                <td>
-                  {% for post_quiz in post_quizes %}
-                    <form method="post" action="{% url 'change_quiz_test' %}" class="post_test_change"
-                          id="radiobtn{{ post_quiz.id }}">
-                      {% csrf_token %}
-                      <a href="/quiz/detail/{{ post_quiz.id }}">{{ post_quiz.title }} </a>
-                      <br>
-                      <div class="btn-group" id="status2" data-toggle="buttons">
-                        <label
-                            class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}"
-                            id="ActiveButton">
-                          <input type="radio" value="1" name="post-test-radio" id="id_post-test-radio"
-                                 {% if post_quiz.draft == False %}checked{% endif %}>ON</label>
-                        <label
-                            class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}"
-                            id="ExpireButton">
-                          <input type="radio" value="0" name="post-test-radio"
-                                 {% if post_quiz.draft == True %}checked{% endif %}>OFF</label>
-                      </div>
-                      <input type="hidden" name="quiz_id" value="{{ post_quiz.id }}">
-                    </form>
-                  {% endfor %}
-                </td>
-              {% else %}
-                <td>No post quiz, Add new by clicking +</td>
-
-              {% endif %}
-              <td style="vertical-align: middle;">
-                {#                <a target="_blank" id="post_test_popup"#}
-                {#                   href="{% url 'quiz_create_from_chapter' chapter_pk=object.pk test_type='post_test' %}"><i#}
-                {#                    class="fa fa-plus"></i></a>#}
-                <button type="button" class="btn qts-button" id="post_test_popup" data-toggle="modal"
-                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i>
-                </button>
+            {% else %}
+              <td width="60%">
+              {% for post_quiz in post_quizes %}
+                <form method="post" action="{% url 'change_quiz_test' %}" class="post_test_change" id="radiobtn{{ post_quiz.id }}">
+                  {% csrf_token %}
+                  <a href="/quiz/detail/{{ post_quiz.id }}">{{ post_quiz.title }} </a><br>
+                  <div class="btn-group" id="status2" data-toggle="buttons">
+                    <label class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}" id="ActiveButton">
+                      <input type="radio" value="1" name="post-test-radio" id="id_post-test-radio" {% if post_quiz.draft == False %}checked{% endif %}>ON
+                    </label>
+                    <label class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}" id="ExpireButton">
+                      <input type="radio" value="0" name="post-test-radio" {% if post_quiz.draft == True %}checked{% endif %}>OFF
+                    </label>
+                  </div>
+                  <input type="hidden" name="quiz_id" value="{{ post_quiz.id }}">
+                </form>
+              {% empty %}
+                No post quiz, Add new by clicking +
+              {% endfor %}
               </td>
-            </tr>
+              <td width="20%">
+              <button type="button" class="btn qts-button" id="post_test_popup" data-toggle="modal" data-target="#quiz_create_popup">
+                <i class="fa fa-plus"></i>
+              </button>
+              </td>
+            {% endif %}
+            </div>
+            <hr>
+          </tr>
+          <!-- Post Quiz End -->
 
-
-          {% endif %}
         </table>
       </div>
     </div>
   </div>
+  
   <div class="col-md-6 col-sm-12 xol-xs-12">
 
     <div class="col-md-12 col-sm-12 col-xs-12 ">
@@ -287,64 +259,6 @@
           </div>
         </div>
       {% endfor %}
-    </div>
-  </div>
-</div>
-
-{# Modal for chapter view #}
-
-<!-- Modal -->
-<div id="course-modal" class="modal fade" role="dialog">
-  <div id='hijoa' class="modal-dialog" style="width: 80%">
-
-    <!-- Modal content-->
-    <div id='hijo' class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <a data-toggle="tooltip" data-placement="right" title="" onclick="toggleFullScreen()"
-           data-original-title="FullScreen" style="float:right;padding-right: 20px;">
-          <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        </a>
-        <h4 class="modal-title">
-                    <span id="chaptertitle">
-                        <!-- Chapter title goes here -->
-                    </span>
-        </h4>
-        Page <span id="currentpage"></span> of <span id="totalpages"></span>
-
-
-      </div>
-      <div id='hijox' class="modal-body" style="overflow-y: hidden!important;">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="col-md-1">
-              <div class="button-position" style="position: relative">
-                <div class="prev-btn"
-                     style="height: 100vh;float: left;display: flex;flex-direction: column;justify-content: center;align-items: center;">
-                  <button id="prev-btn" class="btn btn-secondary"><i class="fa fa-backward"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-10">
-              <div id="modal-container" style="position: relative;">
-
-              </div>
-            </div>
-            <div class="col-md-1">
-              <div class="button-position">
-                <div
-                    style="height: 100vh;display: flex;float: right;flex-direction: column;justify-content: center;align-items: center;height:100vh;">
-                  <button id="next-btn" class="btn btn-secondary"><i class="fa fa-forward"></i>
-                  </button>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -425,52 +339,22 @@
           }
       });
   </script>
+
+<script>
   {% for quiz in pre_quizes %}
-    <script>
         $('#feedbackbtn-quiz{{ quiz.id }}').click(function () {
-            console.log('button-clicked');
             $('#quizmodalbody').html(`<iframe style="height: 90vh; width: 100%"
         src="/quiz/{{ quiz.url }}/take/"
         frameborder="0px"></iframe>`);
         })
-    </script>
+    
   {% endfor %}
+</script>
+
   <script>
 
 
       $(document).ready(function () {
-          $(document).keydown(function (e) {
-              if ($('#course-modal').is(':visible')) {
-                  if (e.keyCode == '39') {
-                      $('#next-btn').click();
-                      return false
-                  }
-                  if (e.keyCode == '37') {
-                      $('#prev-btn').click();
-                      return false
-                  }
-                  //UP
-                  if (e.keyCode == '38') {
-                      $('.modal-body').animate({scrollTop: 0}, 100);
-                      return false;
-                  }
-                  //DOWN
-                  if (e.keyCode == '40') {
-                      $('.modal-body').animate({scrollTop: $(document).height()}, 100);
-                      return false;
-                  }
-
-                  if (e.keyCode == '70' || e.keyCode == '102') {
-                      toggleFullScreen();
-                      return false;
-                  }
-
-                  if (e.keyCode == '81' || e.keyCode == '113') {
-                      $('#course-modal').modal('hide');
-                      return false;
-                  }
-              }
-          });
           $('.pre_test_change').change(function () {
               // console.log(this.id);
               // console.log($('#radio-buttons input[name=pre-test-radio]:checked').val());
@@ -513,216 +397,15 @@
                   'chapterID': '{{ object.id }}'
               },
               success: function (response) {
-                  if (response.data == "") {
+                  if (response.data == "0") {
                       alert("There are no contents available in this chapter.");
                       return
                   }
-
                   window.open($('#course-viewer').attr('href'), '_blank');
-                  // loaddata(response.data)
               },
               error: function () {
                   console.log('Error in getting chapters')
               }
-          });
-
-          function loaddata(data) {
-              if (data == "") {
-                  $('#course-modal').modal('hide')
-                  alert("There are no contents available in this chapter.");
-                  return
-              }
-              var emptycheckflag = [];
-              $('#chaptertitle').text(data.chaptertitle);
-              $('#totalpages').text(data.numberofpages);
-              $('#currentpage').text(1);
-              $('#modal-container').empty();
-              $('#modal-container').css('width', data.canvaswidth)
-              $.each(data.pages, function (key, value) {
-                  $.each(value, function (count) {
-                      // Create modal
-                      $('#modal-container').append(`
-                    <div id="page${key}" class = 'coursepages' role="dialog" style="display:none;">
-
-                    </div>`)
-                      // -------------------------------
-
-                      $.each(value[count], function (div, div_value) {
-                          var now = Math.floor(Math.random() * 900000) + 100000;
-                          if (div == 'textdiv') {
-                              $.each(div_value, function (css, css_value) {
-                                  // css_string = JSON.stringify(css_value)
-                                  $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}">
-                                    ${css_value.content}
-                                </div>
-                            `);
-                              });
-                          }
-                          if (div == 'pic') {
-                              $.each(div_value, function (css, css_value) {
-                                  src = css_value['background-image']
-                                  // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                                  $('#page' + key).append(`
-                                <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}'>
-                                <img src = ${src} style = "height:${css_value.height}; width:${css_value.width}; object-fit:contain"></img>        
-                                </div>
-
-                            `);
-                              });
-                          }
-
-                          if (div == 'btn-div') {
-                              $.each(div_value, function (css, css_value) {
-                                  link = "";
-                                  if (css_value.hasOwnProperty('link')) {
-                                      link = "href = " + css_value.link;
-                                  }
-                                  $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <a ${link} target="_blank"><button>${css_value.btn_name}</button</a>
-                                </div>
-                            `)
-                              });
-                          }
-
-                          if (div == 'pdf') {
-                              $.each(div_value, function (css, css_value) {
-                                  $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <object data="${css_value.link}" type="application/pdf" width="100%" height="100%">
-                                        alt : <a href="${css_value.link}">${css_value.link}</a>
-                                    </object>
-                                </div>
-                            `)
-                              });
-                          }
-                          // if (div == 'video') {
-                          //     $.each(div_value, function (css, css_value) {
-                          //         $('#page' + key).append(`
-                          //         <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                          //             <video width="100%" height="100%" controls>
-                          //                 <source src="${css_value.link}" type="video/mp4">
-                          //                 <source src="${css_value.link}" type="video/ogg">
-                          //                 Your browser does not support the video tag.
-                          //             </video>
-                          //         </div>
-                          //     `)
-                          //     });
-                          // }
-                          if (div == 'video') {
-                              $.each(div_value, function (css, css_value) {
-                                  if (css_value.hasOwnProperty('online_link')) {
-                                      var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                        <iframe width="100%" height="94%" src="${css_value.online_link}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-                                        </div>`
-                                      //     <script>
-                                      //     var options = {
-                                      //         url: "${css_value.link}",
-                                      //         width: "${css_value.width}",
-                                      //         height: "${css_value.height}"
-                                      //     };
-
-                                      //     var videoPlayer = new Vimeo.Player('${now}', options);
-                                      // `
-                                  } else {
-                                      var embed = `
-                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                        <video width="100%" height="100%" controls>
-                                            <source src="${css_value.local_link}" type="video/mp4">
-                                            <source src="${css_value.local_link}" type="video/ogg">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
-                                    `
-                                  }
-                                  $('#page' + key).append(embed)
-                              });
-                          }
-
-                          if (div == '_3d') {
-                              $.each(div_value, function (css, css_value) {
-                                  $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <iframe src="${css_value.link}" width="100%" height="100%">
-                                    </iframe>
-                                </div>
-                            `)
-                              });
-                          }
-                      });
-                  });
-              });
-
-
-              setTimeout(function () {
-                  var width = document.getElementById('hijoa').offsetWidth;
-                  var height = document.getElementById('hijoa').offsetHeight;
-                  var windowWidth = $(document).outerWidth();
-                  var windowHeight = $(document).outerHeight();
-                  var r = 1;
-                  r = Math.min(windowWidth / width, windowHeight / height);
-
-                  $('#hijo').css({
-                      '-webkit-transform': 'scale(' + r + ')',
-                      '-moz-transform': 'scale(' + r + ')',
-                      '-ms-transform': 'scale(' + r + ')',
-                      '-o-transform': 'scale(' + r + ')',
-                      'transform': 'scale(' + r + ')'
-                  });
-                  $('#course-modal').css('padding-top', '5vh');
-              }, 1000);
-              // ----------------------------------------------
-              $.each(data.pages, function (key, value) {
-                  $.each(value, function (count) {
-                      if (value[count].textdiv.length == 0 && value[count].pic.length == 0 && value[count].video.length == 0 && value[count].pdf.length == 0 && value[count]['btn-div'].length == 0 && value[count]['_3d'].length == 0) {
-                          emptycheckflag.push(true);
-                          $('#page' + key).append(`<div>No content here</div>`);
-                      } else {
-                          emptycheckflag.push(false)
-                      }
-                  });
-              });
-              if (emptycheckflag.includes(false) == false) {
-                  $('#course-modal').modal('hide')
-                  alert("There are no contents available in this chapter.");
-              }
-              // ----------------------------------------------
-              $('#page1').css('display', 'block');
-
-              // $("#modal-content").append(htmlContent);
-          }
-
-          $("#course-modal").on("hidden.bs.modal", function () {
-              $("#modal-container").empty();
-          });
-
-          $('#next-btn').off().click(function () {
-              $("#modal-container > .coursepages ").each(function () {
-                  if ($(this).css("display") == "block") {
-                      res = this.id.match(/[0-9]+/);
-                  }
-              });
-              if (res < $("#modal-container > div ").length) {
-                  $('#page' + res).css("display", "none");
-                  res++;
-                  $('#page' + res).css("display", "block")
-              }
-              $('#currentpage').text(res);
-          });
-          $('#prev-btn').off().click(function () {
-              $("#modal-container > div ").each(function () {
-                  if ($(this).css("display") == "block") {
-                      res = this.id.match(/[0-9]+/);
-                  }
-              });
-              if ((res - 1) > 0) {
-                  $('#page' + res).css("display", "none");
-                  res--;
-                  $('#page' + res).css("display", "block")
-              }
-              $('#currentpage').text(res);
           });
       });
   </script>
@@ -749,6 +432,7 @@
               success: function (response) {
                   $('#create_assignment_modal_body').append(response);
                   $('#id_Assignment_Deadline').attr('min', '{{datetime|date:"Y-m-d"}}');
+                  Switchery(document.querySelector('.js-switch'));
               },
               error: function () {
                   console.log('Error in generating assignment create form')

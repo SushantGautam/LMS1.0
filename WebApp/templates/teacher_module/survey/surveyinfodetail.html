@@ -2,35 +2,66 @@
 {% load static %}
 
 {% block stylesheets %}
-    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+  <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'question_teachers' %}">Survey</a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
+  <li class="breadcrumb-item" aria-current="page">
+    <a href="{% url 'question_teachers' %}">Survey</a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
 
 {% block content %}
-    {% include 'survey/common/details.html' %}
+  {% include 'survey/common/details.html' %}
 {% endblock %}
 
 {% block customjss %}
   <script>
-    $('#retakeSurveyBtn').on('click', function () {
+      $(document).ready(function () {
+          var current_progress = 0;
+          var interval = setInterval(function () {
+              if ($('#chk').prop('checked')) {
 
-        $.ajax({
-            type: "GET",
-            data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-            url: "{% url 'teacher_surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
-            success: function (data) {
-                $("#surveyFormRetake").html(data);
-            },
-            complete: function () {
-                $(".se-pre-con-ajax").fadeOut("fast");
-            }
-        });
-    });
+                  current_progress += 10;
+                  $("#dynamic")
+                      .css("width", current_progress + "%")
+                      .attr("aria-valuenow", current_progress)
+                      .text("Refreshing In :" + (10 - (current_progress / 10)));
+              } else {
+                  $("#dynamic").text("Paused");
+              }
+
+              if (current_progress >= 100) {
+                  clearInterval(interval);
+                  location.reload();
+              }
+
+          }, 1000);
+      });
+
+  </script>
+  <script>
+      $('#retakeSurveyBtn').on('click', function () {
+
+          $.ajax({
+              type: "GET",
+              data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+              url: "{% url 'teacher_surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#surveyForm").html(data);
+              },
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
+  </script>
+  <script>
+      function survey_create_content(response) {
+          //location.reload();
+          console.log(response['teacher_url']);
+          window.location.href = String(response['teacher_url']);
+      }
   </script>
 {% endblock %}
