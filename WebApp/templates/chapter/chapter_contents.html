@@ -124,7 +124,8 @@
                                     <i class="fa fa-pencil"></i></li>
                                 <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>
                             {% else %}
-                                <li id="followteacher">Follow Teacher <i class="fa fa-book"> </i></li>
+                                <li id="followteacher" class="offline-followteacher">Teacher
+                                    Offline<i class="fa fa-book"> </i></li>
                             {% endif %}
                             <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
                             <li>Sound <input id="chatsound" type="checkbox" checked></li>
@@ -161,7 +162,8 @@
                             <ul class="chat" id="chat-box-content">
                                 <li class="left clearfix">
                                       <span class="chat-img pull-left">
-                                          <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                                          <img class="chat-avatar" src="https://bootdey.com/img/Content/user_3.jpg"
+                                               alt="User Avatar">
                                       </span>
                                     <div class="chat-body clearfix">
                                         <div class="header">
@@ -176,7 +178,8 @@
                                 </li>
                                 <li class="right clearfix">
                                       <span class="chat-img pull-right">
-                                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                                          <img class="chat-avatar" src="https://bootdey.com/img/Content/user_1.jpg"
+                                               alt="User Avatar">
                                       </span>
                                     <div class="chat-body clearfix">
                                         <div class="header">
@@ -322,12 +325,6 @@
     var currentpage = 1;
     var roomName = "ChapterChat{{chapter.id}}";
     var chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
-    chatSocket.onclose = function (e) {
-        console.error("Chat socket closed unexpectedly");
-        setTimeout(function () {
-            chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
-        }, 5000);
-    };
 
 
     lightbox.option({
@@ -597,6 +594,7 @@
             'border': '1px solid red'
         }).addClass('active');
     }
+
     $(document).ready(function () {
         setThumbnails();
         Layout(x)
@@ -626,14 +624,13 @@
         });
 
 
-
         $('#chatmessageinput').summernote({
             toolbar: []
         });
     });
 
 
-    function changePage(page_number){
+    function changePage(page_number) {
         Layout(x)
         $('#currentpage').text(page_number);
         getProgressWidth();
@@ -644,16 +641,23 @@
             // updatePageByStudent(); //TBI
         {% endif %}
     }
-    function sendMessageWritten() {
 
-        chatSocket.send(
-            JSON.stringify({
-                chat_message: $('.note-editable').html(),
-                sender_id: "{{  user.id }}",
-                sender_name: "{{  user.first_name }} {{  user.last_name }}",
-                sender_icon: "{{  user.Avatar }}",
-            })
-        );
+    function sendMessageWritten() {
+        if ($('.note-editable').html()) {
+            chatSocket.send(
+                JSON.stringify({
+                    chat_message: $('.note-editable').html(),
+                    sender_id: "{{  user.id }}",
+                    sender_name: "{{  user.first_name }} {{  user.last_name }}",
+                    sender_icon: "{{  user.Avatar }}",
+                    {% if ifteacher %}
+                        isteacher: 1,
+                    {%  endif %}
+                })
+            );
+        }
+
+
         $('.note-editable').html("");
 
     };
@@ -661,7 +665,7 @@
     $(document).keydown(function (event) {
         if ($('.note-editable').is(":focus")) {
             if (event.keyCode == 13 && !event.shiftKey) {
-                if ($('.note-editable').html()) {
+                if ($('.note-editable').html() != '""') {
                     sendMessageWritten();
 
                 }
@@ -690,8 +694,13 @@
 
 
         } else if ("chat_message" in data) {
-            $("#chatmessageinput").val("");
-            {#$("#chat-box-content").append("<h4>" + data.sender_name + data.sender_id + ": " + data.chat_message + "</h4>");#}
+
+            {% if ifteacher %}
+            {%  else %}
+                print(data);
+                if ("isteacher" in data) teacherOnline();
+
+            {%  endif %}
 
             if (data.sender_id =={{ user.id }}) {
                 AddSelfMessageToChat(data);
@@ -700,19 +709,24 @@
                 AddOtherMessageToChat(data);
             }
 
-            if ($('#notificationOnChat').prop('checked')) {
-                $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + ": " + data.chat_message + '</h3>');
-
-                $("#messageChatUp").animate({
-                    top: -300,
-                    opacity: 0
-                }, 3000, "linear", function () {
-                })
-            }
+            displayNotif(data);
 
 
         }
     };
+
+    function displayNotif(data) {
+        if ($('#notificationOnChat').prop('checked')) {
+            $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + ": " + data.chat_message + '</h3>');
+
+            $("#messageChatUp").animate({
+                top: -300,
+                opacity: 0
+            }, 3000, "linear", function () {
+            })
+        }
+
+    }
 
     function getProgressWidth() {
         let w = (window.currentpage / parseFloat('{{data.numberofpages}}')) * 100;
@@ -752,7 +766,7 @@
         var CheckIfToScrollChatx = CheckIfToScrollChat()
         $("#chat-box-content").append(`<li class="left clearfix">
                     	<span class="chat-img pull-left">
-                    		<img src="` + data.sender_icon + `" alt="` + data.sender_id + `">
+                    		<img class="chat-avatar" src="` + data.sender_icon + `" alt="` + data.sender_id + `">
                     	</span>
                                 <div class="chat-body clearfix">
                                     <div class="header">
@@ -781,7 +795,7 @@
         var CheckIfToScrollChatx = CheckIfToScrollChat()
         $("#chat-box-content").append(`<li class="right clearfix">
                     	<span class="chat-img pull-right">
-                    		<img src="` + data.sender_icon + `" alt="` + data.sender_id + `">
+                    		<img class="chat-avatar" src="` + data.sender_icon + `" alt="` + data.sender_id + `">
                     	</span>
                                 <div class="chat-body clearfix">
                                     <div class="header">

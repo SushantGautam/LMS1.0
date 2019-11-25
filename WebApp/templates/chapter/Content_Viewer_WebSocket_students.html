@@ -1,12 +1,25 @@
 <script>
     var StoreTeacherPage = 1;
 
+
     function HandlePageInStudents(data) {
+        teacherOnline();
         StoreTeacherPage = data.page;
         console.log(data.page)
         if (parseInt(data.force)) ChangePageTo(data.page);
+
     };
 
+
+    function teacherOnline() {
+        if (document.getElementById("followteacher").className === "offline-followteacher") {
+            var followteacher = document.getElementById("followteacher");
+            followteacher.className = "followteacher";
+            followteacher.innerHTML = `Follow Teacher<i class="fa fa-book">`;
+            displayNotif({'chat_message': "Teacher is Online", "sender_name": "System"});
+        }
+
+    }
 
     window.addEventListener('load', function () {
         document.getElementById("followteacher").onclick = function () {
@@ -18,7 +31,6 @@
         currentpage = PageNum
         changePage(currentpage)
     }
-c
 
 
 </script>

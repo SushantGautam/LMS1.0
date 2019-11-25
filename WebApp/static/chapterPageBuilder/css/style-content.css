@@ -566,3 +566,15 @@ body {
 
     overflow: auto !important;
 }
+
+
+.chat-avatar {
+    max-width: 100% !important;
+}
+
+.followteacher {
+    color: #79f979;
+}
+.offline-followteacher {
+    color: #620806;
+}
