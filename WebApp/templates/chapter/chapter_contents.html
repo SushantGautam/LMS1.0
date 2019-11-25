@@ -689,6 +689,7 @@
 
             {% if not  ifteacher %}
                 HandlePageInStudents(data);
+
             {% endif %}
 
 
@@ -697,7 +698,6 @@
 
             {% if ifteacher %}
             {%  else %}
-                print(data);
                 if ("isteacher" in data) teacherOnline();
 
             {%  endif %}
@@ -885,6 +885,16 @@
         $(".se-pre-con").fadeOut("slow");
         ;
     });
+
+
+    {% if ifteacher %}
+
+        $('#forceScreen').change(function () {
+            updatePageByTeacher();
+        });
+
+    {%  endif %}
+
 </script>
 
 

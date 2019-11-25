@@ -5,7 +5,6 @@
     function HandlePageInStudents(data) {
         teacherOnline();
         StoreTeacherPage = data.page;
-        console.log(data.page)
         if (parseInt(data.force)) ChangePageTo(data.page);
 
     };
@@ -17,15 +16,13 @@
             followteacher.className = "followteacher";
             followteacher.innerHTML = `Follow Teacher<i class="fa fa-book">`;
             displayNotif({'chat_message': "Teacher is Online", "sender_name": "System"});
+            document.getElementsByClassName("followteacher")[0].onclick = function () {
+                ChangePageTo(StoreTeacherPage)
+            };
         }
 
     }
 
-    window.addEventListener('load', function () {
-        document.getElementById("followteacher").onclick = function () {
-            ChangePageTo(StoreTeacherPage)
-        };
-    });
 
     function ChangePageTo(PageNum) {
         currentpage = PageNum
