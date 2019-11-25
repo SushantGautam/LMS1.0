@@ -185,33 +185,31 @@ class MyAssignmentsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
-        context['GroupName'] = []
-        context['GroupName'] += GroupMapping.objects.filter(
-            Students__id=self.request.user.id)
-        context['Group'] = []
-        for group in context['GroupName']:
-            context['Group'] += InningInfo.objects.filter(Groups__id=group.id)
-        context['Course'] = []
+        Sessions = []
+        Courses = set()
+        GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
+        for group in GroupName:
+            Sessions += InningInfo.objects.filter(Groups__id=group.id)
         context['Assignment'] = []
         context['activeAssignment'] = []
         context['expiredAssignment'] = []
-        for course in context['Group']:
+        for session in Sessions:
             Assignment = []
             activeAssignment = []
             expiredAssignment = []
-            context['Course'] += course.Course_Group.all()
+            for coursegroup in session.Course_Group.all():
+                Courses.add(coursegroup.Course_Code)
 
-            for assignment in context['Course']:
-                Assignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id))
-                activeAssignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__gte=datetime_now))
-                expiredAssignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__lte=datetime_now))
-                # print(context['Assignment'])
-            context['Assignment'].append(Assignment)
-            context['activeAssignment'].append(activeAssignment)
-            context['expiredAssignment'].append(expiredAssignment)
+        for course in Courses:
+            Assignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Use_Flag=True))
+            activeAssignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True))
+            expiredAssignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True))
+        context['Assignment'].append(Assignment)
+        context['activeAssignment'].append(activeAssignment)
+        context['expiredAssignment'].append(expiredAssignment)
         return context
 
 
@@ -246,9 +244,10 @@ class CourseInfoDetailView(DetailView):
             Course_Code=self.kwargs.get('pk'), Use_Flag=True).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Question.objects.filter(
-            course_code=self.kwargs.get('pk'))
-        context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(
+            course_code=self.kwargs.get('pk'), exam_paper=False, draft=False)
+        context['topic'] = Topic.objects.filter(
+            course_associated_with=self.kwargs.get('pk'))
         return context
 
 
@@ -263,7 +262,7 @@ class ChapterInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(
-            Chapter_Code=self.kwargs.get('pk'))
+            Chapter_Code=self.kwargs.get('pk'), Use_Flag=True)
         context['post_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(

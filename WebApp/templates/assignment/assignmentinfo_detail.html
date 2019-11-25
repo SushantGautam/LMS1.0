@@ -73,9 +73,9 @@
                         <tr>
                             <td>Status</td>
                             <td>{% if object.Use_Flag == True %}
-                                Active
+                                <span class="text-success">Active</span>
                                 {% else %}
-                                Inactive
+                                <span class="text-danger">Inactive</span>
                                 {% endif %}
                             </td>
                         </tr>
@@ -405,7 +405,7 @@
                     </button>
                 </h4>
             </div>
-            <div class="modal-body" id="add_question_modal_body">
+            <div class="modal-body modal-auto" id="add_question_modal_body">
             </div>
         </div>
     </div>
