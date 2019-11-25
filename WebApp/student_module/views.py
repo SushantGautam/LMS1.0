@@ -245,9 +245,10 @@ class CourseInfoDetailView(DetailView):
             Course_Code=self.kwargs.get('pk'), Use_Flag=True).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Question.objects.filter(
-            course_code=self.kwargs.get('pk'))
-        context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(
+            course_code=self.kwargs.get('pk'), exam_paper=False, draft=False)
+        context['topic'] = Topic.objects.filter(
+            course_associated_with=self.kwargs.get('pk'))
         return context
 
 
@@ -262,7 +263,7 @@ class ChapterInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(
-            Chapter_Code=self.kwargs.get('pk'))
+            Chapter_Code=self.kwargs.get('pk'), Use_Flag=True)
         context['post_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(
