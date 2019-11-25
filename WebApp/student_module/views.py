@@ -184,32 +184,31 @@ class MyAssignmentsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
-        context['GroupName'] = []
-        context['GroupName'] += GroupMapping.objects.filter(
-            Students__id=self.request.user.id)
-        context['Group'] = []
-        for group in context['GroupName']:
-            context['Group'] += InningInfo.objects.filter(Groups__id=group.id)
-        context['Course'] = []
+        Sessions = []
+        Courses = set()
+        GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
+        for group in GroupName:
+            Sessions += InningInfo.objects.filter(Groups__id=group.id)
         context['Assignment'] = []
         context['activeAssignment'] = []
         context['expiredAssignment'] = []
-        for course in context['Group']:
+        for session in Sessions:
             Assignment = []
             activeAssignment = []
             expiredAssignment = []
-            context['Course'] += course.Course_Group.all()
+            for coursegroup in session.Course_Group.all():
+                Courses.add(coursegroup.Course_Code)
 
-            for assignment in context['Course']:
-                Assignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Use_Flag=True))
-                activeAssignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True))
-                expiredAssignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True))
-            context['Assignment'].append(Assignment)
-            context['activeAssignment'].append(activeAssignment)
-            context['expiredAssignment'].append(expiredAssignment)
+        for course in Courses:
+            Assignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Use_Flag=True))
+            activeAssignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True))
+            expiredAssignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True))
+        context['Assignment'].append(Assignment)
+        context['activeAssignment'].append(activeAssignment)
+        context['expiredAssignment'].append(expiredAssignment)
         return context
 
 
