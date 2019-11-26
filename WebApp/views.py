@@ -115,15 +115,15 @@ def logout(request, next_page=None,
 
 _sentinel = object()
 
-def error_400(request, exception=0):
+def error_400(request, exception):
     data = {}
     return render(request,'error_page/page_400.html',data)
 
-def error_403(request, exception=0):
+def error_403(request, exception):
     data = {}
     return render(request,'error_page/page_403.html',data)
 
-def error_404(request, exception=0):
+def error_404(request, exception):
     data = {}
     return render(request,'error_page/page_404.html',data)
 
