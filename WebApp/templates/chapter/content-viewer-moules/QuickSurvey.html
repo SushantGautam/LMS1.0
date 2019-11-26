@@ -110,7 +110,7 @@
         console.log(response['url']);
         console.log(response['teacher_url']);
         console.log(response['student_url']);
-        $(".note-editable").append(`<a href="${response['student_url']}">Take Quick Survey</a>`);
+        $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Survey</a>`);
         close_quick_model("survey_content_modal");
         window.open(response['teacher_url'], '_blank');
 
@@ -122,7 +122,7 @@
         console.log(response['url']);
         console.log(response['teacher_url']);
         console.log(response['student_url']);
-        $(".note-editable").append(`<a href="${response['student_url']}">Take Quick Quiz</a>`);
+        $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Quiz</a>`);
         close_quick_model("quiz_create_popup");
         window.open(response['teacher_url'], '_blank');
 
