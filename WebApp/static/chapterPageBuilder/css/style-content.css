@@ -88,6 +88,7 @@ small, .small {
     overflow: auto;
     min-height: 50vh;
     padding: 0px !important;
+    height: 50vh;
 }
 
 .chat-message {
