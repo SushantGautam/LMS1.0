@@ -4,6 +4,7 @@ from django.urls import path
 from WebApp.teacher_module import views
 from survey import views as survey_views
 from .. import views as admin_views
+from quiz import views as quizViews
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -147,7 +148,8 @@ urlpatterns += (
          name='teacher_quiz_update'),
     path('update_info/<int:pk>/', views.UpdateQuizBasicInfo.as_view(),
          name='teacher_quiz_update_info'),
-
+    path('quiz/exam_list/', quizViews.QuizExamListView.as_view(),
+         name='teacher_quiz_exam_list'),
     path('detail/<slug>', views.QuizDetailView.as_view(),
          name='teacher_quiz_detail_s'),
 
@@ -204,8 +206,8 @@ urlpatterns += (
 )
 
 urlpatterns += (
-     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
          admin_views.chapterpagebuilder, name='teachers_chapterpagebuilder'),
-     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          admin_views.ContentsView.as_view(), name='teacher_contentviewer'),
 )

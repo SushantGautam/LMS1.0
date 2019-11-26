@@ -1517,22 +1517,34 @@ class ContentsView(TemplateView):
             context['data'] = ""
         return context
 
-
+from quiz.views import QuizUserProgressView, Sitting, Progress
 def AchievementPage_Student(request, student_id):
-    student = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
-    pass
+    sittings =  Sitting.objects.filter(user=request.user)
+    return render(request, 'WebApp/Student_Achievement.html', {'sittings':sittings})
+
+
 
 from WebApp.forms import AchievementPage_All_form
 def AchievementPage_All(request):
-    studentfilter = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
-    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now())
-    Coursefilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code)
-    form = AchievementPage_All_form(initial={"studentfilter":studentfilter, "Inningsfilter":Inningsfilter, "Coursefilter":Coursefilter} )
-    return render(request, 'WebApp/Achievement_all.html', {'form':form})
+    CourseFilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
+    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now(), Use_Flag=True)
 
-def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, Coursefilter=None):
-    studentfilter = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
-    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now())
-    Coursefilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code)
+    # Linked relation between course and session
+    # InningGroupFilter = InningGroup.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
+    # Courses = dict()
+    # for course in CourseFilter:
+    #     temp = []
+    #     for group in InningGroupFilter:
+    #         if course.id==group.Course_Code.id:
+    #             temp.append(group.id)
+    #     Courses.update({course.id:temp})
     
-    return render(request, 'WebApp/AchievementPage_All_Ajax.html', { 'studentfilter':studentfilter})
+    return render(request, 'WebApp/Achievement_all.html', {"Inningsfilter":Inningsfilter,  "CourseFilter":CourseFilter, "Courses": CourseFilter})
+
+def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, GroupMappingFilter=None):
+    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
+    Student_GroupMappingFilter = GroupMapping.objects.filter(id__in= Inningsfilter, Center_Code=request.user.Center_Code).values_list('Students').order_by('id')
+    studentfilter = MemberInfo.objects.filter(id__in=Student_GroupMappingFilter, Is_Student=True, Center_Code=request.user.Center_Code)
+
+    return render(request, 'WebApp/AchievementPage_All_Ajax.html', {'studentfilter':studentfilter})
+
