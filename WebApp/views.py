@@ -29,6 +29,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
+from django.db.models import Q
 
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
@@ -115,15 +116,15 @@ def logout(request, next_page=None,
 
 _sentinel = object()
 
-def error_400(request, exception=0):
+def error_400(request, exception):
     data = {}
     return render(request,'error_page/page_400.html',data)
 
-def error_403(request, exception=0):
+def error_403(request, exception):
     data = {}
     return render(request,'error_page/page_403.html',data)
 
-def error_404(request, exception=0):
+def error_404(request, exception):
     data = {}
     return render(request,'error_page/page_404.html',data)
 
@@ -178,15 +179,13 @@ def start(request):
             thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
             wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
-            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
-                '-Register_DateTime')[:5]
+            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by('-Register_DateTime')[:5]
             coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
-            threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count()
+            threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter(Use_Flag=True,
-                                                    End_Date__gte=datetime.now())[:5]
+            surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True), Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None), Q(End_Date__gte=datetime.now()))[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now())[:5]
 
@@ -198,11 +197,11 @@ def start(request):
                            'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
                            'surveycount': surveycount,
                            'sessioncount': sessioncount})
-        if request.user.Is_Student:
+        elif request.user.Is_Student:
             return redirect('student_home')
-        if request.user.Is_Teacher:
+        elif request.user.Is_Teacher:
             return redirect('teacher_home')
-        if request.user.Is_Parent:
+        elif request.user.Is_Parent:
             return redirect('parent_home')
         else:
             logout(request)

@@ -4,37 +4,36 @@
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
-<div class="row" id="surveyheader">
-  <div class="col-md-4 col-xs-12">
-    <div class="btn-group" id="status" data-toggle="buttons">
-      <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-        <input type="radio" value="1" name="multifeatured_module[module_id][status]"
-               checked="checked">Active</label>
-      <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-        <input type="radio" value="0" name="multifeatured_module[module_id][status]">History</label>
-      <label class="btn btn-default btn-off-3 btn-sm" id="LiveButton">
-        <input type="radio" value="0" name="multifeatured_module[module_id][status]">Live Survey</label>
-    </div>
-  </div>
-  <div class="col-md-8 col-xs-12" id="searchBarSurvey">
-
-    <div role="search" action="/forum/search/" id="surveySearch">
-      <input type="text" id="keywordInput" name="keyword" placeholder="Type to search">
-      <div class=" pull-right searchButton">
-        <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i
-            class="fa fa-search"></i>
-        </button>
-      </div>
-    </div>
-
-  </div>
-</div>
+{#<div class="row" id="surveyheader">#}
+{#  <div class="col-md-4 col-xs-12">#}
+{#    <div class="btn-group" id="status" data-toggle="buttons">#}
+{#      <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">#}
+{#        <input type="radio" value="1" name="multifeatured_module[module_id][status]"#}
+{#               checked="checked">Active</label>#}
+{#      <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">#}
+{#        <input type="radio" value="0" name="multifeatured_module[module_id][status]">History</label>#}
+{#      <label class="btn btn-default btn-off-3 btn-sm" id="LiveButton">#}
+{#        <input type="radio" value="0" name="multifeatured_module[module_id][status]">Live Survey</label>#}
+{#    </div>#}
+{#  </div>#}
+{#  <div class="col-md-8 col-xs-12" id="searchBarSurvey">#}
+{##}
+{#    <div role="search" action="/forum/search/" id="surveySearch">#}
+{#      <input type="text" id="keywordInput" name="keyword" placeholder="Type to search">#}
+{#      <div class=" pull-right searchButton">#}
+{#        <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i#}
+{#            class="fa fa-search"></i>#}
+{#        </button>#}
+{#      </div>#}
+{#    </div>#}
+{##}
+{#  </div>#}
+{#</div>#}
 
 <div class="hR"></div>
 <div class="row">
   <div class="col-md-12">
     {% for object in object_list %}
-      {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == False %}
         <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 active_survey">
           <a href=" {% url 'questions_student_detail' object.pk %}">
             <div class="box-part text-center">
@@ -57,95 +56,38 @@
             </div>
           </a>
         </div>
-      {% endif %}
-    {% endfor %}
-
-    {% for object in object_list %}
-      {% if object.End_Date|date:'y m d' < currentDate|date:'y m d' and object.Survey_Live == False %}
-        <div class=" col-lg-4 col-md-6 col-sm-6 col-xs-12 expire_survey " style="display: none;">
-          <a href=" {% url 'questions_student_detail_history' object.pk %}">
-            <div class="box-part text-center">
-              {% if object.id in submittedSurvey %}
-                <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
-              {% else %}
-                <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x" id="participatedSurvey"
-                   aria-hidden="true"></i>
-              {% endif %}
-
-              <div class="title">
-                <h3>{{ object.Survey_Title|truncatechars:12 }}</h3>
-              </div>
-
-              <ul class="card_labels">
-                <li><label>Questions: {{ object.questions_count }}</label></li>
-                <li><label>Start date: {{ object.Start_Date }}</label></li>
-                <li><label>End date: {{ object.End_Date }}</label></li>
-              </ul>
-
-            </div>
-          </a>
-        </div>
-      {% endif %}
-    {% endfor %}
-
-    {% for object in object_list %}
-      {% if object.End_Date|date:'y m d' > currentDate|date:'y m d' and object.Survey_Live == True %}
-        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 live_survey " style="display: none;">
-          <a href=" {% url 'liveSurveyDetail' object.pk %}">
-            <div class="box-part text-center">
-              {% if object.id in submittedSurvey %}
-                <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
-              {% else %}
-                <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x" id="participatedSurvey"
-                   aria-hidden="true"></i>
-              {% endif %}
-
-              <div class="title">
-                <h3>{{ object.Survey_Title|truncatechars:12 }}</h3>
-              </div>
-
-              <ul class="card_labels">
-                <li><label>Questions: {{ object.questions_count }}</label></li>
-                <li><label>Start date: {{ object.Start_Date }}</label></li>
-                <li><label>End date: {{ object.End_Date }}</label></li>
-              </ul>
-
-            </div>
-          </a>
-        </div>
-      {% endif %}
     {% endfor %}
   </div>
 
 </div>
 
 <div class=" text-center">
-  {% if is_paginated %}
-    <ul class="pagination">
-      {% if page_obj.has_previous %}
-        <li><a class="survey_next" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&laquo;</span></li>
-      {% endif %}
-      {% for i in paginator.page_range %}
-        {% if page_obj.number == i %}
-          <li class="active">
-            <span>{{ i }} <span class="sr-only">(current)</span></span>
-          </li>
+    {% if is_paginated %}
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li><a class="survey_next" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
         {% else %}
-          <li>
-            <a class="survey_next" href="?page={{ i }}">{{ i }}</a>
-          </li>
+          <li class="disabled"><span>&laquo;</span></li>
         {% endif %}
-      {% endfor %}
-      {% if page_obj.has_next %}
-        <li><a class="survey_next" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&raquo;</span></li>
-      {% endif %}
-    </ul>
-  {% endif %}
-</div>
+        {% for i in paginator.page_range %}
+          {% if page_obj.number == i %}
+            <li class="active">
+              <span>{{ i }} <span class="sr-only">(current)</span></span>
+            </li>
+          {% else %}
+            <li>
+              <a class="survey_next" href="?page={{ i }}">{{ i }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li><a class="survey_next" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+  </div>
 {% block javascripts %}
   <script src=" {% static 'build/js/survey.js' %}"></script>
   <script>
@@ -155,7 +97,7 @@
           var categoryId = $(".card-text.active .category-name").attr('id');
           $.ajax({
               type: "GET",
-              data: {'categoryId': categoryId},
+              data: {'category_name': "{{ category_name }}", 'date_filter': "{{ date_filter }}"},
               url: "{% url 'surveyFilterCategory_student' %}" + $(this).attr('href'),  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);

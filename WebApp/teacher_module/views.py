@@ -1162,8 +1162,7 @@ class teacherSurveyFilterCategory(ListView):
 
         my_queryset = None
         if category_name == "all_survey":
-            all_survey = general_survey | session_survey | course_survey | system_survey
-            my_queryset = all_survey
+            my_queryset = general_survey | session_survey | course_survey | system_survey
         else:
             if category_name == "general":
                 my_queryset = general_survey

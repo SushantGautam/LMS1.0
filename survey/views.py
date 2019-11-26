@@ -19,6 +19,7 @@ from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSu
 from django.db.models import Q, F
 from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
+from django.core import serializers
 
 
 class AjaxableResponseMixin:
@@ -422,12 +423,21 @@ class SurveyInfoDetailView(DetailView):
         return context
 
 
-# class liveProgressResult(AjaxableResponseMixin, View):
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#
-#         return render(request, template_name, context=None
+class liveProgressResult(View):
+    def get(self, request, *args, **kwargs):
+        survey_obj = SurveyInfo.objects.get(pk=self.kwargs['pk'])
+        questions = QuestionInfo.objects.filter(Survey_Code=survey_obj.id)
+        options = OptionInfo.objects.filter(Question_Code__in=questions)
+        for x in options:
+            total_answers = x.Question_Code.answerinfo.all().count()
+            total_selected = x.Question_Code.answerinfo.filter(Answer_Value=x.id).count()
+            if total_answers != 0:
+                x.Vote_Count = (total_selected * 100) / total_answers
+            else:
+                x.Vote_Count = 0
+        data = serializers.serialize("json", options)
+        return JsonResponse(data, safe=False)
+
 
 class SurveyInfoUpdateView(UpdateView):
     model = SurveyInfo
