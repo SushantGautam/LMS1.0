@@ -94,11 +94,11 @@
 <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 
 <script type="text/javascript">
-
+    var ourdatatable;
     $(document).ready(function () {
-        $('.table').DataTable({
+        ourdatatable = $('.table').DataTable({
             dom: 'lBfrtip',
-            buttons: []
+            buttons: [],
 
         });
     });
@@ -117,9 +117,9 @@
                 type: "GET",
                 url: "/AchievementPage_All_Ajax/" + id_Inningsfilter + '/' + id_studentfilter + '/' + id_CourseFilter,
                 success: function (data) {
-
+                    $('.table').DataTable().destroy();
                     $("#Student_List_toappend").html(data);
-
+                    $('.table').DataTable().draw();
                 },
 
             });

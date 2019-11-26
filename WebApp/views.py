@@ -1571,10 +1571,12 @@ class ContentsView(TemplateView):
             context['data'] = ""
         return context
 
-
+from quiz.views import QuizUserProgressView, Sitting, Progress
 def AchievementPage_Student(request, student_id):
-    student = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
-    pass
+    sittings =  Sitting.objects.filter(user=request.user)
+    return render(request, 'WebApp/Student_Achievement.html', {'sittings':sittings})
+
+
 
 from WebApp.forms import AchievementPage_All_form
 def AchievementPage_All(request):

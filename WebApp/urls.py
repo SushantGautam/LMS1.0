@@ -289,7 +289,7 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    path('AchievementPage_Student', views.AchievementPage_Student,
+    path('AchievementPage_Student/<int:student_id>', views.AchievementPage_Student,
          name='AchievementPage_Student'),
     path('AchievementPage_All', views.AchievementPage_All,
          name='AchievementPage_All'),
