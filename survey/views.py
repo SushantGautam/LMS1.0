@@ -410,7 +410,7 @@ class SurveyInfoDetailView(DetailView):
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
         context['options'] = OptionInfo.objects.filter(Question_Code__in=context['questions']).order_by('pk')
-        context['submit'] = SubmitSurvey.objects.filter(Survey_Code=self.kwargs.get('pk'))
+        context['submit'] = SubmitSurvey.objects.filter(Survey_Code=self.kwargs.get('pk')).count()
         if self.object.Retaken_From:
             context['history'] = SurveyInfo.objects.filter(id=self.object.Retaken_From)
             context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.Retaken_From).order_by(

@@ -634,7 +634,6 @@ def QuizDeleteView(request, pk):
     Quiz.objects.filter(pk=pk).delete()
     return redirect("teacher_quiz_list")
 
-
 class CategoriesListView(ListView):
     model = CourseInfo
 

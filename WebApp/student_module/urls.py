@@ -5,6 +5,7 @@ from django.urls import path
 from WebApp.student_module import views
 from WebApp.views import ContentsView
 from survey import views as surveyViews
+from quiz import views as quizViews
 
 #
 # urlpatterns = (
@@ -147,9 +148,11 @@ urlpatterns += (
          name='student_progress_detail'),
     path('quiz/progress', views.QuizUserProgressView.as_view(),
          name='student_progress'),
+    path('quiz/exam_list/', quizViews.QuizExamListView.as_view(),
+         name='student_quiz_exam_list'),
 )
 
 urlpatterns += (
-     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          ContentsView.as_view(), name='student_contentviewer'),
 )

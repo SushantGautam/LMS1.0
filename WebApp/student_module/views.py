@@ -371,9 +371,11 @@ class questions_student_detail(DetailView):
         context = super().get_context_data(**kwargs)
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
-
         context['options'] = OptionInfo.objects.filter(
             Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.object.id)
+        )
+        context['saq_answers'] = AnswerInfo.objects.filter(
+            Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.object.id, Question_Type='SAQ')
         )
         try:
             context['submit_survey'] = SubmitSurvey.objects.get(
@@ -382,6 +384,26 @@ class questions_student_detail(DetailView):
             )
         except SubmitSurvey.DoesNotExist:
             context['submit_survey'] = None
+
+        if context['submit_survey']:
+            for x in context['options']:
+                if len(context['submit_survey'].answerinfo.filter(Answer_Value=x.id)) > 0:
+                    x.was_chosen = True
+                else:
+                    x.was_chosen = False
+
+            for x in context['questions']:
+                try:
+                    x.answer = AnswerInfo.objects.get(
+                        Submit_Code=context['submit_survey'].id, Question_Code=x.id)
+                except AnswerInfo.DoesNotExist:
+                    x.answer = None
+
+            context['can_submit'] = False
+
+
+        else:
+            context['can_submit'] = True
 
         return context
 
