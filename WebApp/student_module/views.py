@@ -184,19 +184,17 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['currentDate'] = datetime.now()
+        context['Assignment'], context['activeAssignment'], context['expiredAssignment'] = [],[],[]
+        Assignment, activeAssignment, expiredAssignment = [],[],[]
         Sessions = []
         Courses = set()
+
+        context['currentDate'] = datetime.now()
         GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
         for group in GroupName:
             Sessions += InningInfo.objects.filter(Groups__id=group.id)
-        context['Assignment'] = []
-        context['activeAssignment'] = []
-        context['expiredAssignment'] = []
+        
         for session in Sessions:
-            Assignment = []
-            activeAssignment = []
-            expiredAssignment = []
             for coursegroup in session.Course_Group.all():
                 Courses.add(coursegroup.Course_Code)
 

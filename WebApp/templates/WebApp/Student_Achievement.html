@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% load quiz_tags %}
+
+{% block title %} {% trans "Progress Page" %} {% endblock %}
+{% block description %} {% trans "User Progress Page" %} {% endblock %}
+{% block breadcrumb %}
+
+
+<li class="breadcrumb-item active" aria-current="page">Achievement Page</li>
+<link href="{% static '/vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
+
+<link href="{% static '/vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+</div>
+
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="{% static '/vendorsx/nprogress/nprogress.js' %}" type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
+
+<script src="{% static '/vendorsx/Chart.js/dist/Chart.min.js' %}"
+    type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
+
+<script src="{% static '/vendorsx/jquery-sparkline/dist/jquery.sparkline.min.js' %}"
+    type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
+
+<script src="{% static '/vendorsx/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js' %}"
+    type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
+
+<script src="{% static '/vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"
+    type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
+<script src=" {% static 'build/js/custom.min.js' %}"></script>
+<script>
+    Highcharts.chart('container', {
+
+        title: {
+            text: 'Score obtained by Students'
+        },
+
+        // subtitle: {
+        //     text: 'Source'
+        // },
+
+        yAxis: {
+            title: {
+                text: 'Score'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+
+            }
+        },
+
+        series: [{
+            name: 'Pre-Test',
+            data: [
+                {% for i in sittings %}
+                    {% if i.quiz.pre_test %}
+                    {{ i.get_percent_correct }},
+        {% endif %}
+        {% endfor %}
+            ]
+        }, {
+            name: 'Post-Test',
+            data: [{% for i in sittings %}
+                    {% if i.quiz.post_test %}
+    {{ i.get_percent_correct }},
+    {% endif %}
+    {% endfor %}]
+        }, {
+        name: 'Exam Paper',
+            data: [{% for i in sittings %}
+    {% if i.quiz.exam_paper %}
+    {{ i.get_percent_correct }},
+    {% endif %}
+    {% endfor %}]
+    }, {
+        name: 'Pre-Test / Post-Test',
+            data: [{% for i in sittings %}
+                 {% if i.quiz.pre_test and i.quiz.post_test %}
+                 {{ i.get_percent_correct }},
+                 {% endif %}
+    {% endfor %}
+
+                ]
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+    });
+</script>
+
+{% endblock %}

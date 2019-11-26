@@ -63,7 +63,7 @@
 .friend-list li a .time {
     position: absolute;
     top: 10px;
-    right: 8px;
+    /* right: 8px; */
 }
 
 small, .small {
@@ -73,7 +73,7 @@ small, .small {
 .friend-list li a .chat-alert {
     position: absolute;
     right: 8px;
-    top: 27px;
+    /* top: 27px; */
     font-size: 10px;
     padding: 3px 5px;
 }
@@ -86,8 +86,9 @@ small, .small {
     list-style: none;
     margin: 0;
     overflow: auto;
-    max-height: 50vh;
+    min-height: 50vh;
     padding: 0px !important;
+    height: 50vh;
 }
 
 .chat-message {
@@ -356,10 +357,12 @@ a:hover, a:active, a:focus {
         height: auto !important;
     }
 
-    .friend-list-height {
+    /* .friend-list-height {
         display: none;
+    } */
+    .friend-list {
+        width: auto;
     }
-
 
 }
 
