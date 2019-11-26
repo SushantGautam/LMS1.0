@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.utils import timezone
 
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -183,34 +184,30 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['currentDate'] = datetime.now()
-        context['GroupName'] = []
-        context['GroupName'] += GroupMapping.objects.filter(
-            Students__id=self.request.user.id)
-        context['Group'] = []
-        for group in context['GroupName']:
-            context['Group'] += InningInfo.objects.filter(Groups__id=group.id)
-        context['Course'] = []
-        context['Assignment'] = []
-        context['activeAssignment'] = []
-        context['expiredAssignment'] = []
-        for course in context['Group']:
-            Assignment = []
-            activeAssignment = []
-            expiredAssignment = []
-            context['Course'] += course.Course_Group.all()
+        context['Assignment'], context['activeAssignment'], context['expiredAssignment'] = [],[],[]
+        Assignment, activeAssignment, expiredAssignment = [],[],[]
+        Sessions = []
+        Courses = set()
 
-            for assignment in context['Course']:
-                Assignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id))
-                activeAssignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__gte=datetime_now))
-                expiredAssignment.append(AssignmentInfo.objects.filter(
-                    Course_Code__id=assignment.Course_Code.id, Assignment_Deadline__lte=datetime_now))
-                # print(context['Assignment'])
-            context['Assignment'].append(Assignment)
-            context['activeAssignment'].append(activeAssignment)
-            context['expiredAssignment'].append(expiredAssignment)
+        context['currentDate'] = datetime.now()
+        GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
+        for group in GroupName:
+            Sessions += InningInfo.objects.filter(Groups__id=group.id)
+        
+        for session in Sessions:
+            for coursegroup in session.Course_Group.all():
+                Courses.add(coursegroup.Course_Code)
+
+        for course in Courses:
+            Assignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Use_Flag=True))
+            activeAssignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True))
+            expiredAssignment.append(AssignmentInfo.objects.filter(
+                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True))
+        context['Assignment'].append(Assignment)
+        context['activeAssignment'].append(activeAssignment)
+        context['expiredAssignment'].append(expiredAssignment)
         return context
 
 
@@ -245,9 +242,10 @@ class CourseInfoDetailView(DetailView):
             Course_Code=self.kwargs.get('pk'), Use_Flag=True).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Question.objects.filter(
-            course_code=self.kwargs.get('pk'))
-        context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(
+            course_code=self.kwargs.get('pk'), exam_paper=False, draft=False)
+        context['topic'] = Topic.objects.filter(
+            course_associated_with=self.kwargs.get('pk'))
         return context
 
 
@@ -262,7 +260,7 @@ class ChapterInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(
-            Chapter_Code=self.kwargs.get('pk'))
+            Chapter_Code=self.kwargs.get('pk'), Use_Flag=True)
         context['post_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(
@@ -383,8 +381,6 @@ class questions_student_detail(DetailView):
         except SubmitSurvey.DoesNotExist:
             context['submit_survey'] = None
 
-
-
         return context
 
 
@@ -431,6 +427,7 @@ class ParticipateSurvey(View):
 class surveyFilterCategory_student(ListView):
     model = SurveyInfo
     template_name = 'student_module/questions_student_listView.html'
+    # template_name = 'survey/common/surveyinfo_expireView.html'
 
     paginate_by = 6
 
@@ -439,43 +436,58 @@ class surveyFilterCategory_student(ListView):
         self.GET = None
 
     def get_queryset(self):
-        try:
-            category_id = int(self.request.GET['categoryId'])
-            # student related data
-            student_group = self.request.user.groupmapping_set.all()
-            student_session = InningInfo.objects.filter(Groups__in=student_group)
-            active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
-            student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+        # try:
+        category_name = self.request.GET['category_name'].lower()
+        date_filter = self.request.GET['date_filter'].lower()
+        # student related data
+        student_group = self.request.user.groupmapping_set.all()
+        student_session = InningInfo.objects.filter(Groups__in=student_group)
+        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
 
-            # Predefined category name "general, session, course, system"
-            general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
-                                                       Center_Code=self.request.user.Center_Code, Use_Flag=True)
-            session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
-                                                       Session_Code__in=student_session, Use_Flag=True)
-            course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
-                                                      Course_Code__in=student_course, Use_Flag=True)
-            system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+        # Predefined category name "general, session, course, system"
+        general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
+                                                   Center_Code=self.request.user.Center_Code, Use_Flag=True)
+        session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
+                                                   Session_Code__in=student_session, Use_Flag=True)
+        course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
+                                                  Course_Code__in=student_course, Use_Flag=True)
+        system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
-            if category_id == 0:
-                all_survey = general_survey | session_survey | course_survey | system_survey
-                return all_survey
-            else:
-                category_name = CategoryInfo.objects.get(id=category_id).Category_Name.lower()
-                if category_name == "general":
-                    return general_survey
-                elif category_name == "session":
-                    return session_survey
-                elif category_name == "course":
-                    return course_survey
-                elif category_name == "system":
-                    return system_survey
-        except:
-            return None
-            # print("Error occured")
+        my_queryset = None
+        if category_name == "all_survey":
+            my_queryset = general_survey | session_survey | course_survey | system_survey
+        else:
+            if category_name == "general":
+                my_queryset = general_survey
+            elif category_name == "session":
+                my_queryset = session_survey
+            elif category_name == "course":
+                my_queryset = course_survey
+            elif category_name == "system":
+                my_queryset = system_survey
+
+        if date_filter == "active":
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            print(date_filter, "query", len(my_queryset))
+        elif date_filter == "expire":
+            my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
+            print(date_filter, "query", len(my_queryset))
+        elif date_filter == "live":
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+            print(date_filter, "query", len(my_queryset))
+
+        return my_queryset
+
+    # except:
+    #     return None
+    # print("Error occured")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['currentDate'] = datetime.now()
+        context['category_name'] = self.request.GET['category_name'].lower()
+        context['date_filter'] = self.request.GET['date_filter'].lower()
 
         submitSurveyQuerySet = SubmitSurvey.objects.filter(
             Student_Code=self.request.user.id)

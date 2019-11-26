@@ -236,7 +236,7 @@ class CourseInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'))
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
         return context
 
@@ -1162,8 +1162,7 @@ class teacherSurveyFilterCategory(ListView):
 
         my_queryset = None
         if category_name == "all_survey":
-            all_survey = general_survey | session_survey | course_survey | system_survey
-            my_queryset = all_survey
+            my_queryset = general_survey | session_survey | course_survey | system_survey
         else:
             if category_name == "general":
                 my_queryset = general_survey

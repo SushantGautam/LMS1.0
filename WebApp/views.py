@@ -115,15 +115,15 @@ def logout(request, next_page=None,
 
 _sentinel = object()
 
-def error_400(request, exception=0):
+def error_400(request, exception):
     data = {}
     return render(request,'error_page/page_400.html',data)
 
-def error_403(request, exception=0):
+def error_403(request, exception):
     data = {}
     return render(request,'error_page/page_403.html',data)
 
-def error_404(request, exception=0):
+def error_404(request, exception):
     data = {}
     return render(request,'error_page/page_404.html',data)
 
@@ -620,7 +620,7 @@ class CourseInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Question.objects.filter(course_code=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'))
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
         context['exam_quiz'] = Quiz.objects.filter(exam_paper=True, course_code=self.object)
         return context

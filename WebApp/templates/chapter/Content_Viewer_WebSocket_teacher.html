@@ -2,12 +2,13 @@
 
 
     function updatePageByTeacher() {
-
         chatSocket.send(
             JSON.stringify({
                 page: currentpage,
                 force: $('#forceScreen').prop("checked") ? 1 : 0,
             }));
+
+
     };
 
 

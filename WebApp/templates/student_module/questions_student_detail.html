@@ -115,15 +115,18 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
+                  options: {{ options }}
                     {% for option in options %}
                       {% if option.Question_Code.pk == question.pk %}
                         <div class="radio">
-                        {% if can_submit %}
-                          <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"
+{#                        {% if can_submit %}#}
+{#                          <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"#}
+{#                                 value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}#}
+{#                          {% elif sub %}#}
+{##}
+{#                          {% endif %}#}
+                        <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"
                                  value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}
-                          {% elif sub %}
-
-                          {% endif %}
                         </div>
                       {% endif %}
                     {% endfor %}
