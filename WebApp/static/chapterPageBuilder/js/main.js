@@ -1912,7 +1912,7 @@ function openTab(evt, tab_no) {
 // });
 
 
-function resizeImage(url, width, height, callback, dive) {
+async function resizeImage(url, width, height, callback, dive) {
     var sourceImage = new Image();
 
     sourceImage.onload = function () {
@@ -1932,7 +1932,7 @@ function resizeImage(url, width, height, callback, dive) {
 }
 
 
-function setThumbnails() {
+async function setThumbnails() {
     let id = $('.current')[0].id.replace(/[^\d.]/g, '');
     $('.current').find('.pdfdiv').each(function(){
         $(this).css({
@@ -1958,7 +1958,7 @@ function setThumbnails() {
             'background-repeat': 'no-repeat'
         })
     })
-    html2canvas($('.current')[0],).then(canvas => {
+    await html2canvas($('.current')[0],).then(canvas => {
         $('.pagenumber').each(function () {
             if (id == this.value) {
                 if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
@@ -1991,5 +1991,4 @@ function setThumbnailscallback(data, dive) {
         'background-size': 'contain',
         'background-repeat': 'no-repeat',
     });
-
 }
