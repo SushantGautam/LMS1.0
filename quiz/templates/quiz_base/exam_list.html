@@ -1,0 +1,91 @@
+{% load static %}
+{% load i18n %}
+<h2>{% trans "List of Exams" %}</h2>
+{% if object_list %}
+
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered bg-white nowrap">
+      <thead class="thead-light bg-primary">
+      <td>{% trans "Quiz" %}</td>
+      <td>{% trans "Course" %}</td>
+      <td>{% trans "Chapter" %}</td>
+      <td>{% trans "Status" %}</td>
+      <td>{% trans "Action" %}</td>
+      <td></td>
+
+      </thead>
+
+      <tbody>
+      <tr>
+        <form action="" method="GET">
+          <td><input type="text" name="quiz_filter"/></td>
+          <td><input type="text" name="course_filter"/></td>
+          <td><input type="text" name="chapter_filter"/></td>
+          <td></td>
+          <td>
+            <button type="submit" class="btn btn-default">{% trans "Filter" %}</button>
+          </td>
+        </form>
+      </tr>
+
+
+      {% for object in object_list %}
+
+        <tr>
+          <td>
+            {% if '/teachers' in request.path %}
+              <a href="{% url 'teacher_quiz_detail' pk=object.id %}">{{ object.title }}</a>
+            {% elif '/students' in request.path %}
+              {{ object.title }}
+            {% else %}
+              <a href="{% url 'quiz_detail' pk=object.id %}">{{ object.title }}</a>
+            {% endif %}
+          </td>
+          <td>{{ object.course_code.Course_Name }}</td>
+          <td>{{ object.chapter_code.Chapter_Name }}</td>
+          <td>
+            {% if object.draft is True %}
+              <span class="text-danger">Inactive</span>
+            {% else %}
+              <span class="text-success">Active</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if '/students' in request.path %}
+              {% if object.draft is True %}
+                ---
+              {% else %}
+                {% if object.already_submitted %}
+{#                  Already Submitted#}
+                  <a href="{% url 'quiz_question' quiz_name=object.url %}">Already Submitted</a>
+                {% else %}
+                  <a href="{% url 'quiz_question' quiz_name=object.url %}">Take Quiz</a>
+                {% endif %}
+              {% endif %}
+            {% else %}
+              {% if object.draft is True %}
+                <form action="{% url 'activate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
+                  <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
+                         class="confirm-activate">
+                </form>
+              {% else %}
+                <form action="{% url 'deactivate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
+                  <input type="button" value="Deactivate" style="float: right;color: #2A3F54;cursor:pointer"
+                         class="confirm-deactivate">
+                </form>
+              {% endif %}
+            {% endif %}
+          </td>
+
+        </tr>
+
+      {% endfor %}
+
+
+      </tbody>
+
+    </table>
+  </div>
+{% else %}
+  <p>{% trans "There are no matching quizzes" %}.</p>
+{% endif %}
