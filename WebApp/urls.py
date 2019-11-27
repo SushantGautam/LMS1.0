@@ -286,6 +286,8 @@ urlpatterns += (
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          views.ContentsView.as_view(), name='contentviewer'),
+     path('delete-chapter-files',
+         views.deletechapterfile, name='delete-chapter-files'),
 )
 urlpatterns += (
     path('AchievementPage_Student', views.AchievementPage_Student,

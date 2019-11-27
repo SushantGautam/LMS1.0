@@ -1353,13 +1353,12 @@ def chapterpagebuilder(request, course, chapter):
     }
     return render(request, 'WebApp/chapterbuilder.html', context)
 
-
-@csrf_exempt
 def save_file(request):
     if request.method == "POST":
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         media_type = request.POST['type']
+        # old_file = request.POST['old']
         path = ''
         if request.FILES['file-0']:
             media = request.FILES['file-0']
@@ -1371,7 +1370,20 @@ def save_file(request):
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
+            # if old_file is not '0':
+            #     deletefile(request)
         return JsonResponse(data={"message": "success", "media_name": name})
+
+def deletechapterfile(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        old_file = json.loads(request.POST['old'])
+        print(old_file)
+        for value in old_file.values():
+            for x in value:
+                if os.path.exists(os.path.join(BASE_DIR, x[1:])):
+                    os.remove(os.path.join(BASE_DIR, x[1:]))
+                    return JsonResponse({'message':'deletion success'})
+    return HttpResponse('')
 
 def save_3d_file(request):
     if request.method == "POST":
@@ -1394,7 +1406,7 @@ def save_3d_file(request):
                 mtlname = name + '.' + mtl.name.split('.')[-1]
                 fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
                 filename = fs.save(mtlname, mtl)
-        return JsonResponse(data={"message": "success", "objname": objname})
+        return JsonResponse(data={"message": "success", "objname": objname})        
 
 @csrf_exempt
 def save_video(request):
