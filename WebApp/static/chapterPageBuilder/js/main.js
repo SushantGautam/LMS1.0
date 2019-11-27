@@ -1,4 +1,10 @@
 var firstload = true;
+var tobedeletedfiles = {
+    'pic':[],
+    'video':[],
+    'pdf':[],
+    '_3d':[],
+}
 
 $(document).ready(function () {
     $("#import_zip_link").on('click', function (e) {
@@ -654,8 +660,13 @@ $(document).ready(function () {
         });
 
         $('.fa-trash').click(function (e) {
+            if($('#' + e.currentTarget.id).find('img').length > 0){
+                if($('#tabs-for-download').find('img[src$="'+$(div).find('img').attr('src')+'"]').length == 1){
+                   tobedeletedfiles.pic.push($('#' + e.currentTarget.id).find('img').attr('src'))
+                   console.log(tobedeletedfiles)
+                }
+            }
             $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
         });
 
         $('.imagelink').off().bind("click", function (e) {
@@ -771,9 +782,14 @@ $(document).ready(function () {
                     let div = $(input).parent().parent().parent();
                     var data = new FormData();
                     $.each(input.files, function (i, file) {
-                        // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
+                    if($(div).find('img').length > 0){
+                        if($('#tabs-for-download').find('img[src$="'+$(div).find('img').attr('src')+'"]').length == 1){
+                           tobedeletedfiles.pic.push($(div).find('img').attr('src'));
+                        }
+                    }
+                    data.append('csrfmiddlewaretoken', csrf_token);
                     data.append('type', 'pic');
                     data.append('chapterID', chapterID);
                     data.append('courseID', courseID);
@@ -790,7 +806,7 @@ $(document).ready(function () {
                             $('#loadingDiv').show();
                         },
                         error: function (errorThrown) {
-                            alert("Failed to upload PDF")
+                            alert("Failed to upload Image. Try Again!!")
                             div.find('#loadingDiv').remove();
                         },
                         success: function (data) {
@@ -999,6 +1015,12 @@ $(document).ready(function () {
                         // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
+                    if($(div).find('object').length > 0){
+                        if($('#tabs-for-download').find('object[data$="'+$(div).find('object').attr('data')+'"]').length == 1){
+                            tobedeletedfiles.pdf.push($(div).find('object').attr('data'));
+                        }
+                    }
+                    data.append('csrfmiddlewaretoken', csrf_token);
                     data.append('type', 'pdf');
                     data.append('chapterID', chapterID);
                     data.append('courseID', courseID);
@@ -1072,7 +1094,7 @@ $(document).ready(function () {
             },
         });
 
-        $(".pdfInp").change(function (e) {
+        $(".pdfInp").off().change(function (e) {
             readURL(this);
         });
     }
@@ -1350,7 +1372,6 @@ $(document).ready(function () {
 
         $('.fa-trash').click(function (e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
         });
 
         $('._3dobj-div').resizable({
@@ -1389,6 +1410,12 @@ $(document).ready(function () {
 
             let div = $('#' + upload_btn.val()).parent().parent();
             var data = new FormData();
+
+            if($(div).find('iframe').length > 0){
+                if($('#tabs-for-download').find('iframe[src$="'+$(div).find('iframe').attr('src')+'"]').length == 1){
+                    tobedeletedfiles._3d.push($(div).find('iframe').attr('src'));
+                }
+            }
 
             data.append('csrfmiddlewaretoken', csrf_token);
             data.append('objfile', obj);
@@ -1445,7 +1472,7 @@ $(document).ready(function () {
             });
         }
 
-        $("#link-3d-submit").unbind().click(function (e) {
+        $("#link-3d-submit").unbind().off().click(function (e) {
             $('#link-3d-modal').modal('hide');
             readURL($(this));
         });
@@ -1501,7 +1528,7 @@ $(document).ready(function () {
             }
             if (value.classList.contains('pic')) {
                 PictureFunction($(this).css("top"),
-                    $(this).css("left"), $(value).find('img')[0].src, $(this).css("width"), $(this).css("height"));
+                    $(this).css("left"), $(value).find('img').attr('src'), $(this).css("width"), $(this).css("height"));
             }
             if (value.classList.contains('btn-div')) {
                 ButtonFunction($(this).css("top"),
@@ -1867,8 +1894,28 @@ function displaypagenumbers() {
     })
 }
 
-// Button Form Submit
+// Media File deletion
+function deleteFile(){
+    $.ajax({
+        url: delete_file_url, 
+        data: {
+            'csrfmiddlewaretoken': csrf_token,
+            'old': JSON.stringify(tobedeletedfiles),
+        },
+        method: 'POST',
+        type: 'POST',
+        
+        error: function (errorThrown) {
+            alert("Failed to delete existing file")
+        },
+        success: function (data) {
+            console.log('Files deleted successfully')
+        }, 
+    });
+}
+// ===========================================================================
 
+// Button Form Submit
 $('#btn-submit').on('click', function () {
     var btn_name = $('#btn-name').val();
     var btn_link = $('#btn-link').val();
@@ -1992,3 +2039,7 @@ function setThumbnailscallback(data, dive) {
         'background-repeat': 'no-repeat',
     });
 }
+
+setTimeout(function(){
+
+},5000)

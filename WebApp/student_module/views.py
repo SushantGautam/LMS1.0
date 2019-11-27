@@ -44,7 +44,7 @@ datetime_now = datetime.now()
 
 User = get_user_model()
 
-
+from quiz.views import QuizUserProgressView, Sitting, Progress
 def start(request):
     if request.user.Is_Student:
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
@@ -63,10 +63,10 @@ def start(request):
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
                     Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id)[:7]
-
-        return render(request, 'student_module/dashboard.html',
+    sittings =  Sitting.objects.filter(user=request.user)
+    return render(request, 'student_module/dashboard.html',
                       {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                       'activeAssignments': activeassignments})
+                       'activeAssignments': activeassignments, 'sittings':sittings })
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -369,9 +369,11 @@ class questions_student_detail(DetailView):
         context = super().get_context_data(**kwargs)
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
-
         context['options'] = OptionInfo.objects.filter(
             Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.object.id)
+        )
+        context['saq_answers'] = AnswerInfo.objects.filter(
+            Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.object.id, Question_Type='SAQ')
         )
         try:
             context['submit_survey'] = SubmitSurvey.objects.get(
@@ -380,6 +382,26 @@ class questions_student_detail(DetailView):
             )
         except SubmitSurvey.DoesNotExist:
             context['submit_survey'] = None
+
+        if context['submit_survey']:
+            for x in context['options']:
+                if len(context['submit_survey'].answerinfo.filter(Answer_Value=x.id)) > 0:
+                    x.was_chosen = True
+                else:
+                    x.was_chosen = False
+
+            for x in context['questions']:
+                try:
+                    x.answer = AnswerInfo.objects.get(
+                        Submit_Code=context['submit_survey'].id, Question_Code=x.id)
+                except AnswerInfo.DoesNotExist:
+                    x.answer = None
+
+            context['can_submit'] = False
+
+
+        else:
+            context['can_submit'] = True
 
         return context
 

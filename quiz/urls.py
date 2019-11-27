@@ -4,7 +4,6 @@ from rest_framework import routers
 from quiz import views
 from . import api
 
-
 try:
     from django.conf.urls import url
 except ImportError:
@@ -25,13 +24,11 @@ router.register(r'answer', api.AnswerViewSet)
 router.register(r'progress', api.ProgressViewSet)
 router.register(r'sitting', api.SittingViewSet)
 
-
 urlpatterns = (
     # urls for Django Rest Framework API
     path('api/v1/', include(router.urls)),
 
-
-    #url(r'^$', view=QuizListView.as_view(), name='quiz_index'),
+    # url(r'^$', view=QuizListView.as_view(), name='quiz_index'),
 
     url(r'^category/$', view=CategoriesListView.as_view(), name='quiz_category_list_all'),
 
@@ -45,7 +42,7 @@ urlpatterns = (
     url(r'^marking/(?P<pk>[\d.]+)/$', view=QuizMarkingDetail.as_view(), name='quiz_marking_detail'),
 
     # passes variable 'quiz_name' to quiz_take view
-    #url(r'^(?P<slug>[\w-]+)/$', view=QuizDetailView.as_view(), name='quiz_start_page'),
+    # url(r'^(?P<slug>[\w-]+)/$', view=QuizDetailView.as_view(), name='quiz_start_page'),
 
     url(r'^(?P<quiz_name>[\w-]+)/take/$', view=QuizTake.as_view(), name='quiz_question'),
 )
@@ -58,7 +55,7 @@ urlpatterns += (
     path('update/<int:pk>/', QuizUpdateView.as_view(), name='quiz_update'),
     path('update_info/<int:pk>/', UpdateQuizBasicInfo.as_view(), name='quiz_update_info'),
     path('detail/<int:pk>/', QuizDetailView.as_view(), name='quiz_detail'),
-   
+
     path('detail/<slug>/', QuizDetailView.as_view(), name='quiz_detail_s'),
     path('delete/<int:pk>/', QuizDeleteView, name='quiz_delete'),
 
@@ -96,4 +93,7 @@ urlpatterns += (
     path('choose_mcq/<int:pk>/', views.QuizMCQChoosePrevious.as_view(), name='choose_mcq'),
     path('choose_tfq/<int:pk>/', views.QuizTFQChoosePrevious.as_view(), name='choose_tfq'),
     path('choose_saq/<int:pk>/', views.QuizSAQChoosePrevious.as_view(), name='choose_saq'),
+
+    path('quiz/exam_list/', views.QuizExamListView.as_view(),
+         name='teacher_quiz_exam_list'),
 )

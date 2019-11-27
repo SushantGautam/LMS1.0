@@ -1,0 +1,12 @@
+{% extends 'student_module/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "All Quizzes" %}{% endblock %}
+{% block breadcrumb %}
+  <li class="breadcrumb-item active" aria-current="page">Exam Papers</li>
+{% endblock %}
+
+
+{% block content %}
+  {% include "quiz_base/exam_list.html" %}
+{% endblock %}

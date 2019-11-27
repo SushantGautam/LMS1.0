@@ -115,18 +115,24 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                  options: {{ options }}
                     {% for option in options %}
                       {% if option.Question_Code.pk == question.pk %}
                         <div class="radio">
-{#                        {% if can_submit %}#}
-{#                          <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"#}
-{#                                 value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}#}
-{#                          {% elif sub %}#}
-{##}
-{#                          {% endif %}#}
-                        <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"
-                                 value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}
+                          {#                        {% if can_submit %}#}
+                          {#                          <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"#}
+                          {#                                 value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}#}
+                          {#                          {% elif sub %}#}
+                          {##}
+                          {#                          {% endif %}#}
+                          <label style="line-height: 14px">
+                            <input type="radio" name="{{ question.pk }}" id="pollsOptions"
+                                   value="{{ option.pk }}"
+                                {% if option.was_chosen %}
+                                   checked
+                                {% endif %}
+                            >
+                            &nbsp; {{ option.Option_Name }}
+                          </label>
                         </div>
                       {% endif %}
                     {% endfor %}
@@ -154,7 +160,9 @@
                   <div class="x_content" style="margin-left: 40px;">
                     <label class="SAQ_answer_label">Answers:</label>
                     <textarea class="form-control SAQ_answer" name="{{ question.pk }}" rows="5" id="comment"
-                              form="surveyform"></textarea>
+                              form="surveyform"
+                              value="{{ question.answer }}"
+                    >{{ question.answer.Answer_Value }}</textarea>
 
                   </div>
                 </div>

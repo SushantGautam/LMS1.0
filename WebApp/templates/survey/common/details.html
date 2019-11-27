@@ -5,9 +5,9 @@
         <span id="current-progress"></span>
       </div>
     </div>
-    LIVE:
-    <input type="checkbox" id="chk" checked>
-    <button type="button" class="btn btn-info btn-lg" id="update_progress">Update</button>
+{#    LIVE:#}
+{#    <input type="checkbox" id="chk" checked>#}
+{#    <button type="button" class="btn btn-info btn-lg" id="update_progress">Update</button>#}
   </div>
 <div class="clearfix"></div>
 
@@ -36,6 +36,9 @@
               </li>
               <li class="surveyViewDates">
                 <i class="fa fa-calendar"></i><label>End date: {{ object.End_Date }}</label>
+              </li>
+              <li class="surveyViewDates">
+                <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of Participants: {{ submit }}</label>
               </li>
             </ul>
 
@@ -127,7 +130,8 @@
                     <p class="SAQ_answer">
                       {% for answer in question.get_answers %}
                         {{ answer.Answer_Value }}<br/>
-                        {{ answer.Submit_Code.Student_Code }}on August 8 at 12:30 PM<br/><br/>
+                        <hr>
+                        <strong>{{ answer.Submit_Code.Student_Code }}</strong> : on August 8 at 12:30 PM<br/><br/>
                       {% endfor %}
                     </p>
                   </div>

@@ -2,6 +2,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 import random
 import urllib
 
+from django.utils import timezone
 from django_addanother.views import CreatePopupMixin
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -14,7 +15,7 @@ from django.db import transaction
 from django.db import models
 from django.views import View
 
-from WebApp.models import CourseInfo, ChapterInfo, InningGroup
+from WebApp.models import CourseInfo, ChapterInfo, InningGroup, InningInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
     QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question, Answer
@@ -880,10 +881,24 @@ class ActivateQuiz(View):
         my_quiz.save()
         return HttpResponseRedirect(
             reverse(
-                'quiz_detail',
+                self.request.path,
                 kwargs={'pk': my_quiz.pk},
             )
         )
+        # if 'teachers' in self.request.path:
+        #     return HttpResponseRedirect(
+        #         reverse(
+        #             'teacher_quiz_detail',
+        #             kwargs={'pk': my_quiz.pk},
+        #         )
+        #     )
+        # else:
+        #     return HttpResponseRedirect(
+        #         reverse(
+        #             'quiz_detail',
+        #             kwargs={'pk': my_quiz.pk},
+        #         )
+        #     )
 
 
 class DeactivateQuiz(View):
@@ -893,10 +908,62 @@ class DeactivateQuiz(View):
         my_quiz.save()
         return HttpResponseRedirect(
             reverse(
-                'quiz_detail',
+                self.request.path,
                 kwargs={'pk': my_quiz.pk},
             )
         )
+        # if 'teachers' in self.request.path:
+        #     return HttpResponseRedirect(
+        #         reverse(
+        #             # 'teacher_quiz_detail',
+        #             self.request.path,
+        #             kwargs={'pk': my_quiz.pk},
+        #         )
+        #     )
+        # else:
+        #     return HttpResponseRedirect(
+        #         reverse(
+        #             'quiz_detail',
+        #             kwargs={'pk': my_quiz.pk},
+        #         )
+        #     )
+
+
+class QuizExamListView(ListView):
+    model = Quiz
+
+    def get_template_names(self):
+        if 'teachers' in self.request.path:
+            return ['teacher_quiz/exam_list.html']
+        elif 'students' in self.request.path:
+            return ['student_quiz/exam_list.html']
+        else:
+            return ['exam_list.html']
+
+    def get_queryset(self):
+        quiz_qs = Quiz.objects.filter(cent_code=self.request.user.Center_Code.id, exam_paper=True)
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        student_group = self.request.user.groupmapping_set.all()
+        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=timezone.now())
+        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+        if 'teachers' in self.request.path:
+            return quiz_qs.filter(course_code__in=innings_Course_Code)
+        elif 'students' in self.request.path:
+            return quiz_qs.filter(course_code__in=student_course, draft=False)
+        else:
+            return quiz_qs
+
+    def get_context_data(self, **kwargs):
+        old_context = super().get_context_data(**kwargs)
+        if 'students' in self.request.path:
+            my_sittings = Sitting.objects.filter(user=self.request.user.id, complete=True)
+            for x in old_context['object_list']:
+                if len(my_sittings.filter(quiz=x.id)) > 0:
+                    x.already_submitted = True
+                else:
+                    x.already_submitted = False
+
+        return old_context
 
 
 class UpdateQuestions(UpdateView):
