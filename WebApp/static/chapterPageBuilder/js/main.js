@@ -1,4 +1,10 @@
 var firstload = true;
+var tobedeletedfiles = {
+    'pic':[],
+    'video':[],
+    'pdf':[],
+    '_3d':[],
+}
 
 $(document).ready(function () {
     $("#import_zip_link").on('click', function (e) {
@@ -222,10 +228,7 @@ $(document).ready(function () {
                 });
 
                 var a = document.getElementsByClassName("current")[0];
-                // console.log(a);
-                // console.log($('#' + a.id));
                 $('#' + a.id).append(dom);
-                // canvas.append(dom);
             };
         }
     }
@@ -483,16 +486,15 @@ $(document).ready(function () {
             }
             let html =
                 `<div class='_3dobj-div'>
-                <div id="_3dobj-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                </div>
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
-                </form>
-                <p id="_3dobj-drag">${message}</p>
-                
+                    <div id="_3dobj-actions">
+                        <i class="fas fa-trash" id=${id}></i>
+                        <i class="fas fa-upload" id=${id}></i>
+                    </div>
+                    <div>
+                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
+                    </form>
+                    <p id="_3dobj-drag">${message}</p>
                 </div>
                 ${_3dobj}
             </div>`
@@ -502,17 +504,17 @@ $(document).ready(function () {
             }
             this.renderDiagram = function () {
                 // dom includes the html,css code with draggable property
-
                 let dom = $(html).css({
                     "position": "absolute",
                     "top": position.top,
                     "left": position.left,
-                    "width": position.width,
-                    "height": position.height
+                    "height": position.height,
+                    "width": position.width
                 }).draggable({
-                    //Constraint   the draggable movement only within the canvas of the editor
+                    //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
+                    grid: [50, 20],
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
@@ -654,8 +656,12 @@ $(document).ready(function () {
         });
 
         $('.fa-trash').click(function (e) {
+            if($('#' + e.currentTarget.id).find('img').length > 0){
+                if($('#tabs-for-download').find('img[src$="'+$(div).find('img').attr('src')+'"]').length == 1){
+                   tobedeletedfiles.pic.push($('#' + e.currentTarget.id).find('img').attr('src'))
+                }
+            }
             $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
         });
 
         $('.imagelink').off().bind("click", function (e) {
@@ -771,9 +777,14 @@ $(document).ready(function () {
                     let div = $(input).parent().parent().parent();
                     var data = new FormData();
                     $.each(input.files, function (i, file) {
-                        // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
+                    if($(div).find('img').length > 0){
+                        if($('#tabs-for-download').find('img[src$="'+$(div).find('img').attr('src')+'"]').length == 1){
+                           tobedeletedfiles.pic.push($(div).find('img').attr('src'));
+                        }
+                    }
+                    data.append('csrfmiddlewaretoken', csrf_token);
                     data.append('type', 'pic');
                     data.append('chapterID', chapterID);
                     data.append('courseID', courseID);
@@ -790,7 +801,7 @@ $(document).ready(function () {
                             $('#loadingDiv').show();
                         },
                         error: function (errorThrown) {
-                            alert("Failed to upload PDF")
+                            alert("Failed to upload Image. Try Again!!")
                             div.find('#loadingDiv').remove();
                         },
                         success: function (data) {
@@ -999,6 +1010,12 @@ $(document).ready(function () {
                         // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
+                    if($(div).find('object').length > 0){
+                        if($('#tabs-for-download').find('object[data$="'+$(div).find('object').attr('data')+'"]').length == 1){
+                            tobedeletedfiles.pdf.push($(div).find('object').attr('data'));
+                        }
+                    }
+                    data.append('csrfmiddlewaretoken', csrf_token);
                     data.append('type', 'pdf');
                     data.append('chapterID', chapterID);
                     data.append('courseID', courseID);
@@ -1072,7 +1089,7 @@ $(document).ready(function () {
             },
         });
 
-        $(".pdfInp").change(function (e) {
+        $(".pdfInp").off().change(function (e) {
             readURL(this);
         });
     }
@@ -1338,7 +1355,7 @@ $(document).ready(function () {
             $('#mtl-file').prop('disabled', false);
         });
 
-        $('._3dobj-div').off().on('click', '.fa-upload' ,function (e) {
+        $('._3dobj-div').on('click', '.fa-upload' ,function (e) {
             // trigger = parseInt(e.target.id) + 1;
             // $('#' + trigger).trigger('click');
             $('#_3dfile-link').val('');
@@ -1350,7 +1367,6 @@ $(document).ready(function () {
 
         $('.fa-trash').click(function (e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
         });
 
         $('._3dobj-div').resizable({
@@ -1389,6 +1405,12 @@ $(document).ready(function () {
 
             let div = $('#' + upload_btn.val()).parent().parent();
             var data = new FormData();
+
+            if($(div).find('iframe').length > 0){
+                if($('#tabs-for-download').find('iframe[src$="'+$(div).find('iframe').attr('src')+'"]').length == 1){
+                    tobedeletedfiles._3d.push($(div).find('iframe').attr('src'));
+                }
+            }
 
             data.append('csrfmiddlewaretoken', csrf_token);
             data.append('objfile', obj);
@@ -1445,7 +1467,7 @@ $(document).ready(function () {
             });
         }
 
-        $("#link-3d-submit").unbind().click(function (e) {
+        $("#link-3d-submit").unbind().off().click(function (e) {
             $('#link-3d-modal').modal('hide');
             readURL($(this));
         });
@@ -1501,7 +1523,7 @@ $(document).ready(function () {
             }
             if (value.classList.contains('pic')) {
                 PictureFunction($(this).css("top"),
-                    $(this).css("left"), $(value).find('img')[0].src, $(this).css("width"), $(this).css("height"));
+                    $(this).css("left"), $(value).find('img').attr('src'), $(this).css("width"), $(this).css("height"));
             }
             if (value.classList.contains('btn-div')) {
                 ButtonFunction($(this).css("top"),
@@ -1867,8 +1889,28 @@ function displaypagenumbers() {
     })
 }
 
-// Button Form Submit
+// Media File deletion
+function deleteFile(){
+    $.ajax({
+        url: delete_file_url, 
+        data: {
+            'csrfmiddlewaretoken': csrf_token,
+            'old': JSON.stringify(tobedeletedfiles),
+        },
+        method: 'POST',
+        type: 'POST',
+        
+        error: function (errorThrown) {
+            alert("Failed to delete existing file")
+        },
+        success: function (data) {
+            console.log('Files deleted successfully')
+        }, 
+    });
+}
+// ===========================================================================
 
+// Button Form Submit
 $('#btn-submit').on('click', function () {
     var btn_name = $('#btn-name').val();
     var btn_link = $('#btn-link').val();
@@ -1992,3 +2034,7 @@ function setThumbnailscallback(data, dive) {
         'background-repeat': 'no-repeat',
     });
 }
+
+setTimeout(function(){
+
+},5000)
