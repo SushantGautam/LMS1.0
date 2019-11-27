@@ -44,7 +44,7 @@ datetime_now = datetime.now()
 
 User = get_user_model()
 
-
+from quiz.views import QuizUserProgressView, Sitting, Progress
 def start(request):
     if request.user.Is_Student:
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
@@ -63,10 +63,10 @@ def start(request):
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
                     Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id)[:7]
-
-        return render(request, 'student_module/dashboard.html',
+    sittings =  Sitting.objects.filter(user=request.user)
+    return render(request, 'student_module/dashboard.html',
                       {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                       'activeAssignments': activeassignments})
+                       'activeAssignments': activeassignments, 'sittings':sittings })
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):

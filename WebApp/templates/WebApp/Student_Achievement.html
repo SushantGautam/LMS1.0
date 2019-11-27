@@ -10,36 +10,25 @@
 
 
 <li class="breadcrumb-item active" aria-current="page">Achievement Page</li>
-<link href="{% static '/vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
-
-<link href="{% static '/vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 
 
 
-
+<div class="row">
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+</div>
+</div>
+
+<div class="row">
+    <div id="PieChart_Quiz" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 </div>
 
 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/data.js"></script>
-<script src="{% static '/vendorsx/nprogress/nprogress.js' %}" type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/highchart_data.js' %}"></script>
 
-<script src="{% static '/vendorsx/Chart.js/dist/Chart.min.js' %}"
-    type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
-
-<script src="{% static '/vendorsx/jquery-sparkline/dist/jquery.sparkline.min.js' %}"
-    type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
-
-<script src="{% static '/vendorsx/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js' %}"
-    type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
-
-<script src="{% static '/vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"
-    type="31eff4613ce0aeb36c79ce87-text/javascript"></script>
-<script src=" {% static 'build/js/custom.min.js' %}"></script>
 <script>
     Highcharts.chart('container', {
 
@@ -56,6 +45,19 @@
                 text: 'Score'
             }
         },
+
+        xAxis: {
+          type: 'datetime',
+          min: Date.UTC(2018, 1, 1),
+        },
+            
+
+
+        tooltip: {
+            pointFormat: ' <b>{point.y}</b> %<br/>',
+            shared: true
+        },
+
         legend: {
             layout: 'vertical',
             align: 'right',
@@ -75,30 +77,30 @@
             name: 'Pre-Test',
             data: [
                 {% for i in sittings %}
-                    {% if i.quiz.pre_test %}
-                    {{ i.get_percent_correct }},
+                    {% if i.quiz.pre_test and i.end %}
+                [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}),    {{ i.get_percent_correct }}],
         {% endif %}
         {% endfor %}
             ]
         }, {
             name: 'Post-Test',
             data: [{% for i in sittings %}
-                    {% if i.quiz.post_test %}
-    {{ i.get_percent_correct }},
+                    {% if i.quiz.post_test and i.end %}
+   [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
     {% endif %}
     {% endfor %}]
         }, {
         name: 'Exam Paper',
             data: [{% for i in sittings %}
-    {% if i.quiz.exam_paper %}
-    {{ i.get_percent_correct }},
+    {% if i.quiz.exam_paper and i.end %}
+   [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
     {% endif %}
     {% endfor %}]
     }, {
         name: 'Pre-Test / Post-Test',
             data: [{% for i in sittings %}
-                 {% if i.quiz.pre_test and i.quiz.post_test %}
-                 {{ i.get_percent_correct }},
+                 {% if i.quiz.pre_test and i.quiz.post_test and i.end %}
+                [ Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
                  {% endif %}
     {% endfor %}
 
@@ -121,6 +123,81 @@
     }
 
     });
+</script>
+
+
+<script>
+
+var No_PreQuiz=0;
+var No_PostQuiz=0;
+var No_Exam=0;
+var No_PreQuizPost_Quiz=0;
+
+{% for c in sittings %}
+ {% if c.quiz.pre_test and c.end %}
+ No_PreQuiz += 1;
+ {% endif %}
+
+ {% if c.quiz.post_test and c.end %}
+    No_PostQuiz += 1;
+ {% endif %}
+
+  {% if c.quiz.exam_paper and c.end %}
+    No_Exam += 1;
+ {% endif %}
+
+{% if c.quiz.post_test and c.quiz.pre_test and c.end %}
+    No_PreQuizPost_Quiz += 1;
+ {% endif %}
+
+
+
+{% endfor %}
+
+Highcharts.chart('PieChart_Quiz', {
+  chart: {
+    plotBackgroundColor: null,
+    plotBorderWidth: null,
+    plotShadow: false,
+    type: 'pie'
+  },
+  title: {
+    text: 'Total Quiz Played by Students'
+  },
+  tooltip: {
+    pointFormat: '{series.name}:  <b>{point.y}</b><br/>'
+  },
+  plotOptions: {
+    pie: {
+      allowPointSelect: true,
+      cursor: 'pointer',
+      dataLabels: {
+        enabled: true,
+        format: '<b>{point.name}</b>: <b>{point.y}</b><br/>'
+      }
+    }
+  },
+  series: [{
+    name: 'Quiz',
+    colorByPoint: true,
+    data: [{
+      name: 'Pre',
+      y: No_PreQuiz,
+      sliced: true,
+      selected: true
+    }, {
+      name: 'Post',
+      y: No_PostQuiz
+    }, {
+      name: 'Exam Paper',
+      y: No_Exam
+    }, {
+      name: 'Pre/Post',
+      y: No_PreQuizPost_Quiz
+    }]
+  }]
+});
+
 </script>
 
 {% endblock %}
