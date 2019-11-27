@@ -1,4 +1,5 @@
 {% extends "student_module/base.html" %}
+{% load static %}
 {% block title %}
 Dashboard
 {% endblock %}
@@ -12,101 +13,208 @@ Dashboard
     <h3 style="color: white"><b>Overview</b></h3>
 </div>
 
-<div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
-    <div class="panel panel-default">
-        <div class="title text-center">
-            <h3 style="margin-left: 10px"><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
-                        of my Courses </a></span></h3>
-        </div>
-        <ul class="list-group">
-            {% for object in Course %}
-            <li class="list-group-item ">
-                <h5>
+<div class="row">
+    <div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="title text-center">
+                <h3 style="margin-left: 10px"><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
+                            of my Courses </a></span></h3>
+            </div>
+            <ul class="list-group">
+                {% for object in Course %}
+                <li class="list-group-item ">
+                    <h5>
 
-                    <b> {{object.Course_Code}}</b>
-                    <a href="{{ object.Course_Code.student_get_absolute_url }}">
-                        <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                        <b> {{object.Course_Code}}</b>
+                        <a href="{{ object.Course_Code.student_get_absolute_url }}">
+                            <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                         ">CONTINUE <i class="fa fa-arrow-right"></i>
-                        </button>
-                    </a>
-
-                </h5>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-<div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
-    <div class="panel panel-default">
-        <div class="title text-center">
-            <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
-                        href="{% url 'student_myassignmentinfo_list' %}">List
-                        of Active Assignments </a></span></h3>
-        </div>
-        <ul class="list-group">
-            {% for object in activeAssignments %}
-            <li class="list-group-item ">
-
-                <h5>
-                    <b> {{object.Assignment_Topic}}</b>
-                    <h5 style="margin-bottom: 0;">
-                        <a href="{{ object.student_get_absolute_url }}">
-                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                            ">CONTINUE <i class="fa fa-arrow-right"></i>
                             </button>
                         </a>
+
                     </h5>
-                </h5>
-
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-<div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
-    <div class="panel panel-default">
-        <div class="title text-center">
-            <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
-        <ul class="list-group">
-            {% if GroupName %}
-            {% for object in GroupName %}
+    </div>
+    <div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="title text-center">
+                <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
+                            href="{% url 'student_myassignmentinfo_list' %}">List
+                            of Active Assignments </a></span></h3>
+            </div>
+            <ul class="list-group">
+                {% for object in activeAssignments %}
+                <li class="list-group-item ">
 
-            <li class="list-group-item ">
-                <h5>
-                    Group &nbsp; : <b style="float: right">{{object.GroupMapping_Name}}</b>
-                    <!-- <h5 style="margin-bottom: 0;">
+                    <h5>
+                        <b> {{object.Assignment_Topic}}</b>
+                        <h5 style="margin-bottom: 0;">
+                            <a href="{{ object.student_get_absolute_url }}">
+                                <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                            ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                </button>
+                            </a>
+                        </h5>
+                    </h5>
+
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="title text-center">
+                <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
+            </div>
+            <ul class="list-group">
+                {% if GroupName %}
+                {% for object in GroupName %}
+
+                <li class="list-group-item ">
+                    <h5>
+                        Group &nbsp; : <b style="float: right">{{object.GroupMapping_Name}}</b>
+                        <!-- <h5 style="margin-bottom: 0;">
                             <a href="{{ object.student_get_absolute_url }}">
                                 <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                     ">CONTINUE <i class="fa fa-arrow-right"></i>
                                 </button>
                             </a>
                         </h5> -->
-                </h5>
-            </li>
-            {% endfor %}
-            {% endif %}
+                    </h5>
+                </li>
+                {% endfor %}
+                {% endif %}
 
-            {% if Group %}
-            {% for object in Group %}
+                {% if Group %}
+                {% for object in Group %}
 
-            <li class="list-group-item ">
-                <h5>
-                    Session &nbsp; : <b style="float: right">{{object.Inning_Name}}</b>
-                    <!-- <h5 style="margin-bottom: 0;">
+                <li class="list-group-item ">
+                    <h5>
+                        Session &nbsp; : <b style="float: right">{{object.Inning_Name}}</b>
+                        <!-- <h5 style="margin-bottom: 0;">
                             <a href="{{ object.student_get_absolute_url }}">
                                 <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                     ">CONTINUE <i class="fa fa-arrow-right"></i>
                                 </button>
                             </a>
                         </h5> -->
-                </h5>
-            </li>
-            {% endfor %}
-            {% endif %}
-        </ul>
+                    </h5>
+                </li>
+                {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </div>
+
+<div class="row">
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+    </div>
+</div>
+
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/highchart_data.js' %}"></script>
+
+<script>
+    Highcharts.chart('container', {
+
+        title: {
+            text: 'Your Quiz Score'
+        },
+
+        // subtitle: {
+        //     text: 'Source'
+        // },
+
+        yAxis: {
+            title: {
+                text: 'Score'
+            }
+        },
+
+        xAxis: {
+          type: 'datetime',
+          min: Date.UTC(2018, 1, 1),
+        },
+            
+
+
+        tooltip: {
+            pointFormat: ' <b>{point.y}</b> %<br/>',
+            shared: true
+        },
+
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+
+            }
+        },
+
+        series: [{
+            name: 'Pre-Test',
+            data: [
+                {% for i in sittings %}
+                    {% if i.quiz.pre_test and i.end %}
+                [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}),    {{ i.get_percent_correct }}],
+        {% endif %}
+        {% endfor %}
+            ]
+        }, {
+            name: 'Post-Test',
+            data: [{% for i in sittings %}
+                    {% if i.quiz.post_test and i.end %}
+   [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
+    {% endif %}
+    {% endfor %}]
+        }, {
+        name: 'Exam Paper',
+            data: [{% for i in sittings %}
+    {% if i.quiz.exam_paper and i.end %}
+   [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
+    {% endif %}
+    {% endfor %}]
+    }, {
+        name: 'Pre-Test / Post-Test',
+            data: [{% for i in sittings %}
+                 {% if i.quiz.pre_test and i.quiz.post_test and i.end %}
+                [ Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
+                 {% endif %}
+    {% endfor %}
+
+                ]
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+    });
+</script>
+
 
 
 

@@ -289,13 +289,13 @@ urlpatterns += (
      path('delete-chapter-files',
          views.deletechapterfile, name='delete-chapter-files'),
 )
+
 urlpatterns += (
-    path('AchievementPage_Student', views.AchievementPage_Student,
+    path('AchievementPage_Student/<int:student_id>', views.AchievementPage_Student,
          name='AchievementPage_Student'),
     path('AchievementPage_All', views.AchievementPage_All,
          name='AchievementPage_All'),
-    path('AchievementPage_All_Ajax/<int:Inningsfilter>/<int:studentfilter>/<int:Coursefilter>/', views.AchievementPage_All_Ajax,
+    path('AchievementPage_All_Ajax/<int:Inningsfilter>/<slug:studentfilter>/<int:GroupMappingFilter>/', views.AchievementPage_All_Ajax,
          name='AchievementPage_All_Ajax'),
-
 
 )

@@ -29,6 +29,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
+from django.db.models import Q
 
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
@@ -178,15 +179,13 @@ def start(request):
             thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
             wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
-            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
-                '-Register_DateTime')[:5]
+            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by('-Register_DateTime')[:5]
             coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
-            threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count()
+            threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter(Use_Flag=True,
-                                                    End_Date__gte=datetime.now())[:5]
+            surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True), Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None), Q(End_Date__gte=datetime.now()))[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now())[:5]
 
@@ -198,11 +197,11 @@ def start(request):
                            'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
                            'surveycount': surveycount,
                            'sessioncount': sessioncount})
-        if request.user.Is_Student:
+        elif request.user.Is_Student:
             return redirect('student_home')
-        if request.user.Is_Teacher:
+        elif request.user.Is_Teacher:
             return redirect('teacher_home')
-        if request.user.Is_Parent:
+        elif request.user.Is_Parent:
             return redirect('parent_home')
         else:
             logout(request)
@@ -213,7 +212,7 @@ def start(request):
     else:
         return render(request, "WebApp/splash_page.html")
 
-
+# Profile page functions
 def edit_basic_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         try:
@@ -234,7 +233,6 @@ def edit_basic_info_ajax(request):
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
-
 def edit_contact_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         try:
@@ -253,7 +251,6 @@ def edit_contact_info_ajax(request):
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
-
 def edit_description_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         try:
@@ -268,7 +265,6 @@ def edit_description_info_ajax(request):
     else:
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-
 
 def edit_profile_image_ajax(request):
     if request.method == 'POST' and request.FILES['Member_Avatar']:
@@ -295,26 +291,6 @@ def edit_profile_image_ajax(request):
     else:
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
-
-
-# def editprofile(request):
-#     if not request.user.is_authenticated:
-#         return HttpResponse("you are not authenticated", {'error_message': 'Error Message Customize here'})
-#     print('admin amdin')
-#     post = get_object_or_404(MemberInfo, pk=request.user.id)
-#     if request.method == "POST":
-
-#         form = UserUpdateForm(request.POST, request.FILES, instance=post)
-
-#         if form.is_valid():
-#             post.date_last_update = datetime.now()
-#             post.save()
-#             return redirect('user_profile')
-#     else:
-
-#         form = UserUpdateForm(request.POST, request.FILES, instance=post)
-
-#     return render(request, 'WebApp/editprofile.html', {'form': form})
 
 
 class register(CreateView):
@@ -455,6 +431,7 @@ def MemberInfoActivate(request, pk):
         obj = MemberInfo.objects.get(pk=pk)
         obj.Use_Flag = True
         obj.save()
+        messages.success(request, 'Member is activated sucessfully')
     except:
         messages.error(request, 'Cannot perform the action. Please try again later')
 
@@ -469,6 +446,7 @@ def MemberInfoDeactivate(request, pk):
         obj = MemberInfo.objects.get(pk=pk)
         obj.Use_Flag = False
         obj.save()
+        messages.success(request, 'Member is deactivated sucessfully')
     except:
         messages.error(request, 'Cannot perform the action. Please try again later')
 
@@ -585,6 +563,7 @@ class MemberInfoDeleteView(DeleteView):
         redirect_link = self.request.POST.get('redirect','memberinfo_list')
         try:
             self.delete(request, *args, **kwargs)
+            messages.success(request,"The user is deleted Successfully")
             return redirect(redirect_link)
         except:
             messages.error(request,
@@ -631,10 +610,6 @@ class CourseInfoUpdateView(UpdateView):
     form_class = CourseInfoForm
 
 
-# class CourseInfoDeleteView(DeleteView):
-#     model = CourseInfo
-# Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
-
 def CourseInfoDeleteView(request, pk):
     if request.method == 'POST':
         try:
@@ -647,7 +622,6 @@ def CourseInfoDeleteView(request, pk):
             messages.error(request,
                            "Cannot delete courses with chapters")
             return redirect('courseinfo_detail', pk=pk)
-            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 class ChapterInfoListView(ListView):
@@ -662,7 +636,6 @@ class ChapterInfoCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['datetime'] = datetime.now()
-
         return context
 
 
@@ -699,14 +672,11 @@ class ChapterInfoDetailView(DetailView):
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = datetime.now()
-
         return context
 
 
 class ChapterInfoDeleteView(DeleteView):
     model = ChapterInfo
-
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
 
     def post(self, request, *args, **kwargs):
         try:
@@ -720,8 +690,6 @@ class ChapterInfoDeleteView(DeleteView):
                            "Cannot delete chapter with assignments")
             return redirect('chapterinfo_detail', course=self.request.POST['course_id'],
                             pk=self.request.POST['chapter_id'])
-            # return redirect('student_home')
-    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 def CourseForum(request, course):
@@ -854,7 +822,6 @@ def InningInfoDeleteView(request, pk):
             messages.error(request,
                            "Cannot delete inning")
             return redirect('inninginfo_detail', pk=pk)
-            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 class InningGroupListView(ListView):
@@ -917,7 +884,6 @@ def InningGroupDeleteView(request, pk):
             messages.error(request,
                            "Cannot delete Teacher Allocation")
             return redirect('inninggroup_detail', pk=pk)
-            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
@@ -974,7 +940,6 @@ def GroupMappingDeleteView(request, pk):
             messages.error(request,
                            "Cannot delete Group Mapping")
             return redirect('groupmapping_detail', pk=pk)
-            # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 # AssignmentInfoViews
@@ -1046,8 +1011,6 @@ class AssignmentInfoDetailView(DetailView):
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['datetime'] = datetime.now()
-
-        # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
 
@@ -1065,8 +1028,6 @@ class AssignmentInfoUpdateView(UpdateView):
 class AssignmentInfoDeleteView(DeleteView):
     model = AssignmentInfo
 
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
-
     def post(self, request, *args, **kwargs):
 
         try:
@@ -1080,8 +1041,6 @@ class AssignmentInfoDeleteView(DeleteView):
                            "Cannot delete assignment")
             return redirect('assignmentinfo_detail', course=self.request.POST['course_id'],
                             chapter=self.request.POST['chapter_id'], pk=self.request.POST['assignment_id'])
-            # return redirect('student_home')
-    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 class QuestionInfoListView(ListView):
@@ -1091,8 +1050,6 @@ class QuestionInfoListView(ListView):
 class QuestionInfoCreateView(CreateView):
     model = AssignmentQuestionInfo
     form_class = QuestionInfoForm
-
-    # success_url = 'questioninfo_detail'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1113,7 +1070,6 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Question_Score = request.POST["Question_Score"]
         Obj.Question_Description = request.POST["Question_Description"]
         Obj.Answer_Type = request.POST["Answer_Type"]
-        # Obj.Question_Media_File = request.POST["Question_Media_File"]
         if request.POST["Use_Flag"] == 'true':
             Obj.Use_Flag = True
         else:
@@ -1193,8 +1149,6 @@ class QuestionInfoUpdateView(UpdateView):
 class QuestionInfoDeleteView(DeleteView):
     model = AssignmentQuestionInfo
 
-    # Assignment_Code = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
-
     def post(self, request, *args, **kwargs):
 
         try:
@@ -1209,8 +1163,6 @@ class QuestionInfoDeleteView(DeleteView):
                            "Cannot delete question")
             return redirect('assignmentinfo_detail', course=request.POST['course_id'],
                             chapter=request.POST['chapter_id'], pk=request.POST['assignment_id'])
-            # return redirect('student_home')
-    # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
 class AssignAssignmentInfoListView(ListView):
@@ -1323,12 +1275,6 @@ def chapterviewer(request):
             data = 1
         else:
             data = 0
-        # try:
-        #     with open() as json_file:
-        #         data = json.load(json_file)
-        # except Exception as e:
-        #     print(e)
-        #     data = ""
         return JsonResponse({'data': data})
 
 
@@ -1583,23 +1529,34 @@ class ContentsView(TemplateView):
             context['data'] = ""
         return context
 
-
+from quiz.views import QuizUserProgressView, Sitting, Progress
 def AchievementPage_Student(request, student_id):
-    student = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
-    pass
+    sittings =  Sitting.objects.filter(user=request.user)
+    return render(request, 'WebApp/Student_Achievement.html', {'sittings':sittings})
+
+
 
 from WebApp.forms import AchievementPage_All_form
 def AchievementPage_All(request):
-    studentfilter = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
-    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now())
-    Coursefilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code)
-    form = AchievementPage_All_form(initial={"studentfilter":studentfilter, "Inningsfilter":Inningsfilter, "Coursefilter":Coursefilter} )
-    return render(request, 'WebApp/Achievement_all.html', {'form':form})
+    CourseFilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
+    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now(), Use_Flag=True)
 
-def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, Coursefilter=None):
-    studentfilter = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code)
-    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now())
-    Coursefilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code)
+    # Linked relation between course and session
+    # InningGroupFilter = InningGroup.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
+    # Courses = dict()
+    # for course in CourseFilter:
+    #     temp = []
+    #     for group in InningGroupFilter:
+    #         if course.id==group.Course_Code.id:
+    #             temp.append(group.id)
+    #     Courses.update({course.id:temp})
     
-    return render(request, 'WebApp/AchievementPage_All_Ajax.html', { 'studentfilter':studentfilter})
+    return render(request, 'WebApp/Achievement_all.html', {"Inningsfilter":Inningsfilter,  "CourseFilter":CourseFilter, "Courses": CourseFilter})
+
+def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, GroupMappingFilter=None):
+    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
+    Student_GroupMappingFilter = GroupMapping.objects.filter(id__in= Inningsfilter, Center_Code=request.user.Center_Code).values_list('Students').order_by('id')
+    studentfilter = MemberInfo.objects.filter(id__in=Student_GroupMappingFilter, Is_Student=True, Center_Code=request.user.Center_Code)
+
+    return render(request, 'WebApp/AchievementPage_All_Ajax.html', {'studentfilter':studentfilter})
 

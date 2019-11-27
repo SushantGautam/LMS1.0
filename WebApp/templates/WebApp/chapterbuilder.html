@@ -91,16 +91,17 @@
     }
 
     .right-sidebar-content {
-        position: relative;
+        /* position: relative; */
         /* top: 80px; */
         bottom: 20;
         color: #444;
         overflow-y: scroll;
-        height: 100vh;
+        /* height: -webkit-fill-available; */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
+        height: 100vh;
     }
 
     .pagenumber > canvas {
@@ -126,7 +127,7 @@
 <div class="se-pre-con"></div>
 
 <div class="container-fluid full-width ">
-    <div class="editor row">
+    <div class="editor row" style=" height: -webkit-fill-available;">
 
         <!-- Preview Bar must be here... -->
         <div class=" col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 sidebar">
@@ -319,24 +320,27 @@
 
 
             <div class="silde-div">
-                <div class="add-new-page">
-                    <!-- <h3>Preview</h3> -->
-
-                    <!-- <i id="add-page-btn" class="fas fa-plus-square fas-5x"></i> -->
-                </div>
+                
 
                 <div class="right-sidebar">
                     <div class="right-sidebar-content text-left">
-                        <i id="add-page-btn" class="fas fa-plus-square "></i>
+                       
                         <hr class="white-hr">
                         <div class="img1 showSingle" target="1">
                             <div class="tabs-to-click">
                                 <ul>
                                     <li class="tabs-link current pagenumber" onclick="openTab(event,'tab1')"></li>
+
                                 </ul>
+                                <div class="button-builder text-center">
+                                        <i id="add-page-btn" class="fas fa-plus-square "></i>
+            
+                                </div>
                             </div>
                         </div>
                     </div>
+                   
+                    
                 </div>
             </div>
 
