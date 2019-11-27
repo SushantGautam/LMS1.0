@@ -1316,16 +1316,23 @@ def save_file(request):
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
-            # if old_file is not '0':
-            #     deletefile(request)
+            
         return JsonResponse(data={"message": "success", "media_name": name})
 
+import glob
 def deletechapterfile(request):
     if request.method == 'POST' and request.user.is_authenticated:
         old_file = json.loads(request.POST['old'])
         print(old_file)
-        for value in old_file.values():
+        for key, value in old_file.items():
             for x in value:
+                if key == '_3d':
+                    if os.path.exists(os.path.join(BASE_DIR, x[10:])):
+                        extensions = ['mtl','obj']
+                        for ext in extensions:
+                            if os.path.exists(os.path.join(BASE_DIR, x[10:-4]+'.'+ext)):
+                                os.remove(os.path.join(BASE_DIR, x[10:-4]+'.'+ext))
+                        return JsonResponse({'message':'deletion success'})
                 if os.path.exists(os.path.join(BASE_DIR, x[1:])):
                     os.remove(os.path.join(BASE_DIR, x[1:]))
                     return JsonResponse({'message':'deletion success'})

@@ -1411,6 +1411,12 @@ $(document).ready(function () {
             let div = $('#' + upload_btn.val()).parent().parent();
             var data = new FormData();
 
+            if($(div).find('iframe').length > 0){
+                if($('#tabs-for-download').find('iframe[src$="'+$(div).find('iframe').attr('src')+'"]').length == 1){
+                    tobedeletedfiles._3d.push($(div).find('iframe').attr('src'));
+                }
+            }
+
             data.append('csrfmiddlewaretoken', csrf_token);
             data.append('objfile', obj);
             data.append('mtlfile', mtl);
@@ -1466,7 +1472,7 @@ $(document).ready(function () {
             });
         }
 
-        $("#link-3d-submit").unbind().click(function (e) {
+        $("#link-3d-submit").unbind().off().click(function (e) {
             $('#link-3d-modal').modal('hide');
             readURL($(this));
         });
