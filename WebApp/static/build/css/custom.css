@@ -1870,6 +1870,23 @@ label .asteriskField{
     color:#222;
 }
 
+.student_card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 40%;
+    border-radius: 5px;
+    margin-left: 28%;
+  }
+  
+.student_card_container{
+    padding: 2px 16px;
+    text-align: center;
+  }
+
+.student_card_container img{
+    margin-left: 30%;
+  }
+
 
 /* =================================AchivementPage================================= */
 .AchievementPage_Btn{
@@ -1889,3 +1906,5 @@ label .asteriskField{
     height: auto!important;
     overflow: hidden!important;
 }
+
+

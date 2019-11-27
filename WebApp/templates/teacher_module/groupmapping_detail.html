@@ -24,7 +24,9 @@
                     {% for students in object.Students.all %}
                     <tr>
                         <td>
-                            {{ forloop.counter }} . &nbsp; {{ students }}
+                            {{ forloop.counter }} . &nbsp;<a href="{% url 'Student_DetailInfo' id=students.pk %}">
+                                {{ students }}</a>
+
                         </td>
                     </tr>
                     {% endfor %}
