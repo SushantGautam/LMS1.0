@@ -228,10 +228,7 @@ $(document).ready(function () {
                 });
 
                 var a = document.getElementsByClassName("current")[0];
-                // console.log(a);
-                // console.log($('#' + a.id));
                 $('#' + a.id).append(dom);
-                // canvas.append(dom);
             };
         }
     }
@@ -489,16 +486,15 @@ $(document).ready(function () {
             }
             let html =
                 `<div class='_3dobj-div'>
-                <div id="_3dobj-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                </div>
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
-                </form>
-                <p id="_3dobj-drag">${message}</p>
-                
+                    <div id="_3dobj-actions">
+                        <i class="fas fa-trash" id=${id}></i>
+                        <i class="fas fa-upload" id=${id}></i>
+                    </div>
+                    <div>
+                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
+                    </form>
+                    <p id="_3dobj-drag">${message}</p>
                 </div>
                 ${_3dobj}
             </div>`
@@ -508,17 +504,17 @@ $(document).ready(function () {
             }
             this.renderDiagram = function () {
                 // dom includes the html,css code with draggable property
-
                 let dom = $(html).css({
                     "position": "absolute",
                     "top": position.top,
                     "left": position.left,
-                    "width": position.width,
-                    "height": position.height
+                    "height": position.height,
+                    "width": position.width
                 }).draggable({
-                    //Constraint   the draggable movement only within the canvas of the editor
+                    //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
+                    grid: [50, 20],
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
@@ -663,7 +659,6 @@ $(document).ready(function () {
             if($('#' + e.currentTarget.id).find('img').length > 0){
                 if($('#tabs-for-download').find('img[src$="'+$(div).find('img').attr('src')+'"]').length == 1){
                    tobedeletedfiles.pic.push($('#' + e.currentTarget.id).find('img').attr('src'))
-                   console.log(tobedeletedfiles)
                 }
             }
             $('#' + e.currentTarget.id).parent().parent().remove();
@@ -1360,7 +1355,7 @@ $(document).ready(function () {
             $('#mtl-file').prop('disabled', false);
         });
 
-        $('._3dobj-div').off().on('click', '.fa-upload' ,function (e) {
+        $('._3dobj-div').on('click', '.fa-upload' ,function (e) {
             // trigger = parseInt(e.target.id) + 1;
             // $('#' + trigger).trigger('click');
             $('#_3dfile-link').val('');
