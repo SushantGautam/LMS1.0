@@ -145,7 +145,8 @@
     <div class="editor row" style=" height: -webkit-fill-available;">
 
         <!-- Preview Bar must be here... -->
-        <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar">
+        <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar"> 
+            <section class="upper" style="height: 60vh">
 
             <br>
 
@@ -250,35 +251,41 @@
 
             <hr class="white-hr ">
 
-            <h3  class="media-content-builder text-center"style="margin-top:30px; font-size:15px">Media Items </h3>
-            <hr>
+            <h3  class="media-content-builder text-center"style="margin-top:16px; font-size:15px">Media Items </h3>
+            
+        </section> 
 
-            <div class="media-items-tabs">
-                <!-- Tab links -->
-                <div class="tab">
-                    <button class="tablinks" onclick="openCity(event, 'London')">Images</button>
-                    <button class="tablinks" onclick="openCity(event, 'Paris')">Videos</button>
-                   
+         <section class="lower" style="height: 40vh"> 
+                <div class="media-items-tabs">
+                        <!-- Tab links -->
+                        <div class="tab">
+                            <button class="tablinks" onclick="openCity(event, 'London')">Images</button>
+                            <button class="tablinks" onclick="openCity(event, 'Paris')">Videos</button>
+                           
+        
+                        </div>
+        
+                        <!-- Tab content -->
+                        <div id="London" class="tabcontent">
+                            <h3>Images</h3>
+                            <p>Nothing to show here images</p>
+                        </div>
+        
+                        <div id="Paris" class="tabcontent">
+                            <h3>Videos</h3>
+                            <p>Nothing to show for videos here...</p>
+                        </div>
+        
+                    </div>
 
-                </div>
+         </section>
 
-                <!-- Tab content -->
-                <div id="London" class="tabcontent">
-                    <h3>Images</h3>
-                    <p>Nothing to show here images</p>
-                </div>
-
-                <div id="Paris" class="tabcontent">
-                    <h3>Videos</h3>
-                    <p>Nothing to show for videos here...</p>
-                </div>
-
-            </div>
+            
 
         </div>
 
         <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style="padding: 0px!important;">
-            <div id="navbar-title">
+            <div id="navbar-title" style="height: 9vh;">
                 <a href="
                       
                       /courseinfo/6/chapterinfo/3/
@@ -305,7 +312,7 @@
 
             <!-- editable title -->
 
-            <div>
+            <div ">
                 <!-- Editor -->
                 <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
                     <div class="editor-canvas" id="element-container">
@@ -494,15 +501,6 @@
 <!-- End of link modal -->
 
 <script>
-<<<<<<< HEAD
-    var data = {'': ''};
-    var courseID = '6';
-    var chapterID = '3';
-    var chaptertitle = 'gfchvjkl';
-    var save_file_url = "/saveFile";
-    var save_video_url = "/saveVideo";
-    var save_3d_url = "/save3d";
-=======
     var data = {{ data | safe}};
     var courseID = '{{course}}';
     var chapterID = '{{chapter}}';
@@ -511,7 +509,6 @@
     var save_video_url = "{% url 'saveVideo' %}";
     var delete_file_url = "{% url 'delete-chapter-files' %}";
     var save_3d_url = "{% url 'save3d' %}";
->>>>>>> b79df909d21acfb412e4832ac49e93d7d7c94354
     var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
     var save_json_url = "/saveJson";
     var import_zip_url = '/import';
