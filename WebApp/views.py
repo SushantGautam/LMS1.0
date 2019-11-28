@@ -1538,7 +1538,7 @@ class ContentsView(TemplateView):
 
 from quiz.views import QuizUserProgressView, Sitting
 def AchievementPage_Student(request, student_id):
-    sittings =  Sitting.objects.filter(user=request.user)
+    sittings =  Sitting.objects.filter(user=student_id)
     return render(request, 'WebApp/Student_Achievement.html', {'sittings':sittings})
 
 
