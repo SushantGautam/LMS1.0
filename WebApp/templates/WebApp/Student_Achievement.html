@@ -30,7 +30,7 @@
 <script src="{% static 'js/highchart_data.js' %}"></script>
 
 <script>
-    Highcharts.chart('container', {
+   var chart = Highcharts.chart('container', {
 
         title: {
             text: 'Score obtained by Students'
@@ -66,9 +66,21 @@
 
         plotOptions: {
             series: {
-                label: {
-                    connectorAllowed: false
-                },
+                events: {
+                    legendItemClick: function(event) {
+                        var thisSeriesName = this.name;
+                        var thisSeriesVisibility = this.visible ? true : false;
+                        $(chart.series).each(function(i, e) {
+                            if (thisSeriesName !== e.name) {
+                                e.hide();
+                            } else {
+                                thisSeriesVisibility ? e.hide() : e.show();
+                            }
+                        });
+                        event.preventDefault();
+                    }
+                }
+
 
             }
         },
@@ -81,21 +93,21 @@
                 [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}),    {{ i.get_percent_correct }}],
         {% endif %}
         {% endfor %}
-            ]
+            ], visible: true
         }, {
             name: 'Post-Test',
             data: [{% for i in sittings %}
                     {% if i.quiz.post_test and i.end %}
    [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
     {% endif %}
-    {% endfor %}]
+    {% endfor %}], visible: false
         }, {
         name: 'Exam Paper',
             data: [{% for i in sittings %}
     {% if i.quiz.exam_paper and i.end %}
    [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
     {% endif %}
-    {% endfor %}]
+    {% endfor %}], visible: false
     }, {
         name: 'Pre-Test / Post-Test',
             data: [{% for i in sittings %}
@@ -104,7 +116,7 @@
                  {% endif %}
     {% endfor %}
 
-                ]
+                ], visible: false
     }],
 
     responsive: {
