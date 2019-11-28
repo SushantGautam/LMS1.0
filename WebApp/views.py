@@ -18,6 +18,7 @@ from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixi
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -29,12 +30,11 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
-from django.db.models import Q
 
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
-from quiz.models import Question, Quiz
+from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
@@ -116,21 +116,25 @@ def logout(request, next_page=None,
 
 _sentinel = object()
 
+
 def error_400(request, exception):
     data = {}
-    return render(request,'error_page/page_400.html',data)
+    return render(request, 'error_page/page_400.html', data)
+
 
 def error_403(request, exception):
     data = {}
-    return render(request,'error_page/page_403.html',data)
+    return render(request, 'error_page/page_403.html', data)
+
 
 def error_404(request, exception):
     data = {}
-    return render(request,'error_page/page_404.html',data)
+    return render(request, 'error_page/page_404.html', data)
+
 
 def error_500(request):
     data = {}
-    return render(request,'error_page/page_500.html',data)
+    return render(request, 'error_page/page_500.html', data)
 
 
 def calendar(request):
@@ -176,16 +180,20 @@ def start(request):
             return redirect('login')
 
         if request.user.Is_CenterAdmin:
-            thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[:5]
+            thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[
+                     :5]
             wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
-            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by('-Register_DateTime')[:5]
+            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
+                '-Register_DateTime')[:5]
             coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True), Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None), Q(End_Date__gte=datetime.now()))[:5]
+            surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
+                                                    Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
+                                                    Q(End_Date__gte=datetime.now()))[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now())[:5]
 
@@ -212,6 +220,7 @@ def start(request):
     else:
         return render(request, "WebApp/splash_page.html")
 
+
 # Profile page functions
 def edit_basic_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
@@ -233,6 +242,7 @@ def edit_basic_info_ajax(request):
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
+
 def edit_contact_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         try:
@@ -251,6 +261,7 @@ def edit_contact_info_ajax(request):
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
+
 def edit_description_info_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         try:
@@ -265,6 +276,7 @@ def edit_description_info_ajax(request):
     else:
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
 
 def edit_profile_image_ajax(request):
     if request.method == 'POST' and request.FILES['Member_Avatar']:
@@ -560,10 +572,10 @@ class MemberInfoDeleteView(DeleteView):
     success_url = reverse_lazy('memberinfo_list')
 
     def post(self, request, *args, **kwargs):
-        redirect_link = self.request.POST.get('redirect','memberinfo_list')
+        redirect_link = self.request.POST.get('redirect', 'memberinfo_list')
         try:
             self.delete(request, *args, **kwargs)
-            messages.success(request,"The user is deleted Successfully")
+            messages.success(request, "The user is deleted Successfully")
             return redirect(redirect_link)
         except:
             messages.error(request,
@@ -667,7 +679,8 @@ class ChapterInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'), pk = self.kwargs.get('pk'))
+        context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'),
+                                              pk=self.kwargs.get('pk'))
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
@@ -792,6 +805,7 @@ class InningInfoCreateView(CreateView):
         context['datetime'] = datetime.now()
         return context
 
+
 class InningInfoDetailView(DetailView):
     model = InningInfo
 
@@ -809,6 +823,7 @@ class InningInfoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
         return context
+
 
 def InningInfoDeleteView(request, pk):
     if request.method == 'POST':
@@ -872,6 +887,7 @@ class InningGroupUpdateView(UpdateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+
 def InningGroupDeleteView(request, pk):
     if request.method == 'POST':
         try:
@@ -928,6 +944,7 @@ class GroupMappingUpdateView(UpdateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+
 def GroupMappingDeleteView(request, pk):
     if request.method == 'POST':
         try:
@@ -981,7 +998,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentInfo
 
-    def post(self, request, *args, **kwargs):   
+    def post(self, request, *args, **kwargs):
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
@@ -1091,6 +1108,7 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             data={'Message': 'Success'}
         )
 
+
 class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
     model = AssignmentQuestionInfo
 
@@ -1105,12 +1123,12 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
                 Obj.Use_Flag = True
             else:
                 Obj.Use_Flag = False
-          
+
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
             Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
             if request.POST["clear"] == 'true':
                 Obj.Question_Media_File = ''
-            else:     
+            else:
                 if bool(request.FILES.get('Question_Media_File', False)) == True:
                     media = request.FILES['Question_Media_File']
                     if media.size / 1024 > 2048:
@@ -1129,6 +1147,7 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
         return JsonResponse(
             data={'Message': 'Success'}
         )
+
 
 class QuestionInfoDetailView(DetailView):
     model = AssignmentQuestionInfo
@@ -1299,6 +1318,7 @@ def chapterpagebuilder(request, course, chapter):
     }
     return render(request, 'WebApp/chapterbuilder.html', context)
 
+
 def save_file(request):
     if request.method == "POST":
         chapterID = request.POST['chapterID']
@@ -1316,10 +1336,10 @@ def save_file(request):
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
-            
+
         return JsonResponse(data={"message": "success", "media_name": name})
 
-import glob
+
 def deletechapterfile(request):
     if request.method == 'POST' and request.user.is_authenticated:
         old_file = json.loads(request.POST['old'])
@@ -1328,15 +1348,16 @@ def deletechapterfile(request):
             for x in value:
                 if key == '_3d':
                     if os.path.exists(os.path.join(BASE_DIR, x[10:])):
-                        extensions = ['mtl','obj']
+                        extensions = ['mtl', 'obj']
                         for ext in extensions:
-                            if os.path.exists(os.path.join(BASE_DIR, x[10:-4]+'.'+ext)):
-                                os.remove(os.path.join(BASE_DIR, x[10:-4]+'.'+ext))
-                        return JsonResponse({'message':'deletion success'})
+                            if os.path.exists(os.path.join(BASE_DIR, x[10:-4] + '.' + ext)):
+                                os.remove(os.path.join(BASE_DIR, x[10:-4] + '.' + ext))
+                        return JsonResponse({'message': 'deletion success'})
                 if os.path.exists(os.path.join(BASE_DIR, x[1:])):
                     os.remove(os.path.join(BASE_DIR, x[1:]))
-                    return JsonResponse({'message':'deletion success'})
+                    return JsonResponse({'message': 'deletion success'})
     return HttpResponse('')
+
 
 def save_3d_file(request):
     if request.method == "POST":
@@ -1351,7 +1372,7 @@ def save_3d_file(request):
                 mtl = None
             path = settings.MEDIA_ROOT
 
-            name = (str(uuid.uuid4())).replace('-', '') #same name for .obj and .mtl file
+            name = (str(uuid.uuid4())).replace('-', '')  # same name for .obj and .mtl file
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
@@ -1359,7 +1380,8 @@ def save_3d_file(request):
                 mtlname = name + '.' + mtl.name.split('.')[-1]
                 fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
                 filename = fs.save(mtlname, mtl)
-        return JsonResponse(data={"message": "success", "objname": objname})        
+        return JsonResponse(data={"message": "success", "objname": objname})
+
 
 @csrf_exempt
 def save_video(request):
@@ -1496,6 +1518,7 @@ def import_chapter(request):
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
+
 @xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):
     print(urlpath, "urlpath")
@@ -1505,16 +1528,17 @@ def ThreeDViewer(request, urlpath=None):
         urlpath = "static/3D_Viewer/Sample.obj"
         mtlurlpath = "static/3D_Viewer/Sample.mtl"
     else:
-        mtlpath_expected = BASE_DIR +"/" + urlpath[:-4]+".mtl"
+        mtlpath_expected = BASE_DIR + "/" + urlpath[:-4] + ".mtl"
         print("got it mtlpath_expected", mtlpath_expected)
         if os.path.isfile(mtlpath_expected):
-            print("file exist ", mtlpath_expected," url is:", mtlurlpath)
+            print("file exist ", mtlpath_expected, " url is:", mtlurlpath)
             mtlurlpath = (urlpath[:-4] if urlpath else '') + ".mtl"
         else:
             print("MTL doesnt exist", mtlpath_expected)
             mtlurlpath = "static/3D_Viewer/none.mtl"
 
     return render(request, '3D_Viewer/render_template.html', {'objpath': urlpath, 'mtlpath': mtlurlpath})
+
 
 class ContentsView(TemplateView):
     template_name = 'chapter/chapter_contents.html'
@@ -1526,7 +1550,7 @@ class ContentsView(TemplateView):
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
         path = settings.MEDIA_ROOT
-        
+
         try:
             with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
                     chapterID) + '.txt') as json_file:
@@ -1541,12 +1565,17 @@ def AchievementPage_Student(request, student_id):
     sittings =  Sitting.objects.filter(user=student_id)
     return render(request, 'WebApp/Student_Achievement.html', {'sittings':sittings})
 
+from quiz.views import Sitting
+
+def AchievementPage_Student(request, student_id):
+    sittings = Sitting.objects.filter(user=request.user)
+    return render(request, 'WebApp/Student_Achievement.html', {'sittings': sittings})
 
 
-from WebApp.forms import AchievementPage_All_form
 def AchievementPage_All(request):
     CourseFilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
-    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now(), Use_Flag=True)
+    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now(),
+                                              Use_Flag=True)
 
     # Linked relation between course and session
     # InningGroupFilter = InningGroup.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
@@ -1557,13 +1586,25 @@ def AchievementPage_All(request):
     #         if course.id==group.Course_Code.id:
     #             temp.append(group.id)
     #     Courses.update({course.id:temp})
-    
-    return render(request, 'WebApp/Achievement_all.html', {"Inningsfilter":Inningsfilter,  "CourseFilter":CourseFilter, "Courses": CourseFilter})
+
+    return render(request, 'WebApp/Achievement_all.html',
+                  {"Inningsfilter": Inningsfilter, "CourseFilter": CourseFilter, "Courses": CourseFilter})
+
 
 def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, GroupMappingFilter=None):
-    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
-    Student_GroupMappingFilter = GroupMapping.objects.filter(id__in= Inningsfilter, Center_Code=request.user.Center_Code).values_list('Students').order_by('id')
-    studentfilter = MemberInfo.objects.filter(id__in=Student_GroupMappingFilter, Is_Student=True, Center_Code=request.user.Center_Code)
+    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code,
+                                              End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
+    Student_GroupMappingFilter = GroupMapping.objects.filter(id__in=Inningsfilter,
+                                                             Center_Code=request.user.Center_Code).values_list(
+        'Students').order_by('id')
+    studentfilter = MemberInfo.objects.filter(id__in=Student_GroupMappingFilter, Is_Student=True,
+                                              Center_Code=request.user.Center_Code)
 
-    return render(request, 'WebApp/AchievementPage_All_Ajax.html', {'studentfilter':studentfilter})
+    return render(request, 'WebApp/AchievementPage_All_Ajax.html', {'studentfilter': studentfilter})
 
+
+def gitpull(request):
+    import subprocess
+    process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    return HttpResponse(output)
