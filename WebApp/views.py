@@ -1304,7 +1304,6 @@ def save_file(request):
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         media_type = request.POST['type']
-        # old_file = request.POST['old']
         path = ''
         if request.FILES['file-0']:
             media = request.FILES['file-0']
@@ -1313,17 +1312,17 @@ def save_file(request):
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
 
-            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            # file name for the saved file --> uuid||uploadedfilename||userPK
+            # Eg: 561561561||test.jpg||17
+            name = (str(uuid.uuid4())).replace('-', '') + '||' + media.name + '||' + str(request.user.pk) +'.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
             
         return JsonResponse(data={"message": "success", "media_name": name})
 
-import glob
 def deletechapterfile(request):
     if request.method == 'POST' and request.user.is_authenticated:
         old_file = json.loads(request.POST['old'])
-        print(old_file)
         for key, value in old_file.items():
             for x in value:
                 if key == '_3d':
@@ -1351,7 +1350,9 @@ def save_3d_file(request):
                 mtl = None
             path = settings.MEDIA_ROOT
 
-            name = (str(uuid.uuid4())).replace('-', '') #same name for .obj and .mtl file
+            # file name for the saved file --> uuid||uploadedfilename||userPK
+            # Eg: 561561561||test.jpg||17
+            name = (str(uuid.uuid4())).replace('-', '') + '||' + obj.name + '||' + str(request.user.pk) +'.' + obj.name.split('.')[-1]
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
@@ -1374,7 +1375,10 @@ def save_video(request):
                 return JsonResponse(data={"message": "File size exceeds 2GB"}, status=500)
 
         path = settings.MEDIA_ROOT
-        name = (str(uuid.uuid4()).replace('-', '')) + '.' + media.name.split('.')[-1]
+
+        # file name for the saved file --> uuid||uploadedfilename||userPK
+        # Eg: 561561561||test.jpg||17
+        name = (str(uuid.uuid4())).replace('-', '') + '||' + media.name + '||' + str(request.user.pk) +'.' + media.name.split('.')[-1]
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(name, media)
         return JsonResponse({'media_name': name})
@@ -1495,6 +1499,37 @@ def import_chapter(request):
         zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
+
+def retrievechapterfile(request):
+    chapterID = request.GET['chapterID']
+    courseID = request.GET['courseID']
+    userID = request.GET['userpk']
+    path = settings.MEDIA_ROOT
+    image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
+    video_extensions = ['.mp4',]
+    images = []
+    videos = []
+    pdf = []
+    try:
+        if os.path.exists(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID)):
+            chapterfiles = os.listdir(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID))
+            for files in chapterfiles:
+                if(files[-4:] in image_extensions):
+                    images.append(files)
+                elif(files[-4:] in video_extensions):
+                    videos.append(files)
+                elif(files.endswith('.pdf')):
+                    pdf.append(files)
+        else:
+            print("No directory of this chapter")
+    except Exception as e:
+        print(e)
+    return JsonResponse({
+        'images': images,
+        'videos': videos,
+        'pdf': pdf
+    })
+
 
 @xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):

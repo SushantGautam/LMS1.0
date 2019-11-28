@@ -288,6 +288,8 @@ urlpatterns += (
          views.ContentsView.as_view(), name='contentviewer'),
      path('delete-chapter-files',
          views.deletechapterfile, name='delete-chapter-files'),
+     path('retrieve-chapter-files',
+         views.retrievechapterfile, name='retrieve-chapter-files'),
 )
 
 urlpatterns += (

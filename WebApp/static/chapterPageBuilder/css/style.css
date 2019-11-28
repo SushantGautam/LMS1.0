@@ -1217,3 +1217,18 @@ span.btnlink input {
     left: 100px;
     top: 0;
 }
+
+
+/* media files css */
+
+.individualfile{
+    height: 100px;
+    width: 100px;
+}
+.individualfile img{
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}
+
+/* end of mediafile css */
