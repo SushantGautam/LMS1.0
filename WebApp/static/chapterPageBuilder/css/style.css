@@ -1251,11 +1251,11 @@ span.btnlink input {
 
 /* media files css */
 
-.individualfile{
+.individual-file{
     height: 100px;
     width: 100px;
 }
-.individualfile img{
+.individual-file img{
     height: 100%;
     width: 100%;
     object-fit: contain;
