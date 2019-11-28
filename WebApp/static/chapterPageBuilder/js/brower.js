@@ -34,6 +34,7 @@ $(document).ready(function () {
 $("#SaveBtn").on("click",function(e){
   $(this).html(`<i class='fa fa-spinner fa-spin '></i> Saving`);
   setThumbnails()
+  deleteFile()
   setTimeout(function(){
     pages = {}
     var numberofpages = 0

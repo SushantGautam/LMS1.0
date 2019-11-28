@@ -1,39 +1,51 @@
-{% extends "base.html" %}
-{% load i18n %}
+{% extends "teacher_module/base.html"%}
 {% load static %}
 
-{% load quiz_tags %}
-
-{% block title %} {% trans "Progress Page" %} {% endblock %}
-{% block description %} {% trans "User Progress Page" %} {% endblock %}
 {% block breadcrumb %}
-
-
-<li class="breadcrumb-item active" aria-current="page">Achievement Page</li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_groupmapping_detail' pk=groupmapping.pk  %}">{{ groupmapping.GroupMapping_Name }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ memberinfo.username  }}</li>
 {% endblock %}
 
 {% block content %}
+<div class="row">
+    <div class="student_card ">
 
+       
+        <div class="student_card_container">
+         <img src=" {{ memberinfo.Avatar }}" class="thumbnail" alt="...">
+            <h4><b>{{ memberinfo.username }}</b></h4>
+            <p>{{ memberinfo.first_name }} {{ memberinfo.last_name }}</p>
+            <p>{{ memberinfo.Member_Phone }}</p>
+            <p>{{ memberinfo.email }}</p>
+            
 
+        </div>
+    </div>
+</div>
+<hr>
 
 <div class="row">
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
 </div>
 </div>
 
+
+
+<hr>
+
 <div class="row">
     <div id="PieChart_Quiz" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 </div>
 
-
 <script src="{% static 'js/highcharts.js' %}"></script>
 <script src="{% static 'js/highchart_data.js' %}"></script>
 
+
 <script>
-   var chart = Highcharts.chart('container', {
+var chart = Highcharts.chart('container', {
 
         title: {
-            text: 'Score obtained by Students'
+            text: 'Score obtained by {{ memberinfo.username }}'
         },
 
         // subtitle: {
@@ -65,7 +77,7 @@
         },
 
         plotOptions: {
-            series: {
+            series: {   
                 events: {
                     legendItemClick: function(event) {
                         var thisSeriesName = this.name;
@@ -81,9 +93,10 @@
                     }
                 }
 
-
             }
         },
+
+        
 
         series: [{
             name: 'Pre-Test',
@@ -94,21 +107,24 @@
         {% endif %}
         {% endfor %}
             ], visible: true
-        }, {
+        }, 
+        {
             name: 'Post-Test',
             data: [{% for i in sittings %}
                     {% if i.quiz.post_test and i.end %}
    [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
     {% endif %}
-    {% endfor %}], visible: false
-        }, {
+    {% endfor %}],  visible: false
+        }, 
+        {
         name: 'Exam Paper',
             data: [{% for i in sittings %}
     {% if i.quiz.exam_paper and i.end %}
    [  Date.UTC({{ i.end|date:"Y" }},{{ i.end|date:"d" }},{{ i.end|date:"m" }}), {{ i.get_percent_correct }}],
     {% endif %}
     {% endfor %}], visible: false
-    }, {
+    }, 
+    {
         name: 'Pre-Test / Post-Test',
             data: [{% for i in sittings %}
                  {% if i.quiz.pre_test and i.quiz.post_test and i.end %}
@@ -116,7 +132,7 @@
                  {% endif %}
     {% endfor %}
 
-                ], visible: false
+                ],  visible: false
     }],
 
     responsive: {
@@ -174,7 +190,7 @@ Highcharts.chart('PieChart_Quiz', {
     type: 'pie'
   },
   title: {
-    text: 'Total Quiz Played by Students'
+    text: 'Total Quiz Played by {{ memberinfo.username }}'
   },
   tooltip: {
     pointFormat: '{series.name}:  <b>{point.y}</b><br/>'

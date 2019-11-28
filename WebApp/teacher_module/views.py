@@ -111,6 +111,15 @@ class GroupMappingDetailViewTeacher(DetailView):
     model = GroupMapping
     template_name = 'teacher_module/groupmapping_detail.html'
 
+from quiz.views import QuizUserProgressView, Sitting
+
+def Student_DetailInfo(request, id):
+    memberinfo = MemberInfo.objects.get(pk=id)
+    groupmapping = GroupMapping.objects.filter(Students__in=[id])[0]
+    sittings =  Sitting.objects.filter(user=memberinfo)
+    return render(request, 'teacher_module/student_detail.html', {'memberinfo':memberinfo, 'sittings':sittings, 'groupmapping':groupmapping })
+
+
 
 class QuestionInfoDeleteView(DeleteView):
     model = AssignmentQuestionInfo

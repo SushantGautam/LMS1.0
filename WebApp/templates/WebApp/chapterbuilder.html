@@ -494,6 +494,7 @@
 <!-- End of link modal -->
 
 <script>
+<<<<<<< HEAD
     var data = {'': ''};
     var courseID = '6';
     var chapterID = '3';
@@ -501,6 +502,16 @@
     var save_file_url = "/saveFile";
     var save_video_url = "/saveVideo";
     var save_3d_url = "/save3d";
+=======
+    var data = {{ data | safe}};
+    var courseID = '{{course}}';
+    var chapterID = '{{chapter}}';
+    var chaptertitle = '{{chapterdetails.Chapter_Name}}';
+    var save_file_url = "{% url 'saveFile' %}";
+    var save_video_url = "{% url 'saveVideo' %}";
+    var delete_file_url = "{% url 'delete-chapter-files' %}";
+    var save_3d_url = "{% url 'save3d' %}";
+>>>>>>> b79df909d21acfb412e4832ac49e93d7d7c94354
     var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
     var save_json_url = "/saveJson";
     var import_zip_url = '/import';

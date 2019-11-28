@@ -29,6 +29,8 @@ urlpatterns += (
     # urls for TodoTInfo
     path('groupmappinginfo/<int:pk>/', views.GroupMappingDetailViewTeacher.as_view(),
          name='teacher_groupmapping_detail'),
+    path('studentInfo/<int:id>/', views.Student_DetailInfo,
+         name='Student_DetailInfo'),
 )
 
 urlpatterns += (
