@@ -145,7 +145,8 @@
     <div class="editor row" style=" height: -webkit-fill-available;">
 
         <!-- Preview Bar must be here... -->
-        <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar">
+        <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar"> 
+            <section class="upper" style="height: 60vh">
 
             <br>
 
@@ -250,47 +251,52 @@
 
             <hr class="white-hr ">
 
-            <h3  class="media-content-builder text-center"style="margin-top:30px; font-size:15px">Media Items </h3>
-            <hr>
+            <h3  class="media-content-builder text-center"style="margin-top:16px; font-size:15px">Media Items </h3>
+            
+        </section> 
 
-            <div class="media-items-tabs">
-                <!-- Tab links -->
-                <div class="tab">
-                    <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
-                    <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
-                    <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
-                    <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
-                </div>
-
-                <!-- Tab content -->
-                <div id="image-gallery" class="tabcontent file-content">
-                    <h3>Images</h3>
-                    <div class="individual-file">
-
+         <section class="lower" style="height: 40vh"> 
+                <div class="media-items-tabs">
+                    <!-- Tab links -->
+                    <div class="tab">
+                        <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
+                        <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
+                        <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
+                        <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
                     </div>
-                    <p>Nothing to show here...</p>
+    
+                    <!-- Tab content -->
+                    <div id="image-gallery" class="tabcontent file-content">
+                        <h3>Images</h3>
+                        <div class="individual-file">
+    
+                        </div>
+                        <p>Nothing to show here...</p>
+                    </div>
+    
+                    <div id="video-gallery" class="tabcontent file-content">
+                        <h3>Videos</h3>
+                        <p>Nothing to show here...</p>
+                    </div>
+    
+                    <div id="pdf-gallery" class="tabcontent file-content">
+                        <h3>PDF</h3>
+                        <p>Nothing to show here...</p>
+                    </div>
+                    
+                    <div id="3d-gallery" class="tabcontent file-content">
+                        <h3>3D Files</h3>
+                        <p>Nothing to show here...</p>
+                    </div>
                 </div>
+         </section>
 
-                <div id="video-gallery" class="tabcontent file-content">
-                    <h3>Videos</h3>
-                    <p>Nothing to show here...</p>
-                </div>
-
-                <div id="pdf-gallery" class="tabcontent file-content">
-                    <h3>PDF</h3>
-                    <p>Nothing to show here...</p>
-                </div>
-                
-                <div id="3d-gallery" class="tabcontent file-content">
-                    <h3>3D Files</h3>
-                    <p>Nothing to show here...</p>
-                </div>
-            </div>
+            
 
         </div>
 
         <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style="padding: 0px!important;">
-            <div id="navbar-title">
+            <div id="navbar-title" style="height: 9vh;">
                 <a href="
                       
                       /courseinfo/6/chapterinfo/3/
@@ -317,7 +323,7 @@
 
             <!-- editable title -->
 
-            <div>
+            <div ">
                 <!-- Editor -->
                 <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
                     <div class="editor-canvas" id="element-container">
