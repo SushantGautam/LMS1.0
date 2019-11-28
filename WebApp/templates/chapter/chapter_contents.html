@@ -331,7 +331,11 @@
     var currentpage = 1;
     var roomName = "ChapterChat{{chapter.id}}";
     var chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
-
+    chatSocket.onclose = function () {
+        // connection closed, discard old websocket and create a new one in 5s
+        chatSocket = null
+        setTimeout(startWebsocket, 5000)
+    }
 
     lightbox.option({
         'resizeDuration': 200,

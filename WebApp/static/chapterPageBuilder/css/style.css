@@ -56,8 +56,12 @@ body {
 
 .navbar a {
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 15px;
 }
+.navbar a :hover{
+    cursor: pointer;
+}
+
 
 #navbar-title {
     display: flex;
@@ -65,7 +69,7 @@ body {
     justify-content: space-around;
     align-items: center;
     width: auto;
-    padding: 5px 0px;
+    
 
 
 }
@@ -87,7 +91,7 @@ body {
 
 .sidebar {
     background-color: #ddd;
-    zoom: 75%;
+    /* zoom: 75%; */
     min-height: 100%;
 
 }
@@ -95,9 +99,9 @@ body {
 #add-page-btn {
 
     background: rgba(0, 0, 0, 0.05);
-    font-size: 4rem;
+    font-size: 25px;
    
-    margin-top: 0.8em;
+    
 
 
 }
@@ -119,33 +123,57 @@ body {
 
 .builder {
 
-    text-transform: uppercase;
-    min-width: 98px;
-    max-width: 98px;
-    height: 95px;
-    line-height: 20px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 13px;
-    margin-top: 5px;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 1px;
-    cursor: -webkit-grab;
-    transition-duration: 0.15s;
-    transition-property: box-shadow;
-    display: flex;
-    flex-direction: column;
-    -webkit-box-pack: center;
-    justify-content: center;
-    flex: 1 1 0%;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(221, 221, 221);
-    border-image: initial;
-    border-radius: 4px;
-    float: left;
-    margin-right: 5px;
+text-transform: uppercase;
 
+min-width: 98px;
+
+max-width: 86px;
+
+height: 90px;
+
+line-height: 20px;
+
+text-align: center;
+
+font-size: 12px;
+
+font-weight: 600;
+
+/* margin-bottom: 5px; */
+
+margin-top: 5px;
+
+box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 1px;
+
+cursor: -webkit-grab;
+
+transition-duration: 0.15s;
+
+transition-property: box-shadow;
+
+display: flex;
+
+flex-direction: column;
+
+-webkit-box-pack: center;
+
+justify-content: center;
+
+flex: 1 1 0%;
+
+border-width: 1px;
+
+border-style: solid;
+
+border-color: rgb(221, 221, 221);
+
+border-image: initial;
+
+border-radius: 4px;
+
+float: left;
+
+margin-right: 5px;
 }
 
 
@@ -154,7 +182,7 @@ body {
     box-shadow: 2px 0px 2px #666;
 
     min-width: 160px;
-    margin-top: 1em;
+    font-size: 12px;
     text-align: center;
     cursor: move;
     cursor: -webkit-grab;
@@ -167,15 +195,15 @@ body {
     -webkit-border-radius: 2px;
     border-radius: 2px;
     z-index: 9;
+    margin-right:6px;
 }
 
 .draggable img {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 50%;
-    margin-top: 18px;
-
+    width: 45%;
+    margin-top: 12px;
 }
 
 .draggable-style:hover {
@@ -244,7 +272,7 @@ svg {
 
 .draggable span {
     color: #000;
-    line-height: 42px;
+    line-height: 29px;
 }
 
 .layout {
@@ -467,7 +495,7 @@ input.call-picker {
     box-shadow: 2px 2px 2px #666;
     margin: 0;
     padding: 4;
-    zoom: 80%;
+    /* zoom: 80%; */
 
 
 }
@@ -1052,10 +1080,12 @@ table th {
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 14px 16px;
+   
     transition: 0.3s;
 }
-
+.tab button:hover{
+    cursor: pointer;
+}
 /* Change background color of buttons on hover */
 .tab button:hover {
     background-color: #ddd;
@@ -1081,7 +1111,7 @@ table th {
     width: 100%;
     background: rgba(0, 0, 0, 0.05);
     padding: 10px;
-    margin-top: 10px;
+   
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -1128,7 +1158,7 @@ table th {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+  
     height: 100%;
 
 }
@@ -1231,4 +1261,7 @@ span.btnlink input {
     object-fit: contain;
 }
 
+.file-content{
+    overflow: auto;
+}
 /* end of mediafile css */

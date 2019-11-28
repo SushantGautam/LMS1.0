@@ -1,4 +1,4 @@
-{% load static %}
+
 
 <head>
 
@@ -13,22 +13,22 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}"/>
-    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
-    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/responsive.css' %}">
-    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/offline-language-english.min.css' %}">
-    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/offline-theme-default.css' %}">
+    <link rel="icon" href="/static/images/logo.png" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/static/chapterPageBuilder/images/favicon.ico"/>
+    <link rel="stylesheet" href="/static/chapterPageBuilder/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/chapterPageBuilder/css/jquery-ui.css">
+    <link rel="stylesheet" href="/static/chapterPageBuilder/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/chapterPageBuilder/css/style.css">
+    <link rel="stylesheet" href="/static/chapterPageBuilder/css/responsive.css">
+    <link rel="stylesheet" href="/static/chapterPageBuilder/css/offline-language-english.min.css">
+    <link rel="stylesheet" href="/static/chapterPageBuilder/css/offline-theme-default.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
-    <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
-    <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
-    <script src="{% static 'chapterPageBuilder/js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="/static/chapterPageBuilder/SummerNote/summernote.css">
+    <script src="/static/chapterPageBuilder/js/jquery.min.js"></script>
+    <script src="/static/chapterPageBuilder/js/bootstrap.min.js"></script>
 
-    <script src="{% static 'js/modernizr.js' %}"></script>
+    <script src="/static/js/modernizr.js"></script>
 
     <title>Course Builder</title>
 </head>
@@ -46,14 +46,15 @@
     } */
 
     .tlimit {
-        zoom: 80%;
+       
         min-width: 130px;
         color: rgba(0, 0, 0, 0.6);
-        font-size: 25px;
+        font-size: 19px; 
+        text-transform: uppercase;
     }
 
     .preview-bar {
-        zoom: 75%;
+        
         width: 20%;
         display: flex;
         flex-direction: column;
@@ -95,13 +96,13 @@
         /* top: 80px; */
         bottom: 20;
         color: #444;
-        overflow-y: scroll;
+        overflow-y: auto;
         /* height: -webkit-fill-available; */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        height: 100vh;
+        height: 70vh;
     }
 
     .pagenumber > canvas {
@@ -110,9 +111,7 @@
         border: brown;
     }
 
-    .right-sidebar-content::-webkit-scrollbar {
-        display: none;
-    }
+    
 
     .imgclass {
         border-radius: 25px;
@@ -120,6 +119,22 @@
         padding-right: 10px;
         padding-bottom: 10px;
         margin-bottom: 5px;
+    }
+    .white-hr{
+        height: 2px;
+        width: 100%;
+        background-color: white;
+        margin-bottom: 10px;
+       
+    }
+    .media-content-builder{
+        padding:10px;
+        background-color: white;
+    }
+    .nav>li>a {
+        position: relative;
+        display: block;
+        padding: 9px!important;
     }
 </style>
 
@@ -130,15 +145,18 @@
     <div class="editor row" style=" height: -webkit-fill-available;">
 
         <!-- Preview Bar must be here... -->
-        <div class=" col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 sidebar">
+        <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar">
 
             <br>
 
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" style="font-size: 12px;">
                 <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
                 <li><a data-toggle="tab" href="#menu1">Layout</a></li>
 
             </ul>
+            
+            <hr class="white-hr">
+
 
             <div class="tab-content">
 
@@ -147,39 +165,39 @@
                     <div class="home-tab-1 ">
 
                         <div class="draggable builder textbox draggable-style ">
-                            <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
+                            <img src="/static/chapterPageBuilder/icons/textbox.svg">
 
-                            <span>Text Box</span>
+                            <span class="smaller-font">Text Box</span>
                         </div>
 
                         <div class="draggable builder picture draggable-style ">
-                            <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
+                            <img src="/static/chapterPageBuilder/icons/picture.svg">
 
-                            <span>Picture</span>
+                            <span class="smaller-font">Picture</span>
                         </div>
 
                         <div class="draggable builder video draggable-style ">
-                            <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
+                            <img src="/static/chapterPageBuilder/icons/video.svg">
 
-                            <span>Video</span>
+                            <span class="smaller-font">Video</span>
                         </div>
 
                         <div class="draggable builder buttons draggable-style">
-                            <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
+                            <img src="/static/chapterPageBuilder/icons/button.svg">
 
-                            <span>Button</span>
+                            <span class="smaller-font">Button</span>
                         </div>
 
                         <div class="draggable builder 3dobject draggable-style">
 
-                            <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
-                            <span>3D Object</span>
+                            <img src="/static/chapterPageBuilder/icons/3d.svg">
+                            <span class="smaller-font">3D Object</span>
                         </div>
 
                         <div class="draggable builder Pdf draggable-style">
 
-                            <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
-                            <span>PDF</span>
+                            <img src="/static/chapterPageBuilder/icons/pdf.svg">
+                            <span class="smaller-font">PDF</span>
                         </div>
 
                     </div>
@@ -196,28 +214,28 @@
                               </path>
                             </svg> -->
 
-                            <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}" alt="like this">
+                            <img src="/static/chapterPageBuilder/images/saveimg1.png" alt="like this">
 
                         </div>
 
                         <div class="draggable  layout grid-1">
 
-                            <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}" alt="like this">
+                            <img src="/static/chapterPageBuilder/images/saveimg2.png" alt="like this">
 
                         </div>
 
                         <div class="draggable  layout title-slide">
 
-                            <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}" alt="like this">
+                            <img src="/static/chapterPageBuilder/images/saveimg3.png" alt="like this">
                         </div>
 
                         <div class="draggable  layout title-content-details">
 
-                            <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}" alt="like this">
+                            <img src="/static/chapterPageBuilder/images/saveimg4.png" alt="like this">
                         </div>
 
                         <div class="draggable layout pdf-text">
-                            <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}" alt="like this">
+                            <img src="/static/chapterPageBuilder/images/saveimg5.png" alt="like this">
                         </div>
 
                         <div class="draggable  layout title-content-details">
@@ -228,9 +246,11 @@
 
                 </div>
 
-            </div>
+            </div> 
 
-            <h3 style="margin-top:80px; font-size:1.8rem">Media Items </h3>
+            <hr class="white-hr ">
+
+            <h3  class="media-content-builder text-center"style="margin-top:30px; font-size:15px">Media Items </h3>
             <hr>
 
             <div class="media-items-tabs">
@@ -269,27 +289,25 @@
 
         </div>
 
-        <div class="  col-sm-8  col-md-7col-lg-8 col-xl-8 canvas">
+        <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style="padding: 0px!important;">
             <div id="navbar-title">
                 <a href="
-                      {% if 'teachers' in request.path %}
-                      {% url 'teacher_chapterinfo_detail' course chapter %}
-                      {% else %}
-                      {% url 'chapterinfo_detail' course chapter %}
-                      {% endif %}
+                      
+                      /courseinfo/6/chapterinfo/3/
+                      
                       " id="goBackBtn"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i>
                 </a>
                 <h2 class="tlimit" id="chaptertitle">
                 </h2>
 
                 <nav class="navbar">
-                    <a href="#" id="SaveBtn"><i class="far fa-save"></i><br/>Save</a>
+                    <a href="#" id="SaveBtn"><i class="fas fa-save"></i><br/>Save</a>
 
                     <input id="importzipfile" name="importfile" type="file"
                            accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
                     <a href="#" id="import_zip_link"><i class="fas fa-file-import"></i><br/>Import</a>
 
-                    <a href="{% url 'exportzip' course chapter %}" target="_blank"
+                    <a href="/export/6/3/" target="_blank"
                        onclick="return confirm('Have you saved the latest change?')"><i
                             class="fas fa-file-export"></i><br/>Export</a>
 
@@ -310,18 +328,18 @@
         </div>
         <!-- sidebar must be here.... -->
 
-        <div class=" col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar">
+        <div class="  col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar" style="padding:0px!important">
 
             <div class="chapter-select ">
                 <h3>Chapter Lists</h3>
 
                 <div class="selection">
                     <select name="chapter-lists" id="chapterlist">
-                        {% for chapter in chapterlist %}
-                            <option value="{{ chapter.id }}">
-                                {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}
+                        
+                            <option value="3">
+                                1. gfchvjkl
                             </option>
-                        {% endfor %}
+                        
                     </select>
                     <div class="chapter-description" id="chapter-description">
                         <p>
@@ -497,12 +515,12 @@
     var delete_file_url = "{% url 'delete-chapter-files' %}";
     var save_3d_url = "{% url 'save3d' %}";
     var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
-    var save_json_url = "{% url 'saveJson' %}";
-    var import_zip_url = '{% url "importzip" %}';
-    var csrf_token = '{{csrf_token}}'
-    var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}'
-    var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}'
-    var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}'
+    var save_json_url = "/saveJson";
+    var import_zip_url = '/import';
+    var csrf_token = '9nnw7yxTApYmZScBy4T6iKLEZPGkGXQ0GOo4CnWx5ON8PWXfEdb1r53Eg8IkbU7L'
+    var video_icon = '/static/chapterPageBuilder/images/video_icon.png'
+    var _3d_icon = '/static/chapterPageBuilder/icons/3d.svg'
+    var pdf_icon = '/static/chapterPageBuilder/icons/pdf.svg'
 
 
     $('#chapterlist').val(chapterID);
@@ -539,7 +557,7 @@
     });
 
     $(document).ready(function () {
-        let trunc = truncateString(`{{chapterdetails.Summary}}`);
+        let trunc = truncateString(``);
         $('#chapter-description').find('p').text(trunc);
          // Animate loader off screen
         $(".se-pre-con").fadeOut("slow");
@@ -564,7 +582,7 @@
                 if(data.images.length>0){
                     $('#image-gallery').find('p').empty()
                     data.images.forEach(x => {
-                        $('#image-gallery').append(
+                        $('#image-gallery .individual-file').append(
                             `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
                         )
                     });
@@ -591,14 +609,14 @@
     },5000)
 
 </script>
-{# <script src="https://player.vimeo.com/api/player.js"></script> #}
-<script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
 
-<script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/offline.min.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/offline.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
+<script src="/static/chapterPageBuilder/SummerNote/summernote.js"></script>
+<script src="/static/chapterPageBuilder/js/html2canvas.js"></script>
+
+<script src="/static/chapterPageBuilder/js/jquery-ui.min.js"></script>
+<script src="/static/chapterPageBuilder/js/main.js"></script>
+<script src="/static/chapterPageBuilder/js/brower.js"></script>
+<script src="/static/chapterPageBuilder/js/offline.min.js"></script>
+<script src="/static/chapterPageBuilder/js/offline.js"></script>
+<script src="/static/chapterPageBuilder/js/accordin.js"></script>
 </body>

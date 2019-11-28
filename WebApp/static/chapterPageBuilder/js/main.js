@@ -1693,16 +1693,20 @@ $(document).ready(function () {
         var num_tabs = $(".tabs-to-click ul li").length + 1;
 
         $(".tabs-to-click ul").append(`
-            <div>
-                 <p style="display:inline-block"></p> 
-                <span style="float:right ">
-                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
-                </span>
-
-                <span style="float:right ">
-                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
-                </span>
+            <div class="canvas-relative" style="position:relative"> 
+              
+             
                 <li class="tabs-link pagenumber " value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')"></li>
+                <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
+                        <p style="display:inline-block"></p> 
+                        <span style="float:right ">
+                            <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                        </span>
+
+                        <span style="float:right ">
+                            <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                        </span>
+                 </div>
                
                <hr class="white-hr"/>
             
@@ -1885,7 +1889,7 @@ $(document).ready(function () {
 function displaypagenumbers() {
     $('.pagenumber').each(function (key, value) {
         // $(this).parent().children('p').text('')
-        $(this).parent().children('p').text(key + 1);
+        $(this).parent().find('p').text(key + 1);
     })
 }
 
