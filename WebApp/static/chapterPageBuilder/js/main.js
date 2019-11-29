@@ -349,7 +349,12 @@ $(document).ready(function () {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank"  >${name}</a>
+                            <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                            
+                            <svg viewBox="0 0 56 18">
+                                <text x="0" y="15">${name}</text>
+                            </svg>
+                            </a>
                         </div>
         
                 `;
@@ -882,7 +887,7 @@ $(document).ready(function () {
             $('#btn-modal').modal('show');
         });
 
-        $('.btn-button').resizable({
+        $('.btn-div').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
@@ -1586,7 +1591,7 @@ $(document).ready(function () {
             ButtonFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '15%', '20%'
+                null, '10%', '15%'
             );
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
@@ -1926,7 +1931,7 @@ $('#btn-submit').on('click', function () {
     } else {
         $('#' + btn_id).removeAttr('href');
     }
-    $('#' + btn_id).text(btn_name);
+    $('#' + btn_id).find('text').text(btn_name);
     $('#btn-modal').modal('hide');
 })
 
