@@ -11,15 +11,72 @@
 
         {{ form.title|as_crispy_field }}
 
-        {{ form.mcquestion|as_crispy_field }}
-        {{ form.tfquestion|as_crispy_field }}
-        {{ form.saquestion|as_crispy_field }}
-        {{ form.description|as_crispy_field }}
-        {{ form.duration|as_crispy_field }}
-        {{ form.pass_mark|as_crispy_field }}
-        {{ form.negative_marking|as_crispy_field }}
-        {{ form.negative_percentage|as_crispy_field }}
-        {{ form.random_order|as_crispy_field }}
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                           aria-expanded="false" aria-controls="collapseOne">
+                            Manage Multiple Choice Questions </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        {{ form.mcquestion|as_crispy_field }}
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Manage True/False Questions </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        {{ form.tfquestion|as_crispy_field }}
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Manage Short Answer Type Questions
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        {{ form.saquestion|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a class="collapsed text-info" role="button" data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            More Options </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        {{ form.description|as_crispy_field }}
+                        {{ form.duration|as_crispy_field }}
+                        {{ form.pass_mark|as_crispy_field }}
+                        {{ form.negative_marking|as_crispy_field }}
+                        {{ form.negative_percentage|as_crispy_field }}
+                        {{ form.random_order|as_crispy_field }}                    </div>
+                </div>
+            </div>
+        </div>
 
 
     </div>
@@ -28,6 +85,7 @@
 </form>
 <script src=" {% static '/duration_picker/bootstrap-duration-picker.js' %}"></script>
 <script>
+
 
     $(document).ready(function () {
         $("#div_id_negative_percentage").hide();

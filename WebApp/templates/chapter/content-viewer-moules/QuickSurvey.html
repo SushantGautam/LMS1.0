@@ -78,6 +78,8 @@
                 url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
                 success: function (data) {
                     $("#survey_form_ajax").html(data);
+                    $('#smartwizard').smartWizard("reset");
+
                 }
             });
         });
