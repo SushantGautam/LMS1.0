@@ -31,6 +31,17 @@ $(document).ready(function () {
 
 })
 
+// Preview purpose
+
+$("#previewBtn").on("click",function(e){
+  e.preventDefault();
+  alert("Under Maintainance")
+  // $("#SaveBtn").click();
+
+})
+
+
+
 $("#SaveBtn").on("click",function(e){
   $(this).html(`<i class='fa fa-spinner fa-spin '></i> Saving`);
   setThumbnails()

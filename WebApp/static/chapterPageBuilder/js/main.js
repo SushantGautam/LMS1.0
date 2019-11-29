@@ -159,7 +159,6 @@ $(document).ready(function () {
                 $('#editor' + id).parent().find('.note-editable').html(message);
                 // $(".editor-canvas").append(dom);
                 // Making element Resizable
-
             };
         }
     }
@@ -2044,6 +2043,14 @@ function setThumbnailscallback(data, dive) {
     });
 }
 
-setTimeout(function(){
-
-},5000)
+$('#tabs-for-download').on('click', '.textdiv', function(){
+    $this = $('.note-editable:focus')
+    if($('.note-editable:focus').html() == "Type Something Here..."){
+        $('.note-editable:focus').html("")
+    }
+    $($this).on('focusout', function(){
+        if($($this).html() == ""){
+            $($this).html("Type Something Here...")
+        }
+    })
+})
