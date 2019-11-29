@@ -80,7 +80,9 @@ class QuizForm(forms.ModelForm):
         # self.fields['mcquestion'].queryset = mcqueryset
         # self.fields['tfquestion'].queryset = tfqueryset
         # self.fields['saquestion'].queryset = saqueryset
-        self.fields['title'] = forms.CharField(initial=CourseInfo.objects.get(id=course_id).Course_Name + ": Quiz "+ datetime.datetime.now().strftime('%D %H:%M'))
+        self.fields['title'] = forms.CharField(
+            initial=CourseInfo.objects.get(id=course_id).Course_Name + ": Quiz " + datetime.datetime.now().strftime(
+                '%D %H:%M'))
 
         self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
             queryset=MCQuestion.objects.filter(course_code=course_id),
@@ -162,13 +164,13 @@ class QuestionQuizForm(forms.ModelForm):
 class TFQuestionForm(forms.ModelForm):
     class Meta:
         model = TF_Question
-        fields = '__all__'
+        fields = ['correct', 'content', 'figure', 'score', 'explanation', 'course_code', 'cent_code']
 
-    # quiz = forms.ModelMultipleChoiceField(
-    #     queryset=Quiz.objects.all(),
-    #     required=False,
-    #     # label=_("Questions"),
-    #     widget=FilteredSelectMultiple(verbose_name=_("Quizzes"), is_stacked=False))
+        # quiz = forms.ModelMultipleChoiceField(
+        #     queryset=Quiz.objects.all(),
+        #     required=False,
+        #     # label=_("Questions"),
+        #     widget=FilteredSelectMultiple(verbose_name=_("Quizzes"), is_stacked=False))
 
 
 class SAQuestionForm(forms.ModelForm):
