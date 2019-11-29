@@ -66,7 +66,6 @@
                 },
                 url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
                 success: function (data) {
-                    print(data)
                     $("#quiz_form_ajax").html(data);
                 }
             });
@@ -123,7 +122,6 @@
 
     function quiz_create_content(response) {
         if (response['url']) {
-            alert(response['url']);
             //location.reload();
             console.log(response['url']);
             console.log(response['teacher_url']);
