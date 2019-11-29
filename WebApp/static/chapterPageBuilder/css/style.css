@@ -674,8 +674,8 @@ input.call-picker {
 }
 
 .options {
-
-    width: 100px;
+    position: absolute;
+    width: 95%;
     background: #CCC;
     margin: 5px;
     display: none;
