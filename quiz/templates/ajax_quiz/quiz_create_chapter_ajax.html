@@ -1,15 +1,30 @@
 {% load static %}
 {% load crispy_forms_tags %}
+
 <!-- Bootstrap -->
 {{ form.media }}
 <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 <form method="post" id="quiz_form_post" onsubmit="return validateForm()"
       action="{% url 'quiz_create_ajax' %}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">{% csrf_token %}
-  <div class="row">
-    {{ form|crispy }}
-  </div>
-  <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
+    <div class="row">
+
+        {{ form.title|as_crispy_field }}
+
+        {{ form.mcquestion|as_crispy_field }}
+        {{ form.tfquestion|as_crispy_field }}
+        {{ form.saquestion|as_crispy_field }}
+        {{ form.description|as_crispy_field }}
+        {{ form.duration|as_crispy_field }}
+        {{ form.pass_mark|as_crispy_field }}
+        {{ form.negative_marking|as_crispy_field }}
+        {{ form.negative_percentage|as_crispy_field }}
+        {{ form.random_order|as_crispy_field }}
+
+
+    </div>
+    <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
+
 </form>
 <script src=" {% static '/duration_picker/bootstrap-duration-picker.js' %}"></script>
 <script>
@@ -194,28 +209,28 @@
 
 </script>
 <style>
-  @media (min-width: 350px) and (max-width: 825px) {
-    .selector-available {
-      width: 100% !important;
-    }
+    @media (min-width: 350px) and (max-width: 825px) {
+        .selector-available {
+            width: 100% !important;
+        }
 
-    .selector-chosen {
-      width: 100% !important;
-    }
+        .selector-chosen {
+            width: 100% !important;
+        }
 
-    .filtered {
-      width: 100% !important;
-    }
+        .filtered {
+            width: 100% !important;
+        }
 
-    .selector ul.selector-chooser {
-      float: left;
-      width: 22px;
-      background-color: #eee;
-      border-radius: 10px;
-      margin: 5px auto 0 45% !important;
-      padding: 0;
-      transform: rotate(90deg);
-      transition: all 0.3s ease;
+        .selector ul.selector-chooser {
+            float: left;
+            width: 22px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin: 5px auto 0 45% !important;
+            padding: 0;
+            transform: rotate(90deg);
+            transition: all 0.3s ease;
+        }
     }
-  }
 </style>
