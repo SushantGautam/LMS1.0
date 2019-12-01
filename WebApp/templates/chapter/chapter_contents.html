@@ -119,10 +119,10 @@
 
     <div class="row overall-contents">
         <div id="prev-btn" class="button-position" style="left:0;">
-            <i class="fa fa-backward"></i>
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
         </div>
         <div id="next-btn" class="button-position" style="right:0;">
-            <i class="fa fa-forward"></i>
+            <i class="fa fa-chevron-right" aria-hidden="true"></i>
         </div>
 
         <div id="container" class="container12" style="">
@@ -545,7 +545,7 @@
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
                                 $('#page' + key).append(`
-                                    <div style = "overflow:hidden; font-size:1.5rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px">
+                                    <div style = "overflow:hidden; font-size:1.5rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
                                         ${css_value.content}
                                     </div>
                                 `);
