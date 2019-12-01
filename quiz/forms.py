@@ -53,7 +53,7 @@ class QuizForm(forms.ModelForm):
     class Meta:
         model = Quiz
         fields = ['mcquestion', 'tfquestion', 'saquestion', 'title', 'description', 'duration', 'pass_mark',
-                  'negative_marking', 'course_code',
+                  'negative_marking',
                   'negative_percentage', 'random_order', ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, }),
