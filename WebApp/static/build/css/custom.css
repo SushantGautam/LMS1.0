@@ -1901,6 +1901,7 @@ label .asteriskField{
     /* background-color: lightgrey; */
     margin-bottom: 30px;
 /* Auto height and overflow hidden modal class */
+}
 
 .modal-auto{
     height: auto!important;
