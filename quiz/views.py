@@ -765,7 +765,6 @@ class CreateQuizAjax(CreateView):
             chapter_id = None if chapter_id == 'None' else int(chapter_id)
             if course_id:
                 self.object.course_code = CourseInfo.objects.get(id=course_id)
-
             if chapter_id:
                 self.object.chapter_code = ChapterInfo.objects.get(id=chapter_id)
             self.object.pre_test = True if self.request.GET.get("test_type", None) == 'pre_test' else False
@@ -880,26 +879,27 @@ class ActivateQuiz(View):
         my_quiz = get_object_or_404(Quiz, pk=self.kwargs['pk'])
         my_quiz.draft = False
         my_quiz.save()
-        return HttpResponseRedirect(
-            reverse(
-                self.request.path,
-                kwargs={'pk': my_quiz.pk},
+        print("sushant",self.request.path)
+        # return HttpResponseRedirect(
+        #     reverse(
+        #         self.request.path,
+        #         kwargs={'pk': my_quiz.pk},
+        #     )
+        # )
+        if 'teachers' in self.request.path:
+            return HttpResponseRedirect(
+                reverse(
+                    'teacher_quiz_detail',
+                    kwargs={'pk': my_quiz.pk},
+                )
             )
-        )
-        # if 'teachers' in self.request.path:
-        #     return HttpResponseRedirect(
-        #         reverse(
-        #             'teacher_quiz_detail',
-        #             kwargs={'pk': my_quiz.pk},
-        #         )
-        #     )
-        # else:
-        #     return HttpResponseRedirect(
-        #         reverse(
-        #             'quiz_detail',
-        #             kwargs={'pk': my_quiz.pk},
-        #         )
-        #     )
+        else:
+            return HttpResponseRedirect(
+                reverse(
+                    'quiz_detail',
+                    kwargs={'pk': my_quiz.pk},
+                )
+            )
 
 
 class DeactivateQuiz(View):
@@ -907,27 +907,27 @@ class DeactivateQuiz(View):
         my_quiz = get_object_or_404(Quiz, pk=self.kwargs['pk'])
         my_quiz.draft = True
         my_quiz.save()
-        return HttpResponseRedirect(
-            reverse(
-                self.request.path,
-                kwargs={'pk': my_quiz.pk},
+        # return HttpResponseRedirect(
+        #     reverse(
+        #         self.request.path,
+        #         kwargs={'pk': my_quiz.pk},
+        #     )
+        # )
+        if 'teachers' in self.request.path:
+            return HttpResponseRedirect(
+                reverse(
+                    # 'teacher_quiz_detail',
+                    self.request.path,
+                    kwargs={'pk': my_quiz.pk},
+                )
             )
-        )
-        # if 'teachers' in self.request.path:
-        #     return HttpResponseRedirect(
-        #         reverse(
-        #             # 'teacher_quiz_detail',
-        #             self.request.path,
-        #             kwargs={'pk': my_quiz.pk},
-        #         )
-        #     )
-        # else:
-        #     return HttpResponseRedirect(
-        #         reverse(
-        #             'quiz_detail',
-        #             kwargs={'pk': my_quiz.pk},
-        #         )
-        #     )
+        else:
+            return HttpResponseRedirect(
+                reverse(
+                    'quiz_detail',
+                    kwargs={'pk': my_quiz.pk},
+                )
+            )
 
 
 class QuizExamListView(ListView):
