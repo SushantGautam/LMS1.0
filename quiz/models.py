@@ -517,7 +517,7 @@ class Quiz(models.Model):
         help_text=_("If checked, incorrect answers will have negative marking")
     )
     negative_percentage = models.IntegerField(
-        null=True, blank=True, default=100,
+        null=True, blank=True, default=0,
         help_text=_("Percentage of total marks to use for negative marking"),
         verbose_name=_("Negative Marking Percentage"))
 
