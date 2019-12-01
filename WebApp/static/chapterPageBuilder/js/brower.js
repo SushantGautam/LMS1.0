@@ -35,9 +35,10 @@ $(document).ready(function () {
 
 $("#previewBtn").on("click",function(e){
   e.preventDefault();
-  alert("Under Maintainance")
-  // $("#SaveBtn").click();
-
+  $("#SaveBtn").click();
+  setTimeout(function(){
+    window.open($('#previewBtn').attr('href'))
+  }, 7000)
 })
 
 
