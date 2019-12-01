@@ -215,6 +215,8 @@ a:hover, a:active, a:focus {
 
     transition: all 0.3s ease;
     z-index: 500;
+
+    user-select: none;
 }
 
 .full-chat-container {
@@ -296,7 +298,7 @@ a:hover, a:active, a:focus {
 
 
 .button-position {
-   
+
     margin: 5px;
     padding: 5px !important;
     background-color: white;
