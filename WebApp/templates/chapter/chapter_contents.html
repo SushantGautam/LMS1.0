@@ -100,22 +100,22 @@
 
 <script>
     $(document).ready(function () {
-        $(document).bind('click',function (e) {
-                if(!$(e.target).is('#mysidenav') && $('#mySidenav').width() > 0) {
-            $('#mySidenav').css('width', 0);
+        $(document).bind('click', function (e) {
+            if (!$(e.target).is('#mysidenav') && $('#mySidenav').width() > 0) {
+                $('#mySidenav').css('width', 0);
+            }
+        });
+        $('#mysidenav a').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "175px";
         }
-});
-            $('#mysidenav a').on('click', function(e) {
-                e.stopPropagation();
-    });
 
-    function openNav() {
-        document.getElementById("mySidenav").style.width = "175px";
-    }
-
-    function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-    }
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
 </script>
 <div class="container-fluid">
     <!-- For Title -->
@@ -415,7 +415,7 @@
     var chatSocket;
 
     function startWebsocket() {
-        chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
+        chatSocket = WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
         chatSocket.onclose = function () {
             // connection closed, discard old websocket and create a new one in 5s
             chatSocket = null;
