@@ -113,7 +113,7 @@
     {% if object.Course_Level %}
     var rating = parseInt({{ object.Course_Level }});
     {% else %}
-    var rating = 0;
+    var rating = 1;
     {% endif %}
 
     $('#id_Lecture_Cover_File').change(function () {
