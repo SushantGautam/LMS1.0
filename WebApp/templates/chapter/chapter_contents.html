@@ -38,81 +38,84 @@
 <body>
 <div class="se-pre-con"></div>
 <style>
-        body {
-          font-family: "Lato", sans-serif;
-        }
-        
+    body {
+        font-family: "Lato", sans-serif;
+    }
+
+    .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+
+    .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+        color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    @media screen and (max-height: 450px) {
         .sidenav {
-          height: 100%;
-          width: 0;
-          position: fixed;
-          z-index: 1;
-          top: 0;
-          left: 0;
-          background-color: #111;
-          overflow-x: hidden;
-          transition: 0.5s;
-          padding-top: 60px;
+            padding-top: 15px;
         }
-        
+
         .sidenav a {
-          padding: 8px 8px 8px 32px;
-          text-decoration: none;
-          font-size: 25px;
-          color: #818181;
-          display: block;
-          transition: 0.3s;
+            font-size: 18px;
         }
-        
-        .sidenav a:hover {
-          color: #f1f1f1;
-        }
-        
-        .sidenav .closebtn {
-          position: absolute;
-          top: 0;
-          right: 25px;
-          font-size: 36px;
-          margin-left: 50px;
-        }
-        
-        @media screen and (max-height: 450px) {
-          .sidenav {padding-top: 15px;}
-          .sidenav a {font-size: 18px;}
-        }
-        </style>
-        </head>
-        <body>
-        
-        <div id="mySidenav" class="sidenav">
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-          {% for chapter in chapterList  %}
-            <a href="{% url 'contentviewer' course.pk chapter.pk %}">{{chapter.Chapter_No}} {{chapter.Chapter_Name}}</a>
-          {% endfor %}
-        </div>
-        
-       
-       
-        
-        <script>
-        $ (document).ready(function(){ 
-            $(document).bind('click', function(e) {
-                if(!$(e.target).is('#mysidenav') && $('#mySidenav').width() > 0) {
-                    $('#mySidenav').css('width', 0);
-                }
-            });
-            $('#mysidenav a').on('click', function(e) {
-                e.stopPropagation();
-            });
+    }
+</style>
+</head>
+<body>
+
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    {% for chapter in chapterList  %}
+        <a href="{% url 'contentviewer' course.pk chapter.pk %}">{{chapter.Chapter_No}} {{chapter.Chapter_Name}}</a>
+    {% endfor %}
+</div>
+
+
+<script>
+    $ (document).ready(function(){ 
+        $(document).bind('click', function(e) {
+            if(!$(e.target).is('#mysidenav') && $('#mySidenav').width() > 0) {
+                $('#mySidenav').css('width', 0);
+            }
         });
-        function openNav() {
-          document.getElementById("mySidenav").style.width = "175px";
-        }
-        
-        function closeNav() {
-          document.getElementById("mySidenav").style.width = "0";
-        }
-        </script>
+        $('#mysidenav a').on('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "175px";
+    }
+    
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+    </script>
 <div class="container-fluid">
     <!-- For Title -->
 
@@ -133,7 +136,7 @@
                         <!-- Chapter title goes here -->
                          {{ chapter }}
                          <span style="font-size:20px;cursor:pointer;float:left;margin-left: 5px " onclick="openNav()">&#9776; </span> 
-                    </span> 
+                    </span>
             </div>
 
             <div id="page-contents" class="page-contents"></div>
@@ -414,7 +417,8 @@
         chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
         chatSocket.onclose = function () {
             // connection closed, discard old websocket and create a new one in 5s
-            chatSocket = null
+            chatSocket = null;
+            console.log("Websocket restarting. . . ")
             setTimeout(startWebsocket, 5000)
         }
     }
@@ -884,7 +888,7 @@
                                 <div class="chat-body clearfix">
                                     <div class="header">
                                         <strong class="primary-font"> ` + data.sender_name + "&nbsp;" + ` </strong>
-                                       <small class="pull-right text-muted ">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time>    </small>
+                                  <small class="pull-right text-muted">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time>    </small>
                                     </div>
                                     <p>
                                         ` + data.chat_message + `
@@ -914,7 +918,7 @@
                                 <div class="chat-body clearfix">
                                     <div class="header">
                                         <strong class="primary-font"> You </strong>
-                                       <i class="fa fa-clock-o"></i> <time   class="pull-right text-muted timeago" datetime= ` + new Date().toISOString() + `></time>
+                                   <div class="pull-right text-muted">         <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time> </div>
                                     </div>
                                     <p>
                                         ` + data.chat_message + `
