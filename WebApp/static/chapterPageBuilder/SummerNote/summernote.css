@@ -362,6 +362,7 @@
 
 .note-editor.note-frame {
     border: 1px solid #a9a9a9;
+    z-index: 80;
 }
 
 .note-editor.note-frame.codeview .note-editing-area .note-editable {
@@ -382,7 +383,7 @@
     overflow: hidden;
     color: #000;
     word-wrap: break-word;
-    background-color: #fff
+    background-color: transparent;
 }
 
 .note-editor.note-frame .note-editing-area .note-editable[contenteditable="false"] {
@@ -416,7 +417,7 @@
     top: 0;
     left: 0;
     z-index: 1050;
-    width: 100%!important
+    width: 100% !important
 }
 
 .note-editor.note-frame.fullscreen .note-editable {
@@ -445,7 +446,7 @@
 }
 
 .note-editor.note-frame .note-status-output .pull-right {
-    float: right!important
+    float: right !important
 }
 
 .note-editor.note-frame .note-status-output .text-muted {
@@ -485,23 +486,23 @@
 }
 
 .note-editor.note-frame .note-status-output .alert-success {
-    color: #3c763d!important;
-    background-color: #dff0d8!important
+    color: #3c763d !important;
+    background-color: #dff0d8 !important
 }
 
 .note-editor.note-frame .note-status-output .alert-info {
-    color: #31708f!important;
-    background-color: #d9edf7!important
+    color: #31708f !important;
+    background-color: #d9edf7 !important
 }
 
 .note-editor.note-frame .note-status-output .alert-warning {
-    color: #8a6d3b!important;
-    background-color: #fcf8e3!important
+    color: #8a6d3b !important;
+    background-color: #fcf8e3 !important
 }
 
 .note-editor.note-frame .note-status-output .alert-danger {
-    color: #a94442!important;
-    background-color: #f2dede!important
+    color: #a94442 !important;
+    background-color: #f2dede !important
 }
 
 .note-editor.note-frame .note-statusbar {
@@ -550,7 +551,7 @@
 }
 
 .note-popover.popover .arrow {
-    left: 20px!important
+    left: 20px !important
 }
 
 .note-toolbar {
@@ -575,8 +576,8 @@
     left: 0;
 }
 
-.note-popover .popover-content>.btn-group,
-.panel-heading.note-toolbar>.btn-group {
+.note-popover .popover-content > .btn-group,
+.panel-heading.note-toolbar > .btn-group {
     margin-top: 5px;
     margin-right: 5px;
     margin-left: 0;
@@ -595,7 +596,7 @@
 
 .note-popover .popover-content .btn-group .note-table .note-dimension-picker .note-dimension-picker-mousecatcher,
 .panel-heading.note-toolbar .btn-group .note-table .note-dimension-picker .note-dimension-picker-mousecatcher {
-    position: absolute!important;
+    position: absolute !important;
     z-index: 3;
     width: 10em;
     height: 10em;
@@ -604,7 +605,7 @@
 
 .note-popover .popover-content .btn-group .note-table .note-dimension-picker .note-dimension-picker-unhighlighted,
 .panel-heading.note-toolbar .btn-group .note-table .note-dimension-picker .note-dimension-picker-unhighlighted {
-    position: relative!important;
+    position: relative !important;
     z-index: 1;
     width: 5em;
     height: 5em;
@@ -613,7 +614,7 @@
 
 .note-popover .popover-content .btn-group .note-table .note-dimension-picker .note-dimension-picker-highlighted,
 .panel-heading.note-toolbar .btn-group .note-table .note-dimension-picker .note-dimension-picker-highlighted {
-    position: absolute!important;
+    position: absolute !important;
     z-index: 2;
     width: 1em;
     height: 1em;
@@ -717,8 +718,8 @@
     padding: 5px
 }
 
-.note-popover .popover-content .note-para .dropdown-menu>div:first-child,
-.panel-heading.note-toolbar .note-para .dropdown-menu>div:first-child {
+.note-popover .popover-content .note-para .dropdown-menu > div:first-child,
+.panel-heading.note-toolbar .note-para .dropdown-menu > div:first-child {
     margin-right: 5px
 }
 
@@ -736,13 +737,13 @@
 .note-popover .popover-content .dropdown-menu.right::before,
 .panel-heading.note-toolbar .dropdown-menu.right::before {
     right: 9px;
-    left: auto!important
+    left: auto !important
 }
 
 .note-popover .popover-content .dropdown-menu.right::after,
 .panel-heading.note-toolbar .dropdown-menu.right::after {
     right: 10px;
-    left: auto!important
+    left: auto !important
 }
 
 .note-popover .popover-content .dropdown-menu.note-check li a i,
@@ -780,7 +781,7 @@
     border: 1px solid #000
 }
 
-.note-dialog>div {
+.note-dialog > div {
     display: none
 }
 
@@ -821,7 +822,7 @@
     border: 1px solid #000
 }
 
-.note-handle .note-control-selection>div {
+.note-handle .note-control-selection > div {
     position: absolute
 }
 
@@ -920,7 +921,7 @@
 }
 
 .note-hint-popover .popover-content .note-hint-group .note-hint-item {
-    display: block!important;
+    display: block !important;
     padding: 3px
 }
 
@@ -938,8 +939,8 @@
     outline: 0
 }
 
-.note-toolbar .btn-sm{
-    font-size: 12px!important;
+.note-toolbar .btn-sm {
+    font-size: 12px !important;
     padding: 0px;
-    min-width: 25px!important;
+    min-width: 25px !important;
 }

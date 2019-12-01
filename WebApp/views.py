@@ -1332,9 +1332,9 @@ def save_file(request):
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
 
-            # file name for the saved file --> uuid||uploadedfilename||userPK
-            # Eg: 561561561||test.jpg||17
-            name = (str(uuid.uuid4())).replace('-', '') + '||' + media.name + '||' + str(request.user.pk) +'.' + media.name.split('.')[-1]
+            # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
+            # Eg: 561561561&&&test.jpg&&&17
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(request.user.pk) +'.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
 
@@ -1371,9 +1371,9 @@ def save_3d_file(request):
                 mtl = None
             path = settings.MEDIA_ROOT
 
-            # file name for the saved file --> uuid||uploadedfilename||userPK
-            # Eg: 561561561||test.jpg||17
-            name = (str(uuid.uuid4())).replace('-', '') + '||' + obj.name + '||' + str(request.user.pk) +'.' + obj.name.split('.')[-1]
+            # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
+            # Eg: 561561561&&&test.jpg&&&17
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + obj.name.split('.')[0] + '&&&' + str(request.user.pk) +'.' + obj.name.split('.')[-1]
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
@@ -1398,9 +1398,9 @@ def save_video(request):
 
         path = settings.MEDIA_ROOT
 
-        # file name for the saved file --> uuid||uploadedfilename||userPK
-        # Eg: 561561561||test.jpg||17
-        name = (str(uuid.uuid4())).replace('-', '') + '||' + media.name + '||' + str(request.user.pk) +'.' + media.name.split('.')[-1]
+        # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
+        # Eg: 561561561&&&test.jpg&&&17
+        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(request.user.pk) +'.' + media.name.split('.')[-1]
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(name, media)
         return JsonResponse({'media_name': name})
