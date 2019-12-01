@@ -97,7 +97,9 @@
         
         <script>
         $ (document).ready(function(){ 
-            $('.overall-contents').click(function(){
+        
+            $('').click(function(){
+                if( $('#mySidenav').length > 0)
                $('#mySidenav').remove();
             });
             
@@ -106,6 +108,7 @@
         });
         function openNav() {
           document.getElementById("mySidenav").style.width = "175px";
+          $('#mySidenav')
         }
         
         function closeNav() {

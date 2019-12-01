@@ -1016,14 +1016,17 @@ table th {
     height: 2px;
     width: 100%;
     background-color: white;
-    margin-top: 10px !important;
-    margin-bottom: 15px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
 }
 
 .tabs-to-click p {
     text-align: center;
     font-size: 18px;
     font-weight: 800;
+    background-color: white; 
+    color: black;
+    margin-top: 2px;
 }
 
 .tabs-to-click ul li.current {
