@@ -89,9 +89,9 @@
 </head>
 <body>
 
-<div id="mySidenav" class="sidenav">
+<div id="mySidenav" class="sidenav" style="z-index: 999;">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <h4 style=" color:white">Chapter Lists</h4>
+    <h4 style=" color:white ;text-align:center" >Chapter Lists</h4>
     {% for chapter in chapterList  %}
         <a href="{% url 'contentviewer' course.pk chapter.pk %}">{{chapter.Chapter_No}}. {{chapter.Chapter_Name}}</a>
     {% endfor %}
@@ -110,7 +110,7 @@
         });
     });
     function openNav() {
-        document.getElementById("mySidenav").style.width = "175px";
+        document.getElementById("mySidenav").style.width = "250px";
     }
     
     function closeNav() {
@@ -122,10 +122,10 @@
 
 
     <div class="row overall-contents">
-        <div id="prev-btn" class="button-position" style="left:0;">
+        <div id="prev-btn" class="button-position" style="left:0; font-size: 45px;">
             <i class="fa fa-chevron-left" aria-hidden="true"></i>
         </div>
-        <div id="next-btn" class="button-position" style="right:0;">
+        <div id="next-btn" class="button-position" style="right:0px; font-size: 45px;">
             <i class="fa fa-chevron-right" aria-hidden="true"></i>
         </div>
 
