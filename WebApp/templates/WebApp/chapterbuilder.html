@@ -608,7 +608,7 @@
                     $('#video-gallery').find('p').empty()
                     data.videos.forEach(x => {
                         $('#video-gallery').append(
-                            x.split('||')[1]
+                            x.split('&&&')[1]
                         )
                     });
                 }
@@ -616,7 +616,7 @@
                     $('#pdf-gallery').find('p').empty()
                     data.pdf.forEach(x => {
                         $('#pdf-gallery').append(
-                            x.split('||')[1]
+                            x.split('&&&')[1]
                         )
                     });
                 }
