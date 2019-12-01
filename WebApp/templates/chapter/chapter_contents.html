@@ -92,31 +92,32 @@
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <h4 style=" color:white">Chapter Lists</h4>
-    {% for chapter in chapterList  %}
-        <a href="{% url 'contentviewer' course.pk chapter.pk %}">{{chapter.Chapter_No}}. {{chapter.Chapter_Name}}</a>
+    {% for chapter in chapterList %}
+        <a href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
     {% endfor %}
 </div>
 
 
 <script>
-    $ (document).ready(function(){ 
-        $(document).bind('click', function(e) {
-            if(!$(e.target).is('#mysidenav') && $('#mySidenav').width() > 0) {
+    $(document).ready(function () {
+        $(document).bind('click', function (e) {
+            if (!$(e.target).is('#mysidenav') && $('#mySidenav').width() > 0) {
                 $('#mySidenav').css('width', 0);
             }
         });
-        $('#mysidenav a').on('click', function(e) {
+        $('#mysidenav a').on('click', function (e) {
             e.stopPropagation();
         });
     });
+
     function openNav() {
         document.getElementById("mySidenav").style.width = "175px";
     }
-    
+
     function closeNav() {
         document.getElementById("mySidenav").style.width = "0";
     }
-    </script>
+</script>
 <div class="container-fluid">
     <!-- For Title -->
 
@@ -425,6 +426,21 @@
     }
 
     startWebsocket();
+    // Connection opened
+    chatSocket.addEventListener('open', function (event) {
+        chatSocket.send(
+            JSON.stringify({
+                sender_id: "{{  user.id }}",
+                sender_name: "{{  user }}",
+                sender_icon: "{{  user.Avatar }}",
+                {% if ifteacher %}
+                    isteacher: 1,
+                    page: currentpage,
+                    force: $('#forceScreen').prop("checked") ? 1 : 0,
+                {%  endif %}
+            })
+        );
+    });
 
     lightbox.option({
         'resizeDuration': 200,
@@ -480,6 +496,7 @@
 
         {%  if ifteacher %}
             updatePageByTeacher();
+            updateStudentOnlineBox("");
         {% endif  %}
     });
 
@@ -1013,7 +1030,7 @@
         });
 
         var OnlineMem = [];
-        function updateStudentOnlineBox(Newdata) {
+        function updateStudentOnlineBox(Newdata = null) {
             if (Newdata.sender_id) {
                 OnlineMem[Newdata.sender_id] = {
                     sender_name: Newdata.sender_name,
@@ -1038,7 +1055,7 @@
 
                                     </li>`)
             }
-
+            $('time.timeago').timeago();
         }
 
     {%  endif %}

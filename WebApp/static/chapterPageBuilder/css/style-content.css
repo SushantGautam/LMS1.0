@@ -585,11 +585,7 @@ body {
     color: #620806;
 }
 
-.chatonly:focus-visible .closechatopen {
-    display: none;
-}
 
 .closechatopen {
     z-index: 10;
 }
-
