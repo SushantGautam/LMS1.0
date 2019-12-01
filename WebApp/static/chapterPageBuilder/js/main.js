@@ -139,7 +139,7 @@ $(document).ready(function () {
                     snapMode: 'inner',
                     cursorAt: {bottom: 0},
 
-                    handle: '#draghere',
+                    handle: '.text-actions',
                     stop: function () {
                         var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
                         var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
