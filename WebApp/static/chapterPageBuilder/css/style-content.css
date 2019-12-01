@@ -408,7 +408,7 @@ a:hover, a:active, a:focus {
     position: relative;
     top: 0;
     left: 0;
-    z-index: 0;
+    z-index: 1;
 }
 
 .overall-contents:hover .content-title1 {
@@ -584,11 +584,7 @@ body {
     color: #620806;
 }
 
-.chatonly:focus-visible .closechatopen {
-    display: none;
-}
 
 .closechatopen {
     z-index: 10;
 }
-
