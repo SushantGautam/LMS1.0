@@ -95,5 +95,5 @@ urlpatterns += (
     path('choose_saq/<int:pk>/', views.QuizSAQChoosePrevious.as_view(), name='choose_saq'),
 
     path('quiz/exam_list/', views.QuizExamListView.as_view(),
-         name='teacher_quiz_exam_list'),
+         name='quiz_exam_list'),
 )
