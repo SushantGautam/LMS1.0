@@ -1498,15 +1498,14 @@ $(document).ready(function () {
 
     // clone Page function
     $('.tabs-to-click').on('click', '.clone-page-btn', function () {
-        var num_tabs = $(".tabs-to-click ul li").length + 1;
-
-        let copy = $(this).parent().parent().clone();
+        var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
+        let copy = $(this).parent().parent().parent().clone();
         // for cloning page navigation tabs
         copy.find('.clone-page-btn').val(num_tabs);
         copy.find('.delete-page-btn').val(num_tabs);
         copy.find('.pagenumber').val(num_tabs);
         copy.find('.pagenumber').attr('onclick', 'openTab(event,"tab' + num_tabs + '")');
-        $(this).parent().parent().after(copy);
+        $(this).parent().parent().parent().after(copy);
         // =============================================================================
 
         // for editor cloning
@@ -1515,7 +1514,7 @@ $(document).ready(function () {
         editorcopy.empty();
         const obj = $("#tab" + this.value).children();
         $(".tabs").append(editorcopy);
-        $(this).parent().parent().next().find('li')[0].click()
+        $(this).parent().parent().parent().next().find('li')[0].click()
         $.each(obj, function (i, value) {
             if (value.classList.contains('textdiv')) {
                 var clone = $(this).find('.note-editable').clone();
@@ -1561,8 +1560,6 @@ $(document).ready(function () {
         });
 
         displaypagenumbers();
-
-        // alert('Clone Successful')
     });
 
     // =====================================================================================
