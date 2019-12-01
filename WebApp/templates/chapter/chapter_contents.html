@@ -450,7 +450,7 @@
             }
 
             if (e.keyCode == '70') {
-                var hasFocus = $('.note-editable').is(':focus');
+                var hasFocus = $('input').is(':focus') || $('.note-editable').is(':focus');
                 if (hasFocus) {
                     return
                 }
