@@ -879,11 +879,25 @@ class ActivateQuiz(View):
         my_quiz = get_object_or_404(Quiz, pk=self.kwargs['pk'])
         my_quiz.draft = False
         my_quiz.save()
-        
-        if 'teachers' in self.request.path:
+        redirectUrl = self.request.POST.get('redirect-url')
+        if 'teachers' in redirectUrl and 'detail' in redirectUrl:
+            return HttpResponseRedirect(
+                reverse(
+                    'teacher_quiz_detail',
+                    kwargs={'pk': self.kwargs['pk']},
+                )
+            )
+        elif 'teachers' in redirectUrl:
             return HttpResponseRedirect(
                 reverse(
                     'teacher_quiz_exam_list'
+                )
+            )
+        elif 'detail' in redirectUrl:
+            return HttpResponseRedirect(
+                reverse(
+                    'quiz_detail',
+                    kwargs={'pk': self.kwargs['pk']},
                 )
             )
         else:
@@ -899,10 +913,25 @@ class DeactivateQuiz(View):
         my_quiz = get_object_or_404(Quiz, pk=self.kwargs['pk'])
         my_quiz.draft = True
         my_quiz.save()
-        if 'teachers' in self.request.path:
+        redirectUrl = self.request.POST.get('redirect-url')
+        if 'teachers' in redirectUrl and 'detail' in redirectUrl:
+            return HttpResponseRedirect(
+                reverse(
+                    'teacher_quiz_detail',
+                    kwargs={'pk': self.kwargs['pk']},
+                )
+            )
+        elif 'teachers' in redirectUrl:
             return HttpResponseRedirect(
                 reverse(
                     'teacher_quiz_exam_list'
+                )
+            )
+        elif 'detail' in redirectUrl:
+            return HttpResponseRedirect(
+                reverse(
+                    'quiz_detail',
+                    kwargs={'pk': self.kwargs['pk']},
                 )
             )
         else:
@@ -922,7 +951,7 @@ class QuizExamListView(ListView):
         elif 'students' in self.request.path:
             return ['student_quiz/exam_list.html']
         else:
-            return ['exam_list.html']
+            return ['quiz/exam_list.html']
 
     def get_queryset(self):
         quiz_qs = Quiz.objects.filter(cent_code=self.request.user.Center_Code.id, exam_paper=True)

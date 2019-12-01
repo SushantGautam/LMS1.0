@@ -65,11 +65,13 @@
             {% else %}
               {% if object.draft is True %}
                 <form action="{% url 'teacher_activate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
+                  <input type="hidden" value="{{ request.path }}" name="redirect-url">
                   <input type="button" value="Activate" style="float: right;cursor:pointer"
                          class="btn btn-success confirm-activate">
                 </form>
               {% else %}
                 <form action="{% url 'teacher_deactivate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
+                  <input type="hidden" value="{{ request.path }}" name="redirect-url">
                   <input type="button" value="Deactivate" style="float: right;cursor:pointer"
                          class="btn btn-danger confirm-deactivate">
                 </form>
