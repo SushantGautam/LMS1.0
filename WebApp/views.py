@@ -611,7 +611,10 @@ class CourseInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'), exam_paper=True,
+                                                   chapter_code=None) #exam type
+        context['numberOfQuizExclExams'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'), exam_paper=False,
+                                                               chapter_code=None)
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
         context['exam_quiz'] = Quiz.objects.filter(exam_paper=True, course_code=self.object)
         return context
@@ -1334,11 +1337,13 @@ def save_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(request.user.pk) +'.' + media.name.split('.')[-1]
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(
+                request.user.pk) + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
 
         return JsonResponse(data={"message": "success", "media_name": name})
+
 
 def deletechapterfile(request):
     if request.method == 'POST' and request.user.is_authenticated:
@@ -1373,7 +1378,8 @@ def save_3d_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + obj.name.split('.')[0] + '&&&' + str(request.user.pk) +'.' + obj.name.split('.')[-1]
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + obj.name.split('.')[0] + '&&&' + str(
+                request.user.pk) + '.' + obj.name.split('.')[-1]
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
@@ -1400,7 +1406,8 @@ def save_video(request):
 
         # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
         # Eg: 561561561&&&test.jpg&&&17
-        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(request.user.pk) +'.' + media.name.split('.')[-1]
+        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(
+            request.user.pk) + '.' + media.name.split('.')[-1]
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(name, media)
         return JsonResponse({'media_name': name})
@@ -1522,13 +1529,14 @@ def import_chapter(request):
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
+
 def retrievechapterfile(request):
     chapterID = request.GET['chapterID']
     courseID = request.GET['courseID']
     userID = request.GET['userpk']
     path = settings.MEDIA_ROOT
     image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
-    video_extensions = ['.mp4',]
+    video_extensions = ['.mp4', ]
     images = []
     videos = []
     pdf = []
@@ -1536,11 +1544,11 @@ def retrievechapterfile(request):
         if os.path.exists(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID)):
             chapterfiles = os.listdir(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID))
             for files in chapterfiles:
-                if(files[-4:] in image_extensions):
+                if (files[-4:] in image_extensions):
                     images.append(files)
-                elif(files[-4:] in video_extensions):
+                elif (files[-4:] in video_extensions):
                     videos.append(files)
-                elif(files.endswith('.pdf')):
+                elif (files.endswith('.pdf')):
                     pdf.append(files)
         else:
             print("No directory of this chapter")
@@ -1595,12 +1603,14 @@ class ContentsView(TemplateView):
             context['data'] = ""
         return context
 
-from quiz.views import QuizUserProgressView, Sitting
+
 def AchievementPage_Student(request, student_id):
-    sittings =  Sitting.objects.filter(user=student_id)
-    return render(request, 'WebApp/Student_Achievement.html', {'sittings':sittings})
+    sittings = Sitting.objects.filter(user=student_id)
+    return render(request, 'WebApp/Student_Achievement.html', {'sittings': sittings})
+
 
 from quiz.views import Sitting
+
 
 def AchievementPage_Student(request, student_id):
     sittings = Sitting.objects.filter(user=request.user)
