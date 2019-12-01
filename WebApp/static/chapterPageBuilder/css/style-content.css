@@ -214,6 +214,7 @@ a:hover, a:active, a:focus {
     border: 2px solid #3c8dbc;
 
     transition: all 0.3s ease;
+    z-index: 500;
 }
 
 .full-chat-container {
@@ -578,6 +579,7 @@ body {
 .followteacher {
     color: #79f979;
 }
+
 .offline-followteacher {
     color: #620806;
 }
