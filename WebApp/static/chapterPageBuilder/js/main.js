@@ -1483,17 +1483,16 @@ $(document).ready(function () {
         if (confirmation == false) {
             return false
         }
-
-        if ($(this).parent().parent().prev().find('li').length != 0)
-            $(this).parent().parent().prev().find('li')[0].click();
-        else if ($(this).parent().parent().next().find('li').length != 0)
-            $(this).parent().parent().next().find('li')[0].click()
+        if ($(this).parent().parent().parent().prev().find('li').length != 0)
+            $(this).parent().parent().parent().prev().find('li')[0].click();
+        else if ($(this).parent().parent().parent().next().find('li').length != 0)
+            $(this).parent().parent().parent().next().find('li')[0].click()
         else {
             alert("cannot delete only page");
             return false
         }
         $('#tab' + this.value).remove();
-        $(this).parent().parent().remove();
+        $(this).parent().parent().parent().remove();
         displaypagenumbers();
     });
 
@@ -1694,8 +1693,11 @@ $(document).ready(function () {
     });
 
     function newpagefunction() {
-        var num_tabs = $(".tabs-to-click ul li").length + 1;
-
+        if($(".tabs-to-click ul li").last().length == 0){
+            var num_tabs = 1
+        }else{
+            var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
+        }
         $(".tabs-to-click ul").append(`
             <div class="canvas-relative" style="position:relative"> 
               
@@ -1892,7 +1894,6 @@ $(document).ready(function () {
 
 function displaypagenumbers() {
     $('.pagenumber').each(function (key, value) {
-        // $(this).parent().children('p').text('')
         $(this).parent().find('p').text(key + 1);
     })
 }
