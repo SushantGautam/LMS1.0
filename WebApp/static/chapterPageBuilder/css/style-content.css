@@ -274,6 +274,7 @@ a:hover, a:active, a:focus {
     overflow-x: hidden;
     overflow-y: hidden;
     display: none;
+    z-index: 140;
     /* scrollbar-width: thin; */
 }
 
