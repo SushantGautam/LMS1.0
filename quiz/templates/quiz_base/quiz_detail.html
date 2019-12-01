@@ -72,6 +72,7 @@
             </div>
             <div class="col-md-6">
               <form action="{% url 'activate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
+                <input type="hidden" value="{{ request.path }}" name="redirect-url">
                 <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
                        class="confirm-activate">
               </form>
@@ -85,6 +86,7 @@
             </div>
             <div class="col-md-6">
               <form action="{% url 'deactivate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
+                <input type="hidden" value="{{ request.path }}" name="redirect-url">
                 <input type="button" value="Deactivate" style="float: right;color: #2A3F54;cursor:pointer"
                        class="confirm-deactivate">
               </form>
