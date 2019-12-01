@@ -214,6 +214,7 @@ a:hover, a:active, a:focus {
     border: 2px solid #3c8dbc;
 
     transition: all 0.3s ease;
+    z-index: 500;
 }
 
 .full-chat-container {
@@ -408,7 +409,7 @@ a:hover, a:active, a:focus {
     position: relative;
     top: 0;
     left: 0;
-    z-index: 500;
+    z-index: 0;
 }
 
 .overall-contents:hover .content-title1 {
@@ -560,6 +561,7 @@ body {
     display: block;
 }
 
+
 .panel {
     margin-bottom: 0px !important;
 }
@@ -578,6 +580,15 @@ body {
 .followteacher {
     color: #79f979;
 }
+
 .offline-followteacher {
     color: #620806;
+}
+
+.chatonly:focus-visible .closechatopen {
+    display: none;
+}
+
+.closechatopen{
+    z-index: 10;
 }

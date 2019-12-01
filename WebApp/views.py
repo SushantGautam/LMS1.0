@@ -1580,6 +1580,7 @@ class ContentsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['chapterList'] = context['course'].chapterinfos.all()
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
