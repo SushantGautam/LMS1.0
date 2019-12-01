@@ -138,8 +138,8 @@
             <div id="page-contents" class="page-contents"></div>
 
         </div>
-        <div class="progress progress-striped active">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%;" role="progressbar"
+        <div class="progress progress-striped">
+            <div class="progress-bar progress-bar-striped" style="width: 0%;" role="progressbar"
                  aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
@@ -407,12 +407,18 @@
 <script type="text/javascript">
     var currentpage = 1;
     var roomName = "ChapterChat{{chapter.id}}";
-    var chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
-    chatSocket.onclose = function () {
-        // connection closed, discard old websocket and create a new one in 5s
-        chatSocket = null
-        setTimeout(startWebsocket, 5000)
+    var chatSocket;
+
+    function startWebsocket() {
+        chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
+        chatSocket.onclose = function () {
+            // connection closed, discard old websocket and create a new one in 5s
+            chatSocket = null
+            setTimeout(startWebsocket, 5000)
+        }
     }
+
+    startWebsocket();
 
     lightbox.option({
         'resizeDuration': 200,
@@ -566,8 +572,12 @@
                                     link = "href = " + css_value.link;
                                 }
                                 $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <a ${link} target="_blank"><button>${css_value.btn_name}</button</a>
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                    <a ${link} target="_blank">
+                                        <svg viewBox="0 0 56 18">
+                                            <text x="0" y="15">${css_value.btn_name}</text>
+                                        </svg>
+                                    </a>
                                 </div>
                             `)
                             });

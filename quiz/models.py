@@ -436,6 +436,7 @@ class Quiz(models.Model):
 
     duration = models.IntegerField(
         null=True, blank=True,
+        default=1800,
         help_text=_("Time limit for quiz"),
         verbose_name=_("Time limit for quiz"))
 
@@ -492,7 +493,7 @@ class Quiz(models.Model):
         verbose_name=_("Single Attempt"))
 
     pass_mark = models.SmallIntegerField(
-        blank=True, default=0,
+        blank=True, default=40,
         verbose_name=_("Pass Mark"),
         help_text=_("Percentage required to pass exam."),
         validators=[MaxValueValidator(100)])

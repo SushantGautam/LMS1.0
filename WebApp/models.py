@@ -166,7 +166,7 @@ class CourseInfo(models.Model):
     Course_Name = CharField(max_length=240)
     Course_Description = TextField(blank=True, null=True)
     Course_Cover_File = ImageField(upload_to="Course_images/", blank=True, null=True)
-    Course_Level = IntegerField(blank=True, null=True)
+    Course_Level = IntegerField(blank=True, null=True, default=1)
     Course_Info = TextField(blank=True, null=True)
 
     Use_Flag = BooleanField(default=True,  verbose_name="Tick this flag if you want to prevent user from login.")

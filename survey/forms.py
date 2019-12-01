@@ -1,10 +1,11 @@
+from datetime import timedelta, datetime
+
 from django import forms
 from django.contrib.admin.widgets import AdminTimeWidget
-
-from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
-from WebApp.models import CourseInfo, InningInfo, InningGroup
 from django.utils import timezone
-from datetime import timedelta, datetime
+
+from WebApp.models import CourseInfo, InningInfo, InningGroup
+from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 
 
 class CategoryInfoForm(forms.ModelForm):
@@ -38,9 +39,10 @@ class SurveyInfoForm(forms.ModelForm):
 
         category_name = request.GET["category_name"].lower()
         self.fields['Start_Date'].initial = timezone.now()
-        self.fields['End_Date'].initial = timezone.now()+timedelta(days=30)
+        self.fields['End_Date'].initial = timezone.now() + timedelta(days=30)
         self.fields['Category_Code'].widget = forms.HiddenInput()
-        self.fields['End_Time'].initial = timedelta(hours=1)
+        self.fields['End_Time'].initial = int(timedelta(hours=6, minutes=30).total_seconds())
+        self.fields['Survey_Title'].initial = "Survey " + datetime.now().strftime('%D %H:%M')
 
         if category_name == "live":
             self.fields['Start_Date'].widget = forms.HiddenInput()
