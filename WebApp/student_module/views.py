@@ -11,7 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
@@ -244,9 +244,10 @@ class CourseInfoDetailView(DetailView):
             Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Quiz.objects.filter(
             course_code=self.kwargs.get('pk'), draft=False, exam_paper=True, chapter_code=None)
-        context['numberOfQuizExclExams'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'), exam_paper=False,
-                                                               draft=False)
-
+        context['numberOfQuizExclExams'] = Quiz.objects.filter(
+            chapter_code__in=context['chapters'].values_list('pk'),
+            exam_paper=False,
+            draft=False)
         context['topic'] = Topic.objects.filter(
             course_associated_with=self.kwargs.get('pk'))
         return context
