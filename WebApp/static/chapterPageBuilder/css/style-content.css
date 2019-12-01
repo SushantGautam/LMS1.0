@@ -215,6 +215,8 @@ a:hover, a:active, a:focus {
 
     transition: all 0.3s ease;
     z-index: 500;
+
+    user-select: none;
 }
 
 .full-chat-container {
@@ -274,6 +276,7 @@ a:hover, a:active, a:focus {
     overflow-x: hidden;
     overflow-y: hidden;
     display: none;
+    z-index: 140;
     /* scrollbar-width: thin; */
 }
 
@@ -295,12 +298,11 @@ a:hover, a:active, a:focus {
 
 
 .button-position {
-    height: 20px;
-    width: 20px;
+
     margin: 5px;
     padding: 5px !important;
     background-color: white;
-    z-index: 999;
+    z-index: 99;
     top: 50%;
     position: absolute;
 
@@ -585,11 +587,7 @@ body {
     color: #620806;
 }
 
-.chatonly:focus-visible .closechatopen {
-    display: none;
-}
 
 .closechatopen {
     z-index: 10;
 }
-
