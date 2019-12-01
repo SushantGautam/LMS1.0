@@ -97,12 +97,14 @@
         
         <script>
         $ (document).ready(function(){ 
-            $('.overall-contents').click(function(){
-               $('#mySidenav').remove();
+            $(document).bind('click', function(e) {
+                if(!$(e.target).is('#mysidenav') && $('#mySidenav').width() > 0) {
+                    $('#mySidenav').css('width', 0);
+                }
             });
-            
-
-
+            $('#mysidenav a').on('click', function(e) {
+                e.stopPropagation();
+            });
         });
         function openNav() {
           document.getElementById("mySidenav").style.width = "175px";
