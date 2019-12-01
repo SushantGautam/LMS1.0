@@ -153,8 +153,10 @@
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
                                                         <a href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Exam</a>
-                                                    {% elif  "teachers" in request.path %}
-                                                        <a  style="color: #0c83e4; font-size: large" href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a><br>
+                                                    {% else %}
+                                                        {#                                                    {% elif  "teachers" in request.path %}#}
+                                                        <a style="color: #0c83e4; font-size: large"
+                                                           href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a><br>
                                                         <p style="color: #00A000">
                                                             {{ eachquiz.draft|yesno:"Inactive, Active" }}
                                                         <p>
