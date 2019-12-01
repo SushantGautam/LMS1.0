@@ -64,14 +64,14 @@
               {% endif %}
             {% else %}
               {% if object.draft is True %}
-                <form action="{% url 'activate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
-                  <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
-                         class="confirm-activate">
+                <form action="{% url 'teacher_activate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
+                  <input type="button" value="Activate" style="float: right;cursor:pointer"
+                         class="btn btn-success confirm-activate">
                 </form>
               {% else %}
-                <form action="{% url 'deactivate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
-                  <input type="button" value="Deactivate" style="float: right;color: #2A3F54;cursor:pointer"
-                         class="confirm-deactivate">
+                <form action="{% url 'teacher_deactivate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
+                  <input type="button" value="Deactivate" style="float: right;cursor:pointer"
+                         class="btn btn-danger confirm-deactivate">
                 </form>
               {% endif %}
             {% endif %}
