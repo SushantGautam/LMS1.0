@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load i18n %}
+{% load static %}
 {% block title %}{% trans "All Quizzes" %}{% endblock %}
 
 {% block breadcrumb %}
@@ -8,7 +9,34 @@
 
 {% block content %}
 
-
 {% include "quiz_base/quiz_list.html" %}
 
+{% endblock %}
+
+
+{% block customjss %}
+<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var table_main = $('#QuizTable').DataTable({
+            dom: 'lBfrtip',
+            buttons: []
+
+        });
+    });
+
+
+</script>
 {% endblock %}
