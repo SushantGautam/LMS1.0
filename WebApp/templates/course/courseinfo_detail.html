@@ -155,8 +155,7 @@
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
                                                         {% if not eachquiz.draft %}
-                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
-                                                                Exam</a>
+                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Exam</a>
                                                         {% endif %}
                                                     {% elif  "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
@@ -240,8 +239,7 @@
                                                     {% for eachquiz in numberOfQuizExclExams %}
                                                         <br> {{ eachquiz.title }}
                                                         {% if "students" in request.path %}-
-                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
-                                                                Quiz</a>
+                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Quiz</a>
                                                         {% elif  "teachers" in request.path %}
                                                             <br>   <a style="color: #0c83e4; font-size: large"
                                                                       href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
