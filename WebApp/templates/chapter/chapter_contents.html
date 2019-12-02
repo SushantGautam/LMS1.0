@@ -889,7 +889,30 @@
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
 
-
+<script>
+        let idleTimer = null;
+        let idleState = false;
+        
+        function showFoo(time) {
+          clearTimeout(idleTimer);
+          if (idleState == true) {
+            $("#prev-btn , #next-btn , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+           
+          }
+          idleState = false;
+          idleTimer = setTimeout(function() {
+            $("#prev-btn , #next-btn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+           
+            idleState = true;
+          }, time);
+        }
+        
+        showFoo(2000);
+        
+        $(window).mousemove(function(){
+            showFoo(2000);
+        });
+</script>
 <script>
 
 
