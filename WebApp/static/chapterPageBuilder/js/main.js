@@ -1718,7 +1718,7 @@ $(document).ready(function () {
         `);
         $(".tabs").append(
             `<p id='tab${num_tabs}' style="display:none" class="tab-content-no droppable editor-canvas ui-droppable">
-            
+                    <input type = "color" value = "" class="page-background">
             </p>`
         );
 
@@ -1879,6 +1879,10 @@ $(document).ready(function () {
                             'background-repeat': 'no-repeat',
                         })
                     }
+
+                    if(div == 'backgroundcolor'){
+                        $('#tab' + key).css('background-color', div_value)
+                    }
                 });
             });
         });
@@ -1933,6 +1937,18 @@ $('#btn-submit').on('click', function () {
 })
 
 // ======================================================================
+
+// background color for pages
+$('#tabs-for-download').click(function(){
+        
+    var theInput = $('.current').find('.page-background')[0];
+    var theColor = theInput.value;
+    theInput.addEventListener("input", function() {
+        $('.current').css('background-color',theInput.value)
+    }, false);
+})
+
+// ==========================================================================
 
 function openTab(evt, tab_no) {
     try {
