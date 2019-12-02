@@ -1605,14 +1605,13 @@ class ContentsView(TemplateView):
         return context
 
 
-
-
-
 from quiz.views import Sitting
+
+
 def AchievementPage_Student(request, student_id):
     memberinfo = MemberInfo.objects.get(pk=student_id)
     sittings = Sitting.objects.filter(user=student_id)
-    return render(request, 'WebApp/Student_Achievement.html', {'sittings': sittings, 'memberinfo':memberinfo})
+    return render(request, 'WebApp/Student_Achievement.html', {'sittings': sittings, 'memberinfo': memberinfo})
 
 
 def AchievementPage_All(request):
@@ -1635,34 +1634,34 @@ def AchievementPage_All(request):
 
 
 def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, CourseFilter=None):
-   
-    
     if Inningsfilter:
         # Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code,
         #                                       End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
-        print('Inningsfilter', Inningsfilter)
-        Student_GroupMappingFilter = GroupMapping.objects.filter(id=Inningsfilter,
-                                                             Center_Code=request.user.Center_Code).values_list(
-        'Students').order_by('id')
-        print('Student_GroupMappingFilter', Student_GroupMappingFilter)
+        CoursegroupFilter = InningInfo.objects.filter(id=Inningsfilter).values_list('Groups')
+        # print('CoursegroupFilter', CoursegroupFilter)
+        Student_GroupMappingFilter = GroupMapping.objects.filter(id__in=CoursegroupFilter,
+                                                                 Center_Code=request.user.Center_Code).values_list(
+            'Students').order_by('id')
+        # print('Student_GroupMappingFilter', Student_GroupMappingFilter)
         studentfilter = MemberInfo.objects.filter(id__in=Student_GroupMappingFilter, Is_Student=True,
-                                              Center_Code=request.user.Center_Code)
-        print('studentfilter', studentfilter)
+                                                  Center_Code=request.user.Center_Code)
+        # print('studentfilter', studentfilter)
     elif CourseFilter:
-        
+
         CoursegroupFilter = InningGroup.objects.filter(Course_Code=CourseFilter)
-        print('CoursegroupFilter', CoursegroupFilter)
-        Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Course_Group__in=CoursegroupFilter,
-                                              End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
-        print('Inningsfilter', Inningsfilter)
+        # print('CoursegroupFilter', CoursegroupFilter)
+        Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code,
+                                                  Course_Group__in=CoursegroupFilter,
+                                                  End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
+        # print('Inningsfilter', Inningsfilter)
         Student_GroupMappingFilter = GroupMapping.objects.filter(id__in=Inningsfilter,
-                                                             Center_Code=request.user.Center_Code).values_list(
-        'Students').order_by('id')
-        print('Student_GroupMappingFilter', Student_GroupMappingFilter)
+                                                                 Center_Code=request.user.Center_Code).values_list(
+            'Students').order_by('id')
+        # print('Student_GroupMappingFilter', Student_GroupMappingFilter)
         studentfilter = MemberInfo.objects.filter(id__in=Student_GroupMappingFilter, Is_Student=True,
-                                              Center_Code=request.user.Center_Code)
-        
-        print('studentfilter', studentfilter)
+                                                  Center_Code=request.user.Center_Code)
+
+        # print('studentfilter', studentfilter)
 
     return render(request, 'WebApp/AchievementPage_All_Ajax.html', {'studentfilter': studentfilter})
 
