@@ -135,7 +135,6 @@
     width: -webkit-fill-available;
 ">
 
-                                Number of Exams
                                 <div class="panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
 
                                     <div class="panel panel-default">
@@ -144,7 +143,8 @@
                                                 <a class="collapsed" role="button" data-toggle="collapse"
                                                    data-parent="#accordionm" href="#collapseTwoc" aria-expanded="false"
                                                    aria-controls="collapseTwoc">
-                                                    View All Exams <i class="fa fa-angle-double-down"></i>
+                                                    Exams: ({{ quizcount.count }}) <i
+                                                        class="fa fa-angle-double-down"></i>
                                                 </a>
                                             </h4>
                                         </div>
@@ -155,7 +155,8 @@
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
                                                         {% if not eachquiz.draft %}
-                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Exam</a>
+                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
+                                                                Exam</a>
                                                         {% endif %}
                                                     {% elif  "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
@@ -183,10 +184,10 @@
 
 
                         </td>
-                        <td style="border-top:0; ">
-                            {{ quizcount.count }}
-
-                        </td>
+                        {#                        <td style="border-top:0; ">#}
+                        {#                            #}
+                        {##}
+                        {#                        </td>#}
 
                         <td style="border-top:0; ">
                             {% if 'students' in request.path %}
@@ -203,78 +204,141 @@
                     <hr>
                 {% endif %}
                 <tr>
-                    <td>
-                        <div class="col-md-8 col-sm-8 col-xs-8 no-padding">
-                            Number of Survey
-                        </div>
-                    </td>
-                    <td>
-                        {{ surveycount.count }}
-                    </td>
-                </tr>
-                {% if numberOfQuizExclExams.count %}
-                    <tr>
-                        <td>
-                            {% if numberOfQuizExclExams %}
+                    {% if surveycount %}
+                        {#                        <td>#}
+                        {#                            <div class="col-md-8 col-sm-8 col-xs-8 no-padding">#}
+                        {#                                Number of Survey#}
+                        {#                            </div>#}
+                        {#                        #}
+                        {#                        </td>#}
+                        {#                        <td>#}
+                        {#                            {{ surveycount.count }}#}
+                        {#                        </td>#}
+                        <td style="border-top:0 ">
+                            <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
+    width: -webkit-fill-available;
+">
 
-                                <div style="width: -webkit-fill-available;">
-                                    Number of Quizs
-                                    <div class="panel-group" id="accordionmo" role="tablist"
-                                         aria-multiselectable="true">
+                                <div class="panel-group" id="accordionmk" role="tablist" aria-multiselectable="true">
 
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading" role="tab" id="headingTwobbx">
-                                                <h4 class="panel-title">
-                                                    <a class="collapsed" role="button" data-toggle="collapse"
-                                                       data-parent="#accordionmo" href="#collapseTwocn"
-                                                       aria-expanded="false"
-                                                       aria-controls="collapseTwocn">
-                                                        View All Quizs <i class="fa fa-angle-double-down"></i>
-                                                    </a>
-                                                </h4>
-                                            </div>
-                                            <div id="collapseTwocn" class="panel-collapse collapse" role="tabpanel"
-                                                 aria-labelledby="headingTwobbx">
-                                                <div class="panel-body">
-                                                    {% for eachquiz in numberOfQuizExclExams %}
-                                                        <br> {{ eachquiz.title }}
-                                                        {% if "students" in request.path %}-
-                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Quiz</a>
-                                                        {% elif  "teachers" in request.path %}
-                                                            <br>   <a style="color: #0c83e4; font-size: large"
-                                                                      href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
-                                                            <br>
-                                                            <p style="color: #00A000">
-                                                                {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                                            <p>
-                                                            <hr>
-                                                        {% else %}
-                                                            <br>   <a style="color: #0c83e4; font-size: large"
-                                                                      href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
-                                                            <br>
-                                                            <p style="color: #00A000">
-                                                                {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                                            <p>
-                                                            <hr>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwobbv">
+                                            <h4 class="panel-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse"
+                                                   data-parent="#accordionmk" href="#collapseTwocd" aria-expanded="false"
+                                                   aria-controls="collapseTwocd">
+                                                    Surveys: ({{ surveycount.count }}) <i
+                                                        class="fa fa-angle-double-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseTwocd" class="panel-collapse collapse" role="tabpanel"
+                                             aria-labelledby="headingTwobbv">
+                                            <div class="panel-body">
+                                                {% for eachquiz in surveycount %}
+                                                    <br> {{ eachquiz.Survey_Title }}
+                                                    {% if "students" in request.path %}-
+                                                        {% if not eachquiz.draft %}
+                                                            <a target="_blank" href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">Participate</a>
                                                         {% endif %}
-                                                    {% endfor %}
-                                                </div>
+                                                    {% elif  "teachers" in request.path %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/teachers/surveyinfodetail/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% else %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/survey/surveyinfo/detail/{{ eachquiz.pk }}/">Detail</a><br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% endif %}
+                                                {% endfor %}
                                             </div>
                                         </div>
-
                                     </div>
+
                                 </div>
-                            {% endif %}
+                            </div>
+
 
                         </td>
+
+                    {% else %}
+                        No active surveys
+                        <hr>
+                    {% endif %}
+
+                </tr>
+
+
+                <tr>
+                    {% if numberOfQuizExclExams.count %}
                         <td>
-                            {{ numberOfQuizExclExams.count }}
+
+                            <div style="width: -webkit-fill-available;">
+                                <div class="panel-group" id="accordionmo" role="tablist"
+                                     aria-multiselectable="true">
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwobbx">
+                                            <h4 class="panel-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse"
+                                                   data-parent="#accordionmo" href="#collapseTwocn"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapseTwocn">
+                                                    Quizzes: ({{ numberOfQuizExclExams.count }}) <i
+                                                        class="fa fa-angle-double-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseTwocn" class="panel-collapse collapse" role="tabpanel"
+                                             aria-labelledby="headingTwobbx">
+                                            <div class="panel-body">
+                                                {% for eachquiz in numberOfQuizExclExams %}
+                                                    <br> {{ eachquiz.title }}
+                                                    {% if "students" in request.path %}-
+                                                        <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
+                                                            Quiz</a>
+                                                    {% elif  "teachers" in request.path %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% else %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
                         </td>
-                    </tr>
-                {% else %}
-                    No Active Quizs
-                    <hr>
-                {% endif %}
+                        {#                        <td>#}
+                        {#                            #}
+                        {#                        </td>#}
+                    {% else %}
+                        No Active Quizzes
+                        <hr>
+                    {% endif %}
+                </tr>
+
             </table>
             <!-- <p>
 
