@@ -128,75 +128,80 @@
             </div>
 
             <table class="table">
-
-                <tr>
-                    <td style="border-top:0 ">
-                        <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
+                {% if quizcount %}
+                    <tr>
+                        <td style="border-top:0 ">
+                            <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
     width: -webkit-fill-available;
-">                            {% if quizcount %}
+">
 
-                            Number of Exams </i>
-                            <div class="panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
+                                Number of Exams
+                                <div class="panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
 
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingTwobb">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse"
-                                               data-parent="#accordionm" href="#collapseTwoc" aria-expanded="false"
-                                               aria-controls="collapseTwoc">
-                                                View All Exams <i class="fa fa-angle-double-down"></i>
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseTwoc" class="panel-collapse collapse" role="tabpanel"
-                                         aria-labelledby="headingTwobb">
-                                        <div class="panel-body">
-                                            {% for eachquiz in quizcount %}
-                                                <br> {{ eachquiz.title }}
-                                                {% if "students" in request.path %}-
-                                                    <a href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Exam</a>
-                                                {% elif  "teachers" in request.path %}
-                                                    <br>   <a style="color: #0c83e4; font-size: large"
-                                                              href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
-                                                    <br>
-                                                    <p style="color: #00A000">
-                                                        {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                                    <p>
-                                                    <hr>
-                                                {% else %}
-                                                    <br>   <a style="color: #0c83e4; font-size: large"
-                                                              href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a><br>
-                                                    <p style="color: #00A000">
-                                                        {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                                    <p>
-                                                    <hr>
-                                                {% endif %}
-                                            {% endfor %}
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwobb">
+                                            <h4 class="panel-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse"
+                                                   data-parent="#accordionm" href="#collapseTwoc" aria-expanded="false"
+                                                   aria-controls="collapseTwoc">
+                                                    View All Exams <i class="fa fa-angle-double-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseTwoc" class="panel-collapse collapse" role="tabpanel"
+                                             aria-labelledby="headingTwobb">
+                                            <div class="panel-body">
+                                                {% for eachquiz in quizcount %}
+                                                    <br> {{ eachquiz.title }}
+                                                    {% if "students" in request.path %}-
+                                                        {% if not eachquiz.draft %}
+                                                            <a href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Exam</a>
+                                                        {% endif %}
+                                                    {% elif  "teachers" in request.path %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% else %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a><br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
-
-                            </div>
                             </div>
 
 
-                            </td>
-                            <td style="border-top:0; ">
-                                {{ quizcount.count }}
+                        </td>
+                        <td style="border-top:0; ">
+                            {{ quizcount.count }}
 
-                            </td>
-                        {% else %}
-                            No Active Exams
-                        {% endif %}
-                    <td style="border-top:0; ">
-                        {% if 'students' in request.path %}
-                        {% else %}
-                            <button type="button" class="btn qts-button" id="exam_paper_popup" data-toggle="modal"
-                                    data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
-                            </button>
-                        {% endif %}
-                    </td>
-                </tr>
+                        </td>
+
+                        <td style="border-top:0; ">
+                            {% if 'students' in request.path %}
+                            {% else %}
+                                <button type="button" class="btn qts-button" id="exam_paper_popup"
+                                        data-toggle="modal"
+                                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    No Active Exams
+                    <hr>
+                {% endif %}
                 <tr>
                     <td>
                         <div class="col-md-8 col-sm-8 col-xs-8 no-padding">
@@ -268,6 +273,7 @@
                     </tr>
                 {% else %}
                     No Active Quizs
+                    <hr>
                 {% endif %}
             </table>
             <!-- <p>
