@@ -13,6 +13,27 @@
 {% endblock %}
 
 {% block content %}
+<style>
+   .thumbnail {
+    width: -webkit-fill-available!important;
+    overflow: hidden;
+    height: unset!important;
+  }
+</style>
+<div class="row">
+    <div class="student_card ">
+
+       
+        <div class="student_card_container">
+         <img src=" {{ memberinfo.Avatar }}" class="thumbnail" alt="...">
+        </div>
+        <h4><b>{{ memberinfo.username }}</b></h4>
+            <p>{{ memberinfo.first_name }} {{ memberinfo.last_name }}</p>
+            <p>{{ memberinfo.Member_Phone }}</p>
+            <p>{{ memberinfo.email }}</p>
+    </div>
+</div>
+<hr>
 
 
 
@@ -33,7 +54,7 @@
    var chart = Highcharts.chart('container', {
 
         title: {
-            text: 'Score obtained by Students'
+            text: 'Score obtained by {{ memberinfo.username }}'
         },
 
         // subtitle: {
@@ -174,7 +195,7 @@ Highcharts.chart('PieChart_Quiz', {
     type: 'pie'
   },
   title: {
-    text: 'Total Quiz Played by Students'
+    text: 'Total Quiz Played by {{ memberinfo.username }}'
   },
   tooltip: {
     pointFormat: '{series.name}:  <b>{point.y}</b><br/>'

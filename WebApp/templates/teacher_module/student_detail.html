@@ -7,21 +7,27 @@
 {% endblock %}
 
 {% block content %}
+<style>
+   .thumbnail {
+    width: -webkit-fill-available!important;
+    overflow: hidden;
+    height: unset!important;
+  }
+</style>
 <div class="row">
     <div class="student_card ">
 
        
         <div class="student_card_container">
          <img src=" {{ memberinfo.Avatar }}" class="thumbnail" alt="...">
-            <h4><b>{{ memberinfo.username }}</b></h4>
+        </div>
+        <h4><b>{{ memberinfo.username }}</b></h4>
             <p>{{ memberinfo.first_name }} {{ memberinfo.last_name }}</p>
             <p>{{ memberinfo.Member_Phone }}</p>
             <p>{{ memberinfo.email }}</p>
-            
-
-        </div>
     </div>
 </div>
+
 <hr>
 
 <div class="row">
