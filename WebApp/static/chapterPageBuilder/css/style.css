@@ -1025,7 +1025,7 @@ table th {
     /* background-color: white; */
     color: black;
     margin-top: 2px;
-    text-shadow: 1px 3px 10px #ffffff;
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #f7f4f6, 0 0 40px #ece8ea, 0 0 50px #fff, 0 0 60px #fff;
 }
 
 .tabs-to-click ul li.current {
