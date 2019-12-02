@@ -225,7 +225,8 @@
                                         <div class="panel-heading" role="tab" id="headingTwobbv">
                                             <h4 class="panel-title">
                                                 <a class="collapsed" role="button" data-toggle="collapse"
-                                                   data-parent="#accordionmk" href="#collapseTwocd" aria-expanded="false"
+                                                   data-parent="#accordionmk" href="#collapseTwocd"
+                                                   aria-expanded="false"
                                                    aria-controls="collapseTwocd">
                                                     Surveys: ({{ surveycount.count }}) <i
                                                         class="fa fa-angle-double-down"></i>
@@ -239,7 +240,8 @@
                                                     <br> {{ eachquiz.Survey_Title }}
                                                     {% if "students" in request.path %}-
                                                         {% if not eachquiz.draft %}
-                                                            <a target="_blank" href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">Participate</a>
+                                                            <a target="_blank"
+                                                               href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">Participate</a>
                                                         {% endif %}
                                                     {% elif  "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
@@ -251,7 +253,8 @@
                                                         <hr>
                                                     {% else %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
-                                                                  href="/survey/surveyinfo/detail/{{ eachquiz.pk }}/">Detail</a><br>
+                                                                  href="/survey/surveyinfo/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
                                                         <p style="color: #00A000">
                                                             {{ eachquiz.draft|yesno:"Inactive, Active" }}
                                                         <p>
@@ -430,7 +433,7 @@
 </div>
 
 <div id="quiz_create_popup" class="modal fade">
-    <div class="modal-dialog" style="width: fit-content">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
