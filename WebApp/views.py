@@ -1638,10 +1638,10 @@ def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, Co
    
     
     if Inningsfilter:
-        Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code,
-                                              End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
+        # Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code,
+        #                                       End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
         print('Inningsfilter', Inningsfilter)
-        Student_GroupMappingFilter = GroupMapping.objects.filter(id__in=Inningsfilter,
+        Student_GroupMappingFilter = GroupMapping.objects.filter(id=Inningsfilter,
                                                              Center_Code=request.user.Center_Code).values_list(
         'Students').order_by('id')
         print('Student_GroupMappingFilter', Student_GroupMappingFilter)
@@ -1651,6 +1651,7 @@ def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, Co
     elif CourseFilter:
         
         CoursegroupFilter = InningGroup.objects.filter(Course_Code=CourseFilter)
+        print('CoursegroupFilter', CoursegroupFilter)
         Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Course_Group__in=CoursegroupFilter,
                                               End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
         print('Inningsfilter', Inningsfilter)
