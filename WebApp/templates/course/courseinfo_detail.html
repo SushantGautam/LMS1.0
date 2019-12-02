@@ -154,16 +154,16 @@
                                                     {% if "students" in request.path %}-
                                                         <a href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Exam</a>
                                                     {% elif  "teachers" in request.path %}
-                                                        <a style="color: #0c83e4; font-size: large"
-                                                           href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
                                                         <br>
                                                         <p style="color: #00A000">
                                                             {{ eachquiz.draft|yesno:"Inactive, Active" }}
                                                         <p>
                                                         <hr>
                                                     {% else %}
-                                                        <a style="color: #0c83e4; font-size: large"
-                                                           href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a><br>
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a><br>
                                                         <p style="color: #00A000">
                                                             {{ eachquiz.draft|yesno:"Inactive, Active" }}
                                                         <p>
@@ -205,6 +205,50 @@
                     <tr>
                         <td>
                             Number of Quizs
+                            {% if numberOfQuizExclExams %}
+                                <div class="panel-group" id="accordionmo" role="tablist" aria-multiselectable="true">
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwobbx">
+                                            <h4 class="panel-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse"
+                                                   data-parent="#accordionmo" href="#collapseTwocn"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapseTwocn">
+                                                    View All Quizs
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseTwocn" class="panel-collapse collapse" role="tabpanel"
+                                             aria-labelledby="headingTwobbx">
+                                            <div class="panel-body">
+                                                {% for eachquiz in numberOfQuizExclExams %}
+                                                    <br> {{ eachquiz.title }}
+                                                    {% if "students" in request.path %}-
+                                                        <a href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Quiz</a>
+                                                    {% elif  "teachers" in request.path %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% else %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a><br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            {% endif %}
                         </td>
                         <td>
                             {{ numberOfQuizExclExams.count }}
@@ -289,13 +333,13 @@
 
                     {% endfor %}
                 </div>
-                <div>
-                    <ul>
-                        {% for q in exam_quiz %}
-                            <li>{{ q.title }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+{#                <div>#}
+{#                    <ul>#}
+{#                        {% for q in exam_quiz %}#}
+{#                            <li>{{ q.title }}</li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                </div>#}
             </div>
         </div>
     </div>
