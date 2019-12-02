@@ -1,25 +1,21 @@
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 
+from django import forms
 from django.contrib import messages
+from django.core import serializers
 from django.db import transaction
+from django.db.models import Q
 from django.forms import model_to_dict
-from django.http import HttpResponseRedirect, HttpRequest
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
-from django.views.generic.base import View, TemplateView
+from django.views.generic.base import View
 
-from WebApp.models import InningGroup
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
-    QuestionInfoFormset, QuestionAnsInfoFormset, LiveSurveyInfoForm
+    QuestionInfoFormset, QuestionAnsInfoFormset
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
-
-from django.db.models import Q, F
-from django import forms
-from django.forms.models import inlineformset_factory, BaseInlineFormSet
-from django.core import serializers
 
 
 class AjaxableResponseMixin:
@@ -428,15 +424,18 @@ class liveProgressResult(View):
         survey_obj = SurveyInfo.objects.get(pk=self.kwargs['pk'])
         questions = QuestionInfo.objects.filter(Survey_Code=survey_obj.id)
         options = OptionInfo.objects.filter(Question_Code__in=questions)
+
         for x in options:
             total_answers = x.Question_Code.answerinfo.all().count()
             total_selected = x.Question_Code.answerinfo.filter(Answer_Value=x.id).count()
+
             if total_answers != 0:
                 x.Vote_Count = (total_selected * 100) / total_answers
             else:
                 x.Vote_Count = 0
+        Participants = SubmitSurvey.objects.filter(Survey_Code=survey_obj.id).count()
         data = serializers.serialize("json", options)
-        return JsonResponse(data, safe=False)
+        return JsonResponse([data, Participants], safe=False)
 
 
 class SurveyInfoUpdateView(UpdateView):
