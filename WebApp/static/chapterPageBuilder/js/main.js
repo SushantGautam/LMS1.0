@@ -155,7 +155,19 @@ $(document).ready(function () {
 
                 var a = document.getElementsByClassName("current")[0];
                 $('#' + a.id).append(dom);
-                $('#editor' + id).summernote();
+                $('#editor' + id).summernote({
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link']],
+                        // ['view', ['fullscreen', 'codeview', 'help']],
+                      ],
+                    });
+                $('#editor' + id).parent().find('.note-statusbar').remove();
                 $('#editor' + id).parent().find('.note-editable').html(message);
                 // $(".editor-canvas").append(dom);
                 // Making element Resizable
