@@ -23,6 +23,7 @@
 </div>
 
 <form method="POST" id="FormID" enctype="multipart/form-data">
+
     {% csrf_token %}
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
         <div id="div_id_Course_Name" class="form-group">
@@ -104,6 +105,7 @@
         <button class="btn btn-success" type="submit">Submit</button>
     </div>
 
+
 </form>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
@@ -111,7 +113,7 @@
     {% if object.Course_Level %}
     var rating = parseInt({{ object.Course_Level }});
     {% else %}
-    var rating = 0;
+    var rating = 1;
     {% endif %}
 
     $('#id_Lecture_Cover_File').change(function () {

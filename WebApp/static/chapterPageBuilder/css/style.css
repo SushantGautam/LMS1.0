@@ -56,8 +56,13 @@ body {
 
 .navbar a {
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 15px;
 }
+
+.navbar a :hover {
+    cursor: pointer;
+}
+
 
 #navbar-title {
     display: flex;
@@ -65,7 +70,6 @@ body {
     justify-content: space-around;
     align-items: center;
     width: auto;
-    padding: 5px 0px;
 
 
 }
@@ -87,7 +91,7 @@ body {
 
 .sidebar {
     background-color: #ddd;
-    zoom: 75%;
+    /* zoom: 75%; */
     min-height: 100%;
 
 }
@@ -95,9 +99,7 @@ body {
 #add-page-btn {
 
     background: rgba(0, 0, 0, 0.05);
-    font-size: 4rem;
-   
-    margin-top: 0.8em;
+    font-size: 25px;
 
 
 }
@@ -120,32 +122,56 @@ body {
 .builder {
 
     text-transform: uppercase;
-    min-width: 98px;
-    max-width: 98px;
-    height: 95px;
-    line-height: 20px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 13px;
-    margin-top: 5px;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 1px;
-    cursor: -webkit-grab;
-    transition-duration: 0.15s;
-    transition-property: box-shadow;
-    display: flex;
-    flex-direction: column;
-    -webkit-box-pack: center;
-    justify-content: center;
-    flex: 1 1 0%;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(221, 221, 221);
-    border-image: initial;
-    border-radius: 4px;
-    float: left;
-    margin-right: 5px;
 
+    min-width: 98px;
+
+    max-width: 86px;
+
+    height: 90px;
+
+    line-height: 20px;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    /* margin-bottom: 5px; */
+
+    margin-top: 5px;
+
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 1px;
+
+    cursor: -webkit-grab;
+
+    transition-duration: 0.15s;
+
+    transition-property: box-shadow;
+
+    display: flex;
+
+    flex-direction: column;
+
+    -webkit-box-pack: center;
+
+    justify-content: center;
+
+    flex: 1 1 0%;
+
+    border-width: 1px;
+
+    border-style: solid;
+
+    border-color: rgb(221, 221, 221);
+
+    border-image: initial;
+
+    border-radius: 4px;
+
+    float: left;
+
+    margin-right: 5px;
 }
 
 
@@ -154,7 +180,7 @@ body {
     box-shadow: 2px 0px 2px #666;
 
     min-width: 160px;
-    margin-top: 1em;
+    font-size: 12px;
     text-align: center;
     cursor: move;
     cursor: -webkit-grab;
@@ -167,15 +193,15 @@ body {
     -webkit-border-radius: 2px;
     border-radius: 2px;
     z-index: 9;
+    margin-right: 6px;
 }
 
 .draggable img {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 50%;
-    margin-top: 18px;
-
+    width: 45%;
+    margin-top: 12px;
 }
 
 .draggable-style:hover {
@@ -244,7 +270,7 @@ svg {
 
 .draggable span {
     color: #000;
-    line-height: 42px;
+    line-height: 29px;
 }
 
 .layout {
@@ -467,7 +493,7 @@ input.call-picker {
     box-shadow: 2px 2px 2px #666;
     margin: 0;
     padding: 4;
-    zoom: 80%;
+    /* zoom: 80%; */
 
 
 }
@@ -646,8 +672,8 @@ input.call-picker {
 }
 
 .options {
-
-    width: 100px;
+    position: absolute;
+    width: 95%;
     background: #CCC;
     margin: 5px;
     display: none;
@@ -665,11 +691,11 @@ input.call-picker {
 /* =================tabs position=================== */
 .tabs {
 
-/* box-shadow: 2px 2px 2px #666; */
+    /* box-shadow: 2px 2px 2px #666; */
 
-margin-top: 10px;
+    margin-top: 10px;
 
-padding: 0px !important;
+    padding: 0px !important;
 }
 
 /* =============for modal=============== */
@@ -988,14 +1014,18 @@ table th {
     height: 2px;
     width: 100%;
     background-color: white;
-    margin-top: 10px !important;
-    margin-bottom: 15px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
 }
 
 .tabs-to-click p {
     text-align: center;
     font-size: 18px;
     font-weight: 800;
+    /* background-color: white; */
+    color: black;
+    margin-top: 2px;
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #f7f4f6, 0 0 40px #ece8ea, 0 0 50px #fff, 0 0 60px #fff;
 }
 
 .tabs-to-click ul li.current {
@@ -1006,7 +1036,7 @@ table th {
 .tab-content-no {
     display: none;
     width: 100%;
-    height: 560px;
+    height: 88vh;
     /* border: 2px solid whitesmoke; */
     padding: 10px;
 }
@@ -1052,8 +1082,12 @@ table th {
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 14px 16px;
+
     transition: 0.3s;
+}
+
+.tab button:hover {
+    cursor: pointer;
 }
 
 /* Change background color of buttons on hover */
@@ -1081,7 +1115,7 @@ table th {
     width: 100%;
     background: rgba(0, 0, 0, 0.05);
     padding: 10px;
-    margin-top: 10px;
+
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -1128,7 +1162,7 @@ table th {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+
     height: 100%;
 
 }
@@ -1217,3 +1251,23 @@ span.btnlink input {
     left: 100px;
     top: 0;
 }
+
+
+/* media files css */
+
+.individual-file {
+    height: 100px;
+    width: 100px;
+}
+
+.individual-file img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}
+
+.file-content {
+    overflow: auto;
+}
+
+/* end of mediafile css */

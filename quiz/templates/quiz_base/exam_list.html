@@ -47,7 +47,7 @@
             {% if object.draft is True %}
               <span class="text-danger">Inactive</span>
             {% else %}
-              <span class="text-success">Active</span>
+              <span class="text-success">Running</span>
             {% endif %}
           </td>
           <td>
@@ -64,14 +64,16 @@
               {% endif %}
             {% else %}
               {% if object.draft is True %}
-                <form action="{% url 'activate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
-                  <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
-                         class="confirm-activate">
+                <form action="{% url 'teacher_activate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
+                  <input type="hidden" value="{{ request.path }}" name="redirect-url">
+                  <input type="button" value="Take Exam" style="float: right;cursor:pointer"
+                         class="btn btn-success confirm-activate">
                 </form>
               {% else %}
-                <form action="{% url 'deactivate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
-                  <input type="button" value="Deactivate" style="float: right;color: #2A3F54;cursor:pointer"
-                         class="confirm-deactivate">
+                <form action="{% url 'teacher_deactivate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
+                  <input type="hidden" value="{{ request.path }}" name="redirect-url">
+                  <input type="button" value="Stop Exam" style="float: right;cursor:pointer"
+                         class="btn btn-danger confirm-deactivate">
                 </form>
               {% endif %}
             {% endif %}

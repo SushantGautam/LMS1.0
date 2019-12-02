@@ -214,6 +214,9 @@ a:hover, a:active, a:focus {
     border: 2px solid #3c8dbc;
 
     transition: all 0.3s ease;
+    z-index: 500;
+
+    user-select: none;
 }
 
 .full-chat-container {
@@ -273,6 +276,7 @@ a:hover, a:active, a:focus {
     overflow-x: hidden;
     overflow-y: hidden;
     display: none;
+    z-index: 140;
     /* scrollbar-width: thin; */
 }
 
@@ -294,12 +298,11 @@ a:hover, a:active, a:focus {
 
 
 .button-position {
-    height: 20px;
-    width: 20px;
+
     margin: 5px;
     padding: 5px !important;
     background-color: white;
-    z-index: 999;
+    z-index: 99;
     top: 50%;
     position: absolute;
 
@@ -408,7 +411,7 @@ a:hover, a:active, a:focus {
     position: relative;
     top: 0;
     left: 0;
-    z-index: 500;
+    z-index: 1;
 }
 
 .overall-contents:hover .content-title1 {
@@ -427,7 +430,7 @@ a:hover, a:active, a:focus {
     left: 45%;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
-    z-index: 99;
+    z-index: 150;
     /* padding: 10px; */
     height: 30px;
     line-height: 30px;
@@ -560,6 +563,7 @@ body {
     display: block;
 }
 
+
 .panel {
     margin-bottom: 0px !important;
 }
@@ -578,6 +582,12 @@ body {
 .followteacher {
     color: #79f979;
 }
+
 .offline-followteacher {
     color: #620806;
+}
+
+
+.closechatopen {
+    z-index: 10;
 }

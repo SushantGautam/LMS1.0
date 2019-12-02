@@ -1,18 +1,19 @@
+import datetime
+
+from crispy_forms.bootstrap import PrependedText, StrictButton
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column, Div, HTML
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.forms import inlineformset_factory
 from django.forms.widgets import RadioSelect, Textarea
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-# from quiz import admin
-from django_addanother.widgets import AddAnotherWidgetWrapper
 
 from WebApp.models import CourseInfo
 from quiz.models import Quiz, MCQuestion, TF_Question, SA_Question, Answer
-from django.forms import inlineformset_factory
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column, Div, HTML, Field, Button
-from crispy_forms.bootstrap import AppendedText, PrependedText, StrictButton
+
+# from quiz import admin
 
 
 # class AnswerInline(admin.TabularInline):
@@ -33,9 +34,6 @@ class SAForm(forms.Form):
             widget=Textarea(attrs={'style': 'width:100%'}))
 
 
-from django.utils.safestring import mark_safe
-
-
 class QuizForm(forms.ModelForm):
     # mcquestion = forms.ModelMultipleChoiceField(
     #     queryset=MCQuestion.objects.all(),
@@ -54,8 +52,9 @@ class QuizForm(forms.ModelForm):
 
     class Meta:
         model = Quiz
-        fields = ['title', 'description', 'duration', 'pass_mark', 'negative_marking',
-                  'negative_percentage', 'random_order', 'mcquestion', 'tfquestion', 'saquestion']
+        fields = ['mcquestion', 'tfquestion', 'saquestion', 'title', 'description', 'duration', 'pass_mark',
+                  'negative_marking',
+                  'negative_percentage', 'random_order', ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, }),
         }
@@ -70,7 +69,7 @@ class QuizForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         course_id = kwargs.pop('course_id')
         print(course_id)
-        #exam_paper = kwargs.pop('exam_paper')
+        # exam_paper = kwargs.pop('exam_paper')
         mcqueryset = MCQuestion.objects.filter(course_code=course_id)
         tfqueryset = TF_Question.objects.filter(course_code=course_id)
         saqueryset = SA_Question.objects.filter(course_code=course_id)
@@ -81,6 +80,9 @@ class QuizForm(forms.ModelForm):
         # self.fields['mcquestion'].queryset = mcqueryset
         # self.fields['tfquestion'].queryset = tfqueryset
         # self.fields['saquestion'].queryset = saqueryset
+        self.fields['title'] = forms.CharField(
+            initial=CourseInfo.objects.get(id=course_id).Course_Name + ": Quiz " + datetime.datetime.now().strftime(
+                '%D %H:%M'))
 
         self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
             queryset=MCQuestion.objects.filter(course_code=course_id),
@@ -162,13 +164,13 @@ class QuestionQuizForm(forms.ModelForm):
 class TFQuestionForm(forms.ModelForm):
     class Meta:
         model = TF_Question
-        fields = '__all__'
+        fields = ['correct', 'content', 'figure', 'score', 'explanation', 'course_code', 'cent_code']
 
-    # quiz = forms.ModelMultipleChoiceField(
-    #     queryset=Quiz.objects.all(),
-    #     required=False,
-    #     # label=_("Questions"),
-    #     widget=FilteredSelectMultiple(verbose_name=_("Quizzes"), is_stacked=False))
+        # quiz = forms.ModelMultipleChoiceField(
+        #     queryset=Quiz.objects.all(),
+        #     required=False,
+        #     # label=_("Questions"),
+        #     widget=FilteredSelectMultiple(verbose_name=_("Quizzes"), is_stacked=False))
 
 
 class SAQuestionForm(forms.ModelForm):

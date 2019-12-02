@@ -436,6 +436,7 @@ class Quiz(models.Model):
 
     duration = models.IntegerField(
         null=True, blank=True,
+        default=1800,
         help_text=_("Time limit for quiz"),
         verbose_name=_("Time limit for quiz"))
 
@@ -492,7 +493,7 @@ class Quiz(models.Model):
         verbose_name=_("Single Attempt"))
 
     pass_mark = models.SmallIntegerField(
-        blank=True, default=0,
+        blank=True, default=40,
         verbose_name=_("Pass Mark"),
         help_text=_("Percentage required to pass exam."),
         validators=[MaxValueValidator(100)])
@@ -516,7 +517,7 @@ class Quiz(models.Model):
         help_text=_("If checked, incorrect answers will have negative marking")
     )
     negative_percentage = models.IntegerField(
-        null=True, blank=True, default=100,
+        null=True, blank=True, default=0,
         help_text=_("Percentage of total marks to use for negative marking"),
         verbose_name=_("Negative Marking Percentage"))
 

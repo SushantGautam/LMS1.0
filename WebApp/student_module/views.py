@@ -1,50 +1,50 @@
+import uuid
 from datetime import datetime
-from django.utils import timezone
 
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
-from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied
+from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
-from forum.models import NodeGroup, Thread, Topic, Post, Notification
-from forum.views import get_top_thread_keywords
-from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
+
+from LMS import settings
+from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
-from quiz.models import Question, Quiz, Sitting
+from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
+from forum.models import NodeGroup, Thread, Topic, Post, Notification
+from forum.views import get_top_thread_keywords
+from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.contrib.auth import get_user_model
 from .misc import get_query
-from LMS import settings
-import uuid
-from django.core.files.storage import FileSystemStorage
-from WebApp.filters import MyCourseFilter
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.exceptions import ObjectDoesNotExist
-from quiz.models import Progress
-from django.core.exceptions import PermissionDenied
 
 datetime_now = datetime.now()
 
 User = get_user_model()
 
 from quiz.views import QuizUserProgressView, Sitting, Progress
+
+
 def start(request):
     if request.user.Is_Student:
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
@@ -63,10 +63,10 @@ def start(request):
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
                     Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id)[:7]
-    sittings =  Sitting.objects.filter(user=request.user)
+    sittings = Sitting.objects.filter(user=request.user)
     return render(request, 'student_module/dashboard.html',
-                      {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                       'activeAssignments': activeassignments, 'sittings':sittings })
+                  {'GroupName': batches, 'Group': sessions, 'Course': courses,
+                   'activeAssignments': activeassignments, 'sittings': sittings})
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -184,8 +184,8 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Assignment'], context['activeAssignment'], context['expiredAssignment'] = [],[],[]
-        Assignment, activeAssignment, expiredAssignment = [],[],[]
+        context['Assignment'], context['activeAssignment'], context['expiredAssignment'] = [], [], []
+        Assignment, activeAssignment, expiredAssignment = [], [], []
         Sessions = []
         Courses = set()
 
@@ -193,7 +193,7 @@ class MyAssignmentsListView(ListView):
         GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
         for group in GroupName:
             Sessions += InningInfo.objects.filter(Groups__id=group.id)
-        
+
         for session in Sessions:
             for coursegroup in session.Course_Group.all():
                 Courses.add(coursegroup.Course_Code)
@@ -243,7 +243,11 @@ class CourseInfoDetailView(DetailView):
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Quiz.objects.filter(
-            course_code=self.kwargs.get('pk'), exam_paper=False, draft=False)
+            course_code=self.kwargs.get('pk'), draft=False, exam_paper=True, chapter_code=None)
+        context['numberOfQuizExclExams'] = Quiz.objects.filter(
+            chapter_code__in=context['chapters'].values_list('pk'),
+            exam_paper=False,
+            draft=False)
         context['topic'] = Topic.objects.filter(
             course_associated_with=self.kwargs.get('pk'))
         return context
@@ -598,7 +602,6 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
 import operator
 from django.db.models import Q
 from functools import reduce
-from operator import or_
 
 
 def ThreadSearchAjax(request, topic_id, threadkeywordList):

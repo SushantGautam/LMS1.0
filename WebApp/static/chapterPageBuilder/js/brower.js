@@ -31,6 +31,18 @@ $(document).ready(function () {
 
 })
 
+// Preview purpose
+
+$("#previewBtn").on("click",function(e){
+  e.preventDefault();
+  $("#SaveBtn").click();
+  setTimeout(function(){
+    window.open($('#previewBtn').attr('href'))
+  }, 7000)
+})
+
+
+
 $("#SaveBtn").on("click",function(e){
   $(this).html(`<i class='fa fa-spinner fa-spin '></i> Saving`);
   setThumbnails()

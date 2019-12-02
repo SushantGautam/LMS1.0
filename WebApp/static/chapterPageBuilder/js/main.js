@@ -139,7 +139,7 @@ $(document).ready(function () {
                     snapMode: 'inner',
                     cursorAt: {bottom: 0},
 
-                    handle: '#draghere',
+                    handle: '.text-actions',
                     stop: function () {
                         var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
                         var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
@@ -159,7 +159,6 @@ $(document).ready(function () {
                 $('#editor' + id).parent().find('.note-editable').html(message);
                 // $(".editor-canvas").append(dom);
                 // Making element Resizable
-
             };
         }
     }
@@ -349,7 +348,12 @@ $(document).ready(function () {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank"  >${name}</a>
+                            <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                            
+                            <svg viewBox="0 0 56 18">
+                                <text x="0" y="15">${name}</text>
+                            </svg>
+                            </a>
                         </div>
         
                 `;
@@ -882,7 +886,7 @@ $(document).ready(function () {
             $('#btn-modal').modal('show');
         });
 
-        $('.btn-button').resizable({
+        $('.btn-div').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
@@ -1479,31 +1483,29 @@ $(document).ready(function () {
         if (confirmation == false) {
             return false
         }
-
-        if ($(this).parent().parent().prev().find('li').length != 0)
-            $(this).parent().parent().prev().find('li')[0].click();
-        else if ($(this).parent().parent().next().find('li').length != 0)
-            $(this).parent().parent().next().find('li')[0].click()
+        if ($(this).parent().parent().parent().prev().find('li').length != 0)
+            $(this).parent().parent().parent().prev().find('li')[0].click();
+        else if ($(this).parent().parent().parent().next().find('li').length != 0)
+            $(this).parent().parent().parent().next().find('li')[0].click()
         else {
             alert("cannot delete only page");
             return false
         }
         $('#tab' + this.value).remove();
-        $(this).parent().parent().remove();
+        $(this).parent().parent().parent().remove();
         displaypagenumbers();
     });
 
     // clone Page function
     $('.tabs-to-click').on('click', '.clone-page-btn', function () {
-        var num_tabs = $(".tabs-to-click ul li").length + 1;
-
-        let copy = $(this).parent().parent().clone();
+        var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
+        let copy = $(this).parent().parent().parent().clone();
         // for cloning page navigation tabs
         copy.find('.clone-page-btn').val(num_tabs);
         copy.find('.delete-page-btn').val(num_tabs);
         copy.find('.pagenumber').val(num_tabs);
         copy.find('.pagenumber').attr('onclick', 'openTab(event,"tab' + num_tabs + '")');
-        $(this).parent().parent().after(copy);
+        $(this).parent().parent().parent().after(copy);
         // =============================================================================
 
         // for editor cloning
@@ -1512,7 +1514,7 @@ $(document).ready(function () {
         editorcopy.empty();
         const obj = $("#tab" + this.value).children();
         $(".tabs").append(editorcopy);
-        $(this).parent().parent().next().find('li')[0].click()
+        $(this).parent().parent().parent().next().find('li')[0].click()
         $.each(obj, function (i, value) {
             if (value.classList.contains('textdiv')) {
                 var clone = $(this).find('.note-editable').clone();
@@ -1558,8 +1560,6 @@ $(document).ready(function () {
         });
 
         displaypagenumbers();
-
-        // alert('Clone Successful')
     });
 
     // =====================================================================================
@@ -1586,7 +1586,7 @@ $(document).ready(function () {
             ButtonFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '15%', '20%'
+                null, '10%', '15%'
             );
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
@@ -1690,19 +1690,26 @@ $(document).ready(function () {
     });
 
     function newpagefunction() {
-        var num_tabs = $(".tabs-to-click ul li").length + 1;
-
+        if($(".tabs-to-click ul li").last().length == 0){
+            var num_tabs = 1
+        }else{
+            var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
+        }
         $(".tabs-to-click ul").append(`
-            <div>
-                 <p style="display:inline-block"></p> 
-                <span style="float:right ">
-                    <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
-                </span>
-
-                <span style="float:right ">
-                    <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
-                </span>
+            <div class="canvas-relative" style="position:relative"> 
+              
+             
                 <li class="tabs-link pagenumber " value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')"></li>
+                <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
+                        <p style="display:inline-block"></p> 
+                        <span style="float:right ">
+                            <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                        </span>
+
+                        <span style="float:right ">
+                            <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                        </span>
+                 </div>
                
                <hr class="white-hr"/>
             
@@ -1884,8 +1891,7 @@ $(document).ready(function () {
 
 function displaypagenumbers() {
     $('.pagenumber').each(function (key, value) {
-        // $(this).parent().children('p').text('')
-        $(this).parent().children('p').text(key + 1);
+        $(this).parent().find('p').text(key + 1);
     })
 }
 
@@ -1922,7 +1928,7 @@ $('#btn-submit').on('click', function () {
     } else {
         $('#' + btn_id).removeAttr('href');
     }
-    $('#' + btn_id).text(btn_name);
+    $('#' + btn_id).find('text').text(btn_name);
     $('#btn-modal').modal('hide');
 })
 
@@ -2035,6 +2041,14 @@ function setThumbnailscallback(data, dive) {
     });
 }
 
-setTimeout(function(){
-
-},5000)
+$('#tabs-for-download').on('click', '.textdiv', function(){
+    $this = $('.note-editable:focus')
+    if($('.note-editable:focus').html() == "Type Something Here..."){
+        $('.note-editable:focus').html("")
+    }
+    $($this).on('focusout', function(){
+        if($($this).html() == ""){
+            $($this).html("Type Something Here...")
+        }
+    })
+})

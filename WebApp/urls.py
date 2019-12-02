@@ -286,8 +286,12 @@ urlpatterns += (
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          views.ContentsView.as_view(), name='contentviewer'),
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/preview',
+         views.ContentsView.as_view(), name='previewcontentviewer'),
      path('delete-chapter-files',
          views.deletechapterfile, name='delete-chapter-files'),
+     path('retrieve-chapter-files',
+         views.retrievechapterfile, name='retrieve-chapter-files'),
 )
 
 urlpatterns += (

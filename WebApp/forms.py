@@ -210,6 +210,7 @@ class MemberUpdateForm(forms.ModelForm):
 
 
 class CourseInfoForm(forms.ModelForm):
+
     class Meta:
         model = CourseInfo
         fields = '__all__'
