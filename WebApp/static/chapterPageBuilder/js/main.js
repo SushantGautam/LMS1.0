@@ -155,7 +155,19 @@ $(document).ready(function () {
 
                 var a = document.getElementsByClassName("current")[0];
                 $('#' + a.id).append(dom);
-                $('#editor' + id).summernote();
+                $('#editor' + id).summernote({
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link']],
+                        // ['view', ['fullscreen', 'codeview', 'help']],
+                      ],
+                    });
+                $('#editor' + id).parent().find('.note-statusbar').remove();
                 $('#editor' + id).parent().find('.note-editable').html(message);
                 // $(".editor-canvas").append(dom);
                 // Making element Resizable
@@ -1718,7 +1730,7 @@ $(document).ready(function () {
         `);
         $(".tabs").append(
             `<p id='tab${num_tabs}' style="display:none" class="tab-content-no droppable editor-canvas ui-droppable">
-            
+                    <input type = "color" value = "" class="page-background">
             </p>`
         );
 
@@ -1879,6 +1891,10 @@ $(document).ready(function () {
                             'background-repeat': 'no-repeat',
                         })
                     }
+
+                    if(div == 'backgroundcolor'){
+                        $('#tab' + key).css('background-color', div_value)
+                    }
                 });
             });
         });
@@ -1933,6 +1949,18 @@ $('#btn-submit').on('click', function () {
 })
 
 // ======================================================================
+
+// background color for pages
+$('#tabs-for-download').click(function(){
+        
+    var theInput = $('.current').find('.page-background')[0];
+    var theColor = theInput.value;
+    theInput.addEventListener("input", function() {
+        $('.current').css('background-color',theInput.value)
+    }, false);
+})
+
+// ==========================================================================
 
 function openTab(evt, tab_no) {
     try {

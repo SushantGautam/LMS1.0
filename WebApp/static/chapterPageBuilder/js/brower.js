@@ -146,8 +146,9 @@ $("#SaveBtn").on("click",function(e){
         }
         
       });
+      backgroundcolor = $("#tab"+parseInt(this.value)).css('background-color')
       thumbnail = ($(value)[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-      pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'thumbnail': thumbnail}]
+      pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'thumbnail': thumbnail, 'backgroundcolor': backgroundcolor}]
     });
     data = {
       'numberofpages': numberofpages, 
