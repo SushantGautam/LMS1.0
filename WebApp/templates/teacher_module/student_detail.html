@@ -50,6 +50,10 @@
 <script>
 var chart = Highcharts.chart('container', {
 
+        credits: {
+    enabled: false
+},
+
         title: {
             text: 'Score obtained by {{ memberinfo.username }}'
         },
@@ -195,6 +199,11 @@ Highcharts.chart('PieChart_Quiz', {
     plotShadow: false,
     type: 'pie'
   },
+
+credits: {
+    enabled: false
+},
+
   title: {
     text: 'Total Quiz Played by {{ memberinfo.username }}'
   },
