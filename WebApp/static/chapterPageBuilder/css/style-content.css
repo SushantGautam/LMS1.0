@@ -258,6 +258,9 @@ a:hover, a:active, a:focus {
     margin: 27px;
     margin: 0 10px;
 }
+.chat-nav li:hover{
+    cursor: pointer;
+}
 
 /* .friend-list-height{
   height: 55vh;
@@ -301,15 +304,17 @@ a:hover, a:active, a:focus {
 
     margin: 5px;
     padding: 5px !important;
-    background-color: white;
+   
     z-index: 99;
     top: 50%;
     position: absolute;
+    color: rgba(0, 0, 0, 0.5);
 
     display: none;
-    transition: all 1s ease;
-    -webkit-transition: all 0.3s ease;
+  
+    
 }
+
 
 .button-position:hover {
     cursor: pointer;
@@ -426,7 +431,7 @@ a:hover, a:active, a:focus {
     font-weight: 200;
     /* padding-right: 20px; */
     position: absolute;
-    bottom: 10%;
+    bottom: 12%;
     left: 45%;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
@@ -591,3 +596,6 @@ body {
 .closechatopen {
     z-index: 10;
 }
+.inactive {
+    opacity: 0;
+  }

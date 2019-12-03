@@ -1876,6 +1876,7 @@ label .asteriskField{
     width: 40%;
     border-radius: 5px;
     margin-left: 28%;
+    text-align: center;
   }
   
 .student_card_container{
@@ -1883,9 +1884,6 @@ label .asteriskField{
     text-align: center;
   }
 
-.student_card_container img{
-    margin-left: 30%;
-  }
 
 
 /* =================================AchivementPage================================= */

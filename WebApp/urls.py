@@ -286,11 +286,11 @@ urlpatterns += (
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          views.ContentsView.as_view(), name='contentviewer'),
-     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/preview',
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/preview',
          views.ContentsView.as_view(), name='previewcontentviewer'),
-     path('delete-chapter-files',
+    path('delete-chapter-files',
          views.deletechapterfile, name='delete-chapter-files'),
-     path('retrieve-chapter-files',
+    path('retrieve-chapter-files',
          views.retrievechapterfile, name='retrieve-chapter-files'),
 )
 
@@ -299,7 +299,7 @@ urlpatterns += (
          name='AchievementPage_Student'),
     path('AchievementPage_All', views.AchievementPage_All,
          name='AchievementPage_All'),
-    path('AchievementPage_All_Ajax/<int:Inningsfilter>/<slug:studentfilter>/<int:GroupMappingFilter>/', views.AchievementPage_All_Ajax,
+    path('AchievementPage_All_Ajax/<int:Inningsfilter>/<slug:studentfilter>/<int:CourseFilter>/', views.AchievementPage_All_Ajax,
          name='AchievementPage_All_Ajax'),
 
 )
