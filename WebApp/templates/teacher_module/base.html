@@ -15,7 +15,7 @@
 
     <title>Teacher {% block title %}{% endblock %}</title>
 
-    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <!-- Bootstrap -->
     <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %} " rel="stylesheet">
@@ -129,15 +129,15 @@
         $(window).load(function () {
             $(".se-pre-con").fadeOut("fast");
         });
-        setTimeout( function(){
+        setTimeout(function () {
             $('#alert-message').fadeOut('slow');
         }, 3000);
     </script>
+    <script src=" {% static '/build/js/custom.js' %}"></script>
     {% block customjss %}
 
     {% endblock %}
-    <!-- Custom Theme Scripts -->
-    <script src=" {% static '/build/js/custom.js' %}"></script>
+
     {% endblock body %}
 </body>
 

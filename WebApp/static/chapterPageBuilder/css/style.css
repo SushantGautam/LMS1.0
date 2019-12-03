@@ -1271,3 +1271,16 @@ span.btnlink input {
 }
 
 /* end of mediafile css */
+
+/* page background color change function */
+
+.page-background{
+    position: absolute;
+    right: 0;
+    top: -30px;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+}
+
+/* end of page background color */
