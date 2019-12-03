@@ -53,22 +53,18 @@
 <div class="membertable col-md-12 col-sm-12 col-xs-12 table-responsive">
 
 
-    <table class="table table-striped dt-responsive table-bordered bg-white nowrap dataTable no-footer dtr-inline"
-        id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info" style="width: 1197px;">
+
+
+
+    <table id="AchievementTable" class="table table-striped table-bordered" style="width:100%">
         <thead class="thead-light bg-primary">
-            <tr class="tableTitleRow" role="row">
-                <td class="text-center sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
-                    colspan="1" style="width: 41.0104px;" aria-sort="ascending"
-                    aria-label="S. No.: activate to sort column descending">S. No.</td>
-                <td class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                    style="width: 101.01px;" aria-label="Username: activate to sort column ascending">Student</td>
-                <td class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                    style="width: 84.0104px;" aria-label="Member ID: activate to sort column ascending">Progress
-                </td>
-
-
+            <tr>
+                <th>S.No</th>
+                <th>Student</th>
+                <th>Progress</th>
             </tr>
         </thead>
+
 
 
         <tbody id="Student_List_toappend">
@@ -96,7 +92,7 @@
 <script type="text/javascript">
     var ourdatatable;
     $(document).ready(function () {
-        ourdatatable = $('.table').DataTable({
+        ourdatatable = $('#AchievementTable').DataTable({
             dom: 'lBfrtip',
             buttons: [],
 
