@@ -52,7 +52,13 @@
     <script src="{% static 'js/highchart_data.js' %}"></script>
 
     <script>
+        
         var chart = Highcharts.chart('container', {
+                credits: {
+    enabled: false
+},
+
+            
 
             title: {
                 text: 'Score obtained by {{ memberinfo.username }}'
@@ -152,6 +158,8 @@
                             verticalAlign: 'bottom'
                         }
                     }
+
+                    
                 }]
             }
 
@@ -194,6 +202,10 @@
                 plotShadow: false,
                 type: 'pie'
             },
+
+            credits: {
+    enabled: false
+},
             title: {
                 text: 'Total Quiz Played by {{ memberinfo.username }}'
             },
