@@ -447,6 +447,15 @@
         'wrapAround': true
     });
 
+    // $('a').on('click', 'img', function(){
+    //     console.log('hdjsf')
+    //     if($(this).hasAttribute('data-lightbox')){
+    //         return false;
+    //     }
+    // }).dblclick(function () {                
+    //     window.location = this.href;
+    //     return false;
+    // });
     document.addEventListener('visibilitychange', function () {
         pauseAllVideos(); // change tab text for demo
     })
@@ -472,7 +481,7 @@
             }
 
             if (e.keyCode == '70') {
-                var hasFocus = $('input').is(':focus') || $('.note-editable').is(':focus');
+                var hasFocus = $('input, textarea').is(':focus') || $('.note-editable').is(':focus');
                 if (hasFocus) {
                     return
                 }
