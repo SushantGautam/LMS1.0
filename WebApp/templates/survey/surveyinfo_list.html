@@ -1,103 +1,103 @@
-
 <div class="clearfix">
 
-  <div id="mainSurveyPage">
+    <div id="mainSurveyPage">
 
-    <div class="container">
-      <div class="row">
-        <div class="row" id="surveyheader">
-          <div class="col-md-3 col-sm-12">
-            <div class="btn-group" id="status" data-toggle="buttons">
-              <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
-                <input type="radio" value="active" name="survey_filter_radio"
-                       checked="checked">Active</label>
-              <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-                <input type="radio" value="expire" name="survey_filter_radio">Expire</label>
-              <label class="btn btn-default btn-off-3 btn-sm " id="LiveButton">
-                <input type="radio" value="live" name="survey_filter_radio">Live Survey</label>
-            </div>
-          </div>
-
-          <div class="col-md-9 col-sm-12" id="searchBarSurvey">
-            <form method="get" action="">
-              <div role="search" id="surveySearch">
-                <input type="text" id="keywordInput" name="query" placeholder="Type to search"
-                       value="{{ request.GET.query }}" class="form-control">
-                {#            <div class=" pull-right searchButton">#}
-                <button type="submit" id="navSearchBtn" class="btn btn-inverse"
-                        data-hover-z="1"><i class="fa fa-search"></i>
-                </button>
-                {#            </div>#}
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div id="surveyContainer">
-          <div class="col-md-3 col-sm-3 col-xs-12" style="z-index: 1;">
-            <div class="categoryContainer">
-              <div class="card">
-                <div class="card-body">
-                  <h2 class="card-title "><strong>Category</strong></h2>
-                  <hr>
-                  <div id="card_category">
-                    <h5 class="card-text active">
-                      <a href="#" class="category-name" id="all_survey"><i
-                          class="fa fa-bar-chart" id="categoryIcons"></i>All
-                        survey</a>
-                    </h5>
-                    {% for category in categories %}
-                      <div class="row card-text">
-                        <div class="col-md-8 ">
-                          <a href="#" class="category-name" id="{{ category.Category_Name }}"><i
-                              class="fa fa-{{ category.Category_Icon }}"
-                              id="categoryIcons"></i>
-                            {{ category.Category_Name }}
-                          </a>
+        <div class="container">
+            <div class="row">
+                <div class="row" id="surveyheader">
+                    <div class="col-md-3 col-sm-12">
+                        <div class="btn-group" id="status" data-toggle="buttons">
+                            <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+                                <input type="radio" value="active" name="survey_filter_radio"
+                                       checked="checked">Active</label>
+                            <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
+                                <input type="radio" value="expire" name="survey_filter_radio">Expire</label>
+                            <label class="btn btn-default btn-off-3 btn-sm " id="LiveButton">
+                                <input type="radio" value="live" name="survey_filter_radio">Live Survey</label>
                         </div>
-                        {% if category.Category_Name|lower == "general" and "teachers" in request.path or category.Category_Name|lower == "system" and "teachers" in request.path %}
-                        {% else %}
-                          <button class=" {{ category.Category_Name }} btn btn-success"
-                                  id="category_Add_Button{{ category.Category_Name }}" style="margin: 0;"
-                                  data-toggle="modal"
-                                  data-target="#survey_form_modal">Add
-                          </button>
-                        {% endif %}
-                      </div>
-                    {% endfor %}
-                  </div>
+                    </div>
+
+                    <div class="col-md-9 col-sm-12" id="searchBarSurvey">
+                        <form method="get" action="">
+                            <div role="search" id="surveySearch">
+                                <input type="text" id="keywordInput" name="query" placeholder="Type to search"
+                                       value="{{ request.GET.query }}" class="form-control">
+                                {#            <div class=" pull-right searchButton">#}
+                                <button type="submit" id="navSearchBtn" class="btn btn-inverse"
+                                        data-hover-z="1"><i class="fa fa-search"></i>
+                                </button>
+                                {#            </div>#}
+                            </div>
+                        </form>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-md-9 col-sm-9 col-xs-12" style="z-index: 0;">
-            <div id="rowCards">
-              <div class="hR"></div>
-            </div>
-          </div>
+                <div id="surveyContainer">
+                    <div class="col-md-3 col-sm-3 col-xs-12" style="z-index: 1;">
+                        <div class="categoryContainer">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h2 class="card-title "><strong>Category</strong></h2>
+                                    <hr>
+                                    <div id="card_category">
+                                        <h5 class="card-text active">
+                                            <a href="#" class="category-name" id="all_survey"><i
+                                                    class="fa fa-bar-chart" id="categoryIcons"></i>All
+                                                survey</a>
+                                        </h5>
+                                        {% for category in categories %}
+                                            <div class="row card-text">
+                                                <div class="col-md-8 ">
+                                                    <a href="#" class="category-name" id="{{ category.Category_Name }}"><i
+                                                            class="fa fa-{{ category.Category_Icon }}"
+                                                            id="categoryIcons"></i>
+                                                        {{ category.Category_Name }}
+                                                    </a>
+                                                </div>
+                                                {% if category.Category_Name|lower == "general" and "teachers" in request.path or category.Category_Name|lower == "system" and "teachers" in request.path %}
+                                                {% else %}
+                                                    <button class=" {{ category.Category_Name }} btn btn-success"
+                                                            id="category_Add_Button{{ category.Category_Name }}"
+                                                            style="margin: 0;"
+                                                            data-toggle="modal"
+                                                            data-target="#survey_form_modal">Add
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="col-md-9 col-sm-9 col-xs-12" style="z-index: 0;">
+                        <div id="rowCards">
+                            <div class="hR"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <div id="survey_form_modal" class="modal fade" style="height: -webkit-fill-available;">
-  <div class="modal-dialog" style="width: fit-content">
-    <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Create Survey</h4>
-      </div>
-      <div class="modal-body" id="surveyForm">
-        <div>
-          <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Create Survey</h4>
+            </div>
+            <div class="modal-body" id="surveyForm">
+                <div>
+                    <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-      </div>
     </div>
-  </div>
 </div>
 

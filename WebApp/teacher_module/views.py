@@ -1,6 +1,5 @@
 # from django.core.checks import messages
 from datetime import datetime, timedelta
-from django.utils import timezone
 
 from django.conf import settings
 # from django.core.checks import messages
@@ -12,10 +11,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
-from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect
@@ -27,14 +26,14 @@ from django_addanother.views import CreatePopupMixin
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
-    AssignAnswerInfo, MemberInfo, GroupMapping, SessionInfo
+    AssignAnswerInfo, MemberInfo, GroupMapping
 from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm, \
     QuizBasicInfoForm
-from quiz.models import Question, Quiz, SA_Question, Sitting, MCQuestion, TF_Question
+from quiz.models import Question, Quiz, SA_Question, MCQuestion, TF_Question
 from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
 from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
@@ -53,7 +52,6 @@ from django.http import JsonResponse
 
 from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 User = get_user_model()
 
@@ -111,14 +109,16 @@ class GroupMappingDetailViewTeacher(DetailView):
     model = GroupMapping
     template_name = 'teacher_module/groupmapping_detail.html'
 
+
 from quiz.views import QuizUserProgressView, Sitting
+
 
 def Student_DetailInfo(request, id):
     memberinfo = MemberInfo.objects.get(pk=id)
     groupmapping = GroupMapping.objects.filter(Students__in=[id])[0]
-    sittings =  Sitting.objects.filter(user=memberinfo)
-    return render(request, 'teacher_module/student_detail.html', {'memberinfo':memberinfo, 'sittings':sittings, 'groupmapping':groupmapping })
-
+    sittings = Sitting.objects.filter(user=memberinfo)
+    return render(request, 'teacher_module/student_detail.html',
+                  {'memberinfo': memberinfo, 'sittings': sittings, 'groupmapping': groupmapping})
 
 
 class QuestionInfoDeleteView(DeleteView):
@@ -245,7 +245,11 @@ class CourseInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'), exam_paper=True,
+                                                   chapter_code=None)  # exam type
+        context['numberOfQuizExclExams'] = Quiz.objects.filter(
+            chapter_code__in=context['chapters'].values_list('pk'),
+            exam_paper=False, course_code=self.kwargs.get('pk'))
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
         return context
 
@@ -642,6 +646,7 @@ class QuizDetailView(DetailView):
 def QuizDeleteView(request, pk):
     Quiz.objects.filter(pk=pk).delete()
     return redirect("teacher_quiz_list")
+
 
 class CategoriesListView(ListView):
     model = CourseInfo
@@ -1192,6 +1197,7 @@ class teacherSurveyFilterCategory(ListView):
             print(date_filter, "query", len(my_queryset))
 
         return my_queryset
+
     # except:
     #     return None
 
@@ -1647,7 +1653,6 @@ def Thread_related_to_user(request):
 import operator
 from django.db.models import Q
 from functools import reduce
-from operator import or_
 
 
 def ThreadSearchAjax(request, topic_id, threadkeywordList):
