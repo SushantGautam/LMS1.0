@@ -23,6 +23,11 @@
         var current_progress = 0;
         $(document).ready(function () {
 
+
+            $('#survey_form_modal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+
             var interval = setInterval(function () {
                 //if ($('#chk').prop('checked')) {
 

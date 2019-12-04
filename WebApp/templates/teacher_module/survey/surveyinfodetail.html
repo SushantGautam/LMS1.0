@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block stylesheets %}
-<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
@@ -13,8 +13,8 @@
 {% endblock %}
 
 {% block content %}
-<script src="{% static 'js/highcharts.js' %}"></script>
-<script src="{% static 'js/highchart_data.js' %}"></script>
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/highchart_data.js' %}"></script>
 
     {% include 'survey/common/details.html' %}
 {% endblock %}
@@ -24,8 +24,15 @@
 
 
     <script>
+
+        var current_progress = 0;
         $(document).ready(function () {
-            var current_progress = 0;
+
+
+            $('#survey_form_modal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+
             var interval = setInterval(function () {
                 //if ($('#chk').prop('checked')) {
 
