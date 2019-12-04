@@ -2209,7 +2209,7 @@ async function setThumbnails() {
             'background-repeat': 'no-repeat'
         })
     })
-    await html2canvas($('.current')[0],).then(canvas => {
+    html2canvas($('.current')[0],).then(canvas => {
         $('.pagenumber').each(function () {
             if (id == this.value) {
                 if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
