@@ -792,8 +792,8 @@ input.call-picker {
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
-    height: 200px;
-    margin: 10px;
+    height: auto;
+    
 }
 
 .modal-content form label {
