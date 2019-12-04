@@ -57,6 +57,7 @@ body {
 .navbar a {
     text-align: center;
     font-size: 15px;
+    color: #2a3f54;
 }
 
 .navbar a :hover {
@@ -1029,7 +1030,7 @@ table th {
 }
 
 .tabs-to-click ul li.current {
-    border: 1px solid black;
+    border: 2px solid #17a2b8;
 
 }
 
