@@ -159,6 +159,7 @@ $(document).ready(function () {
                     toolbar: [
                         ['style', ['style']],
                         ['font', ['bold', 'underline', 'clear']],
+                        ['fontsize', ['fontsize']],
                         ['fontname', ['fontname']],
                         ['color', ['color']],
                         ['para', ['ul', 'ol', 'paragraph']],
@@ -362,7 +363,7 @@ $(document).ready(function () {
                             </div> 
                             <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
                             
-                            <svg viewBox="0 0 56 18">
+                            <svg viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available">
                                 <text x="0" y="15">${name}</text>
                             </svg>
                             </a>
@@ -425,10 +426,11 @@ $(document).ready(function () {
                             </div> 
                             <a class="btn btn-button" ${quiz_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
                             
-                            <svg viewBox="0 0 56 18">
+                            <svg viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available">
                                 <text x="-1" y="10">${name}</text>
                             </svg>
                             </a>
+                            <span class = "quiz-name"></span>
                         </div>
         
                 `;
@@ -999,7 +1001,6 @@ $(document).ready(function () {
                 processData: false,
                 method: 'GET',
                 success: function(data){
-                    console.log(data)
                     $('#myTable').empty()
                     for(var i = 0; i < data.length; i++){
                         $('#myTable').append(`<tr>
@@ -1867,8 +1868,8 @@ $(document).ready(function () {
             </div>
         `);
         $(".tabs").append(
-            `<p id='tab${num_tabs}' style="display:none" class="tab-content-no droppable editor-canvas ui-droppable">
-                    <input type = "color" value = "" class="page-background">
+            `<p id='tab${num_tabs}' style="display:none; background-color: rgb(255, 255, 255);" class="tab-content-no droppable editor-canvas ui-droppable">
+                    <input type = "color" value = "#ffffff" class="page-background">
             </p>`
         );
 
@@ -2106,6 +2107,7 @@ $('#btn-submit').on('click', function () {
 // quiz Form Submit
 $('#quiz-submit').on('click', function () {
     var quiz_name = $('#quiz-btn-name').val();
+    var quiz_span_name = $('#quiz-name').val();
     var quiz_link = $('#quiz-link').val();
     var quiz_id = $('#quiz_id').val();
     if (quiz_link != "") {
@@ -2116,6 +2118,7 @@ $('#quiz-submit').on('click', function () {
         $('#' + quiz_id).removeAttr('href');
     }
     $('#' + quiz_id).find('text').text(quiz_name);
+    // $('#' + quiz_id).parent().find('.quiz-name').text(quiz_span_name)
     $('#quiz-modal').modal('hide');
 })
 
