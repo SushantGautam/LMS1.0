@@ -79,7 +79,7 @@
                 url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
                 success: function (data) {
                     $("#quiz_form_ajax").html(data);
-                    $("#id_title").val('#Quick' + $("#id_title").val());
+                    $("#id_title").val('#Quick-' + $("#id_title").val());
                 }
             });
         });
@@ -92,7 +92,7 @@
                 success: function (data) {
                     $("#survey_form_ajax").html(data);
                     $('#smartwizard').smartWizard("reset");
-                    $("#id_Survey_Title").val('#Quick' + $("#id_Survey_Title").val());
+                    $("#id_Survey_Title").val('#Quick-' + $("#id_Survey_Title").val());
                 }
             });
         });
