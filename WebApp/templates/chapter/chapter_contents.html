@@ -93,7 +93,7 @@
 <body>
 
 <div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative">
-    <a href="javascript:void(0)" class="back-btn-content" style="position: absolute; top:19px;left:0pxx; font-size:20px">
+    <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content" style="position: absolute; top:19px;left:0pxx; font-size:20px">
             <i class="fa fa-arrow-left"></i>
     </a> 
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>

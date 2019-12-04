@@ -386,7 +386,7 @@ $(document).ready(function () {
                     scroll: false,
                     grid: [50, 20],
                     cursor: "move",
-                    handle: '#draghanle',
+                    handle: '.options',
                     stop: function () {
                         var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
                         var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
@@ -450,7 +450,7 @@ $(document).ready(function () {
                     scroll: false,
                     grid: [50, 20],
                     cursor: "move",
-                    handle: '#draghanle',
+                    handle: '.options',
                     stop: function () {
                         var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
                         var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
@@ -1857,7 +1857,7 @@ $(document).ready(function () {
                             <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
                         </span>
 
-                        <span style="float:right ">
+                        <spannewpage style="float:right ">
                             <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
                         </span>
                  </div>
