@@ -269,7 +269,7 @@ a:hover, a:active, a:focus {
 
 .thumbnail-slider {
     position: absolute;
-    border: 3px solid green;
+    border: 3px solid black;
     padding: 10px;
     height: 10vh;
     bottom: 5;
@@ -389,7 +389,7 @@ a:hover, a:active, a:focus {
     left: 0;
     right: 0;
     position: relative;
-    padding: 20px !important;
+    padding-bottom: 20px !important;
     padding-top: 0 !important;
 }
 
