@@ -687,7 +687,13 @@ input.call-picker {
     border: 1px solid #ddd;
 }
 
+.quiz-div:hover .options {
+    display: block;
+}
 
+.quiz-div:hover {
+    border: 1px solid #ddd;
+}
 /* =================tabs position=================== */
 .tabs {
 
