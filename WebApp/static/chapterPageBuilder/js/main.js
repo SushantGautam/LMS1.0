@@ -156,6 +156,7 @@ $(document).ready(function () {
                 var a = document.getElementsByClassName("current")[0];
                 $('#' + a.id).append(dom);
                 $('#editor' + id).summernote({
+                    fontSizes: ['10', '11', '12', '14', '16', '18', '20', '24', '36', '48'],
                     toolbar: [
                         ['style', ['style']],
                         ['font', ['bold', 'underline', 'clear']],
@@ -2118,7 +2119,7 @@ $('#quiz-submit').on('click', function () {
         $('#' + quiz_id).removeAttr('href');
     }
     $('#' + quiz_id).find('text').text(quiz_name);
-    // $('#' + quiz_id).parent().find('.quiz-name').text(quiz_span_name)
+    $('#' + quiz_id).parent().find('.quiz-name').text(quiz_span_name)
     $('#quiz-modal').modal('hide');
 })
 
