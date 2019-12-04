@@ -671,6 +671,24 @@
                             });
                         }
 
+                        if (div == 'quizdiv') {
+                            $.each(div_value, function (css, css_value) {
+                                link = "";
+                                if (css_value.hasOwnProperty('link')) {
+                                    link = "href = " + css_value.link;
+                                }
+                                $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                    <a ${link} target="_blank">
+                                        <svg viewBox="0 0 56 18">
+                                            <text x="0" y="15">${css_value.quiz_btn_name}</text>
+                                        </svg>
+                                    </a>
+                                </div>
+                            `)
+                            });
+                        }
+
                         if (div == 'pdf') {
                             $.each(div_value, function (css, css_value) {
                                 $('#page' + key).append(`
