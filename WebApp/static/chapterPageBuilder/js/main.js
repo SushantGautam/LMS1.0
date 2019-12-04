@@ -426,7 +426,7 @@ $(document).ready(function () {
                             <a class="btn btn-button" ${quiz_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
                             
                             <svg viewBox="0 0 56 18">
-                                <text x="0" y="15">${name}</text>
+                                <text x="-1" y="10">${name}</text>
                             </svg>
                             </a>
                         </div>
@@ -1026,7 +1026,7 @@ $(document).ready(function () {
             $('#quiz-modal').modal('show');
         });
 
-        $('.btn-div').resizable({
+        $('.quiz-div').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
