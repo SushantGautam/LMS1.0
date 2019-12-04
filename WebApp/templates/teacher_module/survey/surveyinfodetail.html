@@ -38,29 +38,29 @@
                 //    $("#dynamic").text("Paused");
                 //}
 
-                if (current_progress >= 100) {
-                    //clearInterval(interval);
-                    //location.reload();
-                    $.ajax({
-                        type: "GET",
-                        url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
-                        success: function (data) {
-                            obj = JSON.parse(data[0]);
-                            NumberofParticipants = JSON.parse(data[1]);
-                            for (var i = 0; i < obj.length; i++) {
-                                $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
-                                console.log($("#progress" + obj[i].pk).css('width'));
-                                $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
-                                $("#Participants").html(NumberofParticipants);
-                                console.log($("#progress_span" + obj[i].pk).html());
-                                console.log(obj[i].pk)
-                            }
-                        },
-                        complete: function () {
-                            current_progress = 0;
-                            $(".se-pre-con-ajax").fadeOut("fast");
-                        }
-                    });
+                if (current_progress >= 98) {
+                    clearInterval(interval);
+                    location.reload();
+                    // $.ajax({
+                    //     type: "GET",
+                    //     url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
+                    //     success: function (data) {
+                    //         obj = JSON.parse(data[0]);
+                    //         NumberofParticipants = JSON.parse(data[1]);
+                    //         for (var i = 0; i < obj.length; i++) {
+                    //             $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
+                    //             console.log($("#progress" + obj[i].pk).css('width'));
+                    //             $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
+                    //             $("#Participants").html(NumberofParticipants);
+                    //             console.log($("#progress_span" + obj[i].pk).html());
+                    //             console.log(obj[i].pk)
+                    //         }
+                    //     },
+                    //     complete: function () {
+                    //         current_progress = 0;
+                    //         $(".se-pre-con-ajax").fadeOut("fast");
+                    //     }
+                    // });
                 }
 
             }, 1000);
