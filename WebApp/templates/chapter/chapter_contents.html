@@ -85,14 +85,14 @@
             font-size: 18px;
         }
     }
-    .focus:focus {
-        color: red;
+       .focus-page:focus {
+        color:blue;
       }
 </style>
 </head>
 <body>
 
-<div id="mySidenav" class="sidenav" style="z-index: 999; position:relative">
+<div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <div class="profile clearfix">
         
@@ -111,7 +111,7 @@
 
     <h4  style=" color:white ;text-align:center" >Chapter Lists</h4>
     {% for chapter in chapterList  %}
-        <a class="focus" href="{% url 'contentviewer' course.pk chapter.pk %}">{{chapter.Chapter_No}}. {{chapter.Chapter_Name}}</a>
+        <a class="focus-page" href="{% url 'contentviewer' course.pk chapter.pk %}">{{chapter.Chapter_No}}. {{chapter.Chapter_Name}}</a>
     {% endfor %}
     <div class="side-bar-content hidden-small" style="position: absolute; bottom:0; display:inline-block">
 
@@ -664,6 +664,24 @@
                                     <a ${link} target="_blank">
                                         <svg viewBox="0 0 56 18">
                                             <text x="0" y="15">${css_value.btn_name}</text>
+                                        </svg>
+                                    </a>
+                                </div>
+                            `)
+                            });
+                        }
+
+                        if (div == 'quizdiv') {
+                            $.each(div_value, function (css, css_value) {
+                                link = "";
+                                if (css_value.hasOwnProperty('link')) {
+                                    link = "href = " + css_value.link;
+                                }
+                                $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                    <a ${link} target="_blank">
+                                        <svg viewBox="0 0 56 18">
+                                            <text x="0" y="15">${css_value.quiz_btn_name}</text>
                                         </svg>
                                     </a>
                                 </div>

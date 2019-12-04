@@ -407,6 +407,68 @@ $(document).ready(function () {
         }
     }
 
+    class Quiz {
+        constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz') {
+            let id = (new Date).getTime();
+            let position = {top, left, height, width};
+            let quiz_link = ""
+            if (link != null) {
+                quiz_link = 'href = ' + link
+            }
+            let html = `
+                        <div class="quiz-div">
+                            <div class="options">
+                                <i class="fas fa-trash" id=${id}></i>
+                                <i class="fas fa-link"   id=${id} ></i>
+                                <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            
+                            </div> 
+                            <a class="btn btn-button" ${quiz_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                            
+                            <svg viewBox="0 0 56 18">
+                                <text x="-1" y="10">${name}</text>
+                            </svg>
+                            </a>
+                        </div>
+        
+                `;
+
+            // href = ${link}
+            this.renderDiagram = function () {
+                // dom includes the html,css code with draggable property
+                let dom = $(html).css({
+                    "position": "absolute",
+                    "top": position.top,
+                    "left": position.left,
+                    "height": position.height,
+                    "width": position.width,
+                }).draggable({
+                    //Constrain the draggable movement only within the canvas of the editor
+                    containment: "#tabs-for-download",
+                    scroll: false,
+                    grid: [50, 20],
+                    cursor: "move",
+                    handle: '#draghanle',
+                    stop: function () {
+                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                        $(this).css("left", l);
+                        $(this).css("top", t);
+                        $(this).css("height", h);
+                        $(this).css("width", w);
+                    }
+                });
+
+                var a = document.getElementsByClassName("current")[0];
+                $('#' + a.id).append(dom);
+                // canvas.append(dom);
+                // Making element Resizable
+
+            };
+        }
+    }
 
     // ====For PDF======
     class PDF {
@@ -887,7 +949,7 @@ $(document).ready(function () {
             var btn_id = parseInt(e.currentTarget.id) + 1
 
             $('#btn-form input[type=text]').val('');
-            $('#btn-name').val($(this).parent().parent().find('a').text());
+            $('#btn-name').val($(this).parent().parent().find('a').text().trim());
             var link = $(this).parent().parent().find('a').attr('href');
             if (link != undefined) {
                 link = link.replace('http://', '');
@@ -899,6 +961,72 @@ $(document).ready(function () {
         });
 
         $('.btn-div').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 50,
+            minHeight: 30,
+            stop: function (e, ui) {
+                // var parent = ui.element.parent();
+                ui.element.css({
+                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+                });
+            },
+        });
+    }
+
+    function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz') {
+        const quiz = new Quiz(top, left, link, height, width, name);
+
+        quiz.renderDiagram();
+
+        // $('.btn').attr('contentEditable', true);
+
+        $('.btn').on('click', function () {
+            // alert('say me more!!')
+        })
+
+        const div1 = $('i').parent();
+
+        $('.fa-trash').click(function (e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+        });
+
+        $('.fa-link').bind("click", function (e) {
+            $.ajax({
+                url: `/quiz/api/v1/quiz/?course_code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+                processData: false,
+                method: 'GET',
+                success: function(data){
+                    console.log(data)
+                    $('#myTable').empty()
+                    for(var i = 0; i < data.length; i++){
+                        $('#myTable').append(`<tr>
+                            <td>
+                                ${data[i].title}
+                            </td>
+                            <td>
+                                <button type="button" class="selectquiz" value="${data[i].pk}">Select</button>
+                            </td>
+                        </tr>`);
+                    }
+                },
+            });
+            var btn_id = parseInt(e.currentTarget.id) + 1
+            $('#quiz-form input[type=text]').val('');
+            $('#quiz-btn-name').val($(this).parent().parent().find('a').text().trim());
+            var link = $(this).parent().parent().find('a').attr('href');
+            if (link != undefined) {
+                link = link.replace('http://', '');
+            }
+            $('#quiz-link').val(link);
+
+            $('#quiz_id').val(btn_id);
+            $('#quiz-modal').modal('show');
+        });
+
+        $('.quiz-div').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
@@ -1543,6 +1671,10 @@ $(document).ready(function () {
                 ButtonFunction($(this).css("top"),
                     $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
             }
+            if (value.classList.contains('quiz-div')) {
+                QuizFunction($(this).css("top"),
+                    $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
+            }
             if (value.classList.contains('pdfdiv')) {
                 PDFFunction($(this).css("top"),
                     $(this).css("left"), $(this).find('object').attr('data'), $(this).css("height"), $(this).css("width"));
@@ -1596,6 +1728,12 @@ $(document).ready(function () {
             );
         } else if (ui.helper.hasClass('buttons')) {
             ButtonFunction(
+                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+                null, '10%', '15%'
+            );
+        } else if (ui.helper.hasClass('quiz')) {
+            QuizFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
                 null, '10%', '15%'
@@ -1831,9 +1969,24 @@ $(document).ready(function () {
                                 css_value.tops,
                                 css_value.left,
                                 css_value.link,
-                                css_value.height,
+                                Buttoncss_value.height,
                                 css_value.width,
                                 css_value.btn_name
+                            );
+                        });
+                    }
+
+                    if (div == 'quizdiv') {
+                        $.each(div_value, function (css, css_value) {
+                            css_string = JSON.stringify(css_value)
+
+                            QuizFunction(
+                                css_value.tops,
+                                css_value.left,
+                                css_value.link,
+                                css_value.height,
+                                css_value.width,
+                                css_value.quiz_btn_name
                             );
                         });
                     }
@@ -1950,6 +2103,28 @@ $('#btn-submit').on('click', function () {
 
 // ======================================================================
 
+// quiz Form Submit
+$('#quiz-submit').on('click', function () {
+    var quiz_name = $('#quiz-btn-name').val();
+    var quiz_link = $('#quiz-link').val();
+    var quiz_id = $('#quiz_id').val();
+    if (quiz_link != "") {
+        $('#' + quiz_id).attr({
+            "href": `/${quiz_link}`
+        });
+    } else {
+        $('#' + quiz_id).removeAttr('href');
+    }
+    $('#' + quiz_id).find('text').text(quiz_name);
+    $('#quiz-modal').modal('hide');
+})
+
+$('#myTable').on('click', '.selectquiz', function(){
+    $('#quiz-name').val($(this).closest('td').prev('td').text().trim())
+    $('#quiz-link').val(`quiz/quiz${$(this).val().trim()}/take/`)
+})
+// ======================================================================
+
 // background color for pages
 $('#tabs-for-download').click(function(){
         
@@ -2034,7 +2209,7 @@ async function setThumbnails() {
             'background-repeat': 'no-repeat'
         })
     })
-    await html2canvas($('.current')[0],).then(canvas => {
+    html2canvas($('.current')[0],).then(canvas => {
         $('.pagenumber').each(function () {
             if (id == this.value) {
                 if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
