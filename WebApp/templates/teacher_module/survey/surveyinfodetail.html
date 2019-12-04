@@ -34,16 +34,16 @@
             });
 
             var interval = setInterval(function () {
-                //if ($('#chk').prop('checked')) {
+                if ($('#chk').prop('checked')) {
 
                 current_progress += 10;
                 $("#dynamic")
                     .css("width", current_progress + "%")
                     .attr("aria-valuenow", current_progress)
                     .text("Refreshing In :" + (10 - (current_progress / 10)));
-                //} else {
-                //    $("#dynamic").text("Paused");
-                //}
+                } else {
+                   $("#dynamic").text("Paused");
+                }
 
                 if (current_progress >= 98) {
                     clearInterval(interval);
