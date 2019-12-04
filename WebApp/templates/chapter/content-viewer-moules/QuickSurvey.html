@@ -1,5 +1,14 @@
-<div id="survey_content_modal" class="modal fade" style="height: -webkit-fill-available;">
-    <div class="modal-dialog" style="width: fit-content">
+<style>
+    .selector {
+        width: auto !important;
+        float: left !important;
+    }
+
+</style>
+
+<div id="survey_content_modal" class="modal fade"
+     style="height: -webkit-fill-available;    width: -webkit-fill-available;">
+    <div class="modal-dialog">
         <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -16,9 +25,11 @@
     </div>
 </div>
 
-<div id="quiz_create_popup" class="modal fade" style="height: -webkit-fill-available;">
-    <div class="modal-dialog" style="width: fit-content">
-        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+<div id="quiz_create_popup" class="modal fade"
+     style="height: -webkit-fill-available;     width: -webkit-fill-available;">
+    <div class="modal-dialog">
+        <div class="modal-content"
+             style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;width: -webkit-fill-available">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Create Quiz</h4>
@@ -34,9 +45,10 @@
     </div>
 </div>
 
-<div id="question_form_popup" class="modal fade" style="height: -webkit-fill-available;">
-    <div class="modal-dialog" style="width: fit-content">
-        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+<div id="question_form_popup" class="modal fade" style="height: -webkit-fill-available;width: -webkit-fill-available">
+    <div class="modal-dialog" style="width: -webkit-fit-content">
+        <div class="modal-content"
+             style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;width: -webkit-fill-available">
             <div class="modal-header">
                 <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title" id="question_model_title">Add Question</h4>
@@ -67,6 +79,7 @@
                 url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
                 success: function (data) {
                     $("#quiz_form_ajax").html(data);
+                    $("#id_title").val('#Quick-' + $("#id_title").val());
                 }
             });
         });
@@ -79,7 +92,7 @@
                 success: function (data) {
                     $("#survey_form_ajax").html(data);
                     $('#smartwizard').smartWizard("reset");
-
+                    $("#id_Survey_Title").val('#Quick-' + $("#id_Survey_Title").val());
                 }
             });
         });

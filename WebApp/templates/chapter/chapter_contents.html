@@ -503,6 +503,15 @@
         'wrapAround': true
     });
 
+    // $('a').on('click', 'img', function(){
+    //     console.log('hdjsf')
+    //     if($(this).hasAttribute('data-lightbox')){
+    //         return false;
+    //     }
+    // }).dblclick(function () {                
+    //     window.location = this.href;
+    //     return false;
+    // });
     document.addEventListener('visibilitychange', function () {
         pauseAllVideos(); // change tab text for demo
     })
@@ -528,7 +537,7 @@
             }
 
             if (e.keyCode == '70') {
-                var hasFocus = $('input').is(':focus') || $('.note-editable').is(':focus');
+                var hasFocus = $('input, textarea').is(':focus') || $('.note-editable').is(':focus');
                 if (hasFocus) {
                     return
                 }
@@ -719,7 +728,7 @@
                         }
 
                         if(div == 'backgroundcolor'){
-                            $('#page' + key).css('background-color', div_value)
+                            $('#container').css('background-color', div_value)
                         }
                     });
 
@@ -817,6 +826,7 @@
         $('#chatmessageinput').summernote({
             toolbar: []
         });
+        $('#chatmessageinput').parent().find('.note-statusbar').remove();
     });
 
 
@@ -863,6 +873,46 @@
         }
 
     });
+
+
+
+    {% if ifteacher %}
+
+        $('#forceScreen').change(function () {
+            updatePageByTeacher();
+        });
+
+        var OnlineMem = [];
+        function updateStudentOnlineBox(Newdata = null) {
+            if (Newdata.sender_id) {
+                OnlineMem[Newdata.sender_id] = {
+                    sender_name: Newdata.sender_name,
+                    sender_icon: Newdata.sender_icon,
+                    isteacher: Newdata.isteacher,
+                    lastUpdate: new Date().toISOString(),
+                };
+            }
+
+            $('#friend-list').html('');
+            for (var eachuser in OnlineMem) {
+                console.log(eachuser)
+                $('#friend-list').append(`<li class=" ">
+                                        <a href="#" class="clearfix">
+                                            <img src="` + OnlineMem[eachuser].sender_icon + `" alt="" class="img-circle"><br>
+
+` + OnlineMem[eachuser].sender_name + `<br>
+                             <time style=" font-size: 8px;"  class="timeago" datetime= "` + OnlineMem[eachuser].lastUpdate + `"> </time>
+
+
+                                        </a>
+
+                                    </li>`)
+            }
+            $('time.timeago').timeago();
+        }
+
+    {%  endif %}
+
 
 
     function changeThumbScroll() {
@@ -946,28 +996,28 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
 
 <script>
-        let idleTimer = null;
-        let idleState = false;
-        
-        function showFoo(time) {
-          clearTimeout(idleTimer);
-          if (idleState == true) {
+    let idleTimer = null;
+    let idleState = false;
+
+    function showFoo(time) {
+        clearTimeout(idleTimer);
+        if (idleState == true) {
             $("#prev-btn , #next-btn , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
-           
-          }
-          idleState = false;
-          idleTimer = setTimeout(function() {
-            $("#prev-btn , #next-btn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
-           
-            idleState = true;
-          }, time);
+
         }
-        
+        idleState = false;
+        idleTimer = setTimeout(function () {
+            $("#prev-btn , #next-btn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+
+            idleState = true;
+        }, time);
+    }
+
+    showFoo(2000);
+
+    $(window).mousemove(function () {
         showFoo(2000);
-        
-        $(window).mousemove(function(){
-            showFoo(2000);
-        });
+    });
 </script>
 <script>
 
@@ -1103,44 +1153,6 @@
         $(".se-pre-con").fadeOut("slow");
         ;
     });
-
-
-    {% if ifteacher %}
-
-        $('#forceScreen').change(function () {
-            updatePageByTeacher();
-        });
-
-        var OnlineMem = [];
-        function updateStudentOnlineBox(Newdata = null) {
-            if (Newdata.sender_id) {
-                OnlineMem[Newdata.sender_id] = {
-                    sender_name: Newdata.sender_name,
-                    sender_icon: Newdata.sender_icon,
-                    isteacher: Newdata.isteacher,
-                    lastUpdate: new Date().toISOString(),
-                };
-            }
-
-            $('#friend-list').html('');
-            for (var eachuser in OnlineMem) {
-                console.log(eachuser)
-                $('#friend-list').append(`<li class=" ">
-                                        <a href="#" class="clearfix">
-                                            <img src="` + OnlineMem[eachuser].sender_icon + `" alt="" class="img-circle"><br>
-
-` + OnlineMem[eachuser].sender_name + `<br>
-                             <time style=" font-size: 8px;"  class="timeago" datetime= "` + OnlineMem[eachuser].lastUpdate + `"> </time>
-
-
-                                        </a>
-
-                                    </li>`)
-            }
-            $('time.timeago').timeago();
-        }
-
-    {%  endif %}
 
 
 </script>

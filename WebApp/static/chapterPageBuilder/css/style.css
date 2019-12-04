@@ -766,7 +766,7 @@ input.call-picker {
     margin: auto;
     padding: 0;
     border: 1px solid #888;
-    width: fit-content;
+    width: -webkit-fill-available;
     /* height:300px; */
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     -webkit-animation-name: animatetop;
@@ -1271,3 +1271,16 @@ span.btnlink input {
 }
 
 /* end of mediafile css */
+
+/* page background color change function */
+
+.page-background{
+    position: absolute;
+    right: 0;
+    top: -30px;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+}
+
+/* end of page background color */

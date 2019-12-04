@@ -615,7 +615,7 @@ class CourseInfoDetailView(DetailView):
                                                    chapter_code=None)  # exam type
         context['numberOfQuizExclExams'] = Quiz.objects.filter(
             chapter_code__in=context['chapters'].values_list('pk'),
-            exam_paper=False, )
+            exam_paper=False, course_code=self.kwargs.get('pk'))
         context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
         context['exam_quiz'] = Quiz.objects.filter(exam_paper=True, course_code=self.object)
         return context

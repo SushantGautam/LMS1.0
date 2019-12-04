@@ -2,84 +2,97 @@
 {% load static %}
 
 {% block stylesheets %}
-  <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item" aria-current="page">
-    <a href="{% url 'question_teachers' %}">Survey</a>
-  </li>
-  <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'question_teachers' %}">Survey</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
 
 {% block content %}
-  {% include 'survey/common/details.html' %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/highchart_data.js' %}"></script>
+
+    {% include 'survey/common/details.html' %}
 {% endblock %}
 
 {% block customjss %}
-  <script>
-      $(document).ready(function () {
-          var current_progress = 0;
-          var interval = setInterval(function () {
-              //if ($('#chk').prop('checked')) {
 
-              current_progress += 10;
-              $("#dynamic")
-                  .css("width", current_progress + "%")
-                  .attr("aria-valuenow", current_progress)
-                  .text("Refreshing In :" + (10 - (current_progress / 10)));
-              //} else {
-              //    $("#dynamic").text("Paused");
-              //}
 
-              if (current_progress >= 100) {
-                  //clearInterval(interval);
-                  //location.reload();
-                  $.ajax({
-                      type: "GET",
-                      url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
-                      success: function (data) {
-                          obj = JSON.parse(data);
-                          for (var i = 0; i < obj.length; i++) {
-                              $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
-                              console.log($("#progress" + obj[i].pk).css('width'));
-                              $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
-                              console.log($("#progress_span" + obj[i].pk).html());
-                              console.log(obj[i].pk)
-                          }
-                      },
-                      complete: function () {
-                          current_progress = 0;
-                          $(".se-pre-con-ajax").fadeOut("fast");
-                      }
-                  });
-              }
 
-          }, 1000);
-      });
+    <script>
+        $(document).ready(function () {
+            var current_progress = 0;
+            var interval = setInterval(function () {
+                //if ($('#chk').prop('checked')) {
 
-  </script>
-  <script>
-      $('#retakeSurveyBtn').on('click', function () {
+                current_progress += 10;
+                $("#dynamic")
+                    .css("width", current_progress + "%")
+                    .attr("aria-valuenow", current_progress)
+                    .text("Refreshing In :" + (10 - (current_progress / 10)));
+                //} else {
+                //    $("#dynamic").text("Paused");
+                //}
 
-          $.ajax({
-              type: "GET",
-              data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-              url: "{% url 'teacher_surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#surveyForm").html(data);
-              },
-              complete: function () {
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              }
-          });
-      });
-  </script>
-  <script>
-      function survey_create_content(response) {
-          //location.reload();
-          console.log(response['teacher_url']);
-          window.location.href = String(response['teacher_url']);
-      }
-  </script>
+                if (current_progress >= 100) {
+                    //clearInterval(interval);
+                    //location.reload();
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
+                        success: function (data) {
+                            obj = JSON.parse(data[0]);
+                            NumberofParticipants = JSON.parse(data[1]);
+                            for (var i = 0; i < obj.length; i++) {
+                                $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
+                                console.log($("#progress" + obj[i].pk).css('width'));
+                                $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
+                                $("#Participants").html(NumberofParticipants);
+                                console.log($("#progress_span" + obj[i].pk).html());
+                                console.log(obj[i].pk)
+                            }
+                        },
+                        complete: function () {
+                            current_progress = 0;
+                            $(".se-pre-con-ajax").fadeOut("fast");
+                        }
+                    });
+                }
+
+            }, 1000);
+        });
+
+    </script>
+    <script>
+        $('#retakeSurveyBtn').on('click', function () {
+
+            $.ajax({
+                type: "GET",
+                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+                url: "{% url 'teacher_surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#surveyForm").html(data);
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+    </script>
+    <script>
+        function survey_create_content(response) {
+            //location.reload();
+            console.log(response['teacher_url']);
+            window.location.href = String(response['teacher_url']);
+        }
+    </script>
+
+
+
+
+
 {% endblock %}

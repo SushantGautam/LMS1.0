@@ -128,12 +128,13 @@
             </div>
 
             <table class="table">
+                {% if quizcount %}
+                    <tr>
+                        <td style="border-top:0 ">
+                            <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
+    width: -webkit-fill-available;
+">
 
-                <tr>
-                    <td style="border-top:0 ">
-                        <div class="col-md-8 col-sm-8 col-xs-8 no-padding">
-                            Number of Exams
-                            {% if quizcount %}
                                 <div class="panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
 
                                     <div class="panel panel-default">
@@ -142,7 +143,8 @@
                                                 <a class="collapsed" role="button" data-toggle="collapse"
                                                    data-parent="#accordionm" href="#collapseTwoc" aria-expanded="false"
                                                    aria-controls="collapseTwoc">
-                                                    View All Exams
+                                                    Exams: ({{ quizcount.count }}) <i
+                                                        class="fa fa-angle-double-down"></i>
                                                 </a>
                                             </h4>
                                         </div>
@@ -152,7 +154,10 @@
                                                 {% for eachquiz in quizcount %}
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
-                                                        <a href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Exam</a>
+                                                        {% if not eachquiz.draft %}
+                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
+                                                                Exam</a>
+                                                        {% endif %}
                                                     {% elif  "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
                                                                   href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
@@ -175,38 +180,112 @@
                                     </div>
 
                                 </div>
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td style="border-top:0; ">
-                        {{ quizcount.count }}
+                            </div>
 
-                    </td>
-                    <td style="border-top:0; ">
-                        {% if 'students' in request.path %}
-                        {% else %}
-                            <button type="button" class="btn qts-button" id="exam_paper_popup" data-toggle="modal"
-                                    data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
-                            </button>
-                        {% endif %}
-                    </td>
-                </tr>
+
+                        </td>
+                        {#                        <td style="border-top:0; ">#}
+                        {#                            #}
+                        {##}
+                        {#                        </td>#}
+
+                        <td style="border-top:0; ">
+                            {% if 'students' in request.path %}
+                            {% else %}
+                                <button type="button" class="btn qts-button" id="exam_paper_popup"
+                                        data-toggle="modal"
+                                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    No Active Exams
+                    <hr>
+                {% endif %}
                 <tr>
-                    <td>
-                        <div class="col-md-8 col-sm-8 col-xs-8 no-padding">
-                            Number of Survey
-                        </div>
-                    </td>
-                    <td>
-                        {{ surveycount.count }}
-                    </td>
+                    {% if surveycount %}
+                        {#                        <td>#}
+                        {#                            <div class="col-md-8 col-sm-8 col-xs-8 no-padding">#}
+                        {#                                Number of Survey#}
+                        {#                            </div>#}
+                        {#                        #}
+                        {#                        </td>#}
+                        {#                        <td>#}
+                        {#                            {{ surveycount.count }}#}
+                        {#                        </td>#}
+                        <td style="border-top:0 ">
+                            <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
+    width: -webkit-fill-available;
+">
+
+                                <div class="panel-group" id="accordionmk" role="tablist" aria-multiselectable="true">
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwobbv">
+                                            <h4 class="panel-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse"
+                                                   data-parent="#accordionmk" href="#collapseTwocd"
+                                                   aria-expanded="false"
+                                                   aria-controls="collapseTwocd">
+                                                    Surveys: ({{ surveycount.count }}) <i
+                                                        class="fa fa-angle-double-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseTwocd" class="panel-collapse collapse" role="tabpanel"
+                                             aria-labelledby="headingTwobbv">
+                                            <div class="panel-body">
+                                                {% for eachquiz in surveycount %}
+                                                    <br> {{ eachquiz.Survey_Title }}
+                                                    {% if "students" in request.path %}-
+                                                        {% if not eachquiz.draft %}
+                                                            <a target="_blank"
+                                                               href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">Participate</a>
+                                                        {% endif %}
+                                                    {% elif  "teachers" in request.path %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/teachers/surveyinfodetail/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% else %}
+                                                        <br>   <a style="color: #0c83e4; font-size: large"
+                                                                  href="/survey/surveyinfo/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
+                                                        <p style="color: #00A000">
+                                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                                                        <p>
+                                                        <hr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </td>
+
+                    {% else %}
+                        No active surveys
+                        <hr>
+                    {% endif %}
+
                 </tr>
-                {% if numberOfQuizExclExams.count %}
-                    <tr>
+
+
+                <tr>
+                    {% if numberOfQuizExclExams.count %}
                         <td>
-                            Number of Quizs
-                            {% if numberOfQuizExclExams %}
-                                <div class="panel-group" id="accordionmo" role="tablist" aria-multiselectable="true">
+
+                            <div style="width: -webkit-fill-available;">
+                                <div class="panel-group" id="accordionmo" role="tablist"
+                                     aria-multiselectable="true">
 
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="headingTwobbx">
@@ -215,7 +294,8 @@
                                                    data-parent="#accordionmo" href="#collapseTwocn"
                                                    aria-expanded="false"
                                                    aria-controls="collapseTwocn">
-                                                    View All Quizs
+                                                    Quizzes: ({{ numberOfQuizExclExams.count }}) <i
+                                                        class="fa fa-angle-double-down"></i>
                                                 </a>
                                             </h4>
                                         </div>
@@ -225,7 +305,8 @@
                                                 {% for eachquiz in numberOfQuizExclExams %}
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
-                                                        <a href="/quiz/quiz{{ eachquiz.pk }}/take/">Take Quiz</a>
+                                                        <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
+                                                            Quiz</a>
                                                     {% elif  "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
                                                                   href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
@@ -236,7 +317,8 @@
                                                         <hr>
                                                     {% else %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
-                                                                  href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a><br>
+                                                                  href="/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
+                                                        <br>
                                                         <p style="color: #00A000">
                                                             {{ eachquiz.draft|yesno:"Inactive, Active" }}
                                                         <p>
@@ -248,13 +330,18 @@
                                     </div>
 
                                 </div>
-                            {% endif %}
+                            </div>
+
                         </td>
-                        <td>
-                            {{ numberOfQuizExclExams.count }}
-                        </td>
-                    </tr>
-                {% endif %}
+                        {#                        <td>#}
+                        {#                            #}
+                        {#                        </td>#}
+                    {% else %}
+                        No Active Quizzes
+                        <hr>
+                    {% endif %}
+                </tr>
+
             </table>
             <!-- <p>
 
@@ -333,20 +420,20 @@
 
                     {% endfor %}
                 </div>
-{#                <div>#}
-{#                    <ul>#}
-{#                        {% for q in exam_quiz %}#}
-{#                            <li>{{ q.title }}</li>#}
-{#                        {% endfor %}#}
-{#                    </ul>#}
-{#                </div>#}
+                {#                <div>#}
+                {#                    <ul>#}
+                {#                        {% for q in exam_quiz %}#}
+                {#                            <li>{{ q.title }}</li>#}
+                {#                        {% endfor %}#}
+                {#                    </ul>#}
+                {#                </div>#}
             </div>
         </div>
     </div>
 </div>
 
 <div id="quiz_create_popup" class="modal fade">
-    <div class="modal-dialog" style="width: fit-content">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>

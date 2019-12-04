@@ -26,12 +26,12 @@
 
         <img src=" {{ memberinfo.Avatar }}" class="thumbnail" alt="...">
 
-<div style="margin: auto; width: 50%; text-align: center">
-        <h4><b>{{ memberinfo.username }}</b></h4>
-        <p>{{ memberinfo.first_name }} {{ memberinfo.last_name }}</p>
-        <p>{{ memberinfo.Member_Phone }}</p>
-        <p>{{ memberinfo.email }}</p>
-    </div>
+        <div style="margin: auto; width: 50%; text-align: center">
+            <h4><b>{{ memberinfo.username }}</b></h4>
+            <p>{{ memberinfo.first_name }} {{ memberinfo.last_name }}</p>
+            <p>{{ memberinfo.Member_Phone }}</p>
+            <p>{{ memberinfo.email }}</p>
+        </div>
     </div>
 
     <hr>
@@ -52,7 +52,13 @@
     <script src="{% static 'js/highchart_data.js' %}"></script>
 
     <script>
+        
         var chart = Highcharts.chart('container', {
+                credits: {
+    enabled: false
+},
+
+            
 
             title: {
                 text: 'Score obtained by {{ memberinfo.username }}'
@@ -152,6 +158,8 @@
                             verticalAlign: 'bottom'
                         }
                     }
+
+                    
                 }]
             }
 
@@ -194,6 +202,10 @@
                 plotShadow: false,
                 type: 'pie'
             },
+
+            credits: {
+    enabled: false
+},
             title: {
                 text: 'Total Quiz Played by {{ memberinfo.username }}'
             },

@@ -1,6 +1,8 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, permissions
+
 from . import models
 from . import serializers
-from rest_framework import viewsets, permissions
 
 
 class QuizViewSet(viewsets.ModelViewSet):
@@ -9,6 +11,8 @@ class QuizViewSet(viewsets.ModelViewSet):
     queryset = models.Quiz.objects.all()
     serializer_class = serializers.QuizSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['id', 'course_code']
 
 
 class MCQuestionViewSet(viewsets.ModelViewSet):
@@ -26,6 +30,7 @@ class TFQuestionViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TF_QuestionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class SAQuestionViewSet(viewsets.ModelViewSet):
     queryset = models.SA_Question.objects.all()
     serializer_class = serializers.SA_QuestionSerializer
@@ -38,15 +43,16 @@ class AnswerViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AnswerSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class ProgressViewSet(viewsets.ModelViewSet):
     """ViewSet for the OptionInfo class"""
     queryset = models.Progress.objects.all()
     serializer_class = serializers.ProgressSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class SittingViewSet(viewsets.ModelViewSet):
     """ViewSet for the OptionInfo class"""
     queryset = models.Sitting.objects.all()
     serializer_class = serializers.SittingSerializer
     permission_classes = [permissions.IsAuthenticated]
-

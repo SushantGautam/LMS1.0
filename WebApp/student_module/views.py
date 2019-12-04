@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.exceptions import PermissionDenied
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
@@ -432,7 +431,9 @@ class ParticipateSurvey(View):
         userId = self.request.user.id
         print(len(SubmitSurvey.objects.filter(Survey_Code__id=surveyId, Student_Code__id=userId)))
         if len(SubmitSurvey.objects.filter(Survey_Code__id=surveyId, Student_Code__id=userId)) > 0:
-            raise PermissionDenied("You can not participate multiple times")
+            messages.add_message(request, messages.ERROR,
+                                 'You have already submitted and can not participate multiple times')
+            return redirect('questions_student')
 
         submitSurvey = SubmitSurvey()
         submitSurvey.Survey_Code = SurveyInfo.objects.get(id=surveyId)
@@ -446,7 +447,7 @@ class ParticipateSurvey(View):
             answerObject.Question_Code = question
             answerObject.Submit_Code = submitSurvey
             answerObject.save()
-
+        messages.add_message(request, messages.SUCCESS, 'Your Survey has been submitted successfully.')
         return redirect('questions_student')
 
 
