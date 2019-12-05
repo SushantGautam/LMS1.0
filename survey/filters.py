@@ -10,4 +10,4 @@ class SurveyFilter(FilterSet):
 
     class Meta:
         model = SurveyInfo
-        fields = ['End_Date_gte','Start_Date_lte']
+        fields = ['End_Date_gte','Start_Date_lte', "Course_Code"]
