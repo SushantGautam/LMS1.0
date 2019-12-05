@@ -562,6 +562,7 @@ body {
     position: fixed;
     margin-top: 5vh;
     margin-left: 3vh;
+    z-index: 1;
 }
 
 .iframefullscreen:hover .iframefullscreenbtn {
