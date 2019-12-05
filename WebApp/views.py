@@ -1380,7 +1380,7 @@ def save_3d_file(request):
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
             name = (str(uuid.uuid4())).replace('-', '') + '&&&' + obj.name.split('.')[0] + '&&&' + str(
-                request.user.pk) + '.' + obj.name.split('.')[-1]
+                request.user.pk)
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)

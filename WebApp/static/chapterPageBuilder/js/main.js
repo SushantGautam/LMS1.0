@@ -559,8 +559,12 @@ $(document).ready(function () {
             }
             if (file != null) {
                 _3dobj = `
-                    <iframe src="${file}" width="100%" height="100%">
-                    </iframe>
+                    <model-viewer
+                    src="${file}"
+                    alt="Here is a 3D Object."
+                    auto-rotate
+                    camera-controls></model-viewer>
+
                 `
             } else {
                 _3dobj = "";
