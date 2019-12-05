@@ -36,7 +36,7 @@ class OptionInfoViewSet(viewsets.ModelViewSet):
     queryset = models.OptionInfo.objects.all()
     serializer_class = serializers.OptionInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_fields = ['id', 'QuestionInfo']
+    filter_fields = ['Question_Code']
 
 
 class SubmitSurveyViewSet(viewsets.ModelViewSet):
