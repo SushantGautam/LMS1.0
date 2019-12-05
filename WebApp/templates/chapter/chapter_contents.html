@@ -9,7 +9,6 @@
 {% endif %}
 
 
-<html>
 <head>
 
     <link rel="icon"
@@ -33,8 +32,18 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 
-</head>
+    <!-- Loads <model-viewer> for modern browsers: -->
+    <script type="module"
+            src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+    </script>
 
+    <!-- Loads <model-viewer> for old browsers like IE11: -->
+    <script nomodule
+            src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+    </script>
+
+
+</head>
 <body>
 <div class="se-pre-con"></div>
 <style>
@@ -49,7 +58,7 @@
         z-index: 1;
         top: 0;
         left: 0;
-        background-color:black;
+        background-color: black;
         overflow-x: hidden;
         transition: 0.5s;
         padding-top: 60px;
@@ -85,20 +94,21 @@
             font-size: 18px;
         }
     }
-       .focus-page:focus {
-        color:blue;
-      }
+
+    .focus-page:focus {
+        color: blue;
+    }
 </style>
-</head>
-<body>
+
 
 <div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative">
-    <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content" style="position: absolute; top:19px;left:0pxx; font-size:20px">
-            <i class="fa fa-arrow-left"></i>
-    </a> 
+    <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content"
+       style="position: absolute; top:19px;left:0pxx; font-size:20px">
+        <i class="fa fa-arrow-left"></i>
+    </a>
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <div class="profile clearfix">
-        
+
         <div class="profile_pic">
             <img src="/static/images/profile/male.jpg" alt="..." class="img-circle profile_img">
         </div>
@@ -108,51 +118,48 @@
             <span>Welcome,</span>
             <h2>nsdevil</h2>
         </div>
-        
+
     </div>
     <div class="white-hr"></div>
 
-    <h4  style=" color:white ;text-align:center" >Chapter Lists</h4>
-    {% for chapter in chapterList  %}
-        <a class="focus-page" href="{% url 'contentviewer' course.pk chapter.pk %}">{{chapter.Chapter_No}}. {{chapter.Chapter_Name}}</a>
+    <h4 style=" color:white ;text-align:center">Chapter Lists</h4>
+    {% for chapter in chapterList %}
+        <a class="focus-page"
+           href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
     {% endfor %}
     <div class="side-bar-content hidden-small" style="position: absolute; bottom:0; display:inline-block">
 
-       <ul style="display: inline-flex; list-style:none; padding: 0px !important">
-           <li>
-                <a data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()" data-original-title="FullScreen">
-                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                    </a>
+        <ul style="display: inline-flex; list-style:none; padding: 0px !important">
+            <li>
+                <a data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
+                   data-original-title="FullScreen">
+                    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                </a>
 
-           </li>
-           <li> 
+            </li>
+            <li>
                 <a data-toggle="tooltip" data-placement="top" title="" href="/profile/" data-original-title="Profile">
                     <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                 </a>
 
-           </li>
-           <li> 
-                <a data-toggle="tooltip" data-placement="top" title="" href="http://ublcloud.me/media/app/lms-app.apk" data-original-title="Download u-LMS Android App">
+            </li>
+            <li>
+                <a data-toggle="tooltip" data-placement="top" title="" href="http://ublcloud.me/media/app/lms-app.apk"
+                   data-original-title="Download u-LMS Android App">
                     <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
                 </a>
 
-           </li>
-           <li> 
+            </li>
+            <li>
                 <a data-toggle="tooltip" data-placement="top" title="" href="/logout" data-original-title="Logout">
                     <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                 </a>
 
-           </li>
-          
-       </ul>
+            </li>
 
-        
-        
-      
-        
+        </ul>
 
-        
-        
+
     </div>
 </div>
 
@@ -459,7 +466,6 @@
     </div>
 
 </body>
-</html>
 
 <!-- jQuery -->
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
@@ -749,7 +755,7 @@
                             });
                         }
 
-                        if(div == 'backgroundcolor'){
+                        if (div == 'backgroundcolor') {
                             $('#container').css('background-color', div_value)
                         }
                     });
