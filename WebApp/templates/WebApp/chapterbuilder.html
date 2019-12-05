@@ -518,54 +518,33 @@
                                     
                                     
                                 </div> 
-                                <br>
                                 
-                                <!-- <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="col-md-6">
-                                                <div class="radio">
-                                                    <label>
-                                                        <input type="radio" checked="" value="prequiz" id="optionsRadios1" name="optionsRadios"> Pre-Quiz
-                                                    </label>
-                                                </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                                <div class="radio">
-                                                    <label>
-                                                        <input type="radio" value="post-quiz" id="optionsRadios2" name="optionsRadios"> Post-Quiz
-                                                    </label>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                                <div class="row"> 
-                                     
-                                    <div class="col-md-3">
-                                            <label>Quiz</label>
-
-                                    </div> 
-                                    <div class="col-md-9">
-                                            <!-- <input type="text" name="quiz-name" id="quiz-name" style="width:100%"> -->
-                                            <input type="text" name="quiz-name" id="quiz-name" class="form-control" style="width: 100%;">
-
-                                    </div>
-                                    
-                                   
-                                </div> 
-                                <br>
                                 
-                                <input type="hidden" name="quiz-link" id="quiz-link">
+                              
+                               
+                                <hr>
+                                
+                                <!-- <input type="hidden" name="quiz-link" id="quiz-link"> -->
 
-                    <div class="row">
-                        <a href="{% url 'chapterinfo_detail' course chapter %}" target="_blank" id="quiz_create_link">
-                            Create
-                        </a>
-                    </div>
+                   
                    
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="form-control" id="myInput" type="text" placeholder="Search..">
-                            <br>
+                       
+                                <div class="new-quiz">
+                                        <a href="{% url 'chapterinfo_detail' course chapter %}" target="_blank" id="quiz_create_link">
+                                                <h5 > <span style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create New Quiz </span> </h5>
+                                            </a>
+                                       
+                                           
+                                    </div>
+                                    <hr>
+                                    
+                            <div class="select-quiz text-left">
+                                <h5>  Select Existing Quiz
+                                    </h5>
+                                <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                            </div>
                             <div class="modal-table-container" style="height:200px;overflow:auto" >
                                     <table class="table table-bordered table-striped">
                                             <thead>
@@ -583,12 +562,28 @@
                                             </tbody>
                                         </table>
 
-                            </div>
+                            </div> 
+                            <hr>
+                          
+                            <div class="row"> 
+                                     
+                                    <div class="col-md-4">
+                                            <label>Chosen Quiz</label>
+
+                                    </div> 
+                                    <div class="col-md-8">
+                                            <!-- <input type="text" name="quiz-name" id="quiz-name" style="width:100%"> -->
+                                            <input type="text" placeholder="none" name="quiz-name" id="quiz-name" class="form-control"  style="width: 100%;">
+
+                                    </div>
+                                    
+                                   
+                                </div> 
                            
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="border:none!important;">
                     <input type="hidden" id="quiz_id" value="">
                     <button type="button" id="quiz-submit" class="#">Submit</button>
                     <button type="button" class="#" data-dismiss="modal">Close</button>
