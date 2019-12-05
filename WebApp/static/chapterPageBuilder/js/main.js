@@ -563,7 +563,8 @@ $(document).ready(function () {
                     src="${file}"
                     alt="Here is a 3D Object."
                     auto-rotate
-                    camera-controls></model-viewer>
+                    camera-controls style="height: inherit;
+                    width: inherit;"></model-viewer>
 
                 `
             } else {
@@ -1586,7 +1587,7 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     _3dFunction(div.css('top'),
-                        div.css('left'), '/3DViewer/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname, div.css('height'), div.css('width'));
+                        div.css('left'), '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname, div.css('height'), div.css('width'));
                     div.remove()
                 },
                 error: function (data, status, errorThrown) {
