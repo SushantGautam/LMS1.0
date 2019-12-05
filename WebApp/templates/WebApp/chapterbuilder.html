@@ -405,7 +405,7 @@
                         <p>
 
                         </p>
-                        <a href="{% url 'chapterinfo_update' course chapter %}">
+                        <a href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
                             <span class="edit-type-btn" style="float:right; position:absolute; top:0;right:0">
                                 <i class="fas fa-edit" style="padding: 2px;"></i>
                             </span>
@@ -466,14 +466,6 @@
                             <span class="btnlink">
                     http://
                     <input type="text" name="btn-link" id="btn-link">
-                    </span> 
-                    <select class="select2_group form-control">
-                            <optgroup label="Alaskan/Hawaiian Time Zone">
-                            <option value="AK">Alaska</option>
-                            <option value="HI">Hawaii</option>
-                            </optgroup>
-                        
-                            </select>
 
                     </div>
                                
@@ -564,7 +556,11 @@
                                 
                                 <input type="hidden" name="quiz-link" id="quiz-link">
 
-                    
+                    <div class="row">
+                        <a href="{% url 'chapterinfo_detail' course chapter %}" target="_blank" id="quiz_create_link">
+                            Create
+                        </a>
+                    </div>
                    
                     <div class="row">
                         <div class="col-md-12">
@@ -764,6 +760,9 @@
         return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
     };
 
+    $('#quiz_create_link').click(function(){
+        $('#quiz-modal').modal('toggle');
+    })
     setTimeout(function () {
         $.ajax({
             url: "{% url 'retrieve-chapter-files' %}",
