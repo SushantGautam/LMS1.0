@@ -1,6 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, permissions
+from rest_framework import permissions
+from rest_framework import viewsets
 
+from quiz.filters import QuizFilter
 from . import models
 from . import serializers
 
@@ -11,8 +13,8 @@ class QuizViewSet(viewsets.ModelViewSet):
     queryset = models.Quiz.objects.all()
     serializer_class = serializers.QuizSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['id', 'course_code']
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = QuizFilter
 
 
 class MCQuestionViewSet(viewsets.ModelViewSet):
@@ -56,3 +58,6 @@ class SittingViewSet(viewsets.ModelViewSet):
     queryset = models.Sitting.objects.all()
     serializer_class = serializers.SittingSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_fields  = ['id', 'user']
+
+
