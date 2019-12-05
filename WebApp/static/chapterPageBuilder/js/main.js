@@ -2128,7 +2128,7 @@ $('#quiz-submit').on('click', function () {
         $('#' + quiz_id).removeAttr('href');
     }
     $('#' + quiz_id).find('text').text(quiz_name);
-    $('#' + quiz_id).parent().find('.quiz-name').text(quiz_span_name)
+    $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
     $('#quiz-modal').modal('hide');
 })
 
