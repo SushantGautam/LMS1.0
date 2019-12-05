@@ -133,7 +133,7 @@ $("#SaveBtn").on("click",function(e){
           );
         }
         if(value.classList.contains('_3dobj-div')){
-          link = $(this).find('iframe').attr('src');
+          link = $(this).find('model-viewer').attr('src');
   
           _3d.push(
             {

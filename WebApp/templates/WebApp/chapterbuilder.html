@@ -30,6 +30,17 @@
 
     <script src="{% static 'js/modernizr.js' %}"></script>
 
+
+    <!-- Loads <model-viewer> for modern browsers: -->
+    <script type="module"
+            src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+    </script>
+
+    <!-- Loads <model-viewer> for old browsers like IE11: -->
+    <script nomodule
+            src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+    </script>
+
     <title>Course Builder</title>
 </head>
 
@@ -160,13 +171,15 @@
         -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
         box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
         background-color: transparent;
-    } 
-    .edit-type-btn{
+    }
+
+    .edit-type-btn {
         display: none;
         transition: 0.5s;
     }
-    .chapter-description:hover .edit-type-btn{
-        display: block; 
+
+    .chapter-description:hover .edit-type-btn {
+        display: block;
         cursor: pointer;
     }
 
@@ -380,7 +393,7 @@
                 <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
                     <div class="editor-canvas" id="element-container">
                         <p id="tab1" class="tab-content-no   droppable editor-canvas current ">
-                            
+
                         </p>
                     </div>
                 </div>
@@ -401,7 +414,7 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <div class="chapter-description" id="chapter-description"style="position:relative">
+                    <div class="chapter-description" id="chapter-description" style="position:relative">
                         <p>
 
                         </p>
@@ -459,16 +472,16 @@
                 <div class="modal-body">
                     <!-- Modal Contents Here -->
                     <div class="col-md-12">
-                            <label>Display Name</label>
-                            <input type="text" name="btn-name" id="btn-name">
-                            <br>
-                            <label>Link</label>
-                            <span class="btnlink">
+                        <label>Display Name</label>
+                        <input type="text" name="btn-name" id="btn-name">
+                        <br>
+                        <label>Link</label>
+                        <span class="btnlink">
                     http://
                     <input type="text" name="btn-link" id="btn-link">
 
                     </div>
-                               
+
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" id="button_id" value="">
@@ -488,31 +501,27 @@
         <!-- Modal content-->
         <div id="quiz-link-chapter" class="modal-content">
             <form id="quiz-form">
-                <div class="modal-header"> 
+                <div class="modal-header">
                     <div class="row">
                         <div class="col-md-11">
-                                <h4 class="modal-title">Modal Header</h4>
+                            <h4 class="modal-title">Modal Header</h4>
 
                         </div>
                         <div class="col-md-1">
-                                <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;</button>
+                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                            </button>
 
                         </div>
                     </div>
-                    
-                 
+
+
                 </div>
                 <div class="modal-body" style="width: 100%;">
                     <!-- Modal Contents Here -->
-                    
-                            <div class="row"> 
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                        <label class="control-label">Display Name</label>
 
-                                </div>
-                                <div class="col-md-8 col-sm-8 col-xs-12">
-                                       
-                                        <input type="text" name="quiz-btn-name" id="quiz-btn-name" class="form-control" placeholder="Default Input"style="width: 100%;">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <label class="control-label">Display Name</label>
 
                                 </div>
                                     
@@ -668,13 +677,18 @@
             <div class="modal-body">
                 <!-- Modal Contents Here -->
                 <div>
-                    <label>Upload 3D file</label>
-                    <input type="file" name="_3dfile" id="_3dfile-link" accept=".obj"/>
+                    <label>Upload 3D file(.glb or .glft)</label>
+                    <input type="file" name="_3dfile" id="_3dfile-link" accept=".glb,.glft"/>
                 </div>
-                <div>
+                <div>For converting 3D files online,
+                    <a href="https://blackthread.io/gltf-converter/" target="_blank">
+                        Click Here.
+                    </a>
+                </div>
+                <!-- <div>
                     <label>Upload 3D file (MTL)</label>
                     <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
-                </div>
+                </div> -->
             </div>
             <div class="modal-footer">
                 <button type="button" id="link-3d-submit" class="#">Submit</button>
@@ -688,7 +702,6 @@
 <!-- End of link modal -->
 
 <script>
-        
 
 
     var data = {{ data | safe}};
@@ -706,7 +719,7 @@
     var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}'
     var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}'
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}'
-    
+
 
     $('#chapterlist').val(chapterID);
 
@@ -755,7 +768,7 @@
         return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
     };
 
-    $('#quiz_create_link').click(function(){
+    $('#quiz_create_link').click(function () {
         $('#quiz-modal').modal('toggle');
     })
     setTimeout(function () {
@@ -799,12 +812,12 @@
 </script>
 
 <script>
-    $(document).ready(function(){
-        $("#myInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#myTable tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
         });
     });
 </script>

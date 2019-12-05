@@ -1,3 +1,6 @@
+{% load readmore %}
+
+
 <div style="position: sticky; width: 100%; top: 0; z-index: 1">
 
     <div class="progress">
@@ -5,14 +8,13 @@
             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
             <span id="current-progress"></span>
         </div>
-        
+
     </div>
     <div class="custom-control custom-switch">
- <input type="checkbox" class="custom-control-input" id="chk" checked>
- <label class="custom-control-label" for="customSwitch1">Live Survey</label>
-</div
-   </div>
-<div class="clearfix"></div>
+        <input type="checkbox" class="custom-control-input" id="chk" checked>
+        <label class="custom-control-label" for="customSwitch1">Live Survey</label>
+    </div </div> <div class="clearfix">
+</div>
 
 <div class="container">
     <div class="row" id="surveyView">
@@ -91,148 +93,148 @@
 
                             <script>
 
-document.addEventListener("DOMContentLoaded", function(event) {
+                                document.addEventListener("DOMContentLoaded", function (event) {
 
-    $(function () {
-
-
-// Create the chart
-
-var options = {
-    chart: {
-        events: {
-            drilldown: function (e) {
-                if (!e.seriesOptions) {
-
-                    var chart = this;
+                                    $(function () {
 
 
+                                        // Create the chart
 
-                    // Show the loading label
-                    chart.showLoading('Loading ...');
+                                        var options = {
+                                            chart: {
+                                                events: {
+                                                    drilldown: function (e) {
+                                                        if (!e.seriesOptions) {
 
-                    setTimeout(function () {
-                        chart.hideLoading();
-                        chart.addSeriesAsDrilldown(e.point, series);
-                    }, 1000);
-                }
-
-            }
-        },
-        plotBorderWidth: 0
-    },
-
-                credits: {
-    enabled: false
-},
+                                                            var chart = this;
 
 
-    title: {
-        text: '',
-    },
-    //
-    // subtitle: {
-    //         text: 'Subtitle'
-    // },
-    //
-    xAxis: {
-        type: 'category',
-    },
-    //
-    yAxis: {
 
-        title: {
-            margin: 10,
-            text: 'Percentage(%)'
-        },
-    },
-    //
-    legend: {
-        enabled: false,
-    },
-    //
-    plotOptions: {
-        series: {
-            pointPadding: 0.2,
-            borderWidth: 0,
-            dataLabels: {
-                enabled: true,
-                 format: '{point.y:.1f}%'
-            }
-        },
-        pie: {
-            plotBorderWidth: 0,
-            allowPointSelect: true,
-            cursor: 'pointer',
-            size: '100%',
-            dataLabels: {
-                enabled: true,
-                format: '{point.name}: <b>{point.y}%</b>'
-            }
-        }
-    },
-    //
+                                                            // Show the loading label
+                                                            chart.showLoading('Loading ...');
+
+                                                            setTimeout(function () {
+                                                                chart.hideLoading();
+                                                                chart.addSeriesAsDrilldown(e.point, series);
+                                                            }, 1000);
+                                                        }
+
+                                                    }
+                                                },
+                                                plotBorderWidth: 0
+                                            },
+
+                                            credits: {
+                                                enabled: false
+                                            },
 
 
-    tooltip: {
-    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
-  },
-    series: [{
-        name: "",
-        colorByPoint: true,
-        data: [
-            {% for option in question.optioninfo.all %}
+                                            title: {
+                                                text: '',
+                                            },
+                                            //
+                                            // subtitle: {
+                                            //         text: 'Subtitle'
+                                            // },
+                                            //
+                                            xAxis: {
+                                                type: 'category',
+                                            },
+                                            //
+                                            yAxis: {
+
+                                                title: {
+                                                    margin: 10,
+                                                    text: 'Percentage(%)'
+                                                },
+                                            },
+                                            //
+                                            legend: {
+                                                enabled: false,
+                                            },
+                                            //
+                                            plotOptions: {
+                                                series: {
+                                                    pointPadding: 0.2,
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:.1f}%'
+                                                    }
+                                                },
+                                                pie: {
+                                                    plotBorderWidth: 0,
+                                                    allowPointSelect: true,
+                                                    cursor: 'pointer',
+                                                    size: '100%',
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.name}: <b>{point.y}%</b>'
+                                                    }
+                                                }
+                                            },
+                                            //
+
+
+                                            tooltip: {
+                                                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
+                                            },
+                                            series: [{
+                                                name: "",
+                                                colorByPoint: true,
+                                                data: [
+                                                    {% for option in question.optioninfo.all %}
                         {
-        name: "{{ forloop.counter }}. {{ option.Option_Name }}",
-        y: {{ option.get_option_percentage }},
-    drilldown: "Chrome"
-},
-{% endfor %}
+                                                name: "{{ forloop.counter }}. {{ option.Option_Name }}",
+                                                y: {{ option.get_option_percentage }},
+                                            drilldown: "Chrome"
+                                    },
+                                        {% endfor %}
 
                 ]
             }],
-//
-drilldown: {
-series: []
-}
+                                    //
+                                    drilldown: {
+                                    series: []
+                                }
 };
 
-// Column chart
-options.chart.renderTo = 'container{{ forloop.counter }}';
-options.chart.type = 'column';
-var chart1 = new Highcharts.Chart(options);
+                                // Column chart
+                                options.chart.renderTo = 'container{{ forloop.counter }}';
+                                options.chart.type = 'column';
+                                var chart1 = new Highcharts.Chart(options);
 
-chartfunc = function () {
-var column = document.getElementById('column');
-var bar = document.getElementById('bar');
-var pie = document.getElementById('pie');
-var line = document.getElementById('line');
+                                chartfunc = function () {
+                                    var column = document.getElementById('column');
+                                    var bar = document.getElementById('bar');
+                                    var pie = document.getElementById('pie');
+                                    var line = document.getElementById('line');
 
-$('#chk').prop('checked',false)
-if (column.checked) {
+                                    $('#chk').prop('checked', false)
+                                    if (column.checked) {
 
-    options.chart.renderTo = 'container{{ forloop.counter }}';
-    options.chart.type = 'column';
-    var chart1 = new Highcharts.Chart(options);
-}
-else if (bar.checked) {
-    options.chart.renderTo = 'container{{ forloop.counter }}';
-    options.chart.type = 'bar';
-    var chart1 = new Highcharts.Chart(options);
-}
-else if (pie.checked) {
-    options.chart.renderTo = 'container{{ forloop.counter }}';
-    options.chart.type = 'pie';
-    var chart1 = new Highcharts.Chart(options);
-}
-else {
-    options.chart.renderTo = 'container{{ forloop.counter }}';
-    options.chart.type = 'line';
-    var chart1 = new Highcharts.Chart(options);
-}
+                                        options.chart.renderTo = 'container{{ forloop.counter }}';
+                                        options.chart.type = 'column';
+                                        var chart1 = new Highcharts.Chart(options);
+                                    }
+                                    else if (bar.checked) {
+                                        options.chart.renderTo = 'container{{ forloop.counter }}';
+                                        options.chart.type = 'bar';
+                                        var chart1 = new Highcharts.Chart(options);
+                                    }
+                                    else if (pie.checked) {
+                                        options.chart.renderTo = 'container{{ forloop.counter }}';
+                                        options.chart.type = 'pie';
+                                        var chart1 = new Highcharts.Chart(options);
+                                    }
+                                    else {
+                                        options.chart.renderTo = 'container{{ forloop.counter }}';
+                                        options.chart.type = 'line';
+                                        var chart1 = new Highcharts.Chart(options);
+                                    }
 
-}
+                                }
 
 
 });
@@ -242,7 +244,7 @@ else {
 
 
 
-                                
+
                             </script>
 
 
@@ -297,17 +299,91 @@ else {
                                         flex-direction: auto;
                                         background-color: #f1f1f1; "></div>
 
+                                <div id="WordCloud{{ forloop.counter }}" style="min-width: 310px;
+max-width: 800px;
+margin: 0 auto"></div>
+
+
                                 <div class="x_content" style="margin-left: 40px;">
-                                    <label class="SAQ_answer_label">Answers:</label>
-                                    <p class="SAQ_answer">
-                                        {% for answer in question.get_answers %}
-                                        {{ answer.Answer_Value }}<br />
-                                        <hr>
-                                        <strong>{{ answer.Submit_Code.Student_Code }}</strong> : on August 8
-                                        at
-                                        12:30 PM<br /><br />
-                                        {% endfor %}
-                                    </p>
+
+                                    <a class="panel-heading collapsed" role="tab" id="heading{{ forloop.counter }}"
+                                        data-toggle="collapse" data-parent="#accordion"
+                                        href="#collapse{{ forloop.counter }}" aria-expanded="false"
+                                        aria-controls="collapse{{ forloop.counter }}">
+                                        <h4 class="panel-title">Click to See Answers
+                                        </h4>
+                                    </a>
+
+                                    <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse"
+                                        role="tabpanel" aria-labelledby="heading{{ forloop.counter }}"
+                                        aria-expanded="false" style="height: 0px;">
+                                        <p class="SAQ_answer">
+                                            {% for answer in question.get_answers %}
+                                            <div id="{{ forloop.parentloop.counter }}Answer_{{ forloop.counter }}">
+                                                <b> S.N:
+                                                    {{ forloop.counter }}</b><br>{{ answer.Answer_Value|readmore:15 }}
+
+                                            </div>
+                                            <strong>{{ answer.Submit_Code.Student_Code }}</strong> : on August 8
+                                            at
+                                            12:30 PM<br />
+                                            <hr>
+                                            {% endfor %}
+
+                                        </p>
+
+
+                                    </div>
+
+
+
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function (event) {
+
+                                            var Answer_str = "";
+                                            $('[id^="{{ forloop.counter }}Answer_"]').each(function () {
+                                                Answer_str += $(this).text() + " ";
+
+                                                var lines = Answer_str.split(/[,\. ]+/g),
+                                                    data = Highcharts.reduce(lines, function (arr, word) {
+                                                        var obj = Highcharts.find(arr, function (obj) {
+                                                            return obj.name === word;
+                                                        });
+                                                        if (obj) {
+                                                            obj.weight += 1;
+                                                        } else {
+                                                            obj = {
+                                                                name: word,
+                                                                weight: 1
+                                                            };
+                                                            arr.push(obj);
+                                                        }
+                                                        return arr;
+                                                    }, []);
+
+                                                Highcharts.chart('WordCloud{{ forloop.counter }}',
+                                                    {
+                                                        credits: {
+                                                            enabled: false
+                                                        },
+
+                                                        series: [{
+                                                            type: 'wordcloud',
+                                                            data: data,
+                                                            name: 'Occurrences'
+                                                        }],
+                                                        title: {
+                                                            text: ''
+                                                        }
+                                                    });
+                                            });
+                                        });
+
+                                    </script>
+
+
+
+                                    <!-- <label class="SAQ_answer_label">Answers:</label> -->
                                 </div>
                             </div>
                         </div>
@@ -364,3 +440,5 @@ else {
         </div>
     </div>
 </div>
+
+<script src="https://code.highcharts.com/modules/wordcloud.js"></script>
