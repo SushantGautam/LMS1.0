@@ -1,9 +1,9 @@
 var firstload = true;
 var tobedeletedfiles = {
-    'pic':[],
-    'video':[],
-    'pdf':[],
-    '_3d':[],
+    'pic': [],
+    'video': [],
+    'pdf': [],
+    '_3d': [],
 }
 
 $(document).ready(function () {
@@ -167,8 +167,8 @@ $(document).ready(function () {
                         ['table', ['table']],
                         ['insert', ['link']],
                         // ['view', ['fullscreen', 'codeview', 'help']],
-                      ],
-                    });
+                    ],
+                });
                 $('#editor' + id).parent().find('.note-statusbar').remove();
                 $('#editor' + id).parent().find('.note-editable').html(message);
                 // $(".editor-canvas").append(dom);
@@ -563,8 +563,8 @@ $(document).ready(function () {
                     src="${file}"
                     alt="Here is a 3D Object."
                     auto-rotate
-                    camera-controls style="height: inherit;
-                    width: inherit;"></model-viewer>
+                    camera-controls  
+                    style="height: 100%;width:100%;"></model-viewer>
 
                 `
             } else {
@@ -742,9 +742,9 @@ $(document).ready(function () {
         });
 
         $('.fa-trash').click(function (e) {
-            if($('#' + e.currentTarget.id).find('img').length > 0){
-                if($('#tabs-for-download').find('img[src$="'+$(div).find('img').attr('src')+'"]').length == 1){
-                   tobedeletedfiles.pic.push($('#' + e.currentTarget.id).find('img').attr('src'))
+            if ($('#' + e.currentTarget.id).find('img').length > 0) {
+                if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
+                    tobedeletedfiles.pic.push($('#' + e.currentTarget.id).find('img').attr('src'))
                 }
             }
             $('#' + e.currentTarget.id).parent().parent().remove();
@@ -865,9 +865,9 @@ $(document).ready(function () {
                     $.each(input.files, function (i, file) {
                         data.append('file-' + i, file);
                     });
-                    if($(div).find('img').length > 0){
-                        if($('#tabs-for-download').find('img[src$="'+$(div).find('img').attr('src')+'"]').length == 1){
-                           tobedeletedfiles.pic.push($(div).find('img').attr('src'));
+                    if ($(div).find('img').length > 0) {
+                        if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
+                            tobedeletedfiles.pic.push($(div).find('img').attr('src'));
                         }
                     }
                     data.append('csrfmiddlewaretoken', csrf_token);
@@ -1006,9 +1006,9 @@ $(document).ready(function () {
                 url: `/quiz/api/v1/quiz/?course_code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
                 processData: false,
                 method: 'GET',
-                success: function(data){
+                success: function (data) {
                     $('#myTable').empty()
-                    for(var i = 0; i < data.length; i++){
+                    for (var i = 0; i < data.length; i++) {
                         $('#myTable').append(`<tr>
                             <td>
                                 ${data[i].title}
@@ -1161,8 +1161,8 @@ $(document).ready(function () {
                         // console.log(Math.round((file.size / 1024))) // get image size
                         data.append('file-' + i, file);
                     });
-                    if($(div).find('object').length > 0){
-                        if($('#tabs-for-download').find('object[data$="'+$(div).find('object').attr('data')+'"]').length == 1){
+                    if ($(div).find('object').length > 0) {
+                        if ($('#tabs-for-download').find('object[data$="' + $(div).find('object').attr('data') + '"]').length == 1) {
                             tobedeletedfiles.pdf.push($(div).find('object').attr('data'));
                         }
                     }
@@ -1506,7 +1506,7 @@ $(document).ready(function () {
         //     $('#mtl-file').prop('disabled', false);
         // });
 
-        $('._3dobj-div').on('click', '.fa-upload' ,function (e) {
+        $('._3dobj-div').on('click', '.fa-upload', function (e) {
             // trigger = parseInt(e.target.id) + 1;
             // $('#' + trigger).trigger('click');
             $('#_3dfile-link').val('');
@@ -1557,8 +1557,8 @@ $(document).ready(function () {
             let div = $('#' + upload_btn.val()).parent().parent();
             var data = new FormData();
 
-            if($(div).find('iframe').length > 0){
-                if($('#tabs-for-download').find('iframe[src$="'+$(div).find('iframe').attr('src')+'"]').length == 1){
+            if ($(div).find('iframe').length > 0) {
+                if ($('#tabs-for-download').find('iframe[src$="' + $(div).find('iframe').attr('src') + '"]').length == 1) {
                     tobedeletedfiles._3d.push($(div).find('iframe').attr('src'));
                 }
             }
@@ -1697,7 +1697,7 @@ $(document).ready(function () {
             }
             if (value.classList.contains('_3dobj-div')) {
                 _3dFunction($(this).css("top"),
-                $(this).css("left"), $(this).find('iframe').attr('src'), $(this).css("height"), $(this).css("width"));
+                    $(this).css("left"), $(this).find('iframe').attr('src'), $(this).css("height"), $(this).css("width"));
             }
         });
 
@@ -1847,9 +1847,9 @@ $(document).ready(function () {
     });
 
     function newpagefunction() {
-        if($(".tabs-to-click ul li").last().length == 0){
+        if ($(".tabs-to-click ul li").last().length == 0) {
             var num_tabs = 1
-        }else{
+        } else {
             var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
         }
         $(".tabs-to-click ul").append(`
@@ -2044,8 +2044,8 @@ $(document).ready(function () {
                         });
                     }
 
-                    if(div == 'thumbnail'){
-                        $($('.tabs-to-click').find('li')[key-1]).css({
+                    if (div == 'thumbnail') {
+                        $($('.tabs-to-click').find('li')[key - 1]).css({
                             'background-image': 'url("' + div_value + '")',
                             'background-position': 'center',
                             'background-size': 'contain',
@@ -2053,7 +2053,7 @@ $(document).ready(function () {
                         })
                     }
 
-                    if(div == 'backgroundcolor'){
+                    if (div == 'backgroundcolor') {
                         $('#tab' + key).css('background-color', div_value)
                     }
                 });
@@ -2061,7 +2061,7 @@ $(document).ready(function () {
         });
         $('.tabs-to-click > ul > div > li')[0].click()
     }
-    
+
     display(data);
     window.firstload = false
 });
@@ -2073,24 +2073,25 @@ function displaypagenumbers() {
 }
 
 // Media File deletion
-function deleteFile(){
+function deleteFile() {
     $.ajax({
-        url: delete_file_url, 
+        url: delete_file_url,
         data: {
             'csrfmiddlewaretoken': csrf_token,
             'old': JSON.stringify(tobedeletedfiles),
         },
         method: 'POST',
         type: 'POST',
-        
+
         error: function (errorThrown) {
             alert("Failed to delete existing file")
         },
         success: function (data) {
             console.log('Files deleted successfully')
-        }, 
+        },
     });
 }
+
 // ===========================================================================
 
 // Button Form Submit
@@ -2129,19 +2130,19 @@ $('#quiz-submit').on('click', function () {
     $('#quiz-modal').modal('hide');
 })
 
-$('#myTable').on('click', '.selectquiz', function(){
+$('#myTable').on('click', '.selectquiz', function () {
     $('#quiz-name').val($(this).closest('td').prev('td').text().trim())
     $('#quiz-link').val(`quiz/quiz${$(this).val().trim()}/take/`)
 })
 // ======================================================================
 
 // background color for pages
-$('#tabs-for-download').click(function(){
-        
+$('#tabs-for-download').click(function () {
+
     var theInput = $('.current').find('.page-background')[0];
     var theColor = theInput.value;
-    theInput.addEventListener("input", function() {
-        $('.current').css('background-color',theInput.value)
+    theInput.addEventListener("input", function () {
+        $('.current').css('background-color', theInput.value)
     }, false);
 })
 
@@ -2149,7 +2150,7 @@ $('#tabs-for-download').click(function(){
 
 function openTab(evt, tab_no) {
     try {
-        if(!window.firstload)
+        if (!window.firstload)
             setThumbnails()
     } catch (err) {
         console.log(err)
@@ -2195,7 +2196,7 @@ async function resizeImage(url, width, height, callback, dive) {
 
 async function setThumbnails() {
     let id = $('.current')[0].id.replace(/[^\d.]/g, '');
-    $('.current').find('.pdfdiv').each(function(){
+    $('.current').find('.pdfdiv').each(function () {
         $(this).css({
             'background-image': `url('${pdf_icon}')`,
             'background-position': 'center',
@@ -2203,7 +2204,7 @@ async function setThumbnails() {
             'background-repeat': 'no-repeat'
         })
     })
-    $('.current').find('.video-div').each(function(){
+    $('.current').find('.video-div').each(function () {
         $(this).css({
             'background-image': `url('${video_icon}')`,
             'background-position': 'center',
@@ -2211,7 +2212,7 @@ async function setThumbnails() {
             'background-repeat': 'no-repeat'
         })
     });
-    $('.current').find('._3dobj-div').each(function(){
+    $('.current').find('._3dobj-div').each(function () {
         $(this).css({
             'background-image': `url('${_3d_icon}')`,
             'background-position': 'center',
@@ -2228,17 +2229,17 @@ async function setThumbnails() {
             }
         });
     });
-    $('.current').find('.pdfdiv').each(function(){
+    $('.current').find('.pdfdiv').each(function () {
         $(this).css({
             'background-image': `none`,
         })
     });
-    $('.current').find('.video-div').each(function(){
+    $('.current').find('.video-div').each(function () {
         $(this).css({
             'background-image': `none`,
         })
     });
-    $('.current').find('._3dobj-div').each(function(){
+    $('.current').find('._3dobj-div').each(function () {
         $(this).css({
             'background-image': `none`,
         })
@@ -2254,13 +2255,13 @@ function setThumbnailscallback(data, dive) {
     });
 }
 
-$('#tabs-for-download').on('click', '.textdiv', function(){
+$('#tabs-for-download').on('click', '.textdiv', function () {
     $this = $('.note-editable:focus')
-    if($('.note-editable:focus').html() == "Type Something Here..."){
+    if ($('.note-editable:focus').html() == "Type Something Here...") {
         $('.note-editable:focus').html("")
     }
-    $($this).on('focusout', function(){
-        if($($this).html() == ""){
+    $($this).on('focusout', function () {
+        if ($($this).html() == "") {
             $($this).html("Type Something Here...")
         }
     })
