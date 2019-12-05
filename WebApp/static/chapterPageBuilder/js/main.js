@@ -410,7 +410,7 @@ $(document).ready(function () {
     }
 
     class Quiz {
-        constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz') {
+        constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "") {
             let id = (new Date).getTime();
             let position = {top, left, height, width};
             let quiz_link = ""
@@ -431,7 +431,7 @@ $(document).ready(function () {
                                 <text x="-1" y="10">${name}</text>
                             </svg>
                             </a>
-                            <span class = "quiz-name"></span>
+                            <span class = "quiz-name">${quiz_span_name}</span>
                         </div>
         
                 `;
@@ -979,8 +979,8 @@ $(document).ready(function () {
         });
     }
 
-    function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz') {
-        const quiz = new Quiz(top, left, link, height, width, name);
+    function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "") {
+        const quiz = new Quiz(top, left, link, height, width, name, quiz_span_name);
 
         quiz.renderDiagram();
 
@@ -1023,7 +1023,7 @@ $(document).ready(function () {
                 link = link.replace('http://', '');
             }
             $('#quiz-link').val(link);
-
+            $('#quiz-name').val($(this).parent().parent().find('span').text().trim());
             $('#quiz_id').val(btn_id);
             $('#quiz-modal').modal('show');
         });
@@ -1988,7 +1988,8 @@ $(document).ready(function () {
                                 css_value.link,
                                 css_value.height,
                                 css_value.width,
-                                css_value.quiz_btn_name
+                                css_value.quiz_btn_name,
+                                css_value.quiz_name
                             );
                         });
                     }
