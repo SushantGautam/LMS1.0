@@ -30,6 +30,17 @@
 
     <script src="{% static 'js/modernizr.js' %}"></script>
 
+
+    <!-- Loads <model-viewer> for modern browsers: -->
+    <script type="module"
+            src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+    </script>
+
+    <!-- Loads <model-viewer> for old browsers like IE11: -->
+    <script nomodule
+            src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+    </script>
+
     <title>Course Builder</title>
 </head>
 
@@ -160,13 +171,15 @@
         -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
         box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
         background-color: transparent;
-    } 
-    .edit-type-btn{
+    }
+
+    .edit-type-btn {
         display: none;
         transition: 0.5s;
     }
-    .chapter-description:hover .edit-type-btn{
-        display: block; 
+
+    .chapter-description:hover .edit-type-btn {
+        display: block;
         cursor: pointer;
     }
 
@@ -380,7 +393,7 @@
                 <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
                     <div class="editor-canvas" id="element-container">
                         <p id="tab1" class="tab-content-no   droppable editor-canvas current ">
-                            
+
                         </p>
                     </div>
                 </div>
@@ -401,7 +414,7 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <div class="chapter-description" id="chapter-description"style="position:relative">
+                    <div class="chapter-description" id="chapter-description" style="position:relative">
                         <p>
 
                         </p>
@@ -459,16 +472,16 @@
                 <div class="modal-body">
                     <!-- Modal Contents Here -->
                     <div class="col-md-12">
-                            <label>Display Name</label>
-                            <input type="text" name="btn-name" id="btn-name">
-                            <br>
-                            <label>Link</label>
-                            <span class="btnlink">
+                        <label>Display Name</label>
+                        <input type="text" name="btn-name" id="btn-name">
+                        <br>
+                        <label>Link</label>
+                        <span class="btnlink">
                     http://
                     <input type="text" name="btn-link" id="btn-link">
 
                     </div>
-                               
+
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" id="button_id" value="">
@@ -488,103 +501,106 @@
         <!-- Modal content-->
         <div id="quiz-link-chapter" class="modal-content">
             <form id="quiz-form">
-                <div class="modal-header"> 
+                <div class="modal-header">
                     <div class="row">
                         <div class="col-md-11">
-                                <h4 class="modal-title">Modal Header</h4>
+                            <h4 class="modal-title">Modal Header</h4>
 
                         </div>
                         <div class="col-md-1">
-                                <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;</button>
+                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                            </button>
 
                         </div>
                     </div>
-                    
-                 
+
+
                 </div>
                 <div class="modal-body" style="width: 100%;">
                     <!-- Modal Contents Here -->
-                    
-                            <div class="row"> 
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                        <label class="control-label">Display Name</label>
 
-                                </div>
-                                <div class="col-md-8 col-sm-8 col-xs-12">
-                                       
-                                        <input type="text" name="quiz-btn-name" id="quiz-btn-name" class="form-control" placeholder="Default Input"style="width: 100%;">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <label class="control-label">Display Name</label>
 
-                                </div>
-                                    
-                                    
-                                </div> 
-                                <br>
-                                
-                                <!-- <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="col-md-6">
-                                                <div class="radio">
-                                                    <label>
-                                                        <input type="radio" checked="" value="prequiz" id="optionsRadios1" name="optionsRadios"> Pre-Quiz
-                                                    </label>
-                                                </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                                <div class="radio">
-                                                    <label>
-                                                        <input type="radio" value="post-quiz" id="optionsRadios2" name="optionsRadios"> Post-Quiz
-                                                    </label>
-                                                </div>
-                                        </div>
+                        </div>
+                        <div class="col-md-8 col-sm-8 col-xs-12">
+
+                            <input type="text" name="quiz-btn-name" id="quiz-btn-name" class="form-control"
+                                   placeholder="Default Input" style="width: 100%;">
+
+                        </div>
+
+
+                    </div>
+                    <br>
+
+                    <!-- <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" checked="" value="prequiz" id="optionsRadios1" name="optionsRadios"> Pre-Quiz
+                                        </label>
                                     </div>
-                                </div> -->
-                                <div class="row"> 
-                                     
-                                    <div class="col-md-3">
-                                            <label>Quiz</label>
-
-                                    </div> 
-                                    <div class="col-md-9">
-                                            <!-- <input type="text" name="quiz-name" id="quiz-name" style="width:100%"> -->
-                                            <input type="text" name="quiz-name" id="quiz-name" class="form-control" style="width: 100%;">
-
+                            </div>
+                            <div class="col-md-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" value="post-quiz" id="optionsRadios2" name="optionsRadios"> Post-Quiz
+                                        </label>
                                     </div>
-                                    
-                                   
-                                </div> 
-                                <br>
-                                
-                                <input type="hidden" name="quiz-link" id="quiz-link">
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <label>Quiz</label>
+
+                        </div>
+                        <div class="col-md-9">
+                            <!-- <input type="text" name="quiz-name" id="quiz-name" style="width:100%"> -->
+                            <input type="text" name="quiz-name" id="quiz-name" class="form-control"
+                                   style="width: 100%;">
+
+                        </div>
+
+
+                    </div>
+                    <br>
+
+                    <input type="hidden" name="quiz-link" id="quiz-link">
 
                     <div class="row">
                         <a href="{% url 'chapterinfo_detail' course chapter %}" target="_blank" id="quiz_create_link">
                             Create
                         </a>
                     </div>
-                   
+
                     <div class="row">
                         <div class="col-md-12">
                             <input class="form-control" id="myInput" type="text" placeholder="Search..">
                             <br>
-                            <div class="modal-table-container" style="height:200px;overflow:auto" >
-                                    <table class="table table-bordered table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th>Quiz Name</th>
-                                                <th>Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="myTable">
-                                            <!-- Table contents goes here from ajax -->
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                            <div class="modal-table-container" style="height:200px;overflow:auto">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Quiz Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="myTable">
+                                    <!-- Table contents goes here from ajax -->
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
 
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>
@@ -676,9 +692,9 @@
                     <label>Upload 3D file</label>
                     <input type="file" name="_3dfile" id="_3dfile-link" accept=".glb,.glft"/>
                 </div>
-                <div>For converting 3d file. Please visit 
+                <div>For converting 3d file. Please visit
                     "<a href="https://blackthread.io/gltf-converter/">
-                    https://blackthread.io/gltf-converter/
+                        https://blackthread.io/gltf-converter/
                     </a>"
                 </div>
                 <!-- <div>
@@ -698,7 +714,6 @@
 <!-- End of link modal -->
 
 <script>
-        
 
 
     var data = {{ data | safe}};
@@ -716,7 +731,7 @@
     var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}'
     var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}'
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}'
-    
+
 
     $('#chapterlist').val(chapterID);
 
@@ -765,7 +780,7 @@
         return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
     };
 
-    $('#quiz_create_link').click(function(){
+    $('#quiz_create_link').click(function () {
         $('#quiz-modal').modal('toggle');
     })
     setTimeout(function () {
@@ -809,12 +824,12 @@
 </script>
 
 <script>
-    $(document).ready(function(){
-        $("#myInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#myTable tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
         });
     });
 </script>
