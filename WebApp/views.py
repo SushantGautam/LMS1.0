@@ -1371,10 +1371,10 @@ def save_3d_file(request):
         path = ''
         if request.FILES['objfile']:
             obj = request.FILES['objfile']
-            try:
-                mtl = request.FILES['mtlfile']
-            except:
-                mtl = None
+            # try:
+            #     mtl = request.FILES['mtlfile']
+            # except:
+            #     mtl = None
             path = settings.MEDIA_ROOT
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
@@ -1384,10 +1384,10 @@ def save_3d_file(request):
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
-            if mtl is not None:
-                mtlname = name + '.' + mtl.name.split('.')[-1]
-                fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-                filename = fs.save(mtlname, mtl)
+            # if mtl is not None:
+            #     mtlname = name + '.' + mtl.name.split('.')[-1]
+            #     fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            #     filename = fs.save(mtlname, mtl)
         return JsonResponse(data={"message": "success", "objname": objname})
 
 

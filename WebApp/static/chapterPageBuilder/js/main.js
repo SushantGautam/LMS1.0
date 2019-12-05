@@ -284,7 +284,7 @@ $(document).ready(function () {
                 `
                 }
             } else {
-                message = "drag and drop video here...";
+                message = "drag and drop video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>";
                 videoobj = `<div class="progress video-text-div">
                 <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
             </div>`;
@@ -1497,16 +1497,16 @@ $(document).ready(function () {
             height, width);
         _3d.renderDiagram();
 
-        $('#_3dfile-link').on('change', function (e) {
-            $('#mtl-file').prop('disabled', false);
-        });
+        // $('#_3dfile-link').on('change', function (e) {
+        //     $('#mtl-file').prop('disabled', false);
+        // });
 
         $('._3dobj-div').on('click', '.fa-upload' ,function (e) {
             // trigger = parseInt(e.target.id) + 1;
             // $('#' + trigger).trigger('click');
             $('#_3dfile-link').val('');
-            $('#mtl-file').val('');
-            $('#mtl-file').prop('disabled', true);
+            // $('#mtl-file').val('');
+            // $('#mtl-file').prop('disabled', true);
             $('#link-3d-submit').val(parseInt(e.target.id))
             $('#link-3d-modal').modal();
         });
@@ -1543,11 +1543,11 @@ $(document).ready(function () {
                 alert("Please select a file to upload")
                 return false
             }
-            if ($('#mtl-file')[0].files.length != 0) {
-                var mtl = $('#mtl-file')[0].files[0];
-            } else {
-                var mtl = null
-            }
+            // if ($('#mtl-file')[0].files.length != 0) {
+            //     var mtl = $('#mtl-file')[0].files[0];
+            // } else {
+            //     var mtl = null
+            // }
 
             let div = $('#' + upload_btn.val()).parent().parent();
             var data = new FormData();
@@ -1560,7 +1560,7 @@ $(document).ready(function () {
 
             data.append('csrfmiddlewaretoken', csrf_token);
             data.append('objfile', obj);
-            data.append('mtlfile', mtl);
+            // data.append('mtlfile', mtl);
             data.append('type', '3d');
             data.append('chapterID', chapterID);
             data.append('courseID', courseID);
