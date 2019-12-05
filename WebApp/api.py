@@ -46,6 +46,8 @@ class ChapterInfoViewSet(viewsets.ModelViewSet):
     queryset = models.ChapterInfo.objects.all()
     serializer_class = serializers.ChapterInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['id','Course_Code' ]
 
 
 class InningInfoViewSet(viewsets.ModelViewSet):
