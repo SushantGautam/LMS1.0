@@ -39,7 +39,8 @@ class OptionInfoSerializer(serializers.ModelSerializer):
         model = models.OptionInfo
         fields = (
             'pk',
-            'Question_Code'
+            'Question_Code',
+            "Option_Name",  "Vote_Count"
         )
 
 
