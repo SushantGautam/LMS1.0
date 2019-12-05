@@ -746,8 +746,9 @@
                         if (div == '_3d') {
                             $.each(div_value, function (css, css_value) {
                                 $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                  <div  >  <model-viewer class="D3onViewer"
+        <div  style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+
+                                  <div>  <model-viewer ondblclick="requestFullscreen()"
                                         src="${css_value.link}"
                                         alt="Here is a 3D Object."
                                         auto-rotate
