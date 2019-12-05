@@ -747,14 +747,13 @@
                             $.each(div_value, function (css, css_value) {
                                 $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <model-viewer
+                                  <div  >  <model-viewer class="D3onViewer"
                                         src="${css_value.link}"
                                         alt="Here is a 3D Object."
                                         auto-rotate
                                         camera-controls
-                                        ar
-                                        style = "height: 100%;width: 100%;">
-                                    </model-viewer>
+                                        ar style = "height: 100%;width: 100%;">
+                                    </model-viewer></div>
 
                                 </div>
                             `)
