@@ -154,6 +154,7 @@ $("#SaveBtn").on("click",function(e){
               'height': $(this)[0].style.height,
               'link': $(this).children("a").attr('href'),
               'quiz_btn_name': $(this).children("a").text(),
+              'quiz_name': $(this).children('span').text()
             }
           );
         }
