@@ -425,12 +425,14 @@ $(document).ready(function () {
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <a class="btn btn-button" ${quiz_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
-                            
-                            <svg viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available">
-                                <text x="-1" y="10">${name}</text>
-                            </svg>
-                            </a>
+                            <div class="button-name-builder">
+                                <a class="btn btn-button" ${quiz_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                                
+                                <svg style="position:absolute; top:45%; left:0;" viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available" >
+                                    <text x="-1" y="10">${name}</text>
+                                </svg>
+                                </a>
+                            </div>    
                             <span class = "quiz-name">${quiz_span_name}</span>
                         </div>
         
@@ -2126,7 +2128,7 @@ $('#quiz-submit').on('click', function () {
         $('#' + quiz_id).removeAttr('href');
     }
     $('#' + quiz_id).find('text').text(quiz_name);
-    $('#' + quiz_id).parent().find('.quiz-name').text(quiz_span_name)
+    $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
     $('#quiz-modal').modal('hide');
 })
 

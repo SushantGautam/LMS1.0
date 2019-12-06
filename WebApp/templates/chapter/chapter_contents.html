@@ -62,6 +62,7 @@
         overflow-x: hidden;
         transition: 0.5s;
         padding-top: 60px;
+        border-right: 5px solid #2A3F54;
     }
 
     .sidenav a {
@@ -127,7 +128,7 @@
         <a class="focus-page"
            href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
     {% endfor %}
-    <div class="side-bar-content hidden-small" style="position: absolute; bottom:0; display:inline-block">
+    <div class="side-bar-content hidden-small" style="position: absolute;left:0;right:0; bottom:0; display:inline-block; border-top:1px solid white">
 
         <ul style="display: inline-flex; list-style:none; padding: 0px !important">
             <li>
@@ -746,16 +747,15 @@
                         if (div == '_3d') {
                             $.each(div_value, function (css, css_value) {
                                 $('#page' + key).append(`
-                                <div class="iframefullscreen" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                    <div class = "iframefullscreenbtn"><i class="fa fa-credit-card"></i></div>
-                                    <model-viewer
+        <div  style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+
+                                  <div>  <model-viewer class="D3onViewer" ondblclick="requestFullscreen()"
                                         src="${css_value.link}"
                                         alt="Here is a 3D Object."
                                         auto-rotate
                                         camera-controls
-                                        ar
-                                        style = "height: 100%;width: 100%;">
-                                    </model-viewer>
+                                        ar style = "height: 100%;width: 100%;">
+                                    </model-viewer></div>
 
                                 </div>
                             `)

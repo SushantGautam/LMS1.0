@@ -152,9 +152,9 @@ $("#SaveBtn").on("click",function(e){
               'left': $(this)[0].style.left,
               'width': $(this)[0].style.width,
               'height': $(this)[0].style.height,
-              'link': $(this).children("a").attr('href'),
-              'quiz_btn_name': $(this).children("a").text(),
-              'quiz_name': $(this).children('span').text()
+              'link': $(this).find("a").attr('href'),
+              'quiz_btn_name': $(this).find("a").text(),
+              'quiz_name': $(this).find('span').text()
             }
           );
         }
