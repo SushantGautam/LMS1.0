@@ -700,6 +700,25 @@
                             });
                         }
 
+                        if (div == 'surveydiv') {
+                            $.each(div_value, function (css, css_value) {
+                                link = "";
+                                if (css_value.hasOwnProperty('link')) {
+                                    link = "href = " + css_value.link;
+                                }
+                                $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                    <a ${link} target="_blank">
+                                        <svg viewBox="0 0 56 18">
+                                            <text x="0" y="15">${css_value.survey_btn_name}</text>
+                                        </svg>
+                                    </a>
+                                    <span>${css_value.survey_name}</span>
+                                </div>
+                            `)
+                            });
+                        }
+
                         if (div == 'pdf') {
                             $.each(div_value, function (css, css_value) {
                                 $('#page' + key).append(`
@@ -810,7 +829,7 @@
         });
     }
 
-    var x = window.matchMedia("(max-width: 767px)")
+    var x = window.matchMedia("(max-width: 567px)")
 
     function Layout(x) {
         if (x.matches) {

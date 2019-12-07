@@ -59,6 +59,7 @@ $("#SaveBtn").on("click",function(e){
       video = [];
       _3d = [];
       quizdiv = [];
+      surveydiv = [];
       numberofpages++;
       const obj=$("#tab"+parseInt(this.value)).children();
       let tops;
@@ -158,10 +159,23 @@ $("#SaveBtn").on("click",function(e){
             }
           );
         }
+        if(value.classList.contains('survey-div')){
+          surveydiv.push(
+            {
+              'tops': $(this)[0].style.top,
+              'left': $(this)[0].style.left,
+              'width': $(this)[0].style.width,
+              'height': $(this)[0].style.height,
+              'link': $(this).find("a").attr('href'),
+              'survey_btn_name': $(this).find("a").text(),
+              'survey_name': $(this).find('span').text()
+            }
+          );
+        }
       });
       backgroundcolor = $("#tab"+parseInt(this.value)).css('background-color')
       thumbnail = ($(value)[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-      pages[numberofpages] = [{'quizdiv':quizdiv, 'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'thumbnail': thumbnail, 'backgroundcolor': backgroundcolor}]
+      pages[numberofpages] = [{'surveydiv':surveydiv, 'quizdiv':quizdiv, 'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'thumbnail': thumbnail, 'backgroundcolor': backgroundcolor}]
     });
     data = {
       'numberofpages': numberofpages, 
