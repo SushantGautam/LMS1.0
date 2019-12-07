@@ -128,7 +128,8 @@
         <a class="focus-page"
            href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
     {% endfor %}
-    <div class="side-bar-content hidden-small" style="position: absolute;left:0;right:0; bottom:0; display:inline-block; border-top:1px solid white">
+    <div class="side-bar-content hidden-small"
+         style="position: absolute;left:0;right:0; bottom:0; display:inline-block; border-top:1px solid white">
 
         <ul style="display: inline-flex; list-style:none; padding: 0px !important">
             <li>
@@ -1069,7 +1070,7 @@
 
     showFoo(2000);
 
-    $(window).mousemove(function () {
+    $(window).on("mouseover touchstart", function () {
         showFoo(2000);
     });
 </script>
