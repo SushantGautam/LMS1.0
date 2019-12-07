@@ -385,7 +385,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     handle: '.options',
                     stop: function () {
@@ -451,7 +450,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     handle: '.options',
                     stop: function () {
@@ -517,7 +515,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     handle: '.options',
                     stop: function () {
@@ -588,7 +585,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
@@ -667,7 +663,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
