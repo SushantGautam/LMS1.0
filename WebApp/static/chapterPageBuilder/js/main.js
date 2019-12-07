@@ -1068,7 +1068,7 @@ $(document).ready(function () {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
 
-        $('.fa-link').bind("click", function (e) {
+        $('.quiz-div .fa-link').bind("click", function (e) {
             $.ajax({
                 url: `/quiz/api/v1/quiz/?course_code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
                 processData: false,
@@ -1133,7 +1133,7 @@ $(document).ready(function () {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
 
-        $('.fa-link').bind("click", function (e) {
+        $('.survey-div .fa-link').on("click", function (e) {
             $.ajax({
                 url: `/survey/api/v1/surveyinfo/?Course_Code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
                 processData: false,
@@ -2313,7 +2313,12 @@ $('#survey-submit').on('click', function () {
 $('#mySurveyTable').on('click', '.selectsurvey', function () {
     $('#survey-name').val($(this).closest('td').prev('td').text().trim())
     $('#survey-link').val(`students/questions_student_detail/detail/${$(this).val().trim()}`)
-})
+});
+
+// $('#survey_create_link').on('click', function(){
+//     console.log('hello')
+    
+// })
 // ==================================================================================
 
 // background color for pages
