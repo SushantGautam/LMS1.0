@@ -208,8 +208,8 @@
               </span>
             </div>
             <span id="hamburg-nav"
-                  style="font-size: 5vh;cursor:pointer;left: 0px;z-index: 101;position: absolute;color: #0f3c3c;top: 0px;padding: 4vh;text-shadow: 2px 2px 5px red;"
-                  onclick="openNav()">☰ </span>
+                  style="font-size: 5vh;cursor:pointer;left: 0px;z-index: 101;position: fixed;color: #0f3c3c;top: 0px;padding: 4vh;text-shadow: 2px 2px 5px red;"
+                  onclick="openNav()" class="inactive">☰ </span>
             <div id="page-contents" class="page-contents"></div>
 
         </div>
@@ -690,7 +690,7 @@
                                 quizpk = (css_value.link.split('/')[2]).match(/\d+/)[0];
                                 if (css_value.hasOwnProperty('link')) {
                                     {% if '/teachers' in request.path %}
-                                        link = "href = /teachers/quiz/detail/"+ quizpk
+                                        link = "href = /teachers/quiz/detail/" + quizpk
                                     {% else %}
                                         link = "href = " + css_value.link;
                                     {% endif %}
@@ -715,7 +715,7 @@
                                 surveypk = (css_value.link.split('/')[4]).match(/\d+/)[0];
                                 if (css_value.hasOwnProperty('link')) {
                                     {% if '/teachers' in request.path %}
-                                        link = "href = /teachers/surveyinfodetail/detail/"+ surveypk
+                                        link = "href = /teachers/surveyinfodetail/detail/" + surveypk
                                     {% else %}
                                         link = "href = " + css_value.link;
                                     {% endif %}
