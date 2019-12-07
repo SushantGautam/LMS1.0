@@ -684,10 +684,16 @@
                         }
 
                         if (div == 'quizdiv') {
+                            let quizpk;
                             $.each(div_value, function (css, css_value) {
                                 link = "";
+                                quizpk = (css_value.link.split('/')[2]).match(/\d+/)[0];
                                 if (css_value.hasOwnProperty('link')) {
-                                    link = "href = " + css_value.link;
+                                    {% if '/teachers' in request.path %}
+                                        link = "href = /teachers/quiz/detail/"+ quizpk
+                                    {% else %}
+                                        link = "href = " + css_value.link;
+                                    {% endif %}
                                 }
                                 $('#page' + key).append(`
                                 <div style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
@@ -703,10 +709,16 @@
                         }
 
                         if (div == 'surveydiv') {
+                            let surveypk;
                             $.each(div_value, function (css, css_value) {
                                 link = "";
+                                surveypk = (css_value.link.split('/')[4]).match(/\d+/)[0];
                                 if (css_value.hasOwnProperty('link')) {
-                                    link = "href = " + css_value.link;
+                                    {% if '/teachers' in request.path %}
+                                        link = "href = /teachers/surveyinfodetail/detail/"+ surveypk
+                                    {% else %}
+                                        link = "href = " + css_value.link;
+                                    {% endif %}
                                 }
                                 $('#page' + key).append(`
                                 <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">

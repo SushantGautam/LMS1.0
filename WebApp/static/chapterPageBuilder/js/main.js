@@ -385,7 +385,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     handle: '.options',
                     stop: function () {
@@ -451,7 +450,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     handle: '.options',
                     stop: function () {
@@ -517,7 +515,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     handle: '.options',
                     stop: function () {
@@ -588,7 +585,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
@@ -667,7 +663,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
@@ -1068,7 +1063,7 @@ $(document).ready(function () {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
 
-        $('.fa-link').bind("click", function (e) {
+        $('.quiz-div .fa-link').bind("click", function (e) {
             $.ajax({
                 url: `/quiz/api/v1/quiz/?course_code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
                 processData: false,
@@ -1133,7 +1128,7 @@ $(document).ready(function () {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
 
-        $('.fa-link').bind("click", function (e) {
+        $('.survey-div .fa-link').on("click", function (e) {
             $.ajax({
                 url: `/survey/api/v1/surveyinfo/?Course_Code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
                 processData: false,
@@ -2313,7 +2308,12 @@ $('#survey-submit').on('click', function () {
 $('#mySurveyTable').on('click', '.selectsurvey', function () {
     $('#survey-name').val($(this).closest('td').prev('td').text().trim())
     $('#survey-link').val(`students/questions_student_detail/detail/${$(this).val().trim()}`)
-})
+});
+
+// $('#survey_create_link').on('click', function(){
+//     console.log('hello')
+    
+// })
 // ==================================================================================
 
 // background color for pages
