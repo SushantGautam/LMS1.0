@@ -608,3 +608,8 @@ body {
   }
 
 
+
+
+.alignleft, .left{
+    float: inherit;
+}
