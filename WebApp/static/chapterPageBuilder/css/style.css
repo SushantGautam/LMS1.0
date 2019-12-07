@@ -695,6 +695,14 @@ input.call-picker {
 .quiz-div:hover {
     border: 1px solid #ddd;
 }
+
+.survey-div:hover .options {
+    display: block;
+}
+
+.survey-div:hover {
+    border: 1px solid #ddd;
+}
 /* =================tabs position=================== */
 .tabs {
 
