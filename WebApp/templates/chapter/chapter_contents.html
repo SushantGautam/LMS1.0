@@ -205,10 +205,11 @@
                     <span id="chaptertitle" class="content-title">
                         <!-- Chapter title goes here -->
                          {{ chapter }}
-                         <span style="font-size:20px;cursor:pointer;float:left;margin-left: 5px " onclick="openNav()">&#9776; </span> 
-                    </span>
+              </span>
             </div>
-
+            <span id="hamburg-nav"
+                  style="font-size: 5vh;cursor:pointer;left: 0px;z-index: 101;position: absolute;color: #0f3c3c;top: 0px;padding: 4vh;text-shadow: 2px 2px 5px red;"
+                  onclick="openNav()">☰ </span>
             <div id="page-contents" class="page-contents"></div>
 
         </div>
@@ -1057,12 +1058,12 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $("#prev-btn , #next-btn , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $("#prev-btn , #next-btn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);
