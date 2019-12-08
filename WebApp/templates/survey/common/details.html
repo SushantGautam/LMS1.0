@@ -92,7 +92,7 @@
                                     <input type="radio" name="mychart" class="mychart" id="pie{{ forloop.counter }}"
                                            value="pie"
                                            onclick="chartfunc({{ forloop.counter }})">Pie&nbsp;
-                                    <input type="radio" name="mychart" class="mychart" id="line" value="line"
+                                    <input type="radio" name="mychart" class="mychart" id="line{{ forloop.counter }}" value="line"
                                            onclick="chartfunc({{ forloop.counter }})">Line&nbsp;
                                     <br/>
 
@@ -209,7 +209,9 @@
                                                 options.chart.type = 'column';
                                                 var chart1 = new Highcharts.Chart(options);
 
+
                                                 chartfunc = function (divName) {
+                                                    console.log(divName)
                                                     var column = document.getElementById('column' + divName);
                                                     var bar = document.getElementById('bar' + divName);
                                                     var pie = document.getElementById('pie' + divName);
@@ -218,19 +220,19 @@
                                                     $('#chk').prop('checked', false)
                                                     if (column.checked) {
 
-                                                        options.chart.renderTo = 'container' + divName;
+                                                        options.chart.renderTo = 'container'+ divName;
                                                         options.chart.type = 'column';
                                                         var chart1 = new Highcharts.Chart(options);
                                                     } else if (bar.checked) {
-                                                        options.chart.renderTo = 'container' + divName;
+                                                        options.chart.renderTo = 'container'+ divName;
                                                         options.chart.type = 'bar';
                                                         var chart1 = new Highcharts.Chart(options);
                                                     } else if (pie.checked) {
-                                                        options.chart.renderTo = 'container' + divName;
+                                                        options.chart.renderTo = 'container'+ divName;
                                                         options.chart.type = 'pie';
                                                         var chart1 = new Highcharts.Chart(options);
                                                     } else {
-                                                        options.chart.renderTo = 'container' + divName  ;
+                                                        options.chart.renderTo = 'container'+ divName;
                                                         options.chart.type = 'line';
                                                         var chart1 = new Highcharts.Chart(options);
                                                     }
