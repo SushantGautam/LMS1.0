@@ -309,7 +309,7 @@ a:hover, a:active, a:focus {
     position: fixed;
     color: rgba(209, 35, 35, 0.5);
     text-shadow: 2px 2px 0px white;
-    display: none;
+    display: block;
 }
 
 
