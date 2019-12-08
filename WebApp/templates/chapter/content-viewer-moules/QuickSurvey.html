@@ -138,14 +138,16 @@
 
     function quiz_create_content(response) {
         if (response['url']) {
+            console.log(response)
             //location.reload();
             console.log(response['url']);
             console.log(response['teacher_url']);
             console.log(response['student_url']);
+            console.log(response['quiz_id']);
             $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Quiz</a>`);
             close_quick_model("quiz_create_popup");
             sendMessageWritten();
-            window.open(response['teacher_url'], '_blank');
+            window.open("/quiz/markingfilter/"+response['quiz_id']+"/", '_blank');
         }
         //window.location.href = String(response['url']);
     }
