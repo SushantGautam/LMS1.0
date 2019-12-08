@@ -258,7 +258,8 @@ a:hover, a:active, a:focus {
     margin: 27px;
     margin: 0 10px;
 }
-.chat-nav li:hover{
+
+.chat-nav li:hover {
     cursor: pointer;
 }
 
@@ -300,7 +301,16 @@ a:hover, a:active, a:focus {
 }
 
 
-.button-position {margin: 5px;padding: 5px !important;z-index: 1000;top: 50%;position: absolute;color: rgba(209, 35, 35, 0.5);text-shadow: 2px 2px 0px white;display: none;}
+.button-position {
+    margin: 5px;
+    padding: 5px !important;
+    z-index: 1000;
+    top: 50%;
+    position: absolute;
+    color: rgba(209, 35, 35, 0.5);
+    text-shadow: 2px 2px 0px white;
+    display: none;
+}
 
 
 .button-position:hover {
@@ -331,9 +341,9 @@ a:hover, a:active, a:focus {
 @media only screen and (max-width: 767px) {
 
 
-    .D3onViewer{
-    height: 500px!important;
-  }
+    .D3onViewer {
+        height: 500px !important;
+    }
 
 
     .page-contents {
@@ -590,13 +600,26 @@ body {
 .closechatopen {
     z-index: 10;
 }
+
 .inactive {
     opacity: 0;
-  }
+}
+
+.lightboxOverlay {
+    /*#forLightBoxFullscreen*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: black;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+    opacity: 0.8;
+    display: none;
+    height: 100% !important;
+    width: 100% !important;
+}
 
 
-
-
-.alignleft, .left{
+.alignleft, .left {
     float: inherit;
 }
