@@ -61,7 +61,7 @@
         background-color: black;
         overflow-x: hidden;
         transition: 0.5s;
-        padding-top: 60px;
+        padding-top: 10px;
         border-right: 5px solid #2A3F54;
     }
 
@@ -79,7 +79,7 @@
     }
 
     .sidenav .closebtn {
-        position: absolute;
+        position: fixed;
         top: 0;
         right: 25px;
         font-size: 36px;
@@ -103,11 +103,15 @@
 
 
 <div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative">
+    <div style="right:0px" style="right:0px"><a href="javascript:void(0)" style="
+    right: 25px;
+    position: absolute;
+" onclick="closeNav()"> <i class="fa fa-lg fa-arrow-left"></i></a></div>
+
     <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content"
        style="position: absolute; top:19px;left:0pxx; font-size:20px">
-        <i class="fa fa-arrow-left"></i>
+        <div class="closebtn"> &times;</div>
     </a>
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <div class="profile clearfix">
 
         <div class="profile_pic">
@@ -209,7 +213,7 @@
             </div>
             <span id="hamburg-nav"
                   style="font-size: 5vh;cursor:pointer;left: 0px;z-index: 101;position: fixed;color: #0f3c3c;top: 0px;padding: 4vh;text-shadow: 2px 2px 5px red;"
-                  onclick="openNav()" class="inactive">☰ </span>
+                  onclick="openNav()" >☰ </span>
             <div id="page-contents" class="page-contents"></div>
 
         </div>
@@ -1071,12 +1075,12 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $("#prev-btn , #hamburg-nav, #next-btn , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $("#prev-btn , #hamburg-nav, #next-btn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);
