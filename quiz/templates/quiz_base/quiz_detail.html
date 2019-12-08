@@ -294,6 +294,9 @@
         {% endfor %}
       </ul>
     </div>
+{%  if user.Is_Teacher %}
+  <a href="/quiz/markingfilter/{{ quiz.pk }}/" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Assign Marks to Submitted Answers</a>
+{%  endif %}
 
   </div>
 
