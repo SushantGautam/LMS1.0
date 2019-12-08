@@ -514,10 +514,10 @@
     function startWebsocket() {
         var webSProtocal = '';
 
-        if (location.protocol === 'http:') {
-            webSProtocal = "ws://";
-        } else if (location.protocol === 'https:') {
+        if (location.protocol === 'https:') {
             webSProtocal = "wss://";
+        } else {
+            webSProtocal = "ws://";
         }
 
         chatSocket = new WebSocket(webSProtocal + location.host + "/ws/" + roomName + '/');
