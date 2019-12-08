@@ -512,7 +512,13 @@
     var chatSocket;
 
     function startWebsocket() {
-        chatSocket = new WebSocket("ws://" + location.host + "/ws/" + roomName + '/');
+        var webSProtocal = ''
+        if (location.protocol != 'https:') {
+            webSProtocal = "ws://"
+        } else
+            webSProtocal = "wss://";
+
+        chatSocket = new WebSocket(webSProtocal + location.host + "/ws/" + roomName + '/');
         chatSocket.onclose = function () {
             // connection closed, discard old websocket and create a new one in 5s
             chatSocket = null;
