@@ -520,7 +520,7 @@
             webSProtocal = "wss://";
         }
 
-        chatSocket = new WebSocket(webSProtocal + "/ws/" + roomName + '/');
+        chatSocket = new WebSocket(webSProtocal + location.host + "/ws/" + roomName + '/');
         chatSocket.onclose = function () {
             // connection closed, discard old websocket and create a new one in 5s
             chatSocket = null;
