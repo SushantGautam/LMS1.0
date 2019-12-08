@@ -2,9 +2,19 @@
 {% load static %}
 {% block breadcrumb %}
 <li class="breadcrumb-item active" aria-current="page">My Assignments</li>
+
+
+<style>
+    h3 {
+        margin-top: 10px;
+        margin-bottom: 0px !important;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
+
+
 <h1 class="tableHeader"><b>List of My Assignments</b></h1>
 <h4 class="text-center"><b>
         <button class="tablinks tabButton" onclick="openTab(event, 'allAssignments')">All</button>
