@@ -410,7 +410,6 @@ $(document).ready(function () {
 
     class Quiz {
         constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
-            console.log(font_size)
             let id = (new Date).getTime();
             let position = {top, left, height, width};
             let quiz_link = ""
@@ -431,7 +430,8 @@ $(document).ready(function () {
                                 <span class="resizable-text-only" style = "font-size: ${font_size}">${name} </span>
                                 </button>
                             </a>
-                            <span class = "quiz-name" style = "position:absolute; bottom: -20px; left:40%">Quiz Name: ${quiz_span_name}</span>
+                            <span class = "quiz-name" style = "position:absolute; bottom: -20px; left:40%">
+                            ${quiz_span_name}</span>
                             
                             </div>     
                         </div>
@@ -497,7 +497,8 @@ $(document).ready(function () {
                                         <span class="resizable-text-only" style = "font-size: ${font_size}">${name} </span>
                                     </button>
                                 </a>
-                                <span class = "survey-name" style = "position:absolute; bottom: -20px; left:40%">Survey Name: ${survey_span_name}</span>
+                                <span class = "survey-name" style = "position:absolute; bottom: -20px; left:40%">
+                               ${survey_span_name}</span>
                             </div>    
                         </div>
                 `;
@@ -2261,7 +2262,6 @@ function deleteFile() {
             alert("Failed to delete existing file")
         },
         success: function (data) {
-            console.log('Files deleted successfully')
         },
     });
 }
@@ -2292,23 +2292,21 @@ $('#quiz-submit').on('click', function () {
     var quiz_span_name = $('#quiz-name').val();
     var quiz_link = $('#quiz-link').val();
     var quiz_id = $('#quiz_id').val();
-    console.log(quiz_id)
     if (quiz_link != "") {
         $('#' + quiz_id).attr({
-            "href": `/${quiz_link}`
+            "href": `${quiz_link}`
         });
     } else {
         $('#' + quiz_id).removeAttr('href');
     }
-    $('#' + quiz_id).find('text').text(quiz_name);
-    console.log($('#' + quiz_id))
+    $('#' + quiz_id).parent().parent().find('.resizable-text-only').text(quiz_name);
     $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
     $('#quiz-modal').modal('hide');
 })
 
 $('#myTable').on('click', '.selectquiz', function () {
     $('#quiz-name').val($(this).closest('td').prev('td').text().trim())
-    $('#quiz-link').val(`quiz/quiz${$(this).val().trim()}/take/`)
+    $('#quiz-link').val(`/quiz/quiz${$(this).val().trim()}/take/`)
 })
 // ======================================================================
 
@@ -2320,19 +2318,19 @@ $('#survey-submit').on('click', function () {
     var survey_id = $('#survey_id').val();
     if (survey_link != "") {
         $('#' + survey_id).attr({
-            "href": `/${survey_link}`
+            "href": `${survey_link}`
         });
     } else {
         $('#' + survey_id).removeAttr('href');
     }
-    $('#' + survey_id).find('text').text(survey_name);
+    $('#' + survey_id).parent().parent().find('.resizable-text-only').text(survey_name);
     $('#' + survey_id).parent().parent().find('.survey-name').text(survey_span_name)
     $('#survey-modal').modal('hide');
 })
 
 $('#mySurveyTable').on('click', '.selectsurvey', function () {
     $('#survey-name').val($(this).closest('td').prev('td').text().trim())
-    $('#survey-link').val(`students/questions_student_detail/detail/${$(this).val().trim()}`)
+    $('#survey-link').val(`/students/questions_student_detail/detail/${$(this).val().trim()}`)
 });
 
 // $('#survey_create_link').on('click', function(){
