@@ -409,7 +409,8 @@ $(document).ready(function () {
     }
 
     class Quiz {
-        constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "") {
+        constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
+            console.log(font_size)
             let id = (new Date).getTime();
             let position = {top, left, height, width};
             let quiz_link = ""
@@ -427,10 +428,10 @@ $(document).ready(function () {
                             <div class="button-name-builder ">
                             <a ${quiz_link} id = ${id+1} target= "_blank">
                                 <button class="custom-btn-only"style="width:100%; height:100%">
-                                <span class="resizable-text-only">${name} </span>
+                                <span class="resizable-text-only" style = "font-size: ${font_size}">${name} </span>
                                 </button>
                             </a>
-                            <span class = "quiz-name" style = "position:absolute; bottom: -20px; left:40%">QuizName: ${quiz_span_name}</span>
+                            <span class = "quiz-name" style = "position:absolute; bottom: -20px; left:40%">Quiz Name: ${quiz_span_name}</span>
                             
                             </div>     
                         </div>
@@ -474,7 +475,7 @@ $(document).ready(function () {
     }
 
     class Survey {
-        constructor(top, left, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "") {
+        constructor(top, left, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
             let id = (new Date).getTime();
             let position = {top, left, height, width};
             let survey_link = ""
@@ -493,7 +494,7 @@ $(document).ready(function () {
                                 <a ${survey_link} id=${id + 1}  target="_blank" >
                                 
                                     <button class="custom-btn-only"style="width:100%; height:100%">
-                                        <span class="resizable-text-only">${name} </span>
+                                        <span class="resizable-text-only" style = "font-size: ${font_size}">${name} </span>
                                     </button>
                                 </a>
                                 <span class = "survey-name" style = "position:absolute; bottom: -20px; left:40%">Survey Name: ${survey_span_name}</span>
@@ -1045,8 +1046,8 @@ $(document).ready(function () {
         });
     }
 
-    function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "") {
-        const quiz = new Quiz(top, left, link, height, width, name, quiz_span_name);
+    function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
+        const quiz = new Quiz(top, left, link, height, width, name, quiz_span_name, font_size);
 
         quiz.renderDiagram();
 
@@ -1121,8 +1122,8 @@ $(document).ready(function () {
 
     }
 
-    function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "") {
-        const survey = new Survey(top, left, link, height, width, name, survey_span_name);
+    function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
+        const survey = new Survey(top, left, link, height, width, name, survey_span_name, font_size);
 
         survey.renderDiagram();
 
@@ -2151,7 +2152,8 @@ $(document).ready(function () {
                                 css_value.height,
                                 css_value.width,
                                 css_value.quiz_btn_name,
-                                css_value.quiz_name
+                                css_value.quiz_name,
+                                css_value.font_size
                             );
                         });
                     }
@@ -2166,7 +2168,8 @@ $(document).ready(function () {
                                 css_value.height,
                                 css_value.width,
                                 css_value.survey_btn_name,
-                                css_value.survey_name
+                                css_value.survey_name,
+                                css_value.font_size
                             );
                         });
                     }

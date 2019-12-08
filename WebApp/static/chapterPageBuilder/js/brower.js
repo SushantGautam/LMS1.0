@@ -155,7 +155,8 @@ $("#SaveBtn").on("click",function(e){
               'height': $(this)[0].style.height,
               'link': $(this).find("a").attr('href'),
               'quiz_btn_name': $(this).find("a").text(),
-              'quiz_name': $(this).find('span').text()
+              'quiz_name': $(this).find('span').text(),
+              'font_size': $(this).find('.resizable-text-only').css('font-size')
             }
           );
         }
@@ -168,7 +169,8 @@ $("#SaveBtn").on("click",function(e){
               'height': $(this)[0].style.height,
               'link': $(this).find("a").attr('href'),
               'survey_btn_name': $(this).find("a").text(),
-              'survey_name': $(this).find('span').text()
+              'survey_name': $(this).find('span').text(),
+              'font_size': $(this).find('.resizable-text-only').css('font-size')
             }
           );
         }
