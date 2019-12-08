@@ -103,11 +103,15 @@
 
 
 <div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative">
-    <div style="right:0px" style="right:0px"><a href="javascript:void(0)" style="
+    <div id="closenave" style="right:0px" style="right:0px"><a href="javascript:void(0)" style="
     right: 25px;
     position: absolute;
-" onclick="closeNav()"> <i class="fa fa-lg fa-arrow-left"></i></a></div>
-
+"> <i class="fa fa-lg fa-arrow-left"></i></a></div>
+    <script>
+        $('#closenave').on('click mouseover', function () {
+            closeNav()
+        });
+    </script>
     <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content"
        style="position: absolute; top:19px;left:0pxx; font-size:20px">
         <div class="closebtn"> &times;</div>
@@ -220,8 +224,14 @@
             </div>
             <span id="hamburg-nav"
                   style="font-size: 5vh;cursor:pointer;left: 0px;z-index: 101;position: fixed;color: #0f3c3c;top: 0px;padding: 4vh;text-shadow: 2px 2px 5px red;"
-                  onclick="openNav()">☰ </span>
+            >☰ </span>
             <div id="page-contents" class="page-contents"></div>
+            <script>
+                $('#hamburg-nav').on('click mouseover', function () {
+                    openNav();
+                });
+            </script>
+
 
         </div>
         <div class="progress progress-striped">
