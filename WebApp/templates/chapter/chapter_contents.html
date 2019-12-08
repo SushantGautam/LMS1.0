@@ -717,10 +717,18 @@
                                 <div class = "chapterbuttons" style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <a ${link} target="_blank">
                                         <button class="custom-btn-only"style="width:100%; height:100%">
-                                            <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.quiz_btn_name} </span>
+                                            <div class="row text-center" width=100%>
+                                                <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.quiz_btn_name} </span>
+                                            </div>
+                                            <div class="row text-center">
+                                                <span style = "position:absolute;left:0; bottom: 0px; width:100% ;text-align:left; margin-left:14px">${css_value.quiz_name}</span>
+                                            </div>
                                         </button>
+
+                                       
+                                                
+
                                     </a>
-                                    <span>${css_value.quiz_name}</span>
                                 </div>
                             `)
                             });
@@ -742,10 +750,15 @@
                                 <div class = "chapterbuttons" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
                                         <button class="custom-btn-only"style="width:100%; height:100%">
-                                            <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.survey_btn_name} </span>
+                                            <div class="row text-center" width=100%>
+                                             <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.survey_btn_name} </span>
+                                            </div>
+                                            <div class="row text-center">
+                                                    <span class = "survey-name " style = "position:absolute; left:0;bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                            ${css_value.survey_name}
+                                            </div>
                                         </button>
                                     </a>
-                                    <span>${css_value.survey_name}</span>
                                 </div>
                             `)
                             });
