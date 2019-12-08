@@ -39,6 +39,10 @@ urlpatterns = (
 
     url(r'^marking/$', view=QuizMarkingList.as_view(), name='quiz_marking'),
 
+    url(r'^marking/$', view=QuizMarkingList.as_view(), name='quiz_marking'),
+
+        url(r'^markingfilter/(?P<Quiz_Id>[\d.]+)/$', view=views.FilterMarkingForTeachers, name='quiz_marking'),
+
     url(r'^marking/(?P<pk>[\d.]+)/$', view=QuizMarkingDetail.as_view(), name='quiz_marking_detail'),
 
     # passes variable 'quiz_name' to quiz_take view

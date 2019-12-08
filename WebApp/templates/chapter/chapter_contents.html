@@ -129,8 +129,15 @@
 
     <h4 style=" color:white ;text-align:center">Chapter Lists</h4>
     {% for chapter in chapterList %}
-        <a class="focus-page"
-           href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
+
+        {% if "teachers" in request.path %}
+            <a class="focus-page"
+               href="{% url 'teacher_contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
+        {% else %}
+            <a class="focus-page"
+               href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
+
+        {% endif %}
     {% endfor %}
     <div class="side-bar-content hidden-small"
          style="position: absolute;left:0;right:0; bottom:0; display:inline-block; border-top:1px solid white">
@@ -1204,9 +1211,6 @@
         speechSynthesis.speak(msg);
 
     });
-
-
-
 
 
     $('#container').mouseleave(function () {
