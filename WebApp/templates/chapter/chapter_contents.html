@@ -708,7 +708,7 @@
                                 quizpk = (css_value.link.split('/')[2]).match(/\d+/)[0];
                                 if (css_value.hasOwnProperty('link')) {
                                     {% if '/teachers' in request.path %}
-                                        link = "href = /teachers/quiz/detail/" + quizpk
+                                        link = "href = /quiz/markingfilter/" + quizpk
                                     {% else %}
                                         link = "href = " + css_value.link;
                                     {% endif %}
