@@ -43,6 +43,7 @@ urlpatterns = (
     url(r'^marking/$', view=QuizMarkingList.as_view(), name='quiz_marking'),
 
         url(r'^markingfilter/(?P<Quiz_Id>[\d.]+)/$', view=views.FilterMarkingForTeachers, name='markingfilter'),
+        url(r'^DeleteAllSittingAftermarkingfilter/(?P<Quiz_Id>[\d.]+)/$', view=views.DeleteAllSittingAftermarkingfilter, name='DeleteAllSittingAftermarkingfilter'),
 
     url(r'^marking/(?P<pk>[\d.]+)/$', view=QuizMarkingDetail.as_view(), name='quiz_marking_detail'),
 

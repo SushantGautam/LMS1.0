@@ -12,6 +12,7 @@
 
 {% block content %}
 
+        {% include 'WebApp/theme/alerts.html' %}
 
     <h2>{% trans "List of Submitted Answers" %}</h2>
 
@@ -22,7 +23,7 @@
         <span class="glyphicon glyphicon-refresh"></span> Refresh
     </a>
 
-<hr>
+    <hr>
     {% if sitting_list %}
 
 
@@ -102,6 +103,27 @@
 
         </tbody>
     </table>
+
+
+    <script>
+        function askIfRemoveAll() {
+            var answer = window.confirm("This will remove all student's submitted answers and cannot be undone. Continue?")
+            if (answer) {
+                window.location.href = "{% url 'DeleteAllSittingAftermarkingfilter'  Quiz_Id=quiz.pk %}";
+            } else {
+                //some code
+            }
+        }
+
+    </script>
+
+    <a onclick="askIfRemoveAll()" class="btn btn-danger btn-2x" style="
+    float: right;
+">
+        <span class="glyphicon glyphicon-remove"></span> Delete All Quiz
+    </a>
+
+
 {% endblock %}
 
 
