@@ -92,19 +92,19 @@ $(document).ready(function () {
     }
 
     // ==================For TextBoxx================================
-    $('#tabs-for-download').droppable({
-        tolerance: 'fit',
-        drop: function (event, ui) {
-            $(this).removeClass("border").removeClass("over");
-        },
+    // $('#tabs-for-download').droppable({
+    //     tolerance: 'fit',
+    //     drop: function (event, ui) {
+    //         $(this).removeClass("border").removeClass("over");
+    //     },
 
-        over: function (event, elem) {
-            $(this).addClass("over");
-        },
-        out: function (event, elem) {
-            $(this).removeClass("over");
-        },
-    });
+    //     over: function (event, elem) {
+    //         $(this).addClass("over");
+    //     },
+    //     out: function (event, elem) {
+    //         $(this).removeClass("over");
+    //     },
+    // });
 
     class Textbox {
         constructor(top = 0, left = 0, height = null, width = null, message = "Type Something Here...") {
@@ -427,11 +427,19 @@ $(document).ready(function () {
                             <div class="button-name-builder ">
                             <a ${quiz_link} id = ${id+1} target= "_blank">
                                 <button class="custom-btn-only"style="width:100%; height:100%">
-                                <span class="resizable-text-only" style = "font-size: ${font_size}">${name} </span>
+                                <div class="row text-center" width=100%>
+                                <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
+                                </div>
+                                <div class="row text-center">
+                                <span class = "quiz-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                ${quiz_span_name}</span>
+
+                                </div>
+                                
+                                
                                 </button>
                             </a>
-                            <span class = "quiz-name" style = "position:absolute; bottom: -20px; left:40%">
-                            ${quiz_span_name}</span>
+                           
                             
                             </div>     
                         </div>
@@ -494,15 +502,20 @@ $(document).ready(function () {
                                 <a ${survey_link} id=${id + 1}  target="_blank" >
                                 
                                     <button class="custom-btn-only"style="width:100%; height:100%">
-                                        <span class="resizable-text-only" style = "font-size: ${font_size}">${name} </span>
+                                    <div class="row text-center" width=100%>
+                                        <span class="resizable-text-only" style = "width:100%; font-size: ${font_size}">${name} </span>
+                                    </div>
+                                    <div class="row text-center">
+                                        <span class = "survey-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                        ${survey_span_name}</span>
+                                        </div>
                                     </button>
+                                    
                                 </a>
-                                <span class = "survey-name" style = "position:absolute; bottom: -20px; left:40%">
-                               ${survey_span_name}</span>
                             </div>    
                         </div>
                 `;
-
+                
             // href = ${link}
             this.renderDiagram = function () {
                 // dom includes the html,css code with draggable property
