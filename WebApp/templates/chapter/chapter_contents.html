@@ -137,7 +137,7 @@
 
         <ul style="display: inline-flex; list-style:none; padding: 0px !important">
             <li>
-                <a data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
+                <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
                    data-original-title="FullScreen">
                     <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
                 </a>
@@ -213,7 +213,7 @@
             </div>
             <span id="hamburg-nav"
                   style="font-size: 5vh;cursor:pointer;left: 0px;z-index: 101;position: fixed;color: #0f3c3c;top: 0px;padding: 4vh;text-shadow: 2px 2px 5px red;"
-                  onclick="openNav()" >☰ </span>
+                  onclick="openNav()">☰ </span>
             <div id="page-contents" class="page-contents"></div>
 
         </div>
@@ -236,13 +236,19 @@
             </ul>
         </div>
 
-        <div id="thumb-next-btn" class="thumb-nav-button" style="right:9%; padding-top: 5vh;
+        <div id="thumb-next-btn" class="thumb-nav-button" style="right:10%; padding-top: 5vh;
     padding-left: 5vh;">
-            <i class=" fa fa-forward"></i>
+            <i class=" fa fa-forward fa-2x" style="
+    top: 1.5vh;
+    position: absolute;
+"></i>
         </div>
-        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:9%;padding-top: 5vh;
+        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:7%;padding-top: 5vh;
     padding-right: 5vh; ">
-            <i class=" fa fa-backward"></i>
+            <i class=" fa fa-backward fa-2x" style="
+    top: 1.5vh;
+    position: absolute;
+"></i>
         </div>
 
         <div class="content-footer1 text-center">
@@ -1224,7 +1230,8 @@
     $(window).load(function () {
         // Animate loader off screen
         $(".se-pre-con").fadeOut("slow");
-        ;
+        $('#togglefull').click();
+
     });
 
 
