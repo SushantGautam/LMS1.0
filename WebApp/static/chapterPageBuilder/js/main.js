@@ -417,22 +417,22 @@ $(document).ready(function () {
                 quiz_link = 'href = ' + link
             }
             let html = `
-                        <div class="quiz-div">
+                        <div class="quiz-div" data-width = "${width}">
                             <div class="options">
                                 <i class="fas fa-trash" id=${id}></i>
                                 <i class="fas fa-link"   id=${id} ></i>
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <div class="button-name-builder">
-                                <a class="btn btn-button" ${quiz_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
-                                
-                                <svg style="position:absolute; top:45%; left:0;" viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available" >
-                                    <text x="-1" y="10">${name}</text>
-                                </svg>
-                                </a>
-                            </div>    
-                            <span class = "quiz-name">${quiz_span_name}</span>
+                            <div class="button-name-builder ">
+                            <a ${quiz_link} id = ${id+1} target= "_blank">
+                                <button class="custom-btn-only"style="width:100%; height:100%">
+                                <span class="resizable-text-only">${name} </span>
+                                </button>
+                            </a>
+                            <span class = "quiz-name" style = "position:absolute; bottom: -20px; left:40%">QuizName: ${quiz_span_name}</span>
+                            
+                            </div>     
                         </div>
         
                 `;
@@ -482,7 +482,7 @@ $(document).ready(function () {
                 survey_link = 'href = ' + link
             }
             let html = `
-                        <div class="survey-div" style = "text-align:center;">
+                        <div class="survey-div" data-width = "${width}">
                             <div class="options">
                                 <i class="fas fa-trash" id=${id}></i>
                                 <i class="fas fa-link"   id=${id} ></i>
@@ -490,16 +490,15 @@ $(document).ready(function () {
                             
                             </div> 
                             <div class="button-name-builder">
-                                <a class="btn btn-button" ${survey_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                                <a ${survey_link} id=${id + 1}  target="_blank" >
                                 
-                                <svg style="position:absolute; top:45%; left:0;" viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available" >
-                                    <text x="-1" y="10">${name}</text>
-                                </svg>
+                                    <button class="custom-btn-only"style="width:100%; height:100%">
+                                        <span class="resizable-text-only">${name} </span>
+                                    </button>
                                 </a>
+                                <span class = "survey-name" style = "position:absolute; bottom: -20px; left:40%">Survey Name: ${survey_span_name}</span>
                             </div>    
-                            <span class = "survey-name">${survey_span_name}</span>
                         </div>
-        
                 `;
 
             // href = ${link}
@@ -1084,13 +1083,13 @@ $(document).ready(function () {
             });
             var btn_id = parseInt(e.currentTarget.id) + 1
             $('#quiz-form input[type=text]').val('');
-            $('#quiz-btn-name').val($(this).parent().parent().find('a').text().trim());
+            $('#quiz-btn-name').val($(this).parent().parent().find('button').text().trim());
             var link = $(this).parent().parent().find('a').attr('href');
             if (link != undefined) {
                 link = link.replace('http://', '');
             }
             $('#quiz-link').val(link);
-            $('#quiz-name').val($(this).parent().parent().find('span').text().trim());
+            $('#quiz-name').val($(this).parent().parent().find('.quiz-name').text().trim());
             $('#quiz_id').val(btn_id);
             $('#quiz-modal').modal('show');
         });
@@ -1109,6 +1108,17 @@ $(document).ready(function () {
                 });
             },
         });
+
+        $('.quiz-div').on('resize', function(){
+            old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
+            div_width = $(this).width();
+            font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+            $(this).find('.resizable-text-only').css(
+                'font-size', font + 'px'
+            )
+            $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
+        })
+
     }
 
     function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "") {
@@ -1150,12 +1160,12 @@ $(document).ready(function () {
             var btn_id = parseInt(e.currentTarget.id) + 1
             $('#survey-form input[type=text]').val('');
             $('#survey-btn-name').val($(this).parent().parent().find('a').text().trim());
-            var link = $(this).parent().parent().find('a').attr('href');
+            var link = $(this).parent().parent().find('button').attr('href');
             if (link != undefined) {
                 link = link.replace('http://', '');
             }
             $('#survey-link').val(link);
-            $('#survey-name').val($(this).parent().parent().find('span').text().trim());
+            $('#survey-name').val($(this).parent().parent().find('.survey-name').text().trim());
             $('#survey_id').val(btn_id);
             $('#survey-modal').modal('show');
         });
@@ -1174,6 +1184,16 @@ $(document).ready(function () {
                 });
             },
         });
+
+        $('.survey-div').on('resize', function(){
+            old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
+            div_width = $(this).width();
+            font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+            $(this).find('.resizable-text-only').css(
+                'font-size', font + 'px'
+            )
+            $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
+        })
     }
 
     function PDFFunction(top = null, left = null, link = null, height = null, width = null) {
@@ -1868,19 +1888,19 @@ $(document).ready(function () {
             ButtonFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '10%', '15%'
+                null, '13%', '15%'
             );
         } else if (ui.helper.hasClass('quiz')) {
             QuizFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '10%', '15%'
+                null, '13%', '15%'
             );
         } else if (ui.helper.hasClass('survey')) {
             SurveyFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '10%', '15%'
+                null, '13%', '15%'
             );
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
@@ -2269,6 +2289,7 @@ $('#quiz-submit').on('click', function () {
     var quiz_span_name = $('#quiz-name').val();
     var quiz_link = $('#quiz-link').val();
     var quiz_id = $('#quiz_id').val();
+    console.log(quiz_id)
     if (quiz_link != "") {
         $('#' + quiz_id).attr({
             "href": `/${quiz_link}`
@@ -2277,6 +2298,7 @@ $('#quiz-submit').on('click', function () {
         $('#' + quiz_id).removeAttr('href');
     }
     $('#' + quiz_id).find('text').text(quiz_name);
+    console.log($('#' + quiz_id))
     $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
     $('#quiz-modal').modal('hide');
 })

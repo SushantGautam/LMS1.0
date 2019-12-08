@@ -716,9 +716,9 @@
                                 $('#page' + key).append(`
                                 <div style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
-                                        <svg viewBox="0 0 56 18">
-                                            <text x="0" y="15">${css_value.quiz_btn_name}</text>
-                                        </svg>
+                                        <button class="custom-btn-only"style="width:100%; height:100%">
+                                            <span class="resizable-text-only">${css_value.quiz_btn_name} </span>
+                                            </button>
                                     </a>
                                     <span>${css_value.quiz_name}</span>
                                 </div>
