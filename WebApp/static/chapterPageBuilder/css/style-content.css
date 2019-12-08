@@ -306,7 +306,7 @@ a:hover, a:active, a:focus {
     padding: 5px !important;
     z-index: 1000;
     top: 50%;
-    position: absolute;
+    position: fixed;
     color: rgba(209, 35, 35, 0.5);
     text-shadow: 2px 2px 0px white;
     display: none;
