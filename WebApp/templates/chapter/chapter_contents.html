@@ -517,11 +517,19 @@
             // connection closed, discard old websocket and create a new one in 5s
             chatSocket = null;
             console.log("Websocket restarting. . . ")
-            setTimeout(startWebsocket, 5000)
+            try {
+                setTimeout(startWebsocket, 5000)
+            } catch (error) {
+            }
+
         }
     }
 
-    startWebsocket();
+    try {
+        startWebsocket();
+    } catch (error) {
+    }
+
     // Connection opened
     chatSocket.addEventListener('open', function (event) {
         chatSocket.send(
