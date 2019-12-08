@@ -544,6 +544,8 @@ class TeacherSurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
                     'teacher_url': self.request.build_absolute_uri(
                         reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
+
+                    'quiz_id': self.object.id,
                     'student_url': self.request.build_absolute_uri(
                         reverse('questions_student_detail', kwargs={'pk': self.object.id}))}
         return JsonResponse(response)
