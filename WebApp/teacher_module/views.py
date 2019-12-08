@@ -422,7 +422,18 @@ class MyAssignmentsListView(ListView):
         context['expiredAssignment'].append(expiredAssignment)
         return context
 
+def submitStudentscore(request, Answer_id, score):
+    if request.method == "GET":
 
+        answerInfo = AssignAnswerInfo.objects.get(pk=Answer_id)
+        answerInfo.Assignment_Score = score
+        answerInfo.save()
+        return HttpResponse("success")
+
+    else:
+        return HttpResponse("You are not allowed to do this")
+   
+    
 def ProfileView(request):
     return render(request, 'teacher_module/profile.html')
 

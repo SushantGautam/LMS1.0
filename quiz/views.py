@@ -1045,3 +1045,6 @@ class QuizSAQChoosePrevious(UpdateView):
             'quiz_detail',
             kwargs={'pk': self.kwargs['pk']},
         )
+
+
+
