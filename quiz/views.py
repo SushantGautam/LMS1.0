@@ -770,6 +770,7 @@ class CreateQuizAjax(CreateView):
         self.object.url = 'quiz' + str(self.object.id)
         super().form_valid(form)
         response = {'url': self.request.build_absolute_uri(reverse('quiz_detail', kwargs={'pk': self.object.id})),
+                    'quiz_id': self.object.id,
                     'teacher_url': self.request.build_absolute_uri(
                         reverse('teacher_quiz_detail', kwargs={'pk': self.object.id})),
                     'student_url': self.request.build_absolute_uri(
