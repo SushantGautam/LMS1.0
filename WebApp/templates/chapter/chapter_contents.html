@@ -512,11 +512,13 @@
     var chatSocket;
 
     function startWebsocket() {
-        var webSProtocal = ''
-        if (location.protocol != 'https:') {
-            webSProtocal = "ws://"
-        } else
+        var webSProtocal = '';
+
+        if (location.protocol === 'http:') {
+            webSProtocal = "ws://";
+        } else if (location.protocol === 'https:') {
             webSProtocal = "wss://";
+        }
 
         chatSocket = new WebSocket(webSProtocal + location.host + "/ws/" + roomName + '/');
         chatSocket.onclose = function () {
