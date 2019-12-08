@@ -343,8 +343,9 @@ class QuizTake(FormView):
 
         # if self.quiz.exam_paper is False:
         #    self.sitting.delete()
+        return redirect('student_progress_detail',pk=self.sitting.id)
 
-        return render(self.request, self.result_template_name, results)
+        # return render(self.request, self.result_template_name, results)
 
     def anon_load_sitting(self):
         if self.quiz.single_attempt is True:
@@ -769,6 +770,7 @@ class CreateQuizAjax(CreateView):
         self.object.url = 'quiz' + str(self.object.id)
         super().form_valid(form)
         response = {'url': self.request.build_absolute_uri(reverse('quiz_detail', kwargs={'pk': self.object.id})),
+                    'quiz_id': self.object.id,
                     'teacher_url': self.request.build_absolute_uri(
                         reverse('teacher_quiz_detail', kwargs={'pk': self.object.id})),
                     'student_url': self.request.build_absolute_uri(
@@ -1047,4 +1049,8 @@ class QuizSAQChoosePrevious(UpdateView):
         )
 
 
+def FilterMarkingForTeachers(request, Quiz_Id):
+    filtered = Sitting.objects.filter(user__Center_Code=request.user.Center_Code, quiz=Quiz_Id)
+    quiz = Quiz.objects.get(id=Quiz_Id)
 
+    return render(request, 'quiz/sitting_filter.html', {'sitting_list': filtered, 'quiz':quiz})

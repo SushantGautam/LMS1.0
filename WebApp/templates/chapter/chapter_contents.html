@@ -129,8 +129,15 @@
 
     <h4 style=" color:white ;text-align:center">Chapter Lists</h4>
     {% for chapter in chapterList %}
-        <a class="focus-page"
-           href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
+
+        {% if "teachers" in request.path %}
+            <a class="focus-page"
+               href="{% url 'teacher_contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
+        {% else %}
+            <a class="focus-page"
+               href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
+
+        {% endif %}
     {% endfor %}
     <div class="side-bar-content hidden-small"
          style="position: absolute;left:0;right:0; bottom:0; display:inline-block; border-top:1px solid white">
@@ -683,7 +690,7 @@
                                     link = "href = " + css_value.link;
                                 }
                                 $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                <div class = "chapterbuttons" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
                                         <svg viewBox="0 0 56 18">
                                             <text x="0" y="15">${css_value.btn_name}</text>
@@ -701,17 +708,17 @@
                                 quizpk = (css_value.link.split('/')[2]).match(/\d+/)[0];
                                 if (css_value.hasOwnProperty('link')) {
                                     {% if '/teachers' in request.path %}
-                                        link = "href = /teachers/quiz/detail/" + quizpk
+                                        link = "href = /quiz/markingfilter/" + quizpk
                                     {% else %}
                                         link = "href = " + css_value.link;
                                     {% endif %}
                                 }
                                 $('#page' + key).append(`
-                                <div style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                <div class = "chapterbuttons" style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <a ${link} target="_blank">
-                                        <svg viewBox="0 0 56 18">
-                                            <text x="0" y="15">${css_value.quiz_btn_name}</text>
-                                        </svg>
+                                        <button class="custom-btn-only"style="width:100%; height:100%">
+                                            <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.quiz_btn_name} </span>
+                                        </button>
                                     </a>
                                     <span>${css_value.quiz_name}</span>
                                 </div>
@@ -732,11 +739,11 @@
                                     {% endif %}
                                 }
                                 $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                <div class = "chapterbuttons" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
-                                        <svg viewBox="0 0 56 18">
-                                            <text x="0" y="15">${css_value.survey_btn_name}</text>
-                                        </svg>
+                                        <button class="custom-btn-only"style="width:100%; height:100%">
+                                            <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.survey_btn_name} </span>
+                                        </button>
                                     </a>
                                     <span>${css_value.survey_name}</span>
                                 </div>
@@ -1204,9 +1211,6 @@
         speechSynthesis.speak(msg);
 
     });
-
-
-
 
 
     $('#container').mouseleave(function () {
