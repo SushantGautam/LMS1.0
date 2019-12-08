@@ -64,6 +64,7 @@
     </div>
 </div>
 
+{% block quicksurvey_script %}
 {#<script src="/static/vendorsx/jquery/dist/jquery.min.js"></script>#}
 
 <script>
@@ -73,7 +74,7 @@
                 type: "GET",
                 data: {
                     'course_id': '{{ course.id }}',
-                    'chapter_id': {{ chapter.id }},
+                    'chapter_id': '{{ chapter.id }}',
                     'test_type': 'pre_test',
                 },
                 url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
@@ -151,3 +152,4 @@
 
 </script>
 
+{% endblock %}

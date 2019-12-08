@@ -385,7 +385,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     handle: '.options',
                     stop: function () {
@@ -451,7 +450,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     handle: '.options',
                     stop: function () {
@@ -475,6 +473,70 @@ $(document).ready(function () {
         }
     }
 
+    class Survey {
+        constructor(top, left, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "") {
+            let id = (new Date).getTime();
+            let position = {top, left, height, width};
+            let survey_link = ""
+            if (link != null) {
+                survey_link = 'href = ' + link
+            }
+            let html = `
+                        <div class="survey-div" style = "text-align:center;">
+                            <div class="options">
+                                <i class="fas fa-trash" id=${id}></i>
+                                <i class="fas fa-link"   id=${id} ></i>
+                                <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            
+                            </div> 
+                            <div class="button-name-builder">
+                                <a class="btn btn-button" ${survey_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                                
+                                <svg style="position:absolute; top:45%; left:0;" viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available" >
+                                    <text x="-1" y="10">${name}</text>
+                                </svg>
+                                </a>
+                            </div>    
+                            <span class = "survey-name">${survey_span_name}</span>
+                        </div>
+        
+                `;
+
+            // href = ${link}
+            this.renderDiagram = function () {
+                // dom includes the html,css code with draggable property
+                let dom = $(html).css({
+                    "position": "absolute",
+                    "top": position.top,
+                    "left": position.left,
+                    "height": position.height,
+                    "width": position.width,
+                }).draggable({
+                    //Constrain the draggable movement only within the canvas of the editor
+                    containment: "#tabs-for-download",
+                    scroll: false,
+                    cursor: "move",
+                    handle: '.options',
+                    stop: function () {
+                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                        $(this).css("left", l);
+                        $(this).css("top", t);
+                        $(this).css("height", h);
+                        $(this).css("width", w);
+                    }
+                });
+
+                var a = document.getElementsByClassName("current")[0];
+                $('#' + a.id).append(dom);
+                // canvas.append(dom);
+                // Making element Resizable
+
+            };
+        }
+    }
     // ====For PDF======
     class PDF {
         constructor(top, left, link = null, height = null, width = null) {
@@ -523,7 +585,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
@@ -602,7 +663,6 @@ $(document).ready(function () {
                     //Constrain the draggable movement only within the canvas of the editor
                     containment: "#tabs-for-download",
                     scroll: false,
-                    grid: [50, 20],
                     cursor: "move",
                     snap: ".gridlines",
                     snapMode: 'inner',
@@ -1003,7 +1063,7 @@ $(document).ready(function () {
             $('#' + e.currentTarget.id).parent().parent().remove();
         });
 
-        $('.fa-link').bind("click", function (e) {
+        $('.quiz-div .fa-link').bind("click", function (e) {
             $.ajax({
                 url: `/quiz/api/v1/quiz/?course_code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
                 processData: false,
@@ -1036,6 +1096,71 @@ $(document).ready(function () {
         });
 
         $('.quiz-div').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 50,
+            minHeight: 30,
+            stop: function (e, ui) {
+                // var parent = ui.element.parent();
+                ui.element.css({
+                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+                });
+            },
+        });
+    }
+
+    function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "") {
+        const survey = new Survey(top, left, link, height, width, name, survey_span_name);
+
+        survey.renderDiagram();
+
+        // $('.btn').attr('contentEditable', true);
+
+        $('.btn').on('click', function () {
+            // alert('say me more!!')
+        })
+
+        const div1 = $('i').parent();
+
+        $('.fa-trash').click(function (e) {
+            $('#' + e.currentTarget.id).parent().parent().remove();
+        });
+
+        $('.survey-div .fa-link').on("click", function (e) {
+            $.ajax({
+                url: `/survey/api/v1/surveyinfo/?Course_Code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+                processData: false,
+                method: 'GET',
+                success: function (data) {
+                    $('#mySurveyTable').empty()
+                    for (var i = 0; i < data.length; i++) {
+                        $('#mySurveyTable').append(`<tr>
+                            <td>
+                                ${data[i].Survey_Title}
+                            </td>
+                            <td>
+                                <button type="button" class="selectsurvey" value="${data[i].pk}">Select</button>
+                            </td>
+                        </tr>`);
+                    }
+                },
+            });
+            var btn_id = parseInt(e.currentTarget.id) + 1
+            $('#survey-form input[type=text]').val('');
+            $('#survey-btn-name').val($(this).parent().parent().find('a').text().trim());
+            var link = $(this).parent().parent().find('a').attr('href');
+            if (link != undefined) {
+                link = link.replace('http://', '');
+            }
+            $('#survey-link').val(link);
+            $('#survey-name').val($(this).parent().parent().find('span').text().trim());
+            $('#survey_id').val(btn_id);
+            $('#survey-modal').modal('show');
+        });
+
+        $('.survey-div').resizable({
             containment: $('#tabs-for-download'),
             grid: [20, 20],
             autoHide: true,
@@ -1684,6 +1809,10 @@ $(document).ready(function () {
                 QuizFunction($(this).css("top"),
                     $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
             }
+            if (value.classList.contains('survey-div')) {
+                SurveyFunction($(this).css("top"),
+                    $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
+            }
             if (value.classList.contains('pdfdiv')) {
                 PDFFunction($(this).css("top"),
                     $(this).css("left"), $(this).find('object').attr('data'), $(this).css("height"), $(this).css("width"));
@@ -1743,6 +1872,12 @@ $(document).ready(function () {
             );
         } else if (ui.helper.hasClass('quiz')) {
             QuizFunction(
+                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+                null, '10%', '15%'
+            );
+        } else if (ui.helper.hasClass('survey')) {
+            SurveyFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
                 null, '10%', '15%'
@@ -2000,7 +2135,21 @@ $(document).ready(function () {
                             );
                         });
                     }
+                    if (div == 'surveydiv') {
+                        $.each(div_value, function (css, css_value) {
+                            css_string = JSON.stringify(css_value)
 
+                            SurveyFunction(
+                                css_value.tops,
+                                css_value.left,
+                                css_value.link,
+                                css_value.height,
+                                css_value.width,
+                                css_value.survey_btn_name,
+                                css_value.survey_name
+                            );
+                        });
+                    }
                     if (div == 'pdf') {
                         $.each(div_value, function (css, css_value) {
                             css_string = JSON.stringify(css_value)
@@ -2137,6 +2286,35 @@ $('#myTable').on('click', '.selectquiz', function () {
     $('#quiz-link').val(`quiz/quiz${$(this).val().trim()}/take/`)
 })
 // ======================================================================
+
+// survey Form Submit
+$('#survey-submit').on('click', function () {
+    var survey_name = $('#survey-btn-name').val();
+    var survey_span_name = $('#survey-name').val();
+    var survey_link = $('#survey-link').val();
+    var survey_id = $('#survey_id').val();
+    if (survey_link != "") {
+        $('#' + survey_id).attr({
+            "href": `/${survey_link}`
+        });
+    } else {
+        $('#' + survey_id).removeAttr('href');
+    }
+    $('#' + survey_id).find('text').text(survey_name);
+    $('#' + survey_id).parent().parent().find('.survey-name').text(survey_span_name)
+    $('#survey-modal').modal('hide');
+})
+
+$('#mySurveyTable').on('click', '.selectsurvey', function () {
+    $('#survey-name').val($(this).closest('td').prev('td').text().trim())
+    $('#survey-link').val(`students/questions_student_detail/detail/${$(this).val().trim()}`)
+});
+
+// $('#survey_create_link').on('click', function(){
+//     console.log('hello')
+    
+// })
+// ==================================================================================
 
 // background color for pages
 $('#tabs-for-download').click(function () {

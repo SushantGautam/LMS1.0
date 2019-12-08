@@ -3,18 +3,16 @@
 <head>
 
 
-    <link rel="icon"
-          type="image/png"
-          href="/static/images/logo.png"/>
+    <link rel="icon" type="image/png" href="/static/images/logo.png" />
     <meta name="viewport" content="width=device-width, intial-scale=1.0">
 
     <meta charset="UTF-8">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}"/>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}" />
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
@@ -32,13 +30,11 @@
 
 
     <!-- Loads <model-viewer> for modern browsers: -->
-    <script type="module"
-            src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
     </script>
 
     <!-- Loads <model-viewer> for old browsers like IE11: -->
-    <script nomodule
-            src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
     </script>
 
     <title>Course Builder</title>
@@ -116,7 +112,7 @@
         height: 80vh;
     }
 
-    .pagenumber > canvas {
+    .pagenumber>canvas {
         height: 100%;
         width: 100%;
         border: brown;
@@ -144,7 +140,7 @@
         background-color: white;
     }
 
-    .nav > li > a {
+    .nav>li>a {
         position: relative;
         display: block;
         padding: 9px !important;
@@ -159,7 +155,7 @@
         width: auto;
     }
 
-    .panel-default > .panel-heading {
+    .panel-default>.panel-heading {
         background-color: #f5f5f5;
         border-color: #ddd;
     }
@@ -182,84 +178,82 @@
         display: block;
         cursor: pointer;
     }
-
-
 </style>
 
 <body>
-<div class="se-pre-con"></div>
+    <div class="se-pre-con"></div>
 
-<div class="container-fluid full-width ">
-    <div class="editor row" style=" height: -webkit-fill-available;">
+    <div class="container-fluid full-width ">
+        <div class="editor row" style=" height: -webkit-fill-available;">
 
-        <!-- Preview Bar must be here... -->
-        <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar">
-            <section class="upper">
+            <!-- Preview Bar must be here... -->
+            <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar">
+                <section class="upper">
 
-                <br>
-                <div class="row" style="margin:auto">
-                    <ul class="nav nav-tabs" style="font-size: 12px;">
-                        <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
-                        <li><a data-toggle="tab" href="#menu1">Layout</a></li>
-                    </ul>
-                </div>
+                    <br>
+                    <div class="row" style="margin:auto">
+                        <ul class="nav nav-tabs" style="font-size: 12px;">
+                            <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
+                            <li><a data-toggle="tab" href="#menu1">Layout</a></li>
+                        </ul>
+                    </div>
 
 
-                <hr class="white-hr">
+                    <hr class="white-hr">
 
-                <div class="row" style="margin:auto">
-                    <div class="tab-content">
+                    <div class="row" style="margin:auto">
+                        <div class="tab-content">
 
-                        <div id="home" class="tab-pane fade in active">
+                            <div id="home" class="tab-pane fade in active">
 
-                            <div class="home-tab-1 ">
+                                <div class="home-tab-1 ">
 
-                                <div class="draggable builder textbox draggable-style ">
-                                    <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
+                                    <div class="draggable builder textbox draggable-style ">
+                                        <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
 
-                                    <span class="smaller-font">Text Box</span>
-                                </div>
+                                        <span class="smaller-font">Text Box</span>
+                                    </div>
 
-                                <div class="draggable builder picture draggable-style ">
-                                    <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
-                                    <span class="smaller-font">Picture</span>
-                                </div>
+                                    <div class="draggable builder picture draggable-style ">
+                                        <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
+                                        <span class="smaller-font">Picture</span>
+                                    </div>
 
-                                <div class="draggable builder video draggable-style ">
-                                    <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
-                                    <span class="smaller-font">Video</span>
-                                </div>
+                                    <div class="draggable builder video draggable-style ">
+                                        <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
+                                        <span class="smaller-font">Video</span>
+                                    </div>
 
-                                <div class="draggable builder buttons draggable-style">
-                                    <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
-                                    <span class="smaller-font">Button</span>
-                                </div>
+                                    <div class="draggable builder buttons draggable-style">
+                                        <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
+                                        <span class="smaller-font">Button</span>
+                                    </div>
 
-                                <div class="draggable builder 3dobject draggable-style">
-                                    <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
-                                    <span class="smaller-font">3D Object</span>
-                                </div>
+                                    <div class="draggable builder 3dobject draggable-style">
+                                        <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
+                                        <span class="smaller-font">3D Object</span>
+                                    </div>
 
-                                <div class="draggable builder Pdf draggable-style">
-                                    <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
-                                    <span class="smaller-font">PDF</span>
-                                </div>
+                                    <div class="draggable builder Pdf draggable-style">
+                                        <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
+                                        <span class="smaller-font">PDF</span>
+                                    </div>
 
-                                <div class="draggable builder quiz draggable-style">
-                                    <img src="{% static 'chapterPageBuilder/icons/quiz.png' %}">
-                                    <span class="smaller-font">Quiz</span>
-                                </div>
+                                    <div class="draggable builder quiz draggable-style">
+                                        <img src="{% static 'chapterPageBuilder/icons/quiz.png' %}">
+                                        <span class="smaller-font">Quiz</span>
+                                    </div>
 
-                                <div class="draggable builder survey draggable-style">
-                                    <img src="{% static 'chapterPageBuilder/icons/survey.png' %}">
-                                    <span class="smaller-font">Survey</span>
+                                    <div class="draggable builder survey draggable-style">
+                                        <img src="{% static 'chapterPageBuilder/icons/survey.png' %}">
+                                        <span class="smaller-font">Survey</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="menu1" class="tab-pane fade">
-                            <div class="home-tab-2">
-                                <div class="draggable  layout grid">
-                                    <!-- <svg aria-hidden="true" data-prefix="fal" data-icon="columns"
+                            <div id="menu1" class="tab-pane fade">
+                                <div class="home-tab-2">
+                                    <div class="draggable  layout grid">
+                                        <!-- <svg aria-hidden="true" data-prefix="fal" data-icon="columns"
                                       class="svg-inline--fa fa-columns fa-w-16 fa-3x " role="img" xmlns="http://www.w3.org/2000/svg"
                                       viewbox="0 0 512 512">
                                       <path fill="currentColor"
@@ -267,571 +261,696 @@
                                       </path>
                                     </svg> -->
 
-                                    <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}" alt="like this">
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
+                                            alt="like this">
 
+                                    </div>
+
+                                    <div class="draggable  layout grid-1">
+
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
+                                            alt="like this">
+
+                                    </div>
+
+                                    <div class="draggable  layout title-slide">
+
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
+                                            alt="like this">
+                                    </div>
+
+                                    <div class="draggable  layout title-content-details">
+
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
+                                            alt="like this">
+                                    </div>
+
+                                    <div class="draggable layout pdf-text">
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
+                                            alt="like this">
+                                    </div>
+
+                                    <div class="draggable  layout title-content-details">
+
+                                        <!-- <img src="images/saveimg5.png" alt="like this"  > -->
+                                    </div>
                                 </div>
 
-                                <div class="draggable  layout grid-1">
-
-                                    <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}" alt="like this">
-
-                                </div>
-
-                                <div class="draggable  layout title-slide">
-
-                                    <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}" alt="like this">
-                                </div>
-
-                                <div class="draggable  layout title-content-details">
-
-                                    <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}" alt="like this">
-                                </div>
-
-                                <div class="draggable layout pdf-text">
-                                    <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}" alt="like this">
-                                </div>
-
-                                <div class="draggable  layout title-content-details">
-
-                                    <!-- <img src="images/saveimg5.png" alt="like this"  > -->
-                                </div>
                             </div>
 
                         </div>
 
                     </div>
 
-                </div>
 
+                    <hr class="white-hr ">
+                    <div class="row" style="margin:auto">
+                        <h3 class="media-content-builder text-center" style="margin-top:16px; font-size:15px">Media
+                            Items </h3>
 
-                <hr class="white-hr ">
-                <div class="row" style="margin:auto">
-                    <h3 class="media-content-builder text-center" style="margin-top:16px; font-size:15px">Media
-                        Items </h3>
-
-                </div>
-
-
-            </section>
-
-            <section class="lower">
-                <div class="row" style="margin:auto">
-                    <div class="media-items-tabs">
-                        <!-- Tab links -->
-                        <div class="tab">
-                            <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
-                            <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
-                            <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
-                            <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
-                        </div>
-
-                        <!-- Tab content -->
-                        <div id="image-gallery" class="tabcontent file-content">
-                            <h3>Images</h3>
-                            <div class="individual-file">
-
-                            </div>
-                            <p>Nothing to show here...</p>
-                        </div>
-
-                        <div id="video-gallery" class="tabcontent file-content">
-                            <h3>Videos</h3>
-                            <p>Nothing to show here...</p>
-                        </div>
-
-                        <div id="pdf-gallery" class="tabcontent file-content">
-                            <h3>PDF</h3>
-                            <p>Nothing to show here...</p>
-                        </div>
-
-                        <div id="3d-gallery" class="tabcontent file-content">
-                            <h3>3D Files</h3>
-                            <p>Nothing to show here...</p>
-                        </div>
                     </div>
 
-                </div>
 
-            </section>
+                </section>
+
+                <section class="lower">
+                    <div class="row" style="margin:auto">
+                        <div class="media-items-tabs">
+                            <!-- Tab links -->
+                            <div class="tab">
+                                <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
+                                <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
+                                <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
+                                <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
+                            </div>
+
+                            <!-- Tab content -->
+                            <div id="image-gallery" class="tabcontent file-content">
+                                <h3>Images</h3>
+                                <div class="individual-file">
+
+                                </div>
+                                <p>Nothing to show here...</p>
+                            </div>
+
+                            <div id="video-gallery" class="tabcontent file-content">
+                                <h3>Videos</h3>
+                                <p>Nothing to show here...</p>
+                            </div>
+
+                            <div id="pdf-gallery" class="tabcontent file-content">
+                                <h3>PDF</h3>
+                                <p>Nothing to show here...</p>
+                            </div>
+
+                            <div id="3d-gallery" class="tabcontent file-content">
+                                <h3>3D Files</h3>
+                                <p>Nothing to show here...</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
 
 
-        </div>
+            </div>
 
-        <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style="padding: 0px!important;">
-            <div id="navbar-title" style="height: 9vh;">
-                <a href="
+            <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style="padding: 0px!important;">
+                <div id="navbar-title" style="height: 9vh;">
+                    <a href="
                     {% if 'teachers' in request.path %}
                     {% url 'teacher_chapterinfo_detail' course chapter %}
                     {% else %}
                     {% url 'chapterinfo_detail' course chapter %}
                     {% endif %}
                 " id="goBackBtn"><i class="fa fa-arrow-left" style="font-size:1.5em;color: black"></i>
-                </a>
-                <h2 class="tlimit" id="chaptertitle">
-                </h2>
+                    </a>
+                    <h2 class="tlimit" id="chaptertitle">
+                    </h2>
 
-                <nav class="navbar">
-                    <a href="{% url 'previewcontentviewer' course chapter %}" id="previewBtn"><i class="fas fa-eye"></i><br>Preview</a>
-                    <a href="#" id="SaveBtn"><i class="fas fa-save"></i><br/>Save</a>
+                    <nav class="navbar">
+                        <a href="{% url 'previewcontentviewer' course chapter %}" id="previewBtn"><i
+                                class="fas fa-eye"></i><br>Preview</a>
+                        <a href="#" id="SaveBtn"><i class="fas fa-save"></i><br />Save</a>
 
-                    <input id="importzipfile" name="importfile" type="file"
-                           accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
-                    <a href="#" id="import_zip_link"><i class="fas fa-file-import"></i><br/>Import</a>
+                        <input id="importzipfile" name="importfile" type="file"
+                            accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" />
+                        <a href="#" id="import_zip_link"><i class="fas fa-file-import"></i><br />Import</a>
 
-                    <a href="{% url 'exportzip' course chapter %}" target="_blank"
-                       onclick="return confirm('Have you saved the latest change?')"><i
-                            class="fas fa-file-export"></i><br/>Export</a>
+                        <a href="{% url 'exportzip' course chapter %}" target="_blank"
+                            onclick="return confirm('Have you saved the latest change?')"><i
+                                class="fas fa-file-export"></i><br />Export</a>
 
-                    <a href="#" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br/>Save and Exit</a>
-                </nav>
-            </div>
+                        <a href="#" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br />Save and Exit</a>
+                    </nav>
+                </div>
 
-            <!-- editable title -->
+                <!-- editable title -->
 
-            <div>
-                <!-- Editor -->
-                <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
-                    <div class="editor-canvas" id="element-container">
-                        <p id="tab1" class="tab-content-no   droppable editor-canvas current ">
+                <div>
+                    <!-- Editor -->
+                    <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
+                        <div class="editor-canvas" id="element-container">
+                            <p id="tab1" class="tab-content-no   droppable editor-canvas current ">
 
-                        </p>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- sidebar must be here.... -->
+            <!-- sidebar must be here.... -->
 
-        <div class="  col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar" style="padding:0px!important">
+            <div class="  col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar" style="padding:0px!important">
 
-            <div class="chapter-select ">
-                <h3>Chapter Lists</h3>
+                <div class="chapter-select ">
+                    <h3>Chapter Lists</h3>
 
-                <div class="selection">
-                    <select name="chapter-lists" id="chapterlist">
-                        {% for chapter in chapterlist %}
+                    <div class="selection">
+                        <select name="chapter-lists" id="chapterlist">
+                            {% for chapter in chapterlist %}
                             <option value="{{ chapter.id }}">
                                 {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}
                             </option>
-                        {% endfor %}
-                    </select>
-                    <div class="chapter-description" id="chapter-description" style="position:relative">
-                        <p>
+                            {% endfor %}
+                        </select>
+                        <div class="chapter-description" id="chapter-description" style="position:relative">
+                            <p>
 
-                        </p>
-                        <a href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
-                            <span class="edit-type-btn" style="float:right; position:absolute; top:0;right:0">
-                                <i class="fas fa-edit" style="padding: 2px;"></i>
-                            </span>
-                        </a>
+                            </p>
+                            <a href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
+                                <span class="edit-type-btn" style="float:right; position:absolute; top:0;right:0">
+                                    <i class="fas fa-edit" style="padding: 2px;"></i>
+                                </span>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
-            <div class="silde-div">
+                <div class="silde-div">
 
 
-                <div class="right-sidebar">
-                    <div class="right-sidebar-content text-left">
+                    <div class="right-sidebar">
+                        <div class="right-sidebar-content text-left">
 
-                        <hr class="white-hr">
-                        <div class="img1 showSingle" target="1">
-                            <div class="tabs-to-click">
-                                <ul>
-                                    <li class="tabs-link current pagenumber" onclick="openTab(event,'tab1')"></li>
+                            <hr class="white-hr">
+                            <div class="img1 showSingle" target="1">
+                                <div class="tabs-to-click">
+                                    <ul>
+                                        <li class="tabs-link current pagenumber" onclick="openTab(event,'tab1')"></li>
 
-                                </ul>
-                                <div class="button-builder text-center">
-                                    <i id="add-page-btn" class="fas fa-plus-square "></i>
+                                    </ul>
+                                    <div class="button-builder text-center">
+                                        <i id="add-page-btn" class="fas fa-plus-square "></i>
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
-
-
                 </div>
+
             </div>
 
         </div>
-
     </div>
-</div>
 
-<!-- Button Modal -->
-<div id="btn-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <!-- Button Modal -->
+    <div id="btn-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
 
-        <!-- Modal content-->
-        <div id="button-link-chapter" class="modal-content">
-            <form id="btn-form">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Modal Header</h4>
-                </div>
-                <div class="modal-body">
-                    <!-- Modal Contents Here -->
-                    <div class="col-md-12">
-                        <label>Display Name</label>
-                        <input type="text" name="btn-name" id="btn-name">
-                        <br>
-                        <label>Link</label>
-                        <span class="btnlink">
-                    http://
-                    <input type="text" name="btn-link" id="btn-link">
+            <!-- Modal content-->
+            <div id="button-link-chapter" class="modal-content">
+                <form id="btn-form">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Button</h4>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Modal Contents Here -->
+                        <div class="col-md-12">
+                            <label>Display Name</label>
+                            <input type="text" name="btn-name" id="btn-name">
+                            <br>
+                            <label>Link</label>
+                            <span class="btnlink">
+                                http://
+                                <input type="text" name="btn-link" id="btn-link">
+
+                        </div>
 
                     </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="button_id" value="">
+                        <button type="button" id="btn-submit" class="#">Submit</button>
+                        <button type="button" class="#" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
 
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" id="button_id" value="">
-                    <button type="button" id="btn-submit" class="#">Submit</button>
-                    <button type="button" class="#" data-dismiss="modal">Close</button>
-                </div>
-            </form>
         </div>
-
     </div>
-</div>
 
-<!-- Quiz Modal -->
-<div id="quiz-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
 
-        <!-- Modal content-->
-        <div id="quiz-link-chapter" class="modal-content">
-            <form id="quiz-form">
-                <div class="modal-header">
-                    <div class="row">
-                        <div class="col-md-11">
-                            <h4 class="modal-title">Modal Header</h4>
+            <!-- Modal content-->
+            <div id="quiz-link-chapter" class="modal-content">
+                <form id="quiz-form">
+                    <div class="modal-header">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h4 class="modal-title">Quiz</h4>
 
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                                </button>
+
+                            </div>
                         </div>
-                        <div class="col-md-1">
-                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
-                            </button>
 
-                        </div>
+
                     </div>
+                    <div class="modal-body" style="width: 100%;">
+                        <!-- Modal Contents Here -->
 
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <label class="control-label">Display Name</label>
 
-                </div>
-                <div class="modal-body" style="width: 100%;">
-                    <!-- Modal Contents Here -->
+                            </div>
 
-                    <div class="row">
-                        <div class="col-md-4 col-sm-4 col-xs-12">
-                            <label class="control-label">Display Name</label>
-
-                                </div>
-                                    
-                                <input type="text" name="quiz-btn-name" id="quiz-btn-name" class="form-control"
+                            <input type="text" name="quiz-btn-name" id="quiz-btn-name" class="form-control"
                                 placeholder="Default Input" style="width: 100%;">
 
-                                </div> 
-                                
-                                
-                              
-                               
-                                <hr>
-                                
-                                <input type="hidden" name="quiz-link" id="quiz-link">
+                        </div>
 
-                   
-                   
-                    <div class="row">
-                        <div class="col-md-12">
-                       
+
+
+
+                        <hr>
+
+                        <input type="hidden" name="quiz-link" id="quiz-link">
+
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+
                                 <div class="new-quiz">
-                                        <a href="{% url 'chapterinfo_detail' course chapter %}" target="_blank" id="quiz_create_link">
-                                                <h5 > <span style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create New Quiz </span> </h5>
-                                            </a>
-                                       
-                                           
-                                    </div>
-                                    <hr>
-                                    
-                            <div class="select-quiz text-left">
-                                <h5>  Select Existing Quiz
+                                    <a href="{% url 'chapterinfo_detail' course chapter %}" target="_blank"
+                                        id="quiz_create_link">
+                                        <h5> <span
+                                                style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
+                                                New Quiz </span> </h5>
+                                    </a>
+
+
+                                </div>
+                                <hr>
+
+                                <div class="select-quiz text-left">
+                                    <h5> Select Existing Quiz
                                     </h5>
-                                <input class="form-control" id="myInput" type="text" placeholder="Search..">
-                            </div>
-                            <div class="modal-table-container" style="height:200px;overflow:auto" >
+                                    <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                                </div>
+                                <div class="modal-table-container" style="height:200px;overflow:auto">
                                     <table class="table table-bordered table-striped">
-                                            <thead>
+                                        <thead>
                                             <tr>
                                                 <th>Quiz Name</th>
                                                 <th>Action</th>
                                             </tr>
-                                            </thead>
-                                            <tbody id="myTable">
+                                        </thead>
+                                        <tbody id="myTable">
                                             <!-- Table contents goes here from ajax -->
                                             <tr>
                                                 <td></td>
                                                 <td></td>
                                             </tr>
-                                            </tbody>
-                                        </table>
+                                        </tbody>
+                                    </table>
 
-                            </div> 
-                            <hr>
-                          
-                            <div class="row"> 
-                                     
+                                </div>
+                                <hr>
+
+                                <div class="row">
+
                                     <div class="col-md-4">
-                                            <label>Chosen Quiz</label>
-
-                                    </div> 
-                                    <div class="col-md-8">
-                                            <!-- <input type="text" name="quiz-name" id="quiz-name" style="width:100%"> -->
-                                            <input type="text" placeholder="none" name="quiz-name" id="quiz-name" class="form-control"  style="width: 100%;">
+                                        <label>Chosen Quiz</label>
 
                                     </div>
-                                    
-                                   
-                                </div> 
-                           
+                                    <div class="col-md-8">
+                                        <!-- <input type="text" name="quiz-name" id="quiz-name" style="width:100%"> -->
+                                        <input type="text" placeholder="none" name="quiz-name" id="quiz-name"
+                                            class="form-control" style="width: 100%;">
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
                         </div>
                     </div>
+                    <div class="modal-footer" style="border:none!important;">
+                        <input type="hidden" id="quiz_id" value="">
+                        <button type="button" id="quiz-submit" class="#">Submit</button>
+                        <button type="button" class="#" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Survey Modal -->
+    <div id="survey-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div id="survey-link-chapter" class="modal-content">
+                <form id="survey-form">
+                    <div class="modal-header">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h4 class="modal-title">Survey</h4>
+
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                                </button>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-body" style="width: 100%;">
+                        <!-- Modal Contents Here -->
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <label class="control-label">Display Name</label>
+
+                            </div>
+
+                            <input type="text" name="survey-btn-name" id="survey-btn-name" class="form-control"
+                                placeholder="Default Input" style="width: 100%;">
+
+                        </div>
+
+
+
+
+                        <hr>
+
+                        <input type="hidden" name="survey-link" id="survey-link">
+
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="new-survey">
+                                    <a
+                                        id="survey_create_link" href = "{% url 'chapterinfo_detail' course chapter %}" target="_blank">
+                                        <h5> <span
+                                                style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
+                                                New Survey </span> </h5>
+                                    </a>
+
+
+                                </div>
+                                <hr>
+
+                                <div class="select-survey text-left">
+                                    <h5> Select Existing Survey
+                                    </h5>
+                                    <input class="form-control" id="mySurveyInput" type="text" placeholder="Search..">
+                                </div>
+                                <div class="modal-table-container" style="height:200px;overflow:auto">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Survey Name</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="mySurveyTable">
+                                            <!-- Table contents goes here from ajax -->
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <hr>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <label>Chosen Survey</label>
+
+                                    </div>
+                                    <div class="col-md-8">
+                                        <!-- <input type="text" name="survey-name" id="survey-name" style="width:100%"> -->
+                                        <input type="text" placeholder="none" name="survey-name" id="survey-name"
+                                            class="form-control" style="width: 100%;">
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border:none!important;">
+                        <input type="hidden" id="survey_id" value="">
+                        <button type="button" id="survey-submit" class="#">Submit</button>
+                        <button type="button" class="#" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- Link Modal -->
+    <div id="link-video-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Link</h4>
                 </div>
-                <div class="modal-footer" style="border:none!important;">
-                    <input type="hidden" id="quiz_id" value="">
-                    <button type="button" id="quiz-submit" class="#">Submit</button>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+
+                    <label>Link to video</label>
+                    <span class="btnlink">
+                        http://
+                        <input type="text" name="link" id="video-link">
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="link-video-submit" class="#">Submit</button>
                     <button type="button" class="#" data-dismiss="modal">Close</button>
                 </div>
-            </form>
+            </div>
+
         </div>
-
     </div>
-</div>
 
+    <!-- End of link modal -->
 
-<!-- Link Modal -->
-<div id="link-video-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <!-- Link Image Modal -->
+    <div id="link-image-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
 
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Link</h4>
-            </div>
-            <div class="modal-body">
-                <!-- Modal Contents Here -->
-
-                <label>Link to video</label>
-                <span class="btnlink">
-            http://
-            <input type="text" name="link" id="video-link">
-          </span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="link-video-submit" class="#">Submit</button>
-                <button type="button" class="#" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- End of link modal -->
-
-<!-- Link Image Modal -->
-<div id="link-image-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Link</h4>
-            </div>
-            <div class="modal-body">
-                <!-- Modal Contents Here -->
-
-                <label>Image Link</label>
-                <span class="btnlink">
-            http://
-            <input type="text" name="link" id="image-link">
-          </span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="link-image-submit" class="#">Submit</button>
-                <button type="button" class="#" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- End of link modal -->
-
-<!-- Link Modal -->
-<div id="link-3d-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Link</h4>
-            </div>
-            <div class="modal-body">
-                <!-- Modal Contents Here -->
-                <div>
-                    <label>Upload 3D file(.glb or .glft)</label>
-                    <input type="file" name="_3dfile" id="_3dfile-link" accept=".glb,.glft"/>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Link</h4>
                 </div>
-                <div>For converting 3D files online,
-                    <a href="https://blackthread.io/gltf-converter/" target="_blank">
-                        Click Here.
-                    </a>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+
+                    <label>Image Link</label>
+                    <span class="btnlink">
+                        http://
+                        <input type="text" name="link" id="image-link">
+                    </span>
                 </div>
-                <!-- <div>
+                <div class="modal-footer">
+                    <button type="button" id="link-image-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- End of link modal -->
+
+    <!-- Link Modal -->
+    <div id="link-3d-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Link</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+                    <div>
+                        <label>Upload 3D file(.glb or .glft)</label>
+                        <input type="file" name="_3dfile" id="_3dfile-link" accept=".glb,.glft" />
+                    </div>
+                    <div>For converting 3D files online,
+                        <a href="https://blackthread.io/gltf-converter/" target="_blank">
+                            Click Here.
+                        </a>
+                    </div>
+                    <!-- <div>
                     <label>Upload 3D file (MTL)</label>
                     <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
                 </div> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="link-3d-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" id="link-3d-submit" class="#">Submit</button>
-                <button type="button" class="#" data-dismiss="modal">Close</button>
-            </div>
+
         </div>
-
     </div>
-</div>
 
-<!-- End of link modal -->
+    <!-- End of link modal -->
 
-<script>
-
-
-    var data = {{ data | safe}};
-    var courseID = '{{course}}';
-    var chapterID = '{{chapter}}';
-    var chaptertitle = '{{chapterdetails.Chapter_Name}}';
-    var save_file_url = "{% url 'saveFile' %}";
-    var save_video_url = "{% url 'saveVideo' %}";
-    var delete_file_url = "{% url 'delete-chapter-files' %}";
-    var save_3d_url = "{% url 'save3d' %}";
-    var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
-    var save_json_url = "{% url 'saveJson' %}";
-    var import_zip_url = '{% url "importzip" %}';
-    var csrf_token = '{{csrf_token}}'
-    var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}'
-    var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}'
-    var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}'
+    <script>
 
 
-    $('#chapterlist').val(chapterID);
+        var data = {{ data | safe}};
+        var courseID = '{{course}}';
+        var chapterID = '{{chapter}}';
+        var chaptertitle = '{{chapterdetails.Chapter_Name}}';
+        var save_file_url = "{% url 'saveFile' %}";
+        var save_video_url = "{% url 'saveVideo' %}";
+        var delete_file_url = "{% url 'delete-chapter-files' %}";
+        var save_3d_url = "{% url 'save3d' %}";
+        var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
+        var save_json_url = "{% url 'saveJson' %}";
+        var import_zip_url = '{% url "importzip" %}';
+        var csrf_token = '{{csrf_token}}'
+        var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}'
+        var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}'
+        var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}'
 
-    var previous;
-    (function () {
 
-        $("select").on('focus', function () {
-            // Store the current value on focus and on change
-            previous = this.value;
-        }).change(function () {
-            // Do something with the previous value after the change
-            var confirmation = confirm("Are you sure you want to leave?")
-            if (confirmation == false) {
-                $('#chapterlist').val(previous)
-                return false
-            } else {
-                let chapter = $('#chapterlist').val()
-                location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
-            }
+        $('#chapterlist').val(chapterID);
+
+        var previous;
+        (function () {
+
+            $("select").on('focus', function () {
+                // Store the current value on focus and on change
+                previous = this.value;
+            }).change(function () {
+                // Do something with the previous value after the change
+                var confirmation = confirm("Are you sure you want to leave?")
+                if (confirmation == false) {
+                    $('#chapterlist').val(previous)
+                    return false
+                } else {
+                    let chapter = $('#chapterlist').val()
+                    location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                }
+            });
+        })();
+
+        $('#save-and-exit-btn').click(function (e) {
+            e.preventDefault();
+
+            window.alert = function () {
+            };
+            window.onbeforeunload = function () {
+            };
+            $('#SaveBtn').click();
+            var href = $('#goBackBtn').attr('href');
+            location.href = href;
         });
-    })();
 
-    $('#save-and-exit-btn').click(function (e) {
-        e.preventDefault();
-
-        window.alert = function () {
-        };
-        window.onbeforeunload = function () {
-        };
-        $('#SaveBtn').click();
-        var href = $('#goBackBtn').attr('href');
-        location.href = href;
-    });
-
-    $(document).ready(function () {
-        let trunc = truncateString(`{{chapterdetails.Summary}}`);
-        $('#chapter-description').find('p').text(trunc);
-        // Animate loader off screen
-        $(".se-pre-con").fadeOut("slow");
-        ;
-    });
-
-    const truncateString = (string, maxLength = 30) => {
-        if (!string) return null;
-        const showDots = string.length > maxLength;
-        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
-    };
-
-    $('#quiz_create_link').click(function () {
-        $('#quiz-modal').modal('toggle');
-    })
-    setTimeout(function () {
-        $.ajax({
-            url: "{% url 'retrieve-chapter-files' %}",
-            data: {
-                'courseID': courseID,
-                'chapterID': chapterID,
-                'userpk': '{{ request.user.pk }}'
-            },
-            success: function (data) {
-                if (data.images.length > 0) {
-                    $('#image-gallery').find('p').empty()
-                    data.images.forEach(x => {
-                        $('#image-gallery .individual-file').append(
-                            `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
-                        )
-                    });
-                }
-                if (data.videos.length > 0) {
-                    $('#video-gallery').find('p').empty()
-                    data.videos.forEach(x => {
-                        $('#video-gallery').append(
-                            x.split('&&&')[1]
-                        )
-                    });
-                }
-                if (data.pdf.length > 0) {
-                    $('#pdf-gallery').find('p').empty()
-                    data.pdf.forEach(x => {
-                        $('#pdf-gallery').append(
-                            x.split('&&&')[1]
-                        )
-                    });
-                }
-            },
-            // dataType: dataType
+        $(document).ready(function () {
+            let trunc = truncateString(`{{chapterdetails.Summary}}`);
+            $('#chapter-description').find('p').text(trunc);
+            // Animate loader off screen
+            $(".se-pre-con").fadeOut("slow");
+            ;
         });
-    }, 5000)
 
-</script>
+        const truncateString = (string, maxLength = 30) => {
+            if (!string) return null;
+            const showDots = string.length > maxLength;
+            return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+        };
 
-<script>
-    $(document).ready(function () {
-        $("#myInput").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        $('#quiz_create_link').click(function () {
+            $('#quiz-modal').modal('toggle');
+        })
+
+        setTimeout(function () {
+            $.ajax({
+                url: "{% url 'retrieve-chapter-files' %}",
+                data: {
+                    'courseID': courseID,
+                    'chapterID': chapterID,
+                    'userpk': '{{ request.user.pk }}'
+                },
+                success: function (data) {
+                    if (data.images.length > 0) {
+                        $('#image-gallery').find('p').empty()
+                        data.images.forEach(x => {
+                            $('#image-gallery .individual-file').append(
+                                `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
+                            )
+                        });
+                    }
+                    if (data.videos.length > 0) {
+                        $('#video-gallery').find('p').empty()
+                        data.videos.forEach(x => {
+                            $('#video-gallery').append(
+                                x.split('&&&')[1]
+                            )
+                        });
+                    }
+                    if (data.pdf.length > 0) {
+                        $('#pdf-gallery').find('p').empty()
+                        data.pdf.forEach(x => {
+                            $('#pdf-gallery').append(
+                                x.split('&&&')[1]
+                            )
+                        });
+                    }
+                },
+                // dataType: dataType
+            });
+        }, 5000)
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
             });
         });
-    });
-</script>
-{# <script src="https://player.vimeo.com/api/player.js"></script> #}
-<script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
+    </script>
+    {# <script src="https://player.vimeo.com/api/player.js"></script> #}
+    <script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
+    <script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
 
-<script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/offline.min.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/offline.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
+    <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
+    <script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
+    <script src="{% static 'chapterPageBuilder/js/offline.min.js' %}"></script>
+    <script src="{% static 'chapterPageBuilder/js/offline.js' %}"></script>
+    <script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
 
 </body>

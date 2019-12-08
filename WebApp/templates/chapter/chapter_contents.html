@@ -57,11 +57,11 @@
         position: fixed;
         z-index: 1;
         top: 0;
-        left: 0;
+        left: -5px;
         background-color: black;
         overflow-x: hidden;
         transition: 0.5s;
-        padding-top: 60px;
+        padding-top: 10px;
         border-right: 5px solid #2A3F54;
     }
 
@@ -79,7 +79,7 @@
     }
 
     .sidenav .closebtn {
-        position: absolute;
+        position: fixed;
         top: 0;
         right: 25px;
         font-size: 36px;
@@ -103,11 +103,15 @@
 
 
 <div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative">
+    <div style="right:0px" style="right:0px"><a href="javascript:void(0)" style="
+    right: 25px;
+    position: absolute;
+" onclick="closeNav()"> <i class="fa fa-lg fa-arrow-left"></i></a></div>
+
     <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content"
        style="position: absolute; top:19px;left:0pxx; font-size:20px">
-        <i class="fa fa-arrow-left"></i>
+        <div class="closebtn"> &times;</div>
     </a>
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <div class="profile clearfix">
 
         <div class="profile_pic">
@@ -128,11 +132,12 @@
         <a class="focus-page"
            href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
     {% endfor %}
-    <div class="side-bar-content hidden-small" style="position: absolute;left:0;right:0; bottom:0; display:inline-block; border-top:1px solid white">
+    <div class="side-bar-content hidden-small"
+         style="position: absolute;left:0;right:0; bottom:0; display:inline-block; border-top:1px solid white">
 
         <ul style="display: inline-flex; list-style:none; padding: 0px !important">
             <li>
-                <a data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
+                <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
                    data-original-title="FullScreen">
                     <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
                 </a>
@@ -204,10 +209,11 @@
                     <span id="chaptertitle" class="content-title">
                         <!-- Chapter title goes here -->
                          {{ chapter }}
-                         <span style="font-size:20px;cursor:pointer;float:left;margin-left: 5px " onclick="openNav()">&#9776; </span> 
-                    </span>
+              </span>
             </div>
-
+            <span id="hamburg-nav"
+                  style="font-size: 5vh;cursor:pointer;left: 0px;z-index: 101;position: fixed;color: #0f3c3c;top: 0px;padding: 4vh;text-shadow: 2px 2px 5px red;"
+                  onclick="openNav()">☰ </span>
             <div id="page-contents" class="page-contents"></div>
 
         </div>
@@ -230,13 +236,20 @@
             </ul>
         </div>
 
-        <div id="thumb-next-btn" class="thumb-nav-button" style="right:9%; padding-top: 5vh;
+        <div id="thumb-next-btn" class="thumb-nav-button" style="right:9.5%; padding-top: 5vh;
     padding-left: 5vh;">
-            <i class=" fa fa-forward"></i>
+            <i class=" fa fa-forward fa-2x" style="
+    top: 1.5vh;
+    position: absolute;
+        text-shadow: 2px 2px 2px white;"></i>
         </div>
-        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:9%;padding-top: 5vh;
+        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:7%;padding-top: 5vh;
     padding-right: 5vh; ">
-            <i class=" fa fa-backward"></i>
+            <i class=" fa fa-backward fa-2x" style="
+    top: 1.5vh;
+    position: absolute;
+    text-shadow: 2px 2px 2px white;
+"></i>
         </div>
 
         <div class="content-footer1 text-center">
@@ -682,19 +695,50 @@
                         }
 
                         if (div == 'quizdiv') {
+                            let quizpk;
                             $.each(div_value, function (css, css_value) {
                                 link = "";
+                                quizpk = (css_value.link.split('/')[2]).match(/\d+/)[0];
                                 if (css_value.hasOwnProperty('link')) {
-                                    link = "href = " + css_value.link;
+                                    {% if '/teachers' in request.path %}
+                                        link = "href = /teachers/quiz/detail/" + quizpk
+                                    {% else %}
+                                        link = "href = " + css_value.link;
+                                    {% endif %}
                                 }
                                 $('#page' + key).append(`
-                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                <div style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
                                         <svg viewBox="0 0 56 18">
                                             <text x="0" y="15">${css_value.quiz_btn_name}</text>
                                         </svg>
                                     </a>
                                     <span>${css_value.quiz_name}</span>
+                                </div>
+                            `)
+                            });
+                        }
+
+                        if (div == 'surveydiv') {
+                            let surveypk;
+                            $.each(div_value, function (css, css_value) {
+                                link = "";
+                                surveypk = (css_value.link.split('/')[4]).match(/\d+/)[0];
+                                if (css_value.hasOwnProperty('link')) {
+                                    {% if '/teachers' in request.path %}
+                                        link = "href = /teachers/surveyinfodetail/detail/" + surveypk
+                                    {% else %}
+                                        link = "href = " + css_value.link;
+                                    {% endif %}
+                                }
+                                $('#page' + key).append(`
+                                <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
+                                    <a ${link} target="_blank">
+                                        <svg viewBox="0 0 56 18">
+                                            <text x="0" y="15">${css_value.survey_btn_name}</text>
+                                        </svg>
+                                    </a>
+                                    <span>${css_value.survey_name}</span>
                                 </div>
                             `)
                             });
@@ -754,6 +798,7 @@
                                         alt="Here is a 3D Object."
                                         auto-rotate
                                         camera-controls
+                                        poster="/static/3D_Viewer/3DLoading.gif"
                                         ar style = "height: 100%;width: 100%;">
                                     </model-viewer></div>
 
@@ -810,7 +855,7 @@
         });
     }
 
-    var x = window.matchMedia("(max-width: 767px)")
+    var x = window.matchMedia("(max-width: 567px)")
 
     function Layout(x) {
         if (x.matches) {
@@ -1037,12 +1082,12 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $("#prev-btn , #next-btn , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $("#prev-btn , #next-btn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);
@@ -1050,7 +1095,7 @@
 
     showFoo(2000);
 
-    $(window).mousemove(function () {
+    $(window).on("mouseover touchstart", function () {
         showFoo(2000);
     });
 </script>
@@ -1161,20 +1206,7 @@
     });
 
 
-    $('#container').click(function () {
-        $('.chatonly').hide();
 
-        $(".content-title1").toggle();
-        $('.thumbnail-slider').toggle();
-        $('.thumb-nav-button').toggle();
-        $('.content-footer1').toggle();
-        $('.button-position').toggle();
-        if ($('.content-footer1').is(":hidden")) {
-            $('.closechatopen').hide();
-        } else $('.closechatopen').show();
-
-
-    });
 
 
     $('#container').mouseleave(function () {
@@ -1186,7 +1218,8 @@
     $(window).load(function () {
         // Animate loader off screen
         $(".se-pre-con").fadeOut("slow");
-        ;
+        $('#togglefull').click();
+
     });
 
 
