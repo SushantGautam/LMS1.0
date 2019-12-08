@@ -34,7 +34,15 @@
                     </button>
                 </h4>
             </div>
-            <div class="modal-body" id="answercontent" style="color: black">
+            <div class="modal-body"  style="color: black;height: -webkit-fill-available;">
+            <div id="answercontent">
+            
+            </div>
+            <hr>
+            <div>
+            <input type = "number" id="" >
+            </div>
+            
             </div>
         </div>
     </div>
@@ -54,7 +62,10 @@
             <tr class="tableTitleRow">
                 <td>S.No.</td>
                 <td>Student Name</td>
+                <td>Total Marks </td>
+                <td>Marks Obtained </td>
                 <td>Submission</td>
+
 
             </tr>
         </thead>
@@ -64,6 +75,14 @@
         <tr>
             <td class="counterCell" style=" padding-top: 15px;"></td>
             <td style=" padding-top: 15px;">{{ answer.Student_Code }}</td>
+            <td>{{ answer.Question_Code.Question_Score }} </td>
+            {% if answer.Assignment_Score is None %}
+            <td> Not graded </td>
+            {% else %}
+            <td>
+                {{ answer.Assignment_Score }}
+            </td>
+            {% endif %}
             <td>{% if answer %}
                 Submitted
                 {% elif not answer %}
@@ -95,8 +114,20 @@
         {% for answer in Answers %}
         if (this.value == '{{ answer.id }}') {
             $('#answercontent').text('{{answer.Assignment_Answer}}')
+
+            if ('{{ answer.Assignment_File }}') {
+        $('#answercontent').append(`
+        <a href="/media/{{ answer.Assignment_File }}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
+                    <b>View File</b>
+                </button>
+                </a>
+
+        `)
+         }
         }
-        {% endfor %}
+
+    {% endfor %}
+
     })
 </script>
 {% endblock %}
