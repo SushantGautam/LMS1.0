@@ -102,7 +102,7 @@
 </style>
 
 
-<div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative">
+<div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative; height: 100vh">
     <div id="closenave" style="right:0px" style="right:0px"><a href="javascript:void(0)" style="
     right: 25px;
     position: absolute;
@@ -131,53 +131,73 @@
     </div>
     <div class="white-hr"></div>
 
-    <h4 style=" color:white ;text-align:center">Chapter Lists</h4>
-    {% for chapter in chapterList %}
 
-        {% if "teachers" in request.path %}
-            <a class="focus-page"
-               href="{% url 'teacher_contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
-        {% else %}
-            <a class="focus-page"
-               href="{% url 'contentviewer' course.pk chapter.pk %}">{{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}</a>
-
-        {% endif %}
-    {% endfor %}
-    <div class="side-bar-content hidden-small"
-         style="position: absolute;left:0;right:0; bottom:0; display:inline-block; border-top:1px solid white">
-
-        <ul style="display: inline-flex; list-style:none; padding: 0px !important">
-            <li>
-                <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
-                   data-original-title="FullScreen">
-                    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                </a>
-
-            </li>
-            <li>
-                <a data-toggle="tooltip" data-placement="top" title="" href="/profile/" data-original-title="Profile">
-                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                </a>
-
-            </li>
-            <li>
-                <a data-toggle="tooltip" data-placement="top" title="" href="http://ublcloud.me/media/app/lms-app.apk"
-                   data-original-title="Download u-LMS Android App">
-                    <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
-                </a>
-
-            </li>
-            <li>
-                <a data-toggle="tooltip" data-placement="top" title="" href="/logout" data-original-title="Logout">
-                    <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                </a>
-
-            </li>
-
-        </ul>
+    <div style="
+    overflow-x: auto;">
+        <h4 style=" color:white ;text-align:center">Chapter Lists</h4>
+        {% for chapterobj in chapterList %}
 
 
+            {% if "teachers" in request.path %}
+                <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
+    background-color: #647ca8;
+"{% endif %}
+                   href="{% url 'teacher_contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
+            {% else %}
+                <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
+    background-color: #647ca8;
+"{% endif %}
+                   href="{% url 'contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
+
+            {% endif %}
+        {% endfor %}
+
+        <div class="side-bar-content hidden-small"
+             style="position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    display: inline-block;
+    border-top: 1px solid white;">
+
+            <ul style="display: inline-flex; list-style:none; padding: 0px !important">
+                <li>
+                    <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
+                       data-original-title="FullScreen">
+                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                    </a>
+
+                </li>
+                <li>
+                    <a data-toggle="tooltip" data-placement="top" title="" href="/profile/"
+                       data-original-title="Profile">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    </a>
+
+                </li>
+                <li>
+                    <a data-toggle="tooltip" data-placement="top" title=""
+                       href="http://ublcloud.me/media/app/lms-app.apk"
+                       data-original-title="Download u-LMS Android App">
+                        <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+                    </a>
+
+                </li>
+                <li>
+                    <a data-toggle="tooltip" data-placement="top" title="" href="/logout" data-original-title="Logout">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
+
+                </li>
+
+            </ul>
+
+
+        </div>
     </div>
+
+
 </div>
 
 
@@ -195,6 +215,7 @@
 
     function openNav() {
         document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("mySidenav").style.height = "100%";
     }
 
     function closeNav() {
@@ -295,8 +316,9 @@
                     <div class="col-md-7 col-sm-7 col-xs-7" style="padding-left: 0px!important;">
                         <ul class="chat-nav " style="padding-left: 0px;">
                             {% if ifteacher %}
-                                <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz <i
-                                        class="fa fa-pencil"></i></li>
+                                <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
+                                    <i
+                                            class="fa fa-pencil"></i></li>
 
                                 <li id="QuickSurvey" data-toggle="modal" data-target="#survey_content_modal">Quick
                                     Survey
@@ -348,7 +370,8 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">UBL BOT</strong>
-                                            <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins
+                                            <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12
+                                                mins
                                                 ago</small>
                                         </div>
                                         <p>
@@ -364,7 +387,8 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">UBL BOT</strong>
-                                            <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
+                                            <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13
+                                                mins
                                                 ago</small>
                                         </div>
                                         <p>
