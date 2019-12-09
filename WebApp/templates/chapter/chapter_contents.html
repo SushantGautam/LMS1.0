@@ -131,13 +131,13 @@
 
 
 <div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative; height: 100vh">
-    <div id="closenave" style="right:0px" style="right:0px"><a href="javascript:void(0)" style="
+    <div id="closenave" style="right:0px" style="right:0px"><a id="closenav" href="javascript:void(0)" style="
     right: 25px;
     position: absolute;"> 
     
     <i class="fa fa-lg fa-angle-double-left " style="font-size: 45px;"></i></a></div>
     <script>
-        $('#closenave').on('click ', function () {
+        $('#closenav').on('click', function () {
             closeNav()
         });
     </script>
@@ -276,11 +276,11 @@
             
             <span class="glyphicon glyphicon-th" id="hamburg-nav"
 
-                  style="font-size: 6vh;cursor:pointer;left: 0px;z-index: 101;position: fixed;color:#339af0;top: 0px;left:20px"
+                  style="font-size: 25px;cursor:pointer;top:20px;left: 20px;z-index: 101;position: fixed;color:#339af0;"
             ></span>
             <div id="page-contents" class="page-contents"></div>
             <script>
-                $('#hamburg-nav').on('click ', function () {
+                $('#hamburg-nav').on('click', function () {
                     openNav();
                 });
             </script>
