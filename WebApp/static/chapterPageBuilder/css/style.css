@@ -1299,3 +1299,7 @@ span.btnlink input {
 }
 
 /* end of page background color */
+
+html {
+    font-size: 14px;
+}

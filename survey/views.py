@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.forms import model_to_dict
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
@@ -567,3 +568,13 @@ class surveyFilterCategory(ListView):
     #     surveys = paginator.get_page(page)
     #     print(surveys)
     #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
+
+
+def SurveyclearViewForAdmin(request, pk):
+    filteredSubmitSurvey = SubmitSurvey.objects.filter(Survey_Code=pk)
+    filteredAnswerInfo = AnswerInfo.objects.filter(Submit_Code__in=filteredSubmitSurvey).delete()
+    filteredSubmitSurvey.delete()
+    messages.add_message(request, messages.SUCCESS,
+                         'All submitted contents in this survey Deleted Successfully.')
+
+    return redirect('surveyinfo_detail', pk=pk)

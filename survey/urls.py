@@ -38,22 +38,25 @@ urlpatterns += (
          name='surveyinfo_create'),
     path('surveyinfo/detail/<int:pk>/',
          views.SurveyInfoDetailView.as_view(), name='surveyinfo_detail'),
+
+    path('clearsurveys/<int:pk>/',
+         views.SurveyclearViewForAdmin, name='clearsurveys'),
+
     path('surveyinfo/update/<int:pk>/',
          views.SurveyInfoUpdateView.as_view(), name='surveyinfo_update'),
 
     # path('surveyinfo/detail', views.get_survey_info,
     #     name='get_survey_info'),
 
-#     path('surveyinfo/<int:category>/', views.surveyinfo_category,
-#          name='surveyinfo_category'),
+    #     path('surveyinfo/<int:category>/', views.surveyinfo_category,
+    #          name='surveyinfo_category'),
     path('surveyinfo_ajax/', views.SurveyInfo_ajax.as_view(),
          name='surveyinfo_ajax'),
     path('liveProgressResult/<int:pk>/', views.liveProgressResult.as_view(),
-             name='liveProgressResult'),
+         name='liveProgressResult'),
 
     path('surveyinforetake_ajax/<int:pk>/', views.SurveyInfoRetake_ajax.as_view(),
          name='surveyinfo_retake_ajax'),
-
 
     path('surveyFilterCategory/', views.surveyFilterCategory.as_view(),
          name='surveyFilterCategory'),
