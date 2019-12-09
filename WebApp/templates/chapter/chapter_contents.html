@@ -151,7 +151,7 @@
 
             {% endif %}
         {% endfor %}
-    <br><br><br>
+        <br><br><br>
 
     </div>
     <div id="sidebar-buttom" class="side-bar-content hidden-small"
@@ -532,6 +532,12 @@
 
 
 <script type="text/javascript">
+    {% if not data %}
+        alert("No contents in this page. Returning back to previous page...");
+        window.history.go(-1);
+    {% endif %}
+
+
     var currentpage = 1;
     var roomName = "ChapterChat{{chapter.id}}";
     var chatSocket;
@@ -645,8 +651,9 @@
             updateStudentOnlineBox("");
         {% endif  %}
     });
-
-    var data = {{ data | safe}};
+    {% if data %}
+        var data = {{ data | safe}};
+    {% endif %}
 
     // container_height = $('body').height() - $('.content-title1').height() - $('.content-footer1').height()
     // $('#container').css('height', container_height * 100 / $('body').height() + "%")
@@ -776,8 +783,8 @@
                                             </div>
                                         </button>
 
-                                       
-                                                
+
+
 
                                     </a>
                                 </div>
