@@ -13,7 +13,6 @@
     list-style: none;
     overflow: auto;
     height: -webkit-fill-available;
-    overflow: auto;
     /* padding: 0px!important; */
     min-height: 50vh;
     margin: 0;
@@ -307,10 +306,12 @@ a:hover, a:active, a:focus {
     z-index: 1000;
     top: 50%;
     position: fixed;
-   
-    color:white;
+    color: white;
+    background-position: center center;
 
     display: block;
+    border-radius: 14%;
+    background-color: rebeccapurple;
 }
 
 
@@ -420,7 +421,7 @@ a:hover, a:active, a:focus {
     position: relative;
     top: 0;
     left: 0;
-    z-index: 999;
+    z-index: 120;
 }
 
 .overall-contents:hover .content-title1 {
@@ -625,6 +626,6 @@ body {
     float: inherit;
 }
 
-.chapterbuttons{
-    background-color:#DDDDDD
+.chapterbuttons {
+    background-color: #DDDDDD
 }

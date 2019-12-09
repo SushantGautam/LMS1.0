@@ -106,44 +106,56 @@
 
     @media screen and (max-width: 449px) {
         html {
-            font-size: 5px!important;
+            font-size: 5px !important;
         }
     }
+
     @media (min-width: 450px) and (max-width: 549px) {
         html {
-            font-size: 6px!important;
+            font-size: 6px !important;
         }
     }
 
     @media (min-width: 550px) and (max-width: 649px) {
         html {
-            font-size: 6.5px!important;
-        }
-    }
-    @media (min-width: 650px;) and (max-width: 767px) {
-        html {
-            font-size: 8px!important;
+            font-size: 6.5px !important;
         }
     }
 
-    
+    @media (min-width: 650px;) and
+
+    (max-width:
+
+    767px
+
+    ) {
+        html {
+            font-size: 8px !important;
+        }
+    }
+
+
 </style>
 
 
 <div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative; height: 100vh">
     <div id="closenave" style="right:0px" style="right:0px"><a id="closenav" href="javascript:void(0)" style="
     right: 25px;
-    position: absolute;"> 
-    
-    <i class="fa fa-lg fa-angle-double-left " style="font-size: 45px;"></i></a></div>
+    position: absolute;">
+
+        <i class="fa fa-lg fa-angle-double-left " style="font-size: 45px;"></i></a></div>
     <script>
-        $('#closenav').on('click', function () {
+        $('#closenav').on('click mouseover', function () {
             closeNav()
         });
     </script>
     <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content"
        style="position: absolute; top:19px;left:0pxx; font-size:20px">
-        <div class="closebtn"><i class="fa fa-times-circle"></i> </div>
+        <div class="closebtn"><i style="
+    background-color: #d6768c;
+    border-radius: 50%;
+    padding: 0.5px 2px;
+" class="fa fa-times-circle"></i></div>
     </a>
     <div class="profile clearfix">
 
@@ -244,6 +256,12 @@
         document.getElementById("mySidenav").style.width = "250px";
         document.getElementById("mySidenav").style.height = "100%";
         {#document.getElementById("sidebar-buttom").style.display = "block";#}
+        document.getElementById("hamburg-nav").style.display = "none";
+        document.getElementById("closenav").style.display = "none";
+        setTimeout(function () {
+            document.getElementById("hamburg-nav").style.display = "block";
+            document.getElementById("closenav").style.display = "block";
+        }, 500);
     }
 
     function closeNav() {
@@ -273,14 +291,14 @@
                          {{ chapter }}
               </span>
             </div>
-            
+
             <span class="glyphicon glyphicon-th" id="hamburg-nav"
 
-                  style="font-size: 25px;cursor:pointer;top:20px;left: 20px;z-index: 101;position: fixed;color:#339af0;"
+                  style="font-size: 25px;cursor:pointer;top:20px;left: 20px;z-index: 121;position: fixed;color:#339af0;"
             ></span>
             <div id="page-contents" class="page-contents"></div>
             <script>
-                $('#hamburg-nav').on('click', function () {
+                $('#hamburg-nav').on('click mouseover', function () {
                     openNav();
                 });
             </script>
