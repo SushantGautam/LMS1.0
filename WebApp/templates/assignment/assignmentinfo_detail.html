@@ -86,7 +86,7 @@
         <br>
         {% if 'teacher' in request.path %}
         <div class="text-center">
-            <h4><a href="{% url 'teacher_assignment_answers' object.pk %}">View Assignment Submissions</a></h4>
+            <h4><a class="btn btn-sm btn-info" href="{% url 'teacher_assignment_answers' object.pk %}">View Assignment Submissions</a></h4>
         </div>
         {% endif %}
 
