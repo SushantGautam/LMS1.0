@@ -47,6 +47,10 @@
 <body>
 <div class="se-pre-con"></div>
 <style>
+    html {
+        font-size: 13px;
+    }
+
     body {
         font-family: "Lato", sans-serif;
     }
@@ -99,6 +103,30 @@
     .focus-page:focus {
         color: blue;
     }
+
+    @media screen and (max-width: 449px) {
+        html {
+            font-size: 5px!important;
+        }
+    }
+    @media (min-width: 450px) and (max-width: 549px) {
+        html {
+            font-size: 6px!important;
+        }
+    }
+
+    @media (min-width: 550px) and (max-width: 649px) {
+        html {
+            font-size: 6.5px!important;
+        }
+    }
+    @media (min-width: 650px;) and (max-width: 767px) {
+        html {
+            font-size: 8px!important;
+        }
+    }
+
+    
 </style>
 
 
@@ -688,7 +716,7 @@
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
                                 $('#page' + key).append(`
-                                    <div style = "overflow:hidden; font-size:1.5rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
+                                    <div style = "overflow:hidden;font-size:1.5em; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
                                         ${css_value.content}
                                     </div>
                                 `);
@@ -905,11 +933,11 @@
 
     function Layout(x) {
         if (x.matches) {
-            $('#page-contents').empty();
-            loaddata(data, window.currentpage);
-            $('#page-contents div').each(function () {
-                $(this).removeAttr('style')
-            })
+            // $('#page-contents').empty();
+            // loaddata(data, window.currentpage);
+            // $('#page-contents div').each(function () {
+            //     $(this).removeAttr('style')
+            // })
         } else {
             $('#page-contents').empty();
             loaddata(data, window.currentpage)

@@ -91,6 +91,13 @@ $(document).ready(function () {
         return parseFloat(element) * 100 / parseFloat(divider)
     }
 
+    function convertFontToREM(font){
+        return parseFloat(font)/14;
+    }
+
+    function convertFontToPX(font){
+        return parseFloat(font)*14;
+    }
     // ==================For TextBoxx================================
     // $('#tabs-for-download').droppable({
     //     tolerance: 'fit',
@@ -156,7 +163,7 @@ $(document).ready(function () {
                 var a = document.getElementsByClassName("current")[0];
                 $('#' + a.id).append(dom);
                 $('#editor' + id).summernote({
-                    fontSizes: ['10', '11', '12', '14', '16', '18', '20', '24', '36', '48'],
+                    fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
                     toolbar: [
                         ['style', ['style']],
                         ['font', ['bold', 'underline', 'clear']],
@@ -2117,7 +2124,14 @@ $(document).ready(function () {
                     if (div == 'textdiv') {
                         $.each(div_value, function (css, css_value) {
                             css_string = JSON.stringify(css_value)
-
+                            // let x = $(css_value.content.match(/\S.*?(?![^<]),?/g));
+                            
+                            // x.each(function(){
+                            //     console.log($(this))
+                            //     if($(this).find('span').css('font-size')){
+                            //         console.log('herll')
+                            //     }
+                            // })
                             TextboxFunction(
                                 css_value.tops,
                                 css_value.left,

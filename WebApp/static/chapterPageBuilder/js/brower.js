@@ -21,6 +21,10 @@ function positionConvert(element, divider){
   return parseFloat(element)*100/parseFloat(divider)
 }
 
+function convertFontToREM(font){
+  return parseFloat(font)/14;
+}
+
 $(document).ready(function () {
 
   $("body").on('DOMSubtreeModified', ".tab-content-no", function () {
@@ -73,6 +77,12 @@ $("#SaveBtn").on("click",function(e){
         if(value.classList.contains('textdiv')){
           var clone = $(this).find('.note-editable').clone();
           // clone.find('div').remove();
+          $(clone).each(function(){
+            if($(this).find('span').css('font-size')){
+              let font = convertFontToREM($(this).find('span').css('font-size'))
+              $(this).find('span').css('font-size', font + 'em')
+            }
+          })
           var content_html = clone.html();
           textdiv.push(
             {
