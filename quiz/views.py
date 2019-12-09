@@ -343,7 +343,7 @@ class QuizTake(FormView):
 
         # if self.quiz.exam_paper is False:
         #    self.sitting.delete()
-        return redirect('student_progress_detail',pk=self.sitting.id)
+        return redirect('student_progress_detail', pk=self.sitting.id)
 
         # return render(self.request, self.result_template_name, results)
 
@@ -1053,4 +1053,12 @@ def FilterMarkingForTeachers(request, Quiz_Id):
     filtered = Sitting.objects.filter(user__Center_Code=request.user.Center_Code, quiz=Quiz_Id)
     quiz = Quiz.objects.get(id=Quiz_Id)
 
-    return render(request, 'quiz/sitting_filter.html', {'sitting_list': filtered, 'quiz':quiz})
+    return render(request, 'quiz/sitting_filter.html', {'sitting_list': filtered, 'quiz': quiz})
+
+
+def DeleteAllSittingAftermarkingfilter(request, Quiz_Id):
+    filtered = Sitting.objects.filter(user__Center_Code=request.user.Center_Code, quiz=Quiz_Id).delete()
+    messages.add_message(request, messages.SUCCESS,
+                         'All Quizzes Deleted Successfully.')
+
+    return redirect('markingfilter', Quiz_Id=Quiz_Id)

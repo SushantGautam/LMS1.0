@@ -86,7 +86,7 @@
         <br>
         {% if 'teacher' in request.path %}
         <div class="text-center">
-            <h4><a href="{% url 'teacher_assignment_answers' object.pk %}">View Assignment Submissions</a></h4>
+            <h4><a class="btn btn-sm btn-info" href="{% url 'teacher_assignment_answers' object.pk %}">View Assignment Submissions</a></h4>
         </div>
         {% endif %}
 
@@ -338,7 +338,7 @@
                         {% endif %}
                         {% endif %}
                         {% endfor %}
-                        
+
                         {% for answer in notAnswered %}
                         {% if  questions.id == answer  %}
                         <form enctype="multipart/form-data" method="post" id="{{ questions.id }}"
@@ -634,7 +634,7 @@
             answerdata.append("Assignment_Answer", answer_text);
             answerdata.append("Question_Code", $(`#id_Question_Code${this.id}`).val());
             answerdata.append("Student_Code", $(`#id_Student_Code${this.id}`).val());
-            
+
             $.ajax({
                 url: "{% url 'assignanswerinfo_create_ajax' %}",  // URL to your view that serves new info
                 data: answerdata,

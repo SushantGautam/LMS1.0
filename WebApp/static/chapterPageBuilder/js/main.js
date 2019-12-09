@@ -92,19 +92,19 @@ $(document).ready(function () {
     }
 
     // ==================For TextBoxx================================
-    $('#tabs-for-download').droppable({
-        tolerance: 'fit',
-        drop: function (event, ui) {
-            $(this).removeClass("border").removeClass("over");
-        },
+    // $('#tabs-for-download').droppable({
+    //     tolerance: 'fit',
+    //     drop: function (event, ui) {
+    //         $(this).removeClass("border").removeClass("over");
+    //     },
 
-        over: function (event, elem) {
-            $(this).addClass("over");
-        },
-        out: function (event, elem) {
-            $(this).removeClass("over");
-        },
-    });
+    //     over: function (event, elem) {
+    //         $(this).addClass("over");
+    //     },
+    //     out: function (event, elem) {
+    //         $(this).removeClass("over");
+    //     },
+    // });
 
     class Textbox {
         constructor(top = 0, left = 0, height = null, width = null, message = "Type Something Here...") {
@@ -409,7 +409,7 @@ $(document).ready(function () {
     }
 
     class Quiz {
-        constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "") {
+        constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
             let id = (new Date).getTime();
             let position = {top, left, height, width};
             let quiz_link = ""
@@ -417,22 +417,31 @@ $(document).ready(function () {
                 quiz_link = 'href = ' + link
             }
             let html = `
-                        <div class="quiz-div">
+                        <div class="quiz-div" data-width = "${width}">
                             <div class="options">
                                 <i class="fas fa-trash" id=${id}></i>
                                 <i class="fas fa-link"   id=${id} ></i>
                                 <i class="fas fa-arrows-alt" id="draghanle"></i>
                             
                             </div> 
-                            <div class="button-name-builder">
-                                <a class="btn btn-button" ${quiz_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                            <div class="button-name-builder ">
+                            <a ${quiz_link} id = ${id+1} target= "_blank">
+                                <button class="custom-btn-only"style="width:100%; height:100%">
+                                <div class="row text-center" width=100%>
+                                <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
+                                </div>
+                                <div class="row text-center">
+                                <span class = "quiz-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                ${quiz_span_name}</span>
+
+                                </div>
                                 
-                                <svg style="position:absolute; top:45%; left:0;" viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available" >
-                                    <text x="-1" y="10">${name}</text>
-                                </svg>
-                                </a>
-                            </div>    
-                            <span class = "quiz-name">${quiz_span_name}</span>
+                                
+                                </button>
+                            </a>
+                           
+                            
+                            </div>     
                         </div>
         
                 `;
@@ -474,7 +483,7 @@ $(document).ready(function () {
     }
 
     class Survey {
-        constructor(top, left, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "") {
+        constructor(top, left, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
             let id = (new Date).getTime();
             let position = {top, left, height, width};
             let survey_link = ""
@@ -482,7 +491,7 @@ $(document).ready(function () {
                 survey_link = 'href = ' + link
             }
             let html = `
-                        <div class="survey-div" style = "text-align:center;">
+                        <div class="survey-div" data-width = "${width}">
                             <div class="options">
                                 <i class="fas fa-trash" id=${id}></i>
                                 <i class="fas fa-link"   id=${id} ></i>
@@ -490,18 +499,23 @@ $(document).ready(function () {
                             
                             </div> 
                             <div class="button-name-builder">
-                                <a class="btn btn-button" ${survey_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                                <a ${survey_link} id=${id + 1}  target="_blank" >
                                 
-                                <svg style="position:absolute; top:45%; left:0;" viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available" >
-                                    <text x="-1" y="10">${name}</text>
-                                </svg>
+                                    <button class="custom-btn-only"style="width:100%; height:100%">
+                                    <div class="row text-center" width=100%>
+                                        <span class="resizable-text-only" style = "width:100%; font-size: ${font_size}">${name} </span>
+                                    </div>
+                                    <div class="row text-center">
+                                        <span class = "survey-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                        ${survey_span_name}</span>
+                                        </div>
+                                    </button>
+                                    
                                 </a>
                             </div>    
-                            <span class = "survey-name">${survey_span_name}</span>
                         </div>
-        
                 `;
-
+                
             // href = ${link}
             this.renderDiagram = function () {
                 // dom includes the html,css code with draggable property
@@ -1046,8 +1060,8 @@ $(document).ready(function () {
         });
     }
 
-    function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "") {
-        const quiz = new Quiz(top, left, link, height, width, name, quiz_span_name);
+    function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
+        const quiz = new Quiz(top, left, link, height, width, name, quiz_span_name, font_size);
 
         quiz.renderDiagram();
 
@@ -1084,13 +1098,13 @@ $(document).ready(function () {
             });
             var btn_id = parseInt(e.currentTarget.id) + 1
             $('#quiz-form input[type=text]').val('');
-            $('#quiz-btn-name').val($(this).parent().parent().find('a').text().trim());
+            $('#quiz-btn-name').val($(this).parent().parent().find('button').text().trim());
             var link = $(this).parent().parent().find('a').attr('href');
             if (link != undefined) {
                 link = link.replace('http://', '');
             }
             $('#quiz-link').val(link);
-            $('#quiz-name').val($(this).parent().parent().find('span').text().trim());
+            $('#quiz-name').val($(this).parent().parent().find('.quiz-name').text().trim());
             $('#quiz_id').val(btn_id);
             $('#quiz-modal').modal('show');
         });
@@ -1109,10 +1123,21 @@ $(document).ready(function () {
                 });
             },
         });
+
+        $('.quiz-div').on('resize', function(){
+            old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
+            div_width = $(this).width();
+            font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+            $(this).find('.resizable-text-only').css(
+                'font-size', font + 'px'
+            )
+            $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
+        })
+
     }
 
-    function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "") {
-        const survey = new Survey(top, left, link, height, width, name, survey_span_name);
+    function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
+        const survey = new Survey(top, left, link, height, width, name, survey_span_name, font_size);
 
         survey.renderDiagram();
 
@@ -1150,12 +1175,12 @@ $(document).ready(function () {
             var btn_id = parseInt(e.currentTarget.id) + 1
             $('#survey-form input[type=text]').val('');
             $('#survey-btn-name').val($(this).parent().parent().find('a').text().trim());
-            var link = $(this).parent().parent().find('a').attr('href');
+            var link = $(this).parent().parent().find('button').attr('href');
             if (link != undefined) {
                 link = link.replace('http://', '');
             }
             $('#survey-link').val(link);
-            $('#survey-name').val($(this).parent().parent().find('span').text().trim());
+            $('#survey-name').val($(this).parent().parent().find('.survey-name').text().trim());
             $('#survey_id').val(btn_id);
             $('#survey-modal').modal('show');
         });
@@ -1174,6 +1199,16 @@ $(document).ready(function () {
                 });
             },
         });
+
+        $('.survey-div').on('resize', function(){
+            old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
+            div_width = $(this).width();
+            font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+            $(this).find('.resizable-text-only').css(
+                'font-size', font + 'px'
+            )
+            $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
+        })
     }
 
     function PDFFunction(top = null, left = null, link = null, height = null, width = null) {
@@ -1868,19 +1903,19 @@ $(document).ready(function () {
             ButtonFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '10%', '15%'
+                null, '13%', '15%'
             );
         } else if (ui.helper.hasClass('quiz')) {
             QuizFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '10%', '15%'
+                null, '13%', '15%'
             );
         } else if (ui.helper.hasClass('survey')) {
             SurveyFunction(
                 (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
                 (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '10%', '15%'
+                null, '13%', '15%'
             );
         } else if (ui.helper.hasClass('grid-1')) {
             PictureFunction(
@@ -2131,7 +2166,8 @@ $(document).ready(function () {
                                 css_value.height,
                                 css_value.width,
                                 css_value.quiz_btn_name,
-                                css_value.quiz_name
+                                css_value.quiz_name,
+                                css_value.font_size
                             );
                         });
                     }
@@ -2146,7 +2182,8 @@ $(document).ready(function () {
                                 css_value.height,
                                 css_value.width,
                                 css_value.survey_btn_name,
-                                css_value.survey_name
+                                css_value.survey_name,
+                                css_value.font_size
                             );
                         });
                     }
@@ -2238,7 +2275,6 @@ function deleteFile() {
             alert("Failed to delete existing file")
         },
         success: function (data) {
-            console.log('Files deleted successfully')
         },
     });
 }
@@ -2271,19 +2307,19 @@ $('#quiz-submit').on('click', function () {
     var quiz_id = $('#quiz_id').val();
     if (quiz_link != "") {
         $('#' + quiz_id).attr({
-            "href": `/${quiz_link}`
+            "href": `${quiz_link}`
         });
     } else {
         $('#' + quiz_id).removeAttr('href');
     }
-    $('#' + quiz_id).find('text').text(quiz_name);
+    $('#' + quiz_id).parent().parent().find('.resizable-text-only').text(quiz_name);
     $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
     $('#quiz-modal').modal('hide');
 })
 
 $('#myTable').on('click', '.selectquiz', function () {
     $('#quiz-name').val($(this).closest('td').prev('td').text().trim())
-    $('#quiz-link').val(`quiz/quiz${$(this).val().trim()}/take/`)
+    $('#quiz-link').val(`/quiz/quiz${$(this).val().trim()}/take/`)
 })
 // ======================================================================
 
@@ -2295,19 +2331,19 @@ $('#survey-submit').on('click', function () {
     var survey_id = $('#survey_id').val();
     if (survey_link != "") {
         $('#' + survey_id).attr({
-            "href": `/${survey_link}`
+            "href": `${survey_link}`
         });
     } else {
         $('#' + survey_id).removeAttr('href');
     }
-    $('#' + survey_id).find('text').text(survey_name);
+    $('#' + survey_id).parent().parent().find('.resizable-text-only').text(survey_name);
     $('#' + survey_id).parent().parent().find('.survey-name').text(survey_span_name)
     $('#survey-modal').modal('hide');
 })
 
 $('#mySurveyTable').on('click', '.selectsurvey', function () {
     $('#survey-name').val($(this).closest('td').prev('td').text().trim())
-    $('#survey-link').val(`students/questions_student_detail/detail/${$(this).val().trim()}`)
+    $('#survey-link').val(`/students/questions_student_detail/detail/${$(this).val().trim()}`)
 });
 
 // $('#survey_create_link').on('click', function(){
