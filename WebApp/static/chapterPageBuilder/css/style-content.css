@@ -303,14 +303,15 @@ a:hover, a:active, a:focus {
 
 .button-position {
     margin: 5px;
-    padding: 5px !important;
     z-index: 1000;
     top: 50%;
     position: fixed;
-   
-    color:white;
-
+    color: white;
+    border-radius: 25%;
+    padding: 0.5px 2.9px;
+    background-position: center center;
     display: block;
+    background-color: #4d90fe;
 }
 
 

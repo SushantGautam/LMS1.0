@@ -15,6 +15,9 @@
             margin: 0;
             padding: 0;
         }
+      
+        
+        
     </style>
 {% endblock %}
 {% block content %}
@@ -28,7 +31,7 @@
                 <div class="tile-stats" id="student_tile">
                     <div class="icon"><img src="/static/images/student_icon.png" id="student_icon"></div>
                     <div class="count">{{ studentcount }}</div>
-                    <h3>Student</h3>
+                    <h3 >Student</h3>
                     <p></p>
                 </div>
             </div>
@@ -36,7 +39,7 @@
                 <div class="tile-stats" id="teacher_tile">
                     <div class="icon"><img src="/static/images/teacher_icon.png" id="teacher_icon"></div>
                     <div class="count">{{ teachercount }}</div>
-                    <h3>Teacher</h3>
+                    <h3  >Teacher</h3>
                     <p></p>
                 </div>
             </div>
@@ -45,7 +48,7 @@
                     <div class="icon"><img src="/static/images/total_icon.png" id="total_icon"></div>
                     <div class="count">{{ totalcount }}</div>
                     <a href="{% url 'memberinfo_list' %}">
-                        <h3>Total Members</h3>
+                        <h3 > Members</h3>
                     </a>
                     <p></p>
                 </div>
@@ -55,7 +58,7 @@
                     <div class="icon"><img src="/static/images/courses.png" id="course_icon"></div>
                     <div class="count">{{ coursecount }}</div>
                     <a href="{% url 'courseinfo_list' %}">
-                        <h3>Courses</h3>
+                        <h3 >Courses</h3>
                     </a>
                     <p></p>
                 </div>

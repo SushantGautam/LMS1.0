@@ -986,11 +986,11 @@
 
     function Layout(x) {
         if (x.matches) {
-            // $('#page-contents').empty();
-            // loaddata(data, window.currentpage);
-            // $('#page-contents div').each(function () {
-            //     $(this).removeAttr('style')
-            // })
+            $('#page-contents').empty();
+            loaddata(data, window.currentpage);
+            $('#page-contents div').each(function () {
+                $(this).removeAttr('style')
+            })
         } else {
             $('#page-contents').empty();
             loaddata(data, window.currentpage)
