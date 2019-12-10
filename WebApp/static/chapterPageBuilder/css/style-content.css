@@ -279,10 +279,11 @@ a:hover, a:active, a:focus {
     margin-left: 10%;
     overflow-x: hidden;
     overflow-y: hidden;
-    display: none;
+    display: block;
     z-index: 140;
     margin-right: 10%;
     /* scrollbar-width: thin; */
+    right: 0;
 }
 
 .thumb-img {
@@ -294,11 +295,11 @@ a:hover, a:active, a:focus {
 
 .thumbnail-container {
 
-    margin-top: 0;
+margin-top: 0;
 
-    margin-bottom: 0px !important;
+margin-bottom: 0px !important;
 
-    width: max-content; /*Subtract 25px - the width of your image */
+width: max-content; /*Subtract 25px - the width of your image */
 }
 
 
@@ -549,7 +550,7 @@ body {
 .thumb-nav-button {
     position: absolute;
     bottom: 5vh;
-    display: none;
+    display: block;
 }
 
 .no-js #loader {
