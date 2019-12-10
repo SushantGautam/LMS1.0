@@ -604,9 +604,10 @@
         } else {
             webSProtocal = "ws://";
         }
-        var locationhost = location.host
-        if (locationhost === 'ws://ulms.me') {
-            locationhost = "ws://ulms.me:9002";
+
+        var locationhost = location.host;
+        if (locationhost === 'ulms.me') {
+            locationhost = "ulms.me:9002";
 
 
             chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomName + '/');
