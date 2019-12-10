@@ -104,6 +104,12 @@
         color: blue;
     }
 
+    @media screen and (max-width: 567px) {
+        .custom-btn-only {
+            height: auto!important;
+        }
+    }
+
     @media screen and (max-width: 349px) {
         html {
             font-size: 4px !important;
@@ -834,7 +840,7 @@
                                 $('#page' + key).append(`
                                 <div class = "chapterbuttons" style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <a ${link} target="_blank">
-                                        <button class="custom-btn-only"style="width:100%; height:auto">
+                                        <button class="custom-btn-only"style="width:100%; height:100%">
                                             <div class="row text-center" width=100%>
                                                 <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.quiz_btn_name} </span>
                                             </div>
@@ -867,7 +873,7 @@
                                 $('#page' + key).append(`
                                 <div class = "chapterbuttons" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
-                                        <button class="custom-btn-only"style="width:100%; height:auto">
+                                        <button class="custom-btn-only"style="width:100%; height:100%">
                                             <div class="row text-center" width=100%>
                                              <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.survey_btn_name} </span>
                                             </div>

@@ -385,7 +385,7 @@ width: max-content; /*Subtract 25px - the width of your image */
     background-color: white;
     color: black;
     overflow-y: auto;
-
+    overflow-x: hidden;
     width: 100vw;
     height: -webkit-fill-available;
     max-height: 100vh;
