@@ -268,7 +268,7 @@ a:hover, a:active, a:focus {
 
 
 .thumbnail-slider {
-    position: absolute;
+    position: fixed;
     border: 3px solid black;
     padding: 10px;
     height: 10vh;
@@ -280,6 +280,7 @@ a:hover, a:active, a:focus {
     overflow-y: hidden;
     display: none;
     z-index: 140;
+    margin-right: 10%;
     /* scrollbar-width: thin; */
 }
 
