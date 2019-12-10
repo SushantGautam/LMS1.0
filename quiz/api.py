@@ -2,7 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
 from rest_framework import viewsets
 
-from quiz.filters import QuizFilter
+from quiz.filters import QuizFilter, AnswerFilter
 from . import models
 from . import serializers
 
@@ -44,7 +44,8 @@ class AnswerViewSet(viewsets.ModelViewSet):
     queryset = models.Answer.objects.all()
     serializer_class = serializers.AnswerSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_fields = ['question',]
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = AnswerFilter
 
 
 class ProgressViewSet(viewsets.ModelViewSet):
@@ -59,6 +60,4 @@ class SittingViewSet(viewsets.ModelViewSet):
     queryset = models.Sitting.objects.all()
     serializer_class = serializers.SittingSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_fields  = ['id', 'user']
-
-
+    filter_fields = ['id', 'user']

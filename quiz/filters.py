@@ -13,3 +13,11 @@ class QuizFilter(filters.FilterSet):
     class Meta:
         model = Quiz
         fields = ['id_in', 'course_code']
+
+
+class AnswerFilter(filters.FilterSet):
+    question_in = NumberInFilter(field_name='question', lookup_expr='in')
+
+    class Meta:
+        model = Quiz
+        fields = ['question_in',]
