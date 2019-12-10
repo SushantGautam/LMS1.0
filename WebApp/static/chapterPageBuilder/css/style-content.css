@@ -302,16 +302,15 @@ a:hover, a:active, a:focus {
 
 .button-position {
     margin: 5px;
-    padding: 5px !important;
     z-index: 1000;
     top: 50%;
     position: fixed;
     color: white;
+    border-radius: 25%;
+    padding: 0.5px 2.9px;
     background-position: center center;
-
     display: block;
-    border-radius: 14%;
-    background-color: rebeccapurple;
+    background-color: #4d90fe;
 }
 
 
@@ -340,7 +339,7 @@ a:hover, a:active, a:focus {
     right: 0;
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 567px) {
 
 
     .D3onViewer {
@@ -352,7 +351,7 @@ a:hover, a:active, a:focus {
         padding-top: 10px !important;
     }
 
-    .overall-contents {
+    /* .overall-contents {
         width: 100vw;
         height: auto;
         max-height: 100vh;
@@ -363,7 +362,7 @@ a:hover, a:active, a:focus {
         bottom: 0;
         left: 0;
         right: 0;
-    }
+    } */
 
     .image-fitting {
         object-fit: contain !important;
@@ -382,7 +381,7 @@ a:hover, a:active, a:focus {
 .container12 {
     background-color: white;
     color: black;
-    overflow: auto;
+    overflow: hidden;
 
     width: 100vw;
     height: -webkit-fill-available;
