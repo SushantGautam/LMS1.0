@@ -178,6 +178,12 @@ $(document).ready(function () {
                 });
                 $('#editor' + id).parent().find('.note-statusbar').remove();
                 $('#editor' + id).parent().find('.note-editable').html(message);
+                $('#editor' + id).parent().find('.note-editable').each(function(){
+                    if($(this).find('span').css('font-size')){
+                        let font = convertFontToPX($(this).find('span')[0].style['font-size'])
+                        $(this).find('span').css('font-size', font + 'px')
+                    }
+                })
                 // $(".editor-canvas").append(dom);
                 // Making element Resizable
             };
@@ -2124,14 +2130,7 @@ $(document).ready(function () {
                     if (div == 'textdiv') {
                         $.each(div_value, function (css, css_value) {
                             css_string = JSON.stringify(css_value)
-                            // let x = $(css_value.content.match(/\S.*?(?![^<]),?/g));
                             
-                            // x.each(function(){
-                            //     console.log($(this))
-                            //     if($(this).find('span').css('font-size')){
-                            //         console.log('herll')
-                            //     }
-                            // })
                             TextboxFunction(
                                 css_value.tops,
                                 css_value.left,
