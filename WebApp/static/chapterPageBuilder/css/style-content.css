@@ -353,7 +353,7 @@ a:hover, a:active, a:focus {
         padding-top: 10px !important;
     }
 
-    /* .overall-contents {
+    .overall-contents {
         width: 100vw;
         height: auto;
         max-height: 100vh;
@@ -364,7 +364,7 @@ a:hover, a:active, a:focus {
         bottom: 0;
         left: 0;
         right: 0;
-    } */
+    }
 
     .image-fitting {
         object-fit: contain !important;
@@ -383,7 +383,7 @@ a:hover, a:active, a:focus {
 .container12 {
     background-color: white;
     color: black;
-    overflow: hidden;
+    overflow-y: auto;
 
     width: 100vw;
     height: -webkit-fill-available;

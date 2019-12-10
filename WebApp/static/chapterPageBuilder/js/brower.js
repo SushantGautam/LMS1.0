@@ -77,12 +77,12 @@ $("#SaveBtn").on("click",function(e){
         if(value.classList.contains('textdiv')){
           var clone = $(this).find('.note-editable').clone();
           // clone.find('div').remove();
-          $(clone).each(function(){
-            if($(this).find('span').css('font-size')){
-              let font = convertFontToREM($(this).find('span').css('font-size'))
-              $(this).find('span').css('font-size', font + 'em')
-            }
-          })
+          // $(clone).each(function(){
+          //   if($(this).find('span').css('font-size')){
+          //     let font = convertFontToREM($(this).find('span').css('font-size'))
+          //     $(this).find('span').css('font-size', font + 'em')
+          //   }
+          // })
           var content_html = clone.html();
           textdiv.push(
             {

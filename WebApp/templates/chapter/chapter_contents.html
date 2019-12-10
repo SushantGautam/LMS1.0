@@ -987,7 +987,7 @@
         });
     }
 
-    var x = window.matchMedia("(max-width: 0px)")
+    var x = window.matchMedia("(max-width: 567px)")
 
     function Layout(x) {
         if (x.matches) {
@@ -995,6 +995,7 @@
             loaddata(data, window.currentpage);
             $('#page-contents div').each(function () {
                 $(this).removeAttr('style')
+                $(this).css('padding','10px')
             })
         } else {
             $('#page-contents').empty();
