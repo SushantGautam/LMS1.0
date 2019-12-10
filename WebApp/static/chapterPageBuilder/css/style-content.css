@@ -551,6 +551,7 @@ body {
     position: absolute;
     bottom: 5vh;
     display: block;
+    z-index: 151;
 }
 
 .no-js #loader {
