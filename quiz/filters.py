@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from quiz.models import Quiz
+from quiz.models import Quiz, Answer
 
 
 class NumberInFilter(filters.BaseInFilter, filters.NumberFilter):
@@ -19,5 +19,5 @@ class AnswerFilter(filters.FilterSet):
     question_in = NumberInFilter(field_name='question', lookup_expr='in')
 
     class Meta:
-        model = Quiz
-        fields = ['question_in',]
+        model = Answer
+        fields = ['question_in', ]
