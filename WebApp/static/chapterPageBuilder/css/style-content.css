@@ -432,25 +432,25 @@ width: max-content; /*Subtract 25px - the width of your image */
 
 .content-footer1 {
     color: white;
-    width: 100px;
-    /* padding-top: 10px; */
+    width: 20%;
     font-size: 1.2rem;
     font-weight: 200;
     /* padding-right: 20px; */
-    position: absolute;
+    position: fixed;
     bottom: 12%;
-    left: 45%;
+    margin-left: 40%;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
     z-index: 150;
     /* padding: 10px; */
     height: 30px;
     line-height: 30px;
-    display: none;
+    display: block;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
-
-
+    margin-right: 25%;
+    left: 0;
+    right: 0;
 }
 
 .overall-contents:hover .content-footer1 {
