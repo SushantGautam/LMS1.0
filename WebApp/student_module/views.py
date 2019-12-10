@@ -124,7 +124,25 @@ def quizzes(request):
 
 
 def calendar(request):
-    return render(request, 'student_module/calendar.html')
+    if request.user.Is_Student:
+        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
+        sessions = []
+        if batches:
+            for batch in batches:
+                # Filtering out only active sessions
+                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
+                sessions += session
+        courses = set()
+        activeassignments = []
+        if sessions:
+            for session in sessions:
+                course = session.Course_Group.all()
+                courses.update(course)
+            for course in courses:
+                activeassignments += AssignmentInfo.objects.filter(
+                    Course_Code=course.Course_Code.id)[:7]
+
+    return render(request, 'student_module/calendar.html', {'activeassignments':activeassignments})
 
 
 class MyCoursesListView(ListView):

@@ -13,6 +13,7 @@
     list-style: none;
     overflow: auto;
     height: -webkit-fill-available;
+    overflow: auto;
     /* padding: 0px!important; */
     min-height: 50vh;
     margin: 0;
@@ -421,7 +422,7 @@ a:hover, a:active, a:focus {
     position: relative;
     top: 0;
     left: 0;
-    z-index: 120;
+    z-index: 999;
 }
 
 .overall-contents:hover .content-title1 {
@@ -626,6 +627,6 @@ body {
     float: inherit;
 }
 
-.chapterbuttons {
-    background-color: #DDDDDD
+.chapterbuttons{
+    background-color:#DDDDDD
 }
