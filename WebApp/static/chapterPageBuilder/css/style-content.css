@@ -381,7 +381,7 @@ a:hover, a:active, a:focus {
 .container12 {
     background-color: white;
     color: black;
-    overflow: auto;
+    overflow: hidden;
 
     width: 100vw;
     height: -webkit-fill-available;
