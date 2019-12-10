@@ -122,16 +122,14 @@
         }
     }
 
-    @media (min-width: 650px;) and
-
-    (max-width:
-
-    767px
-
-    ) {
+    @media (min-width: 650px) and (max-width:767px) {
         html {
             font-size: 8px !important;
         }
+    }
+
+    .textdiv h1 {
+        font-size: 1.5rem!important;
     }
 
 
@@ -769,7 +767,7 @@
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
                                 $('#page' + key).append(`
-                                    <div style = "overflow:hidden;font-size:1.5em; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
+                                    <div class = "textdiv" style = "overflow:hidden;font-size:1rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
                                         ${css_value.content}
                                     </div>
                                 `);
@@ -982,7 +980,7 @@
         });
     }
 
-    var x = window.matchMedia("(max-width: 567px)")
+    var x = window.matchMedia("(max-width: 0px)")
 
     function Layout(x) {
         if (x.matches) {

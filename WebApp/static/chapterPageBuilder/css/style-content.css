@@ -339,7 +339,7 @@ a:hover, a:active, a:focus {
     right: 0;
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 567px) {
 
 
     .D3onViewer {
@@ -351,7 +351,7 @@ a:hover, a:active, a:focus {
         padding-top: 10px !important;
     }
 
-    .overall-contents {
+    /* .overall-contents {
         width: 100vw;
         height: auto;
         max-height: 100vh;
@@ -362,7 +362,7 @@ a:hover, a:active, a:focus {
         bottom: 0;
         left: 0;
         right: 0;
-    }
+    } */
 
     .image-fitting {
         object-fit: contain !important;
