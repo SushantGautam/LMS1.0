@@ -279,10 +279,11 @@ a:hover, a:active, a:focus {
     margin-left: 10%;
     overflow-x: hidden;
     overflow-y: hidden;
-    display: none;
+    display: block;
     z-index: 140;
     margin-right: 10%;
     /* scrollbar-width: thin; */
+    right: 0;
 }
 
 .thumb-img {
@@ -294,11 +295,11 @@ a:hover, a:active, a:focus {
 
 .thumbnail-container {
 
-    margin-top: 0;
+margin-top: 0;
 
-    margin-bottom: 0px !important;
+margin-bottom: 0px !important;
 
-    width: max-content; /*Subtract 25px - the width of your image */
+width: max-content; /*Subtract 25px - the width of your image */
 }
 
 
@@ -431,25 +432,25 @@ a:hover, a:active, a:focus {
 
 .content-footer1 {
     color: white;
-    width: 100px;
-    /* padding-top: 10px; */
+    width: 20%;
     font-size: 1.2rem;
     font-weight: 200;
     /* padding-right: 20px; */
-    position: absolute;
+    position: fixed;
     bottom: 12%;
-    left: 45%;
+    margin-left: 40%;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
     z-index: 150;
     /* padding: 10px; */
     height: 30px;
     line-height: 30px;
-    display: none;
+    display: block;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
-
-
+    margin-right: 25%;
+    left: 0;
+    right: 0;
 }
 
 .overall-contents:hover .content-footer1 {
@@ -549,7 +550,8 @@ body {
 .thumb-nav-button {
     position: absolute;
     bottom: 5vh;
-    display: none;
+    display: block;
+    z-index: 151;
 }
 
 .no-js #loader {
