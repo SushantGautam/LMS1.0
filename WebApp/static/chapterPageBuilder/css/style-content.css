@@ -202,7 +202,7 @@ a:hover, a:active, a:focus {
 
 .chatonly {
 
-    position: absolute;
+    position: fixed;
 
     bottom: 0;
 
