@@ -128,14 +128,14 @@
         }
     }
 
-    @media (min-width: 650px) and (max-width:767px) {
+    @media (min-width: 650px) and (max-width: 767px) {
         html {
             font-size: 8px !important;
         }
     }
 
     .textdiv h1 {
-        font-size: 1.5rem!important;
+        font-size: 1.5rem !important;
     }
 
 
@@ -604,204 +604,208 @@
         } else {
             webSProtocal = "ws://";
         }
+        var locationhost = location.host
+        if (locationhost === 'ws://ulms.me') {
+            locationhost = "ws://ulms.me:9002";
 
-        chatSocket = new WebSocket(webSProtocal + location.host + "/ws/" + roomName + '/');
-        chatSocket.onclose = function () {
-            // connection closed, discard old websocket and create a new one in 5s
-            chatSocket = null;
-            console.log("Websocket restarting. . . ")
-            try {
-                setTimeout(startWebsocket, 5000)
-            } catch (error) {
-            }
 
-        }
-    }
-
-    try {
-        startWebsocket();
-    } catch (error) {
-    }
-
-    // Connection opened
-    chatSocket.addEventListener('open', function (event) {
-        chatSocket.send(
-            JSON.stringify({
-                sender_id: "{{  user.id }}",
-                sender_name: "{{  user }}",
-                sender_icon: "{{  user.Avatar }}",
-                {% if ifteacher %}
-                    isteacher: 1,
-                    page: currentpage,
-                    force: $('#forceScreen').prop("checked") ? 1 : 0,
-                {%  endif %}
-            })
-        );
-    });
-
-    lightbox.option({
-        'resizeDuration': 200,
-        'wrapAround': true
-    });
-
-    // $('a').on('click', 'img', function(){
-    //     console.log('hdjsf')
-    //     if($(this).hasAttribute('data-lightbox')){
-    //         return false;
-    //     }
-    // }).dblclick(function () {                
-    //     window.location = this.href;
-    //     return false;
-    // });
-    document.addEventListener('visibilitychange', function () {
-        pauseAllVideos(); // change tab text for demo
-    })
-    $(document).keydown(function (e) {
-        if ($('#lightbox').css('display') == 'none') {
-            if (e.keyCode == '39') {
-                $('#next-btn').click();
-                return false
-            }
-            if (e.keyCode == '37') {
-                $('#prev-btn').click();
-                return false
-            }
-            //UP
-            if (e.keyCode == '38') {
-                $('body').animate({scrollTop: 0}, 100);
-                return false;
-            }
-            //DOWN
-            if (e.keyCode == '40') {
-                $('body').animate({scrollTop: $(document).height()}, 100);
-                return false;
-            }
-
-            if (e.keyCode == '70') {
-                var hasFocus = $('input, textarea').is(':focus') || $('.note-editable').is(':focus');
-                if (hasFocus) {
-                    return
+            chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomName + '/');
+            chatSocket.onclose = function () {
+                // connection closed, discard old websocket and create a new one in 5s
+                chatSocket = null;
+                console.log("Websocket restarting. . . ")
+                try {
+                    setTimeout(startWebsocket, 5000)
+                } catch (error) {
                 }
 
-                toggleFullScreen();
-                return false;
             }
-
         }
-    });
 
+        try {
+            startWebsocket();
+        } catch (error) {
+        }
 
-    $('#closechatbox').on('click mouseover', function () {
-        $('.chatonly').hide();
-        $('#closechatopen').show();
-    });
-
-    $('#closechatopen').on('click mouseover', function () {
-        $('.chatonly').show();
-        $('#closechatopen').hide();
-
-        {%  if ifteacher %}
-            updatePageByTeacher();
-            updateStudentOnlineBox("");
-        {% endif  %}
-    });
-    {% if data %}
-        var data = {{ data | safe}};
-    {% endif %}
-
-    // container_height = $('body').height() - $('.content-title1').height() - $('.content-footer1').height()
-    // $('#container').css('height', container_height * 100 / $('body').height() + "%")
-
-    function pauseAllVideos() {
-        $('iframe').each(function () {
-            $(this).attr('src', $(this).attr('src'));
-            // console.log($(this)[0])
-            // $(this)[0].contentWindow.
-            // stMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
+        // Connection opened
+        chatSocket.addEventListener('open', function (event) {
+            chatSocket.send(
+                JSON.stringify({
+                    sender_id: "{{  user.id }}",
+                    sender_name: "{{  user }}",
+                    sender_icon: "{{  user.Avatar }}",
+                    {% if ifteacher %}
+                        isteacher: 1,
+                        page: currentpage,
+                        force: $('#forceScreen').prop("checked") ? 1 : 0,
+                    {%  endif %}
+                })
+            );
         });
-        $('video').each(function () {
-            this.pause();
+
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true
         });
-    }
 
-    $(document).ready(function () {
-
-        $('#page-contents').on('click', '.iframefullscreenbtn', function () {
-            // check if fullscreen mode is available
-            if (document.fullscreenEnabled ||
-                document.webkitFullscreenEnabled ||
-                document.mozFullScreenEnabled ||
-                document.msFullscreenEnabled) {
-
-                // which element will be fullscreen
-                var iframe = $(this).parent().find('object')[0] || $(this).parent().find('iframe')[0];
-                // Do fullscreen
-                if (iframe.requestFullscreen) {
-                    iframe.requestFullscreen();
-                } else if (iframe.webkitRequestFullscreen) {
-                    iframe.webkitRequestFullscreen();
-                } else if (iframe.mozRequestFullScreen) {
-                    iframe.mozRequestFullScreen();
-                } else if (iframe.msRequestFullscreen) {
-                    iframe.msRequestFullscreen();
+        // $('a').on('click', 'img', function(){
+        //     console.log('hdjsf')
+        //     if($(this).hasAttribute('data-lightbox')){
+        //         return false;
+        //     }
+        // }).dblclick(function () {
+        //     window.location = this.href;
+        //     return false;
+        // });
+        document.addEventListener('visibilitychange', function () {
+            pauseAllVideos(); // change tab text for demo
+        })
+        $(document).keydown(function (e) {
+            if ($('#lightbox').css('display') == 'none') {
+                if (e.keyCode == '39') {
+                    $('#next-btn').click();
+                    return false
                 }
-            } else {
-                document.querySelector('.error').innerHTML = 'Your browser is not supported';
+                if (e.keyCode == '37') {
+                    $('#prev-btn').click();
+                    return false
+                }
+                //UP
+                if (e.keyCode == '38') {
+                    $('body').animate({scrollTop: 0}, 100);
+                    return false;
+                }
+                //DOWN
+                if (e.keyCode == '40') {
+                    $('body').animate({scrollTop: $(document).height()}, 100);
+                    return false;
+                }
+
+                if (e.keyCode == '70') {
+                    var hasFocus = $('input, textarea').is(':focus') || $('.note-editable').is(':focus');
+                    if (hasFocus) {
+                        return
+                    }
+
+                    toggleFullScreen();
+                    return false;
+                }
+
             }
         });
 
-    });
+
+        $('#closechatbox').on('click mouseover', function () {
+            $('.chatonly').hide();
+            $('#closechatopen').show();
+        });
+
+        $('#closechatopen').on('click mouseover', function () {
+            $('.chatonly').show();
+            $('#closechatopen').hide();
+
+            {%  if ifteacher %}
+                updatePageByTeacher();
+                updateStudentOnlineBox("");
+            {% endif  %}
+        });
+        {% if data %}
+            var data = {{ data | safe}};
+        {% endif %}
+
+        // container_height = $('body').height() - $('.content-title1').height() - $('.content-footer1').height()
+        // $('#container').css('height', container_height * 100 / $('body').height() + "%")
+
+        function pauseAllVideos() {
+            $('iframe').each(function () {
+                $(this).attr('src', $(this).attr('src'));
+                // console.log($(this)[0])
+                // $(this)[0].contentWindow.
+                // stMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
+            });
+            $('video').each(function () {
+                this.pause();
+            });
+        }
+
+        $(document).ready(function () {
+
+            $('#page-contents').on('click', '.iframefullscreenbtn', function () {
+                // check if fullscreen mode is available
+                if (document.fullscreenEnabled ||
+                    document.webkitFullscreenEnabled ||
+                    document.mozFullScreenEnabled ||
+                    document.msFullscreenEnabled) {
+
+                    // which element will be fullscreen
+                    var iframe = $(this).parent().find('object')[0] || $(this).parent().find('iframe')[0];
+                    // Do fullscreen
+                    if (iframe.requestFullscreen) {
+                        iframe.requestFullscreen();
+                    } else if (iframe.webkitRequestFullscreen) {
+                        iframe.webkitRequestFullscreen();
+                    } else if (iframe.mozRequestFullScreen) {
+                        iframe.mozRequestFullScreen();
+                    } else if (iframe.msRequestFullscreen) {
+                        iframe.msRequestFullscreen();
+                    }
+                } else {
+                    document.querySelector('.error').innerHTML = 'Your browser is not supported';
+                }
+            });
+
+        });
 
 
-    function loaddata(data, currentpage = 1) {
-        window.currentpage = currentpage
-        $('#totalpages').text(data.numberofpages);
-        $('#currentpage').text(window.currentpage);
-        $.each(data.pages, function (key, value) {
-            if (key == window.currentpage) {
-                $.each(value, function (count) {
-                    // Create modal
-                    $('#page-contents').empty();
-                    $('#page-contents').append(`
+        function loaddata(data, currentpage = 1) {
+            window.currentpage = currentpage
+            $('#totalpages').text(data.numberofpages);
+            $('#currentpage').text(window.currentpage);
+            $.each(data.pages, function (key, value) {
+                if (key == window.currentpage) {
+                    $.each(value, function (count) {
+                        // Create modal
+                        $('#page-contents').empty();
+                        $('#page-contents').append(`
                     <div id="page${key}" class = 'coursepages' role="dialog">
 
                     </div>`)
-                    // -------------------------------
+                        // -------------------------------
 
-                    $.each(value[count], function (div, div_value) {
-                        var now = Math.floor(Math.random() * 900000) + 100000;
-                        if (div == 'textdiv') {
-                            $.each(div_value, function (css, css_value) {
-                                css_string = JSON.stringify(css_value)
-                                $('#page' + key).append(`
+                        $.each(value[count], function (div, div_value) {
+                            var now = Math.floor(Math.random() * 900000) + 100000;
+                            if (div == 'textdiv') {
+                                $.each(div_value, function (css, css_value) {
+                                    css_string = JSON.stringify(css_value)
+                                    $('#page' + key).append(`
                                     <div class = "textdiv" style = "overflow:hidden;font-size:1rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
                                         ${css_value.content}
                                     </div>
                                 `);
-                                // $('#page' + key).append(css_value.content);
+                                    // $('#page' + key).append(css_value.content);
 
-                            });
-                        }
-                        if (div == 'pic') {
-                            $.each(div_value, function (css, css_value) {
-                                src = css_value['background-image']
-                                // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                                $('#page' + key).append(`
+                                });
+                            }
+                            if (div == 'pic') {
+                                $.each(div_value, function (css, css_value) {
+                                    src = css_value['background-image']
+                                    // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
+                                    $('#page' + key).append(`
                                     <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
                                     <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = "height:100%; width:100%;" class="image-fitting"></img>  </a>
                                     </div>
                                 `);
-                                // $('#page' + key).append(css_value.div);
-                            });
-                        }
+                                    // $('#page' + key).append(css_value.div);
+                                });
+                            }
 
-                        if (div == 'btn-div') {
-                            $.each(div_value, function (css, css_value) {
-                                link = "";
-                                if (css_value.hasOwnProperty('link')) {
-                                    link = "href = " + css_value.link;
-                                }
-                                $('#page' + key).append(`
+                            if (div == 'btn-div') {
+                                $.each(div_value, function (css, css_value) {
+                                    link = "";
+                                    if (css_value.hasOwnProperty('link')) {
+                                        link = "href = " + css_value.link;
+                                    }
+                                    $('#page' + key).append(`
                                 <div class = "chapterbuttons" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
                                         <svg viewBox="0 0 56 18">
@@ -810,22 +814,22 @@
                                     </a>
                                 </div>
                             `)
-                            });
-                        }
+                                });
+                            }
 
-                        if (div == 'quizdiv') {
-                            let quizpk;
-                            $.each(div_value, function (css, css_value) {
-                                link = "";
-                                quizpk = (css_value.link.split('/')[2]).match(/\d+/)[0];
-                                if (css_value.hasOwnProperty('link')) {
-                                    {% if '/teachers' in request.path %}
-                                        link = "href = /quiz/markingfilter/" + quizpk
-                                    {% else %}
-                                        link = "href = " + css_value.link;
-                                    {% endif %}
-                                }
-                                $('#page' + key).append(`
+                            if (div == 'quizdiv') {
+                                let quizpk;
+                                $.each(div_value, function (css, css_value) {
+                                    link = "";
+                                    quizpk = (css_value.link.split('/')[2]).match(/\d+/)[0];
+                                    if (css_value.hasOwnProperty('link')) {
+                                        {% if '/teachers' in request.path %}
+                                            link = "href = /quiz/markingfilter/" + quizpk
+                                        {% else %}
+                                            link = "href = " + css_value.link;
+                                        {% endif %}
+                                    }
+                                    $('#page' + key).append(`
                                 <div class = "chapterbuttons" style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <a ${link} target="_blank">
                                         <button class="custom-btn-only"style="width:100%; height:100%">
@@ -843,22 +847,22 @@
                                     </a>
                                 </div>
                             `)
-                            });
-                        }
+                                });
+                            }
 
-                        if (div == 'surveydiv') {
-                            let surveypk;
-                            $.each(div_value, function (css, css_value) {
-                                link = "";
-                                surveypk = (css_value.link.split('/')[4]).match(/\d+/)[0];
-                                if (css_value.hasOwnProperty('link')) {
-                                    {% if '/teachers' in request.path %}
-                                        link = "href = /teachers/surveyinfodetail/detail/" + surveypk
-                                    {% else %}
-                                        link = "href = " + css_value.link;
-                                    {% endif %}
-                                }
-                                $('#page' + key).append(`
+                            if (div == 'surveydiv') {
+                                let surveypk;
+                                $.each(div_value, function (css, css_value) {
+                                    link = "";
+                                    surveypk = (css_value.link.split('/')[4]).match(/\d+/)[0];
+                                    if (css_value.hasOwnProperty('link')) {
+                                        {% if '/teachers' in request.path %}
+                                            link = "href = /teachers/surveyinfodetail/detail/" + surveypk
+                                        {% else %}
+                                            link = "href = " + css_value.link;
+                                        {% endif %}
+                                    }
+                                    $('#page' + key).append(`
                                 <div class = "chapterbuttons" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
                                         <button class="custom-btn-only"style="width:100%; height:100%">
@@ -873,12 +877,12 @@
                                     </a>
                                 </div>
                             `)
-                            });
-                        }
+                                });
+                            }
 
-                        if (div == 'pdf') {
-                            $.each(div_value, function (css, css_value) {
-                                $('#page' + key).append(`
+                            if (div == 'pdf') {
+                                $.each(div_value, function (css, css_value) {
+                                    $('#page' + key).append(`
                                 <div class="iframefullscreen" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <div class = "iframefullscreenbtn"><i class="fa fa-credit-card"></i></div>
                                         <object data="${css_value.link}#toolbar=0" type="application/pdf" width="100%" height="100%">
@@ -886,27 +890,27 @@
                                     </object>
                                 </div>
                             `)
-                            });
-                        }
+                                });
+                            }
 
-                        if (div == 'video') {
-                            $.each(div_value, function (css, css_value) {
-                                if (css_value.hasOwnProperty('online_link')) {
-                                    var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                            if (div == 'video') {
+                                $.each(div_value, function (css, css_value) {
+                                    if (css_value.hasOwnProperty('online_link')) {
+                                        var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                         <iframe width="100%" height="94%" src="${css_value.online_link}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
                                         </div>`
-                                    //     <script>
-                                    //     var options = {
-                                    //         url: "${css_value.link}",
-                                    //         width: "${css_value.width}",
-                                    //         height: "${css_value.height}"
-                                    //     };
+                                        //     <script>
+                                        //     var options = {
+                                        //         url: "${css_value.link}",
+                                        //         width: "${css_value.width}",
+                                        //         height: "${css_value.height}"
+                                        //     };
 
-                                    //     var videoPlayer = new Vimeo.Player('${now}', options);
-                                    // `
-                                } else {
-                                    var embed = `
+                                        //     var videoPlayer = new Vimeo.Player('${now}', options);
+                                        // `
+                                    } else {
+                                        var embed = `
                                     <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                         <video width="100%" height="100%" controlsList="nodownload" controls>
                                             <source src="${css_value.local_link}" type="video/mp4">
@@ -915,14 +919,14 @@
                                         </video>
                                     </div>
                                     `
-                                }
-                                $('#page' + key).append(embed)
-                            });
-                        }
+                                    }
+                                    $('#page' + key).append(embed)
+                                });
+                            }
 
-                        if (div == '_3d') {
-                            $.each(div_value, function (css, css_value) {
-                                $('#page' + key).append(`
+                            if (div == '_3d') {
+                                $.each(div_value, function (css, css_value) {
+                                    $('#page' + key).append(`
         <div  style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
 
                                   <div>  <model-viewer class="D3onViewer" ondblclick="requestFullscreen()"
@@ -936,179 +940,179 @@
 
                                 </div>
                             `)
-                            });
-                        }
+                                });
+                            }
 
-                        if (div == 'backgroundcolor') {
-                            $('#container').css('background-color', div_value)
-                        }
+                            if (div == 'backgroundcolor') {
+                                $('#container').css('background-color', div_value)
+                            }
+                        });
+
                     });
+                }
+            });
+        }
 
-                });
-            }
-        });
-    }
-
-    function toggleFullScreen() {
-        if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-            (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-            if (document.documentElement.requestFullScreen) {
-                document.documentElement.requestFullScreen();
-            } else if (document.documentElement.mozRequestFullScreen) {
-                document.documentElement.mozRequestFullScreen();
-            } else if (document.documentElement.webkitRequestFullScreen) {
-                document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-            }
-        } else {
-            if (document.cancelFullScreen) {
-                document.cancelFullScreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.webkitCancelFullScreen) {
-                document.webkitCancelFullScreen();
+        function toggleFullScreen() {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+                if (document.documentElement.requestFullScreen) {
+                    document.documentElement.requestFullScreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullScreen) {
+                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
             }
         }
-    }
 
 
-    function setThumbnails() {
-        $.each(data.pages, function (key, value) {
-            if (value[0]['thumbnail'] == "") {
-                $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
+        function setThumbnails() {
+            $.each(data.pages, function (key, value) {
+                if (value[0]['thumbnail'] == "") {
+                    $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
                     <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}"></img>
                 </li>
             `);
-            } else {
-                $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
+                } else {
+                    $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
                         <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
                     </li>
                 `);
-            }
-        });
-    }
-
-    var x = window.matchMedia("(max-width: 0px)")
-
-    function Layout(x) {
-        if (x.matches) {
-            $('#page-contents').empty();
-            loaddata(data, window.currentpage);
-            $('#page-contents div').each(function () {
-                $(this).removeAttr('style')
-            })
-        } else {
-            $('#page-contents').empty();
-            loaddata(data, window.currentpage)
+                }
+            });
         }
-        $('.thumbnails').removeAttr('style').removeClass('active');
-        $('.thumbnails[value=' + window.currentpage + ']').css({
-            'border': '1px solid red'
-        }).addClass('active');
-    }
 
-    $(document).ready(function () {
-        setThumbnails();
-        Layout(x)
-        x.addListener(Layout) // Attach listener function on state changes
-        getProgressWidth();
+        var x = window.matchMedia("(max-width: 0px)")
 
-        $('#next-btn').off().click(function () {
-            pauseAllVideos();
-            if (currentpage < data.numberofpages) {
-                currentpage += 1;
-                changePage(currentpage)
-
-            }
-        });
-
-        $('#prev-btn').off().click(function () {
-            pauseAllVideos();
-            if (currentpage != 1) {
-                currentpage -= 1;
-                changePage(currentpage)
-            }
-        });
-
-        $('.thumbnails').on('click', function () {
-            currentpage = this.value
-            changePage(currentpage)
-        });
-
-
-        $('#chatmessageinput').summernote({
-            toolbar: []
-        });
-        $('#chatmessageinput').parent().find('.note-statusbar').remove();
-    });
-
-
-    function changePage(page_number) {
-        Layout(x)
-        $('#currentpage').text(page_number);
-        getProgressWidth();
-        changeThumbScroll();
-        {% if ifteacher %}
-            updatePageByTeacher();
-        {% else %}
-            // updatePageByStudent(); //TBI
-        {% endif %}
-    }
-
-    function sendMessageWritten() {
-        if ($('.note-editable').html()) {
-            chatSocket.send(
-                JSON.stringify({
-                    chat_message: $('.note-editable').html(),
-                    sender_id: "{{  user.id }}",
-                    sender_name: "{{  user }}",
-                    sender_icon: "{{  user.Avatar }}",
-                    {% if ifteacher %}
-                        isteacher: 1,
-                    {%  endif %}
+        function Layout(x) {
+            if (x.matches) {
+                $('#page-contents').empty();
+                loaddata(data, window.currentpage);
+                $('#page-contents div').each(function () {
+                    $(this).removeAttr('style')
                 })
-            );
+            } else {
+                $('#page-contents').empty();
+                loaddata(data, window.currentpage)
+            }
+            $('.thumbnails').removeAttr('style').removeClass('active');
+            $('.thumbnails[value=' + window.currentpage + ']').css({
+                'border': '1px solid red'
+            }).addClass('active');
         }
 
-        $('.note-editable').html("");
+        $(document).ready(function () {
+            setThumbnails();
+            Layout(x)
+            x.addListener(Layout) // Attach listener function on state changes
+            getProgressWidth();
 
-    };
-
-    $(document).keydown(function (event) {
-        if ($('.note-editable').is(":focus")) {
-            if (event.keyCode == 13 && !event.shiftKey) {
-                if ($('.note-editable').html() != '""') {
-                    sendMessageWritten();
+            $('#next-btn').off().click(function () {
+                pauseAllVideos();
+                if (currentpage < data.numberofpages) {
+                    currentpage += 1;
+                    changePage(currentpage)
 
                 }
-                ;
-            }
-        }
+            });
 
-    });
+            $('#prev-btn').off().click(function () {
+                pauseAllVideos();
+                if (currentpage != 1) {
+                    currentpage -= 1;
+                    changePage(currentpage)
+                }
+            });
+
+            $('.thumbnails').on('click', function () {
+                currentpage = this.value
+                changePage(currentpage)
+            });
 
 
-
-    {% if ifteacher %}
-
-        $('#forceScreen').change(function () {
-            updatePageByTeacher();
+            $('#chatmessageinput').summernote({
+                toolbar: []
+            });
+            $('#chatmessageinput').parent().find('.note-statusbar').remove();
         });
 
-        var OnlineMem = [];
-        function updateStudentOnlineBox(Newdata = null) {
-            if (Newdata.sender_id) {
-                OnlineMem[Newdata.sender_id] = {
-                    sender_name: Newdata.sender_name,
-                    sender_icon: Newdata.sender_icon,
-                    isteacher: Newdata.isteacher,
-                    lastUpdate: new Date().toISOString(),
-                };
+
+        function changePage(page_number) {
+            Layout(x)
+            $('#currentpage').text(page_number);
+            getProgressWidth();
+            changeThumbScroll();
+            {% if ifteacher %}
+                updatePageByTeacher();
+            {% else %}
+                // updatePageByStudent(); //TBI
+            {% endif %}
+        }
+
+        function sendMessageWritten() {
+            if ($('.note-editable').html()) {
+                chatSocket.send(
+                    JSON.stringify({
+                        chat_message: $('.note-editable').html(),
+                        sender_id: "{{  user.id }}",
+                        sender_name: "{{  user }}",
+                        sender_icon: "{{  user.Avatar }}",
+                        {% if ifteacher %}
+                            isteacher: 1,
+                        {%  endif %}
+                    })
+                );
             }
 
-            $('#friend-list').html('');
-            for (var eachuser in OnlineMem) {
-                console.log(eachuser)
-                $('#friend-list').append(`<li class=" ">
+            $('.note-editable').html("");
+
+        };
+
+        $(document).keydown(function (event) {
+            if ($('.note-editable').is(":focus")) {
+                if (event.keyCode == 13 && !event.shiftKey) {
+                    if ($('.note-editable').html() != '""') {
+                        sendMessageWritten();
+
+                    }
+                    ;
+                }
+            }
+
+        });
+
+
+
+        {% if ifteacher %}
+
+            $('#forceScreen').change(function () {
+                updatePageByTeacher();
+            });
+
+            var OnlineMem = [];
+            function updateStudentOnlineBox(Newdata = null) {
+                if (Newdata.sender_id) {
+                    OnlineMem[Newdata.sender_id] = {
+                        sender_name: Newdata.sender_name,
+                        sender_icon: Newdata.sender_icon,
+                        isteacher: Newdata.isteacher,
+                        lastUpdate: new Date().toISOString(),
+                    };
+                }
+
+                $('#friend-list').html('');
+                for (var eachuser in OnlineMem) {
+                    console.log(eachuser)
+                    $('#friend-list').append(`<li class=" ">
                                         <a href="#" class="clearfix">
                                             <img src="` + OnlineMem[eachuser].sender_icon + `" alt="" class="img-circle"><br>
 
@@ -1119,75 +1123,75 @@
                                         </a>
 
                                     </li>`)
+                }
+                $('time.timeago').timeago();
             }
-            $('time.timeago').timeago();
-        }
 
-    {%  endif %}
+        {%  endif %}
 
 
 
-    function changeThumbScroll() {
-        document.querySelector("#thumbnail-slider > li.thumbnails.active").scrollIntoView();
+        function changeThumbScroll() {
+            document.querySelector("#thumbnail-slider > li.thumbnails.active").scrollIntoView();
 
-    };
-
-
-    chatSocket.onmessage = function (e) {
+        };
 
 
-        var data = JSON.parse(e.data);
-
-        {% if ifteacher %}
-            updateStudentOnlineBox(data);
-        {% endif %}
-        if ("page" in data) {
+        chatSocket.onmessage = function (e) {
 
 
-            {% if not  ifteacher %}
-                HandlePageInStudents(data);
-
-            {% endif %}
-
-
-
-        } else if ("chat_message" in data) {
+            var data = JSON.parse(e.data);
 
             {% if ifteacher %}
-            {%  else %}
-                if ("isteacher" in data) teacherOnline();
+                updateStudentOnlineBox(data);
+            {% endif %}
+            if ("page" in data) {
 
-            {%  endif %}
 
-            if (data.sender_id =={{ user.id }}) {
-                AddSelfMessageToChat(data);
-            } else {
+                {% if not  ifteacher %}
+                    HandlePageInStudents(data);
 
-                AddOtherMessageToChat(data);
+                {% endif %}
+
+
+
+            } else if ("chat_message" in data) {
+
+                {% if ifteacher %}
+                {%  else %}
+                    if ("isteacher" in data) teacherOnline();
+
+                {%  endif %}
+
+                if (data.sender_id =={{ user.id }}) {
+                    AddSelfMessageToChat(data);
+                } else {
+
+                    AddOtherMessageToChat(data);
+                }
+
+                displayNotif(data);
+
+            }
+        };
+
+        function displayNotif(data) {
+            if ($('#notificationOnChat').prop('checked')) {
+                $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + ": " + data.chat_message + '</h3>');
+
+                $("#messageChatUp").animate({
+                    top: -300,
+                    opacity: 0
+                }, 3000, "linear", function () {
+                })
             }
 
-            displayNotif(data);
-
-        }
-    };
-
-    function displayNotif(data) {
-        if ($('#notificationOnChat').prop('checked')) {
-            $("#fadeOutUp").html('<h3 id="messageChatUp" style="position: relative">' + data.sender_name + ": " + data.chat_message + '</h3>');
-
-            $("#messageChatUp").animate({
-                top: -300,
-                opacity: 0
-            }, 3000, "linear", function () {
-            })
         }
 
-    }
-
-    function getProgressWidth() {
-        let w = (window.currentpage / parseFloat('{{data.numberofpages}}')) * 100;
-        $('.progress-bar').css('width', w + '%')
-    }
+        function getProgressWidth() {
+            let w = (window.currentpage / parseFloat('{{data.numberofpages}}')) * 100;
+            $('.progress-bar').css('width', w + '%')
+        }
 
 </script>
 
