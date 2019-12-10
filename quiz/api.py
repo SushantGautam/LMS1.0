@@ -44,6 +44,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
     queryset = models.Answer.objects.all()
     serializer_class = serializers.AnswerSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_fields = ['question',]
 
 
 class ProgressViewSet(viewsets.ModelViewSet):
