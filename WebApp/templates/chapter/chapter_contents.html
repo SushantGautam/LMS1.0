@@ -137,7 +137,7 @@
 
     @media screen and (max-width: 567px) {
         .custom-btn-only {
-            height: auto!important;
+            height: auto !important;
         }
     }
 
@@ -234,7 +234,12 @@
     background-color: #647ca8;
 "{% endif %}
                    href="{% url 'teacher_contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
-            {% else %}
+            {% elif "students" in request.path %}
+                <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
+    background-color: #647ca8;
+"{% endif %}
+                   href="{% url 'student_contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
+
                 <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
     background-color: #647ca8;
 "{% endif %}
@@ -1090,7 +1095,7 @@
             loaddata(data, window.currentpage);
             $('#page-contents div').each(function () {
                 $(this).removeAttr('style')
-                $(this).css('padding','10px')
+                $(this).css('padding', '10px')
             })
         } else {
             $('#page-contents').empty();
