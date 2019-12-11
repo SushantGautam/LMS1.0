@@ -2389,6 +2389,18 @@ $('#tabs-for-download').on('click', '.survey-div', function(e){
     }
 })
 
+$('#tabs-for-download').on('click', '.quiz-div', function(e){
+    e.preventDefault()
+    if (window.location.href.indexOf("/teachers") > -1) {
+        link = $(this).find('a')[0].href
+        quizpk = (link.split('/')[4]).match(/\d+/);
+        link = "/quiz/markingfilter/" + quizpk
+        window.open(link)
+    }else{
+        window.open($(this).find('a')[0].href)
+    }
+})
+
 function openTab(evt, tab_no) {
     try {
         if (!window.firstload)
