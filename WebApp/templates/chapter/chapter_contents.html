@@ -55,37 +55,6 @@
         font-family: "Lato", sans-serif;
     }
 
-    .examiframeholder {
-        height: 100vh;
-        width: 100%;
-        top: 0;
-        left: 0;
-        position: absolute;
-        z-index: 9999;
-    }
-
-    .closeiframebtn {
-        display: none;
-        position: absolute;
-        /* float: right; */
-        /* top: 50vh; */
-        /* right: 0; */
-        cursor: pointer;
-        bottom: 0;
-        background-color: white;
-        width: 100%;
-        text-align: center;
-    }
-
-    .closeiframebtn i {
-        /* float: right; */
-        font-size: xx-large;
-        font-weight: bold;
-        border-bottom: groove;
-        /* text-align: center; */
-
-    }
-
     .sidenav {
         height: 100%;
         width: 0;
@@ -190,18 +159,9 @@
             closeNav()
         });
     </script>
-    <a href="
-    {% if '/teachers' in request.path %}
-        {% url 'teacher_chapterinfo_detail' course.pk chapter.pk %}
-    {% elif '/students' in request.path %}
-        {% url 'student_chapterinfo_detail' course.pk chapter.pk %}
-    {% else %}
-        {% url 'chapterinfo_detail' course.pk chapter.pk %}
-    {% endif %}
-    " class="back-btn-content"
+    <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content"
        style="position: absolute; top:19px;left:0pxx; font-size:20px">
-        <div class="closebtn" onclick="Print.postMessage('closeViewer')"
-        ><i style="
+        <div class="closebtn"><i style="
     background-color: #d6768c;
     border-radius: 50%;
     padding: 0.5px 2px;
@@ -210,13 +170,13 @@
     <div class="profile clearfix">
 
         <div class="profile_pic">
-            <img src="{{request.user.Avatar}}" alt="..." class="img-circle profile_img">
+            <img src="/static/images/profile/male.jpg" alt="..." class="img-circle profile_img">
         </div>
 
         <div class="profile_info">
 
             <span>Welcome,</span>
-            <h2>{{request.user}}</h2>
+            <h2>nsdevil</h2>
         </div>
 
     </div>
@@ -230,16 +190,18 @@
 
 
             {% if "teachers" in request.path %}
-                <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
+            <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
     background-color: #647ca8;
-"{% endif %}
-                   href="{% url 'teacher_contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
+"
+               href="{% url 'teacher_contentviewer' course.pk chapterobj.pk %}">
+                {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
             {% elif "students" in request.path %}
-                <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
+            <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
     background-color: #647ca8;
-"{% endif %}
-                   href="{% url 'student_contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
-
+"
+               href="{% url 'student_contentviewer' course.pk chapterobj.pk %}">
+                    {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
+            {% else %}
                 <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
     background-color: #647ca8;
 "{% endif %}
@@ -340,7 +302,7 @@
         <div id="container" class="container12" style="">
 
             <div class="content-title1  text-center">
-                   
+
                     <span id="chaptertitle" class="content-title">
                         <!-- Chapter title goes here -->
                          {{ chapter }}
@@ -626,17 +588,6 @@
 
     </div>
 
-    <div id="examiframeholder">
-        <div id="closeiframebtn" class="closeiframebtn">
-            <button>
-                <i class="fa fa-close" aria-hidden="true">
-                    Close
-                </i>
-
-            </button>
-        </div>
-        <div id="iframeholder"></div>
-    </div>
 </body>
 
 <!-- jQuery -->
@@ -820,34 +771,6 @@
 
     });
 
-    $('.page-contents').on('click', '.chapterbuttons', function(e){
-        {% if '/students' in request.path %}
-            e.preventDefault()
-            let link = $(this).find('a')[0].href;
-            loadexam(link)
-        {% endif %}
-    })
-
-    function loadexam(link){
-        $('#examiframeholder').addClass('examiframeholder')
-        $('#iframeholder').append(`
-            <iframe src = ${link} height = 100% width = 100%></iframe>
-        `);
-        $('iframe').on('load', function() {
-            if($(this).contents().find('#survey_already_taken').is(':visible')){
-                    $('#closeiframebtn').css('display', 'block')
-            }
-            if(link != this.contentWindow.location.href && link+'/' != this.contentWindow.location.href) {
-                $('#closeiframebtn').css('display', 'block')
-            }
-        });
-    }
-
-    $('#closeiframebtn').click(function(){
-        $('#examiframeholder').removeClass('examiframeholder')
-        $('#closeiframebtn').css('display', 'none')
-        $('#iframeholder').empty();
-    })
 
     function loaddata(data, currentpage = 1) {
         window.currentpage = currentpage
