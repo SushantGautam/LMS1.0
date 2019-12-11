@@ -50,7 +50,12 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel"><b>Assignment Information</b></h5>
+                <b>
+                    <h5 class="modal-title" id="exampleModalLabel" style="
+                    font-weight: 600;
+                    text-align: center;
+                "></h5>
+                </b>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -59,12 +64,12 @@
             <div class="modal-body" style="
             height: auto;
         ">
-                <b> Assignment Topic: </b><span id="Assignment_name"></span><br><br>
+                <b> Title : </b><span id="Assignment_name"></span><br><br>
 
-                <b> Assignment Create Date: </b><span id="starts-at"></span><br><br>
+                <b> Start Date: </b><span id="starts-at"></span><br><br>
 
 
-                <b> Assignment Submission Deadline: </b><span id="Assignment_end_date"></span><br><br>
+                <b> Submission Deadline: </b><span id="Assignment_end_date"></span><br><br>
 
                 <a href="">
                     <button type="button" id="viewDetails" class="btn btn-primary"
@@ -94,27 +99,54 @@
                 title: "{{ i.Assignment_Topic}}",
                 start: '{{ i.Register_DateTime|date:"Y-m-d" }}',
                 end: '{{ i.Assignment_Deadline|date:"Y-m-d" }}',
-                url: '{% url 'student_assignmentinfo_detail' course=i.Course_Code.pk chapter=i.Chapter_Code.pk pk=i.pk  %}'
+                url: '{% url 'student_assignmentinfo_detail' course=i.Course_Code.pk chapter=i.Chapter_Code.pk pk=i.pk  %}',
+                extendedProps: {
+                    type: 'Assignment'
+                },
 
             },
             {% endfor %}
+            {% for c in activesurvey %}
+    {
+        title: "{{ c.Survey_Title }}",
+            start: '{{ c.Start_Date|date:"Y-m-d" }}',
+                end: '{{ c.End_Date|date:"Y-m-d" }}',
+                    url: '{% url 'questions_student_detail' pk=c.pk  %}',
+                        extendedProps: {
+            type: 'Survey'
+        },
+
+    },
+    {% endfor %}
+
+
 
         
 
     ],
 
-        eventClick: function (calEvent, jsEvent, view) {
-            jsEvent.preventDefault();
-            $('#exampleModal').modal('show');
-            $('#Assignment_name').html(calEvent.title);
-            $('#starts-at').html(moment(calEvent.start).format('MMMM Do YYYY dddd'));
-            $('#Assignment_end_date').html(moment(calEvent.end).format('MMMM Do YYYY dddd'));
-            $("a").attr("href", calEvent.url)
+    eventClick: function (calEvent, jsEvent, view) {
+        jsEvent.preventDefault();
+        $('#exampleModal').modal('show');
+        $('#Assignment_name').html(calEvent.title);
+        $('#starts-at').html(moment(calEvent.start).format('MMMM Do YYYY dddd'));
+        $('#Assignment_end_date').html(moment(calEvent.end).format('MMMM Do YYYY dddd'));
+        $("a").attr("href", calEvent.url)
 
-
-
+        if (calEvent.extendedProps.type == 'Assignment') {
+            $('#exampleModalLabel').html("Assignment");
 
         }
+
+        if (calEvent.extendedProps.type == 'Survey') {
+            $('#exampleModalLabel').html("Survey");
+
+        }
+
+
+
+
+    }
 
         });
     });
