@@ -912,6 +912,8 @@
                                 if (css_value.hasOwnProperty('link')) {
                                     {% if '/teachers' in request.path %}
                                         link = "href = /quiz/markingfilter/" + quizpk
+                                    {% elif '/students' not in request.path and '/teachers' not in request.path %}
+                                        link = "href = /quiz/detail/" + quizpk
                                     {% else %}
                                         link = "href = " + css_value.link;
                                     {% endif %}
@@ -945,6 +947,8 @@
                                 if (css_value.hasOwnProperty('link')) {
                                     {% if '/teachers' in request.path %}
                                         link = "href = /teachers/surveyinfodetail/detail/" + surveypk
+                                    {% elif '/students' not in request.path and '/teachers' not in request.path %}
+                                        link = "href = /survey/surveyinfo/detail/" + surveypk
                                     {% else %}
                                         link = "href = " + css_value.link;
                                     {% endif %}
