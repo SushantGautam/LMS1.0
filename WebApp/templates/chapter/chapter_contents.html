@@ -159,9 +159,18 @@
             closeNav()
         });
     </script>
-    <a href="{% url 'chapterinfo_detail' course.pk chapter.pk %}" class="back-btn-content"
+    <a href="
+    {% if '/teachers' in request.path %}
+        {% url 'teacher_chapterinfo_detail' course.pk chapter.pk %}
+    {% elif '/students' in request.path %}
+        {% url 'student_chapterinfo_detail' course.pk chapter.pk %}
+    {% else %}
+        {% url 'chapterinfo_detail' course.pk chapter.pk %}
+    {% endif %}
+    " class="back-btn-content"
        style="position: absolute; top:19px;left:0pxx; font-size:20px">
-        <div class="closebtn"><i style="
+        <div class="closebtn" onclick="Print.postMessage('closeViewer')"
+        ><i style="
     background-color: #d6768c;
     border-radius: 50%;
     padding: 0.5px 2px;
@@ -170,13 +179,13 @@
     <div class="profile clearfix">
 
         <div class="profile_pic">
-            <img src="/static/images/profile/male.jpg" alt="..." class="img-circle profile_img">
+            <img src="{{request.user.Avatar}}" alt="..." class="img-circle profile_img">
         </div>
 
         <div class="profile_info">
 
             <span>Welcome,</span>
-            <h2>nsdevil</h2>
+            <h2>{{request.user}}</h2>
         </div>
 
     </div>

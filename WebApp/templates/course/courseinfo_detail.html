@@ -555,7 +555,6 @@
 {% block quicksurvey_script %}
 <script>
     $('#new_survey_btn').click(function () {
-        console.log("{{object}}");
         $.ajax({
             type: "GET",
             data: {"category_name": "live", "course_code": "{{ object.id }}"},
