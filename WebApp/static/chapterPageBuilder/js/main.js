@@ -2383,9 +2383,12 @@ $('#tabs-for-download').on('click', '.survey-div', function(e){
         link = $(this).find('a')[0].href
         surveypk = (link.split('/')[6]).match(/\d+/);
         link = "/teachers/surveyinfodetail/detail/" + surveypk
-        window.open(link)
+        window.open(link)   
     }else{
-        window.open($(this).find('a')[0].href)
+        link = $(this).find('a')[0].href
+        surveypk = (link.split('/')[6]).match(/\d+/);
+        link = "/survey/surveyinfo/detail/" + surveypk
+        window.open(link)
     }
 })
 
@@ -2397,7 +2400,10 @@ $('#tabs-for-download').on('click', '.quiz-div', function(e){
         link = "/quiz/markingfilter/" + quizpk
         window.open(link)
     }else{
-        window.open($(this).find('a')[0].href)
+        link = $(this).find('a')[0].href
+        quizpk = (link.split('/')[4]).match(/\d+/);
+        link = "/quiz/detail/" + quizpk
+        window.open(link)
     }
 })
 
