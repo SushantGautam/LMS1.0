@@ -55,6 +55,37 @@
         font-family: "Lato", sans-serif;
     }
 
+    .examiframeholder {
+        height: 100vh;
+        width: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+        z-index: 9999;
+    }
+
+    .closeiframebtn {
+        display: none;
+        position: absolute;
+        /* float: right; */
+        /* top: 50vh; */
+        /* right: 0; */
+        cursor: pointer;
+        bottom: 0;
+        background-color: white;
+        width: 100%;
+        text-align: center;
+    }
+
+    .closeiframebtn i {
+        /* float: right; */
+        font-size: xx-large;
+        font-weight: bold;
+        border-bottom: groove;
+        /* text-align: center; */
+
+    }
+
     .sidenav {
         height: 100%;
         width: 0;
@@ -585,6 +616,18 @@
 
     </div>
 
+    <div id="examiframeholder">
+        <div id="closeiframebtn" class="closeiframebtn">
+            <button>
+                <i class="fa fa-close" aria-hidden="true">
+                    Close
+                </i>
+
+            </button>
+        </div>
+        <div id="iframeholder"></div>
+    </div>
+    
 </body>
 
 <!-- jQuery -->
@@ -768,6 +811,34 @@
 
     });
 
+    $('.page-contents').on('click', '.chapterbuttons', function(e){
+        {% if '/students' in request.path %}
+            e.preventDefault()
+            let link = $(this).find('a')[0].href;
+            loadexam(link)
+        {% endif %}
+    })
+
+    function loadexam(link){
+        $('#examiframeholder').addClass('examiframeholder')
+        $('#iframeholder').append(`
+            <iframe src = ${link} height = 100% width = 100%></iframe>
+        `);
+        $('iframe').on('load', function() {
+            if($(this).contents().find('#survey_already_taken').is(':visible')){
+                    $('#closeiframebtn').css('display', 'block')
+            }
+            if(link != this.contentWindow.location.href && link+'/' != this.contentWindow.location.href) {
+                $('#closeiframebtn').css('display', 'block')
+            }
+        });
+    }
+
+    $('#closeiframebtn').click(function(){
+        $('#examiframeholder').removeClass('examiframeholder')
+        $('#closeiframebtn').css('display', 'none')
+        $('#iframeholder').empty();
+    })
 
     function loaddata(data, currentpage = 1) {
         window.currentpage = currentpage
