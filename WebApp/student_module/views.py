@@ -33,7 +33,7 @@ from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, Ass
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
-from forum.views import get_top_thread_keywords
+
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
