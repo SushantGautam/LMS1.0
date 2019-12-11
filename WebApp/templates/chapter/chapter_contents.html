@@ -197,8 +197,8 @@
                 <a class="focus-page"
                    {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8;"{% endif %}
                    href="{% url 'student_contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
-                %}
-                {% else%}
+
+            {% else %}
                 <a class="focus-page" {% if chapterobj.pk == chapter.pk %}style="
     background-color: #647ca8;
 "{% endif %}
