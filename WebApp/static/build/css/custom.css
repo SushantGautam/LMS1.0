@@ -1626,8 +1626,8 @@ input[type=checkbox], input[type=radio] {
 }
 
 .quiz-ques-image {
-    height: 250px;
-    width: 350px;
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
 }
 
 .quiz-ques-image img {
