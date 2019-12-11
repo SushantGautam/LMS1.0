@@ -4,7 +4,7 @@
 
     <div class="navbar nav_title" style="border: 0;">
         <a class="site_title">
-            <img src="{% static 'images/logo.png' %}" alt="..." id="ubl_logo" />
+            <img src="{% static 'images/logo.png' %}" alt="..." id="ubl_logo"/>
             <span id="LMS">u-LMS 2019</span>
         </a>
     </div>
@@ -14,25 +14,25 @@
     <!-- menu profile quick info -->
     <div class="profile clearfix">
         {% if request.user.is_authenticated %}
-        <div class="profile_pic">
-            <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" />
-        </div>
+            <div class="profile_pic">
+                <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img"/>
+            </div>
 
-        <div class="profile_info">
+            <div class="profile_info">
 
-            <span>Welcome,</span>
-            <h2>{{ request.user.username }}</h2>
-        </div>
+                <span>Welcome,</span>
+                <h2>{{ request.user.username }}</h2>
+            </div>
         {% endif %}
     </div>
     <!-- /menu profile quick info -->
 
-    <br />
+    <br/>
     <!-- sidebar menu -->
     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
         <div class="menu_section">
             <h3>Student Portal Home</h3>
-            <hr />
+            <hr/>
             <ul class="nav side-menu">
                 <li><a href=" {% url 'student_home' %}"><i class="fa fa-home"></i> Dashboard </a>
                 </li>
@@ -60,13 +60,21 @@
 
                 <li><a href=" {% url 'questions_student' %}"><i class="fa fa-bar-chart"></i>Survey</a></li>
             </ul>
+
+            <hr>
+            <div style=" padding: 10px;">
+
+                <img style='height: 100%; width: 100%; object-fit: contain'
+                     src="{% static "3D_Viewer/google-play-badge.svg" %}">
+            </div>
+
+
         </div>
 
     </div>
     <!-- /sidebar menu -->
     <!-- /menu footer buttons -->
     <div class="sidebar-footer hidden-small">
-
 
 
         <a data-toggle="tooltip" data-placement="top" title="FullScreen" onclick="toggleFullScreen()">
@@ -76,7 +84,7 @@
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
         </a>
         <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App"
-            href="http://ublcloud.me/media/app/lms-app.apk">
+           href="http://ublcloud.me/media/app/lms-app.apk">
             <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
         </a>
         <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout">
