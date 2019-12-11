@@ -206,6 +206,14 @@
                                         data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
                                 </button>
                     <hr>
+
+                    <!-- Quick Survey Button -->
+                    <button style="float: right" type="button" class="btn qts-button" id="new_survey_btn"
+                            data-toggle="modal"
+                            data-target="#survey_content_modal"><i class="fa fa-plus"></i> Survey
+                    </button>
+                    <!-- End of Quick Survey Button -->
+
                 {% endif %}
                 <tr>
                     {% if surveycount %}
@@ -540,4 +548,28 @@
             location.reload();
         }
     </script>
+{% endblock %}
+
+{% include 'chapter/content-viewer-moules/QuickSurvey.html' %}
+
+{% block quicksurvey_script %}
+<script>
+    $('#new_survey_btn').click(function () {
+        console.log("{{object}}");
+        $.ajax({
+            type: "GET",
+            data: {"category_name": "live", "course_code": "{{ object.id }}"},
+            url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#survey_form_ajax").html(data);
+                $('#smartwizard').smartWizard("reset");
+                $("#id_Survey_Title").val('#Quick-' + $("#id_Survey_Title").val());
+            }
+        });
+    });
+
+    function survey_create_content(response){
+        location.reload()
+    }
+</script>
 {% endblock %}
