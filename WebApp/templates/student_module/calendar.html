@@ -50,23 +50,29 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel"><b>Assignment Information</b></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {% for i in activeassignments %}
-            <div class="modal-body">
-                <div id="name">
 
-                </div>
+            <div class="modal-body" style="
+            height: auto;
+        ">
+                <b> Assignment Topic: </b><span id="Assignment_name"></span><br><br>
+
+                <b> Assignment Create Date: </b><span id="starts-at"></span><br><br>
+
+
+                <b> Assignment Submission Deadline: </b><span id="Assignment_end_date"></span><br><br>
+
+                <a href="">
+                    <button type="button" id="viewDetails" class="btn btn-primary"
+                        style="margin:auto;display:block">View Details</button></a>
+
 
             </div>
-            {% endfor %}
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+
         </div>
     </div>
 </div>
@@ -97,16 +103,21 @@
 
     ],
 
-        eventClick: function (info) 
-        {
-            $('#modal-body').append
-            alert('Event: ' + info.event.title);
-            alert('Coordinates: ' + info.event.start);
-            alert('View: ' + info.end);
+        eventClick: function (calEvent, jsEvent, view) {
+            jsEvent.preventDefault();
+            $('#exampleModal').modal('show');
+            $('#Assignment_name').html(calEvent.title);
+            $('#starts-at').html(moment(calEvent.start).format('MMMM Do YYYY dddd'));
+            $('#Assignment_end_date').html(moment(calEvent.end).format('MMMM Do YYYY dddd'));
+            $("a").attr("href", calEvent.url)
+
+
+
+
+        }
 
         });
-
-});
+    });
 
 
 </script>
