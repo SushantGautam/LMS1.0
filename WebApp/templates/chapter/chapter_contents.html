@@ -104,6 +104,12 @@
         color: blue;
     }
 
+    @media screen and (max-width: 567px) {
+        .custom-btn-only {
+            height: auto!important;
+        }
+    }
+
     @media screen and (max-width: 349px) {
         html {
             font-size: 4px !important;
@@ -128,14 +134,14 @@
         }
     }
 
-    @media (min-width: 650px) and (max-width:767px) {
+    @media (min-width: 650px) and (max-width: 767px) {
         html {
             font-size: 8px !important;
         }
     }
 
     .textdiv h1 {
-        font-size: 1.5rem!important;
+        font-size: 1.5rem !important;
     }
 
 
@@ -331,15 +337,16 @@
         <div id="thumb-next-btn" class="thumb-nav-button" style="right:9.5%; padding-top: 5vh;
     padding-left: 5vh;">
             <i class="fa  fa-chevron-circle-right  fa-2x" style="
-    top: 1.5vh;
-    position: absolute;
+    bottom: 3.5vh;
+    right:8% ;
+    position: fixed;
         text-shadow: 2px 2px 2px white;"></i>
         </div>
         <div id="thumb-prev-btn" class="thumb-nav-button" style="left:7%;padding-top: 5vh;
     padding-right: 5vh; ">
             <i class=" fa fa-chevron-circle-left fa-2x" style="
-    top: 1.5vh;
-    position: absolute;
+    bottom: 3.5vh;left:8%;
+    position: fixed;
     text-shadow: 2px 2px 2px white;
 "></i>
         </div>
@@ -592,7 +599,7 @@
 
 
     var currentpage = 1;
-    var roomName = "ChapterChat{{chapter.id}}";
+    var roomName = "chapterchat{{chapter.id}}";
     var chatSocket;
 
     function startWebsocket() {
@@ -604,7 +611,13 @@
             webSProtocal = "ws://";
         }
 
-        chatSocket = new WebSocket(webSProtocal + location.host + "/ws/" + roomName + '/');
+        var locationhost = location.host;
+        if (locationhost === 'ulms.me') {
+            locationhost = "ulms.me:9002";
+        }
+
+
+        chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomName + '/');
         chatSocket.onclose = function () {
             // connection closed, discard old websocket and create a new one in 5s
             chatSocket = null;
@@ -648,7 +661,7 @@
     //     if($(this).hasAttribute('data-lightbox')){
     //         return false;
     //     }
-    // }).dblclick(function () {                
+    // }).dblclick(function () {
     //     window.location = this.href;
     //     return false;
     // });
@@ -832,7 +845,7 @@
                                                 <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.quiz_btn_name} </span>
                                             </div>
                                             <div class="row text-center">
-                                                <span style = "position:absolute;left:0; bottom: 0px; width:100% ;text-align:left; margin-left:14px">${css_value.quiz_name}</span>
+                                                <span style = "position:unset;left:0; bottom: 0px; width:100% ;text-align:left; margin-left:14px">${css_value.quiz_name}</span>
                                             </div>
                                         </button>
 
@@ -865,7 +878,7 @@
                                              <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.survey_btn_name} </span>
                                             </div>
                                             <div class="row text-center">
-                                                    <span class = "survey-name " style = "position:absolute; left:0;bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                                    <span class = "survey-name " style = "position:unset; left:0;bottom: 0px; width:100% ;text-align:left; margin-left:14px">
                                             ${css_value.survey_name}
                                             </div>
                                         </button>
@@ -986,7 +999,7 @@
         });
     }
 
-    var x = window.matchMedia("(max-width: 0px)")
+    var x = window.matchMedia("(max-width: 567px)")
 
     function Layout(x) {
         if (x.matches) {
@@ -994,6 +1007,7 @@
             loaddata(data, window.currentpage);
             $('#page-contents div').each(function () {
                 $(this).removeAttr('style')
+                $(this).css('padding','10px')
             })
         } else {
             $('#page-contents').empty();

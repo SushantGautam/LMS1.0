@@ -13,6 +13,7 @@
     list-style: none;
     overflow: auto;
     height: -webkit-fill-available;
+    overflow: auto;
     /* padding: 0px!important; */
     min-height: 50vh;
     margin: 0;
@@ -202,7 +203,7 @@ a:hover, a:active, a:focus {
 
 .chatonly {
 
-    position: absolute;
+    position: fixed;
 
     bottom: 0;
 
@@ -268,7 +269,7 @@ a:hover, a:active, a:focus {
 
 
 .thumbnail-slider {
-    position: absolute;
+    position: fixed;
     border: 3px solid black;
     padding: 10px;
     height: 10vh;
@@ -278,9 +279,11 @@ a:hover, a:active, a:focus {
     margin-left: 10%;
     overflow-x: hidden;
     overflow-y: hidden;
-    display: none;
+    display: block;
     z-index: 140;
+    margin-right: 10%;
     /* scrollbar-width: thin; */
+    right: 0;
 }
 
 .thumb-img {
@@ -292,11 +295,11 @@ a:hover, a:active, a:focus {
 
 .thumbnail-container {
 
-    margin-top: 0;
+margin-top: 0;
 
-    margin-bottom: 0px !important;
+margin-bottom: 0px !important;
 
-    width: max-content; /*Subtract 25px - the width of your image */
+width: max-content; /*Subtract 25px - the width of your image */
 }
 
 
@@ -351,7 +354,7 @@ a:hover, a:active, a:focus {
         padding-top: 10px !important;
     }
 
-    /* .overall-contents {
+    .overall-contents {
         width: 100vw;
         height: auto;
         max-height: 100vh;
@@ -362,7 +365,7 @@ a:hover, a:active, a:focus {
         bottom: 0;
         left: 0;
         right: 0;
-    } */
+    }
 
     .image-fitting {
         object-fit: contain !important;
@@ -381,8 +384,8 @@ a:hover, a:active, a:focus {
 .container12 {
     background-color: white;
     color: black;
-    overflow: hidden;
-
+    overflow-y: auto;
+    overflow-x: hidden;
     width: 100vw;
     height: -webkit-fill-available;
     max-height: 100vh;
@@ -420,7 +423,7 @@ a:hover, a:active, a:focus {
     position: relative;
     top: 0;
     left: 0;
-    z-index: 120;
+    z-index: 999;
 }
 
 .overall-contents:hover .content-title1 {
@@ -429,25 +432,25 @@ a:hover, a:active, a:focus {
 
 .content-footer1 {
     color: white;
-    width: 100px;
-    /* padding-top: 10px; */
+    width: 20%;
     font-size: 1.2rem;
     font-weight: 200;
     /* padding-right: 20px; */
-    position: absolute;
+    position: fixed;
     bottom: 12%;
-    left: 45%;
+    margin-left: 40%;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
     z-index: 150;
     /* padding: 10px; */
     height: 30px;
     line-height: 30px;
-    display: none;
+    display: block;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
-
-
+    margin-right: 25%;
+    left: 0;
+    right: 0;
 }
 
 .overall-contents:hover .content-footer1 {
@@ -547,7 +550,8 @@ body {
 .thumb-nav-button {
     position: absolute;
     bottom: 5vh;
-    display: none;
+    display: block;
+    z-index: 151;
 }
 
 .no-js #loader {
@@ -625,6 +629,6 @@ body {
     float: inherit;
 }
 
-.chapterbuttons {
-    background-color: #DDDDDD
+.chapterbuttons{
+    background-color:#DDDDDD
 }

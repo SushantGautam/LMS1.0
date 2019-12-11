@@ -189,7 +189,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
         if form.is_valid():
             self.object = form.save(commit=False)
             if self.request.GET['category_name'].lower() == "system":
-                self.object.Center_Code = None
+                self.object.Center_Code = self.request.user.Center_Code
             else:
                 self.object.Center_Code = self.request.user.Center_Code
             self.object.Added_By = self.request.user
