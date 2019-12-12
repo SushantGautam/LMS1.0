@@ -119,7 +119,7 @@ Dashboard
                 <div class="title text-center">
                     <h2 style="font-size: 2em">&nbsp;<b>Your Quiz Score</b></h2>
                 </div>
-                <div class="col-md-12 col-sm-12 col-xs-12" id="container" style="height: 400px; margin: 0 auto"></div>
+                <div class="col-md-12 col-sm-12 col-xs-12" id="container" style="min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto"></div>
             </div>
 
     
@@ -129,7 +129,7 @@ Dashboard
                 <div class="title text-center">
                     <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
                 </div>
-                <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; "></div>
+                <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; width:100%; "></div>
             </div>
     </div>
 </div>
@@ -137,8 +137,15 @@ Dashboard
 <script src="{% static 'js/highcharts.js' %}"></script>
 <script src="{% static 'js/highchart_data.js' %}"></script>
 
+
 <script>
-   var chart =  Highcharts.chart('container', {
+   Highcharts.chart('container', {
+       chart: {
+        type: 'scatter',
+        zoomType: 'xy'
+    },
+
+
        credits: {
     enabled: false
 },
@@ -161,6 +168,9 @@ Dashboard
         xAxis: {
           type: 'datetime',
           min: Date.UTC(2018, 1, 1),
+          startOnTick: true,
+        endOnTick: true,
+        showLastLabel: true
         },
             
 
@@ -177,6 +187,25 @@ Dashboard
         },
 
         plotOptions: {
+
+            scatter: {
+            marker: {
+                radius: 5,
+                states: {
+                    hover: {
+                        enabled: true,
+                        lineColor: 'rgb(100,100,100)'
+                    }
+                }
+            },
+            states: {
+                hover: {
+                    marker: {
+                        enabled: false
+                    }
+                }
+            },
+      
             series: {
                 events: {
                     legendItemClick: function(event) {
@@ -193,6 +222,7 @@ Dashboard
                     }
                 }
 
+            }
             }
         },
 
