@@ -27,6 +27,7 @@
 
     <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
 
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -45,6 +46,9 @@
 
 </head>
 <body>
+
+
+
 <div class="se-pre-con"></div>
 <style>
     html {
@@ -329,9 +333,9 @@
         {% endif %}
 
         <div class="thumbnail-slider">
-            <ul id="thumbnail-slider" class="thumbnail-container">
+            <div id="thumbnail-slider" class="thumbnail-container owl-carousel owl-theme">
                 <!-- Thumbnail goes here -->
-            </ul>
+            </div>
         </div>
 
         <div id="thumb-next-btn" class="thumb-nav-button" style="right:9.5%; padding-top: 5vh;
@@ -986,14 +990,14 @@
     function setThumbnails() {
         $.each(data.pages, function (key, value) {
             if (value[0]['thumbnail'] == "") {
-                $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
+                $('.thumbnail-container').append(`${key}<div class = 'thumbnails items' value = ${key}>
                     <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}"></img>
-                </li>
+                </div>
             `);
             } else {
-                $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
+                $('.thumbnail-container').append(`${key}<div class = 'thumbnails items' value = ${key}>
                         <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
-                    </li>
+                </div>
                 `);
             }
         });
@@ -1214,7 +1218,7 @@
 
 
 </script>
-
+<script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"> </script>
 <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script type="text/javascript"
