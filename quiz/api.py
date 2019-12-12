@@ -62,4 +62,4 @@ class SittingViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SittingSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_fields = ['id', 'user']
-    pagination.PageNumberPagination.page_size = 10
+

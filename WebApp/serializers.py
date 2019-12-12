@@ -1,6 +1,6 @@
-from . import models
-
 from rest_framework import serializers
+
+from . import models
 
 
 class CenterInfoSerializer(serializers.ModelSerializer):
@@ -79,11 +79,14 @@ class GroupMappingSerializer(serializers.ModelSerializer):
 
 # AssignmentInfoSerializer
 class AssignmentInfoSerializer(serializers.ModelSerializer):
+    course_name = serializers.ReadOnlyField(source='Course_Code.Course_Name')
+    Register_Agent_Name = serializers.ReadOnlyField(source='Register_Agent.username')
+
     class Meta:
         model = models.AssignmentInfo
         fields = (
             'pk', 'Assignment_Topic', 'Assignment_Deadline', 'Use_Flag', 'Register_DateTime',
-            'Updated_DateTime', 'Register_Agent', 'Course_Code', 'Chapter_Code'
+            'Updated_DateTime', 'Register_Agent', 'Course_Code', 'course_name', 'Chapter_Code', 'Register_Agent_Name'
         )
 
 
