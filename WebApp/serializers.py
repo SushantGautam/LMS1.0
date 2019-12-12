@@ -1,6 +1,6 @@
-from . import models
-
 from rest_framework import serializers
+
+from . import models
 
 
 class CenterInfoSerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class MemberInfoSerializer(serializers.ModelSerializer):
             'pk', 'username', 'first_name', 'last_name', 'email', 'password', 'Member_Permanent_Address',
             'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',
             'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
-            'Member_Memo', 'Is_Teacher', 'Is_Student', 'Is_CenterAdmin', 'Is_Parent', 'Member_Avatar', 'Center_Code'
+            'Member_Memo', 'Is_Teacher', 'Is_Student', 'Is_CenterAdmin', 'Is_Parent', 'Member_Avatar', 'Center_Code', 'get_student_courses'
         )
 
 
@@ -79,11 +79,14 @@ class GroupMappingSerializer(serializers.ModelSerializer):
 
 # AssignmentInfoSerializer
 class AssignmentInfoSerializer(serializers.ModelSerializer):
+    course_name = serializers.ReadOnlyField(source='Course_Code.Course_Name')
+    Register_Agent_Name = serializers.ReadOnlyField(source='Register_Agent.__str__')
+
     class Meta:
         model = models.AssignmentInfo
         fields = (
             'pk', 'Assignment_Topic', 'Assignment_Deadline', 'Use_Flag', 'Register_DateTime',
-            'Updated_DateTime', 'Register_Agent', 'Course_Code', 'Chapter_Code'
+            'Updated_DateTime', 'Register_Agent', 'Course_Code', 'course_name', 'Chapter_Code', 'Register_Agent_Name'
         )
 
 

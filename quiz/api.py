@@ -1,5 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions
+from rest_framework import permissions, pagination
 from rest_framework import viewsets
 
 from quiz.filters import QuizFilter, AnswerFilter
@@ -15,6 +15,7 @@ class QuizViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = (DjangoFilterBackend,)
     filter_class = QuizFilter
+
 
 
 class MCQuestionViewSet(viewsets.ModelViewSet):
@@ -61,3 +62,4 @@ class SittingViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SittingSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_fields = ['id', 'user']
+

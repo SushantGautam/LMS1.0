@@ -172,7 +172,7 @@ $(document).ready(function () {
                         ['color', ['color']],
                         ['para', ['ul', 'ol', 'paragraph']],
                         ['table', ['table']],
-                        ['insert', ['link']],
+                        ['insert', ['']],
                         // ['view', ['fullscreen', 'codeview', 'help']],
                     ],
                 });
@@ -2377,19 +2377,22 @@ $('#tabs-for-download').click(function () {
 
 // ==========================================================================
 
-$('#tabs-for-download').on('click', '.survey-div', function(e){
+$('#tabs-for-download').find('.survey-div').on('click', 'a', function(e){
     e.preventDefault()
     if (window.location.href.indexOf("/teachers") > -1) {
         link = $(this).find('a')[0].href
         surveypk = (link.split('/')[6]).match(/\d+/);
         link = "/teachers/surveyinfodetail/detail/" + surveypk
-        window.open(link)
+        window.open(link)   
     }else{
-        window.open($(this).find('a')[0].href)
+        link = $(this).find('a')[0].href
+        surveypk = (link.split('/')[6]).match(/\d+/);
+        link = "/survey/surveyinfo/detail/" + surveypk
+        window.open(link)
     }
 })
 
-$('#tabs-for-download').on('click', '.quiz-div', function(e){
+$('#tabs-for-download').find('.quiz-div').on('click', 'a', function(e){
     e.preventDefault()
     if (window.location.href.indexOf("/teachers") > -1) {
         link = $(this).find('a')[0].href
@@ -2397,7 +2400,10 @@ $('#tabs-for-download').on('click', '.quiz-div', function(e){
         link = "/quiz/markingfilter/" + quizpk
         window.open(link)
     }else{
-        window.open($(this).find('a')[0].href)
+        link = $(this).find('a')[0].href
+        quizpk = (link.split('/')[4]).match(/\d+/);
+        link = "/quiz/detail/" + quizpk
+        window.open(link)
     }
 })
 
