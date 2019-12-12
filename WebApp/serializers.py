@@ -80,7 +80,7 @@ class GroupMappingSerializer(serializers.ModelSerializer):
 # AssignmentInfoSerializer
 class AssignmentInfoSerializer(serializers.ModelSerializer):
     course_name = serializers.ReadOnlyField(source='Course_Code.Course_Name')
-    Register_Agent_Name = serializers.ReadOnlyField(source='Register_Agent.username')
+    Register_Agent_Name = serializers.ReadOnlyField(source='Register_Agent.__str__')
 
     class Meta:
         model = models.AssignmentInfo
