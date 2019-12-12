@@ -137,8 +137,15 @@ Dashboard
 <script src="{% static 'js/highcharts.js' %}"></script>
 <script src="{% static 'js/highchart_data.js' %}"></script>
 
+
 <script>
-   var chart =  Highcharts.chart('container', {
+   Highcharts.chart('container', {
+       chart: {
+        type: 'scatter',
+        zoomType: 'xy'
+    },
+
+
        credits: {
     enabled: false
 },
@@ -161,6 +168,9 @@ Dashboard
         xAxis: {
           type: 'datetime',
           min: Date.UTC(2018, 1, 1),
+          startOnTick: true,
+        endOnTick: true,
+        showLastLabel: true
         },
             
 
@@ -177,6 +187,25 @@ Dashboard
         },
 
         plotOptions: {
+
+            scatter: {
+            marker: {
+                radius: 5,
+                states: {
+                    hover: {
+                        enabled: true,
+                        lineColor: 'rgb(100,100,100)'
+                    }
+                }
+            },
+            states: {
+                hover: {
+                    marker: {
+                        enabled: false
+                    }
+                }
+            },
+      
             series: {
                 events: {
                     legendItemClick: function(event) {
@@ -193,6 +222,7 @@ Dashboard
                     }
                 }
 
+            }
             }
         },
 
