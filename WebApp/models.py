@@ -114,6 +114,11 @@ class MemberInfo(AbstractUser):
         related_name="memberinfos", on_delete=models.DO_NOTHING, null=True
     )
 
+    def get_student_courses(self):
+        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk))
+        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
+        return courses
+
     @property
     def get_user_type(self):
         if self.Is_CenterAdmin and self.Is_Teacher and self.Is_Student:

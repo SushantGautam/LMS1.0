@@ -18,7 +18,7 @@ class MemberInfoSerializer(serializers.ModelSerializer):
             'pk', 'username', 'first_name', 'last_name', 'email', 'password', 'Member_Permanent_Address',
             'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',
             'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
-            'Member_Memo', 'Is_Teacher', 'Is_Student', 'Is_CenterAdmin', 'Is_Parent', 'Member_Avatar', 'Center_Code'
+            'Member_Memo', 'Is_Teacher', 'Is_Student', 'Is_CenterAdmin', 'Is_Parent', 'Member_Avatar', 'Center_Code', 'get_student_courses'
         )
 
 
