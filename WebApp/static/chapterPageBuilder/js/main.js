@@ -2377,7 +2377,7 @@ $('#tabs-for-download').click(function () {
 
 // ==========================================================================
 
-$('#tabs-for-download').on('click', '.survey-div', function(e){
+$('#tabs-for-download').find('.survey-div').on('click', 'a', function(e){
     e.preventDefault()
     if (window.location.href.indexOf("/teachers") > -1) {
         link = $(this).find('a')[0].href
@@ -2392,7 +2392,7 @@ $('#tabs-for-download').on('click', '.survey-div', function(e){
     }
 })
 
-$('#tabs-for-download').on('click', '.quiz-div', function(e){
+$('#tabs-for-download').find('.quiz-div').on('click', 'a', function(e){
     e.preventDefault()
     if (window.location.href.indexOf("/teachers") > -1) {
         link = $(this).find('a')[0].href
