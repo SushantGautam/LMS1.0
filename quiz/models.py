@@ -612,6 +612,9 @@ class Quiz(models.Model):
         return str(self.id) + "_data"
 
 
+
+
+
 @python_2_unicode_compatible
 class Answer(models.Model):
     question = models.ForeignKey(MCQuestion, verbose_name=_("Question"), on_delete=models.CASCADE)
