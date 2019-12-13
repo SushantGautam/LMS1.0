@@ -72,16 +72,25 @@
         /* right: 0; */
         cursor: pointer;
         bottom: 0;
-        background-color: white;
-        width: 100%;
+        /* background-color: white; */
+        /* width: 100%; */
+        left: 48%;
         text-align: center;
+    }
+
+    .closeiframebtn button {
+        background-color: #2A3F54;
+        height: 75px;
+        width: 75px;
+        border-radius: 50%;
     }
 
     .closeiframebtn i {
         /* float: right; */
         font-size: xx-large;
         font-weight: bold;
-        border-bottom: groove;
+        color: white;
+        /* border-bottom: groove; */
         /* text-align: center; */
 
     }
@@ -168,6 +177,24 @@
     @media (min-width: 650px) and (max-width: 767px) {
         html {
             font-size: 8px !important;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 867px) {
+        html {
+            font-size: 9px !important;
+        }
+    }
+
+    @media (min-width: 868px) and (max-width: 967px) {
+        html {
+            font-size: 10.5px !important;
+        }
+    }
+
+    @media (min-width: 968px) and (max-width: 1067px) {
+        html {
+            font-size: 11.5px !important;
         }
     }
 
@@ -628,7 +655,6 @@
         <div id="closeiframebtn" class="closeiframebtn">
             <button>
                 <i class="fa fa-close" aria-hidden="true">
-                    Close
                 </i>
 
             </button>
@@ -868,9 +894,11 @@
                         if (div == 'textdiv') {
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
+                                content = css_value.content;
+                                
                                 $('#page' + key).append(`
                                     <div class = "textdiv" style = "overflow:hidden;font-size:1rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
-                                        ${css_value.content}
+                                        ${content}
                                     </div>
                                 `);
                                 // $('#page' + key).append(css_value.content);
@@ -930,13 +958,9 @@
                                                 <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.quiz_btn_name} </span>
                                             </div>
                                             <div class="row text-center">
-                                                <span style = "position:unset;left:0; bottom: 0px; width:100% ;text-align:left; margin-left:14px">${css_value.quiz_name}</span>
+                                                <span style = "font-size: 1.5rem;">${css_value.quiz_name}</span>
                                             </div>
                                         </button>
-
-
-
-
                                     </a>
                                 </div>
                             `)
@@ -965,7 +989,7 @@
                                              <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.survey_btn_name} </span>
                                             </div>
                                             <div class="row text-center">
-                                                    <span class = "survey-name " style = "position:unset; left:0;bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                                    <span class = "survey-name " style = "font-size:1.5rem">
                                             ${css_value.survey_name}
                                             </div>
                                         </button>
@@ -1042,10 +1066,35 @@
                             $('#container').css('background-color', div_value)
                         }
                     });
-
                 });
+                $('.textdiv span').each(function(){
+                    let fontsize = $(this)[0].style.fontSize
+                    if(fontsize){
+                        convertedFont = convertFont(fontsize)
+                        $(this)[0].style.fontSize = convertedFont;
+                    }
+                })
             }
         });
+    }
+
+    function convertFont(font){
+        let unit = font.slice(-2)
+        if(unit == 'px'){
+            return parseFloat(font) / 16 + 'rem'
+        }
+        else if(unit == 'em'){
+            return parseFloat(font) + 'rem'
+        }
+        else if(unit == 'rem'){
+            return font
+        }
+        else if(unit == 'pt'){
+            return parseFloat(font)/12 + 'rem'
+        }else{
+            return font
+        }
+
     }
 
     function toggleFullScreen() {
