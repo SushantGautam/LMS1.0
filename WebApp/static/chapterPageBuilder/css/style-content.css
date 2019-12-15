@@ -295,11 +295,11 @@ a:hover, a:active, a:focus {
 
 .thumbnail-container {
 
-margin-top: 0;
+    margin-top: 0;
 
-margin-bottom: 0px !important;
+    margin-bottom: 0px !important;
 
-width: max-content; /*Subtract 25px - the width of your image */
+    width: max-content; /*Subtract 25px - the width of your image */
 }
 
 
@@ -629,6 +629,7 @@ body {
     float: inherit;
 }
 
-.chapterbuttons{
-    background-color:#DDDDDD
+.chapterbuttons {
+    background-color: #DDDDDD
 }
+

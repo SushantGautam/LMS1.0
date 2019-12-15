@@ -54,6 +54,7 @@
     .owl-carousel .owl-item img {
         display: block;
         width: auto;
+        height: -webkit-fill-available;
     }
 
     .owl-prev {
@@ -1161,7 +1162,7 @@
             `);
             } else {
                 $('.thumbnail-container').append(`<div class = 'thumbnails items' value = ${key}>
-                        <div class="key-holder" style="position:absolute; top:0px; left:3px; font-weight:700"> ${key} </div> <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
+                        <div class="key-holder" style="position:absolute;top:0px;left:3px;font-size: large;font-weight:700;text-shadow: 2px 2px 6px #ffffff;"> ${key} </div> <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
                 </div>
                 `);
             }
@@ -1191,12 +1192,10 @@
     $(document).ready(function () {
         setThumbnails();
         $('.owl-carousel').owlCarousel({
-            margin: 10,
             nav: true,
-            rewindNav: 1,
-            loop: 0,
-            rewind: 1,
-            center: 1,
+            slideBy: 4,
+            dots:false,
+            items: parseInt($('#totalpages').text()),
             navText: ["<i class=' fa fa-chevron-circle-left'></i>",
                 "<i class='fa  fa-chevron-circle-right'></i>"],
             responsive: {
@@ -1252,7 +1251,7 @@
         Layout(x)
         $('#currentpage').text(page_number);
         getProgressWidth();
-        $("#thumbnail-slider").trigger("to.owl.carousel", page_number);
+        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
         {% if ifteacher %}
             updatePageByTeacher();
         {% else %}
