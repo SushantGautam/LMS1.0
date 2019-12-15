@@ -853,7 +853,7 @@
         {% endif %}
     })
 
-    function loadexam(link) {
+    function loadexam(link, ShowCloseBoxonInit=false) {
         $('#examiframeholder').addClass('examiframeholder')
         $('#iframeholder').append(`
             <iframe src = ${link} height = 100% width = 100%></iframe>
