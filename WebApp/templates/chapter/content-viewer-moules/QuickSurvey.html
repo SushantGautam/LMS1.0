@@ -127,14 +127,12 @@
                 console.log(response['url']);
                 console.log(response['teacher_url']);
                 console.log(response['student_url']);
-                $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Survey</a>`);
+                $(".note-editable").append(`<a onclick="loadexam('${response['student_url']}')">Take Quick Survey</a>`);
                 close_quick_model("survey_content_modal");
                 console.log(response)
                 sendMessageWrittenToStudents();
-                $(".note-editable").append(`<a onclick="loadexam('/teachers/surveyinfodetail/detail/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
-                //open in popup
+                $(".note-editable").append(`<a onclick="loadexam('/teachers/surveyinfodetail/detail/` + response['quiz_id'] + `', 1)">View Quick Survey Submissions</a>`);
                 sendMessageWrittenToTeachers();
-                window.open('/teachers/surveyinfodetail/detail/' + response['quiz_id'], '_blank');
                 loadexam('/teachers/surveyinfodetail/detail/' + response['quiz_id'], 1); //shows with close button 1
 
                 //window.location.href = String(response['url']);
@@ -149,7 +147,7 @@
                 console.log(response['teacher_url']);
                 console.log(response['student_url']);
                 console.log(response['quiz_id']);
-                $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Quiz</a>`);
+                $(".note-editable").append(`<a onclick="loadexam('${response['student_url']}')">Take Quick Quiz</a>`);
                 close_quick_model("quiz_create_popup");
                 sendMessageWrittenToStudents();
                 $(".note-editable").append(`<a onclick="loadexam('/quiz/markingfilter/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);

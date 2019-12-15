@@ -27,6 +27,7 @@
 
     <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
 
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -45,6 +46,9 @@
 
 </head>
 <body>
+
+
+
 <div class="se-pre-con"></div>
 <style>
     html {
@@ -201,7 +205,25 @@
     .textdiv h1 {
         font-size: 1.5rem !important;
     }
+    .custom-carousel{
+        position: relative;
+    }
 
+    .owl-prev{
+        position: absolute;
+        top: 0;
+        left:15px;
+        bottom: 10px;
+    }
+    .owl-next{
+        position: absolute;
+        top: 0;
+        right: 15px;
+        bottom: 10px;
+    }
+    .owl-nav{
+        font-size: 50px;
+    }
 
 </style>
 
@@ -398,11 +420,30 @@
 
         {% endif %}
 
-        <div class="thumbnail-slider">
-            <ul id="thumbnail-slider" class="thumbnail-container">
-                <!-- Thumbnail goes here -->
-            </ul>
+        <!-- <div class="thumbnail-slider">
+            <div id="thumbnail-slider" class="thumbnail-container owl-carousel owl-theme">
+              
+            </div>
+        </div> -->
+        <div class="container custom-carousel " style="position:absolute; bottom:10px">
+          
+              
+                <div class="owl-carousel owl-theme">
+                        <div class="item"><h4>1</h4></div>
+                        <div class="item"><h4>2</h4></div>
+                        <div class="item"><h4>3</h4></div>
+                        <div class="item"><h4>4</h4></div>
+                        <div class="item"><h4>4</h4></div>
+                        <div class="item"><h4>6</h4></div>
+                        <div class="item"><h4>7</h4></div>
+                        <div class="item"><h4>8</h4></div>
+                        <div class="item"><h4>9</h4></div>
+                  
+                    </div>
+       
+              
         </div>
+     
 
         <div id="thumb-next-btn" class="thumb-nav-button" style="right:9.5%; padding-top: 5vh;
     padding-left: 5vh;">
@@ -470,7 +511,7 @@
                          style="padding-right: 9px!important; padding-left:0px!important">
                         <span id="reloadcontent" class="text-center"> <i
                                 class="fa fa-refresh"> Reload Content  </i></span>
-                        <span id="closechatbox" style="float:right; "> <i class="fa fa-close"></i></span>
+                        <span id="closechatbox" style="float:right; "> <i class="fa fa-2x fa-close"></i></span>
                         <div>
                             <span id="google_translate_element"></span>
                         </div>
@@ -857,7 +898,7 @@
         }
     })
 
-    function loadexam(link, ShowCloseBoxonInit=false) {
+    function loadexam(link, ShowCloseBoxonInit = false) {
         $('#examiframeholder').addClass('examiframeholder')
         $('#iframeholder').append(`
             <iframe src = ${link} height = 100% width = 100%></iframe>
@@ -867,6 +908,9 @@
                 $('#closeiframebtn').css('display', 'block')
             }
             if (link != this.contentWindow.location.href && link + '/' != this.contentWindow.location.href) {
+                $('#closeiframebtn').css('display', 'block')
+            }
+            if (ShowCloseBoxonInit) {
                 $('#closeiframebtn').css('display', 'block')
             }
         });
@@ -1120,22 +1164,22 @@
     }
 
 
-    function setThumbnails() {
+ /*   function setThumbnails() {
         $.each(data.pages, function (key, value) {
-            if (value[0]['thumbnail'] == "") {
-                $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
+         if (value[0]['thumbnail'] == "") {
+                $('.thumbnail-container').append(`${key}<div class = 'thumbnails items' value = ${key}>
                     <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}"></img>
-                </li>
+                </div>
             `);
             } else {
-                $('.thumbnail-container').append(`${key}<li class = 'thumbnails' value = ${key}>
+                $('.thumbnail-container').append(`${key}<div class = 'thumbnails items' value = ${key}>
                         <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
-                    </li>
+                </div>
                 `);
             }
         });
     }
-
+*/
     var x = window.matchMedia("(max-width: 567px)")
 
     function Layout(x) {
@@ -1386,11 +1430,32 @@
 
 
 </script>
-
+<script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"> </script>
 <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
+
+        <!-- for owlcarousel -->
+        <script>
+                $('.owl-carousel').owlCarousel({
+                    loop:false,
+                    margin:10,
+                    nav:true,
+                    center:true,
+                    responsive:{
+                        0:{
+                            items:1
+                        },
+                        600:{
+                            items:3
+                        },
+                        1000:{
+                            items:5
+                        }
+                    }
+                })
+         </script>        
 
 <script>
     let idleTimer = null;

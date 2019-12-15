@@ -3,116 +3,208 @@
 {% block title %}
 Dashboard
 {% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
+
+{% endblock stylesheets %}
+
 {% block content %}
             {% include 'WebApp/theme/alerts.html' %}
+<style>
+    .owl-prev{
+        position: absolute;
+        top: 5vh;
+        left: 0;
+       
+    }
+    .owl-next{
+        position: absolute;
+        top:5vh;
+        right: 0;
+       
+    }
+    /*.card--content{
+        display: flex;
+        justify-content: center;
+    } 
+    @media screen and (max-width: 767px){
+        
+        .card--content{
+            display: block;
+        }
+    }*/
+</style>         
 
-<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+<div class=" row col-md-12 col-sm-12 col-xs-12 text-center">
     <h1><b>
             Welcome to Student Portal
         </b></h1>
 </div>
-<div class="col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
+<div class=" row col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
     <h3 style="color: white"><b>Overview</b></h3>
 </div>
 
-<div class="row">
-    <div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h3 style="margin-left: 10px"><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
-                            of my Courses </a></span></h3>
+    
+            <div class="courses-lists-only" style="margin:10px 0">
+            <div class=" text-center">
+                    <h4 style=""><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
+                                of my Courses </a></span> </h4>
+                </div>
+               
+           
+
+            
             </div>
-            <ul class="list-group">
+
+
+            <div class="owl-carousel owl-theme">
                 {% for object in Course %}
-                <li class="list-group-item ">
-                    <h5>
+                    <div class="item">
 
-                        <b> {{object.Course_Code}}</b>
-                        <a href="{{ object.Course_Code.student_get_absolute_url }}">
-                            <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                        ">CONTINUE <i class="fa fa-arrow-right"></i>
-                            </button>
-                        </a>
+                          
+                                <div class="gridContentsList">
+                                    <div class="card-header">
+                                    <a href="
+                                                        /courseinfo/9/
+                                                        ">
+                                        <img id="courseListImage" class="card-img-top" src="
+                                                        
+                                                            /static/images/course.jpg
+                                                        " alt="Card image cap" width="100%" height="120px" style="object-fit: cover">
+                                    </a>
+                                    </div>
+                                    <div class="card-body" id="cardInfo">
+                                    <h2 class="card-title">
+                                        <strong><a href="
+                                                                    /courseinfo/9/
+                                                                ">{{object.Course_Code}}</a></strong>
+                                        
+                                    </h2>
+                                    <hr>
+                                    <h5 class="lectureDescription" style="padding-bottom: 5px;">
+                                        
+                                        <p style="padding-left: 10px;
+                                        padding-right: 10px;
+                                        line-height: 1.5em;
+                                        height: 3em;
+                                        overflow-wrap:break-word; 
+                                        overflow: hidden;
+                                        white-space: normal;
+                                        text-overflow: ellipsis;">
+                                        <a href="{{ object.Course_Code.student_get_absolute_url }}">
+                                                <button type="button" style="text-align:center;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                            ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                                </button>
+                                            </a>
+                                        </p>
+                                        
+                                    </h5>
+                                    </div>
+                                </div>
+                               
+    
+                           
 
-                    </h5>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    <div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
-                            href="{% url 'student_myassignmentinfo_list' %}">List
-                            of Active Assignments </a></span></h3>
+                        </div>
+    
+                      
+             {% endfor %}
             </div>
-            <ul class="list-group">
-                {% for object in activeAssignments %}
-                <li class="list-group-item ">
+                        
+                   
 
-                    <h5>
-                        <b> {{object.Assignment_Topic}}</b>
-                        <h5 style="margin-bottom: 0;">
-                            <a href="{{ object.student_get_absolute_url }}">
-                                <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                            ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </a>
-                        </h5>
-                    </h5>
 
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    <div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
+                   
+
+
+
+                    
+               
+
+            
+
+
+
+
+            <div class="row">
+                
+                <div class="padding_homepage col-md-8 col-sm-12 col-xs-12" style="max-height: 50vh;overflow:auto">
+                    <div class="panel panel-default">
+                        <div class="title text-center">
+                            <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
+                                        href="{% url 'student_myassignmentinfo_list' %}">List
+                                        of Active Assignments </a></span></h3>
+                        </div>
+                        <ul class="list-group">
+                            {% for object in activeAssignments %}
+                            <li class="list-group-item ">
+
+                                <h5>
+                                    <b> {{object.Assignment_Topic}}</b>
+                                    <h5 style="margin-bottom: 0;">
+                                        <a href="{{ object.student_get_absolute_url }}">
+                                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                        ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                            </button>
+                                        </a>
+                                    </h5>
+                                </h5>
+
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="padding_homepage col-md-4 col-sm-12 col-xs-12 " style="max-height: 50vh;overflow:auto">
+                    <div class="panel panel-default">
+                        <div class="title text-center">
+                            <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
+                        </div>
+                        <ul class="list-group">
+                            {% if GroupName %}
+                            {% for object in GroupName %}
+
+                            <li class="list-group-item ">
+                                <h5>
+                                    Group &nbsp; : <b style="float: right">{{object.GroupMapping_Name}}</b>
+                                    <!-- <h5 style="margin-bottom: 0;">
+                                        <a href="{{ object.student_get_absolute_url }}">
+                                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                                ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                            </button>
+                                        </a>
+                                    </h5> -->
+                                </h5>
+                            </li>
+                            {% endfor %}
+                            {% endif %}
+
+                            {% if Group %}
+                            {% for object in Group %}
+
+                            <li class="list-group-item ">
+                                <h5>
+                                    Session &nbsp; : <b style="float: right">{{object.Inning_Name}}</b>
+                                    <!-- <h5 style="margin-bottom: 0;">
+                                        <a href="{{ object.student_get_absolute_url }}">
+                                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                                ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                            </button>
+                                        </a>
+                                    </h5> -->
+                                </h5>
+                            </li>
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <ul class="list-group">
-                {% if GroupName %}
-                {% for object in GroupName %}
 
-                <li class="list-group-item ">
-                    <h5>
-                        Group &nbsp; : <b style="float: right">{{object.GroupMapping_Name}}</b>
-                        <!-- <h5 style="margin-bottom: 0;">
-                            <a href="{{ object.student_get_absolute_url }}">
-                                <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                    ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </a>
-                        </h5> -->
-                    </h5>
-                </li>
-                {% endfor %}
-                {% endif %}
-
-                {% if Group %}
-                {% for object in Group %}
-
-                <li class="list-group-item ">
-                    <h5>
-                        Session &nbsp; : <b style="float: right">{{object.Inning_Name}}</b>
-                        <!-- <h5 style="margin-bottom: 0;">
-                            <a href="{{ object.student_get_absolute_url }}">
-                                <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                    ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </a>
-                        </h5> -->
-                    </h5>
-                </li>
-                {% endfor %}
-                {% endif %}
-            </ul>
-        </div>
-    </div>
-</div>
-
+            <div class="row">
+                <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+                </div>
+            </div>
 <div class="row">
     <div class="col-sm-6">
     
@@ -411,8 +503,37 @@ Dashboard
             }
         })();
     </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <!-- <script>
+            $.fn.andSelf = function() {
+                return this.addBack.apply(this, arguments);
+               }
+    </script> -->
 
-
-
+    <script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"> </script>
+    <script>
+            $('.owl-carousel').owlCarousel({
+                autoplayTimeout:2000,
+                autoplayHoverPause:true,
+                loop:true,
+                margin:10,
+                nav:true,
+                autoplay:true,
+                navText:["<i class=' fa fa-chevron-circle-left fa-2x'></i>",
+                "<i class='fa  fa-chevron-circle-right  fa-2x'></i>"],
+                
+                responsive:{
+                    0:{
+                        items:1
+                    },
+                    600:{
+                        items:3
+                    },
+                    1000:{
+                        items:3
+                    }
+                }
+            })
+     </script>
 
 {% endblock %}
