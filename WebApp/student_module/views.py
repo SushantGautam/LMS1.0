@@ -24,6 +24,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
+from textblob import TextBlob
 
 from LMS import settings
 from WebApp.filters import MyCourseFilter
@@ -32,7 +33,7 @@ from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, Ass
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
-from forum.views import get_top_thread_keywords
+
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
@@ -63,9 +64,12 @@ def start(request):
                 activeassignments += AssignmentInfo.objects.filter(
                     Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id)[:7]
     sittings = Sitting.objects.filter(user=request.user)
+    wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
+    thread_keywords = get_top_thread_keywords(request, 10)
+            
     return render(request, 'student_module/dashboard.html',
                   {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                   'activeAssignments': activeassignments, 'sittings': sittings})
+                   'activeAssignments': activeassignments, 'sittings': sittings, 'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -142,7 +146,25 @@ def calendar(request):
                 activeassignments += AssignmentInfo.objects.filter(
                     Course_Code=course.Course_Code.id)[:7]
 
-    return render(request, 'student_module/calendar.html', {'activeassignments':activeassignments})
+        student_group = request.user.groupmapping_set.all()
+        student_session = InningInfo.objects.filter(Groups__in=student_group)
+        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+
+        # Predefined category name "general, session, course, system"
+        general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
+                                                   Center_Code=request.user.Center_Code, Use_Flag=True)
+        session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
+                                                   Session_Code__in=student_session, Use_Flag=True)
+        course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
+                                                  Course_Code__in=student_course, Use_Flag=True)
+        system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+
+        my_queryset = None
+        my_queryset = general_survey | session_survey | course_survey | system_survey
+        my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+           
+        return render(request, 'student_module/calendar.html', {'activeassignments':activeassignments, 'activesurvey':my_queryset})
 
 
 class MyCoursesListView(ListView):
@@ -976,6 +998,23 @@ def Topic_related_to_user(request, node_group=None):
 
 def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
+
+
+def get_top_thread_keywords(request, number_of_keyword):
+    obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
+    word_counter = {}
+    for eachx in obj:
+        words = TextBlob(eachx.title).noun_phrases
+        for eachword in words:
+            for singleword in eachword.split(" "):
+                if singleword in word_counter:
+                    word_counter[singleword] += 1
+                else:
+                    word_counter[singleword] = 1
+
+    popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
+    return popular_words[:number_of_keyword]
+
 
 
 class QuizUserProgressView(TemplateView):

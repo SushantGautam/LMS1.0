@@ -61,9 +61,9 @@ class ProgressSerializer(serializers.ModelSerializer):
         )
 
 class SittingSerializer(serializers.ModelSerializer):
-
+    quiz_title = serializers.ReadOnlyField(source='quiz.title')
     class Meta:
         model = models.Sitting
         fields = (
-            'pk','user', 'quiz', 'question_order', 'question_list', 'incorrect_questions', 'current_score', 'complete', 'user_answers', 'start', 'end', 'objects'
+            'pk','user', 'quiz', 'quiz_title','question_order', 'question_list', 'incorrect_questions', 'current_score', 'complete', 'user_answers', 'start', 'end', 'objects'
         )        

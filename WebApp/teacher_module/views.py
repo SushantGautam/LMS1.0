@@ -62,6 +62,9 @@ def start(request):
     # return render(request,"start.html")
 
     if request.user.Is_Teacher:
+        wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
+        thread_keywords = get_top_thread_keywords(request, 10)
+    
         mycourse = InningGroup.objects.filter(Teacher_Code=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
         if mycourse:
@@ -78,7 +81,9 @@ def start(request):
                                                                Assignment_Deadline__gte=datetime_now)
 
         return render(request, "teacher_module/homepage.html",
-                      {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments})
+                      {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments, 'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
+
+
 
 
 def teacher_editprofile(request):
@@ -1661,6 +1666,24 @@ def Topic_related_to_user(request, node_group=None):
 
 def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
+
+
+from textblob import TextBlob
+def get_top_thread_keywords(request, number_of_keyword):
+    obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
+    word_counter = {}
+    for eachx in obj:
+        words = TextBlob(eachx.title).noun_phrases
+        for eachword in words:
+            for singleword in eachword.split(" "):
+                if singleword in word_counter:
+                    word_counter[singleword] += 1
+                else:
+                    word_counter[singleword] = 1
+
+    popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
+    return popular_words[:number_of_keyword]
+
 
 
 import operator

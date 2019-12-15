@@ -2377,6 +2377,36 @@ $('#tabs-for-download').click(function () {
 
 // ==========================================================================
 
+$('#tabs-for-download').on('click', '.survey-div', function(e){
+    e.preventDefault()
+    if (window.location.href.indexOf("/teachers") > -1) {
+        link = $(this).find('a')[0].href
+        surveypk = (link.split('/')[6]).match(/\d+/);
+        link = "/teachers/surveyinfodetail/detail/" + surveypk
+        window.open(link)   
+    }else{
+        link = $(this).find('a')[0].href
+        surveypk = (link.split('/')[6]).match(/\d+/);
+        link = "/survey/surveyinfo/detail/" + surveypk
+        window.open(link)
+    }
+})
+
+$('#tabs-for-download').on('click', '.quiz-div', function(e){
+    e.preventDefault()
+    if (window.location.href.indexOf("/teachers") > -1) {
+        link = $(this).find('a')[0].href
+        quizpk = (link.split('/')[4]).match(/\d+/);
+        link = "/quiz/markingfilter/" + quizpk
+        window.open(link)
+    }else{
+        link = $(this).find('a')[0].href
+        quizpk = (link.split('/')[4]).match(/\d+/);
+        link = "/quiz/detail/" + quizpk
+        window.open(link)
+    }
+})
+
 function openTab(evt, tab_no) {
     try {
         if (!window.firstload)

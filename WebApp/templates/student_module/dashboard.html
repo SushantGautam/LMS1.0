@@ -3,6 +3,11 @@
 {% block title %}
 Dashboard
 {% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
+
+{% endblock stylesheets %}
+
 {% block content %}
             {% include 'WebApp/theme/alerts.html' %}
 <style>
@@ -28,7 +33,7 @@ Dashboard
 </div>
 
     
-<div class="courses-lists-only" style="margin:10px 0">
+            <div class="courses-lists-only" style="margin:10px 0">
             <div class=" text-center">
                     <h4 style=""><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
                                 of my Courses </a></span> </h4>
@@ -36,116 +41,77 @@ Dashboard
                
            
 
-            <div class="container">
-                <div class="row col-md-12 hidden-xs card--content " style="margin:0 auto">
-                    {% for object in Course %}
-                        <div class=" col-md-3   col-sm-6 col-xs-12 text-center align-self-center ">
-                            <div class="gridContentsList">
-                                <div class="card-header">
-                                <a href="
-                                                    /courseinfo/9/
-                                                    ">
-                                    <img id="courseListImage" class="card-img-top" src="
-                                                    
-                                                        /static/images/course.jpg
-                                                    " alt="Card image cap" width="100%" height="120px" style="object-fit: cover">
-                                </a>
+            
+            </div>
+
+
+            <div class="owl-carousel owl-theme">
+                {% for object in Course %}
+                    <div class="item">
+
+                            <div class="owl-nav disabled"><button type="button" role="presentation" class="owl-prev"><span aria-label="Previous">‹</span></button><button type="button" role="presentation" class="owl-next disabled"><span aria-label="Next">›</span></button></div>
+                                <div class="gridContentsList">
+                                    <div class="card-header">
+                                    <a href="
+                                                        /courseinfo/9/
+                                                        ">
+                                        <img id="courseListImage" class="card-img-top" src="
+                                                        
+                                                            /static/images/course.jpg
+                                                        " alt="Card image cap" width="100%" height="120px" style="object-fit: cover">
+                                    </a>
+                                    </div>
+                                    <div class="card-body" id="cardInfo">
+                                    <h2 class="card-title">
+                                        <strong><a href="
+                                                                    /courseinfo/9/
+                                                                ">{{object.Course_Code}}</a></strong>
+                                        
+                                    </h2>
+                                    <hr>
+                                    <h5 class="lectureDescription" style="padding-bottom: 5px;">
+                                        
+                                        <p style="padding-left: 10px;
+                                        padding-right: 10px;
+                                        line-height: 1.5em;
+                                        height: 3em;
+                                        overflow-wrap:break-word; 
+                                        overflow: hidden;
+                                        white-space: normal;
+                                        text-overflow: ellipsis;">
+                                        <a href="{{ object.Course_Code.student_get_absolute_url }}">
+                                                <button type="button" style="text-align:center;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                            ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                                </button>
+                                            </a>
+                                        </p>
+                                        
+                                    </h5>
+                                    </div>
                                 </div>
-                                <div class="card-body" id="cardInfo">
-                                <h2 class="card-title">
-                                    <strong><a href="
-                                                                /courseinfo/9/
-                                                            ">{{object.Course_Code}}</a></strong>
-                                    
-                                </h2>
-                                <hr>
-                                <h5 class="lectureDescription" style="padding-bottom: 5px;">
-                                    
-                                    <p style="padding-left: 10px;
-                                    padding-right: 10px;
-                                    line-height: 1.5em;
-                                    height: 3em;
-                                    overflow-wrap:break-word; 
-                                    overflow: hidden;
-                                    white-space: normal;
-                                    text-overflow: ellipsis;">
-                                    <a href="{{ object.Course_Code.student_get_absolute_url }}">
-                                            <button type="button" style="text-align:center;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                        ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                            </button>
-                                        </a>
-                                    </p>
-                                    
-                                </h5>
-                                </div>
-                            </div>
+                               
+    
                            
 
                         </div>
-                        {% endfor %}
-                    
-                        
-                    
-                    </div>
-                    <div class="row col-md-12  hidden-lg hidden-md hidden-sm  card--content " style="margin:0 auto">
-                            {% for object in Course %}
-                                <div class=" col-md-3   col-sm-6 col-xs-12 text-center align-self-center ">
-                                    <div class="col-md-12">
-                                        
-                                    </div>
-                                    <div class="gridContentsList2 hidden-md hidden-lg">
-        
-                                        <div class="col-md-6">
-                                                <div class="card-header">
-                                                        <a href="
-                                                                            /courseinfo/9/
-                                                                            ">
-                                                            <img id="courseListImage" class="card-img-top" src="
-                                                                            
-                                                                                /static/images/course.jpg
-                                                                            " alt="Card image cap" width="100%" height="120px" style="object-fit: cover">
-                                                        </a>
-                                               </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                                <div class="card-body" id="cardInfo">
-                                                        <h2 class="card-title">
-                                                            <strong><a href="
-                                                                                        /courseinfo/9/
-                                                                                    ">{{object.Course_Code}}</a></strong>
-                                                            
-                                                        </h2>
-                                                        <hr>
-                                                        <h5 class="lectureDescription" style="padding-bottom: 5px;">
-                                                            
-                                                            <p style="padding-left: 10px;
-                                                            padding-right: 10px;
-                                                            line-height: 1.5em;
-                                                            height: 3em;
-                                                            overflow-wrap:break-word; 
-                                                            overflow: hidden;
-                                                            white-space: normal;
-                                                            text-overflow: ellipsis;">
-                                                            <a href="{{ object.Course_Code.student_get_absolute_url }}">
-                                                                    <button type="button" style="text-align:center;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                                                ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                                                    </button>
-                                                                </a>
-                                                            </p>
-                                                            
-                                                        </h5>
-                                                        </div>
-                                        </div>
-                                    </div>
-        
-                                </div>
-                                {% endfor %}
-                            
-                                
-                            
-                            </div>
-                </div>
+             {% endfor %}
             </div>
+                        
+                   
+
+
+                   
+
+
+
+                    
+               
+
+            
+
+
+
+
             <div class="row">
                 <div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
                     <div class="panel panel-default">
@@ -248,9 +214,30 @@ Dashboard
                 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
                 </div>
             </div>
+<div class="row">
+    <div class="col-sm-6">
+    
+                <div class="title text-center">
+                    <h2 style="font-size: 2em">&nbsp;<b>Your Quiz Score</b></h2>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12" id="container" style="height: 400px; margin: 0 auto"></div>
+            </div>
+
+    
+
+    <div class="col-sm-6" style="max-width: -webkit-fill-available;">
+             <div class="panel panel-default" >
+                <div class="title text-center">
+                    <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; "></div>
+            </div>
+    </div>
+</div>
 
 <script src="{% static 'js/highcharts.js' %}"></script>
 <script src="{% static 'js/highchart_data.js' %}"></script>
+
 
 <script>
    var chart =  Highcharts.chart('container', {
@@ -259,12 +246,13 @@ Dashboard
 },
 
         title: {
-            text: 'Your Quiz Score'
+            text: ''
+            
         },
 
-        // subtitle: {
-        //     text: 'Source'
-        // },
+        subtitle: {
+            text: ''
+        },
 
         yAxis: {
             title: {
@@ -361,8 +349,167 @@ Dashboard
 
     });
 </script>
+<script>
+        var config = {
+            trace: true,
+            spiralResolution: 1, //Lower = better resolution
+            spiralLimit: 360 * 5,
+            lineHeight: 0.8,
+            xWordPadding: 0,
+            yWordPadding: 3,
+            font: "sans-serif"
+        }
+        var values = {{ get_top_thread_keywords | safe  }};
+        var words = values.map(function (word) {
+            return {
+                word: word,
+                freq: Math.floor(Math.random() * 50) + 10
+            }
+        })
+
+        words.sort(function (a, b) {
+            return -1 * (a.freq - b.freq);
+        });
+
+        var cloud = document.getElementById("word-cloud");
+        cloud.style.position = "relative";
+        cloud.style.fontFamily = config.font;
+
+        var traceCanvas = document.createElement("canvas");
+        traceCanvas.width = cloud.offsetWidth;
+        traceCanvas.height = cloud.offsetHeight;
+        var traceCanvasCtx = traceCanvas.getContext("2d");
+        cloud.appendChild(traceCanvas);
+
+        var startPoint = {
+            x: cloud.offsetWidth / 2,
+            y: cloud.offsetHeight / 2
+        };
+
+        var wordsDown = [];
+        /* ======================= END SETUP ======================= */
 
 
 
+
+
+        /* =======================  PLACEMENT FUNCTIONS =======================  */
+        function createWordObject(word, freq) {
+            var wordContainer = document.createElement("div");
+            var wordLink = document.createElement("a");
+            wordContainer.style.position = "absolute";
+            wordContainer.style.fontSize = freq + "px";
+            wordContainer.style.lineHeight = config.lineHeight;
+            /*    wordContainer.style.transform = "translateX(-50%) translateY(-50%)";
+            wordContainer.appendChild(document.createTextNode(word));*/
+
+            wordLink.setAttribute(`href`, `/students/forum/search/(%3FP${word}.*)`);
+            wordLink.appendChild(document.createTextNode(word));
+            wordContainer.appendChild(wordLink);
+
+            return wordContainer;
+        }
+
+        function placeWord(word, x, y) {
+
+            cloud.appendChild(word);
+            word.style.left = x - word.offsetWidth / 2 + "px";
+            word.style.top = y - word.offsetHeight / 2 + "px";
+
+            wordsDown.push(word.getBoundingClientRect());
+        }
+
+        function trace(x, y) {
+            //     traceCanvasCtx.lineTo(x, y);
+            //     traceCanvasCtx.stroke();
+            traceCanvasCtx.fillRect(x, y, 1, 1);
+        }
+
+        function spiral(i, callback) {
+            angle = config.spiralResolution * i;
+            x = (1 + angle) * Math.cos(angle);
+            y = (1 + angle) * Math.sin(angle);
+            return callback ? callback() : null;
+        }
+
+        function intersect(word, x, y) {
+            cloud.appendChild(word);
+
+            word.style.left = x - word.offsetWidth / 2 + "px";
+            word.style.top = y - word.offsetHeight / 2 + "px";
+
+            var currentWord = word.getBoundingClientRect();
+
+            cloud.removeChild(word);
+
+            for (var i = 0; i < wordsDown.length; i += 1) {
+                var comparisonWord = wordsDown[i];
+
+                if (!(currentWord.right + config.xWordPadding < comparisonWord.left - config.xWordPadding ||
+                    currentWord.left - config.xWordPadding > comparisonWord.right + config.wXordPadding ||
+                    currentWord.bottom + config.yWordPadding < comparisonWord.top - config.yWordPadding ||
+                    currentWord.top - config.yWordPadding > comparisonWord.bottom + config.yWordPadding)) {
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /* =======================  END PLACEMENT FUNCTIONS =======================  */
+
+
+
+
+
+        /* =======================  LETS GO! =======================  */
+        (function placeWords() {
+            for (var i = 0; i < words.length; i += 1) {
+
+                var word = createWordObject(words[i].word, words[i].freq);
+
+                for (var j = 0; j < config.spiralLimit; j++) {
+                    //If the spiral function returns true, we've placed the word down and can break from the j loop
+                    if (spiral(j, function () {
+                        if (!intersect(word, startPoint.x + x, startPoint.y + y)) {
+                            placeWord(word, startPoint.x + x, startPoint.y + y);
+                            return true;
+                        }
+                    })) {
+                        break;
+                    }
+                }
+            }
+        })();
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <!-- <script>
+            $.fn.andSelf = function() {
+                return this.addBack.apply(this, arguments);
+               }
+    </script> -->
+
+    <script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"> </script>
+    <script>
+            $('.owl-carousel').owlCarousel({
+                loop:false,
+                margin:10,
+                nav:true,
+                center:true,
+                
+                responsive:{
+                    0:{
+                        items:1
+                    },
+                    600:{
+                        items:3
+                    },
+                    1000:{
+                        items:3
+                    }
+                }
+            })
+     </script>
 
 {% endblock %}
