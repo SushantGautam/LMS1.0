@@ -16,49 +16,56 @@
 <body>
 
 
-    <form class="form-signin" method="POST" action="" id="FormID">
-        {% csrf_token %}
+<form class="form-signin" method="POST" action="" id="FormID">
+    {% csrf_token %}
 
-        <div class="text-center mb-4">
-            <img class="mb-4" src="{% static 'images/logo_orange.png' %}" alt="UBL-logo-orange" width="80%"/>
+    <div class="text-center mb-4">
+        <img class="mb-4" src="{% static 'images/logo_orange.png' %}" alt="UBL-logo-orange" width="80%"/>
+    </div>
+
+    <h1 class="mb-4" style="color: gray; text-align: center">
+        <hr>
+        u-LMS 2019
+        <hr>
+    </h1>
+
+    {% include 'WebApp/theme/alerts.html' %}
+
+    <div class="form-inputs">
+        <div class="form-label-group">
+            <input name="username" type="text" id="id_username" class="form-control" placeholder="Username" required
+                   autofocus>
+            <label for="id_username">User Name</label>
         </div>
 
-        <h1 class="mb-4" style="color: gray; text-align: center">
-            <hr>u-LMS 2019<hr>
-        </h1>
-
-        {% include 'WebApp/theme/alerts.html' %}
-
-        <div class="form-inputs">
-            <div class="form-label-group">
-                <input name="username" type="text" id="id_username" class="form-control" placeholder="Username" required autofocus>
-                <label for="id_username">User Name</label>
-            </div>
-
-            <div class="form-label-group">
-                <input name="password" type="password" id="id_password" class="form-control" placeholder="Password" required>
-                <label for="id_password">Password</label>
-            </div>
-            
-            <div id="CreateAcc">
-                Not Registered Yet? <a href="{% url 'register' %}">&nbsp;Create an Account </a>
-            </div>
-
-            <button class="btn btn-lg btn-primary btn-block" type="submit">
-                Sign in
-            </button>
+        <div class="form-label-group">
+            <input name="password" type="password" id="id_password" class="form-control" placeholder="Password"
+                   required>
+            <label for="id_password">Password</label>
         </div>
 
-    </form>
+        <div id="CreateAcc">
+            Not Registered Yet? <a href="{% url 'register' %}">&nbsp;Create an Account </a>
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">
+            Sign in
+        </button>
+    </div>
+
+</form>
 <div>
 
 </div>
 
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
 <script>
-    setTimeout( function(){
+    Print.postMessage('loginRequired');
+    setTimeout(function () {
         $('div.alert').fadeOut('slow');
     }, 3000);
 </script>

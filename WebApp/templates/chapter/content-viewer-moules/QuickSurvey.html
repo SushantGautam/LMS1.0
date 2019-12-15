@@ -65,93 +65,101 @@
 </div>
 
 {% block quicksurvey_script %}
-{#<script src="/static/vendorsx/jquery/dist/jquery.min.js"></script>#}
+    {#<script src="/static/vendorsx/jquery/dist/jquery.min.js"></script>#}
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        $('#QuickQuiz').click(function () {
-            $.ajax({
-                type: "GET",
-                data: {
-                    'course_id': '{{ course.id }}',
-                    'chapter_id': '{{ chapter.id }}',
-                    'test_type': 'pre_test',
-                },
-                url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
-                success: function (data) {
-                    $("#quiz_form_ajax").html(data);
-                    $("#id_title").val('#Quick-' + $("#id_title").val());
-                }
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#QuickQuiz').click(function () {
+                $.ajax({
+                    type: "GET",
+                    data: {
+                        'course_id': '{{ course.id }}',
+                        'chapter_id': '{{ chapter.id }}',
+                        'test_type': 'pre_test',
+                    },
+                    url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
+                    success: function (data) {
+                        $("#quiz_form_ajax").html(data);
+                        $("#id_title").val('#Quick-' + $("#id_title").val());
+                    }
+                });
             });
-        });
-        $('#QuickSurvey').click(function () {
-            console.log("survey_create");
-            $.ajax({
-                type: "GET",
-                data: {"category_name": "live", "course_code": "{{ course.id }}"},
-                url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
-                success: function (data) {
-                    $("#survey_form_ajax").html(data);
-                    $('#smartwizard').smartWizard("reset");
-                    $("#id_Survey_Title").val('#Quick-' + $("#id_Survey_Title").val());
-                }
+            $('#QuickSurvey').click(function () {
+                console.log("survey_create");
+                $.ajax({
+                    type: "GET",
+                    data: {"category_name": "live", "course_code": "{{ course.id }}"},
+                    url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
+                    success: function (data) {
+                        $("#survey_form_ajax").html(data);
+                        $('#smartwizard').smartWizard("reset");
+                        $("#id_Survey_Title").val('#Quick-' + $("#id_Survey_Title").val());
+                    }
+                });
             });
-        });
 
-        $('#qn_close').on("click", function () {
-            $("#quiz_create_popup").modal("show");
-        });
+            $('#qn_close').on("click", function () {
+                $("#quiz_create_popup").modal("show");
+            });
 
 
-    }, false);
+        }, false);
 
-    function close_quick_model(id) {
-        // get modal
-        const quick_modal = document.getElementById(id);
+        function close_quick_model(id) {
+            // get modal
+            const quick_modal = document.getElementById(id);
 
-        // change state like in hidden modal
-        quick_modal.classList.remove('show');
-        quick_modal.setAttribute('aria-hidden', 'true');
-        quick_modal.setAttribute('style', 'display: none');
+            // change state like in hidden modal
+            quick_modal.classList.remove('show');
+            quick_modal.setAttribute('aria-hidden', 'true');
+            quick_modal.setAttribute('style', 'display: none');
 
-        // get modal backdrop
-        const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+            // get modal backdrop
+            const modalBackdrops = document.getElementsByClassName('modal-backdrop');
 
-        // remove opened modal backdrop
-        document.body.removeChild(modalBackdrops[0]);
-    }
+            // remove opened modal backdrop
+            document.body.removeChild(modalBackdrops[0]);
+        }
 
-    function survey_create_content(response) {
-        if (response['url']) {
-            //location.reload();
-            console.log(response['url']);
-            console.log(response['teacher_url']);
-            console.log(response['student_url']);
-            $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Survey</a>`);
-            sendMessageWritten();
-            close_quick_model("survey_content_modal");
-            window.open(response['teacher_url'], '_blank');
+        function survey_create_content(response) {
+            if (response['url']) {
+                //location.reload();
+                console.log(response['url']);
+                console.log(response['teacher_url']);
+                console.log(response['student_url']);
+                $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Survey</a>`);
+                close_quick_model("survey_content_modal");
+                console.log(response)
+                sendMessageWrittenToStudents();
+                $(".note-editable").append(`<a onclick="loadexam('/teachers/surveyinfodetail/detail/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
+                //open in popup
+                sendMessageWrittenToTeachers();
+                window.open('/teachers/surveyinfodetail/detail/' + response['quiz_id'], '_blank');
+                loadexam('/teachers/surveyinfodetail/detail/' + response['quiz_id'], 1); //shows with close button 1
 
+                //window.location.href = String(response['url']);
+            }
+        }
+
+        function quiz_create_content(response) {
+            if (response['url']) {
+                console.log(response)
+                //location.reload();
+                console.log(response['url']);
+                console.log(response['teacher_url']);
+                console.log(response['student_url']);
+                console.log(response['quiz_id']);
+                $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Quiz</a>`);
+                close_quick_model("quiz_create_popup");
+                sendMessageWrittenToStudents();
+                $(".note-editable").append(`<a onclick="loadexam('/quiz/markingfilter/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
+                sendMessageWrittenToTeachers();
+                loadexam("/quiz/markingfilter/" + response['quiz_id'] + "/", '_blank', 1);  //open popup
+
+            }
             //window.location.href = String(response['url']);
         }
-    }
 
-    function quiz_create_content(response) {
-        if (response['url']) {
-            console.log(response)
-            //location.reload();
-            console.log(response['url']);
-            console.log(response['teacher_url']);
-            console.log(response['student_url']);
-            console.log(response['quiz_id']);
-            $(".note-editable").append(`<a href="${response['student_url']}" target="_blank">Take Quick Quiz</a>`);
-            close_quick_model("quiz_create_popup");
-            sendMessageWritten();
-            window.open("/quiz/markingfilter/"+response['quiz_id']+"/", '_blank');
-        }
-        //window.location.href = String(response['url']);
-    }
-
-</script>
+    </script>
 
 {% endblock %}
