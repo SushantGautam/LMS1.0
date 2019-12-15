@@ -1527,6 +1527,43 @@ def import_chapter(request):
 
             continue
         zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
+    
+    for u, v in data['pages'].items():
+        for x in v:
+            for(div,values) in x.items():
+                if div == 'pic':
+                    for value in range(len(values)):
+                        for i, j in values[value].items():
+                            if i == 'background-image':
+                                p = (j.split('/'))
+                                p[3], p[4] = courseID, chapterID
+                                j = '/'.join(p)
+                                data['pages'][u][0][div][value]['background-image'] = j
+                if div == 'video':
+                    for value in range(len(values)):
+                        for i, j in values[value].items():
+                            if i == 'local_link':
+                                p = (j.split('/'))
+                                p[3], p[4] = courseID, chapterID
+                                j = '/'.join(p)
+                                data['pages'][u][0][div][value]['local_link'] = j   
+                if div == '_3d':
+                    for value in range(len(values)):
+                        for i, j in values[value].items():
+                            if i == 'link':
+                                p = (j.split('/'))
+                                p[3], p[4] = courseID, chapterID
+                                j = '/'.join(p)
+                                data['pages'][u][0][div][value]['link'] = j
+                if div == 'pdf':
+                    for value in range(len(values)):
+                        for i, j in values[value].items():
+                            if i == 'link':
+                                p = (j.split('/'))
+                                p[3], p[4] = courseID, chapterID
+                                j = '/'.join(p)
+                                data['pages'][u][0][div][value]['link'] = j
+                
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 

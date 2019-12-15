@@ -258,7 +258,7 @@
     <div class="profile clearfix">
 
         <div class="profile_pic">
-            <img src="{{request.user.Avatar}}" alt="..." class="img-circle profile_img">
+            <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img">
         </div>
 
         <div class="profile_info">
@@ -511,7 +511,7 @@
                          style="padding-right: 9px!important; padding-left:0px!important">
                         <span id="reloadcontent" class="text-center"> <i
                                 class="fa fa-refresh"> Reload Content  </i></span>
-                        <span id="closechatbox" style="float:right; "> <i class="fa fa-close"></i></span>
+                        <span id="closechatbox" style="float:right; "> <i class="fa fa-2x fa-close"></i></span>
                         <div>
                             <span id="google_translate_element"></span>
                         </div>
@@ -702,7 +702,7 @@
         </div>
         <div id="iframeholder"></div>
     </div>
-    
+
 </body>
 
 <!-- jQuery -->
@@ -886,30 +886,35 @@
 
     });
 
-    $('.page-contents').on('click', '.chapterbuttons', function(e){
+    $('.page-contents').on('click', '.chapterbuttons', function (e) {
+        e.preventDefault()
+        let link = $(this).find('a')[0].href;
         {% if '/students' in request.path %}
-            e.preventDefault()
-            let link = $(this).find('a')[0].href;
             loadexam(link)
+        {% else %}
+            loadexam(link, 1)
         {% endif %}
     })
 
-    function loadexam(link){
+    function loadexam(link, ShowCloseBoxonInit = false) {
         $('#examiframeholder').addClass('examiframeholder')
         $('#iframeholder').append(`
             <iframe src = ${link} height = 100% width = 100%></iframe>
         `);
-        $('iframe').on('load', function() {
-            if($(this).contents().find('#survey_already_taken').is(':visible')){
-                    $('#closeiframebtn').css('display', 'block')
+        $('iframe').on('load', function () {
+            if ($(this).contents().find('#survey_already_taken').is(':visible')) {
+                $('#closeiframebtn').css('display', 'block')
             }
-            if(link != this.contentWindow.location.href && link+'/' != this.contentWindow.location.href) {
+            if (link != this.contentWindow.location.href && link + '/' != this.contentWindow.location.href) {
+                $('#closeiframebtn').css('display', 'block')
+            }
+            if (ShowCloseBoxonInit) {
                 $('#closeiframebtn').css('display', 'block')
             }
         });
     }
 
-    $('#closeiframebtn').click(function(){
+    $('#closeiframebtn').click(function () {
         $('#examiframeholder').removeClass('examiframeholder')
         $('#closeiframebtn').css('display', 'none')
         $('#iframeholder').empty();
@@ -936,7 +941,7 @@
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
                                 content = css_value.content;
-                                
+
                                 $('#page' + key).append(`
                                     <div class = "textdiv" style = "overflow:hidden;font-size:1rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
                                         ${content}
@@ -1108,9 +1113,9 @@
                         }
                     });
                 });
-                $('.textdiv span').each(function(){
+                $('.textdiv span').each(function () {
                     let fontsize = $(this)[0].style.fontSize
-                    if(fontsize){
+                    if (fontsize) {
                         convertedFont = convertFont(fontsize)
                         $(this)[0].style.fontSize = convertedFont;
                     }
@@ -1119,20 +1124,17 @@
         });
     }
 
-    function convertFont(font){
+    function convertFont(font) {
         let unit = font.slice(-2)
-        if(unit == 'px'){
+        if (unit == 'px') {
             return parseFloat(font) / 16 + 'rem'
-        }
-        else if(unit == 'em'){
+        } else if (unit == 'em') {
             return parseFloat(font) + 'rem'
-        }
-        else if(unit == 'rem'){
+        } else if (unit == 'rem') {
             return font
-        }
-        else if(unit == 'pt'){
-            return parseFloat(font)/12 + 'rem'
-        }else{
+        } else if (unit == 'pt') {
+            return parseFloat(font) / 12 + 'rem'
+        } else {
             return font
         }
 
@@ -1244,6 +1246,44 @@
         {% endif %}
     }
 
+
+    function sendMessageWrittenToTeachers() {
+        if ($('.note-editable').html()) {
+            chatSocket.send(
+                JSON.stringify({
+                    chat_message: $('.note-editable').html(),
+                    sender_id: "{{  user.id }}",
+                    sender_name: "{{  user }}",
+                    sender_icon: "{{  user.Avatar }}",
+                    {% if ifteacher %}
+                        isteacher: 1,
+                    {%  endif %}
+                    SendOnlyToTeachers: 1,
+                })
+            );
+        }
+        $('.note-editable').html("");
+    }
+
+    function sendMessageWrittenToStudents() {
+        if ($('.note-editable').html()) {
+            chatSocket.send(
+                JSON.stringify({
+                    chat_message: $('.note-editable').html(),
+                    sender_id: "{{  user.id }}",
+                    sender_name: "{{  user }}",
+                    sender_icon: "{{  user.Avatar }}",
+                    {% if ifteacher %}
+                        isteacher: 1,
+                    {%  endif %}
+                    SendOnlyToStudents: 1,
+                })
+            );
+        }
+        $('.note-editable').html("");
+    }
+
+
     function sendMessageWritten() {
         if ($('.note-editable').html()) {
             chatSocket.send(
@@ -1258,9 +1298,7 @@
                 })
             );
         }
-
         $('.note-editable').html("");
-
     };
 
     $(document).keydown(function (event) {
@@ -1336,7 +1374,6 @@
 
             {% if not  ifteacher %}
                 HandlePageInStudents(data);
-
             {% endif %}
 
 
@@ -1344,15 +1381,15 @@
         } else if ("chat_message" in data) {
 
             {% if ifteacher %}
+                if ("SendOnlyToStudents" in data) return 0;
             {%  else %}
                 if ("isteacher" in data) teacherOnline();
-
+                if ("SendOnlyToTeachers" in data) return 0;
             {%  endif %}
 
             if (data.sender_id =={{ user.id }}) {
                 AddSelfMessageToChat(data);
             } else {
-
                 AddOtherMessageToChat(data);
             }
 
