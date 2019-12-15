@@ -1563,7 +1563,13 @@ def import_chapter(request):
                                 p[3], p[4] = courseID, chapterID
                                 j = '/'.join(p)
                                 data['pages'][u][0][div][value]['link'] = j
-                
+                if div == 'quizdiv':
+                    for value in range(len(values)):
+                        data['pages'][u][0][div][value].pop('link')
+
+                if div == 'surveydiv':
+                    for value in range(len(values)):
+                        data['pages'][u][0][div][value].pop('link')
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
