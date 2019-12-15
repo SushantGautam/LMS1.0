@@ -870,8 +870,11 @@
             window.onbeforeunload = function () {
             };
             $('#SaveBtn').click();
-            var href = $('#goBackBtn').attr('href');
-            location.href = href;
+            setTimeout(function(){
+                var href = $('#goBackBtn').attr('href');
+                location.href = href;
+
+            }, 6000)
         });
 
         $(document).ready(function () {
