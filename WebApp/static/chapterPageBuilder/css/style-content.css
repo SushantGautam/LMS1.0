@@ -633,4 +633,7 @@ body {
 .chapterbuttons {
     background-color: #DDDDDD
 }
+.owl-item{
+    width: auto!important;
+}
 
