@@ -50,25 +50,34 @@
 
 <div class="se-pre-con"></div>
 <style>
+
+    .owl-carousel .owl-item img {
+        display: block;
+        width: auto;
+    }
+
     .owl-prev {
         position: fixed;
-        bottom: 5vh;
+        bottom: 3vh;
         left: 3.5%;
 
         border-radius: 50%;
-        color: #337ab7!important;
+        color: #337ab7 !important;
 
     }
 
-
-        .owl-next{
-            position: fixed;
-            bottom: 5vh ;
-            right: 3.5%;
-
-            border-radius: 50%;
-            color: #337ab7 !important;
+    .owl-carousel .owl-nav.disabled, .owl-carousel .owl-dots.disabled {
+        display: block !important;
     }
+
+    .owl-next {
+        position: fixed;
+        bottom: 3vh;
+        right: 3.5%;
+        border-radius: 50%;
+        color: #337ab7 !important;
+    }
+
     html {
         font-size: 13px;
     }
@@ -88,16 +97,16 @@
 
     .closeiframebtn {
         display: none;
-       position: fixed;
-       float: right;
-       top: 60vh;
-       right: 1%;
-       cursor: pointer;
-       bottom: 0;
-       /* background-color: white; */
-       /* width: 100%; */
-       /* left: 48%; */
-       text-align: center
+        position: fixed;
+        float: right;
+        top: 60vh;
+        right: 1%;
+        cursor: pointer;
+        bottom: 0;
+        /* background-color: white; */
+        /* width: 100%; */
+        /* left: 48%; */
+        text-align: center
     }
 
     .closeiframebtn button {
@@ -170,87 +179,7 @@
         .custom-btn-only {
             height: auto !important;
         }
-    {#@media screen and (max-width: 349px) {#}
-    {#    html {#}
-    {#        font-size: 4px !important;#}
-    {#    }#}
-    {
-    #}#}
-    {##}
-    {#@media (min-width: 350px) and (max-width: 449px) {#}
-    {#    html {#}
-    {#        font-size: 5px !important;#}
-    {#    }#}
-    {
-    #}#}
-    {##}
-    {#@media (min-width: 450px) and (max-width: 549px) {#}
-    {#    html {#}
-    {#        font-size: 6px !important;#}
-    {#    }#}
-    {
-    #}#}
-    {##}
-    {#@media (min-width: 550px) and (max-width: 649px) {#}
-    {#    html {#}
-    {#        font-size: 6.5px !important;#}
-    {#    }#}
-    {
-    #}#}
-    {##}
-    {#@media (min-width: 650px) and (max-width: 767px) {#}
-    {#    html {#}
-    {#        font-size: 8px !important;#}
-    {#    }#}
-    {
-    #}#}
-    {##}
-    {#@media (min-width: 768px) and (max-width: 867px) {#}
-    {#    html {#}
-    {#        font-size: 9px !important;#}
-    {#    }#}
-    {
-    #}#}
-    {##}
-    {#@media (min-width: 868px) and (max-width: 967px) {#}
-    {#    html {#}
-    {#        font-size: 10.5px !important;#}
-    {#    }#}
-    {
-    #}#}
-    {##}
-    {#@media (min-width: 968px) and (max-width: 1067px) {#}
-    {#    html {#}
-    {#        font-size: 11.5px !important;#}
-    {#    }#}
-    {
-    #}#}
-
-    {#.textdiv h1, h2, h3{#}
-    {#        margin-top: 0.325em;#}
-    {#        margin-bottom: 0.325em;#}
-    {
-    #}#}
-    {#.textdiv h1 {#}
-    {#    font-size: 2.5rem !important;#}
-    {
-    #}#}
-    {##}
-    {#.textdiv h2 {#}
-    {#    font-size: 2.143rem !important;#}
-    {
-    #}#}
-    {##}
-    {#.textdiv h3 {#}
-    {#    font-size: 1.714rem !important;#}
-    {
-    #}#}
-    {##}
-    {#.textdiv h4 {#}
-    {#    font-size: 1.286rem !important;#}
-    {
-    #}#}
-
+    }
 
     .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
         margin-bottom: .5em;
@@ -288,7 +217,6 @@
     .custom-carousel {
         position: relative;
     }
-
 
 
     .owl-nav {
@@ -490,24 +418,13 @@
 
         {% endif %}
 
-        <!-- <div class="thumbnail-slider">
-            <div id="thumbnail-slider" class="thumbnail-container owl-carousel owl-theme">
-              
-            </div>
-        </div> -->
+
+
         <div class="container custom-carousel thumbnail-slider" style="position:fixed; bottom:10px">
 
 
             <div id="thumbnail-slider" class="owl-carousel owl-theme thumbnail-container">
-                <!-- <div class="item"><h4>1</h4></div>
-                <div class="item"><h4>2</h4></div>
-                <div class="item"><h4>3</h4></div>
-                <div class="item"><h4>4</h4></div>
-                <div class="item"><h4>4</h4></div>
-                <div class="item"><h4>6</h4></div>
-                <div class="item"><h4>7</h4></div>
-                <div class="item"><h4>8</h4></div>
-                <div class="item"><h4>9</h4></div> -->
+
 
             </div>
 
@@ -1274,13 +1191,14 @@
     $(document).ready(function () {
         setThumbnails();
         $('.owl-carousel').owlCarousel({
-            loop: false,
-            margin: 10,
+            margin: "100px",
             nav: true,
-            center: true,
+            rewindNav: 1,
+            loop: 0,
+            rewind: 1,
+            center: 1,
             navText: ["<i class=' fa fa-chevron-circle-left'></i>",
                 "<i class='fa  fa-chevron-circle-right'></i>"],
-            rewind: true,
             responsive: {
                 0: {
                     items: 1
@@ -1315,8 +1233,11 @@
         });
 
         $('.thumbnails').on('click', function () {
-            currentpage = $(this).attr('value')
+            pauseAllVideos();
+            currentpage = parseInt($(this).attr('value'))
             changePage(currentpage)
+
+
         });
 
 
@@ -1331,7 +1252,7 @@
         Layout(x)
         $('#currentpage').text(page_number);
         getProgressWidth();
-        // changeThumbScroll();
+        $("#thumbnail-slider").trigger("to.owl.carousel", page_number);
         {% if ifteacher %}
             updatePageByTeacher();
         {% else %}
@@ -1527,30 +1448,30 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
 
 
-        <script>
-                let idleTimer = null;
-               let idleState = false;
+<script>
+    let idleTimer = null;
+    let idleState = false;
 
-               function showFoo(time) {
-                   clearTimeout(idleTimer);
-                   if (idleState == true) {
-                       $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+    function showFoo(time) {
+        clearTimeout(idleTimer);
+        if (idleState == true) {
+            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
-                   }
-                   idleState = false;
-                   idleTimer = setTimeout(function () {
-                       $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+        }
+        idleState = false;
+        idleTimer = setTimeout(function () {
+            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
-                       idleState = true;
-                   }, time);
-               }
+            idleState = true;
+        }, time);
+    }
 
-               showFoo(2000);
+    showFoo(15000);
 
-               $(window).on("mouseover touchstart", function () {
-                   showFoo(2000);
-               });
-            </script>
+    $(window).on("mouseover touchstart click", function () {
+        showFoo(15000);
+    });
+</script>
 <script>
 
 
@@ -1634,14 +1555,6 @@
 
     });
 
-    $('#thumb-next-btn').on('click mouseover', function () {
-        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() + 100);
-    });
-    $('#thumb-prev-btn').on('click mouseover', function () {
-        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() - 100);
-
-    });
-
 
     $('#speakContent').click(function () {
 
@@ -1649,7 +1562,7 @@
         var text = $('#container').children(":visible").text()
         var msg = new SpeechSynthesisUtterance();
         var voices = window.speechSynthesis.getVoices();
-        msg.voice = voices[10];
+        msg.voice = voices[0];
         msg.rate = 1;
         msg.pitch = 1;
         msg.text = text;
@@ -1677,7 +1590,7 @@
     });
 
     function fontResize() {
-        if(window.innerWidth > 567){
+        if (window.innerWidth > 567) {
             var perc = parseInt($('.container12').width()) / 80;
             $('.container12').css('font-size', perc);
         }

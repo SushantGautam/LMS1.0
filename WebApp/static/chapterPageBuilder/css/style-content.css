@@ -272,7 +272,7 @@ a:hover, a:active, a:focus {
     position: fixed;
     border: 3px solid black;
     padding: 10px;
-    height: 15vh;
+    height: 10vh;
     bottom: 5;
     width: 80%;
     background: whitesmoke;
