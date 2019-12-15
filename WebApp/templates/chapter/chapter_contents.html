@@ -846,10 +846,12 @@
     });
 
     $('.page-contents').on('click', '.chapterbuttons', function (e) {
+        e.preventDefault()
+        let link = $(this).find('a')[0].href;
         {% if '/students' in request.path %}
-            e.preventDefault()
-            let link = $(this).find('a')[0].href;
             loadexam(link)
+        {% else %}
+            loadexam(link,1)
         {% endif %}
     })
 

@@ -1563,6 +1563,7 @@ def import_chapter(request):
                                 p[3], p[4] = courseID, chapterID
                                 j = '/'.join(p)
                                 data['pages'][u][0][div][value]['link'] = j
+                
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
