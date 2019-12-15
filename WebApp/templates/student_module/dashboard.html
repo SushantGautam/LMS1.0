@@ -11,7 +11,19 @@ Dashboard
 {% block content %}
             {% include 'WebApp/theme/alerts.html' %}
 <style>
-    .card--content{
+    .owl-prev{
+        position: absolute;
+        top: 5vh;
+        left: 0;
+       
+    }
+    .owl-next{
+        position: absolute;
+        top:5vh;
+        right: 0;
+       
+    }
+    /*.card--content{
         display: flex;
         justify-content: center;
     } 
@@ -20,7 +32,7 @@ Dashboard
         .card--content{
             display: block;
         }
-    }
+    }*/
 </style>         
 
 <div class=" row col-md-12 col-sm-12 col-xs-12 text-center">
@@ -49,7 +61,7 @@ Dashboard
                 {% for object in Course %}
                     <div class="item">
 
-                            <div class="owl-nav disabled"><button type="button" role="presentation" class="owl-prev"><span aria-label="Previous">‹</span></button><button type="button" role="presentation" class="owl-next disabled"><span aria-label="Next">›</span></button></div>
+                          
                                 <div class="gridContentsList">
                                     <div class="card-header">
                                     <a href="
@@ -94,6 +106,8 @@ Dashboard
                            
 
                         </div>
+    
+                      
              {% endfor %}
             </div>
                         
@@ -113,31 +127,8 @@ Dashboard
 
 
             <div class="row">
-                <div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
-                    <div class="panel panel-default">
-                        <div class="title text-center">
-                            <h3 style="margin-left: 10px"><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
-                                        of my Courses </a></span></h3>
-                        </div>
-                        <ul class="list-group">
-                            {% for object in Course %}
-                            <li class="list-group-item ">
-                                <h5>
-
-                                    <b> {{object.Course_Code}}</b>
-                                    <a href="{{ object.Course_Code.student_get_absolute_url }}">
-                                        <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                    ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                        </button>
-                                    </a>
-
-                                </h5>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                <div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
+                
+                <div class="padding_homepage col-md-8 col-sm-12 col-xs-12" style="max-height: 50vh;overflow:auto">
                     <div class="panel panel-default">
                         <div class="title text-center">
                             <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
@@ -164,7 +155,7 @@ Dashboard
                         </ul>
                     </div>
                 </div>
-                <div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
+                <div class="padding_homepage col-md-4 col-sm-12 col-xs-12 " style="max-height: 50vh;overflow:auto">
                     <div class="panel panel-default">
                         <div class="title text-center">
                             <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
@@ -522,10 +513,14 @@ Dashboard
     <script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"> </script>
     <script>
             $('.owl-carousel').owlCarousel({
-                loop:false,
+                autoplayTimeout:2000,
+                autoplayHoverPause:true,
+                loop:true,
                 margin:10,
                 nav:true,
-                center:true,
+                autoplay:true,
+                navText:["<i class=' fa fa-chevron-circle-left fa-2x'></i>",
+                "<i class='fa  fa-chevron-circle-right  fa-2x'></i>"],
                 
                 responsive:{
                     0:{
