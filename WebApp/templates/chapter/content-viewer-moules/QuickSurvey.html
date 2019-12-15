@@ -127,7 +127,7 @@
                 console.log(response['url']);
                 console.log(response['teacher_url']);
                 console.log(response['student_url']);
-                $(".note-editable").append(`<a onclick="loadexam(${response['student_url']})">Take Quick Survey</a>`);
+                $(".note-editable").append(`<a onclick="loadexam('${response['student_url']}')">Take Quick Survey</a>`);
                 close_quick_model("survey_content_modal");
                 console.log(response)
                 sendMessageWrittenToStudents();
@@ -147,7 +147,7 @@
                 console.log(response['teacher_url']);
                 console.log(response['student_url']);
                 console.log(response['quiz_id']);
-                $(".note-editable").append(`<a onclick="loadexam(${response['student_url']})">Take Quick Quiz</a>`);
+                $(".note-editable").append(`<a onclick="loadexam('${response['student_url']}')">Take Quick Quiz</a>`);
                 close_quick_model("quiz_create_popup");
                 sendMessageWrittenToStudents();
                 $(".note-editable").append(`<a onclick="loadexam('/quiz/markingfilter/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
