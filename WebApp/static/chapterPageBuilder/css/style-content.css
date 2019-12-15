@@ -423,7 +423,7 @@ width: max-content; /*Subtract 25px - the width of your image */
     position: relative;
     top: 0;
     left: 0;
-    z-index: 999;
+    z-index: 100;
 }
 
 .overall-contents:hover .content-title1 {
