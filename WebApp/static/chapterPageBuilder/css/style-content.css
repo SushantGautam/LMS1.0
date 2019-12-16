@@ -2,6 +2,7 @@
 .bg-white {
     background-color: #fff;
     padding: 0 !important;
+    width: -webkit-fill-available;
 }
 
 
@@ -223,7 +224,7 @@ a:hover, a:active, a:focus {
     border: 2px solid #3c8dbc;
 
     transition: all 0.3s ease;
-    z-index: 500;
+    z-index: 9999;
 
     user-select: none;
 }
