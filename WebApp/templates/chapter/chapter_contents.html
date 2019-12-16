@@ -48,30 +48,37 @@
 <body>
 
 
-
 <div class="se-pre-con"></div>
 <style>
+
+    .owl-carousel .owl-item img {
+        display: block;
+        width: auto;
+        height: -webkit-fill-available;
+    }
+
     .owl-prev {
         position: fixed;
-        bottom: 5vh;
+        bottom: 3vh;
         left: 3.5%;
-       
+
         border-radius: 50%;
-        color: #337ab7!important;
+        color: #337ab7 !important;
 
     }
 
-    
-        .owl-next{
-            position: fixed;
-            bottom: 5vh;
-            right: 3.5%; 
-           
-            border-radius: 50%;
-            color: #337ab7!important;
-           
-        }
-    
+    .owl-carousel .owl-nav.disabled, .owl-carousel .owl-dots.disabled {
+        display: block !important;
+    }
+
+    .owl-next {
+        position: fixed;
+        bottom: 3vh;
+        right: 3.5%;
+        border-radius: 50%;
+        color: #337ab7 !important;
+    }
+
     html {
         font-size: 13px;
     }
@@ -91,16 +98,16 @@
 
     .closeiframebtn {
         display: none;
-        position: absolute;
-        /* float: right; */
-        /* top: 50vh; */
-        /* right: 0; */
+        position: fixed;
+        float: right;
+        top: 60vh;
+        right: 1%;
         cursor: pointer;
         bottom: 0;
         /* background-color: white; */
         /* width: 100%; */
-        left: 48%;
-        text-align: center;
+        /* left: 48%; */
+        text-align: center
     }
 
     .closeiframebtn button {
@@ -175,63 +182,45 @@
         }
     }
 
-    @media screen and (max-width: 349px) {
-        html {
-            font-size: 4px !important;
-        }
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5em;
+        font-family: inherit;
+        font-weight: 500;
+        line-height: 1.2;
+        color: inherit
     }
 
-    @media (min-width: 350px) and (max-width: 449px) {
-        html {
-            font-size: 5px !important;
-        }
+    .h1, h1 {
+        font-size: 2.5em
     }
 
-    @media (min-width: 450px) and (max-width: 549px) {
-        html {
-            font-size: 6px !important;
-        }
+    .h2, h2 {
+        font-size: 2em
     }
 
-    @media (min-width: 550px) and (max-width: 649px) {
-        html {
-            font-size: 6.5px !important;
-        }
+    .h3, h3 {
+        font-size: 1.75em
     }
 
-    @media (min-width: 650px) and (max-width: 767px) {
-        html {
-            font-size: 8px !important;
-        }
+    .h4, h4 {
+        font-size: 1.5em
     }
 
-    @media (min-width: 768px) and (max-width: 867px) {
-        html {
-            font-size: 9px !important;
-        }
+    .h5, h5 {
+        font-size: 1.25em
     }
 
-    @media (min-width: 868px) and (max-width: 967px) {
-        html {
-            font-size: 10.5px !important;
-        }
+    .h6, h6 {
+        font-size: 1rem
     }
 
-    @media (min-width: 968px) and (max-width: 1067px) {
-        html {
-            font-size: 11.5px !important;
-        }
-    }
 
-    .textdiv h1 {
-        font-size: 1.5rem !important;
-    }
-    .custom-carousel{
+    .custom-carousel {
         position: relative;
     }
 
-    
-    .owl-nav{
+
+    .owl-nav {
         font-size: 50px;
     }
 
@@ -430,30 +419,18 @@
 
         {% endif %}
 
-        <!-- <div class="thumbnail-slider">
-            <div id="thumbnail-slider" class="thumbnail-container owl-carousel owl-theme">
-              
-            </div>
-        </div> -->
+
+
         <div class="container custom-carousel thumbnail-slider" style="position:fixed; bottom:10px">
-          
-              
-                <div id="thumbnail-slider" class="owl-carousel owl-theme thumbnail-container">
-                        <!-- <div class="item"><h4>1</h4></div>
-                        <div class="item"><h4>2</h4></div>
-                        <div class="item"><h4>3</h4></div>
-                        <div class="item"><h4>4</h4></div>
-                        <div class="item"><h4>4</h4></div>
-                        <div class="item"><h4>6</h4></div>
-                        <div class="item"><h4>7</h4></div>
-                        <div class="item"><h4>8</h4></div>
-                        <div class="item"><h4>9</h4></div> -->
-                  
-                    </div>
-       
-              
+
+
+            <div id="thumbnail-slider" class="owl-carousel owl-theme thumbnail-container">
+
+
+            </div>
+
         </div>
-     
+
 
         <!-- <div id="thumb-next-btn" class="thumb-nav-button" style="right:9.5%; padding-top: 5vh;
     padding-left: 5vh;">
@@ -904,11 +881,11 @@
     $('.page-contents').on('click', '.chapterbuttons', function (e) {
         e.preventDefault()
         let link = $(this).find('a')[0].href;
-        if(link){
+        if (link) {
             {% if '/students' in request.path %}
                 loadexam(link)
             {% else %}
-                loadexam(link,1)
+                loadexam(link, 1)
             {% endif %}
         }
     })
@@ -960,7 +937,7 @@
                                 content = css_value.content;
 
                                 $('#page' + key).append(`
-                                    <div class = "textdiv" style = "overflow:hidden;font-size:1rem; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
+                                    <div class = "textdiv" style = "overflow:hidden; position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${css_value.height}; width:${css_value.width}; padding:10px; z-index:100">
                                         ${content}
                                     </div>
                                 `);
@@ -1013,15 +990,16 @@
                                         link = "href = " + css_value.link;
                                     {% endif %}
                                 }
+                                font_size = convertFont(css_value.font_size)
                                 $('#page' + key).append(`
                                 <div class = "chapterbuttons" style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <a ${link}>
                                         <button class="custom-btn-only"style="width:100%; height:100%">
                                             <div class="row text-center" width=100%>
-                                                <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.quiz_btn_name} </span>
+                                                <span class="resizable-text-only" style = "font-size: ${font_size}">${css_value.quiz_btn_name} </span>
                                             </div>
                                             <div class="row text-center">
-                                                <span style = "font-size: 1.5rem;">${css_value.quiz_name}</span>
+                                                <span style = "font-size: 1em;">${css_value.quiz_name}</span>
                                             </div>
                                         </button>
                                     </a>
@@ -1044,15 +1022,16 @@
                                         link = "href = " + css_value.link;
                                     {% endif %}
                                 }
+                                font_size = convertFont(css_value.font_size)
                                 $('#page' + key).append(`
                                 <div class = "chapterbuttons" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
                                     <a ${link} target="_blank">
                                         <button class="custom-btn-only"style="width:100%; height:100%">
                                             <div class="row text-center" width=100%>
-                                             <span class="resizable-text-only" style = "font-size: ${css_value.font_size}">${css_value.survey_btn_name} </span>
+                                             <span class="resizable-text-only" style = "font-size: ${font_size}">${css_value.survey_btn_name} </span>
                                             </div>
                                             <div class="row text-center">
-                                                    <span class = "survey-name " style = "font-size:1.5rem">
+                                                    <span class = "survey-name " style = "font-size:1em">
                                             ${css_value.survey_name}
                                             </div>
                                         </button>
@@ -1144,13 +1123,13 @@
     function convertFont(font) {
         let unit = font.slice(-2)
         if (unit == 'px') {
-            return parseFloat(font) / 16 + 'rem'
+            return parseFloat(font) / 16 + 'em'
         } else if (unit == 'em') {
-            return parseFloat(font) + 'rem'
+            return parseFloat(font) + 'em'
         } else if (unit == 'rem') {
             return font
         } else if (unit == 'pt') {
-            return parseFloat(font) / 12 + 'rem'
+            return parseFloat(font) / 12 + 'em'
         } else {
             return font
         }
@@ -1181,14 +1160,14 @@
 
     function setThumbnails() {
         $.each(data.pages, function (key, value) {
-         if (value[0]['thumbnail'] == "") {
+            if (value[0]['thumbnail'] == "") {
                 $('.thumbnail-container').append(`<div class = 'thumbnails items' value = ${key} style="position:relative">
                        <div class="key-holder" style="position:absolute; top:0px ; left:3px"> ${key} </div> <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}"></img>
                 </div>
             `);
             } else {
                 $('.thumbnail-container').append(`<div class = 'thumbnails items' value = ${key}>
-                        <div class="key-holder" style="position:absolute; top:0px; left:3px; font-weight:700"> ${key} </div> <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
+                        <div class="key-holder" style="position:absolute;top:0px;left:3px;font-size: large;font-weight:700;text-shadow: 2px 2px 6px #ffffff;"> ${key} </div> <img  class="thumb-img" src = "${value[0]['thumbnail']}"></img>
                 </div>
                 `);
             }
@@ -1218,25 +1197,24 @@
     $(document).ready(function () {
         setThumbnails();
         $('.owl-carousel').owlCarousel({
-                    loop:false,
-                    margin:10,
-                    nav:true,
-                    center:true,
-                    navText: ["<i class=' fa fa-chevron-circle-left'></i>",
-                                "<i class='fa  fa-chevron-circle-right'></i>"],
-                    rewind: true,
-                    responsive:{
-                        0:{
-                            items:1
-                        },
-                        600:{
-                            items:3
-                        },
-                        1000:{
-                            items:5
-                        }
-                    }
-                })
+            nav: true,
+            slideBy: 4,
+            dots:false,
+            items: parseInt($('#totalpages').text()),
+            navText: ["<i class=' fa fa-chevron-circle-left'></i>",
+                "<i class='fa  fa-chevron-circle-right'></i>"],
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 3
+                },
+                1000: {
+                    items: 5
+                }
+            }
+        })
         Layout(x)
         x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
@@ -1259,8 +1237,11 @@
         });
 
         $('.thumbnails').on('click', function () {
-            currentpage = $(this).attr('value')
+            pauseAllVideos();
+            currentpage = parseInt($(this).attr('value'))
             changePage(currentpage)
+
+
         });
 
 
@@ -1275,7 +1256,7 @@
         Layout(x)
         $('#currentpage').text(page_number);
         getProgressWidth();
-        // changeThumbScroll();
+        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
         {% if ifteacher %}
             updatePageByTeacher();
         {% else %}
@@ -1464,37 +1445,37 @@
 
 
 </script>
-<script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"> </script>
+<script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"></script>
 <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
-       
 
-        <script>
-                let idleTimer = null;
-               let idleState = false;
-            
-               function showFoo(time) {
-                   clearTimeout(idleTimer);
-                   if (idleState == true) {
-                       $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
-            
-                   }
-                   idleState = false;
-                   idleTimer = setTimeout(function () {
-                       $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
-            
-                       idleState = true;
-                   }, time);
-               }
-            
-               showFoo(2000);
-            
-               $(window).on("mouseover touchstart", function () {
-                   showFoo(2000);
-               });
-            </script>
+
+<script>
+    let idleTimer = null;
+    let idleState = false;
+
+    function showFoo(time) {
+        clearTimeout(idleTimer);
+        if (idleState == true) {
+            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+
+        }
+        idleState = false;
+        idleTimer = setTimeout(function () {
+            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+
+            idleState = true;
+        }, time);
+    }
+
+    showFoo(15000);
+
+    $(window).on("mouseover touchstart click", function () {
+        showFoo(15000);
+    });
+</script>
 <script>
 
 
@@ -1578,14 +1559,6 @@
 
     });
 
-    $('#thumb-next-btn').on('click mouseover', function () {
-        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() + 100);
-    });
-    $('#thumb-prev-btn').on('click mouseover', function () {
-        $('.thumbnail-slider').scrollLeft($('.thumbnail-slider').scrollLeft() - 100);
-
-    });
-
 
     $('#speakContent').click(function () {
 
@@ -1593,7 +1566,7 @@
         var text = $('#container').children(":visible").text()
         var msg = new SpeechSynthesisUtterance();
         var voices = window.speechSynthesis.getVoices();
-        msg.voice = voices[10];
+        msg.voice = voices[0];
         msg.rate = 1;
         msg.pitch = 1;
         msg.text = text;
@@ -1619,6 +1592,23 @@
         $('#togglefull').click();
 
     });
+
+    function fontResize() {
+        if (window.innerWidth > 567) {
+            var perc = parseInt($('.container12').width()) / 80;
+            $('.container12').css('font-size', perc);
+        }
+
+    }
+
+    $(document).ready(function () {
+        fontResize();
+    });
+    $(window).resize(function () {
+        fontResize();
+    });
+
+
 
 
 </script>
