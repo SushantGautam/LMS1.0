@@ -42,7 +42,7 @@ $("#previewBtn").on("click",function(e){
   $("#SaveBtn").click();
   setTimeout(function(){
     let link = $("#previewBtn").attr('href');
-    loadPreview(link, 1)
+    loadPreview(link, 1, 'Preview')
     // window.open($('#previewBtn').attr('href'))
   }, 7000)
 })
@@ -253,13 +253,17 @@ $("#loadBtn").on("click",function(){
 //   }
 // })
 
-function loadPreview(link, ShowCloseBoxonInit = false) {
+function loadPreview(link, ShowCloseBoxonInit = false, message) {
   $('#examiframeholder').addClass('examiframeholder')
+  var ribbon = `<div class="ribbon blue"><span>${message}</span></div>`
   $('#iframeholder').append(`
       <iframe src = ${link} height = 100% width = 100%></iframe>
-      <div class="ribbon blue"><span>Preview</span></div>
-
   `);
+  if(message){
+    $('#iframeholder').append(`
+      ${ribbon}
+  `);
+  }
   $('iframe').on('load', function () {
       if ($(this).contents().find('#survey_already_taken').is(':visible')) {
           $('#closeiframebtn').css('display', 'block')
