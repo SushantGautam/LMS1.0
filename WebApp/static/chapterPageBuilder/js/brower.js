@@ -257,6 +257,8 @@ function loadPreview(link, ShowCloseBoxonInit = false) {
   $('#examiframeholder').addClass('examiframeholder')
   $('#iframeholder').append(`
       <iframe src = ${link} height = 100% width = 100%></iframe>
+      <div class="ribbon blue"><span>Preview</span></div>
+
   `);
   $('iframe').on('load', function () {
       if ($(this).contents().find('#survey_already_taken').is(':visible')) {
@@ -268,6 +270,8 @@ function loadPreview(link, ShowCloseBoxonInit = false) {
       if (ShowCloseBoxonInit) {
           $('#closeiframebtn').css('display', 'block')
       }
+      
+      $(this).contents().find('.closebtn, #hamburg-nav, #closechatopen').remove()
   });
 }
 
