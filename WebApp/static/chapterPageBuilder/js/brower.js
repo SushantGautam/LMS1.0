@@ -41,7 +41,9 @@ $("#previewBtn").on("click",function(e){
   e.preventDefault();
   $("#SaveBtn").click();
   setTimeout(function(){
-    window.open($('#previewBtn').attr('href'))
+    let link = $("#previewBtn").attr('href');
+    loadPreview(link, 1)
+    // window.open($('#previewBtn').attr('href'))
   }, 7000)
 })
 
@@ -238,3 +240,39 @@ $("#loadBtn").on("click",function(){
 });
 
 });
+
+// $('.page-contents').on('click', '.chapterbuttons', function (e) {
+//   e.preventDefault()
+//   let link = $(this).find('a')[0].href;
+//   if (link) {
+//       {% if '/students' in request.path %}
+//           loadexam(link)
+//       {% else %}
+//           loadexam(link, 1)
+//       {% endif %}
+//   }
+// })
+
+function loadPreview(link, ShowCloseBoxonInit = false) {
+  $('#examiframeholder').addClass('examiframeholder')
+  $('#iframeholder').append(`
+      <iframe src = ${link} height = 100% width = 100%></iframe>
+  `);
+  $('iframe').on('load', function () {
+      if ($(this).contents().find('#survey_already_taken').is(':visible')) {
+          $('#closeiframebtn').css('display', 'block')
+      }
+      if (link != this.contentWindow.location.href && link + '/' != this.contentWindow.location.href) {
+          $('#closeiframebtn').css('display', 'block')
+      }
+      if (ShowCloseBoxonInit) {
+          $('#closeiframebtn').css('display', 'block')
+      }
+  });
+}
+
+$('#closeiframebtn').click(function () {
+  $('#examiframeholder').removeClass('examiframeholder')
+  $('#closeiframebtn').css('display', 'none')
+  $('#iframeholder').empty();
+})
