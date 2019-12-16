@@ -1330,17 +1330,18 @@ html {
 }
 
 .closeiframebtn button {
-    background-color: #2A3F54;
-    height: 60px;
-    width: 60px;
+    background-color: white;
+    height: 50px;
+    width: 50px;
     border-radius: 50%;
+    border-color: #d6768c;
 }
 
 .closeiframebtn i {
     /* float: right; */
     font-size: xx-large;
     font-weight: bold;
-    color: white;
+    color: #d6768c;;
     /* border-bottom: groove; */
     /* text-align: center; */
 

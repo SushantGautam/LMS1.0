@@ -436,7 +436,7 @@ a:hover, a:active, a:focus {
     position: relative;
     top: 0;
     left: 0;
-    z-index: 100;
+    z-index: 102;
 }
 
 .overall-contents:hover .content-title1 {
