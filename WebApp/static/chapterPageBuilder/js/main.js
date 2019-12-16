@@ -444,7 +444,7 @@ $(document).ready(function () {
                                 <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
                                 </div>
                                 <div class="row text-center">
-                                <span class = "quiz-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                <span class = "quiz-name " style = "bottom: 0px; width:100% ;">
                                 ${quiz_span_name}</span>
 
                                 </div>
@@ -519,7 +519,7 @@ $(document).ready(function () {
                                         <span class="resizable-text-only" style = "width:100%; font-size: ${font_size}">${name} </span>
                                     </div>
                                     <div class="row text-center">
-                                        <span class = "survey-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                        <span class = "survey-name " style = "bottom: 0px; width:100% ;">
                                         ${survey_span_name}</span>
                                         </div>
                                     </button>
