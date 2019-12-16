@@ -901,10 +901,19 @@
             return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
         };
 
-        $('#quiz_create_link').click(function () {
+        $('#quiz_create_link').click(function (e) {
+            e.preventDefault();
             $('#quiz-modal').modal('toggle');
+            let link = $("#quiz_create_link").attr('href');
+            loadPreview(link, 1)
         })
 
+        $('#survey_create_link').click(function (e) {
+            e.preventDefault();
+            $('#survey-modal').modal('toggle');
+            let link = $("#survey_create_link").attr('href');
+            loadPreview(link, 1)
+        })
         setTimeout(function () {
             $.ajax({
                 url: "{% url 'retrieve-chapter-files' %}",
