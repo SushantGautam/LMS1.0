@@ -39,12 +39,12 @@ $(document).ready(function () {
 
 $("#previewBtn").on("click",function(e){
   e.preventDefault();
-  // $("#SaveBtn").click();
-  // setTimeout(function(){
+  $("#SaveBtn").click();
+  setTimeout(function(){
     let link = $("#previewBtn").attr('href');
     loadPreview(link, 1)
     // window.open($('#previewBtn').attr('href'))
-  // }, 7000)
+  }, 7000)
 })
 
 
