@@ -28,8 +28,6 @@
     {% csrf_token %}
     <div id="smartwizard" class="sw-theme-dots">
         <ul>
-            <li><a href="#step-1">Step 1<br/><small>Add question</small></a></li>
-            <li><a href="#step-2">Step 2 <br><small>Survey Information</small></a></li>
 
         </ul>
         <div>
@@ -104,20 +102,39 @@
                 </div>
             </div>
             <div id="step-2">
-                <label class="control-label " id="categoryTitle" for="first-name">Category :
-                    <span class="text text-black">{{ category_name }}</span>
-                </label>
-                <h2 class="StepTitle text-center">Survey Information</h2>
-                <div class="col-xs-12">
-                    <div class="col-md-12">
-                        {{ form|crispy }}
+                <div class="row">
+
+                    <div class="col-md-12 text-center">
+                        <button class="btn btn-amber-500" type="button" data-toggle="collapse"
+                                data-target="#collapseExample"
+                                aria-expanded="false" aria-controls="collapseExample">
+                            Edit More Information
+                        </button>
                     </div>
-
-
-                    <div class="text-danger survey_error"></div>
-
                 </div>
-                <button class="btn btn-primary" type="submit">Submit</button>
+
+                <div class="collapse" id="collapseExample">
+
+                    <label class="control-label " id="categoryTitle" for="first-name">Category :
+                        <span class="text text-black">{{ category_name }}</span>
+                    </label>
+                    <h2 class="StepTitle text-center">Survey Information</h2>
+                    <div class="col-xs-12">
+                        <div class="col-md-12">
+                            {{ form|crispy }}
+                        </div>
+
+                        <div class="text-danger survey_error"></div>
+
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </div>
+
 
             </div>
 
@@ -154,63 +171,63 @@
     <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
     <script>
         $(document).ready(function () {
-            $("#smartwizard").smartWizard({selected: 0,});
+            {#$("#smartwizard").smartWizard({selected: 0,});#}
 
         });
-        $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
-            if (stepNumber == 1) {
-                if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
-                    $(".survey_error").html("End Date must be greater than Start Date");
-                    e.preventDefault();
-                }
-                if (new Date() >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
-                    $(".survey_error").html("End Date must be greater than Current Date");
-                    e.preventDefault();
-                }
-                if ($("#id_Survey_Title").val() === "") {
-                    $(".survey_error").html("Survey Title cannot be empty");
-                    e.preventDefault();
-                }
-                if ($("#id_Course_Code").val() === "" && $("#id_Course_Code").prop("required")) {
-                    $(".survey_error").html("Please Select a Course");
-                    e.preventDefault();
-                }
-                if ($("#id_Session_Code").val() === "" && $("#id_Session_Code").prop("required")) {
-                    $(".survey_error").html("Please Select a Session");
-                    e.preventDefault();
-                }
-            }
-            if (stepNumber == 0) {
-                var non_empty_count = 0;
-                var non_empty_op_count = 0;
-                for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {
-                    if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {
-                        non_empty_count++;
-                        for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {
-                            if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {
-                                non_empty_op_count++;
-                            }
-                        }
-                        if (non_empty_op_count < 2) {
-                            $(".question_error").html("Enter at least two option for each questions");
-                            console.log("question op error: " + cnt);
-                            e.preventDefault()
-                        }
-                        non_empty_op_count = 0;
-                    }
-                }
-                for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {
-                    if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {
-                        non_empty_count++;
-                    }
-                }
-                if (non_empty_count < 1) {
-                    $(".question_error").html("Please enter at least one question");
-                    e.preventDefault()
-                }
-            }
+        {#$("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {#}
+        {#    if (stepNumber == 1) {#}
+        {#        if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {#}
+        {#            $(".survey_error").html("End Date must be greater than Start Date");#}
+        {#            e.preventDefault();#}
+        {#        }#}
+        {#        if (new Date() >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {#}
+        {#            $(".survey_error").html("End Date must be greater than Current Date");#}
+        {#            e.preventDefault();#}
+        {#        }#}
+        {#        if ($("#id_Survey_Title").val() === "") {#}
+        {#            $(".survey_error").html("Survey Title cannot be empty");#}
+        {#            e.preventDefault();#}
+        {#        }#}
+        {#        if ($("#id_Course_Code").val() === "" && $("#id_Course_Code").prop("required")) {#}
+        {#            $(".survey_error").html("Please Select a Course");#}
+        {#            e.preventDefault();#}
+        {#        }#}
+        {#        if ($("#id_Session_Code").val() === "" && $("#id_Session_Code").prop("required")) {#}
+        {#            $(".survey_error").html("Please Select a Session");#}
+        {#            e.preventDefault();#}
+        {#        }#}
+        {#    }#}
+        {#    if (stepNumber == 0) {#}
+        {#        var non_empty_count = 0;#}
+        {#        var non_empty_op_count = 0;#}
+        {#        for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {#}
+        {#            if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {#}
+        {#                non_empty_count++;#}
+        {#                for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {#}
+        {#                    if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {#}
+        {#                        non_empty_op_count++;#}
+        {#                    }#}
+        {#                }#}
+        {#                if (non_empty_op_count < 2) {#}
+        {#                    $(".question_error").html("Enter at least two option for each questions");#}
+        {#                    console.log("question op error: " + cnt);#}
+        {#                    e.preventDefault()#}
+        {#                }#}
+        {#                non_empty_op_count = 0;#}
+        {#            }#}
+        {#        }#}
+        {#        for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {#}
+        {#            if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {#}
+        {#                non_empty_count++;#}
+        {#            }#}
+        {#        }#}
+        {#        if (non_empty_count < 1) {#}
+        {#            $(".question_error").html("Please enter at least one question");#}
+        {#            e.preventDefault()#}
+        {#        }#}
+        {#    }#}
+        {##}
 
-        });
     </script>
     <script>
         function cloneMore(selector, append_after, type) {
