@@ -2,7 +2,7 @@
 .bg-white {
     background-color: #fff;
     padding: 0 !important;
-    width: -webkit-fill-available;
+  
 }
 
 
@@ -421,12 +421,12 @@ a:hover, a:active, a:focus {
 .content-title {
     color: white;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     display: none;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 .content-title1 {
