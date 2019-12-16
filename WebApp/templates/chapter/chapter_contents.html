@@ -495,7 +495,7 @@
 
 
                 <div class="row upbarchat">
-                    <div class="col-md-7 col-sm-7 col-xs-7" style="padding-left: 0px!important;">
+                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding-left: 0px!important;">
                         <ul class="chat-nav " style="padding-left: 0px;">
                             {% if ifteacher %}
                                 <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
@@ -517,14 +517,22 @@
 
                         </ul>
                     </div>
-                    <div class="col-md-5 col-sm-5 col-xs-5 "
+                    <div class="col-md-6 col-sm-6 col-xs-6 "
                          style="padding-right: 9px!important; padding-left:0px!important">
-                        <span id="reloadcontent" class="text-center"> <i
+                        <div class="col-md-8 col-sm-8 col-xs-9">
+                            <span id="reloadcontent" class="text-center" style="margin-bottom: 5px;"> <i
                                 class="fa fa-refresh"> Reload Content  </i></span>
-                        <span id="closechatbox" style="float:right; "> <i class="fa fa-2x fa-close"></i></span>
-                        <div>
-                            <span id="google_translate_element"></span>
+                                <div style=" margin-top:5px">
+                                    <span id="google_translate_element"></span>
+                                </div>
                         </div>
+                        <div class="col-md-4 col-sm-4 col-xs-3">
+                                <span id="closechatbox" style="float:right; color:red "> <i class="fa fa-3x fa-close"></i></span>
+
+                        </div>
+                       
+                        
+                      
 
                     </div>
 
@@ -585,14 +593,11 @@
                     </div>
                     {% if "teachers" in request.path %}
                         <div class="col-md-4 col-sm-4 col-xs-4 bg-white ">
-                            <div class="row upbarchat">
-
-
-                            </div>
+                           
 
                             <!-- =============================================================== -->
                             <!-- member list -->
-                            <div class="friend-list-height">
+                            <div class="friend-list-height" style="overflow: auto;">
 
 
                                 <ul id="friend-list" class="friend-list">
@@ -678,7 +683,7 @@
                                    class="form-control border no-shadow no-rounded"
                                    placeholder="Type your message here" required>
                             <span class="input-group-btn">
-                                    <button class="btn btn-success no-rounded" type="button"
+                                    <button style="padding: 17px;margin:0px" class="btn btn-success no-rounded" type="button"
                                             onclick="sendMessageWritten()">Send</button>
                                 </span>
                         </div><!-- /input-group -->

@@ -9,21 +9,30 @@
 }
 
 .friend-list {
-    width: 153px;
-    list-style: none;
-    overflow: auto;
-    height: -webkit-fill-available;
-    overflow: auto;
-    /* padding: 0px!important; */
-    min-height: 50vh;
-    margin: 0;
-    padding-right: 10px !important;
-    padding-left: 0;
+    
+list-style: none;
+    
+/* height: -webkit-fill-available; */
+    
+/* padding: 0px!important; */
+    
+/* min-height: 50vh; */
+    
+margin: 0;
+    
+/* padding-right: 10px !important; */
+    
+padding-left: 0;
+    
+background-color:white;
+    
+height: 50vh;
+overflow:auto;
 }
 
 .friend-list li {
     border-bottom: 1px solid #eee;
-    overflow: auto;
+    
 }
 
 .friend-list li a img {
@@ -86,18 +95,18 @@ small, .small {
     list-style: none;
     margin: 0;
     overflow: auto;
-    min-height: 50vh;
+    /* min-height: 50vh; */
     padding: 0px !important;
     height: 50vh;
 }
 
 .chat-message {
     background: #f9f9f9;
-    min-height: 50vh;
-    overflow: auto;
+    max-height: 50vh;
+    /* overflow: auto; */
     /* width: 200px; */
     /* margin-right: 10px; */
-    padding: 10px;
+    /* padding: 10px; */
 }
 
 .chat li img {
@@ -256,7 +265,10 @@ a:hover, a:active, a:focus {
     display: inline-block;
     font-size: 13px;
     margin: 27px;
-    margin: 0 10px;
+    margin: 0 8px;
+}
+.chat-nav li:hover{
+    color: black;
 }
 
 .chat-nav li:hover {
