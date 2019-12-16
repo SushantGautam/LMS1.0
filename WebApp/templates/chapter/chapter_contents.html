@@ -60,7 +60,7 @@
     .owl-prev {
         position: fixed;
         bottom: 3vh;
-        left: 3.5%;
+        left: 2%;
 
         border-radius: 50%;
         color: #337ab7 !important;
@@ -74,7 +74,7 @@
     .owl-next {
         position: fixed;
         bottom: 3vh;
-        right: 3.5%;
+        right: 2%;
         border-radius: 50%;
         color: #337ab7 !important;
     }
@@ -522,7 +522,8 @@
                   ">
 
 
-                    <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white ">
+                    <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white " style ="{{ ifteacher|yesno:' ,width: -webkit-fill-available;' }} ">
+                        
                         <div class="row upbarchat">
 
 
