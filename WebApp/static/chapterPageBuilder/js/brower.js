@@ -39,12 +39,12 @@ $(document).ready(function () {
 
 $("#previewBtn").on("click",function(e){
   e.preventDefault();
-  $("#SaveBtn").click();
-  setTimeout(function(){
+  // $("#SaveBtn").click();
+  // setTimeout(function(){
     let link = $("#previewBtn").attr('href');
     loadPreview(link, 1)
     // window.open($('#previewBtn').attr('href'))
-  }, 7000)
+  // }, 7000)
 })
 
 
@@ -257,6 +257,8 @@ function loadPreview(link, ShowCloseBoxonInit = false) {
   $('#examiframeholder').addClass('examiframeholder')
   $('#iframeholder').append(`
       <iframe src = ${link} height = 100% width = 100%></iframe>
+      <div class="ribbon blue"><span>Preview</span></div>
+
   `);
   $('iframe').on('load', function () {
       if ($(this).contents().find('#survey_already_taken').is(':visible')) {
@@ -268,6 +270,8 @@ function loadPreview(link, ShowCloseBoxonInit = false) {
       if (ShowCloseBoxonInit) {
           $('#closeiframebtn').css('display', 'block')
       }
+      
+      $(this).contents().find('.closebtn, #hamburg-nav, #closechatopen').remove()
   });
 }
 
