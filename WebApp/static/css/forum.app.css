@@ -21,6 +21,14 @@ body.login .lock-container {
     width: 300px;
 }
 
+    @media (min-width: 400) and (max-width: 600){
+        .custom-size{
+            font-size: 12px;
+            padding: 0 ;
+
+        }
+    x
+
 @media (min-width: 480px) {
     body.login .lock-container {
         bottom: 0;

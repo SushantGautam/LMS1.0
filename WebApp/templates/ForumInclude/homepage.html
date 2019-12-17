@@ -5,13 +5,14 @@
 
 {% block main_contain %}
 
+
 <div class="panel panel-default paper-shadow" data-z="0.5">
     <ul class="list-group">
         <li class="list-group-item">
             <div class="media v-middle">
                 <div class="media-body">
                     <h2 class="text-headline margin-none" style="color:#368BC1">
-                        Recent Threads
+                        Recent Threads 
                     </h2>
 
                 </div>
@@ -23,13 +24,14 @@
                      {% elif '/forum' in request.path %}
                     /forum/topic/create
                      {% endif %}">
-                        <i class="fa fa-fw fa-plus"></i> Sub Category
+                        <i class="fa fa-fw fa-plus "></i> Sub Category
+                        
                     </a>
                 </div>
                 {% endif %}
 
                 <div class="media-right">
-                    <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
+                    <a class="btn btn-white btn-flat custom-size" href="{% if '/teachers' in request.path %}
                     /teachers/forum/create_thread
                     {% elif '/students' in request.path %}
                     /students/forum/create_thread
@@ -37,7 +39,7 @@
                     /forum/t/create
                     {% endif %}">
                         <i class="fa fa-fw fa-plus"></i>
-                        Ask New Question</a>
+                        Ask New Question  </a>
                 </div>
                 {% endif %}
 
