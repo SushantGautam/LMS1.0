@@ -241,18 +241,6 @@ $("#loadBtn").on("click",function(){
 
 });
 
-// $('.page-contents').on('click', '.chapterbuttons', function (e) {
-//   e.preventDefault()
-//   let link = $(this).find('a')[0].href;
-//   if (link) {
-//       {% if '/students' in request.path %}
-//           loadexam(link)
-//       {% else %}
-//           loadexam(link, 1)
-//       {% endif %}
-//   }
-// })
-
 function loadPreview(link, ShowCloseBoxonInit = false, message) {
   $('#examiframeholder').addClass('examiframeholder')
   var ribbon = `<div class="ribbon blue"><span>${message}</span></div>`
