@@ -444,7 +444,7 @@ $(document).ready(function () {
                                 <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
                                 </div>
                                 <div class="row text-center">
-                                <span class = "quiz-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                <span class = "quiz-name " style = "bottom: 0px; width:100% ;">
                                 ${quiz_span_name}</span>
 
                                 </div>
@@ -519,7 +519,7 @@ $(document).ready(function () {
                                         <span class="resizable-text-only" style = "width:100%; font-size: ${font_size}">${name} </span>
                                     </div>
                                     <div class="row text-center">
-                                        <span class = "survey-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                        <span class = "survey-name " style = "bottom: 0px; width:100% ;">
                                         ${survey_span_name}</span>
                                         </div>
                                     </button>
@@ -1080,8 +1080,19 @@ $(document).ready(function () {
 
         // $('.btn').attr('contentEditable', true);
 
-        $('.btn').on('click', function () {
-            // alert('say me more!!')
+        $('.quiz-div button').off().on('click', function (e) {
+            e.preventDefault()
+            link = $(this).parent().parent().find('a')[0].href
+            if(link){
+                quizpk = (link.split('/')[4]).match(/\d+/);
+                if (window.location.href.indexOf("/teachers") > -1) {
+                    link = "/quiz/markingfilter/" + quizpk
+                    loadPreview(link, 1)
+                }else{
+                    link = "/quiz/detail/" + quizpk
+                    loadPreview(link, 1)
+                }
+            }
         })
 
         const div1 = $('i').parent();
@@ -1156,8 +1167,19 @@ $(document).ready(function () {
 
         // $('.btn').attr('contentEditable', true);
 
-        $('.btn').on('click', function () {
-            // alert('say me more!!')
+        $('.survey-div button').off().on('click', function (e) {
+            e.preventDefault()
+            link = $(this).parent().parent().find('a')[0].href            
+            if(link){
+                surveypk = (link.split('/')[6]).match(/\d+/);
+                if (window.location.href.indexOf("/teachers") > -1) {
+                    link = "/teachers/surveyinfodetail/detail/" + surveypk
+                    loadPreview(link, 1)
+                }else{
+                    link = "/survey/surveyinfo/detail/" + surveypk
+                    loadPreview(link, 1)
+                }
+            }
         })
 
         const div1 = $('i').parent();
@@ -2376,36 +2398,6 @@ $('#tabs-for-download').click(function () {
 })
 
 // ==========================================================================
-
-$('#tabs-for-download').find('.survey-div').on('click', 'a', function(e){
-    e.preventDefault()
-    if (window.location.href.indexOf("/teachers") > -1) {
-        link = $(this).find('a')[0].href
-        surveypk = (link.split('/')[6]).match(/\d+/);
-        link = "/teachers/surveyinfodetail/detail/" + surveypk
-        window.open(link)   
-    }else{
-        link = $(this).find('a')[0].href
-        surveypk = (link.split('/')[6]).match(/\d+/);
-        link = "/survey/surveyinfo/detail/" + surveypk
-        window.open(link)
-    }
-})
-
-$('#tabs-for-download').find('.quiz-div').on('click', 'a', function(e){
-    e.preventDefault()
-    if (window.location.href.indexOf("/teachers") > -1) {
-        link = $(this).find('a')[0].href
-        quizpk = (link.split('/')[4]).match(/\d+/);
-        link = "/quiz/markingfilter/" + quizpk
-        window.open(link)
-    }else{
-        link = $(this).find('a')[0].href
-        quizpk = (link.split('/')[4]).match(/\d+/);
-        link = "/quiz/detail/" + quizpk
-        window.open(link)
-    }
-})
 
 function openTab(evt, tab_no) {
     try {
