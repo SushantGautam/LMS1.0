@@ -47,7 +47,7 @@
 
 
     <table id="NodeTable" class="table table-striped table-bordered ">
-        <p class="text-muted font-13 m-b-30">{{ node_group.description }}</p>
+        <p class="text-muted font-13 m-b-30 ">{{ node_group.description }}</p>
         <thead class="thead-light bg-primary">
 
             <tr class="tableTitleRow">
@@ -133,6 +133,7 @@
     $(document).ready(function () {
         var table_main = $('#NodeTable').DataTable({
             dom: 'lBfrtip',
+            responsive:true,
             buttons: []
 
         });

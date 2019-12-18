@@ -5,7 +5,6 @@
 
 {% block main_contain %}
 
-
 <div class="panel panel-default paper-shadow" data-z="0.5">
     <ul class="list-group">
         <li class="list-group-item">
@@ -19,7 +18,7 @@
                 {% if request.user.is_authenticated %}
                 {% if not '/students' in request.path %}
                 <div class="media-right">
-                    <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
+                    <a  class="btn btn-white btn-flat " href="{% if '/teachers' in request.path %}
                     {% url 'teacher_create_topic' %}
                      {% elif '/forum' in request.path %}
                     /forum/topic/create
