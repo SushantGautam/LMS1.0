@@ -1284,7 +1284,8 @@ def make_directory_if_not_exists(courseID, chapterID):
         os.makedirs(os.path.join(path, 'chapterBuilder/' + courseID))
     if not os.path.exists(path + '/chapterBuilder/' + courseID + '/' + chapterID):
         os.makedirs(os.path.join(path, 'chapterBuilder/' + courseID + '/' + chapterID))
-
+    if not os.path.exists(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/thumbs/'):
+        os.makedirs(os.path.join(path, 'chapterBuilder/' + courseID + '/' + chapterID + '/thumbs/'))
 
 def chapterviewer(request):
     if request.method == "GET":
@@ -1343,7 +1344,11 @@ def save_file(request):
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
 
-        return JsonResponse(data={"message": "success", "media_name": name})
+            if not os.path.exists(os.path.join(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/thumbs/')):
+                make_directory_if_not_exists(courseID, chapterID)
+            saveandresizeImage(location = (path + '/chapterBuilder/' + courseID + '/' + chapterID), image_name=name)
+
+        return JsonResponse(data={"message": "success", "media_name": '/thumbs/scaled_'+name})
 
 
 def deletechapterfile(request):
@@ -1363,6 +1368,11 @@ def deletechapterfile(request):
                     return JsonResponse({'message': 'deletion success'})
     return HttpResponse('')
 
+from PIL import Image
+def saveandresizeImage(location, image_name):
+    resizedImage = Image.open(os.path.join(location, image_name))
+    
+    resizedImage.save(os.path.join(location + '/thumbs/', "scaled_"+image_name),optimize=True,quality=5)
 
 def save_3d_file(request):
     if request.method == "POST":
