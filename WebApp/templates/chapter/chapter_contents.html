@@ -55,7 +55,7 @@
         display: block;
         width: auto;
         height: -webkit-fill-available;
-       
+
     }
 
     .owl-prev {
@@ -501,18 +501,17 @@
                          style="padding-right: 9px!important; padding-left:0px!important">
                         <div class="col-md-8 col-sm-8 col-xs-9">
                             <span id="reloadcontent" class="text-center" style="margin-bottom: 5px;"> <i
-                                class="fa fa-refresh"> Reload Content  </i></span>
-                                <div style=" margin-top:5px">
-                                    <span id="google_translate_element"></span>
-                                </div>
+                                    class="fa fa-refresh"> Reload Content  </i></span>
+                            <div style=" margin-top:5px">
+                                <span id="google_translate_element"></span>
+                            </div>
                         </div>
                         <div class="col-md-4 col-sm-4 col-xs-3">
-                                <span id="closechatbox" style="float:right; color:rgb(119, 42, 42) "> <i class="fa fa-3x fa-close"></i></span>
+                            <span id="closechatbox" style="float:right; color:rgb(119, 42, 42) "> <i
+                                    class="fa fa-3x fa-close"></i></span>
 
                         </div>
-                       
-                        
-                      
+
 
                     </div>
 
@@ -525,8 +524,9 @@
                   ">
 
 
-                    <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white " style ="{{ ifteacher|yesno:' ,width: -webkit-fill-available;' }} ">
-                        
+                    <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white "
+                         style="{{ ifteacher|yesno:' ,width: -webkit-fill-available;' }} ">
+
                         <div class="row upbarchat">
 
 
@@ -574,7 +574,7 @@
                     </div>
                     {% if "teachers" in request.path %}
                         <div class="col-md-4 col-sm-4 col-xs-4 bg-white ">
-                           
+
 
                             <!-- =============================================================== -->
                             <!-- member list -->
@@ -664,7 +664,8 @@
                                    class="form-control border no-shadow no-rounded"
                                    placeholder="Type your message here" required>
                             <span class="input-group-btn">
-                                    <button style="padding: 17px;margin:0px" class="btn btn-success no-rounded" type="button"
+                                    <button style="padding: 17px;margin:0px" class="btn btn-success no-rounded"
+                                            type="button"
                                             onclick="sendMessageWritten()">Send</button>
                                 </span>
                         </div><!-- /input-group -->
@@ -1203,7 +1204,7 @@
         $('.owl-carousel').owlCarousel({
             nav: true,
             slideBy: 4,
-            dots:false,
+            dots: false,
             items: parseInt($('#totalpages').text()),
             navText: ["<i class=' fa fa-chevron-circle-left'></i>",
                 "<i class='fa  fa-chevron-circle-right'></i>"],
@@ -1266,6 +1267,8 @@
         {% else %}
             // updatePageByStudent(); //TBI
         {% endif %}
+        sessionStorage.setItem(roomName + "_pagenumber", page_number); //save page number
+
     }
 
 
@@ -1594,7 +1597,8 @@
         // Animate loader off screen
         $(".se-pre-con").fadeOut("slow");
         $('#togglefull').click();
-
+        currentpage = sessionStorage.getItem(roomName + "_pagenumber")
+        changePage(currentpage)
     });
 
     function fontResize() {
@@ -1611,8 +1615,6 @@
     $(window).resize(function () {
         fontResize();
     });
-
-
 
 
 </script>
