@@ -1243,7 +1243,7 @@
 
         $('.thumbnails').on('click', function () {
             pauseAllVideos();
-            currentpage = parseInt($(this).attr('value'))
+            currentpage = parseInt($(this).attr('value'));
             changePage(currentpage)
 
 
@@ -1259,7 +1259,7 @@
 
     function changePage(page_number) {
         Layout(x)
-        $('#currentpage').text(page_number);
+        $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
         document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
         {% if ifteacher %}
@@ -1597,8 +1597,8 @@
         // Animate loader off screen
         $(".se-pre-con").fadeOut("slow");
         $('#togglefull').click();
-        currentpage = sessionStorage.getItem(roomName + "_pagenumber")
-        changePage(currentpage)
+        currentpage = parseInt(sessionStorage.getItem(roomName + "_pagenumber"));
+        if (currentpage) changePage(currentpage)
     });
 
     function fontResize() {
