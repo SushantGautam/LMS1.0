@@ -39,7 +39,8 @@ urlpatterns = [
                   path('ajax/validate_username/', views.validate_username, name='validate_username'),
                   path('ajax/validate_password/', views.validate_password, name='validate_password'),
 
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL,
+                                                                                         document_root=settings.STATIC_ROOT)
 
 router = routers.DefaultRouter()
 
