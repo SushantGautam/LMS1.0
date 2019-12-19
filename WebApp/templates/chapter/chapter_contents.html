@@ -1227,7 +1227,7 @@
         $('#next-btn').off().click(function () {
             pauseAllVideos();
             if (currentpage < data.numberofpages) {
-                currentpage += 1;
+                currentpage = parseInt(currentpage) + 1;
                 changePage(currentpage)
 
             }
@@ -1236,7 +1236,7 @@
         $('#prev-btn').off().click(function () {
             pauseAllVideos();
             if (currentpage != 1) {
-                currentpage -= 1;
+                currentpage = parseInt(currentpage) - 1;
                 changePage(currentpage)
             }
         });
@@ -1267,7 +1267,7 @@
         {% else %}
             // updatePageByStudent(); //TBI
         {% endif %}
-        localStorage .setItem(roomName + "_pagenumber", page_number); //save page number
+        localStorage.setItem(roomName + "_pagenumber", page_number); //save page number
 
     }
 
