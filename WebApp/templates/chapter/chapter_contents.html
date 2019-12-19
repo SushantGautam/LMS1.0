@@ -1267,7 +1267,7 @@
         {% else %}
             // updatePageByStudent(); //TBI
         {% endif %}
-        sessionStorage.setItem(roomName + "_pagenumber", page_number); //save page number
+        localStorage.setItem(roomName + "_pagenumber", page_number); //save page number
 
     }
 
@@ -1597,8 +1597,12 @@
         // Animate loader off screen
         $(".se-pre-con").fadeOut("slow");
         $('#togglefull').click();
-        currentpage = parseInt(sessionStorage.getItem(roomName + "_pagenumber"));
-        if (currentpage) changePage(currentpage)
+
+        if (parseInt(localStorage.getItem(roomName + "_pagenumber")) >= 1) {
+            currentpage = localStorage.getItem(roomName + "_pagenumber")
+            changePage(currentpage)
+
+        }
     });
 
     function fontResize() {
