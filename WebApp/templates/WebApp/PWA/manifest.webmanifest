@@ -1,0 +1,16 @@
+{
+	"name" : "U-LMS",
+	"short_name" : "LMS",
+	"description" : "LMS App",
+	"start_url" : "/",
+	"icons" : [
+		{
+			"src": "/static/images/logo.png",
+			"sizes": "200x200"
+		}],
+	"screenshots" : [],
+	"lang" : "",
+	"display" : "fullscreen",
+	"orientation" : "landscape-primary",
+	"generated" : "true"
+}

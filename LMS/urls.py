@@ -79,3 +79,10 @@ handler400 = 'WebApp.views.error_400'
 handler403 = 'WebApp.views.error_403'
 handler404 = 'WebApp.views.error_404'
 handler500 = 'WebApp.views.error_500'
+
+
+urlpatterns += (
+    path('pwabuilder-sw.js', views.ServiceWorker),
+    path('offline.html', views.OfflineApp),
+    path('manifest.webmanifest', views.manifestwebmanifest),
+)
