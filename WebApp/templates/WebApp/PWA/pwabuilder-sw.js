@@ -12,12 +12,28 @@ const networkFirstPaths = [
     /* Add an array of regex of paths that should go network first */
     // Example: /\/api\/.*/
     /\/students\/questions_student_detail\/detail*/,
-
+    /\/students*/,
+    /\/teachers*/,
+    /\/quiz*/,
+    /\/survey*/,
+    /\/forum*/,
+    /\/memberinfo*/,
+    /\/inninginfo*/,
+    /\/groupmapping*/,
+    /\/inninggroup*/,
+    /\/Achievement*/,
 ];
 
 const avoidCachingPaths = [
     /* Add an array of regex of paths that shouldn't be cached */
     // Example: /\/api\/.*/
+    /\/login*/,
+    /\/logout*/,
+    /\/admin*/,
+    /\/register*/,
+    /\/collect*/,
+    /\/gtag*/,
+    /\/analytics*/,
 ];
 
 function pathComparer(requestUrl, pathRegEx) {
