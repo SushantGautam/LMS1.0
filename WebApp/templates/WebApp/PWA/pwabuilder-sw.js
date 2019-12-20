@@ -12,7 +12,6 @@ const networkFirstPaths = [
     /* Add an array of regex of paths that should go network first */
     // Example: /\/api\/.*/
     /\/students\/questions_student_detail\/detail*/,
-    /\/media*/,
 ];
 
 const avoidCachingPaths = [
