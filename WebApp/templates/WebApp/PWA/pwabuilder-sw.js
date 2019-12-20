@@ -11,7 +11,6 @@ const offlineFallbackPage = "offline.html";
 const networkFirstPaths = [
     /* Add an array of regex of paths that should go network first */
     // Example: /\/api\/.*/
-    /\/students\/questions_student_detail\/detail*/,
     /\/students*/,
     /\/teachers*/,
     /\/quiz*/,
@@ -22,6 +21,7 @@ const networkFirstPaths = [
     /\/groupmapping*/,
     /\/inninggroup*/,
     /\/Achievement*/,
+    /\//,
 ];
 
 const avoidCachingPaths = [
@@ -34,6 +34,8 @@ const avoidCachingPaths = [
     /\/collect*/,
     /\/gtag*/,
     /\/analytics*/,
+    /\/students\/questions_student_detail\/detail*/,
+
 ];
 
 function pathComparer(requestUrl, pathRegEx) {
