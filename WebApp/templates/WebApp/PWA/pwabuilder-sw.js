@@ -13,8 +13,17 @@ const networkFirstPaths = [
     // Example: /\/api\/.*/
     /\/.*/,
     /\/students\/questions_student_detail\/detail*/,
+];
+
+
+const cacheFirstPaths = [
+    /* Add an array of regex of paths that should go cache first */
+    // Example: /\/api\/.*/
+    /\/media*/,
+    /\/static*/,
 
 ];
+
 
 const avoidCachingPaths = [
     /* Add an array of regex of paths that shouldn't be cached */
@@ -72,10 +81,10 @@ self.addEventListener("activate", function (event) {
 self.addEventListener("fetch", function (event) {
     if (event.request.method !== "GET") return;
 
-    if (comparePaths(event.request.url, networkFirstPaths)) {
-        networkFirstFetch(event);
-    } else {
+    if (comparePaths(event.request.url, cacheFirstPaths)) {
         cacheFirstFetch(event);
+    } else if (comparePaths(event.request.url, networkFirstPaths)) {
+        networkFirstFetch(event);
     }
 });
 
@@ -89,7 +98,7 @@ function cacheFirstFetch(event) {
                 // file to use the next time we show view
                 event.waitUntil(
                     fetch(event.request).then(function (response) {
-                        return updateCache(event.request, response);
+                        return updateCacheForNetworkFirst(event.request, response);
                     })
                 );
 
@@ -100,7 +109,7 @@ function cacheFirstFetch(event) {
                 return fetch(event.request)
                     .then(function (response) {
                         // If request was success, add or update it in the cache
-                        event.waitUntil(updateCache(event.request, response.clone()));
+                        event.waitUntil(updateCacheForNetworkFirst(event.request, response.clone()));
 
                         return response;
                     })
@@ -121,12 +130,46 @@ function cacheFirstFetch(event) {
     );
 }
 
+function CacheFirstFetch(event) {
+    event.respondWith(
+        fromCache(event.request).then(
+            function (response) {
+                // The response was found in the cache so we responde with it and update the entry
+
+                // This is where we call the server to get the newest version of the
+                // file to use the next time we show view
+                event.waitUntil(
+                    fetch(event.request).then(function (response) {
+                        return updateCacheForCacheFirst(event.request, response);
+                    })
+                );
+
+                return response;
+            },
+            function () {
+                // The response was not found in the cache so we look for it on the server
+                return fetch(event.request)
+                    .then(function (response) {
+                        // If request was success, add or update it in the cache
+                        event.waitUntil(updateCacheForCacheFirst(event.request, response.clone()));
+
+                        return response;
+                    })
+                    .catch(function (error) {
+                        console.log("[PWA Builder] Network request failed and no cache." + error);
+                    });
+            }
+        )
+    );
+
+}
+
 function networkFirstFetch(event) {
     event.respondWith(
         fetch(event.request)
             .then(function (response) {
                 // If request was success, add or update it in the cache
-                event.waitUntil(updateCache(event.request, response.clone()));
+                event.waitUntil(updateCacheForNetworkFirst(event.request, response.clone()));
                 return response;
             })
             .catch(function (error) {
@@ -152,7 +195,7 @@ function fromCache(request) {
     });
 }
 
-function updateCache(request, response) {
+function updateCacheForNetworkFirst(request, response) {
     if (!comparePaths(request.url, avoidCachingPaths)) {
         return caches.open(CACHE).then(function (cache) {
             return cache.put(request, response);
@@ -160,4 +203,11 @@ function updateCache(request, response) {
     }
 
     return Promise.resolve();
+}
+
+
+function updateCacheForCacheFirst(request, response) {
+    return caches.open(CACHE).then(function (cache) {
+        return cache.put(request, response);
+    });
 }
