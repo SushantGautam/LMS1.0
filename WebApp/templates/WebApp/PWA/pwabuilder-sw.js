@@ -79,18 +79,25 @@ function cacheFirstFetch(event) {
         fromCache(event.request).then(
             function (response) {
                 // The response was found in the cache so we responde with it and update the entry
-
                 // This is where we call the server to get the newest version of the
                 // file to use the next time we show view
-                event.waitUntil(
-                    fetch(event.request).then(function (response) {
-                        return updateCache(event.request, response);
-                    })
-                );
+                if (event.request.url.indexOf(".glb") > -1) {
+                    console.log('.glb file Loaded from Cache');
+
+                    return response;
+                } else {
+                    event.waitUntil(
+                        fetch(event.request).then(function (response) {
+                            return updateCache(event.request, response);
+                        })
+                    );
+                }
 
                 return response;
             },
             function () {
+                console.log('looking in server for ' + event.request.url);
+
                 // The response was not found in the cache so we look for it on the server
                 return fetch(event.request)
                     .then(function (response) {
