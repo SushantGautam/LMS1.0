@@ -12,6 +12,7 @@ const networkFirstPaths = [
     /* Add an array of regex of paths that should go network first */
     // Example: /\/api\/.*/
     /\/students\/questions_student_detail\/detail*/,
+
 ];
 
 const avoidCachingPaths = [
@@ -74,6 +75,19 @@ self.addEventListener("fetch", function (event) {
     }
 });
 
+
+self.addEventListener("refreshOffline", function () {
+    const offlinePageRequest = new Request(offlineFallbackPage);
+
+    return fetch(offlineFallbackPage).then(function (response) {
+        return caches.open(CACHE).then(function (cache) {
+            console.log("[PWA Builder] Offline page updated from refreshOffline event: " + response.url);
+            return cache.put(offlinePageRequest, response);
+        });
+    });
+});
+
+
 function cacheFirstFetch(event) {
     event.respondWith(
         fromCache(event.request).then(
@@ -112,10 +126,9 @@ function cacheFirstFetch(event) {
                             return;
                         }
 
-                        console.log("[PWA Builder] Network request failed and no cache." + error);
-                        // Use the precached offline page as fallback
+                        console.error("[PWA Builder] Network request Failed. Serving offline page " + error);
                         return caches.open(CACHE).then(function (cache) {
-                            cache.match(offlineFallbackPage);
+                            return cache.match(offlineFallbackPage);
                         });
                     });
             }
@@ -162,3 +175,5 @@ function updateCache(request, response) {
 
     return Promise.resolve();
 }
+
+
