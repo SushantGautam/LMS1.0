@@ -3,6 +3,7 @@
 const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
     /* Add an array of files to precache for your app */
+    'offline.html',
 ];
 
 // TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
@@ -94,18 +95,6 @@ self.addEventListener("fetch", function (event) {
 });
 
 
-self.addEventListener("refreshOffline", function () {
-    const offlinePageRequest = new Request(offlineFallbackPage);
-
-    return fetch(offlineFallbackPage).then(function (response) {
-        return caches.open(CACHE).then(function (cache) {
-            console.log("[PWA Builder] Offline page updated from refreshOffline event: " + response.url);
-            return cache.put(offlinePageRequest, response);
-        });
-    });
-});
-
-
 function cacheFirstFetch(event) {
     event.respondWith(
         fromCache(event.request).then(
@@ -176,7 +165,8 @@ function fromCache(request) {
     return caches.open(CACHE).then(function (cache) {
         return cache.match(request).then(function (matching) {
             if (!matching || matching.status === 404) {
-                return Promise.reject("no-match");
+                return cache.match(offlineFallbackPage);
+                // return Promise.reject("no-match");
             }
 
             return matching;
