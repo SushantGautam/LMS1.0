@@ -813,6 +813,11 @@ class InningInfoCreateView(CreateView):
 class InningInfoDetailView(DetailView):
     model = InningInfo
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
+        return context
+
 
 class InningInfoUpdateView(UpdateView):
     model = InningInfo
@@ -1726,7 +1731,7 @@ def ServiceWorker(request):
 def OfflineApp(request):
     with open('WebApp/templates/WebApp/PWA/offline.html', 'r') as f:
         data = f.read()
-    return HttpResponse(data,)
+    return HttpResponse(data, )
 
 
 def manifestwebmanifest(request):

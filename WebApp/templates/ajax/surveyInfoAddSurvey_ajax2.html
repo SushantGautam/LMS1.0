@@ -268,7 +268,13 @@
             var newel_id = String(
                 '#div_id_questioninfo-' + questionId + '-Question_Name'
             );
+
+
             var question_counter = parseInt(questionId) + 1;
+
+            $('#abc' + questionId).click();
+            $('#abc' + questionId).click();
+
             var counter_el = `<p>${question_counter}</p>`;
             $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;'></div>`);
             $('#new_que_div' + questionId).prepend(counter_el);
@@ -283,7 +289,8 @@
         });
 
         function addOption(event, questionId, selector, append_after, type, type2) {
-            event.preventDefault();
+            if (event) event.preventDefault();
+
             var optionId = $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val();
             // console.log(optionId
             var str1 = String(type + '-' + questionId);
@@ -409,5 +416,12 @@
             });
         });
 
+    </script>
+
+    <script>
+        if ($('#id_questioninfo-0-Question_Name').val() === "") {
+            addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
+            addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
+        }
     </script>
 {% endblock customjss %}
