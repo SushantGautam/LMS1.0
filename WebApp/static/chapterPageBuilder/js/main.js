@@ -754,7 +754,6 @@ $(document).ready(function () {
         const textBox = new Textbox(top, left, height, width, message);
 
         textBox.renderDiagram();
-
         $('.textdiv').hover(function (e) {
             $(e.currentTarget).find('.text-actions').css({
                 'display': 'block'
@@ -1800,7 +1799,7 @@ $(document).ready(function () {
     }
 
     // delete page function
-    $('.tabs-to-click').on('click', 'div .delete-page-btn', function () {
+    $('.tabs-to-click').on('click', '.delete-page-btn', function () {
         var confirmation = confirm("Are you sure you want to delete?")
         if (confirmation == false) {
             return false
@@ -2041,7 +2040,7 @@ $(document).ready(function () {
             <div class="canvas-relative" style="position:relative"> 
               
              
-                <li class="tabs-link pagenumber " value="${num_tabs}" onclick="openTab(event,'tab${num_tabs}')"></li>
+                <li class="tabs-link pagenumber " value="${num_tabs}" onclick="changePage('tab${num_tabs}')"></li>
                 <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
                         <p style="display:inline-block"></p> 
                         <span style="float:right ">
@@ -2059,7 +2058,7 @@ $(document).ready(function () {
             </div>
         `);
         $(".tabs").append(
-            `<p id='tab${num_tabs}' style="display:none; background-color: rgb(255, 255, 255);" class="tab-content-no droppable editor-canvas ui-droppable">
+            `<p id='tab${num_tabs}' style="display:block; background-color: rgb(255, 255, 255);" class="tab-content-no droppable editor-canvas ui-droppable current">
                     <input type = "color" value = "#ffffff" class="page-background">
             </p>`
         );
@@ -2114,15 +2113,30 @@ $(document).ready(function () {
         });
     });
 
-    function display(data = "") {
-        $('#chaptertitle').text(chaptertitle);
-        $('#tabs-for-download').empty();    // empty current canvas 
-        $('.tabs-to-click > ul > li:first').remove()
-        if (data.pages == undefined) {
-            $('#add-page-btn').click()
-        }
-        $.each(data.pages, function (key, value) {
-            newpagefunction()   // add pages corresponding to the number of pages in json
+    changePage('tab1');
+    window.firstload = false 
+});
+async function changePage(page_number){
+    let prev_page = window.currentPage
+    if(!window.firstload){
+        await(setThumbnails())
+        setTimeout(()=>{updateData(prev_page)},5000) 
+    }
+    window.currentPage = page_number.replace( /^\D+/g, '')
+    $('#tabs-for-download').empty();    // empty current canvas 
+
+    display(data, page_number);
+}
+
+function display(data = "", currentPage='tab1') {
+    $('#chaptertitle').text(chaptertitle);
+    // $('#tabs-for-download').empty();    // empty current canvas 
+    $('.tabs-to-click > ul > li:first').remove()
+    if (data.pages == undefined) {
+        $('#add-page-btn').click();
+    }
+    $.each(data.pages, function (key, value) {
+        if(key == window.currentPage){
             $('.tabs-to-click > ul > div > li')[key - 1].click()
             $.each(value, function (count) {
                 // -------------------------------
@@ -2259,18 +2273,162 @@ $(document).ready(function () {
                     }
                 });
             });
-        });
-        $('.tabs-to-click > ul > div > li')[0].click()
-    }
-
-    display(data);
-    window.firstload = false
-});
+        }
+    });
+    // $('.tabs-to-click > ul > div > li')[0].click()
+}
 
 function displaypagenumbers() {
     $('.pagenumber').each(function (key, value) {
         $(this).parent().find('p').text(key + 1);
     })
+}
+
+function updateData(prev_page){
+    console.log($('.pagenumber[value= '+prev_page+']'))
+    if(!data.numberofpages){
+        // newpagefunction()   // add pages corresponding to the number of pages in json
+        pages = {}
+        textdiv = [];
+        picdiv = [];
+        buttondiv = [];
+        pdf = [];
+        video = [];
+        _3d = [];
+        quizdiv = [];
+        surveydiv = [];
+    }
+    // numberofpages++;
+    const obj=$("#tab"+parseInt(window.currentPage)).children();
+    let tops;
+    let left;
+    let width;
+    let height;
+    let content;
+    let numberofpages = $('.pagenumber').length;
+    $.each( obj, function( i, value ) {
+        if(value.classList.contains('textdiv')){
+            var clone = $(this).find('.note-editable').clone();
+            // clone.find('div').remove();
+            // $(clone).each(function(){
+            //   if($(this).find('span').css('font-size')){
+            //     let font = convertFontToREM($(this).find('span').css('font-size'))
+            //     $(this).find('span').css('font-size', font + 'em')
+            //   }
+            // })
+            var content_html = clone.html();
+            textdiv.push(
+            {
+                'tops': $(this)[0].style.top,
+                'left': $(this)[0].style.left,
+                'width': $(this)[0].style.width,
+                'height': $(this)[0].style.height,
+                'content': content_html
+            }
+            );
+        }
+        if(value.classList.contains('pic')){
+            picdiv.push(
+            {
+                'tops': $(this)[0].style.top,
+                'left': $(this)[0].style.left,
+                'width': $(this)[0].style.width,
+                'height': $(this)[0].style.height,
+                'background-image': $(this).find("img").attr('src')
+            }
+            );
+        }
+        if(value.classList.contains('btn-div')){
+            buttondiv.push(
+            {
+                'tops': $(this)[0].style.top,
+                'left': $(this)[0].style.left,
+                'width': $(this)[0].style.width,
+                'height': $(this)[0].style.height,
+                'link': $(this).children("a").attr('href'),
+                'btn_name': $(this).children("a").text(),
+            }
+            );
+        }
+        if(value.classList.contains('pdfdiv')){
+            pdf.push(
+            {
+                'tops': $(this)[0].style.top,
+                'left': $(this)[0].style.left,
+                'width': $(this)[0].style.width,
+                'height': $(this)[0].style.height,
+                'link': $(this).find('object').attr('data'),
+            }
+            );
+        }
+        if(value.classList.contains('video-div')){
+            online_link = $(this).find('iframe').attr('src');
+            local_link = $(this).find('video > source').attr('src');
+
+            video.push(
+            {
+                'tops': $(this)[0].style.top,
+                'left': $(this)[0].style.left,
+                'width': $(this)[0].style.width,
+                'height': $(this)[0].style.height,
+                'online_link': online_link,
+                'local_link': local_link
+            }
+            );
+        }
+        if(value.classList.contains('_3dobj-div')){
+            link = $(this).find('model-viewer').attr('src');
+
+            _3d.push(
+            {
+                'tops': $(this)[0].style.top,
+                'left': $(this)[0].style.left,
+                'width': $(this)[0].style.width,
+                'height': $(this)[0].style.height,
+                'link': link,
+            }
+            );
+        }
+        if(value.classList.contains('quiz-div')){
+            quizdiv.push(
+            {
+                'tops': $(this)[0].style.top,
+                'left': $(this)[0].style.left,
+                'width': $(this)[0].style.width,
+                'height': $(this)[0].style.height,
+                'link': $(this).find("a").attr('href'),
+                'quiz_btn_name': $(this).find(".resizable-text-only").text(),
+                'quiz_name': $(this).find('.quiz-name').text(),
+                'font_size': $(this).find('.resizable-text-only').css('font-size')
+            }
+            );
+        }
+        if(value.classList.contains('survey-div')){
+            surveydiv.push(
+            {
+                'tops': $(this)[0].style.top,
+                'left': $(this)[0].style.left,
+                'width': $(this)[0].style.width,
+                'height': $(this)[0].style.height,
+                'link': $(this).find("a").attr('href'),
+                'survey_btn_name': $(this).find(".resizable-text-only").text(),
+                'survey_name': $(this).find('.survey-name').text(),
+                'font_size': $(this).find('.resizable-text-only').css('font-size')
+            }
+            );
+        }
+    });
+    backgroundcolor = $("#tab"+parseInt(window.currentPage)).css('background-color')
+    thumbnail = ($('.pagenumber[value= '+prev_page+']')[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+    pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'thumbnail': thumbnail, 'backgroundcolor': backgroundcolor}]
+    
+    data = {
+      'numberofpages': numberofpages, 
+      'chaptertitle': $('#chaptertitle').text(),
+      'pages': pages,
+      'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
+      'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
+    };
 }
 
 // Media File deletion
@@ -2407,26 +2565,22 @@ $('#tabs-for-download').find('.quiz-div').on('click', 'a', function(e){
     }
 })
 
-function openTab(evt, tab_no) {
-    try {
-        if (!window.firstload)
-            setThumbnails()
-    } catch (err) {
-        console.log(err)
-    }
-    tabcontent = document.getElementsByClassName("tab-content-no");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-        tabcontent[i].className = tabcontent[i].className.replace("current", "");
-    }
-    tablinks = document.getElementsByClassName("tabs-link");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace("current", "");
-    }
-    document.getElementById(tab_no).style.display = "block";
-    document.getElementById(tab_no).className += " current";
-    evt.currentTarget.className += " current";
-}
+// function openTab(evt, tab_no) {
+//     try {
+//         if (!window.firstload)
+//             setThumbnails()
+//     } catch (err) {
+//         console.log(err)
+//     }
+//     if($('.current').length != 0){
+//         $(".current.tab-content-no").css('display', 'none')
+//         $(".current").removeClass('current')
+//     }
+
+//     document.getElementById(tab_no).style.display = "block";
+//     document.getElementById(tab_no).className += " current";
+//     evt.currentTarget.className += " current";
+// }
 
 // document.addEventListener('visibilitychange', function(){
 //     setThumbnails();
@@ -2524,4 +2678,4 @@ $('#tabs-for-download').on('click', '.textdiv', function () {
             $($this).html("Type Something Here...")
         }
     })
-})
+});

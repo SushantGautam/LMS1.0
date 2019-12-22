@@ -220,21 +220,3 @@ $("#SaveBtn").on("click",function(e){
     });
   }, 5000)
 });
-
-$("#loadBtn").on("click",function(){
-  $.get('/index/read', function(list) {
-    let html=`
-      <div>
-      </div>
-    `;
-    let dom = $(html).css({
-      "position": "absolute",
-      "top": list.html.top,
-      "left": list.html.left,
-      "width":list.html.width,
-      "height":list.html.height,
-      "content":list.html.content
-    });  
-});
-
-});
