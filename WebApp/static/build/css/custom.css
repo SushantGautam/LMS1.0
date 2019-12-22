@@ -194,18 +194,32 @@ ul.messages li img.image, img.image {
 .omb-login {
     margin: 40%;
 }
+.blocked-members{
+    text-align: right;
+}
+.span-member{
+    line-height: 38px;
+}
+@media all and (max-width:767px){
+    .blocked-members{
+        text-align: left;
+    }
+    .span-member{
+        line-height: 22px;
+       
+    }
+
+}
 
 .navbar-nav.navbar-center {
-    position: absolute;
-    left: 50%;
-    transform: translatex(-50%);
+    display: flex;
+ 
 }
 
 
 
 .navbar-nav.member-list > li {
-    margin-left: 30px;
-    margin-right: 30px;
+  
 
 
 }
@@ -296,7 +310,14 @@ table {
 }
 
 .btn-createnew {
-    float: right;
+    text-align: right;
+}
+@media all and (max-width:700px){
+    .btn-createnew {
+        text-align: left;
+        margin-left: 10px;
+    }
+
 }
 
 .full-width {
