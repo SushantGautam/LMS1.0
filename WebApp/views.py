@@ -1527,10 +1527,10 @@ def import_chapter(request):
 
             continue
         zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
-    
+
     for u, v in data['pages'].items():
         for x in v:
-            for(div,values) in x.items():
+            for (div, values) in x.items():
                 if div == 'pic':
                     for value in range(len(values)):
                         for i, j in values[value].items():
@@ -1546,7 +1546,7 @@ def import_chapter(request):
                                 p = (j.split('/'))
                                 p[3], p[4] = courseID, chapterID
                                 j = '/'.join(p)
-                                data['pages'][u][0][div][value]['local_link'] = j   
+                                data['pages'][u][0][div][value]['local_link'] = j
                 if div == '_3d':
                     for value in range(len(values)):
                         for i, j in values[value].items():
@@ -1715,3 +1715,21 @@ def gitpull(request):
     process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
     output = process.communicate()[0]
     return HttpResponse(output)
+
+
+def ServiceWorker(request):
+    with open('WebApp/templates/WebApp/PWA/pwabuilder-sw.js', 'r') as f:
+        data = f.read()
+    return HttpResponse(data, content_type='text/javascript')
+
+
+def OfflineApp(request):
+    with open('WebApp/templates/WebApp/PWA/offline.html', 'r') as f:
+        data = f.read()
+    return HttpResponse(data,)
+
+
+def manifestwebmanifest(request):
+    with open('WebApp/templates/WebApp/PWA/manifest.webmanifest', 'r') as f:
+        data = f.read()
+    return HttpResponse(data, )
