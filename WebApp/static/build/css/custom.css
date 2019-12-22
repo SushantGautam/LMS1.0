@@ -197,6 +197,10 @@ ul.messages li img.image, img.image {
 .blocked-members{
     text-align: right;
 }
+.view-inactive{
+    float:right;
+    font-weight: 600;
+}
 .span-member{
     line-height: 38px;
 }
@@ -207,6 +211,11 @@ ul.messages li img.image, img.image {
     .span-member{
         line-height: 22px;
        
+    }
+    .view-inactive{
+        float:left;
+        margin-top: 10px;
+        font-weight: 600;
     }
 
 }
@@ -301,6 +310,30 @@ table {
     text-align: center;
     font-size: 2.5em;
     color: #009999;
+}
+@media screen and (max-width: 767px){
+    div.dt-buttons{
+        display: none!important;
+    }
+    .dataTables_length{
+        float:left;
+    }
+
+ }
+ @media screen and (max-width: 325px){
+    div.dt-buttons{
+        display: none!important;
+    }
+    .dataTables_length{
+        float:none;
+    }
+
+ }
+@media all and (max-width:500px){
+    .tableHeader {
+        font-size: 1.5em;
+    }
+
 }
 
 .btn-title {
