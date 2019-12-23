@@ -564,6 +564,7 @@ $(document).ready(function () {
             };
         }
     }
+
     // ====For PDF======
     class PDF {
         constructor(top, left, link = null, height = null, width = null) {
@@ -720,23 +721,7 @@ $(document).ready(function () {
             'display': 'block'
         });
     });
-
-    // save button click function
-    $("#save_btn").on("click", function (e) {
-        e.preventDefault();
-        var title = $("#main_title").val();
-        $(".tlimit").html(title);
-        $("#title_id").css({
-            'display': 'none'
-        });
-    });
-
-    $("#close1").on("click", function () {
-        $("#title_id").css({
-            'display': 'none'
-        });
-    });
-
+    
     let sidebarWidth = $(".sidebar").width(); // get width of sidebar
     let toolbarheight = $('.editor-toolbar').height();
     // Making sidebar tools draggable
@@ -776,7 +761,6 @@ $(document).ready(function () {
 
         $('.fa-trash').click(function (e) {
             $('#' + e.currentTarget.id).parent().parent().remove();
-            //  alert('btn clickd')
         });
         $('.textdiv').resizable({
             containment: $('#tabs-for-download'),
@@ -815,1083 +799,6 @@ $(document).ready(function () {
             }
         });
     }
-
-    function PictureFunction(top = null, left = null, pic = null, width = null, height = null) {
-        const Pic = new picture(
-            top,
-            left,
-            pic,
-            width, height);
-        Pic.renderDiagram();
-
-        $('.fa-upload').off().unbind().click(function (e) {
-            trigger = parseInt(e.target.id) + 1;
-            $('#' + trigger).trigger('click');
-        });
-
-        $('.fa-trash').click(function (e) {
-            if ($('#' + e.currentTarget.id).find('img').length > 0) {
-                if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
-                    tobedeletedfiles.pic.push($('#' + e.currentTarget.id).find('img').attr('src'))
-                }
-            }
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-
-        $('.imagelink').off().bind("click", function (e) {
-            var link_id = parseInt(e.currentTarget.id) + 1
-            var div = $('#' + e.currentTarget.id).parent().parent();
-            // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
-            var prevlink = $(this).parent().parent().find('img').attr('src')
-            if (prevlink == undefined) {
-                prevlink = "";
-            }
-            var link = prompt("Link of image", prevlink);
-            if (link == null) {
-                return false
-            } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
-                link = '' + link
-            }
-
-            PictureFunction(
-                $(div)[0].style.top,
-                $(div)[0].style.left,
-                link,
-                $(div)[0].style.width,
-                $(div)[0].style.height,
-            );
-            div.remove()
-        });
-
-        $('.pic').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 150,
-            minHeight: 150,
-            stop: function (e, ui) {
-                // var parent = ui.element.parent();
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
-            }
-        });
-
-        $('.pic').on('dragover', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            //   $(this).css('border',"2px solid #39F")
-        })
-
-        $('.pic').on('drop', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            const files = e.originalEvent.dataTransfer.files;
-            var file = files[0];
-            upload(file);
-        });
-
-        function upload(file) {
-            let div = $('#picture-drag').parent().parent();
-            const data = new FormData();
-            data.append("file-0", file);
-            data.append('chapterID', chapterID);
-            data.append('courseID', courseID);
-            data.append('type', 'pic');
-            $.ajax({
-                url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-                data: data,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST',
-                beforeSend: function () {
-                    div.append(`<div class="loader" id="loadingDiv"></div>`)
-                    $('#loadingDiv').show();
-                },
-                error: function (errorThrown) {
-                    alert("Failed to upload PDF")
-                    div.find('#loadingDiv').remove();
-                },
-                success: function (data) {
-                    div.find('#loadingDiv').remove();
-                    div.find('p').text("");
-
-                    PictureFunction(
-                        $(div)[0].style.top,
-                        $(div)[0].style.left,
-                        load_file_url + '/' + data.media_name,
-                        $(div)[0].style.width,
-                        $(div)[0].style.height,
-                    );
-                    div.remove()
-                },
-                error: function (data, status, errorThrown) {
-                    alert(data.responseJSON.message);
-                }
-            });
-
-            $('#picture-drag').css({
-                'display': 'none'
-            })
-
-
-            $(div).hover(function () {
-                $(this).css("border", "1px solid red");
-            }, function () {
-                $(this).css("border", '0')
-            })
-        }
-
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    let div = $(input).parent().parent().parent();
-                    var data = new FormData();
-                    $.each(input.files, function (i, file) {
-                        data.append('file-' + i, file);
-                    });
-                    if ($(div).find('img').length > 0) {
-                        if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
-                            tobedeletedfiles.pic.push($(div).find('img').attr('src'));
-                        }
-                    }
-                    data.append('csrfmiddlewaretoken', csrf_token);
-                    data.append('type', 'pic');
-                    data.append('chapterID', chapterID);
-                    data.append('courseID', courseID);
-                    $.ajax({
-                        url: save_file_url,
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        enctype: 'multipart/form-data',
-                        method: 'POST',
-                        type: 'POST',
-                        beforeSend: function () {
-                            div.append(`<div class="loader" id="loadingDiv"></div>`)
-                            $('#loadingDiv').show();
-                        },
-                        error: function (errorThrown) {
-                            alert("Failed to upload Image. Try Again!!")
-                            div.find('#loadingDiv').remove();
-                        },
-                        success: function (data) {
-                            div.find('#loadingDiv').remove();
-                            div.find('p').text("");
-
-                            PictureFunction(
-                                $(div)[0].style.top,
-                                $(div)[0].style.left,
-                                load_file_url + '/' + data.media_name,
-                                $(div)[0].style.width,
-                                $(div)[0].style.height,
-                            );
-                            div.remove()
-                        },
-                        error: function (data, status, errorThrown) {
-                            alert(data.responseJSON.message);
-                        }
-                    });
-
-                    $('#picture-drag').css({
-                        'display': 'none'
-                    })
-
-                    $(div).hover(function () {
-                        $(this).css("border", "1px solid red");
-                    }, function () {
-                        $(this).css("border", '0')
-                    })
-
-                    $('.pic').resizable({
-                        containment: $('.editor-canvas'),
-                        grid: [20, 20],
-                        autoHide: true,
-                        minWidth: 150,
-                        minHeight: 150
-                    });
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $(".imgInp").off().change(function (e) {
-            readURL(this);
-
-        });
-    }
-
-    function ButtonFunction(top = null, left = null, link = null, height = null, width = null, name = 'Button') {
-        const btns = new Button(top, left, link, height, width, name);
-
-        btns.renderDiagram();
-
-        // $('.btn').attr('contentEditable', true);
-
-        $('.btn').on('click', function () {
-            // alert('say me more!!')
-        })
-
-        const div1 = $('i').parent();
-
-        $('.fa-trash').click(function (e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-
-        $('.fa-link').bind("click", function (e) {
-            var btn_id = parseInt(e.currentTarget.id) + 1
-
-            $('#btn-form input[type=text]').val('');
-            $('#btn-name').val($(this).parent().parent().find('a').text().trim());
-            var link = $(this).parent().parent().find('a').attr('href');
-            if (link != undefined) {
-                link = link.replace('http://', '');
-            }
-            $('#btn-link').val(link);
-
-            $('#button_id').val(btn_id);
-            $('#btn-modal').modal('show');
-        });
-
-        $('.btn-div').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 50,
-            minHeight: 30,
-            stop: function (e, ui) {
-                // var parent = ui.element.parent();
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
-            },
-        });
-    }
-
-    function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
-        const quiz = new Quiz(top, left, link, height, width, name, quiz_span_name, font_size);
-
-        quiz.renderDiagram();
-
-        // $('.btn').attr('contentEditable', true);
-
-        $('.btn').on('click', function () {
-            // alert('say me more!!')
-        })
-
-        const div1 = $('i').parent();
-
-        $('.fa-trash').click(function (e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-
-        $('.quiz-div .fa-link').bind("click", function (e) {
-            $.ajax({
-                url: `/quiz/api/v1/quiz/?course_code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-                processData: false,
-                method: 'GET',
-                success: function (data) {
-                    $('#myTable').empty()
-                    for (var i = 0; i < data.length; i++) {
-                        $('#myTable').append(`<tr>
-                            <td>
-                                ${data[i].title}
-                            </td>
-                            <td>
-                                <button type="button" class="selectquiz" value="${data[i].pk}">Select</button>
-                            </td>
-                        </tr>`);
-                    }
-                },
-            });
-            var btn_id = parseInt(e.currentTarget.id) + 1
-            $('#quiz-form input[type=text]').val('');
-            $('#quiz-btn-name').val($(this).parent().parent().find('button').text().trim());
-            var link = $(this).parent().parent().find('a').attr('href');
-            if (link != undefined) {
-                link = link.replace('http://', '');
-            }
-            $('#quiz-link').val(link);
-            $('#quiz-name').val($(this).parent().parent().find('.quiz-name').text().trim());
-            $('#quiz_id').val(btn_id);
-            $('#quiz-modal').modal('show');
-        });
-
-        $('.quiz-div').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 50,
-            minHeight: 30,
-            stop: function (e, ui) {
-                // var parent = ui.element.parent();
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
-            },
-        });
-
-        $('.quiz-div').on('resize', function(){
-            old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
-            div_width = $(this).width();
-            font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
-            $(this).find('.resizable-text-only').css(
-                'font-size', font + 'px'
-            )
-            $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
-        })
-
-    }
-
-    function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
-        const survey = new Survey(top, left, link, height, width, name, survey_span_name, font_size);
-
-        survey.renderDiagram();
-
-        // $('.btn').attr('contentEditable', true);
-
-        $('.btn').on('click', function () {
-            // alert('say me more!!')
-        })
-
-        const div1 = $('i').parent();
-
-        $('.fa-trash').click(function (e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-
-        $('.survey-div .fa-link').on("click", function (e) {
-            $.ajax({
-                url: `/survey/api/v1/surveyinfo/?Course_Code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-                processData: false,
-                method: 'GET',
-                success: function (data) {
-                    $('#mySurveyTable').empty()
-                    for (var i = 0; i < data.length; i++) {
-                        $('#mySurveyTable').append(`<tr>
-                            <td>
-                                ${data[i].Survey_Title}
-                            </td>
-                            <td>
-                                <button type="button" class="selectsurvey" value="${data[i].pk}">Select</button>
-                            </td>
-                        </tr>`);
-                    }
-                },
-            });
-            var btn_id = parseInt(e.currentTarget.id) + 1
-            $('#survey-form input[type=text]').val('');
-            $('#survey-btn-name').val($(this).parent().parent().find('a').text().trim());
-            var link = $(this).parent().parent().find('button').attr('href');
-            if (link != undefined) {
-                link = link.replace('http://', '');
-            }
-            $('#survey-link').val(link);
-            $('#survey-name').val($(this).parent().parent().find('.survey-name').text().trim());
-            $('#survey_id').val(btn_id);
-            $('#survey-modal').modal('show');
-        });
-
-        $('.survey-div').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 50,
-            minHeight: 30,
-            stop: function (e, ui) {
-                // var parent = ui.element.parent();
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
-            },
-        });
-
-        $('.survey-div').on('resize', function(){
-            old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
-            div_width = $(this).width();
-            font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
-            $(this).find('.resizable-text-only').css(
-                'font-size', font + 'px'
-            )
-            $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
-        })
-    }
-
-    function PDFFunction(top = null, left = null, link = null, height = null, width = null) {
-        const Pdf = new PDF(
-            top,
-            left, link, height, width
-        );
-
-        Pdf.renderDiagram();
-
-        // ==for pdf upload==
-        $('.fa-upload').off().click(function (e) {
-            trigger = parseInt(e.target.id) + 1;
-            $('#' + trigger).trigger('click');
-        });
-
-        $('.fa-trash').click(function (e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-
-        $('.pdfdiv').on('dragover', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            //   $(this).css('border',"2px solid #39F")
-        })
-
-        $('.pdfdiv').on('drop', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            const files = e.originalEvent.dataTransfer.files;
-            var file = files[0];
-            upload(file);
-        });
-
-        function upload(file) {
-            const data = new FormData();
-            data.append("file-0", file);
-            data.append('chapterID', chapterID);
-            data.append('courseID', courseID);
-            data.append('type', 'pic');
-            $.ajax({
-                url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-                data: data,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST',
-                beforeSend: function () {
-                    div.append(`<div class="loader" id="loadingDiv"></div>`)
-                    $('#loadingDiv').show();
-                },
-                error: function (errorThrown) {
-                    alert("Failed to upload PDF")
-                    div.find('#loadingDiv').remove();
-                },
-                success: function (data) {
-                    div.append(`
-                        <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
-                            alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">test.pdf</a>
-                        </object>
-                    `);
-
-                },
-                error: function (data, status, errorThrown) {
-                    alert(data.responseJSON.message);
-                }
-            });
-            let div = $('#pdf-actions1').parent();
-            $('#pdf-actions1').css({
-                'display': 'none'
-            });
-
-            $(div).hover(function () {
-                $(this).css(
-                    {
-                        "border": "1px solid red",
-
-                    });
-
-
-            }, function () {
-                $(this).css("border", '0')
-            });
-
-
-            $(div).resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 500,
-                minHeight: 500
-
-
-            })
-
-
-            $('.pdf').css({
-                'resize': ' both'
-            })
-
-
-        }
-
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    let div = $(input).parent().parent().parent();
-                    var data = new FormData();
-
-                    $.each(input.files, function (i, file) {
-                        // console.log(Math.round((file.size / 1024))) // get image size
-                        data.append('file-' + i, file);
-                    });
-                    if ($(div).find('object').length > 0) {
-                        if ($('#tabs-for-download').find('object[data$="' + $(div).find('object').attr('data') + '"]').length == 1) {
-                            tobedeletedfiles.pdf.push($(div).find('object').attr('data'));
-                        }
-                    }
-                    data.append('csrfmiddlewaretoken', csrf_token);
-                    data.append('type', 'pdf');
-                    data.append('chapterID', chapterID);
-                    data.append('courseID', courseID);
-                    $.ajax({
-                        url: save_file_url,
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        enctype: 'multipart/form-data',
-                        method: 'POST',
-                        type: 'POST',
-                        beforeSend: function () {
-                            div.append(`<div class="loader" id="loadingDiv"></div>`)
-                            $('#loadingDiv').show();
-                        },
-                        error: function (errorThrown) {
-                            alert("Failed to upload PDF")
-                            div.find('#loadingDiv').remove();
-                        },
-                        success: function (data) {
-                            PDFFunction(
-                                $(div)[0].style.top,
-                                $(div)[0].style.left,
-                                `/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}`,
-                                $(div)[0].style.height,
-                                $(div)[0].style.width,
-                            );
-                            div.remove();
-                        },
-                        error: function (data, status, errorThrown) {
-                            alert(data.responseJSON.message);
-                        }
-                    });
-
-                    $('#picture-drag').css({
-                        'display': 'none'
-                    })
-
-                    $(div).hover(function () {
-                        $(this).css("border", "1px solid red");
-                    }, function () {
-                        $(this).css("border", '0')
-                    })
-
-                    $('.pdf').resizable({
-                        containment: $('#tabs-for-download'),
-                        grid: [20, 20],
-                        autoHide: true,
-                        minWidth: 150,
-                        minHeight: 150
-                    });
-
-                    $('.pdf').css({
-                        'resize': 'both'
-                    })
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $('.pdfdiv').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            stop: function (e, ui) {
-                // var parent = ui.element.parent();
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
-            },
-        });
-
-        $(".pdfInp").off().change(function (e) {
-            readURL(this);
-        });
-    }
-
-    function VideoFunction(top = null, left = null, link = null, height = null, width = null) {
-        const Videos = new video(top, left, link, height, width);
-        Videos.renderDiagram();
-        $('.fa-trash').click(function (e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-        $('.fa-upload').off().unbind().click(function (e) {
-            trigger = parseInt(e.target.id) + 1;
-            $('#' + trigger).trigger('click');
-        });
-        $('.videolink').off().bind("click", function (e) {
-            var link_id = parseInt(e.currentTarget.id) + 1
-            var div = $(this).parent().parent();
-            var prevlink = $(this).parent().parent().find('iframe').attr('src');
-            if (prevlink == undefined) {
-                prevlink = "http://";
-            }
-            var link = prompt("Url (Youtube, DailyMotion)", prevlink);
-            if (link == null) {
-                return false
-            } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
-                link = 'http://' + link
-            }
-            video_link = getEmbedVideo(link)
-            div.find('p, iframe, video').remove();
-            div.append(video_link);
-        });
-
-        $('.video-div').on('dragover', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-        })
-
-        $('.video-div').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 150,
-            minHeight: 150,
-            stop: function (e, ui) {
-                // var parent = ui.element.parent();
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
-            },
-        });
-
-        $('.video-div').on('drop', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-
-
-            $(this).css({
-                'padding': '5px'
-            })
-
-            const files = e.originalEvent.dataTransfer.files;
-            var file = files[0];
-            upload(file);
-        });
-
-        function upload(file) {
-            var data = new FormData();
-
-            data.append("FileName", file);
-            data.append('chapterID', chapterID);
-            data.append('courseID', courseID);
-            data.append('type', 'video');
-            $.ajax({
-                xhr: function () {
-                    var xhr = new window.XMLHttpRequest();
-
-                    xhr.upload.addEventListener("progress", function (evt) {
-                        $('#progress-bar').css("display", "block");
-
-                        if (evt.lengthComputable) {
-                            var percentComplete = evt.loaded / evt.total;
-                            percentComplete = parseInt(percentComplete * 100);
-                            console.log(percentComplete);
-                            // $('#progress-bar-fill').css('width', percentComplete + '%');
-                            $("#progress-bar").attr('aria-valuenow', percentComplete).css('width', percentComplete + '%').text(percentComplete + '%');
-
-                            if (percentComplete === 100) {
-                                // $('#progress-bar').css("display", "none");
-                                let div = $('#video-drag').parent().parent();
-                                $('#video-drag').css({
-                                    'display': 'none'
-                                });
-
-                                div.append(`
-                                        <video width="400" height="200" controls>
-                                        <source src="../uploads/${data.media_name}" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                `);
-
-                                $(div).hover(function () {
-                                    $(this).css("border", "1px solid red");
-                                }, function () {
-                                    $(this).css("border", '0')
-                                })
-
-                                $('.video-div').resizable({
-                                    containment: $('.editor-canvas'),
-                                    grid: [20, 20],
-                                    autoHide: true,
-                                    minWidth: 150,
-                                    minHeight: 150
-                                });
-                            }
-
-                        }
-                    }, false);
-
-                    return xhr;
-                },
-                url: save_video_url,
-                data: data,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST',
-                success: function (data) {
-                    console.log(data);
-                }
-
-            });
-
-        }
-
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    let div = $(input).parent().parent().parent();
-                    div.find('video').remove();
-                    var data = new FormData();
-                    $.each(input.files, function (i, file) {
-                        data.append('file-' + i, file);
-                    });
-                    data.append('chapterID', chapterID);
-                    data.append('courseID', courseID);
-                    data.append('type', 'video');
-                    $.ajax({
-                        url: save_video_url,
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        method: 'POST',
-                        type: 'POST',
-                        beforeSend: function () {
-                            div.append(`<div class="loader" id="loadingDiv"></div>
-                            <p id = "percentcomplete"></p>
-                            `)
-                            $('#loadingDiv').show();
-                        },
-                        error: function (errorThrown) {
-                            alert("Failed to upload Video" + errorThrown)
-                            div.find('#loadingDiv').remove();
-                            div.find('#percentcomplete').remove();
-                        },
-                        success: function (data) {
-                            div.find('#loadingDiv').remove();
-                            div.find('#percentcomplete').remove();
-                            div.find('p').remove();
-                            div.find('.progress').remove();
-                            if (data.hasOwnProperty('html')) {
-                                var html = $(data.html);
-                                $(html).css('height', '100%')
-                                $(html).css('width', '100%')
-
-                                div.append(`
-                                    <video width="100%" height="100%">
-                                        <source src="${data.link}">
-                                    </video>
-                                `);
-                            } else {
-                                div.append(`
-                                    <video width="100%" height="100%" controls>
-                                        <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
-                                    </video>
-                                `)
-                            }
-                        },
-                        xhr: function () {
-                            var xhr = new window.XMLHttpRequest();
-
-                            xhr.upload.addEventListener("progress", function (evt) {
-                                $('#progress-bar').css("display", "block");
-
-                                if (evt.lengthComputable) {
-                                    var percentComplete = evt.loaded / evt.total;
-                                    percentComplete = parseInt(percentComplete * 100);
-                                    console.log(percentComplete);
-                                    $('#percentcomplete').text(percentComplete + '%')
-                                    $('#progress-bar-fill').css('width', percentComplete + '%');
-
-                                    if (percentComplete === 100) {
-                                        $('#progress-bar').css("display", "none");
-                                        let div = $('#video-drag').parent().parent();
-                                        $('#video-drag').css({
-                                            'display': 'none'
-                                        });
-
-                                        //         div.append(`
-                                        //         <video width="400" height="200" controls>
-                                        //         <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
-                                        //          Your browser does not support the video tag.
-                                        //       </video>
-                                        //   `);
-
-                                        $(div).hover(function () {
-                                            $(this).css("border", "1px solid red");
-                                        }, function () {
-                                            $(this).css("border", '0')
-                                        })
-
-                                        $('.video-div').resizable({
-                                            containment: $('#tabs-for-download'),
-                                            grid: [20, 20],
-                                            autoHide: true,
-                                            minWidth: 150,
-                                            minHeight: 150
-                                        });
-                                        // console.log(file.name);
-                                    }
-                                }
-                            }, false);
-
-                            return xhr;
-                        }
-
-                    });
-
-                    $('#video-drag').css({
-                        'display': 'none'
-                    });
-
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $(".video-form").off().change(function (e) {
-            readURL(this);
-        });
-    }
-
-    function _3dFunction(top = null, left = null, file = null, height = null, width = null) {
-        const _3d = new _3Dobject(
-            top,
-            left,
-            file,
-            height, width);
-        _3d.renderDiagram();
-
-        // $('#_3dfile-link').on('change', function (e) {
-        //     $('#mtl-file').prop('disabled', false);
-        // });
-
-        $('._3dobj-div').on('click', '.fa-upload', function (e) {
-            // trigger = parseInt(e.target.id) + 1;
-            // $('#' + trigger).trigger('click');
-            $('#_3dfile-link').val('');
-            // $('#mtl-file').val('');
-            // $('#mtl-file').prop('disabled', true);
-            $('#link-3d-submit').val(parseInt(e.target.id))
-            $('#link-3d-modal').modal();
-        });
-
-        $('.fa-trash').click(function (e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-
-        $('._3dobj-div').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 150,
-            minHeight: 150,
-            stop: function (e, ui) {
-                var parent = ui.element.parent();
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
-            },
-        });
-
-        $('.3dobj').on('dragover', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            //   $(this).css('border',"2px solid #39F")
-        });
-
-        function readURL(upload_btn) {
-            if ($('#_3dfile-link')[0].files.length != 0) {
-                var obj = $('#_3dfile-link')[0].files[0];
-            } else {
-                alert("Please select a file to upload")
-                return false
-            }
-            // if ($('#mtl-file')[0].files.length != 0) {
-            //     var mtl = $('#mtl-file')[0].files[0];
-            // } else {
-            //     var mtl = null
-            // }
-
-            let div = $('#' + upload_btn.val()).parent().parent();
-            var data = new FormData();
-
-            if ($(div).find('iframe').length > 0) {
-                if ($('#tabs-for-download').find('iframe[src$="' + $(div).find('iframe').attr('src') + '"]').length == 1) {
-                    tobedeletedfiles._3d.push($(div).find('iframe').attr('src'));
-                }
-            }
-
-            data.append('csrfmiddlewaretoken', csrf_token);
-            data.append('objfile', obj);
-            // data.append('mtlfile', mtl);
-            data.append('type', '3d');
-            data.append('chapterID', chapterID);
-            data.append('courseID', courseID);
-            $.ajax({
-                url: save_3d_url,
-                data: data,
-                contentType: false,
-                processData: false,
-                enctype: 'multipart/form-data',
-                method: 'POST',
-                type: 'POST',
-                beforeSend: function () {
-                    div.append(`<div class="loader" id="loadingDiv"></div>`)
-                    $('#loadingDiv').show();
-                },
-                error: function (errorThrown) {
-                    alert("Failed to upload File")
-                    div.find('#loadingDiv').remove();
-                },
-                success: function (data) {
-                    _3dFunction(div.css('top'),
-                        div.css('left'), '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname, div.css('height'), div.css('width'));
-                    div.remove()
-                },
-                error: function (data, status, errorThrown) {
-                    alert(data.responseJSON.message);
-                }
-            });
-
-            $('#_3dobj-drag').css({
-                'display': 'none'
-            })
-
-            $(div).hover(function () {
-                $(this).css("border", "1px solid red");
-            }, function () {
-                $(this).css("border", '0')
-            })
-
-            $('._3dobj').resizable({
-                containment: $('#tabs-for-download'),
-                grid: [20, 20],
-                autoHide: true,
-                minWidth: 150,
-                minHeight: 150
-            });
-
-            $('._3dobj').css({
-                'resize': 'both'
-            });
-        }
-
-        $("#link-3d-submit").unbind().off().click(function (e) {
-            $('#link-3d-modal').modal('hide');
-            readURL($(this));
-        });
-    }
-
-    // delete page function
-    $('.tabs-to-click').on('click', '.delete-page-btn', function () {
-        var confirmation = confirm("Are you sure you want to delete?")
-        if (confirmation == false) {
-            return false
-        }
-        if ($(this).parent().parent().parent().prev().find('li').length != 0)
-            $(this).parent().parent().parent().prev().find('li')[0].click();
-        else if ($(this).parent().parent().parent().next().find('li').length != 0)
-            $(this).parent().parent().parent().next().find('li')[0].click()
-        else {
-            alert("cannot delete only page");
-            return false
-        }
-        $('#tab' + this.value).remove();
-        $(this).parent().parent().parent().remove();
-        displaypagenumbers();
-    });
-
-    // clone Page function
-    $('.tabs-to-click').on('click', '.clone-page-btn', function () {
-        var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
-        let copy = $(this).parent().parent().parent().clone();
-        // for cloning page navigation tabs
-        copy.find('.clone-page-btn').val(num_tabs);
-        copy.find('.delete-page-btn').val(num_tabs);
-        copy.find('.pagenumber').val(num_tabs);
-        copy.find('.pagenumber').attr('onclick', 'openTab(event,"tab' + num_tabs + '")');
-        $(this).parent().parent().parent().after(copy);
-        // =============================================================================
-
-        // for editor cloning
-        editorcopy = $('#tab' + this.value).clone();
-        editorcopy.attr('id', 'tab' + num_tabs);
-        editorcopy.empty();
-        const obj = $("#tab" + this.value).children();
-        $(".tabs").append(editorcopy);
-        $(this).parent().parent().parent().next().find('li')[0].click()
-        $.each(obj, function (i, value) {
-            if (value.classList.contains('textdiv')) {
-                var clone = $(this).find('.note-editable').clone();
-                // clone.find('div').remove();
-                var content_html = clone.html();
-                TextboxFunction($(this).css("top"),
-                    $(this).css("left"), $(this).css("height"), $(this).css("width"), content_html);
-            }
-            if (value.classList.contains('pic')) {
-                PictureFunction($(this).css("top"),
-                    $(this).css("left"), $(value).find('img').attr('src'), $(this).css("width"), $(this).css("height"));
-            }
-            if (value.classList.contains('btn-div')) {
-                ButtonFunction($(this).css("top"),
-                    $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
-            }
-            if (value.classList.contains('quiz-div')) {
-                QuizFunction($(this).css("top"),
-                    $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
-            }
-            if (value.classList.contains('survey-div')) {
-                SurveyFunction($(this).css("top"),
-                    $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
-            }
-            if (value.classList.contains('pdfdiv')) {
-                PDFFunction($(this).css("top"),
-                    $(this).css("left"), $(this).find('object').attr('data'), $(this).css("height"), $(this).css("width"));
-            }
-            if (value.classList.contains('video-div')) {
-                if ($(this).find('iframe').length > 0) {
-                    var vidlink = $(this).find('iframe').attr('src');
-                } else if ($(this).find('video').length) {
-                    var vidlink = $(this).find('video > source').attr('src');
-                }
-                VideoFunction($(this).css("top"),
-                    $(this).css("left"), vidlink, $(this).css("height"), $(this).css("width"));
-            }
-            if (value.classList.contains('_3dobj-div')) {
-                _3dFunction($(this).css("top"),
-                    $(this).css("left"), $(this).find('iframe').attr('src'), $(this).css("height"), $(this).css("width"));
-            }
-        });
-
-
-        // =========================================================================
-
-        $(".editor-canvas").droppable({
-            drop: function (event, ui) {
-                dropfunction(event, ui)
-            }
-        });
-
-        displaypagenumbers();
-    });
-
-    // =====================================================================================
 
     function dropfunction(event, ui) {
         if (ui.helper.hasClass('textbox')) {
@@ -2022,6 +929,7 @@ $(document).ready(function () {
 
     $(".editor-canvas").droppable({
         drop: function (event, ui) {
+            console.log('hello')
             dropfunction(event, ui)
         }
     });
@@ -2030,108 +938,92 @@ $(document).ready(function () {
         newpagefunction();
     });
 
-    function newpagefunction() {
-        if ($(".tabs-to-click ul li").last().length == 0) {
-            var num_tabs = 1
-        } else {
-            var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
-        }
-        $(".tabs-to-click ul").append(`
-            <div class="canvas-relative" style="position:relative"> 
-              
-             
-                <li class="tabs-link pagenumber " value="${num_tabs}" onclick="changePage('tab${num_tabs}')"></li>
-                <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
-                        <p style="display:inline-block"></p> 
-                        <span style="float:right ">
-                            <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
-                        </span>
-
-                        <spannewpage style="float:right ">
-                            <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
-                        </span>
-                 </div>
-               
-               <hr class="white-hr"/>
-            
-
-            </div>
-        `);
-        $(".tabs").append(
-            `<p id='tab${num_tabs}' style="display:block; background-color: rgb(255, 255, 255);" class="tab-content-no droppable editor-canvas ui-droppable current">
-                    <input type = "color" value = "#ffffff" class="page-background">
-            </p>`
-        );
-
-        $(".editor-canvas").droppable({
-            drop: function (event, ui) {
-                dropfunction(event, ui);
-            }
-        });
-        displaypagenumbers();
-    }
-
-    $("#importzipfile").change(function (e) {
-        var confirmation = confirm('All current data will be replaced! Are you sure you want to continue?')
-        if (confirmation == false) {
-            return false
-        }
-        let input = this.files[0];
-        var fileExtension = ['zip'];
-        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
-            alert(fileExtension.join(', ') + " formats allowed only");
-            return false
-        }
-        var filedata = new FormData();
-        filedata.append("filename", input);
-        filedata.append("chapterID", chapterID);
-        filedata.append("courseID", courseID);
-        filedata.append("csrfmiddlewaretoken", csrf_token);
-        $.ajax({
-            url: import_zip_url,
-            contentType: false,
-            processData: false,
-            data: filedata,
-            enctype: 'multipart/form-data',
-            method: 'POST',
-            beforeSend: function () {
-                $('#tabs-for-download').append(`<div class="loader" id="loadingDiv"></div>
-                <p id = "percentcomplete"></p>
-                `)
-                $('#loadingDiv').show();
-            },
-            success: function (data) {
-                $('#tabs-for-download').empty();
-                $('.tabs-to-click > ul').empty();
-                display(data);
-            },
-            error: function (errorThrown) {
-                $('#tabs-for-download').find('#loadingDiv').empty();
-                console.log(errorThrown)
-                alert(errorThrown.responseJSON.message)
-            }
-        });
-    });
-
+    
+    $('.tabs-to-click > ul > li:first').remove()
     changePage('tab1');
     window.firstload = false 
+
+  
+    
+    
 });
+
+function displaypagenumbers() {
+    $('.pagenumber').each(function (key, value) {
+        $(this).parent().find('p').text(key + 1);
+    })
+}
+function newpagefunction(new_page_num) {
+    if ($(".tabs-to-click ul li").last().length == 0) {
+        var num_tabs = 1
+    } 
+    
+    else if(new_page_num){
+        var num_tabs =  new_page_num   
+    }else {
+        var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
+    }
+    $(".tabs-to-click ul").append(`
+        <div class="canvas-relative" style="position:relative"> 
+          
+         
+            <li class="tabs-link pagenumber " value="${num_tabs}" onclick="changePage('tab${num_tabs}')"></li>
+            <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
+                    <p style="display:inline-block"></p> 
+                    <span style="float:right ">
+                        <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                    </span>
+
+                    <spannewpage style="float:right ">
+                        <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                    </span>
+             </div>
+           
+           <hr class="white-hr"/>
+        
+
+        </div>
+    `);
+    $(".tabs").append(
+        `<p id='tab${num_tabs}' style="display:block; background-color: rgb(255, 255, 255);" class="tab-content-no droppable editor-canvas ui-droppable current">
+                <input type = "color" value = "#ffffff" class="page-background">
+        </p>`
+    );
+
+    $(".editor-canvas").droppable({
+        drop: function (event, ui) {
+            dropfunction(event, ui);
+        }
+    });
+    displaypagenumbers();
+}
+
 async function changePage(page_number){
     let prev_page = window.currentPage
     if(!window.firstload){
-        await(setThumbnails())
-        setTimeout(()=>{updateData(prev_page)},5000) 
+        await(setThumbnails(prev_page))
+        updateData(prev_page)
+        $('#tab'+prev_page).removeClass('current')
+        $('#tab'+prev_page).css('display', 'none')
+        
+        var promise = new Promise(function(resolve, reject){
+            resolve(storethumbnails(prev_page))
+        });
+        promise.then(function(){ 
+            $('#tab'+prev_page).remove();    // empty current canvas 
+        }).catch(function(errorMessage) { 
+             console.log('error',errorMessage); 
+        }); 
     }
     window.currentPage = page_number.replace( /^\D+/g, '')
-    $('#tabs-for-download').empty();    // empty current canvas 
-
-    display(data, page_number);
+    newpagefunction(window.currentPage)
+    display(data, page_number);  
 }
 
 function display(data = "", currentPage='tab1') {
     $('#chaptertitle').text(chaptertitle);
     // $('#tabs-for-download').empty();    // empty current canvas 
-    $('.tabs-to-click > ul > li:first').remove()
+    // $('.tabs-to-click > ul > li:first').remove()
     if (data.pages == undefined) {
         $('#add-page-btn').click();
     }
@@ -2278,16 +1170,8 @@ function display(data = "", currentPage='tab1') {
     // $('.tabs-to-click > ul > div > li')[0].click()
 }
 
-function displaypagenumbers() {
-    $('.pagenumber').each(function (key, value) {
-        $(this).parent().find('p').text(key + 1);
-    })
-}
-
 function updateData(prev_page){
-    console.log($('.pagenumber[value= '+prev_page+']'))
     if(!data.numberofpages){
-        // newpagefunction()   // add pages corresponding to the number of pages in json
         pages = {}
         textdiv = [];
         picdiv = [];
@@ -2419,8 +1303,7 @@ function updateData(prev_page){
         }
     });
     backgroundcolor = $("#tab"+parseInt(window.currentPage)).css('background-color')
-    thumbnail = ($('.pagenumber[value= '+prev_page+']')[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-    pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'thumbnail': thumbnail, 'backgroundcolor': backgroundcolor}]
+    pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
     
     data = {
       'numberofpages': numberofpages, 
@@ -2431,161 +1314,22 @@ function updateData(prev_page){
     };
 }
 
-// Media File deletion
-function deleteFile() {
-    $.ajax({
-        url: delete_file_url,
-        data: {
-            'csrfmiddlewaretoken': csrf_token,
-            'old': JSON.stringify(tobedeletedfiles),
-        },
-        method: 'POST',
-        type: 'POST',
-
-        error: function (errorThrown) {
-            alert("Failed to delete existing file")
-        },
-        success: function (data) {
-        },
-    });
+function storethumbnails(prev_page){
+    thumbnail = ($('.pagenumber[value= '+prev_page+']')[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+    data.pages[prev_page].thumbnail = thumbnail
 }
 
-// ===========================================================================
-
-// Button Form Submit
-$('#btn-submit').on('click', function () {
-    var btn_name = $('#btn-name').val();
-    var btn_link = $('#btn-link').val();
-    var btn_id = $('#button_id').val();
-    if (btn_link != "") {
-        $('#' + btn_id).attr({
-            "href": `http://${btn_link}`
-        });
-    } else {
-        $('#' + btn_id).removeAttr('href');
+$('#tabs-for-download').on('click', '.textdiv', function () {
+    $this = $('.note-editable:focus')
+    if ($('.note-editable:focus').html() == "Type Something Here...") {
+        $('.note-editable:focus').html("")
     }
-    $('#' + btn_id).find('text').text(btn_name);
-    $('#btn-modal').modal('hide');
-})
-
-// ======================================================================
-
-// quiz Form Submit
-$('#quiz-submit').on('click', function () {
-    var quiz_name = $('#quiz-btn-name').val();
-    var quiz_span_name = $('#quiz-name').val();
-    var quiz_link = $('#quiz-link').val();
-    var quiz_id = $('#quiz_id').val();
-    if (quiz_link != "") {
-        $('#' + quiz_id).attr({
-            "href": `${quiz_link}`
-        });
-    } else {
-        $('#' + quiz_id).removeAttr('href');
-    }
-    $('#' + quiz_id).parent().parent().find('.resizable-text-only').text(quiz_name);
-    $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
-    $('#quiz-modal').modal('hide');
-})
-
-$('#myTable').on('click', '.selectquiz', function () {
-    $('#quiz-name').val($(this).closest('td').prev('td').text().trim())
-    $('#quiz-link').val(`/quiz/quiz${$(this).val().trim()}/take/`)
-})
-// ======================================================================
-
-// survey Form Submit
-$('#survey-submit').on('click', function () {
-    var survey_name = $('#survey-btn-name').val();
-    var survey_span_name = $('#survey-name').val();
-    var survey_link = $('#survey-link').val();
-    var survey_id = $('#survey_id').val();
-    if (survey_link != "") {
-        $('#' + survey_id).attr({
-            "href": `${survey_link}`
-        });
-    } else {
-        $('#' + survey_id).removeAttr('href');
-    }
-    $('#' + survey_id).parent().parent().find('.resizable-text-only').text(survey_name);
-    $('#' + survey_id).parent().parent().find('.survey-name').text(survey_span_name)
-    $('#survey-modal').modal('hide');
-})
-
-$('#mySurveyTable').on('click', '.selectsurvey', function () {
-    $('#survey-name').val($(this).closest('td').prev('td').text().trim())
-    $('#survey-link').val(`/students/questions_student_detail/detail/${$(this).val().trim()}`)
+    $($this).on('focusout', function () {
+        if ($($this).html() == "") {
+            $($this).html("Type Something Here...")
+        }
+    })
 });
-
-// $('#survey_create_link').on('click', function(){
-//     console.log('hello')
-    
-// })
-// ==================================================================================
-
-// background color for pages
-$('#tabs-for-download').click(function () {
-
-    var theInput = $('.current').find('.page-background')[0];
-    var theColor = theInput.value;
-    theInput.addEventListener("input", function () {
-        $('.current').css('background-color', theInput.value)
-    }, false);
-})
-
-// ==========================================================================
-
-$('#tabs-for-download').find('.survey-div').on('click', 'a', function(e){
-    e.preventDefault()
-    if (window.location.href.indexOf("/teachers") > -1) {
-        link = $(this).find('a')[0].href
-        surveypk = (link.split('/')[6]).match(/\d+/);
-        link = "/teachers/surveyinfodetail/detail/" + surveypk
-        window.open(link)   
-    }else{
-        link = $(this).find('a')[0].href
-        surveypk = (link.split('/')[6]).match(/\d+/);
-        link = "/survey/surveyinfo/detail/" + surveypk
-        window.open(link)
-    }
-})
-
-$('#tabs-for-download').find('.quiz-div').on('click', 'a', function(e){
-    e.preventDefault()
-    if (window.location.href.indexOf("/teachers") > -1) {
-        link = $(this).find('a')[0].href
-        quizpk = (link.split('/')[4]).match(/\d+/);
-        link = "/quiz/markingfilter/" + quizpk
-        window.open(link)
-    }else{
-        link = $(this).find('a')[0].href
-        quizpk = (link.split('/')[4]).match(/\d+/);
-        link = "/quiz/detail/" + quizpk
-        window.open(link)
-    }
-})
-
-// function openTab(evt, tab_no) {
-//     try {
-//         if (!window.firstload)
-//             setThumbnails()
-//     } catch (err) {
-//         console.log(err)
-//     }
-//     if($('.current').length != 0){
-//         $(".current.tab-content-no").css('display', 'none')
-//         $(".current").removeClass('current')
-//     }
-
-//     document.getElementById(tab_no).style.display = "block";
-//     document.getElementById(tab_no).className += " current";
-//     evt.currentTarget.className += " current";
-// }
-
-// document.addEventListener('visibilitychange', function(){
-//     setThumbnails();
-// });
-
 
 async function resizeImage(url, width, height, callback, dive) {
     var sourceImage = new Image();
@@ -2607,9 +1351,8 @@ async function resizeImage(url, width, height, callback, dive) {
 }
 
 
-async function setThumbnails() {
-    let id = $('.current')[0].id.replace(/[^\d.]/g, '');
-    $('.current').find('.pdfdiv').each(function () {
+async function setThumbnails(prev_page) {
+    $('#tab'+prev_page).find('.pdfdiv').each(function () {
         $(this).css({
             'background-image': `url('${pdf_icon}')`,
             'background-position': 'center',
@@ -2617,7 +1360,7 @@ async function setThumbnails() {
             'background-repeat': 'no-repeat'
         })
     })
-    $('.current').find('.video-div').each(function () {
+    $('#tab'+prev_page).find('.video-div').each(function () {
         $(this).css({
             'background-image': `url('${video_icon}')`,
             'background-position': 'center',
@@ -2625,7 +1368,7 @@ async function setThumbnails() {
             'background-repeat': 'no-repeat'
         })
     });
-    $('.current').find('._3dobj-div').each(function () {
+    $('#tab'+prev_page).find('._3dobj-div').each(function () {
         $(this).css({
             'background-image': `url('${_3d_icon}')`,
             'background-position': 'center',
@@ -2633,30 +1376,13 @@ async function setThumbnails() {
             'background-repeat': 'no-repeat'
         })
     })
-    html2canvas($('.current')[0],).then(canvas => {
-        $('.pagenumber').each(function () {
-            if (id == this.value) {
+    html2canvas($('#tab'+prev_page)[0],).then(canvas => {
+        $('.pagenumber[value= '+prev_page+']').each(function () {
                 if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
                     resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
                 }
-            }
         });
     });
-    $('.current').find('.pdfdiv').each(function () {
-        $(this).css({
-            'background-image': `none`,
-        })
-    });
-    $('.current').find('.video-div').each(function () {
-        $(this).css({
-            'background-image': `none`,
-        })
-    });
-    $('.current').find('._3dobj-div').each(function () {
-        $(this).css({
-            'background-image': `none`,
-        })
-    })
 }
 
 function setThumbnailscallback(data, dive) {
@@ -2667,15 +1393,3 @@ function setThumbnailscallback(data, dive) {
         'background-repeat': 'no-repeat',
     });
 }
-
-$('#tabs-for-download').on('click', '.textdiv', function () {
-    $this = $('.note-editable:focus')
-    if ($('.note-editable:focus').html() == "Type Something Here...") {
-        $('.note-editable:focus').html("")
-    }
-    $($this).on('focusout', function () {
-        if ($($this).html() == "") {
-            $($this).html("Type Something Here...")
-        }
-    })
-});
