@@ -51,7 +51,8 @@ $("#previewBtn").on("click",function(e){
 
 $("#SaveBtn").on("click",function(e){
   $(this).html(`<i class='fa fa-spinner fa-spin '></i> Saving`);
-  setThumbnails()
+  let prev_page = document.getElementsByClassName("tab-content-no current")[0].id.replace( /^\D+/g, '')
+  setThumbnails(prev_page)
   deleteFile()
   setTimeout(function(){
     pages = {}
