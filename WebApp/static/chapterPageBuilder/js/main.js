@@ -2400,18 +2400,21 @@ $('#tabs-for-download').click(function () {
 // ==========================================================================
 
 function openTab(evt, tab_no) {
+    
     try {
-        if (!window.firstload)
-            setThumbnails()
+        if (!window.firstload){
+            let prev_page = document.getElementsByClassName("tab-content-no current")[0].id.replace( /^\D+/g, '')
+            setThumbnails(prev_page)
+        }
     } catch (err) {
         console.log(err)
     }
-    tabcontent = document.getElementsByClassName("tab-content-no");
+    tabcontent = document.getElementsByClassName("tab-content-no current");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
         tabcontent[i].className = tabcontent[i].className.replace("current", "");
     }
-    tablinks = document.getElementsByClassName("tabs-link");
+    tablinks = document.getElementsByClassName("tabs-link current");
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace("current", "");
     }
@@ -2445,8 +2448,8 @@ async function resizeImage(url, width, height, callback, dive) {
 }
 
 
-async function setThumbnails() {
-    let id = $('.current')[0].id.replace(/[^\d.]/g, '');
+async function setThumbnails(prev_page) {
+    // let id = $('.current')[0].id.replace(/[^\d.]/g, '');
     $('.current').find('.pdfdiv').each(function () {
         $(this).css({
             'background-image': `url('${pdf_icon}')`,
@@ -2472,11 +2475,11 @@ async function setThumbnails() {
         })
     })
     html2canvas($('.current')[0],).then(canvas => {
-        $('.pagenumber').each(function () {
-            if (id == this.value) {
+        $('.pagenumber[value= '+prev_page+']').each(function () {
+            // if (id == this.value) {
                 if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
                     resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
-                }
+                // }
             }
         });
     });
