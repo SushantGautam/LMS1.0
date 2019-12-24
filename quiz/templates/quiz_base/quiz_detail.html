@@ -106,12 +106,11 @@
     <a href="#mcqn_list" data-toggle="collapse">
 
         <p class="exam-results text-center">
-<span class="exam-results"> <i class="fa fa-list"></i>
-    LIST OF MCQUESTIONS</span> {% if quiz.has_mcqs %} <span class="fa fa-chevron-down"
-                                                            style="color:white"></span>{% endif %}
+         <span class="exam-results"> <i class="fa fa-list"></i>&nbsp;LIST OF MCQUESTIONS {% if quiz.has_mcqs %} <span class="fa fa-chevron-down"
+            style="color:white"></span>{% endif %}</span> 
             <a href="" id="mcq_choose_button" data-toggle="modal"
                data-target="#question_form_popup">
-                <span class="add-mcq-details" style="float: right; margin-left: 10px;"> CHOOSE PREVIOUS MCQ </span>
+                <span class="add-mcq-details" style="float: right;margin-right: 10px;"> CHOOSE PREVIOUS MCQ </span>
             </a>
             <a href="" id="mcq_create_button" data-toggle="modal"
                data-target="#question_form_popup">
@@ -125,7 +124,7 @@
 
 
     <div id="mcqn_list" class="collapse">
-        <ul>
+        <ul style="padding: 0px;">
             {% for quest in quiz.mcquestion.all %}
                 <div class="mcq-list-details">
                     <div class="row">
@@ -175,7 +174,7 @@
                     </div>
                 </div>
                 <div id="mcans_list_{{ quest.id }}" class=" correct-list collapse">
-                    <ul>
+                    <ul >
                         {% for ans in quest.get_answers %}
                             <li class="quiz-answer-listing"></li>
                             {{ forloop.counter }} <span>)&nbsp;</span>
@@ -191,12 +190,12 @@
 <div class="quiz-question-list">
     <a href="#tfqn_list" data-toggle="collapse">
         <p class="exam-results text-center">
-            <span class="exam-results"> <i class="fa fa-bookmark "></i> LIST OF TFQUESTIONS</span>
-            {% if quiz.has_tfqs %}<span class="fa fa-chevron-down"
-                                        style="color:white"></span> {% endif %}
+            <span class="exam-results"> <i class="fa fa-bookmark "></i>&nbsp;LIST OF TFQUESTIONS {% if quiz.has_tfqs %}<span class="fa fa-chevron-down"
+                style="color:white"></span> {% endif %}</span>
+            
             <a href="" id="tfq_choose_button" data-toggle="modal"
                data-target="#question_form_popup">
-                <span class="add-mcq-details" style="float: right; margin-left: 10px;"> CHOOSE PREVIOUS TFQ </span>
+                <span class="add-mcq-details" style="float: right;margin-right: 10px;"> CHOOSE PREVIOUS TFQ </span>
             </a>
             <a href="" id="tfq_create_button" data-toggle="modal"
                data-target="#question_form_popup">
@@ -205,7 +204,7 @@
         </p>
     </a>
     <div id="tfqn_list" class="collapse">
-        <ul>
+        <ul style="padding: 0px;">
             {% for quest in quiz.tfquestion.all %}
                 <div class="tfq-list-details">
                     <div class="row">
@@ -251,23 +250,34 @@
     <a href="#esqn_list" data-toggle="collapse">
 
         <p class="exam-results text-center">
-            <span class="exam-results"> <i class="fa fa-align-right  "></i>LIST OF SHORT ANSWER QUESTIONS</span>
-            {% if quiz.has_saqs %}<span class="fa fa-chevron-down"
-                                        style="color:white"></span>{% endif %}
-            <a href="" id="saq_choose_button" data-toggle="modal"
-               data-target="#question_form_popup">
-                <span class="add-mcq-details" style="float: right; margin-left: 10px;"> CHOOSE PREVIOUS SAQ </span>
-            </a>
-            <a href="" id="saq_create_button" data-toggle="modal"
-               data-target="#question_form_popup">
-                <span class="add-mcq-details" style="float: right">ADD SAQ +</span>
-            </a>
+            
+                    <span class="exam-results"> <i class="fa fa-align-right  "></i>&nbsp;LIST OF SHORT ANSWER QUESTIONS  {% if quiz.has_saqs %}<span class="fa fa-chevron-down"
+                        style="color:white"></span>{% endif %}</span>
+                   
+
+            
+            
+                    <a href="" id="saq_choose_button" data-toggle="modal"
+                    data-target="#question_form_popup">
+                     <span class="add-mcq-details" style="float: right;margin-right: 10px;">CHOOSE PREVIOUS SAQ </span>
+                 </a>
+
+            
+           
+                    <a href="" id="saq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup">
+                     <span class="add-mcq-details" style="float: right">ADD SAQ +</span>
+                 </a>
+         
+           
+            
+           
         </p>
 
     </a>
 
     <div id="esqn_list" class="collapse">
-        <ul>
+        <ul style="padding: 0px;">
             {% for quest in quiz.saquestion.all %}
                 <div class="saq-list-details">
                     <div class="row">
