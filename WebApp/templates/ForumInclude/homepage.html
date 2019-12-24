@@ -18,7 +18,7 @@
                 {% if request.user.is_authenticated %}
                 {% if not '/students' in request.path %}
                 <div class="media-right">
-                    <a  class="btn btn-white btn-flat " href="{% if '/teachers' in request.path %}
+                    <a  class="btn btn-white btn-fla  custom-size-font " href="{% if '/teachers' in request.path %}
                     {% url 'teacher_create_topic' %}
                      {% elif '/forum' in request.path %}
                     /forum/topic/create
@@ -30,7 +30,7 @@
                 {% endif %}
 
                 <div class="media-right">
-                    <a class="btn btn-white btn-flat custom-size" href="{% if '/teachers' in request.path %}
+                    <a class="btn btn-white btn-flat custom-size-font" href="{% if '/teachers' in request.path %}
                     /teachers/forum/create_thread
                     {% elif '/students' in request.path %}
                     /students/forum/create_thread
