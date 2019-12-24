@@ -1,248 +1,279 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
-{% block content %}
-{% include 'WebApp/theme/alerts.html' %}
 
-<div class="col-md-12 col-sm-12 col-xs-12 text-center">
-    <h1 class="tableHeader"><b>
+{% block stylesheets %}
+    <link rel='manifest' href='/manifest.webmanifest'>
+
+{% endblock stylesheets %}
+
+
+{% block content %}
+    {% include 'WebApp/theme/alerts.html' %}
+
+    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+        <h1 class="tableHeader"><b>
             Welcome to Teacher Portal
         </b></h1>
-</div>
-<div class="col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
-    <h3 style="color: white"><b>Overview</b></h3>
-</div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
+        <h3 style="color: white"><b>Overview</b></h3>
+    </div>
 
-<div class="row">
-    <div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h3 style="margin-left: 10px"><span>List of my Classes </span></h3>
-            </div>
-            <ul class="list-group">
-                {% for object in Session %}
-                {% ifchanged object %}
+    <div class="row">
+        <div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="title text-center">
+                    <h3 style="margin-left: 10px"><span>List of my Classes </span></h3>
+                </div>
+                <ul class="list-group">
+                    {% for object in Session %}
+                        {% ifchanged object %}
 
-                <li class="list-group-item ">
-                    <h5 class="text-center">
+                            <li class="list-group-item ">
+                                <h5 class="text-center">
 
-                        <b> <a href="{{ object.Groups.teacher_get_absolute_url }}">{{object.Groups}}</a></b>
-                        <!-- <a href="{{ object.Inning_Name.teacher_get_absolute_url }}">
+                                    <b>
+                                        <a href="{{ object.Groups.teacher_get_absolute_url }}">{{ object.Groups }}</a></b>
+                                    <!-- <a href="{{ object.Inning_Name.teacher_get_absolute_url }}">
                         <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                         ">CONTINUE <i class="fa fa-arrow-right"></i>
                         </button>
                     </a> -->
 
-                    </h5>
-                </li>
-                {% endifchanged %}
-                {% endfor %}
-            </ul>
+                                </h5>
+                            </li>
+                        {% endifchanged %}
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-    </div>
-    <div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h3 style="margin-left: 10px"><span><b>Courses</b> - <a href="{% url 'teacher_mycourses_list' %}">List
+        <div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="title text-center">
+                    <h3 style="margin-left: 10px"><span><b>Courses</b> - <a href="{% url 'teacher_mycourses_list' %}">List
                             of my
                             Courses </a></span></h3>
 
-            </div>
-            <ul class="list-group">
-                {% for object in MyCourses %}
-                <li class="list-group-item ">
-                    <h5>
-                        <b> {{object.Course_Code}}</b>
-                        <a href="{{ object.Course_Code.teacher_get_absolute_url }}">
-                            <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                </div>
+                <ul class="list-group">
+                    {% for object in MyCourses %}
+                        <li class="list-group-item ">
+                            <h5>
+                                <b> {{ object.Course_Code }}</b>
+                                <a href="{{ object.Course_Code.teacher_get_absolute_url }}">
+                                    <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                         ">CONTINUE <i class="fa fa-arrow-right"></i>
-                            </button>
-                        </a>
+                                    </button>
+                                </a>
 
-                    </h5>
-                </li>
-                {% endfor %}
-            </ul>
+                            </h5>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h3 style="margin-left: 10px"><span><a href="{% url 'teacher_myassignmentinfo_list' %}"><b>List of my
+        <div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="title text-center">
+                    <h3 style="margin-left: 10px"><span><a href="{% url 'teacher_myassignmentinfo_list' %}"><b>List of my
                                 Assignments</b></a>
                     </span></h3>
-            </div>
-            <ul class="list-group">
-                {% for object in activeAssignments %}
-                <li class="list-group-item ">
-                    <h5>
-                        <b> {{object.Assignment_Topic}}</b>
-                        <h5 style="margin-bottom: 0;">
-                            <a href="{{ object.teacher_get_absolute_url }}">
-                                <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                </div>
+                <ul class="list-group">
+                    {% for object in activeAssignments %}
+                        <li class="list-group-item ">
+                            <h5>
+                                <b> {{ object.Assignment_Topic }}</b>
+                                <h5 style="margin-bottom: 0;">
+                                    <a href="{{ object.teacher_get_absolute_url }}">
+                                        <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                         ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </a>
-                        </h5>
-                    </h5>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="row justify-content-md-center">
-    <div class="col-sm-6" style="max-width: -webkit-fill-available;">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
+                                        </button>
+                                    </a>
+                                </h5>
+                            </h5>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; "></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row justify-content-md-center">
+        <div class="col-sm-6" style="max-width: -webkit-fill-available;">
+            <div class="panel panel-default">
+                <div class="title text-center">
+                    <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; "></div>
+            </div>
         </div>
     </div>
-</div>
 
 
 
 
 
-<script>
-    var config = {
-        trace: true,
-        spiralResolution: 1, //Lower = better resolution
-        spiralLimit: 360 * 5,
-        lineHeight: 0.8,
-        xWordPadding: 0,
-        yWordPadding: 3,
-        font: "sans-serif"
-    }
-    var values = {{ get_top_thread_keywords | safe  }};
-    var words = values.map(function (word) {
-        return {
-            word: word,
-            freq: Math.floor(Math.random() * 50) + 10
+    <script>
+        var config = {
+            trace: true,
+            spiralResolution: 1, //Lower = better resolution
+            spiralLimit: 360 * 5,
+            lineHeight: 0.8,
+            xWordPadding: 0,
+            yWordPadding: 3,
+            font: "sans-serif"
         }
-    })
-
-    words.sort(function (a, b) {
-        return -1 * (a.freq - b.freq);
-    });
-
-    var cloud = document.getElementById("word-cloud");
-    cloud.style.position = "relative";
-    cloud.style.fontFamily = config.font;
-
-    var traceCanvas = document.createElement("canvas");
-    traceCanvas.width = cloud.offsetWidth;
-    traceCanvas.height = cloud.offsetHeight;
-    var traceCanvasCtx = traceCanvas.getContext("2d");
-    cloud.appendChild(traceCanvas);
-
-    var startPoint = {
-        x: cloud.offsetWidth / 2,
-        y: cloud.offsetHeight / 2
-    };
-
-    var wordsDown = [];
-    /* ======================= END SETUP ======================= */
-
-
-
-
-
-    /* =======================  PLACEMENT FUNCTIONS =======================  */
-    function createWordObject(word, freq) {
-        var wordContainer = document.createElement("div");
-        var wordLink = document.createElement("a");
-        wordContainer.style.position = "absolute";
-        wordContainer.style.fontSize = freq + "px";
-        wordContainer.style.lineHeight = config.lineHeight;
-        /*    wordContainer.style.transform = "translateX(-50%) translateY(-50%)";
-        wordContainer.appendChild(document.createTextNode(word));*/
-
-        wordLink.setAttribute(`href`, `/teachers/forum/search/(%3FP${word}.*)`);
-        wordLink.appendChild(document.createTextNode(word));
-        wordContainer.appendChild(wordLink);
-
-        return wordContainer;
-    }
-
-    function placeWord(word, x, y) {
-
-        cloud.appendChild(word);
-        word.style.left = x - word.offsetWidth / 2 + "px";
-        word.style.top = y - word.offsetHeight / 2 + "px";
-
-        wordsDown.push(word.getBoundingClientRect());
-    }
-
-    function trace(x, y) {
-        //     traceCanvasCtx.lineTo(x, y);
-        //     traceCanvasCtx.stroke();
-        traceCanvasCtx.fillRect(x, y, 1, 1);
-    }
-
-    function spiral(i, callback) {
-        angle = config.spiralResolution * i;
-        x = (1 + angle) * Math.cos(angle);
-        y = (1 + angle) * Math.sin(angle);
-        return callback ? callback() : null;
-    }
-
-    function intersect(word, x, y) {
-        cloud.appendChild(word);
-
-        word.style.left = x - word.offsetWidth / 2 + "px";
-        word.style.top = y - word.offsetHeight / 2 + "px";
-
-        var currentWord = word.getBoundingClientRect();
-
-        cloud.removeChild(word);
-
-        for (var i = 0; i < wordsDown.length; i += 1) {
-            var comparisonWord = wordsDown[i];
-
-            if (!(currentWord.right + config.xWordPadding < comparisonWord.left - config.xWordPadding ||
-                currentWord.left - config.xWordPadding > comparisonWord.right + config.wXordPadding ||
-                currentWord.bottom + config.yWordPadding < comparisonWord.top - config.yWordPadding ||
-                currentWord.top - config.yWordPadding > comparisonWord.bottom + config.yWordPadding)) {
-
-                return true;
+        var values = {{ get_top_thread_keywords | safe  }};
+        var words = values.map(function (word) {
+            return {
+                word: word,
+                freq: Math.floor(Math.random() * 50) + 10
             }
+        })
+
+        words.sort(function (a, b) {
+            return -1 * (a.freq - b.freq);
+        });
+
+        var cloud = document.getElementById("word-cloud");
+        cloud.style.position = "relative";
+        cloud.style.fontFamily = config.font;
+
+        var traceCanvas = document.createElement("canvas");
+        traceCanvas.width = cloud.offsetWidth;
+        traceCanvas.height = cloud.offsetHeight;
+        var traceCanvasCtx = traceCanvas.getContext("2d");
+        cloud.appendChild(traceCanvas);
+
+        var startPoint = {
+            x: cloud.offsetWidth / 2,
+            y: cloud.offsetHeight / 2
+        };
+
+        var wordsDown = [];
+        /* ======================= END SETUP ======================= */
+
+
+
+
+
+        /* =======================  PLACEMENT FUNCTIONS =======================  */
+        function createWordObject(word, freq) {
+            var wordContainer = document.createElement("div");
+            var wordLink = document.createElement("a");
+            wordContainer.style.position = "absolute";
+            wordContainer.style.fontSize = freq + "px";
+            wordContainer.style.lineHeight = config.lineHeight;
+            /*    wordContainer.style.transform = "translateX(-50%) translateY(-50%)";
+            wordContainer.appendChild(document.createTextNode(word));*/
+
+            wordLink.setAttribute(`href`, `/teachers/forum/search/(%3FP${word}.*)`);
+            wordLink.appendChild(document.createTextNode(word));
+            wordContainer.appendChild(wordLink);
+
+            return wordContainer;
         }
 
-        return false;
-    }
+        function placeWord(word, x, y) {
 
-    /* =======================  END PLACEMENT FUNCTIONS =======================  */
+            cloud.appendChild(word);
+            word.style.left = x - word.offsetWidth / 2 + "px";
+            word.style.top = y - word.offsetHeight / 2 + "px";
 
+            wordsDown.push(word.getBoundingClientRect());
+        }
 
+        function trace(x, y) {
+            //     traceCanvasCtx.lineTo(x, y);
+            //     traceCanvasCtx.stroke();
+            traceCanvasCtx.fillRect(x, y, 1, 1);
+        }
 
+        function spiral(i, callback) {
+            angle = config.spiralResolution * i;
+            x = (1 + angle) * Math.cos(angle);
+            y = (1 + angle) * Math.sin(angle);
+            return callback ? callback() : null;
+        }
 
+        function intersect(word, x, y) {
+            cloud.appendChild(word);
 
-    /* =======================  LETS GO! =======================  */
-    (function placeWords() {
-        for (var i = 0; i < words.length; i += 1) {
+            word.style.left = x - word.offsetWidth / 2 + "px";
+            word.style.top = y - word.offsetHeight / 2 + "px";
 
-            var word = createWordObject(words[i].word, words[i].freq);
+            var currentWord = word.getBoundingClientRect();
 
-            for (var j = 0; j < config.spiralLimit; j++) {
-                //If the spiral function returns true, we've placed the word down and can break from the j loop
-                if (spiral(j, function () {
-                    if (!intersect(word, startPoint.x + x, startPoint.y + y)) {
-                        placeWord(word, startPoint.x + x, startPoint.y + y);
-                        return true;
-                    }
-                })) {
-                    break;
+            cloud.removeChild(word);
+
+            for (var i = 0; i < wordsDown.length; i += 1) {
+                var comparisonWord = wordsDown[i];
+
+                if (!(currentWord.right + config.xWordPadding < comparisonWord.left - config.xWordPadding ||
+                    currentWord.left - config.xWordPadding > comparisonWord.right + config.wXordPadding ||
+                    currentWord.bottom + config.yWordPadding < comparisonWord.top - config.yWordPadding ||
+                    currentWord.top - config.yWordPadding > comparisonWord.bottom + config.yWordPadding)) {
+
+                    return true;
                 }
             }
-        }
-    })();
-</script>
 
+            return false;
+        }
+
+        /* =======================  END PLACEMENT FUNCTIONS =======================  */
+
+
+
+
+
+        /* =======================  LETS GO! =======================  */
+        (function placeWords() {
+            for (var i = 0; i < words.length; i += 1) {
+
+                var word = createWordObject(words[i].word, words[i].freq);
+
+                for (var j = 0; j < config.spiralLimit; j++) {
+                    //If the spiral function returns true, we've placed the word down and can break from the j loop
+                    if (spiral(j, function () {
+                        if (!intersect(word, startPoint.x + x, startPoint.y + y)) {
+                            placeWord(word, startPoint.x + x, startPoint.y + y);
+                            return true;
+                        }
+                    })) {
+                        break;
+                    }
+                }
+            }
+        })();
+    </script>
+    <script>
+
+        // This is the service worker with the Advanced caching
+
+        // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
+
+        // Check compatibility for the browser we're running this in
+        if ("serviceWorker" in navigator) {
+            if (navigator.serviceWorker.controller) {
+                console.log("[PWA Builder] active service worker found, no need to register");
+            } else {
+                // Register the service worker
+                navigator.serviceWorker
+                    .register("/pwabuilder-sw.js", {
+                        scope: "/"
+                    })
+                    .then(function (reg) {
+                        console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+                    });
+            }
+        }
+
+
+    </script>
 {% endblock %}
