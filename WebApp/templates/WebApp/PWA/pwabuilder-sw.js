@@ -13,8 +13,6 @@ const precacheFiles = [
     '/inninginfo',
     '/groupmapping',
     '/inninggroup',
-
-
     '/students',
     '/students/calendar',
     '/students/courseinfo/mycourses',
@@ -23,9 +21,7 @@ const precacheFiles = [
     '/students/forum',
     '/students/questions_student/',
     '/students/profile',
-
-
-    '/teachers',
+    '/teachers/',
     '/teachers/courseinfo/mycourses',
     '/teachers/myassignments/',
     '/teachers/quiz/',
