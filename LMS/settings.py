@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
-    'corsheaders'
+    'corsheaders',
     'django_filters',
     'import_export',
     'WebApp',
