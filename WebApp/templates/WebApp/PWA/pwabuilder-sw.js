@@ -3,7 +3,32 @@
 const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
     /* Add an array of files to precache for your app */
-    'offline.html',
+    '/offline.html',
+    '/profile',
+    '/quiz',
+    '/survey/surveyinfo',
+    '/forum',
+    '/memberinfo',
+    '/courseinfo',
+    '/inninginfo',
+    '/groupmapping',
+    '/inninggroup',
+    '/students',
+    '/students/calendar',
+    '/students/courseinfo/mycourses',
+    '/students/myassignments',
+    '/students/quiz/progress',
+    '/students/forum',
+    '/students/questions_student/',
+    '/students/profile',
+    '/teachers/',
+    '/teachers/courseinfo/mycourses',
+    '/teachers/myassignments/',
+    '/teachers/quiz/',
+    '/teachers/forum/',
+    '/teachers/question_teachers/',
+    '/teachers/profile',
+
 ];
 
 // TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
@@ -67,10 +92,6 @@ self.addEventListener("install", function (event) {
             console.log("[PWA Builder] Caching pages during install");
 
             return cache.addAll(precacheFiles).then(function () {
-                if (offlineFallbackPage === "ToDo-replace-this-name.html") {
-                    return cache.add(new Response("TODO: Update the value of the offlineFallbackPage constant in the serviceworker."));
-                }
-
                 return cache.add(offlineFallbackPage);
             });
         })
@@ -88,38 +109,38 @@ self.addEventListener("fetch", function (event) {
     if (event.request.method !== "GET") return;
 
     if (comparePaths(event.request.url, networkFirstPaths)) {
+        if (event.request.url.includes("media") || event.request.url.includes("static")) {
+            console.log('contains media ' + event.request.url);
+            TryfromCache(event.request);
+            console.log('Going for cacheFirstFetch ' + event.request.url);
+            return cacheFirstFetch(event);
+        }
+        console.log('Going for networkFirstFetch ' + event.request.url);
         networkFirstFetch(event);
     } else {
-        if (caches.match(event.request)) return cacheFirstFetch(event);
-        else return networkFirstFetch(event);
+        console.log('Going for cacheFirstFetch ' + event.request.url);
+
+        cacheFirstFetch(event);
     }
 });
-
 
 function cacheFirstFetch(event) {
     event.respondWith(
         fromCache(event.request).then(
             function (response) {
                 // The response was found in the cache so we responde with it and update the entry
+
                 // This is where we call the server to get the newest version of the
                 // file to use the next time we show view
-                if (event.request.url.indexOf(".glb") > -1) {
-                    console.log('.glb file Loaded from Cache');
-
-                    return response;
-                } else {
-                    event.waitUntil(
-                        fetch(event.request).then(function (response) {
-                            return updateCache(event.request, response.clone());
-                        })
-                    );
-                }
+                event.waitUntil(
+                    fetch(event.request).then(function (response) {
+                        return updateCache(event.request, response);
+                    })
+                );
 
                 return response;
             },
             function () {
-                console.log('looking in server for ' + event.request.url);
-
                 // The response was not found in the cache so we look for it on the server
                 return fetch(event.request)
                     .then(function (response) {
@@ -134,9 +155,10 @@ function cacheFirstFetch(event) {
                             return;
                         }
 
-                        console.error("[PWA Builder] Network request Failed. Serving offline page " + error);
+                        console.log("[PWA Builder] Network request failed and no cache. Opening from offline page" + error);
+                        // Use the precached offline page as fallback
                         return caches.open(CACHE).then(function (cache) {
-                            return cache.match(offlineFallbackPage);
+                            cache.match(offlineFallbackPage);
                         });
                     });
             }
@@ -166,14 +188,41 @@ function fromCache(request) {
     return caches.open(CACHE).then(function (cache) {
         return cache.match(request).then(function (matching) {
             if (!matching || matching.status === 404) {
-                return cache.match(offlineFallbackPage);
-                // return Promise.reject("no-match");
+                console.log("Opening Error Page")
+
+                // return cache.match(offlineFallbackPage);
+                if (request.destination !== "document" || request.mode !== "navigate") {
+                    return Promise.reject("no-match");
+                } else return caches.open(CACHE).then(function (cache) {
+                    return cache.match(offlineFallbackPage);
+                });
+
+
             }
 
             return matching;
         });
     });
 }
+
+
+function TryfromCache(request) {
+    // Check to see if you have it in the cache
+    // Return response
+    // If not in the cache, then return error page
+    return caches.open(CACHE).then(function (cache) {
+        return cache.match(request).then(function (matching) {
+            if (!matching || matching.status === 404) {
+                console.log('Try from cache couldnt find ' + request.url);
+
+                return Promise.reject("no-match");
+            }
+
+            return matching;
+        });
+    });
+}
+
 
 function updateCache(request, response) {
     if (!comparePaths(request.url, avoidCachingPaths)) {
@@ -184,5 +233,3 @@ function updateCache(request, response) {
 
     return Promise.resolve();
 }
-
-

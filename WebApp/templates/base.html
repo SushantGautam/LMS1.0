@@ -153,10 +153,7 @@
     <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
 
-    <script src="https://browser.sentry-cdn.com/5.7.1/bundle.min.js"
-            integrity="sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ" crossorigin="anonymous">
 
-    </script>
     <!-- Fade out spinner image when the page is loaded -->
     <script>
         $(window).load(function () {
@@ -175,15 +172,7 @@
     </script>
 
 
-    <script>
-        Sentry.init({dsn: 'https://c929f92bf1284629815c8d96805a4dba@sentry.io/1803012'});
 
-        Sentry.configureScope(function (scope) {
-            scope.setUser({"email": "{{ user.email }}"});
-            scope.setUser({"username": "{{ user.username }}"});
-            scope.setExtra({"center_name": "{{ user.Center_Code.Center_Name }}"});
-        });
-    </script>
 
     {% block customjss %}{% endblock %}
 
