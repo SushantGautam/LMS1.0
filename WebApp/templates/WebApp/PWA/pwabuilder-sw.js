@@ -163,8 +163,8 @@ function fromCache(request) {
     return caches.open(CACHE).then(function (cache) {
         return cache.match(request).then(function (matching) {
             if (!matching || matching.status === 404) {
-                cache.match(offlineFallbackPage);
-                return Promise.reject("no-match");
+                return cache.match(offlineFallbackPage);
+                // return Promise.reject("no-match");
             }
 
             return matching;
