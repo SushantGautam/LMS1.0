@@ -36,10 +36,32 @@ limitations under the License.
 </head>
 
 <body>
+<a href="/"><img src="/static/images/logo_orange.png" alt="..." id="ubl_logo_orange" style="
+    width: 20%;
+"></a>
 <h1>Sorry!</h1>
-<p>We were unable to load the page you requested.</p>
-<p>Please check your network connection and try again.</p>
-<a href="javascript:history.go(-1)">[Go Back]</a>
+<p>We were unable to load the page you requested because it was not stored on your device.<br> <b>Please open this
+    content
+    when
+    ONLINE to save it to your device. </b></p>
+
+<p><i>Also, this page might not be available offline.</i></p>
+<br>
+<b>
+    <a style="
+    font-size: larger;
+" id="goback">[Go Back]</a></b>
 
 </body>
 </html>
+<script>
+
+    if (history.length === 1) {
+        document.getElementById('goback').href = "/";
+
+    } else {
+        document.getElementById('goback').href = "Javascript:history.go(-1)";
+
+    }
+
+</script>
