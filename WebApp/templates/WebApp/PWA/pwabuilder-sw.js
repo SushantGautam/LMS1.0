@@ -90,7 +90,8 @@ self.addEventListener("fetch", function (event) {
     if (comparePaths(event.request.url, networkFirstPaths)) {
         networkFirstFetch(event);
     } else {
-        cacheFirstFetch(event);
+        if (caches.match(event.request)) return cacheFirstFetch(event);
+        else return networkFirstFetch(event);
     }
 });
 
