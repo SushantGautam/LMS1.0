@@ -90,7 +90,8 @@ self.addEventListener("fetch", function (event) {
     if (comparePaths(event.request.url, networkFirstPaths)) {
         networkFirstFetch(event);
     } else {
-        cacheFirstFetch(event);
+        if (caches.match(event.request)) return cacheFirstFetch(event);
+        else return networkFirstFetch(event);
     }
 });
 
@@ -109,7 +110,7 @@ function cacheFirstFetch(event) {
                 } else {
                     event.waitUntil(
                         fetch(event.request).then(function (response) {
-                            return updateCache(event.request, response);
+                            return updateCache(event.request, response.clone());
                         })
                     );
                 }
