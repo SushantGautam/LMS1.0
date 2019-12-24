@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'corsheaders'
     'django_filters',
     'import_export',
     'WebApp',
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -214,5 +216,6 @@ REST_FRAMEWORK = {
 #     }
 # }
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 WHITENOISE_MAX_AGE = 43200
