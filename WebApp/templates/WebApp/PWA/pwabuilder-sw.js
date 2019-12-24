@@ -4,6 +4,34 @@ const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
     /* Add an array of files to precache for your app */
     'offline.html',
+    '/profile',
+    '/quiz',
+    '/survey',
+    '/forum',
+    '/memberinfo',
+    '/inninginfo',
+    '/groupmapping',
+    '/inninggroup',
+
+
+    '/students',
+    '/students/calendar',
+    '/students/courseinfo/mycourses',
+    '/students/myassignments',
+    '/students/quiz/progress',
+    '/students/forum',
+    '/students/questions_student/',
+    '/students/profile',
+
+
+    '/teachers',
+    '/teachers/courseinfo/mycourses',
+    '/teachers/myassignments/',
+    '/teachers/quiz/',
+    '/teachers/forum/',
+    '/teachers/question_teachers/',
+    '/teachers/profile',
+
 ];
 
 // TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
@@ -130,7 +158,7 @@ function cacheFirstFetch(event) {
                             return;
                         }
 
-                        console.log("[PWA Builder] Network request failed and no cache." + error);
+                        console.log("[PWA Builder] Network request failed and no cache. Opening from offline page" + error);
                         // Use the precached offline page as fallback
                         return caches.open(CACHE).then(function (cache) {
                             cache.match(offlineFallbackPage);
@@ -163,8 +191,16 @@ function fromCache(request) {
     return caches.open(CACHE).then(function (cache) {
         return cache.match(request).then(function (matching) {
             if (!matching || matching.status === 404) {
-                return cache.match(offlineFallbackPage);
-                // return Promise.reject("no-match");
+                console.log("Opening Error Page")
+
+                // return cache.match(offlineFallbackPage);
+                if (request.destination !== "document" || request.mode !== "navigate") {
+                    return Promise.reject("no-match");
+                } else return caches.open(CACHE).then(function (cache) {
+                    return cache.match(offlineFallbackPage);
+                });
+
+
             }
 
             return matching;
