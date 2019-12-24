@@ -3,12 +3,13 @@
 const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
     /* Add an array of files to precache for your app */
-    'offline.html',
+    '/offline.html',
     '/profile',
     '/quiz',
-    '/survey',
+    '/survey/surveyinfo',
     '/forum',
     '/memberinfo',
+    '/courseinfo',
     '/inninginfo',
     '/groupmapping',
     '/inninggroup',
