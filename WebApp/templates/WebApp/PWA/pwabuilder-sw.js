@@ -12,8 +12,6 @@ const offlineFallbackPage = "offline.html";
 const networkFirstPaths = [
     /* Add an array of regex of paths that should go network first */
     // Example: /\/api\/.*/
-    /\/students*/,
-    /\/teachers*/,
     /\/quiz*/,
     /\/survey*/,
     /\/forum*/,
@@ -22,7 +20,8 @@ const networkFirstPaths = [
     /\/groupmapping*/,
     /\/inninggroup*/,
     /\/Achievement*/,
-    /\//,
+
+    // /\//,
 ];
 
 const avoidCachingPaths = [
@@ -109,7 +108,7 @@ function cacheFirstFetch(event) {
                 } else {
                     event.waitUntil(
                         fetch(event.request).then(function (response) {
-                            return updateCache(event.request, response);
+                            return updateCache(event.request, response.clone());
                         })
                     );
                 }
