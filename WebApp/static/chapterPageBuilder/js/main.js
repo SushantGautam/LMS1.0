@@ -711,62 +711,7 @@ class _3Dobject {
 
 // ====================== End of initializing elements ========================
 
-
-$(document).ready(function () {
-    $("#import_zip_link").on('click', function (e) {
-        e.preventDefault();
-        $("#importzipfile:hidden").trigger('click');
-    });
-
-    $('#loadingDiv').hide();
-
- 
-    // title click function
-    $(".tlimit").on("click", function () {
-        $("#title_id").css({
-            'display': 'block'
-        });
-    });
-    
-    // Making sidebar tools draggable
-    $(".draggable").draggable({
-        helper: "clone",
-        revert: "invalid",
-        cursor: "pointer",
-        cursorAt: {
-            top: 56,
-            left: 56
-        },
-    });
-
-    $(".editor-canvas").droppable({
-        drop: function (event, ui) {
-            dropfunction(event, ui)
-        }
-    });
-
-    // background color for pages
-    $('#tabs-for-download').click(function () {
-        var theInput = $('#tabs-for-download').find('.page-background')[0];
-        var theColor = theInput.value;
-        theInput.addEventListener("input", function () {
-            $('.current').css('background-color', theInput.value)
-            data.pages[window.currentPage][0].backgroundcolor = theInput.value
-        }, false);
-    })
-
-    $("#add-page-btn").on("click", function () {
-        newpagefunction();
-    });
-    setslider()
-    
-    $('.tabs-to-click > ul > li:first').remove()
-    changePage('1');
-});
-
-let sidebarWidth = $(".sidebar").width(); // get width of sidebar
-let toolbarheight = $('.editor-toolbar').height();
-
+// Element Functions
 function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "Type Something Here...") {
     const textBox = new Textbox(top, left, height, width, message);
 
@@ -831,6 +776,1044 @@ function TextboxFunction(top = null, left = null, height = "20%", width = "30%",
         }
     });
 }
+
+function PictureFunction(top = null, left = null, pic = null, width = null, height = null) {
+    const Pic = new picture(
+        top,
+        left,
+        pic,
+        width, height);
+    Pic.renderDiagram();
+
+    $('.fa-upload').off().unbind().click(function (e) {
+        trigger = parseInt(e.target.id) + 1;
+        $('#' + trigger).trigger('click');
+    });
+
+    $('.fa-trash').click(function (e) {
+        if ($('#' + e.currentTarget.id).find('img').length > 0) {
+            if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
+                tobedeletedfiles.pic.push($('#' + e.currentTarget.id).find('img').attr('src'))
+            }
+        }
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('.imagelink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $('#' + e.currentTarget.id).parent().parent();
+        // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
+        var prevlink = $(this).parent().parent().find('img').attr('src')
+        if (prevlink == undefined) {
+            prevlink = "";
+        }
+        var link = prompt("Link of image", prevlink);
+        if (link == null) {
+            return false
+        } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
+            link = '' + link
+        }
+
+        PictureFunction(
+            $(div)[0].style.top,
+            $(div)[0].style.left,
+            link,
+            $(div)[0].style.width,
+            $(div)[0].style.height,
+        );
+        div.remove()
+    });
+
+    $('.pic').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 150,
+        minHeight: 150,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        }
+    });
+
+    $('.pic').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        //   $(this).css('border',"2px solid #39F")
+    })
+
+    $('.pic').on('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        const files = e.originalEvent.dataTransfer.files;
+        var file = files[0];
+        upload(file);
+    });
+
+    function upload(file) {
+        let div = $('#picture-drag').parent().parent();
+        const data = new FormData();
+        data.append("file-0", file);
+        data.append('chapterID', chapterID);
+        data.append('courseID', courseID);
+        data.append('type', 'pic');
+        $.ajax({
+            url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+            data: data,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            beforeSend: function () {
+                div.append(`<div class="loader" id="loadingDiv"></div>`)
+                $('#loadingDiv').show();
+            },
+            error: function (errorThrown) {
+                alert("Failed to upload PDF")
+                div.find('#loadingDiv').remove();
+            },
+            success: function (data) {
+                div.find('#loadingDiv').remove();
+                div.find('p').text("");
+
+                PictureFunction(
+                    $(div)[0].style.top,
+                    $(div)[0].style.left,
+                    load_file_url + '/' + data.media_name,
+                    $(div)[0].style.width,
+                    $(div)[0].style.height,
+                );
+                div.remove()
+            },
+            error: function (data, status, errorThrown) {
+                alert(data.responseJSON.message);
+            }
+        });
+
+        $('#picture-drag').css({
+            'display': 'none'
+        })
+
+
+        $(div).hover(function () {
+            $(this).css("border", "1px solid red");
+        }, function () {
+            $(this).css("border", '0')
+        })
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                let div = $(input).parent().parent().parent();
+                var data = new FormData();
+                $.each(input.files, function (i, file) {
+                    data.append('file-' + i, file);
+                });
+                if ($(div).find('img').length > 0) {
+                    if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
+                        tobedeletedfiles.pic.push($(div).find('img').attr('src'));
+                    }
+                }
+                data.append('csrfmiddlewaretoken', csrf_token);
+                data.append('type', 'pic');
+                data.append('chapterID', chapterID);
+                data.append('courseID', courseID);
+                $.ajax({
+                    url: save_file_url,
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    enctype: 'multipart/form-data',
+                    method: 'POST',
+                    type: 'POST',
+                    beforeSend: function () {
+                        div.append(`<div class="loader" id="loadingDiv"></div>`)
+                        $('#loadingDiv').show();
+                    },
+                    error: function (errorThrown) {
+                        alert("Failed to upload Image. Try Again!!")
+                        div.find('#loadingDiv').remove();
+                    },
+                    success: function (data) {
+                        div.find('#loadingDiv').remove();
+                        div.find('p').text("");
+
+                        PictureFunction(
+                            $(div)[0].style.top,
+                            $(div)[0].style.left,
+                            load_file_url + '/' + data.media_name,
+                            $(div)[0].style.width,
+                            $(div)[0].style.height,
+                        );
+                        div.remove()
+                    },
+                    error: function (data, status, errorThrown) {
+                        alert(data.responseJSON.message);
+                    }
+                });
+
+                $('#picture-drag').css({
+                    'display': 'none'
+                })
+
+                $(div).hover(function () {
+                    $(this).css("border", "1px solid red");
+                }, function () {
+                    $(this).css("border", '0')
+                })
+
+                $('.pic').resizable({
+                    containment: $('.editor-canvas'),
+                    grid: [20, 20],
+                    autoHide: true,
+                    minWidth: 150,
+                    minHeight: 150
+                });
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(".imgInp").off().change(function (e) {
+        readURL(this);
+
+    });
+}
+
+function ButtonFunction(top = null, left = null, link = null, height = null, width = null, name = 'Button') {
+    const btns = new Button(top, left, link, height, width, name);
+
+    btns.renderDiagram();
+
+    // $('.btn').attr('contentEditable', true);
+
+    $('.btn').on('click', function () {
+        // alert('say me more!!')
+    })
+
+    const div1 = $('i').parent();
+
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('.fa-link').bind("click", function (e) {
+        var btn_id = parseInt(e.currentTarget.id) + 1
+
+        $('#btn-form input[type=text]').val('');
+        $('#btn-name').val($(this).parent().parent().find('a').text().trim());
+        var link = $(this).parent().parent().find('a').attr('href');
+        if (link != undefined) {
+            link = link.replace('http://', '');
+        }
+        $('#btn-link').val(link);
+
+        $('#button_id').val(btn_id);
+        $('#btn-modal').modal('show');
+    });
+
+    $('.btn-div').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 50,
+        minHeight: 30,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        },
+    });
+}
+
+function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
+    const quiz = new Quiz(top, left, link, height, width, name, quiz_span_name, font_size);
+
+    quiz.renderDiagram();
+
+    // $('.btn').attr('contentEditable', true);
+
+    $('.btn').on('click', function () {
+        // alert('say me more!!')
+    })
+
+    const div1 = $('i').parent();
+
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('.quiz-div .fa-link').bind("click", function (e) {
+        $.ajax({
+            url: `/quiz/api/v1/quiz/?course_code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+            processData: false,
+            method: 'GET',
+            success: function (data) {
+                $('#myTable').empty()
+                for (var i = 0; i < data.length; i++) {
+                    $('#myTable').append(`<tr>
+                        <td>
+                            ${data[i].title}
+                        </td>
+                        <td>
+                            <button type="button" class="selectquiz" value="${data[i].pk}">Select</button>
+                        </td>
+                    </tr>`);
+                }
+            },
+        });
+        var btn_id = parseInt(e.currentTarget.id) + 1
+        $('#quiz-form input[type=text]').val('');
+        $('#quiz-btn-name').val($(this).parent().parent().find('button').text().trim());
+        var link = $(this).parent().parent().find('a').attr('href');
+        if (link != undefined) {
+            link = link.replace('http://', '');
+        }
+        $('#quiz-link').val(link);
+        $('#quiz-name').val($(this).parent().parent().find('.quiz-name').text().trim());
+        $('#quiz_id').val(btn_id);
+        $('#quiz-modal').modal('show');
+    });
+
+    $('.quiz-div').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 50,
+        minHeight: 30,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        },
+    });
+
+    $('.quiz-div').on('resize', function(){
+        old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
+        div_width = $(this).width();
+        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+        $(this).find('.resizable-text-only').css(
+            'font-size', font + 'px'
+        )
+        $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
+    })
+
+}
+
+function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
+    const survey = new Survey(top, left, link, height, width, name, survey_span_name, font_size);
+
+    survey.renderDiagram();
+
+    // $('.btn').attr('contentEditable', true);
+
+    $('.btn').on('click', function () {
+        // alert('say me more!!')
+    })
+
+    const div1 = $('i').parent();
+
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('.survey-div .fa-link').on("click", function (e) {
+        $.ajax({
+            url: `/survey/api/v1/surveyinfo/?Course_Code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+            processData: false,
+            method: 'GET',
+            success: function (data) {
+                $('#mySurveyTable').empty()
+                for (var i = 0; i < data.length; i++) {
+                    $('#mySurveyTable').append(`<tr>
+                        <td>
+                            ${data[i].Survey_Title}
+                        </td>
+                        <td>
+                            <button type="button" class="selectsurvey" value="${data[i].pk}">Select</button>
+                        </td>
+                    </tr>`);
+                }
+            },
+        });
+        var btn_id = parseInt(e.currentTarget.id) + 1
+        $('#survey-form input[type=text]').val('');
+        $('#survey-btn-name').val($(this).parent().parent().find('a').text().trim());
+        var link = $(this).parent().parent().find('button').attr('href');
+        if (link != undefined) {
+            link = link.replace('http://', '');
+        }
+        $('#survey-link').val(link);
+        $('#survey-name').val($(this).parent().parent().find('.survey-name').text().trim());
+        $('#survey_id').val(btn_id);
+        $('#survey-modal').modal('show');
+    });
+
+    $('.survey-div').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 50,
+        minHeight: 30,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        },
+    });
+
+    $('.survey-div').on('resize', function(){
+        old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
+        div_width = $(this).width();
+        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+        $(this).find('.resizable-text-only').css(
+            'font-size', font + 'px'
+        )
+        $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
+    })
+}
+
+function PDFFunction(top = null, left = null, link = null, height = null, width = null) {
+    const Pdf = new PDF(
+        top,
+        left, link, height, width
+    );
+
+    Pdf.renderDiagram();
+
+    // ==for pdf upload==
+    $('.fa-upload').off().click(function (e) {
+        trigger = parseInt(e.target.id) + 1;
+        $('#' + trigger).trigger('click');
+    });
+
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('.pdfdiv').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        //   $(this).css('border',"2px solid #39F")
+    })
+
+    $('.pdfdiv').on('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        const files = e.originalEvent.dataTransfer.files;
+        var file = files[0];
+        upload(file);
+    });
+
+    function upload(file) {
+        const data = new FormData();
+        data.append("file-0", file);
+        data.append('chapterID', chapterID);
+        data.append('courseID', courseID);
+        data.append('type', 'pic');
+        $.ajax({
+            url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+            data: data,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            beforeSend: function () {
+                div.append(`<div class="loader" id="loadingDiv"></div>`)
+                $('#loadingDiv').show();
+            },
+            error: function (errorThrown) {
+                alert("Failed to upload PDF")
+                div.find('#loadingDiv').remove();
+            },
+            success: function (data) {
+                div.append(`
+                    <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
+                        alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">test.pdf</a>
+                    </object>
+                `);
+
+            },
+            error: function (data, status, errorThrown) {
+                alert(data.responseJSON.message);
+            }
+        });
+        let div = $('#pdf-actions1').parent();
+        $('#pdf-actions1').css({
+            'display': 'none'
+        });
+
+        $(div).hover(function () {
+            $(this).css(
+                {
+                    "border": "1px solid red",
+
+                });
+
+
+        }, function () {
+            $(this).css("border", '0')
+        });
+
+
+        $(div).resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 500,
+            minHeight: 500
+
+
+        })
+
+
+        $('.pdf').css({
+            'resize': ' both'
+        })
+
+
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                let div = $(input).parent().parent().parent();
+                var data = new FormData();
+
+                $.each(input.files, function (i, file) {
+                    // console.log(Math.round((file.size / 1024))) // get image size
+                    data.append('file-' + i, file);
+                });
+                if ($(div).find('object').length > 0) {
+                    if ($('#tabs-for-download').find('object[data$="' + $(div).find('object').attr('data') + '"]').length == 1) {
+                        tobedeletedfiles.pdf.push($(div).find('object').attr('data'));
+                    }
+                }
+                data.append('csrfmiddlewaretoken', csrf_token);
+                data.append('type', 'pdf');
+                data.append('chapterID', chapterID);
+                data.append('courseID', courseID);
+                $.ajax({
+                    url: save_file_url,
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    enctype: 'multipart/form-data',
+                    method: 'POST',
+                    type: 'POST',
+                    beforeSend: function () {
+                        div.append(`<div class="loader" id="loadingDiv"></div>`)
+                        $('#loadingDiv').show();
+                    },
+                    error: function (errorThrown) {
+                        alert("Failed to upload PDF")
+                        div.find('#loadingDiv').remove();
+                    },
+                    success: function (data) {
+                        PDFFunction(
+                            $(div)[0].style.top,
+                            $(div)[0].style.left,
+                            `/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}`,
+                            $(div)[0].style.height,
+                            $(div)[0].style.width,
+                        );
+                        div.remove();
+                    },
+                    error: function (data, status, errorThrown) {
+                        alert(data.responseJSON.message);
+                    }
+                });
+
+                $('#picture-drag').css({
+                    'display': 'none'
+                })
+
+                $(div).hover(function () {
+                    $(this).css("border", "1px solid red");
+                }, function () {
+                    $(this).css("border", '0')
+                })
+
+                $('.pdf').resizable({
+                    containment: $('#tabs-for-download'),
+                    grid: [20, 20],
+                    autoHide: true,
+                    minWidth: 150,
+                    minHeight: 150
+                });
+
+                $('.pdf').css({
+                    'resize': 'both'
+                })
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $('.pdfdiv').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        },
+    });
+
+    $(".pdfInp").off().change(function (e) {
+        readURL(this);
+    });
+}
+
+function VideoFunction(top = null, left = null, link = null, height = null, width = null) {
+    const Videos = new video(top, left, link, height, width);
+    Videos.renderDiagram();
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+    $('.fa-upload').off().unbind().click(function (e) {
+        trigger = parseInt(e.target.id) + 1;
+        $('#' + trigger).trigger('click');
+    });
+    $('.videolink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url (Youtube, DailyMotion)", prevlink);
+        if (link == null) {
+            return false
+        } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
+            link = 'http://' + link
+        }
+        video_link = getEmbedVideo(link)
+        div.find('p, iframe, video').remove();
+        div.append(video_link);
+    });
+
+    $('.video-div').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    })
+
+    $('.video-div').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 150,
+        minHeight: 150,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        },
+    });
+
+    $('.video-div').on('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+
+        $(this).css({
+            'padding': '5px'
+        })
+
+        const files = e.originalEvent.dataTransfer.files;
+        var file = files[0];
+        upload(file);
+    });
+
+    function upload(file) {
+        var data = new FormData();
+
+        data.append("FileName", file);
+        data.append('chapterID', chapterID);
+        data.append('courseID', courseID);
+        data.append('type', 'video');
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", function (evt) {
+                    $('#progress-bar').css("display", "block");
+
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        console.log(percentComplete);
+                        // $('#progress-bar-fill').css('width', percentComplete + '%');
+                        $("#progress-bar").attr('aria-valuenow', percentComplete).css('width', percentComplete + '%').text(percentComplete + '%');
+
+                        if (percentComplete === 100) {
+                            // $('#progress-bar').css("display", "none");
+                            let div = $('#video-drag').parent().parent();
+                            $('#video-drag').css({
+                                'display': 'none'
+                            });
+
+                            div.append(`
+                                    <video width="400" height="200" controls>
+                                    <source src="../uploads/${data.media_name}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            `);
+
+                            $(div).hover(function () {
+                                $(this).css("border", "1px solid red");
+                            }, function () {
+                                $(this).css("border", '0')
+                            })
+
+                            $('.video-div').resizable({
+                                containment: $('.editor-canvas'),
+                                grid: [20, 20],
+                                autoHide: true,
+                                minWidth: 150,
+                                minHeight: 150
+                            });
+                        }
+
+                    }
+                }, false);
+
+                return xhr;
+            },
+            url: save_video_url,
+            data: data,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            success: function (data) {
+                console.log(data);
+            }
+
+        });
+
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                let div = $(input).parent().parent().parent();
+                div.find('video').remove();
+                var data = new FormData();
+                $.each(input.files, function (i, file) {
+                    data.append('file-' + i, file);
+                });
+                data.append('chapterID', chapterID);
+                data.append('courseID', courseID);
+                data.append('type', 'video');
+                $.ajax({
+                    url: save_video_url,
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST',
+                    beforeSend: function () {
+                        div.append(`<div class="loader" id="loadingDiv"></div>
+                        <p id = "percentcomplete"></p>
+                        `)
+                        $('#loadingDiv').show();
+                    },
+                    error: function (errorThrown) {
+                        alert("Failed to upload Video" + errorThrown)
+                        div.find('#loadingDiv').remove();
+                        div.find('#percentcomplete').remove();
+                    },
+                    success: function (data) {
+                        div.find('#loadingDiv').remove();
+                        div.find('#percentcomplete').remove();
+                        div.find('p').remove();
+                        div.find('.progress').remove();
+                        if (data.hasOwnProperty('html')) {
+                            var html = $(data.html);
+                            $(html).css('height', '100%')
+                            $(html).css('width', '100%')
+
+                            div.append(`
+                                <video width="100%" height="100%">
+                                    <source src="${data.link}">
+                                </video>
+                            `);
+                        } else {
+                            div.append(`
+                                <video width="100%" height="100%" controls>
+                                    <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
+                                </video>
+                            `)
+                        }
+                    },
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            $('#progress-bar').css("display", "block");
+
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                percentComplete = parseInt(percentComplete * 100);
+                                console.log(percentComplete);
+                                $('#percentcomplete').text(percentComplete + '%')
+                                $('#progress-bar-fill').css('width', percentComplete + '%');
+
+                                if (percentComplete === 100) {
+                                    $('#progress-bar').css("display", "none");
+                                    let div = $('#video-drag').parent().parent();
+                                    $('#video-drag').css({
+                                        'display': 'none'
+                                    });
+
+                                    //         div.append(`
+                                    //         <video width="400" height="200" controls>
+                                    //         <source src="${load_file_url}/${input.files[0].name}" type="video/mp4">
+                                    //          Your browser does not support the video tag.
+                                    //       </video>
+                                    //   `);
+
+                                    $(div).hover(function () {
+                                        $(this).css("border", "1px solid red");
+                                    }, function () {
+                                        $(this).css("border", '0')
+                                    })
+
+                                    $('.video-div').resizable({
+                                        containment: $('#tabs-for-download'),
+                                        grid: [20, 20],
+                                        autoHide: true,
+                                        minWidth: 150,
+                                        minHeight: 150
+                                    });
+                                    // console.log(file.name);
+                                }
+                            }
+                        }, false);
+
+                        return xhr;
+                    }
+
+                });
+
+                $('#video-drag').css({
+                    'display': 'none'
+                });
+
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(".video-form").off().change(function (e) {
+        readURL(this);
+    });
+}
+
+function _3dFunction(top = null, left = null, file = null, height = null, width = null) {
+    const _3d = new _3Dobject(
+        top,
+        left,
+        file,
+        height, width);
+    _3d.renderDiagram();
+
+    // $('#_3dfile-link').on('change', function (e) {
+    //     $('#mtl-file').prop('disabled', false);
+    // });
+
+    $('._3dobj-div').on('click', '.fa-upload', function (e) {
+        // trigger = parseInt(e.target.id) + 1;
+        // $('#' + trigger).trigger('click');
+        $('#_3dfile-link').val('');
+        // $('#mtl-file').val('');
+        // $('#mtl-file').prop('disabled', true);
+        $('#link-3d-submit').val(parseInt(e.target.id))
+        $('#link-3d-modal').modal();
+    });
+
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('._3dobj-div').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 150,
+        minHeight: 150,
+        stop: function (e, ui) {
+            var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        },
+    });
+
+    $('.3dobj').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        //   $(this).css('border',"2px solid #39F")
+    });
+
+    function readURL(upload_btn) {
+        if ($('#_3dfile-link')[0].files.length != 0) {
+            var obj = $('#_3dfile-link')[0].files[0];
+        } else {
+            alert("Please select a file to upload")
+            return false
+        }
+        // if ($('#mtl-file')[0].files.length != 0) {
+        //     var mtl = $('#mtl-file')[0].files[0];
+        // } else {
+        //     var mtl = null
+        // }
+
+        let div = $('#' + upload_btn.val()).parent().parent();
+        var data = new FormData();
+
+        if ($(div).find('iframe').length > 0) {
+            if ($('#tabs-for-download').find('iframe[src$="' + $(div).find('iframe').attr('src') + '"]').length == 1) {
+                tobedeletedfiles._3d.push($(div).find('iframe').attr('src'));
+            }
+        }
+
+        data.append('csrfmiddlewaretoken', csrf_token);
+        data.append('objfile', obj);
+        // data.append('mtlfile', mtl);
+        data.append('type', '3d');
+        data.append('chapterID', chapterID);
+        data.append('courseID', courseID);
+        $.ajax({
+            url: save_3d_url,
+            data: data,
+            contentType: false,
+            processData: false,
+            enctype: 'multipart/form-data',
+            method: 'POST',
+            type: 'POST',
+            beforeSend: function () {
+                div.append(`<div class="loader" id="loadingDiv"></div>`)
+                $('#loadingDiv').show();
+            },
+            error: function (errorThrown) {
+                alert("Failed to upload File")
+                div.find('#loadingDiv').remove();
+            },
+            success: function (data) {
+                _3dFunction(div.css('top'),
+                    div.css('left'), '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname, div.css('height'), div.css('width'));
+                div.remove()
+            },
+            error: function (data, status, errorThrown) {
+                alert(data.responseJSON.message);
+            }
+        });
+
+        $('#_3dobj-drag').css({
+            'display': 'none'
+        })
+
+        $(div).hover(function () {
+            $(this).css("border", "1px solid red");
+        }, function () {
+            $(this).css("border", '0')
+        })
+
+        $('._3dobj').resizable({
+            containment: $('#tabs-for-download'),
+            grid: [20, 20],
+            autoHide: true,
+            minWidth: 150,
+            minHeight: 150
+        });
+
+        $('._3dobj').css({
+            'resize': 'both'
+        });
+    }
+
+    $("#link-3d-submit").unbind().off().click(function (e) {
+        $('#link-3d-modal').modal('hide');
+        readURL($(this));
+    });
+}
+// End of Element Function
+
+$(document).ready(function () {
+    $("#import_zip_link").on('click', function (e) {
+        e.preventDefault();
+        $("#importzipfile:hidden").trigger('click');
+    });
+
+    $('#loadingDiv').hide();
+
+ 
+    // title click function
+    $(".tlimit").on("click", function () {
+        $("#title_id").css({
+            'display': 'block'
+        });
+    });
+    
+    // Making sidebar tools draggable
+    $(".draggable").draggable({
+        helper: "clone",
+        revert: "invalid",
+        cursor: "pointer",
+        cursorAt: {
+            top: 56,
+            left: 56
+        },
+    });
+
+    $(".editor-canvas").droppable({
+        drop: function (event, ui) {
+            dropfunction(event, ui)
+        }
+    });
+
+    // background color for pages
+    $('#tabs-for-download').click(function () {
+        var theInput = $('#tabs-for-download').find('.page-background')[0];
+        var theColor = theInput.value;
+        theInput.addEventListener("input", function () {
+            $('.current').css('background-color', theInput.value)
+            data.pages[window.currentPage][0].backgroundcolor = theInput.value
+        }, false);
+    })
+
+    $("#add-page-btn").on("click", function () {
+        newpagefunction();
+    });
+    setslider()
+    
+    $('.tabs-to-click > ul > li:first').remove()
+    changePage('1');
+});
+
+let sidebarWidth = $(".sidebar").width(); // get width of sidebar
+let toolbarheight = $('.editor-toolbar').height();
 
 function dropfunction(event, ui) {
     if (ui.helper.hasClass('textbox')) {
@@ -1352,10 +2335,10 @@ function updateData(prev_page, prev_data){
         }
     });
     // backgroundcolor = $("#tab"+parseInt(window.currentPage)).css('background-color')
-
+    console.log(prev_page)
     if(!data.pages){
         var pages = {}
-
+        backgroundcolor = $("#tab").css('background-color')
         pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
         
         data = {
@@ -1366,15 +2349,8 @@ function updateData(prev_page, prev_data){
             'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
         };
     } else{
-        data.pages[prev_page][0].textdiv = textdiv
-        data.pages[prev_page][0].pic = picdiv
-        data.pages[prev_page][0]['btn-div'] = buttondiv, 
-        data.pages[prev_page][0].pdf = pdf, 
-        data.pages[prev_page][0].video = video,
-        data.pages[prev_page][0]._3d = _3d, 
-        data.pages[prev_page][0].quizdiv = quizdiv, 
-        data.pages[prev_page][0].surveydiv = surveydiv,
-        data.numberofpages = numberofpages
+        backgroundcolor = $("#tab").css('background-color')
+        data.pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
     }
 }
 
@@ -1413,6 +2389,7 @@ function changePage(page_number){
             $('.tabs-to-click ul li[value= '+prev_page+']').removeClass('current')
             promise.then((successmessage) => {
                 // $('#tab').empty()
+                console.log(successmessage)
                 storethumbnails(prev_page)
             })
         }
