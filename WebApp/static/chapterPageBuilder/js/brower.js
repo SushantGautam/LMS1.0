@@ -49,14 +49,16 @@ $("#previewBtn").on("click",function(e){
 
 $("#SaveBtn").on("click",function(e){
   $(this).html(`<i class='fa fa-spinner fa-spin '></i> Saving`);
+  
   changePage(window.currentPage)
   deleteFile()
   setTimeout(function(){
-    console.log(data)
     var pages = {}
     var numberofpages = 0
     
     var json=JSON.stringify(data);
+    console.log(json)
+    console.log(data)
     $.ajax({
       url: save_json_url,
       type: 'post',
@@ -67,7 +69,6 @@ $("#SaveBtn").on("click",function(e){
         'courseID': courseID
       },
       success: function (data) {
-        console.log(data)
         alert('saved successfully.')
       },
       error: function(e){
@@ -75,7 +76,6 @@ $("#SaveBtn").on("click",function(e){
         alert("Failed to save data")
       },
       complete: function(data){
-        console.log(data)
         $('#SaveBtn').html(`<a href="#" id="SaveBtn"><i class="fas fa-save"></i><br/>Save</a>`)
       }
     });

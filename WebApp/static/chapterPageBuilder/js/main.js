@@ -745,6 +745,16 @@ $(document).ready(function () {
         }
     });
 
+    // background color for pages
+    $('#tabs-for-download').click(function () {
+        var theInput = $('#tabs-for-download').find('.page-background')[0];
+        var theColor = theInput.value;
+        theInput.addEventListener("input", function () {
+            $('.current').css('background-color', theInput.value)
+            data.pages[window.currentPage][0].backgroundcolor = theInput.value
+        }, false);
+    })
+
     $("#add-page-btn").on("click", function () {
         newpagefunction();
     });
@@ -963,9 +973,9 @@ function setslider(){
                 <div class="canvas-relative" style="position:relative"> 
             
             
-            <li class="tabs-link pagenumber current" value="${key}" onclick="changePage('tab${key}')"></li>
+            <li class="tabs-link pagenumber" value="${key}" onclick="changePage('tab${key}')"></li>
             <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
-                    <p style="display:inline-block"></p> 
+                    <p style="display:inline-block">${key}</p> 
                     <span style="float:right ">
                         <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
                     </span>
@@ -987,7 +997,7 @@ function setslider(){
             
             <li class="tabs-link pagenumber" value="${key}" onclick="changePage('tab${key}')"></li>
             <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
-                    <p style="display:inline-block"></p> 
+                    <p style="display:inline-block">${key}</p> 
                     <span style="float:right ">
                         <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
                     </span>
@@ -1018,8 +1028,6 @@ function newpagefunction(new_page_num){
     }
     $(".tabs-to-click ul").append(`
         <div class="canvas-relative" style="position:relative"> 
-            
-            
             <li class="tabs-link pagenumber current" value="${num_tabs}" onclick="changePage('tab${num_tabs}')"></li>
             <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
                     <p style="display:inline-block"></p> 
@@ -1066,6 +1074,7 @@ function displaypagenumbers() {
 
 function display(data = "", currentPage='1') {
     $('#tab').empty()
+    $('#tab').css('background-color', '#fff')
     $('#chaptertitle').text(chaptertitle);
     if(data.pages){
         $.each(data.pages, function (key, value) {
@@ -1201,7 +1210,7 @@ function display(data = "", currentPage='1') {
                         }
 
                         if (div == 'backgroundcolor') {
-                            $('#tab' + key).css('background-color', div_value)
+                            $('#tab').css('background-color', div_value)
                         }
                     });
                 });
@@ -1342,7 +1351,7 @@ function updateData(prev_page, prev_data){
             );
         }
     });
-    backgroundcolor = $("#tab"+parseInt(window.currentPage)).css('background-color')
+    // backgroundcolor = $("#tab"+parseInt(window.currentPage)).css('background-color')
 
     if(!data.pages){
         var pages = {}
@@ -1350,21 +1359,28 @@ function updateData(prev_page, prev_data){
         pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
         
         data = {
-        'numberofpages': numberofpages, 
-        'chaptertitle': $('#chaptertitle').text(),
-        'pages': pages,
-        'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
-        'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
+            'numberofpages': numberofpages, 
+            'chaptertitle': $('#chaptertitle').text(),
+            'pages': pages,
+            'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
+            'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
         };
     } else{
-        data.pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
+        data.pages[prev_page][0].textdiv = textdiv
+        data.pages[prev_page][0].pic = picdiv
+        data.pages[prev_page][0]['btn-div'] = buttondiv, 
+        data.pages[prev_page][0].pdf = pdf, 
+        data.pages[prev_page][0].video = video,
+        data.pages[prev_page][0]._3d = _3d, 
+        data.pages[prev_page][0].quizdiv = quizdiv, 
+        data.pages[prev_page][0].surveydiv = surveydiv,
         data.numberofpages = numberofpages
     }
 }
 
 function storethumbnails(prev_page){
     thumbnail = ($('.pagenumber[value= '+prev_page+']')[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-    data.pages[prev_page].thumbnail = thumbnail
+    data.pages[prev_page][0].thumbnail = thumbnail
 }
 
 function changePage(page_number){
