@@ -14,7 +14,7 @@ const precacheFiles = [
     // '/inninginfo',
     // '/groupmapping',
     // '/inninggroup',
-    '/students',
+    '/students/',
     // '/students/calendar',
     // '/students/courseinfo/mycourses',
     // '/students/myassignments',
