@@ -30,11 +30,11 @@
 
 
     <!-- Loads <model-viewer> for modern browsers: -->
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+    <script type="module">
     </script>
 
     <!-- Loads <model-viewer> for old browsers like IE11: -->
-    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+    <script nomodule>
     </script>
 
     <title>Course Builder</title>
@@ -392,9 +392,13 @@
                     <!-- Editor -->
                     <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
                         <!-- <div class="editor-canvas" id="element-container"> -->
-                            <!-- <p id="tab1" class="tab-content-no   droppable editor-canvas current ">
+                            <input type="color" value="#ffffff" class="page-background">
+                            <p id="tab" value = "0" class="tab-content-no   droppable editor-canvas current">
+                                
+                            </p>
+                            <p id="copy_tab" value = "0" style = "display: none;">
 
-                            </p> -->
+                            </p>
                         <!-- </div> -->
                     </div>
                 </div>
@@ -823,7 +827,7 @@
 
     <script>
 
-        var currentPage = 'tab1';
+        var currentPage = '1';
         var data = {{ data | safe}};
         var courseID = '{{course}}';
         var chapterID = '{{chapter}}';

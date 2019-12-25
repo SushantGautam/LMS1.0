@@ -49,153 +49,13 @@ $("#previewBtn").on("click",function(e){
 
 $("#SaveBtn").on("click",function(e){
   $(this).html(`<i class='fa fa-spinner fa-spin '></i> Saving`);
-  setThumbnails()
+  changePage(window.currentPage)
   deleteFile()
   setTimeout(function(){
-    pages = {}
+    console.log(data)
+    var pages = {}
     var numberofpages = 0
-    htmlfile = {};
-    $('.pagenumber').each(function(key,value){
-      textdiv = [];
-      picdiv = [];
-      buttondiv = [];
-      pdf = [];
-      video = [];
-      _3d = [];
-      quizdiv = [];
-      surveydiv = [];
-      numberofpages++;
-      const obj=$("#tab"+parseInt(this.value)).children();
-      let tops;
-      let left;
-      let width;
-      let height;
-      let content;
-      htmlfile[(key+1)] = ($("#tab"+parseInt(this.value)).html());
-      
-      $.each( obj, function( i, value ) {
-        if(value.classList.contains('textdiv')){
-          var clone = $(this).find('.note-editable').clone();
-          // clone.find('div').remove();
-          // $(clone).each(function(){
-          //   if($(this).find('span').css('font-size')){
-          //     let font = convertFontToREM($(this).find('span').css('font-size'))
-          //     $(this).find('span').css('font-size', font + 'em')
-          //   }
-          // })
-          var content_html = clone.html();
-          textdiv.push(
-            {
-              'tops': $(this)[0].style.top,
-              'left': $(this)[0].style.left,
-              'width': $(this)[0].style.width,
-              'height': $(this)[0].style.height,
-              'content': content_html
-            }
-          );
-        }
-        if(value.classList.contains('pic')){
-          picdiv.push(
-            {
-              'tops': $(this)[0].style.top,
-              'left': $(this)[0].style.left,
-              'width': $(this)[0].style.width,
-              'height': $(this)[0].style.height,
-              'background-image': $(this).find("img").attr('src')
-            }
-          );
-        }
-        if(value.classList.contains('btn-div')){
-          buttondiv.push(
-            {
-              'tops': $(this)[0].style.top,
-              'left': $(this)[0].style.left,
-              'width': $(this)[0].style.width,
-              'height': $(this)[0].style.height,
-              'link': $(this).children("a").attr('href'),
-              'btn_name': $(this).children("a").text(),
-            }
-          );
-        }
-        if(value.classList.contains('pdfdiv')){
-          pdf.push(
-            {
-              'tops': $(this)[0].style.top,
-              'left': $(this)[0].style.left,
-              'width': $(this)[0].style.width,
-              'height': $(this)[0].style.height,
-              'link': $(this).find('object').attr('data'),
-            }
-          );
-        }
-        if(value.classList.contains('video-div')){
-          online_link = $(this).find('iframe').attr('src');
-          local_link = $(this).find('video > source').attr('src');
-  
-          video.push(
-            {
-              'tops': $(this)[0].style.top,
-              'left': $(this)[0].style.left,
-              'width': $(this)[0].style.width,
-              'height': $(this)[0].style.height,
-              'online_link': online_link,
-              'local_link': local_link
-            }
-          );
-        }
-        if(value.classList.contains('_3dobj-div')){
-          link = $(this).find('model-viewer').attr('src');
-  
-          _3d.push(
-            {
-              'tops': $(this)[0].style.top,
-              'left': $(this)[0].style.left,
-              'width': $(this)[0].style.width,
-              'height': $(this)[0].style.height,
-              'link': link,
-            }
-          );
-        }
-        if(value.classList.contains('quiz-div')){
-          quizdiv.push(
-            {
-              'tops': $(this)[0].style.top,
-              'left': $(this)[0].style.left,
-              'width': $(this)[0].style.width,
-              'height': $(this)[0].style.height,
-              'link': $(this).find("a").attr('href'),
-              'quiz_btn_name': $(this).find(".resizable-text-only").text(),
-              'quiz_name': $(this).find('.quiz-name').text(),
-              'font_size': $(this).find('.resizable-text-only').css('font-size')
-            }
-          );
-        }
-        if(value.classList.contains('survey-div')){
-          surveydiv.push(
-            {
-              'tops': $(this)[0].style.top,
-              'left': $(this)[0].style.left,
-              'width': $(this)[0].style.width,
-              'height': $(this)[0].style.height,
-              'link': $(this).find("a").attr('href'),
-              'survey_btn_name': $(this).find(".resizable-text-only").text(),
-              'survey_name': $(this).find('.survey-name').text(),
-              'font_size': $(this).find('.resizable-text-only').css('font-size')
-            }
-          );
-        }
-      });
-      backgroundcolor = $("#tab"+parseInt(this.value)).css('background-color')
-      thumbnail = ($(value)[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-      pages[numberofpages] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'thumbnail': thumbnail, 'backgroundcolor': backgroundcolor}]
-    });
-    data = {
-      'numberofpages': numberofpages, 
-      'chaptertitle': $('#chaptertitle').text(),
-      'pages': pages,
-      'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
-      'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
-    };
+    
     var json=JSON.stringify(data);
     $.ajax({
       url: save_json_url,
@@ -203,11 +63,11 @@ $("#SaveBtn").on("click",function(e){
       data: {
         'csrfmiddlewaretoken': csrf_token,
         'json': json,
-        'htmlfile': JSON.stringify(htmlfile),
         'chapterID': chapterID,
         'courseID': courseID
       },
       success: function (data) {
+        console.log(data)
         alert('saved successfully.')
       },
       error: function(e){
@@ -215,6 +75,7 @@ $("#SaveBtn").on("click",function(e){
         alert("Failed to save data")
       },
       complete: function(data){
+        console.log(data)
         $('#SaveBtn').html(`<a href="#" id="SaveBtn"><i class="fas fa-save"></i><br/>Save</a>`)
       }
     });

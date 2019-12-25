@@ -6,6 +6,712 @@ var tobedeletedfiles = {
     '_3d': [],
 }
 
+function getEmbedVideo(url) {
+    var ytRegExp = /\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
+    var ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
+    var ytMatch = url.match(ytRegExp);
+    var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
+    var igMatch = url.match(igRegExp);
+    var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
+    var vMatch = url.match(vRegExp);
+    var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
+    var vimMatch = url.match(vimRegExp);
+    var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+    var dmMatch = url.match(dmRegExp);
+    var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
+    var youkuMatch = url.match(youkuRegExp);
+    var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
+    var qqMatch = url.match(qqRegExp);
+    var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
+    var qqMatch2 = url.match(qqRegExp2);
+    var mp4RegExp = /^.+.(mp4|m4v)$/;
+    var mp4Match = url.match(mp4RegExp);
+    var oggRegExp = /^.+.(ogg|ogv)$/;
+    var oggMatch = url.match(oggRegExp);
+    var webmRegExp = /^.+.(webm)$/;
+    var webmMatch = url.match(webmRegExp);
+    var fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
+    var fbMatch = url.match(fbRegExp);
+    var $video_element;
+    if (ytMatch && ytMatch[1].length === 11) {
+        var youtubeId = ytMatch[1];
+        var start = 0;
+        if (typeof ytMatch[2] !== 'undefined') {
+            var ytMatchForStart = ytMatch[2].match(ytRegExpForStart);
+            if (ytMatchForStart) {
+                for (var n = [3600, 60, 1], i = 0, r = n.length; i < r; i++) {
+                    start += (typeof ytMatchForStart[i + 1] !== 'undefined' ? n[i] * parseInt(ytMatchForStart[i + 1], 10) : 0);
+                }
+            }
+        }
+        $video_element = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
+            .attr('width', '100%').attr('height', '100%');
+    } else if (vimMatch && vimMatch[3].length) {
+        $video_element = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
+            .attr('width', '100%').attr('height', '100%');
+    } else if (dmMatch && dmMatch[2].length) {
+        $video_element = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
+            .attr('width', '100%').attr('height', '100%');
+    } else if (youkuMatch && youkuMatch[1].length) {
+        $video_element = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('height', '100%')
+            .attr('width', '100%')
+            .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+    } else if (mp4Match || oggMatch || webmMatch) {
+        $video_element = $('<video controls>')
+            .attr('src', url)
+            .attr('width', '100%').attr('height', '100%');
+    } else {
+        // this is not a known video link. Now what, Cat? Now what?
+        return false;
+    }
+    return $video_element[0];
+}
+
+function revertpositionConvert(element, multiplier) {
+    return parseFloat(element) * parseFloat(multiplier) / 100
+}
+
+function positionConvert(element, divider) {
+    return parseFloat(element) * 100 / parseFloat(divider)
+}
+
+function convertFontToREM(font){
+    return parseFloat(font)/14;
+}
+
+function convertFontToPX(font){
+    return parseFloat(font)*14;
+}
+
+// Initializing Elements
+
+// ==================For TextBoxx================================
+// $('#tabs-for-download').droppable({
+//     tolerance: 'fit',
+//     drop: function (event, ui) {
+//         $(this).removeClass("border").removeClass("over");
+//     },
+
+//     over: function (event, elem) {
+//         $(this).addClass("over");
+//     },
+//     out: function (event, elem) {
+//         $(this).removeClass("over");
+//     },
+// });
+
+class Textbox {
+    constructor(top = 0, left = 0, height = null, width = null, message = "Type Something Here...") {
+        let id = (new Date).getTime();
+        let position = {
+            top, left, height, width
+        };
+        let html = `<div class='textdiv' >
+                 
+                 <div id="editor${id}" class="messageText"></div>
+                 <div id="text-actions" class = "text-actions">
+                     <i class="fas fa-trash" id=${id}></i>
+                     <i class="fas fa-arrows-alt" id="draghere" ></i>
+                 </div> 
+              </div>
+              `;
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width,
+                "border": "2px dashed #000 !important"
+
+            }).draggable({
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+
+                handle: '.text-actions',
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+
+            var a = document.getElementsByClassName("current")[0];
+            
+            $('#' + a.id).append(dom);
+            $('#editor' + id).summernote({
+                fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['fontsize', ['fontsize']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['']],
+                    // ['view', ['fullscreen', 'codeview', 'help']],
+                ],
+            });
+            $('#editor' + id).parent().find('.note-statusbar').remove();
+            $('#editor' + id).parent().find('.note-editable').html(message);
+            // $('#editor' + id).parent().find('.note-editable').each(function(){
+            //     if($(this).find('span').css('font-size')){
+            //         let font = convertFontToPX($(this).find('span')[0].style['font-size'])
+            //         $(this).find('span').css('font-size', font + 'px')
+            //     }
+            // })
+            // $(".editor-canvas").append(dom);
+            // Making element Resizable
+        };
+    }
+}
+
+// ===========================FOR PICTURE=====================================
+
+class picture {
+    constructor(top, left, pic = null, width = null, height = null) {
+
+        let id = (new Date).getTime();
+        let position = {top, left, width, height};
+        let message = "";
+        if (pic == null) {
+            message = "Drag and drop images here..."
+        }
+        let img = '';
+        if (pic != null) {
+            img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
+        }
+        let html =
+            `<div class='pic'>
+            <div id="pic-actions">
+                <i class="fas fa-trash" id=${id}></i>
+                <i class="fas fa-upload" id=${id}></i>
+                <i class="fas fa-link imagelink" id=${id}></i>
+            </div>
+            ${img}
+            <div>
+                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                <input type='file' accept="image/*" name="userImage" style="display:none" id=${id + 1} class="imgInp" />
+            </form>
+            <p id="picture-drag">${message}</p>
+            </div>
+        </div>`
+
+        this.RemoveElement = function () {
+            return idss;
+        }
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "width": position.width,
+                "height": position.height
+            }).draggable({
+                //Constraint   the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+        };
+    }
+}
+
+// ====================================For Video==============================
+
+class video {
+    constructor(top, left, link = null, height = null, width = null) {
+        let id = (new Date).getTime();
+        var now = Math.floor(Math.random() * 900000) + 100000;
+        let position = {top, left, height, width};
+        let videoobj;
+        let message = ""
+        // if(link!=null){
+        //     videoobj = `<div id='${now}'><div>
+        //  <script>
+        //     var options = {
+        //         url: '${link}',
+        //         width: "${width}",
+        //         height: "${height}"
+        //     };
+
+        //     var videoPlayer = new Vimeo.Player('${now}', options);
+        //   </script>`
+        //  ================================   end for vimeo    ===========================================
+        if (link != null) {
+
+            // videoobj = `
+            //         <video width="100%" height="75%" controls>
+            //             <source src="https://www.youtube.com/embed/${myYoutubeId}"  type="video/mp4">
+            //         </video>
+            // `
+            if (link.includes('www') && link.includes('.com')) {
+                videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
+            } else {
+                videoobj = `
+                    <video width="100%" height="94%" controls>
+                        <source src="${link}"  type="video/mp4">
+                    </video>
+            `
+            }
+        } else {
+            message = "drag and drop video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>";
+            videoobj = `<div class="progress video-text-div">
+            <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>`;
+        }
+        let html =
+            `<div class='video-div'>
+                <div id="video-actions">
+                    <i class="fas fa-trash" id=${id}></i>
+                    <i class="fas fa-upload" id=${id}></i>
+                    <i class="fas fa-link videolink" id=${id}></i>
+                </div>
+                <div>
+                    <p id="video-drag">${message}</p>
+                    
+                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                    <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
+                    </form>
+                    ${videoobj}
+                </div>
+            </div>`
+
+
+        this.RemoveElement = function () {
+            return idss;
+        }
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width
+            }).draggable({
+                //Constraint   the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom)
+        };
+    }
+}
+
+// =====================For Button==============================
+
+class Button {
+    constructor(top, left, link = null, height = null, width = null, name = 'Button') {
+        let id = (new Date).getTime();
+        let position = {top, left, height, width};
+        let button_link = ""
+        if (link != null) {
+            button_link = 'href = ' + link
+        }
+        let html = `
+                    <div class="btn-div">
+                        <div class="options">
+                            <i class="fas fa-trash" id=${id}></i>
+                            <i class="fas fa-link"   id=${id} ></i>
+                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                        
+                        </div> 
+                        <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+                        
+                        <svg viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available">
+                            <text x="0" y="15">${name}</text>
+                        </svg>
+                        </a>
+                    </div>
+    
+            `;
+
+        // href = ${link}
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width,
+            }).draggable({
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                handle: '.options',
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+            // canvas.append(dom);
+            // Making element Resizable
+
+        };
+    }
+}
+
+class Quiz {
+    constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
+        let id = (new Date).getTime();
+        let position = {top, left, height, width};
+        let quiz_link = ""
+        if (link != null) {
+            quiz_link = 'href = ' + link
+        }
+        let html = `
+                    <div class="quiz-div" data-width = "${width}">
+                        <div class="options">
+                            <i class="fas fa-trash" id=${id}></i>
+                            <i class="fas fa-link"   id=${id} ></i>
+                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                        
+                        </div> 
+                        <div class="button-name-builder ">
+                        <a ${quiz_link} id = ${id+1} target= "_blank">
+                            <button class="custom-btn-only"style="width:100%; height:100%">
+                            <div class="row text-center" width=100%>
+                            <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
+                            </div>
+                            <div class="row text-center">
+                            <span class = "quiz-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                            ${quiz_span_name}</span>
+
+                            </div>
+                            
+                            
+                            </button>
+                        </a>
+                       
+                        
+                        </div>     
+                    </div>
+    
+            `;
+
+        // href = ${link}
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width,
+            }).draggable({
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                handle: '.options',
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+            // canvas.append(dom);
+            // Making element Resizable
+
+        };
+    }
+}
+
+class Survey {
+    constructor(top, left, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
+        let id = (new Date).getTime();
+        let position = {top, left, height, width};
+        let survey_link = ""
+        if (link != null) {
+            survey_link = 'href = ' + link
+        }
+        let html = `
+                    <div class="survey-div" data-width = "${width}">
+                        <div class="options">
+                            <i class="fas fa-trash" id=${id}></i>
+                            <i class="fas fa-link"   id=${id} ></i>
+                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                        
+                        </div> 
+                        <div class="button-name-builder">
+                            <a ${survey_link} id=${id + 1}  target="_blank" >
+                            
+                                <button class="custom-btn-only"style="width:100%; height:100%">
+                                <div class="row text-center" width=100%>
+                                    <span class="resizable-text-only" style = "width:100%; font-size: ${font_size}">${name} </span>
+                                </div>
+                                <div class="row text-center">
+                                    <span class = "survey-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                    ${survey_span_name}</span>
+                                    </div>
+                                </button>
+                                
+                            </a>
+                        </div>    
+                    </div>
+            `;
+            
+        // href = ${link}
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width,
+            }).draggable({
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                handle: '.options',
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+            // canvas.append(dom);
+            // Making element Resizable
+
+        };
+    }
+}
+
+// ====For PDF======
+class PDF {
+    constructor(top, left, link = null, height = null, width = null) {
+        let id = (new Date).getTime();
+        var pdfobj;
+        var message;
+        let position = {top, left, height, width};
+        if (link != null) {
+            pdfobj = `
+            <object data="${link}" type="application/pdf" width="100%" height="100%">
+                alt : <a href="${link}"></a>
+            </object>
+        `
+            message = ''
+        } else {
+            message = "drag and drop files here...";
+            pdfobj = "";
+        }
+        let html = `
+        <div class='pdfdiv'>
+            <div id="pdfdiv-actions1">
+                <i class="fas fa-trash" id=${id}></i>
+                <i class="fas fa-upload" id=${id}></i>
+            </div>
+            <div>
+                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                <input type='file' accept="application/pdf"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
+                </form>
+                <p id="pdfdiv-drag" placeholder="drag and drop files here...">${message}</p>
+            </div>
+            ${pdfobj}
+        </div>
+    `;
+        this.RemoveElement = function () {
+            return idss;
+        }
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width
+            }).draggable({
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+            // Making element Resizable
+
+        };
+    }
+}
+
+// =====================For 3DObjects==============================
+
+class _3Dobject {
+    constructor(top, left, file = null, height = null, width = null) {
+        let id = (new Date).getTime();
+        let position = {top, left, width, height};
+        let message = "";
+        var _3dobj;
+        if (file == null) {
+            message = "Drag and drop 3D objects here..."
+        }
+        if (file != null) {
+            _3dobj = `
+                <model-viewer
+                src="${file}"
+                alt="Here is a 3D Object."
+                auto-rotate
+                camera-controls  
+                style="height: 100%;width:100%;"></model-viewer>
+
+            `
+        } else {
+            _3dobj = "";
+        }
+        let html =
+            `<div class='_3dobj-div'>
+                <div id="_3dobj-actions">
+                    <i class="fas fa-trash" id=${id}></i>
+                    <i class="fas fa-upload" id=${id}></i>
+                </div>
+                <div>
+                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                    <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
+                </form>
+                <p id="_3dobj-drag">${message}</p>
+            </div>
+            ${_3dobj}
+        </div>`
+
+        this.RemoveElement = function () {
+            return idss;
+        }
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width
+            }).draggable({
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+        };
+    }
+}
+
+// ====================== End of initializing elements ========================
+
+
 $(document).ready(function () {
     $("#import_zip_link").on('click', function (e) {
         e.preventDefault();
@@ -14,707 +720,7 @@ $(document).ready(function () {
 
     $('#loadingDiv').hide();
 
-    function getEmbedVideo(url) {
-        var ytRegExp = /\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
-        var ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
-        var ytMatch = url.match(ytRegExp);
-        var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
-        var igMatch = url.match(igRegExp);
-        var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
-        var vMatch = url.match(vRegExp);
-        var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
-        var vimMatch = url.match(vimRegExp);
-        var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-        var dmMatch = url.match(dmRegExp);
-        var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
-        var youkuMatch = url.match(youkuRegExp);
-        var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
-        var qqMatch = url.match(qqRegExp);
-        var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
-        var qqMatch2 = url.match(qqRegExp2);
-        var mp4RegExp = /^.+.(mp4|m4v)$/;
-        var mp4Match = url.match(mp4RegExp);
-        var oggRegExp = /^.+.(ogg|ogv)$/;
-        var oggMatch = url.match(oggRegExp);
-        var webmRegExp = /^.+.(webm)$/;
-        var webmMatch = url.match(webmRegExp);
-        var fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
-        var fbMatch = url.match(fbRegExp);
-        var $video_element;
-        if (ytMatch && ytMatch[1].length === 11) {
-            var youtubeId = ytMatch[1];
-            var start = 0;
-            if (typeof ytMatch[2] !== 'undefined') {
-                var ytMatchForStart = ytMatch[2].match(ytRegExpForStart);
-                if (ytMatchForStart) {
-                    for (var n = [3600, 60, 1], i = 0, r = n.length; i < r; i++) {
-                        start += (typeof ytMatchForStart[i + 1] !== 'undefined' ? n[i] * parseInt(ytMatchForStart[i + 1], 10) : 0);
-                    }
-                }
-            }
-            $video_element = $('<iframe>')
-                .attr('frameborder', 0)
-                .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
-                .attr('width', '100%').attr('height', '100%');
-        } else if (vimMatch && vimMatch[3].length) {
-            $video_element = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-                .attr('frameborder', 0)
-                .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-                .attr('width', '100%').attr('height', '100%');
-        } else if (dmMatch && dmMatch[2].length) {
-            $video_element = $('<iframe>')
-                .attr('frameborder', 0)
-                .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-                .attr('width', '100%').attr('height', '100%');
-        } else if (youkuMatch && youkuMatch[1].length) {
-            $video_element = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-                .attr('frameborder', 0)
-                .attr('height', '100%')
-                .attr('width', '100%')
-                .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
-        } else if (mp4Match || oggMatch || webmMatch) {
-            $video_element = $('<video controls>')
-                .attr('src', url)
-                .attr('width', '100%').attr('height', '100%');
-        } else {
-            // this is not a known video link. Now what, Cat? Now what?
-            return false;
-        }
-        return $video_element[0];
-    }
-
-    function revertpositionConvert(element, multiplier) {
-        return parseFloat(element) * parseFloat(multiplier) / 100
-    }
-
-    function positionConvert(element, divider) {
-        return parseFloat(element) * 100 / parseFloat(divider)
-    }
-
-    function convertFontToREM(font){
-        return parseFloat(font)/14;
-    }
-
-    function convertFontToPX(font){
-        return parseFloat(font)*14;
-    }
-    // ==================For TextBoxx================================
-    // $('#tabs-for-download').droppable({
-    //     tolerance: 'fit',
-    //     drop: function (event, ui) {
-    //         $(this).removeClass("border").removeClass("over");
-    //     },
-
-    //     over: function (event, elem) {
-    //         $(this).addClass("over");
-    //     },
-    //     out: function (event, elem) {
-    //         $(this).removeClass("over");
-    //     },
-    // });
-
-    class Textbox {
-        constructor(top = 0, left = 0, height = null, width = null, message = "Type Something Here...") {
-            let id = (new Date).getTime();
-            let position = {
-                top, left, height, width
-            };
-            let html = `<div class='textdiv' >
-                     
-                     <div id="editor${id}" class="messageText"></div>
-                     <div id="text-actions" class = "text-actions">
-                         <i class="fas fa-trash" id=${id}></i>
-                         <i class="fas fa-arrows-alt" id="draghere" ></i>
-                     </div> 
-                  </div>
-                  `;
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "height": position.height,
-                    "width": position.width,
-                    "border": "2px dashed #000 !important"
-
-                }).draggable({
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    snap: ".gridlines",
-                    snapMode: 'inner',
-                    cursorAt: {bottom: 0},
-
-                    handle: '.text-actions',
-                    stop: function () {
-                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
-                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
-                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
-                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
-                        $(this).css("left", l);
-                        $(this).css("top", t);
-                        $(this).css("height", h);
-                        $(this).css("width", w);
-                    }
-                });
-
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom);
-                $('#editor' + id).summernote({
-                    fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
-                    toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'underline', 'clear']],
-                        ['fontsize', ['fontsize']],
-                        ['fontname', ['fontname']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['table', ['table']],
-                        ['insert', ['']],
-                        // ['view', ['fullscreen', 'codeview', 'help']],
-                    ],
-                });
-                $('#editor' + id).parent().find('.note-statusbar').remove();
-                $('#editor' + id).parent().find('.note-editable').html(message);
-                // $('#editor' + id).parent().find('.note-editable').each(function(){
-                //     if($(this).find('span').css('font-size')){
-                //         let font = convertFontToPX($(this).find('span')[0].style['font-size'])
-                //         $(this).find('span').css('font-size', font + 'px')
-                //     }
-                // })
-                // $(".editor-canvas").append(dom);
-                // Making element Resizable
-            };
-        }
-    }
-
-    // ===========================FOR PICTURE=====================================
-
-    class picture {
-        constructor(top, left, pic = null, width = null, height = null) {
-
-            let id = (new Date).getTime();
-            let position = {top, left, width, height};
-            let message = "";
-            if (pic == null) {
-                message = "Drag and drop images here..."
-            }
-            let img = '';
-            if (pic != null) {
-                img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
-            }
-            let html =
-                `<div class='pic'>
-                <div id="pic-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                    <i class="fas fa-link imagelink" id=${id}></i>
-                </div>
-                ${img}
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' accept="image/*" name="userImage" style="display:none" id=${id + 1} class="imgInp" />
-                </form>
-                <p id="picture-drag">${message}</p>
-                </div>
-            </div>`
-
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "width": position.width,
-                    "height": position.height
-                }).draggable({
-                    //Constraint   the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    snap: ".gridlines",
-                    snapMode: 'inner',
-                    cursorAt: {bottom: 0},
-                    stop: function () {
-                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
-                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
-                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
-                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
-                        $(this).css("left", l);
-                        $(this).css("top", t);
-                        $(this).css("height", h);
-                        $(this).css("width", w);
-                    }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom);
-            };
-        }
-    }
-
-    // ====================================For Video==============================
-
-    class video {
-        constructor(top, left, link = null, height = null, width = null) {
-            let id = (new Date).getTime();
-            var now = Math.floor(Math.random() * 900000) + 100000;
-            let position = {top, left, height, width};
-            let videoobj;
-            let message = ""
-            // if(link!=null){
-            //     videoobj = `<div id='${now}'><div>
-            //  <script>
-            //     var options = {
-            //         url: '${link}',
-            //         width: "${width}",
-            //         height: "${height}"
-            //     };
-
-            //     var videoPlayer = new Vimeo.Player('${now}', options);
-            //   </script>`
-            //  ================================   end for vimeo    ===========================================
-            if (link != null) {
-
-                // videoobj = `
-                //         <video width="100%" height="75%" controls>
-                //             <source src="https://www.youtube.com/embed/${myYoutubeId}"  type="video/mp4">
-                //         </video>
-                // `
-                if (link.includes('www') && link.includes('.com')) {
-                    videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
-                } else {
-                    videoobj = `
-                        <video width="100%" height="94%" controls>
-                            <source src="${link}"  type="video/mp4">
-                        </video>
-                `
-                }
-            } else {
-                message = "drag and drop video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>";
-                videoobj = `<div class="progress video-text-div">
-                <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>`;
-            }
-            let html =
-                `<div class='video-div'>
-                    <div id="video-actions">
-                        <i class="fas fa-trash" id=${id}></i>
-                        <i class="fas fa-upload" id=${id}></i>
-                        <i class="fas fa-link videolink" id=${id}></i>
-                    </div>
-                    <div>
-                        <p id="video-drag">${message}</p>
-                        
-                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
-                        </form>
-                        ${videoobj}
-                    </div>
-                </div>`
-
-
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "height": position.height,
-                    "width": position.width
-                }).draggable({
-                    //Constraint   the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    snap: ".gridlines",
-                    snapMode: 'inner',
-                    cursorAt: {bottom: 0},
-                    stop: function () {
-                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
-                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
-                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
-                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
-                        $(this).css("left", l);
-                        $(this).css("top", t);
-                        $(this).css("height", h);
-                        $(this).css("width", w);
-                    }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom)
-            };
-        }
-    }
-
-    // =====================For Button==============================
-
-    class Button {
-        constructor(top, left, link = null, height = null, width = null, name = 'Button') {
-            let id = (new Date).getTime();
-            let position = {top, left, height, width};
-            let button_link = ""
-            if (link != null) {
-                button_link = 'href = ' + link
-            }
-            let html = `
-                        <div class="btn-div">
-                            <div class="options">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-link"   id=${id} ></i>
-                                <i class="fas fa-arrows-alt" id="draghanle"></i>
-                            
-                            </div> 
-                            <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
-                            
-                            <svg viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available">
-                                <text x="0" y="15">${name}</text>
-                            </svg>
-                            </a>
-                        </div>
-        
-                `;
-
-            // href = ${link}
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "height": position.height,
-                    "width": position.width,
-                }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    handle: '.options',
-                    stop: function () {
-                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
-                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
-                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
-                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
-                        $(this).css("left", l);
-                        $(this).css("top", t);
-                        $(this).css("height", h);
-                        $(this).css("width", w);
-                    }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom);
-                // canvas.append(dom);
-                // Making element Resizable
-
-            };
-        }
-    }
-
-    class Quiz {
-        constructor(top, left, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
-            let id = (new Date).getTime();
-            let position = {top, left, height, width};
-            let quiz_link = ""
-            if (link != null) {
-                quiz_link = 'href = ' + link
-            }
-            let html = `
-                        <div class="quiz-div" data-width = "${width}">
-                            <div class="options">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-link"   id=${id} ></i>
-                                <i class="fas fa-arrows-alt" id="draghanle"></i>
-                            
-                            </div> 
-                            <div class="button-name-builder ">
-                            <a ${quiz_link} id = ${id+1} target= "_blank">
-                                <button class="custom-btn-only"style="width:100%; height:100%">
-                                <div class="row text-center" width=100%>
-                                <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
-                                </div>
-                                <div class="row text-center">
-                                <span class = "quiz-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
-                                ${quiz_span_name}</span>
-
-                                </div>
-                                
-                                
-                                </button>
-                            </a>
-                           
-                            
-                            </div>     
-                        </div>
-        
-                `;
-
-            // href = ${link}
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "height": position.height,
-                    "width": position.width,
-                }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    handle: '.options',
-                    stop: function () {
-                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
-                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
-                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
-                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
-                        $(this).css("left", l);
-                        $(this).css("top", t);
-                        $(this).css("height", h);
-                        $(this).css("width", w);
-                    }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom);
-                // canvas.append(dom);
-                // Making element Resizable
-
-            };
-        }
-    }
-
-    class Survey {
-        constructor(top, left, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
-            let id = (new Date).getTime();
-            let position = {top, left, height, width};
-            let survey_link = ""
-            if (link != null) {
-                survey_link = 'href = ' + link
-            }
-            let html = `
-                        <div class="survey-div" data-width = "${width}">
-                            <div class="options">
-                                <i class="fas fa-trash" id=${id}></i>
-                                <i class="fas fa-link"   id=${id} ></i>
-                                <i class="fas fa-arrows-alt" id="draghanle"></i>
-                            
-                            </div> 
-                            <div class="button-name-builder">
-                                <a ${survey_link} id=${id + 1}  target="_blank" >
-                                
-                                    <button class="custom-btn-only"style="width:100%; height:100%">
-                                    <div class="row text-center" width=100%>
-                                        <span class="resizable-text-only" style = "width:100%; font-size: ${font_size}">${name} </span>
-                                    </div>
-                                    <div class="row text-center">
-                                        <span class = "survey-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
-                                        ${survey_span_name}</span>
-                                        </div>
-                                    </button>
-                                    
-                                </a>
-                            </div>    
-                        </div>
-                `;
-                
-            // href = ${link}
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "height": position.height,
-                    "width": position.width,
-                }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    handle: '.options',
-                    stop: function () {
-                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
-                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
-                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
-                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
-                        $(this).css("left", l);
-                        $(this).css("top", t);
-                        $(this).css("height", h);
-                        $(this).css("width", w);
-                    }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom);
-                // canvas.append(dom);
-                // Making element Resizable
-
-            };
-        }
-    }
-
-    // ====For PDF======
-    class PDF {
-        constructor(top, left, link = null, height = null, width = null) {
-            let id = (new Date).getTime();
-            var pdfobj;
-            var message;
-            let position = {top, left, height, width};
-            if (link != null) {
-                pdfobj = `
-                <object data="${link}" type="application/pdf" width="100%" height="100%">
-                    alt : <a href="${link}"></a>
-                </object>
-            `
-                message = ''
-            } else {
-                message = "drag and drop files here...";
-                pdfobj = "";
-            }
-            let html = `
-            <div class='pdfdiv'>
-                <div id="pdfdiv-actions1">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                </div>
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                    <input type='file' accept="application/pdf"  style="display:none" id=${id + 1}  multiple="multiple" class="pdfInp" />
-                    </form>
-                    <p id="pdfdiv-drag" placeholder="drag and drop files here...">${message}</p>
-                </div>
-                ${pdfobj}
-            </div>
-        `;
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "height": position.height,
-                    "width": position.width
-                }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    snap: ".gridlines",
-                    snapMode: 'inner',
-                    cursorAt: {bottom: 0},
-                    stop: function () {
-                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
-                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
-                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
-                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
-                        $(this).css("left", l);
-                        $(this).css("top", t);
-                        $(this).css("height", h);
-                        $(this).css("width", w);
-                    }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom);
-                // Making element Resizable
-
-            };
-        }
-    }
-
-    // =====================For 3DObjects==============================
-
-    class _3Dobject {
-        constructor(top, left, file = null, height = null, width = null) {
-            let id = (new Date).getTime();
-            let position = {top, left, width, height};
-            let message = "";
-            var _3dobj;
-            if (file == null) {
-                message = "Drag and drop 3D objects here..."
-            }
-            if (file != null) {
-                _3dobj = `
-                    <model-viewer
-                    src="${file}"
-                    alt="Here is a 3D Object."
-                    auto-rotate
-                    camera-controls  
-                    style="height: 100%;width:100%;"></model-viewer>
-
-                `
-            } else {
-                _3dobj = "";
-            }
-            let html =
-                `<div class='_3dobj-div'>
-                    <div id="_3dobj-actions">
-                        <i class="fas fa-trash" id=${id}></i>
-                        <i class="fas fa-upload" id=${id}></i>
-                    </div>
-                    <div>
-                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' name="userImage" style="display:none" id=${id + 1} class="_3dobjinp" />
-                    </form>
-                    <p id="_3dobj-drag">${message}</p>
-                </div>
-                ${_3dobj}
-            </div>`
-
-            this.RemoveElement = function () {
-                return idss;
-            }
-            this.renderDiagram = function () {
-                // dom includes the html,css code with draggable property
-                let dom = $(html).css({
-                    "position": "absolute",
-                    "top": position.top,
-                    "left": position.left,
-                    "height": position.height,
-                    "width": position.width
-                }).draggable({
-                    //Constrain the draggable movement only within the canvas of the editor
-                    containment: "#tabs-for-download",
-                    scroll: false,
-                    cursor: "move",
-                    snap: ".gridlines",
-                    snapMode: 'inner',
-                    cursorAt: {bottom: 0},
-                    stop: function () {
-                        var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
-                        var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
-                        var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
-                        var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
-                        $(this).css("left", l);
-                        $(this).css("top", t);
-                        $(this).css("height", h);
-                        $(this).css("width", w);
-                    }
-                });
-
-                var a = document.getElementsByClassName("current")[0];
-                $('#' + a.id).append(dom);
-            };
-        }
-    }
-
-// ====================== End of initializing elements ========================
-
+ 
     // title click function
     $(".tlimit").on("click", function () {
         $("#title_id").css({
@@ -722,8 +728,6 @@ $(document).ready(function () {
         });
     });
     
-    let sidebarWidth = $(".sidebar").width(); // get width of sidebar
-    let toolbarheight = $('.editor-toolbar').height();
     // Making sidebar tools draggable
     $(".draggable").draggable({
         helper: "clone",
@@ -735,201 +739,8 @@ $(document).ready(function () {
         },
     });
 
-    function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "Type Something Here...") {
-        const textBox = new Textbox(top, left, height, width, message);
-
-        textBox.renderDiagram();
-        $('.textdiv').hover(function (e) {
-            $(e.currentTarget).find('.text-actions').css({
-                'display': 'block'
-            });
-            $(this).css({
-                'border': '1px solid grey'
-            })
-
-        }, function () {
-            $('.text-actions').css({
-                'display': 'none'
-            });
-            $(this).css({
-                'border': 'none'
-            })
-            $('.messageText').css({
-                'border': 'none'
-            })
-        });
-
-        $('.fa-trash').click(function (e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-        $('.textdiv').resizable({
-            containment: $('#tabs-for-download'),
-            grid: [20, 20],
-            autoHide: true,
-            minWidth: 75,
-            minHeight: 25,
-            autoHide: true,
-            stop: function (e, ui) {
-                //   var parent = ui.element.parent();
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
-            }
-        });
-        $('.note-editing-area').on('focusin', function (e) {
-            $(e.currentTarget).parent().find('.note-popover .popover-content,.panel-heading.note-toolbar').css('display', 'block')
-        });
-
-        var resultsSelected = false;
-        $(".note-toolbar > .note-btn-group").hover(
-            function () {
-                resultsSelected = true;
-            },
-            function () {
-                resultsSelected = false;
-                // if(!$('.note-editing-area').has(':focus')){
-                //   $('.note-popover .popover-content,.panel-heading.note-toolbar').css('display','none')
-                // }
-            }
-        );
-        $('.note-editing-area').on('focusout', function (e) {
-            if (!resultsSelected) {
-                $('.panel-heading.note-toolbar').css('display', 'none')
-            }
-        });
-    }
-
-    function dropfunction(event, ui) {
-        if (ui.helper.hasClass('textbox')) {
-            TextboxFunction(
-                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                "20%", "35%");
-        } else if (ui.helper.hasClass('picture')) {
-            PictureFunction(
-                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert(ui.helper.position().left - sidebarWidth, $('#tabs-for-download').width())) + '%',
-                null, '40%', '30%'
-            );
-        } else if (ui.helper.hasClass('video')) {
-            VideoFunction(
-                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '30%', '40%'
-            );
-        } else if (ui.helper.hasClass('buttons')) {
-            ButtonFunction(
-                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '13%', '15%'
-            );
-        } else if (ui.helper.hasClass('quiz')) {
-            QuizFunction(
-                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '13%', '15%'
-            );
-        } else if (ui.helper.hasClass('survey')) {
-            SurveyFunction(
-                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '13%', '15%'
-            );
-        } else if (ui.helper.hasClass('grid-1')) {
-            PictureFunction(
-                top = 0 + '%',
-                left = 0 + '%',
-                null,
-                width = "100%", height = "50%");
-
-
-            // ===============for textbox inside grid-1============
-            TextboxFunction(
-                top = "50%",
-                left = 0 + '%',
-                height = "45%", width = '100% '
-            );
-        } else if (ui.helper.hasClass('grid')) {
-            VideoFunction(
-                top = 0 + '%',
-                left = 0 + '%',
-                null,
-                height = "50%", width = "100%");
-
-
-            // ===============for textbox inside grid-1============
-            TextboxFunction(
-                top = "52%",
-                left = 0 + '%',
-                height = "45%", width = "100%"
-            );
-        } else if (ui.helper.hasClass('title-slide')) {
-            PictureFunction(
-                top = 0 + '%',
-                left = 0 + '%',
-                null,
-                width = "49%", height = "60%");
-            PictureFunction(
-                top = 0 + '%',
-                left = "51%",
-                null,
-                width = "49%", height = "60%");
-            TextboxFunction(
-                top = "62%",
-                left = 0 + '%',
-                height = "35%", width = "100%",
-                message = "Your Content Here"
-            );
-        } else if (ui.helper.hasClass('title-content-details')) {
-            TextboxFunction(
-                top = "0%",
-                left = 0 + '%',
-                height = "10%", width = "100%",
-                message = "Your Title Here"
-            );
-            TextboxFunction(
-                top = "13%",
-                left = 0 + '%',
-                height = "84%", width = "100%",
-                message = "Your Content Here"
-            );
-        } else if (ui.helper.hasClass('pdf-text')) {
-            PDFFunction(
-                top = "0%",
-                left = 0 + '%',
-                link = null,
-                height = "60%", width = "100%");
-
-
-            // ===============for textbox inside grid-1============
-            TextboxFunction(
-                top = "62%",
-                left = 0 + '%',
-                height = "35%", width = "100%"
-            );
-
-        } else if (ui.helper.hasClass('3dobject')) {
-            _3dFunction(
-                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '30%', '40%'
-            );
-        } else if (ui.helper.hasClass('Pdf')) {
-            PDFFunction(
-                (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-                (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-                null, '30%', '40%'
-            );
-        }
-        $('.fa-trash').click(function (e) {
-            $('#' + e.currentTarget.id).parent().parent().remove();
-        });
-    }
-
     $(".editor-canvas").droppable({
         drop: function (event, ui) {
-            console.log('hello')
             dropfunction(event, ui)
         }
     });
@@ -937,37 +748,279 @@ $(document).ready(function () {
     $("#add-page-btn").on("click", function () {
         newpagefunction();
     });
-
+    setslider()
     
     $('.tabs-to-click > ul > li:first').remove()
-    changePage('tab1');
-    window.firstload = false 
-
-  
-    
-    
+    changePage('1');
 });
+
+let sidebarWidth = $(".sidebar").width(); // get width of sidebar
+let toolbarheight = $('.editor-toolbar').height();
+
+function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "Type Something Here...") {
+    const textBox = new Textbox(top, left, height, width, message);
+
+    textBox.renderDiagram();
+    $('.textdiv').hover(function (e) {
+        $(e.currentTarget).find('.text-actions').css({
+            'display': 'block'
+        });
+        $(this).css({
+            'border': '1px solid grey'
+        })
+
+    }, function () {
+        $('.text-actions').css({
+            'display': 'none'
+        });
+        $(this).css({
+            'border': 'none'
+        })
+        $('.messageText').css({
+            'border': 'none'
+        })
+    });
+
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+    $('.textdiv').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 75,
+        minHeight: 25,
+        autoHide: true,
+        stop: function (e, ui) {
+            //   var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        }
+    });
+    $('.note-editing-area').on('focusin', function (e) {
+        $(e.currentTarget).parent().find('.note-popover .popover-content,.panel-heading.note-toolbar').css('display', 'block')
+    });
+
+    var resultsSelected = false;
+    $(".note-toolbar > .note-btn-group").hover(
+        function () {
+            resultsSelected = true;
+        },
+        function () {
+            resultsSelected = false;
+            // if(!$('.note-editing-area').has(':focus')){
+            //   $('.note-popover .popover-content,.panel-heading.note-toolbar').css('display','none')
+            // }
+        }
+    );
+    $('.note-editing-area').on('focusout', function (e) {
+        if (!resultsSelected) {
+            $('.panel-heading.note-toolbar').css('display', 'none')
+        }
+    });
+}
+
+function dropfunction(event, ui) {
+    if (ui.helper.hasClass('textbox')) {
+        TextboxFunction(
+            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            "20%", "35%");
+    } else if (ui.helper.hasClass('picture')) {
+        PictureFunction(
+            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+            (positionConvert(ui.helper.position().left - sidebarWidth, $('#tabs-for-download').width())) + '%',
+            null, '40%', '30%'
+        );
+    } else if (ui.helper.hasClass('video')) {
+        VideoFunction(
+            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            null, '30%', '40%'
+        );
+    } else if (ui.helper.hasClass('buttons')) {
+        ButtonFunction(
+            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            null, '13%', '15%'
+        );
+    } else if (ui.helper.hasClass('quiz')) {
+        QuizFunction(
+            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            null, '13%', '15%'
+        );
+    } else if (ui.helper.hasClass('survey')) {
+        SurveyFunction(
+            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            null, '13%', '15%'
+        );
+    } else if (ui.helper.hasClass('grid-1')) {
+        PictureFunction(
+            top = 0 + '%',
+            left = 0 + '%',
+            null,
+            width = "100%", height = "50%");
+
+
+        // ===============for textbox inside grid-1============
+        TextboxFunction(
+            top = "50%",
+            left = 0 + '%',
+            height = "45%", width = '100% '
+        );
+    } else if (ui.helper.hasClass('grid')) {
+        VideoFunction(
+            top = 0 + '%',
+            left = 0 + '%',
+            null,
+            height = "50%", width = "100%");
+
+
+        // ===============for textbox inside grid-1============
+        TextboxFunction(
+            top = "52%",
+            left = 0 + '%',
+            height = "45%", width = "100%"
+        );
+    } else if (ui.helper.hasClass('title-slide')) {
+        PictureFunction(
+            top = 0 + '%',
+            left = 0 + '%',
+            null,
+            width = "49%", height = "60%");
+        PictureFunction(
+            top = 0 + '%',
+            left = "51%",
+            null,
+            width = "49%", height = "60%");
+        TextboxFunction(
+            top = "62%",
+            left = 0 + '%',
+            height = "35%", width = "100%",
+            message = "Your Content Here"
+        );
+    } else if (ui.helper.hasClass('title-content-details')) {
+        TextboxFunction(
+            top = "0%",
+            left = 0 + '%',
+            height = "10%", width = "100%",
+            message = "Your Title Here"
+        );
+        TextboxFunction(
+            top = "13%",
+            left = 0 + '%',
+            height = "84%", width = "100%",
+            message = "Your Content Here"
+        );
+    } else if (ui.helper.hasClass('pdf-text')) {
+        PDFFunction(
+            top = "0%",
+            left = 0 + '%',
+            link = null,
+            height = "60%", width = "100%");
+
+
+        // ===============for textbox inside grid-1============
+        TextboxFunction(
+            top = "62%",
+            left = 0 + '%',
+            height = "35%", width = "100%"
+        );
+
+    } else if (ui.helper.hasClass('3dobject')) {
+        _3dFunction(
+            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            null, '30%', '40%'
+        );
+    } else if (ui.helper.hasClass('Pdf')) {
+        PDFFunction(
+            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            null, '30%', '40%'
+        );
+    }
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+}
 
 function displaypagenumbers() {
     $('.pagenumber').each(function (key, value) {
         $(this).parent().find('p').text(key + 1);
     })
 }
-function newpagefunction(new_page_num) {
+
+function setslider(){
+    if(data.pages){
+        $.each(data.pages, function (key, value) {
+            if (value[0]['thumbnail'] == "") {
+                $(".tabs-to-click ul").append(`
+                <div class="canvas-relative" style="position:relative"> 
+            
+            
+            <li class="tabs-link pagenumber current" value="${key}" onclick="changePage('tab${key}')"></li>
+            <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
+                    <p style="display:inline-block"></p> 
+                    <span style="float:right ">
+                        <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                    </span>
+
+                    <spannewpage style="float:right ">
+                        <button class="delete-page-btn" value="${key}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                    </span>
+                </div>
+            
+            <hr class="white-hr"/>
+        
+
+        </div>
+            `);
+            } else {
+                $(".tabs-to-click ul").append(`
+                <div class="canvas-relative" style="position:relative"> 
+            
+            
+            <li class="tabs-link pagenumber" value="${key}" onclick="changePage('tab${key}')"></li>
+            <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
+                    <p style="display:inline-block"></p> 
+                    <span style="float:right ">
+                        <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                    </span>
+
+                    <spannewpage style="float:right ">
+                        <button class="delete-page-btn" value="${key}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                    </span>
+                </div>
+            
+            <hr class="white-hr"/>
+        
+
+        </div>
+                `);
+            }
+        });
+        // displaypagenumbers()
+    }
+}
+
+function newpagefunction(new_page_num){
     if ($(".tabs-to-click ul li").last().length == 0) {
         var num_tabs = 1
-    } 
-    
-    else if(new_page_num){
+    } else if(new_page_num){
         var num_tabs =  new_page_num   
-    }else {
+    } else {
         var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
     }
     $(".tabs-to-click ul").append(`
         <div class="canvas-relative" style="position:relative"> 
-          
-         
-            <li class="tabs-link pagenumber " value="${num_tabs}" onclick="changePage('tab${num_tabs}')"></li>
+            
+            
+            <li class="tabs-link pagenumber current" value="${num_tabs}" onclick="changePage('tab${num_tabs}')"></li>
             <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
                     <p style="display:inline-block"></p> 
                     <span style="float:right ">
@@ -977,18 +1030,21 @@ function newpagefunction(new_page_num) {
                     <spannewpage style="float:right ">
                         <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
                     </span>
-             </div>
-           
-           <hr class="white-hr"/>
+                </div>
+            
+            <hr class="white-hr"/>
         
 
         </div>
     `);
-    $(".tabs").append(
-        `<p id='tab${num_tabs}' style="display:block; background-color: rgb(255, 255, 255);" class="tab-content-no droppable editor-canvas ui-droppable current">
-                <input type = "color" value = "#ffffff" class="page-background">
-        </p>`
-    );
+    // $(".tabs").append(
+    //     `<p id='tab${num_tabs}' style="display:block; background-color: rgb(255, 255, 255);" class="tab-content-no droppable editor-canvas ui-droppable current">
+    //             <input type = "color" value = "#ffffff" class="page-background">
+    //     </p>`
+    // );
+    
+    $('#tab').attr('value', num_tabs)
+    // $('#copy_tab').attr('value', num_tabs)
 
     $(".editor-canvas").droppable({
         drop: function (event, ui) {
@@ -996,194 +1052,178 @@ function newpagefunction(new_page_num) {
         }
     });
     displaypagenumbers();
-}
-
-async function changePage(page_number){
-    let prev_page = window.currentPage
     if(!window.firstload){
-        await(setThumbnails(prev_page))
-        updateData(prev_page)
-        $('#tab'+prev_page).removeClass('current')
-        $('#tab'+prev_page).css('display', 'none')
-        
-        var promise = new Promise(function(resolve, reject){
-            resolve(storethumbnails(prev_page))
-        });
-        promise.then(function(){ 
-            $('#tab'+prev_page).remove();    // empty current canvas 
-        }).catch(function(errorMessage) { 
-             console.log('error',errorMessage); 
-        }); 
+        changePage('tab'+num_tabs)
     }
-    window.currentPage = page_number.replace( /^\D+/g, '')
-    newpagefunction(window.currentPage)
-    display(data, page_number);  
+    
 }
 
-function display(data = "", currentPage='tab1') {
+function displaypagenumbers() {
+    $('.pagenumber').each(function (key, value) {
+        $(this).parent().find('p').text(key + 1);
+    })
+}
+
+function display(data = "", currentPage='1') {
+    $('#tab').empty()
     $('#chaptertitle').text(chaptertitle);
-    // $('#tabs-for-download').empty();    // empty current canvas 
-    // $('.tabs-to-click > ul > li:first').remove()
-    if (data.pages == undefined) {
-        $('#add-page-btn').click();
-    }
-    $.each(data.pages, function (key, value) {
-        if(key == window.currentPage){
-            $('.tabs-to-click > ul > div > li')[key - 1].click()
-            $.each(value, function (count) {
-                // -------------------------------
-                $.each(value[count], function (div, div_value) {
-                    if (div == 'textdiv') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
-                            
-                            TextboxFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value.height,
-                                css_value.width,
-                                css_value.content
-                            );
-                        });
-                    }
-                    if (div == 'pic') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
-                            PictureFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value['background-image'],
-                                css_value.width,
-                                css_value.height,
-                            );
-                        });
-                    }
+    if(data.pages){
+        $.each(data.pages, function (key, value) {
+            if(key == window.currentPage){
+                // $('.tabs-to-click > ul > div > li')[key - 1].click()
+                $.each(value, function (count) {
+                    // -------------------------------
+                    $.each(value[count], function (div, div_value) {
+                        if (div == 'textdiv') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                TextboxFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value.height,
+                                    css_value.width,
+                                    css_value.content
+                                );
+                            });
+                        }
+                        if (div == 'pic') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                PictureFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value['background-image'],
+                                    css_value.width,
+                                    css_value.height,
+                                );
+                            });
+                        }
 
-                    if (div == 'btn-div') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
+                        if (div == 'btn-div') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
 
-                            ButtonFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value.link,
-                                Buttoncss_value.height,
-                                css_value.width,
-                                css_value.btn_name
-                            );
-                        });
-                    }
+                                ButtonFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value.link,
+                                    Buttoncss_value.height,
+                                    css_value.width,
+                                    css_value.btn_name
+                                );
+                            });
+                        }
 
-                    if (div == 'quizdiv') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
+                        if (div == 'quizdiv') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
 
-                            QuizFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value.link,
-                                css_value.height,
-                                css_value.width,
-                                css_value.quiz_btn_name,
-                                css_value.quiz_name,
-                                css_value.font_size
-                            );
-                        });
-                    }
-                    if (div == 'surveydiv') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
+                                QuizFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value.link,
+                                    css_value.height,
+                                    css_value.width,
+                                    css_value.quiz_btn_name,
+                                    css_value.quiz_name,
+                                    css_value.font_size
+                                );
+                            });
+                        }
+                        if (div == 'surveydiv') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
 
-                            SurveyFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value.link,
-                                css_value.height,
-                                css_value.width,
-                                css_value.survey_btn_name,
-                                css_value.survey_name,
-                                css_value.font_size
-                            );
-                        });
-                    }
-                    if (div == 'pdf') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
-                            PDFFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value['link'],
-                                css_value.height,
-                                css_value.width,
-                            );
-                        });
-                    }
+                                SurveyFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value.link,
+                                    css_value.height,
+                                    css_value.width,
+                                    css_value.survey_btn_name,
+                                    css_value.survey_name,
+                                    css_value.font_size
+                                );
+                            });
+                        }
+                        if (div == 'pdf') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                PDFFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value['link'],
+                                    css_value.height,
+                                    css_value.width,
+                                );
+                            });
+                        }
 
-                    if (div == 'video') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
-                            let link;
-                            if (css_value.hasOwnProperty('online_link')) {
-                                link = css_value.online_link
-                            } else {
-                                link = css_value.local_link
-                            }
-                            VideoFunction(
-                                css_value.tops,
-                                css_value.left,
-                                link,
-                                css_value.height,
-                                css_value.width,
-                            );
-                        });
-                    }
+                        if (div == 'video') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                let link;
+                                if (css_value.hasOwnProperty('online_link')) {
+                                    link = css_value.online_link
+                                } else {
+                                    link = css_value.local_link
+                                }
+                                VideoFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    link,
+                                    css_value.height,
+                                    css_value.width,
+                                );
+                            });
+                        }
 
-                    if (div == '_3d') {
-                        $.each(div_value, function (css, css_value) {
-                            css_string = JSON.stringify(css_value)
-                            _3dFunction(
-                                css_value.tops,
-                                css_value.left,
-                                css_value['link'],
-                                css_value.height,
-                                css_value.width,
-                            );
-                        });
-                    }
+                        if (div == '_3d') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                _3dFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value['link'],
+                                    css_value.height,
+                                    css_value.width,
+                                );
+                            });
+                        }
 
-                    if (div == 'thumbnail') {
-                        $($('.tabs-to-click').find('li')[key - 1]).css({
-                            'background-image': 'url("' + div_value + '")',
-                            'background-position': 'center',
-                            'background-size': 'contain',
-                            'background-repeat': 'no-repeat',
-                        })
-                    }
+                        if (div == 'thumbnail') {
+                            $($('.tabs-to-click').find('li')[key - 1]).css({
+                                'background-image': 'url("' + div_value + '")',
+                                'background-position': 'center',
+                                'background-size': 'contain',
+                                'background-repeat': 'no-repeat',
+                            })
+                        }
 
-                    if (div == 'backgroundcolor') {
-                        $('#tab' + key).css('background-color', div_value)
-                    }
+                        if (div == 'backgroundcolor') {
+                            $('#tab' + key).css('background-color', div_value)
+                        }
+                    });
                 });
-            });
-        }
-    });
-    // $('.tabs-to-click > ul > div > li')[0].click()
+                return
+            }
+            
+        });
+    }
 }
 
-function updateData(prev_page){
-    if(!data.numberofpages){
-        pages = {}
-        textdiv = [];
-        picdiv = [];
-        buttondiv = [];
-        pdf = [];
-        video = [];
-        _3d = [];
-        quizdiv = [];
-        surveydiv = [];
-    }
-    // numberofpages++;
-    const obj=$("#tab"+parseInt(window.currentPage)).children();
+function updateData(prev_page, prev_data){
+    var textdiv = [];
+    var picdiv = [];
+    var buttondiv = [];
+    var pdf = [];
+    var video = [];
+    var _3d = [];
+    var quizdiv = [];
+    var surveydiv = [];
+
+    const obj=$(prev_data).children();
+
     let tops;
     let left;
     let width;
@@ -1303,20 +1343,84 @@ function updateData(prev_page){
         }
     });
     backgroundcolor = $("#tab"+parseInt(window.currentPage)).css('background-color')
-    pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
-    
-    data = {
-      'numberofpages': numberofpages, 
-      'chaptertitle': $('#chaptertitle').text(),
-      'pages': pages,
-      'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
-      'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
-    };
+
+    if(!data.pages){
+        var pages = {}
+
+        pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
+        
+        data = {
+        'numberofpages': numberofpages, 
+        'chaptertitle': $('#chaptertitle').text(),
+        'pages': pages,
+        'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
+        'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
+        };
+    } else{
+        data.pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
+        data.numberofpages = numberofpages
+    }
 }
 
 function storethumbnails(prev_page){
     thumbnail = ($('.pagenumber[value= '+prev_page+']')[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
     data.pages[prev_page].thumbnail = thumbnail
+}
+
+function changePage(page_number){
+    let prev_page = window.currentPage.replace( /^\D+/g, '')    
+    if(window.firstload){
+        // newpagefunction()
+        window.firstload = false
+        if(data.pages){
+            $('.pagenumber[value=1]').addClass('current')
+            // $('#add-page-btn').click();
+            display(data)
+            return
+        }else {
+            newpagefunction()
+        }
+    } else{
+        window.currentPage = page_number.replace( /^\D+/g, '')
+        let prev_data = $('#tab').clone()
+        var promise = new Promise((resolve,reject) => {
+            setThumbnails(prev_page)
+            resolve('success')
+        })
+        updateData(prev_page, prev_data)
+        
+        $('#copy_tab').html($('#tab').html())
+        $('#copy_tab').attr('value', prev_page)
+        $('#tab'+window.currentPage).css('display', 'block')
+        if(prev_page != window.currentPage){
+            $('.tabs-to-click ul li[value= '+window.currentPage+']').addClass('current')
+            $('.tabs-to-click ul li[value= '+prev_page+']').removeClass('current')
+            promise.then((successmessage) => {
+                // $('#tab').empty()
+                storethumbnails(prev_page)
+            })
+        }
+        display(data)
+    }
+}
+
+// Media File deletion
+function deleteFile() {
+    $.ajax({
+        url: delete_file_url,
+        data: {
+            'csrfmiddlewaretoken': csrf_token,
+            'old': JSON.stringify(tobedeletedfiles),
+        },
+        method: 'POST',
+        type: 'POST',
+
+        error: function (errorThrown) {
+            alert("Failed to delete existing file")
+        },
+        success: function (data) {
+        },
+    });
 }
 
 $('#tabs-for-download').on('click', '.textdiv', function () {
@@ -1350,7 +1454,6 @@ async function resizeImage(url, width, height, callback, dive) {
     sourceImage.src = url;
 }
 
-
 async function setThumbnails(prev_page) {
     $('#tab'+prev_page).find('.pdfdiv').each(function () {
         $(this).css({
@@ -1376,7 +1479,8 @@ async function setThumbnails(prev_page) {
             'background-repeat': 'no-repeat'
         })
     })
-    html2canvas($('#tab'+prev_page)[0],).then(canvas => {
+
+    html2canvas($('#tab')[0]).then(canvas => {
         $('.pagenumber[value= '+prev_page+']').each(function () {
                 if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
                     resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
