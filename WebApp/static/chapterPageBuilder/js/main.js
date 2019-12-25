@@ -2205,6 +2205,16 @@ function display(data = "", currentPage='1') {
 }
 
 function updateData(prev_page, prev_data){
+    var promise = new Promise((resolve,reject) => {
+        setThumbnails(prev_page)
+        resolve('success')
+    })
+    promise.then((successmessage) => {
+        // $('#tab').empty()
+        setTimeout(function(){
+            storethumbnails(prev_page)
+        },1000)
+    })
     var textdiv = [];
     var picdiv = [];
     var buttondiv = [];
@@ -2373,10 +2383,10 @@ function changePage(page_number){
     } else{
         window.currentPage = page_number.replace( /^\D+/g, '')
         let prev_data = $('#tab').clone()
-        var promise = new Promise((resolve,reject) => {
-            setThumbnails(prev_page)
-            resolve('success')
-        })
+        // var promise = new Promise((resolve,reject) => {
+        //     setThumbnails(prev_page)
+        //     resolve('success')
+        // })
         updateData(prev_page, prev_data)
         
         $('#copy_tab').html($('#tab').html())
@@ -2385,13 +2395,13 @@ function changePage(page_number){
         if(prev_page != window.currentPage){
             $('.tabs-to-click ul li[value= '+window.currentPage+']').addClass('current')
             $('.tabs-to-click ul li[value= '+prev_page+']').removeClass('current')
-            promise.then((successmessage) => {
-                // $('#tab').empty()
-                setTimeout(function(){
-                    console.log('hello')
-                    storethumbnails(prev_page)
-                },1000)
-            })
+            // promise.then((successmessage) => {
+            //     // $('#tab').empty()
+            //     setTimeout(function(){
+            //         console.log('hello')
+            //         storethumbnails(prev_page)
+            //     },1000)
+            // })
         }
         display(data)
     }

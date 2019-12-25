@@ -78,5 +78,5 @@ $("#SaveBtn").on("click",function(e){
         $('#SaveBtn').html(`<a href="#" id="SaveBtn"><i class="fas fa-save"></i><br/>Save</a>`)
       }
     });
-  }, 5000)
+  }, 3000)
 });
