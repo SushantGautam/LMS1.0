@@ -1299,7 +1299,7 @@
         {% else %}
             // updatePageByStudent(); //TBI
         {% endif %}
-        localStorage.setItem("ChapterPageNumber_" +{{chapter.id}}, page_number); //save page number
+        localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
 
     }
 
@@ -1631,8 +1631,8 @@
 
 
         // retrieve slide number
-        if (parseInt(localStorage.getItem("ChapterPageNumber_" +{{chapter.id}}) >= 1)) {
-            currentpage = parseInt(localStorage.getItem("ChapterPageNumber_" +{{chapter.id}}));
+        if (parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}")) >= 1) {
+            currentpage = parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}"));
             changePage(currentpage)
 
         }
