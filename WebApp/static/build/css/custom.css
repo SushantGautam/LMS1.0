@@ -1244,6 +1244,36 @@ article {
     margin-left: 200;
     font-size: 25px;
 }
+@media all and (max-width:415px){
+    nav{
+        display: inline!important;
+    }
+    .centerNameTopNav {
+
+        line-height: 60px;
+        
+        font-size: 18px;
+    }
+    .toggle{
+        width:49px;
+    }
+    .msg-box1{
+        margin-left: -11px;
+    }
+    .nav_menu{
+        position: fixed!important;
+        z-index: 999;
+    }
+    .nav-sm .container.body .col-md-3.left_col {
+    
+        position: fixed!important;
+    } 
+    .nav-sm .menu_section {
+        margin: 0;
+        height: 80vh!important;
+        overflow: auto!important;
+    }
+}
 
 /* changes to quiz delete */
 
