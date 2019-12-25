@@ -2334,8 +2334,6 @@ function updateData(prev_page, prev_data){
             );
         }
     });
-    // backgroundcolor = $("#tab"+parseInt(window.currentPage)).css('background-color')
-    console.log(prev_page)
     if(!data.pages){
         var pages = {}
         backgroundcolor = $("#tab").css('background-color')
@@ -2389,8 +2387,10 @@ function changePage(page_number){
             $('.tabs-to-click ul li[value= '+prev_page+']').removeClass('current')
             promise.then((successmessage) => {
                 // $('#tab').empty()
-                console.log(successmessage)
-                storethumbnails(prev_page)
+                setTimeout(function(){
+                    console.log('hello')
+                    storethumbnails(prev_page)
+                },1000)
             })
         }
         display(data)
@@ -2448,7 +2448,7 @@ async function resizeImage(url, width, height, callback, dive) {
 }
 
 async function setThumbnails(prev_page) {
-    $('#tab'+prev_page).find('.pdfdiv').each(function () {
+    $('#tab').find('.pdfdiv').each(function () {
         $(this).css({
             'background-image': `url('${pdf_icon}')`,
             'background-position': 'center',
@@ -2456,7 +2456,7 @@ async function setThumbnails(prev_page) {
             'background-repeat': 'no-repeat'
         })
     })
-    $('#tab'+prev_page).find('.video-div').each(function () {
+    $('#tab').find('.video-div').each(function () {
         $(this).css({
             'background-image': `url('${video_icon}')`,
             'background-position': 'center',
@@ -2464,7 +2464,7 @@ async function setThumbnails(prev_page) {
             'background-repeat': 'no-repeat'
         })
     });
-    $('#tab'+prev_page).find('._3dobj-div').each(function () {
+    $('#tab').find('._3dobj-div').each(function () {
         $(this).css({
             'background-image': `url('${_3d_icon}')`,
             'background-position': 'center',
