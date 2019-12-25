@@ -94,7 +94,7 @@
                                         overflow: hidden;
                                         white-space: normal;
                                         text-overflow: ellipsis;">
-                                <a href="{{ object.Course_Code.student_get_absolute_url }}">
+                                <a onclick="RetrieveChatper('{{ object.Course_Code.student_get_absolute_url }}',{{ object.Course_Code.pk }})">
                                     <button type="button" style="text-align:center;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                             ">CONTINUE <i class="fa fa-arrow-right"></i>
                                     </button>
@@ -229,6 +229,17 @@
 
 
     <script>
+        function RetrieveChatper(urlx, coursepk) {
+            let chapterVal = localStorage.getItem("chapter_for_course" + coursepk);
+
+
+            if (chapterVal >= 1) {
+                window.location.href = "/students/courseinfo/" + coursepk + "/chapterinfo/" + chapterVal + "/contents";
+            } else
+                window.location.href = urlx;
+
+        }
+
         Highcharts.chart('container', {
             chart: {
                 type: 'scatter',
@@ -534,8 +545,6 @@
         })
     </script>
     <script>
-        <
-        script >
         // This is the service worker with the Advanced caching
 
         // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
@@ -558,5 +567,4 @@
 
     </script>
 
-    </script>
 {% endblock %}

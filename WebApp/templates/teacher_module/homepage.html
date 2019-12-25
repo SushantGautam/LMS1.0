@@ -59,8 +59,8 @@
                     {% for object in MyCourses %}
                         <li class="list-group-item ">
                             <h5>
-                                <b> {{ object.Course_Code }}</b>
-                                <a href="{{ object.Course_Code.teacher_get_absolute_url }}">
+                                <a href='{{ object.Course_Code.teacher_get_absolute_url }}'><b> {{ object.Course_Code }}</b></a>
+                                <a onclick="RetrieveChatper('{{ object.Course_Code.teacher_get_absolute_url }}',{{ object.Course_Code.pk }})">
                                     <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                         ">CONTINUE <i class="fa fa-arrow-right"></i>
                                     </button>
@@ -274,6 +274,20 @@
             }
         }
 
+
+    </script>
+
+    <script>
+        function RetrieveChatper(urlx, coursepk) {
+            let chapterVal = localStorage.getItem("chapter_for_course" + coursepk);
+
+
+            if (chapterVal >= 1) {
+                window.location.href = "/teachers/courseinfo/" + coursepk + "/chapterinfo/" + chapterVal + "/contents";
+            } else
+                window.location.href = urlx;
+
+        }
 
     </script>
 {% endblock %}

@@ -174,6 +174,14 @@
         margin-left: 50px;
     }
 
+    .sidenav .editbtn {
+        position: fixed;
+        top: 80px;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
     @media screen and (max-height: 450px) {
         .sidenav {
             padding-top: 15px;
@@ -265,7 +273,20 @@
     border-radius: 50%;
     padding: 0.5px 2px;
 " class="fa fa-times-circle"></i></div>
+
     </a>
+
+    {% if '/teachers' in request.path %}
+        <a href="chapterpagebuilder">
+            <div class="editbtn"><i style="
+    color: #6f41d6;
+    padding: 0.5px 2px;
+    text-shadow: 2px 2px #f9f5f5;
+" class="fa fa-pencil"></i></div>
+        </a>
+    {% endif %}
+
+
     <div class="profile clearfix">
 
         <div class="profile_pic">
@@ -905,6 +926,7 @@
     })
 
     function loadexam(link, ShowCloseBoxonInit = false) {
+
         $('#examiframeholder').addClass('examiframeholder')
         $('#iframeholder').append(`
             <iframe src = ${link} height = 100% width = 100%></iframe>
@@ -1277,7 +1299,7 @@
         {% else %}
             // updatePageByStudent(); //TBI
         {% endif %}
-        localStorage.setItem(roomName + "_pagenumber", page_number); //save page number
+        localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
 
     }
 
@@ -1476,12 +1498,12 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);
@@ -1607,11 +1629,19 @@
         // Animate loader off screen
         $(".se-pre-con").fadeOut("slow");
 
-        if (parseInt(localStorage.getItem(roomName + "_pagenumber")) >= 1) {
-            currentpage = localStorage.getItem(roomName + "_pagenumber")
+
+        // retrieve slide number
+        if (parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}")) >= 1) {
+            currentpage = parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}"));
             changePage(currentpage)
 
         }
+
+
+        // save chapter number for course
+        localStorage.setItem("chapter_for_course" + {{ course.pk }}, {{ chapter.pk }});
+
+
     });
 
     function fontResize() {
