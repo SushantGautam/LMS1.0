@@ -2,7 +2,7 @@
 .bg-white {
     background-color: #fff;
     padding: 0 !important;
-  
+
 }
 
 
@@ -10,30 +10,30 @@
 }
 
 .friend-list {
-    
-list-style: none;
-    
-/* height: -webkit-fill-available; */
-    
-/* padding: 0px!important; */
-    
-/* min-height: 50vh; */
-    
-margin: 0;
-    
-/* padding-right: 10px !important; */
-    
-padding-left: 0;
-    
-background-color:white;
-    
-height: 50vh;
-overflow:auto;
+
+    list-style: none;
+
+    /* height: -webkit-fill-available; */
+
+    /* padding: 0px!important; */
+
+    /* min-height: 50vh; */
+
+    margin: 0;
+
+    /* padding-right: 10px !important; */
+
+    padding-left: 0;
+
+    background-color: white;
+
+    height: 50vh;
+    overflow: auto;
 }
 
 .friend-list li {
     border-bottom: 1px solid #eee;
-    
+
 }
 
 .friend-list li a img {
@@ -268,7 +268,8 @@ a:hover, a:active, a:focus {
     margin: 27px;
     margin: 0 8px;
 }
-.chat-nav li:hover{
+
+.chat-nav li:hover {
     color: black;
 }
 
@@ -535,7 +536,8 @@ a:hover, a:active, a:focus {
 
 @media only screen and (max-width: 600px) {
     .full-chat-container {
-        width: 310px;
+        width: 433px;
+        max-width: 95vw;
     }
 }
 
@@ -646,7 +648,8 @@ body {
 .chapterbuttons {
     background-color: #DDDDDD
 }
-.owl-item{
-    width: auto!important;
+
+.owl-item {
+    width: auto !important;
 }
 
