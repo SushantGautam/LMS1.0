@@ -1659,6 +1659,10 @@
     });
 
 
+    window.addEventListener('beforeunload', function (e) {
+        // the absence of a returnValue property on the event will guarantee the browser unload happens
+        $(".se-pre-con").fadeIn("fast");
+    });
 </script>
 
 
