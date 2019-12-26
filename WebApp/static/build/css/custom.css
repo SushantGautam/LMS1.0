@@ -1261,8 +1261,10 @@ article {
         margin-left: -11px;
     }
     .nav_menu{
-        position: fixed!important;
-        z-index: 999;
+        position:fixed !important; 
+        z-index:999;
+        
+        
     }
     .nav-sm .container.body .col-md-3.left_col {
     
