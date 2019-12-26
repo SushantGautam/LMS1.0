@@ -64,10 +64,16 @@
         crossorigin="anonymous"></script>
 
 <script>
+
+    localStorage.clear();
+
+    self.caches.delete('pwabuilder-adv-cache');
+
     Print.postMessage('loginRequired');
     setTimeout(function () {
         $('div.alert').fadeOut('slow');
     }, 3000);
+
 </script>
 
 </body>

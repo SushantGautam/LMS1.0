@@ -636,7 +636,7 @@ def CourseInfoDeleteView(request, pk):
 
         except:
             messages.error(request,
-                           "Cannot delete courses with chapters")
+                           "Cannot delete courses if have any chapters, association with inning groups, survey, quiz or forum. Please make sure all associations with this chapters are deleted. ")
             return redirect('courseinfo_detail', pk=pk)
 
 
