@@ -112,15 +112,15 @@ self.addEventListener("fetch", function (event) {
 
     if (comparePaths(event.request.url, networkFirstPaths)) {
         if (event.request.url.includes("media") || event.request.url.includes("static")) {
-            console.log('contains media ' + event.request.url);
+            // console.log('contains media ' + event.request.url);
             TryfromCache(event.request);
-            console.log('Going for cacheFirstFetch ' + event.request.url);
+            // console.log('Going for cacheFirstFetch ' + event.request.url);
             return cacheFirstFetch(event);
         }
-        console.log('Going for networkFirstFetch ' + event.request.url);
+        // console.log('Going for networkFirstFetch ' + event.request.url);
         networkFirstFetch(event);
     } else {
-        console.log('Going for cacheFirstFetch ' + event.request.url);
+        // console.log('Going for cacheFirstFetch ' + event.request.url);
 
         cacheFirstFetch(event);
     }
@@ -215,7 +215,7 @@ function TryfromCache(request) {
     return caches.open(CACHE).then(function (cache) {
         return cache.match(request).then(function (matching) {
             if (!matching || matching.status === 404) {
-                console.log('Try from cache couldnt find ' + request.url);
+                // console.log('Try from cache couldnt find ' + request.url);
 
                 return Promise.reject("no-match");
             }
