@@ -1792,9 +1792,13 @@ $(document).ready(function () {
             dropfunction(event, ui)
         }
     });
+    // $("body").on('DOMSubtreeModified', "#tab", function() {
+    //     console.log('changed');
+    // });
 
     // background color for pages
     $('#tabs-for-download').click(function () {
+        setThumbnailok = true
         var theInput = $('#tabs-for-download').find('.page-background')[0];
         var theColor = theInput.value;
         theInput.addEventListener("input", function () {
@@ -2426,6 +2430,112 @@ function deleteFile() {
     });
 }
 
+// delete page function
+$('.tabs-to-click').on('click', '.delete-page-btn', function () {
+    var confirmation = confirm("Are you sure you want to delete?")
+    if (confirmation == false) {
+        return false
+    }
+    
+    if ($(this).parent().parent().parent().find('li')[0].classList.contains('current')) {
+        setThumbnailok = false
+        if ($(this).parent().parent().parent().prev().find('li').length != 0)
+            $(this).parent().parent().parent().prev().find('li')[0].click();
+        else if ($(this).parent().parent().parent().next().find('li').length != 0)
+            $(this).parent().parent().parent().next().find('li')[0].click()
+        else {
+            alert("cannot delete only page");
+            return false
+        }
+    }
+    $(this).parent().parent().parent().remove();
+    delete data.pages[this.value]
+
+    for(x = this.value; x <= Object.keys(data.pages).length; x++){
+        $('.pagenumber[value="'+(parseInt(x)+1)+'"').attr({
+            "value": x,
+            "onclick": "changePage('tab"+x+"')"
+        })
+        data.pages[x] = (data.pages[parseInt(x)+1])
+        delete data.pages[parseInt(x)+1]
+    }
+    displaypagenumbers();
+});
+
+// clone Page function
+$('.tabs-to-click').on('click', '.clone-page-btn', function () {
+    var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
+    let copy = $(this).parent().parent().parent().clone();
+    // for cloning page navigation tabs
+    copy.find('.clone-page-btn').val(num_tabs);
+    copy.find('.delete-page-btn').val(num_tabs);
+    copy.find('.pagenumber').val(num_tabs);
+    copy.find('.pagenumber').attr('onclick', 'openTab(event,"tab' + num_tabs + '")');
+    $(this).parent().parent().parent().after(copy);
+    // =============================================================================
+
+    // for editor cloning
+    editorcopy = $('#tab' + this.value).clone();
+    editorcopy.attr('id', 'tab' + num_tabs);
+    editorcopy.empty();
+    const obj = $("#tab" + this.value).children();
+    $(".tabs").append(editorcopy);
+    $(this).parent().parent().parent().next().find('li')[0].click()
+    $.each(obj, function (i, value) {
+        if (value.classList.contains('textdiv')) {
+            var clone = $(this).find('.note-editable').clone();
+            // clone.find('div').remove();
+            var content_html = clone.html();
+            TextboxFunction($(this).css("top"),
+                $(this).css("left"), $(this).css("height"), $(this).css("width"), content_html);
+        }
+        if (value.classList.contains('pic')) {
+            PictureFunction($(this).css("top"),
+                $(this).css("left"), $(value).find('img').attr('src'), $(this).css("width"), $(this).css("height"));
+        }
+        if (value.classList.contains('btn-div')) {
+            ButtonFunction($(this).css("top"),
+                $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
+        }
+        if (value.classList.contains('quiz-div')) {
+            QuizFunction($(this).css("top"),
+                $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
+        }
+        if (value.classList.contains('survey-div')) {
+            SurveyFunction($(this).css("top"),
+                $(this).css("left"), $(this).children("a").attr('href'), $(this).css("height"), $(this).css("width"));
+        }
+        if (value.classList.contains('pdfdiv')) {
+            PDFFunction($(this).css("top"),
+                $(this).css("left"), $(this).find('object').attr('data'), $(this).css("height"), $(this).css("width"));
+        }
+        if (value.classList.contains('video-div')) {
+            if ($(this).find('iframe').length > 0) {
+                var vidlink = $(this).find('iframe').attr('src');
+            } else if ($(this).find('video').length) {
+                var vidlink = $(this).find('video > source').attr('src');
+            }
+            VideoFunction($(this).css("top"),
+                $(this).css("left"), vidlink, $(this).css("height"), $(this).css("width"));
+        }
+        if (value.classList.contains('_3dobj-div')) {
+            _3dFunction($(this).css("top"),
+                $(this).css("left"), $(this).find('iframe').attr('src'), $(this).css("height"), $(this).css("width"));
+        }
+    });
+
+
+    // =========================================================================
+
+    $(".editor-canvas").droppable({
+        drop: function (event, ui) {
+            dropfunction(event, ui)
+        }
+    });
+
+    displaypagenumbers();
+});
+
 $('#tabs-for-download').on('click', '.textdiv', function () {
     $this = $('.note-editable:focus')
     if ($('.note-editable:focus').html() == "Type Something Here...") {
@@ -2458,6 +2568,9 @@ async function resizeImage(url, width, height, callback, dive) {
 }
 
 async function setThumbnails(prev_page) {
+    if (!setThumbnailok) {
+        return false
+    }
     $('#tab').find('.pdfdiv').each(function () {
         $(this).css({
             'background-image': `url('${pdf_icon}')`,
@@ -2490,6 +2603,7 @@ async function setThumbnails(prev_page) {
                 }
         });
     });
+    setThumbnailok = false
 }
 
 function setThumbnailscallback(data, dive) {
