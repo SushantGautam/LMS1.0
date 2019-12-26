@@ -2450,8 +2450,9 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
     }
     $(this).parent().parent().parent().remove();
     delete data.pages[this.value]
-
-    for(x = this.value; x <= Object.keys(data.pages).length; x++){
+    
+    numberofloops = Object.keys(data.pages).length +1
+    for(x = this.value; x <= numberofloops ; x++){
         $('.pagenumber[value="'+(parseInt(x)+1)+'"').attr({
             "value": x,
             "onclick": "changePage('tab"+x+"')"
@@ -2459,7 +2460,15 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
         data.pages[x] = (data.pages[parseInt(x)+1])
         delete data.pages[parseInt(x)+1]
     }
-    displaypagenumbers();
+    var promise = new Promise((resolve,reject) => {
+        displaypagenumbers()
+        resolve('success')
+    })
+    promise.then((successmessage) => {
+        setTimeout(function(){
+            window.currentPage = $('.pagenumber.current').attr('value')
+        },200)
+    })
 });
 
 // clone Page function
