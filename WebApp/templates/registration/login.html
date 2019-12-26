@@ -69,6 +69,13 @@
 
     self.caches.delete('pwabuilder-adv-cache');
 
+
+    navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        for (let registration of registrations) {
+            registration.unregister()
+        }
+    });
+
     Print.postMessage('loginRequired');
     setTimeout(function () {
         $('div.alert').fadeOut('slow');
