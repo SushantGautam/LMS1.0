@@ -1299,6 +1299,28 @@ article {
     }
 
 }
+.timeline .block{
+
+    margin: 0px!important;
+}
+.block_content{
+    margin-top: 50px!important;
+}
+.thread-font{
+    font-size:18px;
+    font-weight:600;
+}
+@media all and (max-width:415px){
+    .thread-font{
+        font-size:13px;
+        font-size: 600;
+
+    }
+    #Undobtn {
+        margin-left: 0px!important;
+        margin-top: 0px!important;
+    }
+}
 
 /* changes to quiz delete */
 
