@@ -1038,11 +1038,21 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
 
     quiz.renderDiagram();
 
-    // $('.btn').attr('contentEditable', true);
-
-    $('.btn').on('click', function () {
-        // alert('say me more!!')
+    $('.quiz-div button').off().on('click', function (e) {
+        e.preventDefault()
+        link = $(this).parent().parent().find('a')[0].href
+        if(link){
+            quizpk = (link.split('/')[4]).match(/\d+/);
+            if (window.location.href.indexOf("/teachers") > -1) {
+                link = "/quiz/markingfilter/" + quizpk
+                loadPreview(link, 1)
+            }else{
+                link = "/quiz/detail/" + quizpk
+                loadPreview(link, 1)
+            }
+        }
     })
+
 
     const div1 = $('i').parent();
 
@@ -1114,10 +1124,19 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
 
     survey.renderDiagram();
 
-    // $('.btn').attr('contentEditable', true);
-
-    $('.btn').on('click', function () {
-        // alert('say me more!!')
+    $('.survey-div button').off().on('click', function (e) {
+        e.preventDefault()
+        link = $(this).parent().parent().find('a')[0].href            
+        if(link){
+            surveypk = (link.split('/')[6]).match(/\d+/);
+            if (window.location.href.indexOf("/teachers") > -1) {
+                link = "/teachers/surveyinfodetail/detail/" + surveypk
+                loadPreview(link, 1)
+            }else{
+                link = "/survey/surveyinfo/detail/" + surveypk
+                loadPreview(link, 1)
+            }
+        }
     })
 
     const div1 = $('i').parent();
@@ -1814,6 +1833,77 @@ $(document).ready(function () {
     
     $('.tabs-to-click > ul > li:first').remove()
     changePage('1');
+
+    // Button Form Submit
+    $('#btn-submit').on('click', function () {
+        var btn_name = $('#btn-name').val();
+        var btn_link = $('#btn-link').val();
+        var btn_id = $('#button_id').val();
+        if (btn_link != "") {
+            $('#' + btn_id).attr({
+                "href": `http://${btn_link}`
+            });
+        } else {
+            $('#' + btn_id).removeAttr('href');
+        }
+        $('#' + btn_id).find('text').text(btn_name);
+        $('#btn-modal').modal('hide');
+    })
+
+    // ======================================================================
+
+    // quiz Form Submit
+    $('#quiz-submit').on('click', function () {
+        var quiz_name = $('#quiz-btn-name').val();
+        var quiz_span_name = $('#quiz-name').val();
+        var quiz_link = $('#quiz-link').val();
+        var quiz_id = $('#quiz_id').val();
+        if (quiz_link != "") {
+            $('#' + quiz_id).attr({
+                "href": `${quiz_link}`
+            });
+        } else {
+            $('#' + quiz_id).removeAttr('href');
+        }
+        $('#' + quiz_id).parent().parent().find('.resizable-text-only').text(quiz_name);
+        $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
+        $('#quiz-modal').modal('hide');
+    })
+
+    $('#myTable').on('click', '.selectquiz', function () {
+        $('#quiz-name').val($(this).closest('td').prev('td').text().trim())
+        $('#quiz-link').val(`/quiz/quiz${$(this).val().trim()}/take/`)
+    })
+    // ======================================================================
+
+    // survey Form Submit
+    $('#survey-submit').on('click', function () {
+        var survey_name = $('#survey-btn-name').val();
+        var survey_span_name = $('#survey-name').val();
+        var survey_link = $('#survey-link').val();
+        var survey_id = $('#survey_id').val();
+        if (survey_link != "") {
+            $('#' + survey_id).attr({
+                "href": `${survey_link}`
+            });
+        } else {
+            $('#' + survey_id).removeAttr('href');
+        }
+        $('#' + survey_id).parent().parent().find('.resizable-text-only').text(survey_name);
+        $('#' + survey_id).parent().parent().find('.survey-name').text(survey_span_name)
+        $('#survey-modal').modal('hide');
+    })
+
+    $('#mySurveyTable').on('click', '.selectsurvey', function () {
+        $('#survey-name').val($(this).closest('td').prev('td').text().trim())
+        $('#survey-link').val(`/students/questions_student_detail/detail/${$(this).val().trim()}`)
+    });
+
+    // $('#survey_create_link').on('click', function(){
+    //     console.log('hello')
+        
+    // })
+
 });
 
 let sidebarWidth = $(".sidebar").width(); // get width of sidebar
