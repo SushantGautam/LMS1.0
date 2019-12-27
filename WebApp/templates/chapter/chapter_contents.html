@@ -1601,7 +1601,11 @@
 
 
     });
+    var availablevoices;
+    speechSynthesis.onvoiceschanged = function () {
+        availablevoices = window.speechSynthesis.getVoices();
 
+    };
 
     function speakContent() {
 
@@ -1613,10 +1617,29 @@
             $('#speakContent').html('<div onClick="speechSynthesis.cancel();"><i class="fa fa-pause"> </i> Stop</div>');
         };
         msg.onend = function () {
+
             $('#speakContent').html('<div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>');
         };
-        var voices = window.speechSynthesis.getVoices();
-        msg.voice = voices[0];
+        msg.onerror = function () {
+
+            $('#speakContent').html('<div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>');
+        };
+
+        selectedTranslation = document.getElementsByClassName('goog-te-combo')[0].value ? document.getElementsByClassName('goog-te-combo')[0].value : 0;
+        if (selectedTranslation) {
+            if (selectedTranslation === "id") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "zh-CN") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "cs") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "ko") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "nl") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "en") msg.lang = "en-GB";
+            else if (selectedTranslation === "et") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "fr") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "ne") msg.lang = "hi";
+            else if (selectedTranslation === "ru") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "vi") msg.lang = selectedTranslation;
+            else msg.lang = "en-GB";
+        }
         msg.rate = 1;
         msg.pitch = 1;
         msg.text = text;
@@ -1670,11 +1693,14 @@
 
 
     window.addEventListener('beforeunload', function (e) {
+
         // the absence of a returnValue property on the event will guarantee the browser unload happens
         $(".se-pre-con").fadeIn("slow", function () {
             $(".se-pre-con").fadeOut("slow");
 
         });
+        speechSynthesis.cancel();
+
     });
 
 
