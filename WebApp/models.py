@@ -163,7 +163,7 @@ class MemberInfo(AbstractUser):
 
     def __str__(self):
         if self.first_name and self.last_name:
-            return self.first_name + " " + self.last_name
+            return self.first_name + " " + self.last_name + " (" + self.username + ")"
         else:
             return "-- " + self.username
 
