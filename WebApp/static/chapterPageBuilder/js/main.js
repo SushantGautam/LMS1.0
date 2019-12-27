@@ -2453,10 +2453,16 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
     
     numberofloops = Object.keys(data.pages).length +1
     for(x = this.value; x <= numberofloops ; x++){
+        $('.pagenumber[value="'+(parseInt(x)+1)+'"').parent().find('.clone-page-btn').attr({
+            "value": parseInt(x),
+        });
+        $('.pagenumber[value="'+(parseInt(x)+1)+'"').parent().find('.delete-page-btn').attr({
+            "value": parseInt(x),
+        });
         $('.pagenumber[value="'+(parseInt(x)+1)+'"').attr({
             "value": x,
             "onclick": "changePage('tab"+x+"')"
-        })
+        })        
         data.pages[x] = (data.pages[parseInt(x)+1])
         delete data.pages[parseInt(x)+1]
     }
@@ -2473,6 +2479,10 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
 
 // clone Page function
 $('.tabs-to-click').on('click', '.clone-page-btn', function () {
+    var promise = new Promise((resolve,reject) => {
+        updateData(this.value, $('tab').clone())
+        resolve('success')
+    })
     source = this.value
     numberofloops = Object.keys(data.pages).length
     $.each($('.pagenumber'), function(){
@@ -2490,33 +2500,39 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
         }
     });
     numberofloops = Object.keys(data.pages).length
-    for(x = numberofloops; x >= (parseInt(this.value)+1) ; x--){
-        console.log(x)
-        data.pages[parseInt(x)+1] = data.pages[x]
-        // delete data.pages[parseInt(x)]
-    }
-    data.pages[parseInt(this.value)+1] = data.pages[this.value]
+    promise.then((successmessage) => {
+        setTimeout(() => {
+            for(x = numberofloops; x >= (parseInt(this.value)+1) ; x--){
+                data.pages[parseInt(x)+1] = data.pages[x]
+                // delete data.pages[parseInt(x)]
+            }
+        
+            data.pages[parseInt(this.value)+1] = data.pages[this.value]
+
+            $('.current.pagenumber').removeClass('current')
+            var num_tabs = parseInt(this.value)+1;
+            let copy = $(this).parent().parent().parent().clone();
+            // for cloning page navigation tabs
+            copy.find('.clone-page-btn').val(num_tabs);
+            copy.find('.delete-page-btn').val(num_tabs);
+            copy.find('.pagenumber').val(num_tabs);
+            copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');
+            $(this).parent().parent().parent().after(copy);
+            changePage('tab'+num_tabs)
+            // ===================================================================================
+            $(".editor-canvas").droppable({
+                drop: function (event, ui) {
+                    dropfunction(event, ui)
+                }
+            });
+        
+            displaypagenumbers();
+
+        }, 3000)
+    })
 
 
-
-    var num_tabs = parseInt(this.value)+1;
-    let copy = $(this).parent().parent().parent().clone();
-    // for cloning page navigation tabs
-    copy.find('.clone-page-btn').val(num_tabs);
-    copy.find('.delete-page-btn').val(num_tabs);
-    copy.find('.pagenumber').val(num_tabs);
-    copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');
-    $(this).parent().parent().parent().after(copy);
-
-    // ===================================================================================
-
-    $(".editor-canvas").droppable({
-        drop: function (event, ui) {
-            dropfunction(event, ui)
-        }
-    });
-
-    displaypagenumbers();
+    
 });
 
 $('#tabs-for-download').on('click', '.textdiv', function () {
