@@ -2479,6 +2479,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
 
 // clone Page function
 $('.tabs-to-click').on('click', '.clone-page-btn', function () {
+    $(this).attr('disabled', true)
     var promise = new Promise((resolve,reject) => {
         updateData(this.value, $('#tab').clone())
         resolve('success')
@@ -2527,7 +2528,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
             });
         
             displaypagenumbers();
-
+            $(this).attr('disabled', false)
         }, 200)
     })
 });
