@@ -2480,7 +2480,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
 // clone Page function
 $('.tabs-to-click').on('click', '.clone-page-btn', function () {
     var promise = new Promise((resolve,reject) => {
-        updateData(this.value, $('tab').clone())
+        updateData(this.value, $('#tab').clone())
         resolve('success')
     })
     source = this.value
@@ -2528,11 +2528,8 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
         
             displaypagenumbers();
 
-        }, 3000)
+        }, 200)
     })
-
-
-    
 });
 
 $('#tabs-for-download').on('click', '.textdiv', function () {
