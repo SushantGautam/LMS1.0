@@ -2481,11 +2481,24 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
                 "value": parseInt(this.value)+1,
                 "onclick": "changePage('tab"+(parseInt(this.value)+1)+"')"
             });
+            $(this).find('.clone-page-btn').attr({
+                "value": parseInt(this.value)+1,
+            });
+            $(this).find('.delete-page-btn').attr({
+                "value": parseInt(this.value)+1,
+            });
         }
     });
+    numberofloops = Object.keys(data.pages).length
+    for(x = numberofloops; x >= (parseInt(this.value)+1) ; x--){
+        console.log(x)
+        data.pages[parseInt(x)+1] = data.pages[x]
+        // delete data.pages[parseInt(x)]
+    }
+    data.pages[parseInt(this.value)+1] = data.pages[this.value]
 
 
-    
+
     var num_tabs = parseInt(this.value)+1;
     let copy = $(this).parent().parent().parent().clone();
     // for cloning page navigation tabs
@@ -2494,6 +2507,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
     copy.find('.pagenumber').val(num_tabs);
     copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');
     $(this).parent().parent().parent().after(copy);
+
     // ===================================================================================
 
     $(".editor-canvas").droppable({
