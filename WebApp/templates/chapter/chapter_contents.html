@@ -692,7 +692,7 @@
                       margin-right: 0px!important;
                       margin-left: 0px!important;">
                     <div class="chat-box bg-white">
-                        <div class="input-group">
+                        <div class="input-group notranslate">
                             <input id="chatmessageinput"
                                    class="form-control border no-shadow no-rounded"
                                    placeholder="Type your message here" required>
@@ -1304,6 +1304,7 @@
             // updatePageByStudent(); //TBI
         {% endif %}
         localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
+        speechSynthesis.cancel();
 
     }
 
