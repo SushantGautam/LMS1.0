@@ -524,7 +524,9 @@
                             {% endif %}
                             <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
                             <li>Sound <input id="chatsound" type="checkbox" checked></li>
-                            <li id="speakContent"><i class="fa fa-music"> </i> Read</li>
+                            <li id="speakContent">
+                                <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
+                            </li>
 
                         </ul>
                     </div>
@@ -1601,11 +1603,18 @@
     });
 
 
-    $('#speakContent').click(function () {
+    function speakContent() {
 
-        speechSynthesis.cancel()
-        var text = $('#container').children(":visible").text()
+        if (speechSynthesis.speaking) speechSynthesis.cancel();
+
+        var text = $('#container').children(":visible").text();
         var msg = new SpeechSynthesisUtterance();
+        msg.onstart = function () {
+            $('#speakContent').html('<div onClick="speechSynthesis.cancel();"><i class="fa fa-pause"> </i> Stop</div>');
+        };
+        msg.onend = function () {
+            $('#speakContent').html('<div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>');
+        };
         var voices = window.speechSynthesis.getVoices();
         msg.voice = voices[0];
         msg.rate = 1;
@@ -1613,7 +1622,7 @@
         msg.text = text;
         speechSynthesis.speak(msg);
 
-    });
+    }
 
 
     $('#container').click(function () {
