@@ -1004,12 +1004,15 @@
                                 if (css_value.hasOwnProperty('link')) {
                                     link = "href = " + css_value.link;
                                 }
+                                font_size = convertFont(css_value.font_size)
                                 $('#page' + key).append(`
-                                <div class = "chapterbuttons" style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width}; background-color:#DDDDDD">
-                                    <a ${link} target="_blank">
-                                        <svg viewBox="0 0 56 18">
-                                            <text x="0" y="15">${css_value.btn_name}</text>
-                                        </svg>
+                                <div class = "chapterbuttons" style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                    <a ${link}>
+                                        <button class="custom-btn-only"style="width:100%; height:100%">
+                                            <div class="row text-center" width=100%>
+                                                <span class="resizable-text-only" style = "font-size: ${font_size}">${css_value.btn_name} </span>
+                                            </div>
+                                        </button>
                                     </a>
                                 </div>
                             `)

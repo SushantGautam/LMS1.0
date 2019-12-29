@@ -29,13 +29,15 @@
     <script src="{% static 'js/modernizr.js' %}"></script>
 
 
-    <!-- Loads <model-viewer> for modern browsers: -->
-    <script type="module">
-    </script>
+     <!-- Loads <model-viewer> for modern browsers: -->
+        <script type="module" crossorigin="anonymous"
+                src="{% static '3D_Viewer/model-viewer.js' %}">
+        </script>
 
-    <!-- Loads <model-viewer> for old browsers like IE11: -->
-    <script nomodule>
-    </script>
+        <!-- Loads <model-viewer> for old browsers like IE11: -->
+        <script nomodule crossorigin="anonymous"
+                src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+        </script>
 
     <title>Course Builder</title>
 </head>

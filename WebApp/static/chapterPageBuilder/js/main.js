@@ -356,7 +356,7 @@ class video {
 // =====================For Button==============================
 
 class Button {
-    constructor(top, left, link = null, height = null, width = null, name = 'Button') {
+    constructor(top, left, link = null, height = null, width = null, name = 'Button', font_size) {
         let id = (new Date).getTime();
         let position = {top, left, height, width};
         let button_link = ""
@@ -364,19 +364,25 @@ class Button {
             button_link = 'href = ' + link
         }
         let html = `
-                    <div class="btn-div">
+                    <div class="btn-div" data-width = "${width}">
                         <div class="options">
                             <i class="fas fa-trash" id=${id}></i>
                             <i class="fas fa-link"   id=${id} ></i>
                             <i class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
-                        <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+
+                        <div class="button-name-builder ">
+                        <a ${button_link} id=${id + 1}  target="_blank">
                         
-                        <svg viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available">
-                            <text x="0" y="15">${name}</text>
-                        </svg>
-                        </a>
+                        <button class="custom-btn-only"style="width:100%; height:100%">
+                            <div class="row text-center" width=100%>
+                            <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
+                            </div>
+                            <div class="row text-center">
+                            </div>    
+                        </button>
+
                     </div>
     
             `;
@@ -985,16 +991,10 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
     });
 }
 
-function ButtonFunction(top = null, left = null, link = null, height = null, width = null, name = 'Button') {
-    const btns = new Button(top, left, link, height, width, name);
+function ButtonFunction(top = null, left = null, link = null, height = null, width = null, name = 'Button', font_size) {
+    const btns = new Button(top, left, link, height, width, name, font_size);
 
     btns.renderDiagram();
-
-    // $('.btn').attr('contentEditable', true);
-
-    $('.btn').on('click', function () {
-        // alert('say me more!!')
-    })
 
     const div1 = $('i').parent();
 
@@ -1031,6 +1031,17 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
             });
         },
     });
+
+    $('.btn-div').on('resize', function(){
+        old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
+        div_width = $(this).width();
+        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+        $(this).find('.resizable-text-only').css(
+            'font-size', font + 'px'
+        )
+        $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
+    })
+
 }
 
 function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
@@ -1051,7 +1062,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
                 loadPreview(link, 1)
             }
         }
-    })
+    });
 
 
     const div1 = $('i').parent();
@@ -1846,7 +1857,7 @@ $(document).ready(function () {
         } else {
             $('#' + btn_id).removeAttr('href');
         }
-        $('#' + btn_id).find('text').text(btn_name);
+        $('#' + btn_id).parent().parent().find('.resizable-text-only').text(btn_name);
         $('#btn-modal').modal('hide');
     })
 
@@ -1898,11 +1909,6 @@ $(document).ready(function () {
         $('#survey-name').val($(this).closest('td').prev('td').text().trim())
         $('#survey-link').val(`/students/questions_student_detail/detail/${$(this).val().trim()}`)
     });
-
-    // $('#survey_create_link').on('click', function(){
-    //     console.log('hello')
-
-    // })
 
     $("#importzipfile").change(function (e) {
         var confirmation = confirm('All current data will be replaced! Are you sure you want to continue?')
@@ -2241,9 +2247,10 @@ function display(data = "", currentPage='1') {
                                     css_value.tops,
                                     css_value.left,
                                     css_value.link,
-                                    Buttoncss_value.height,
+                                    css_value.height,
                                     css_value.width,
-                                    css_value.btn_name
+                                    css_value.btn_name,
+                                    css_value.font_size
                                 );
                             });
                         }
@@ -2413,8 +2420,9 @@ function updateData(prev_page, prev_data){
                 'left': $(this)[0].style.left,
                 'width': $(this)[0].style.width,
                 'height': $(this)[0].style.height,
-                'link': $(this).children("a").attr('href'),
-                'btn_name': $(this).children("a").text(),
+                'link': $(this).find("a").attr('href'),
+                'btn_name': $(this).find(".resizable-text-only").text(),
+                'font_size': $(this).find('.resizable-text-only').css('font-size')
             }
             );
         }

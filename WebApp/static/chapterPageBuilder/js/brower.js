@@ -53,8 +53,8 @@ $("#SaveBtn").on("click",function(e){
     var pages = {}
     var numberofpages = 0
     
+    data.numberofpages = $('.pagenumber').length
     var json=JSON.stringify(data);
-  
     $.ajax({
       url: save_json_url,
       type: 'post',
