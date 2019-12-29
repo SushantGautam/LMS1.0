@@ -1904,6 +1904,52 @@ $(document).ready(function () {
         
     // })
 
+    $("#importzipfile").change(function (e) {
+        var confirmation = confirm('All current data will be replaced! Are you sure you want to continue?')
+        if (confirmation == false) {
+            return false
+        }
+        let input = this.files[0];
+        var fileExtension = ['zip'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            alert(fileExtension.join(', ') + " formats allowed only");
+            return false
+        }
+        var filedata = new FormData();
+        filedata.append("filename", input);
+        filedata.append("chapterID", chapterID);
+        filedata.append("courseID", courseID);
+        filedata.append("csrfmiddlewaretoken", csrf_token);
+        $.ajax({
+            url: import_zip_url,
+            contentType: false,
+            processData: false,
+            data: filedata,
+            enctype: 'multipart/form-data',
+            method: 'POST',
+            beforeSend: function () {
+                $('#tabs-for-download').append(`<div class="loader" id="loadingDiv"></div>
+                <p id = "percentcomplete"></p>
+                `)
+                $('#loadingDiv').show();
+            },
+            success: function (success_data) {
+                $('#tabs-for-download').find('#loadingDiv').empty();
+                $('#tab').empty();
+                $('.tabs-to-click > ul').empty();
+                data = success_data;
+                window.currentPage = '1'
+                display(data,1)
+                setslider()
+            },
+            error: function (errorThrown) {
+                $('#tabs-for-download').find('#loadingDiv').empty();
+                console.log(errorThrown)
+                alert(errorThrown.responseJSON.message)
+            }
+        });
+    });
+
 });
 
 let sidebarWidth = $(".sidebar").width(); // get width of sidebar
@@ -2047,47 +2093,47 @@ function setslider(){
         $.each(data.pages, function (key, value) {
             if (value[0]['thumbnail'] == "") {
                 $(".tabs-to-click ul").append(`
-                <div class="canvas-relative" style="position:relative"> 
-            
-            
-            <li class="tabs-link pagenumber" value="${key}" onclick="changePage('tab${key}')"></li>
-            <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
-                    <p style="display:inline-block">${key}</p> 
-                    <span style="float:right ">
-                        <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
-                    </span>
+                    <div class="canvas-relative" style="position:relative"> 
+                
+                        <li class="tabs-link pagenumber" value="${key}" onclick="changePage('tab${key}')"></li>
+                        <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
+                                <p style="display:inline-block">${key}</p> 
+                                <span style="float:right ">
+                                    <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                                </span>
 
-                    <spannewpage style="float:right ">
-                        <button class="delete-page-btn" value="${key}"><i class="fa fa-times " aria-hidden="true"></i></button>
-                    </span>
-                </div>
-            
-            <hr class="white-hr"/>
-        
-
-        </div>
-            `);
+                                <spannewpage style="float:right ">
+                                    <button class="delete-page-btn" value="${key}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                                </span>
+                            </div>
+                        
+                        <hr class="white-hr"/>
+                    </div>
+                        `);
             } else {
                 $(".tabs-to-click ul").append(`
-                <div class="canvas-relative" style="position:relative"> 
-            
-            
-            <li class="tabs-link pagenumber" value="${key}" onclick="changePage('tab${key}')"></li>
-            <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
-                    <p style="display:inline-block">${key}</p> 
-                    <span style="float:right ">
-                        <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
-                    </span>
+                    <div class="canvas-relative" style="position:relative"> 
+                    <li class="tabs-link pagenumber" value="${key}" onclick="changePage('tab${key}')" 
+                        style = "
+                            background-image: url('${value[0]['thumbnail']}'); 
+                            background-position: center;
+                            background-size: contain;
+                            background-repeat: no-repeat;
+                        ">
+                    </li>
+                    <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
+                        <p style="display:inline-block">${key}</p> 
+                        <span style="float:right ">
+                            <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                        </span>
 
-                    <spannewpage style="float:right ">
-                        <button class="delete-page-btn" value="${key}"><i class="fa fa-times " aria-hidden="true"></i></button>
-                    </span>
-                </div>
-            
-            <hr class="white-hr"/>
-        
-
-        </div>
+                        <spannewpage style="float:right ">
+                            <button class="delete-page-btn" value="${key}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                        </span>
+                    </div>
+                            
+                    <hr class="white-hr"/>
+                    </div>
                 `);
             }
         });
