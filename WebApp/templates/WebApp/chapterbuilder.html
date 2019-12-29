@@ -59,7 +59,7 @@
         font-size: 19px;
         text-transform: uppercase;
     }
-    
+
     .preview-bar {
 
         width: 20%;
@@ -392,13 +392,13 @@
                     <!-- Editor -->
                     <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
                         <!-- <div class="editor-canvas" id="element-container"> -->
-                            <input type="color" value="#ffffff" class="page-background">
-                            <p id="tab" value = "0" class="tab-content-no   droppable editor-canvas current">
-                                
-                            </p>
-                            <p id="copy_tab" value = "0" style = "display: none;">
+                        <input type="color" value="#ffffff" class="page-background">
+                        <p id="tab" value="0" class="tab-content-no   droppable editor-canvas current">
 
-                            </p>
+                        </p>
+                        <p id="copy_tab" value="0" style="display: none;">
+
+                        </p>
                         <!-- </div> -->
                     </div>
                 </div>
@@ -462,6 +462,16 @@
         </div>
     </div>
 
+    <div id="examiframeholder">
+        <div id="closeiframebtn" class="closeiframebtn">
+            <button>
+                <i class="fa fa-times">
+                </i>
+
+            </button>
+        </div>
+        <div id="iframeholder"></div>
+    </div>
     <!-- Button Modal -->
     <div id="btn-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -662,8 +672,8 @@
                             <div class="col-md-12">
 
                                 <div class="new-survey">
-                                    <a
-                                        id="survey_create_link" href = "{% url 'courseinfo_detail' course %}" target="_blank">
+                                    <a id="survey_create_link" href="{% url 'courseinfo_detail' course %}"
+                                        target="_blank">
                                         <h5> <span
                                                 style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
                                                 New Survey </span> </h5>
@@ -727,7 +737,7 @@
 
         </div>
     </div>
-    
+
     <!-- Link Modal -->
     <div id="link-video-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -825,6 +835,7 @@
 
     <!-- End of link modal -->
 
+
     <script>
         var setThumbnailok = false;
         var currentPage = '1';
@@ -865,21 +876,6 @@
                 }
             });
         })();
-
-        $('#save-and-exit-btn').click(function (e) {
-            e.preventDefault();
-
-            window.alert = function () {
-            };
-            window.onbeforeunload = function () {
-            };
-            $('#SaveBtn').click();
-            setTimeout(function(){
-                var href = $('#goBackBtn').attr('href');
-                location.href = href;
-
-            }, 6000)
-        });
 
         $(document).ready(function () {
             let trunc = truncateString(`{{chapterdetails.Summary}}`);

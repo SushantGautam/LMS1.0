@@ -1947,7 +1947,6 @@ $(document).ready(function () {
                 alert(errorThrown.responseJSON.message)
             }, 
             complete: function() {
-                console.log('dfkshj')
                 $('#loadingDiv').hide();
             }
         });
@@ -2654,6 +2653,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
             let copy = $(this).parent().parent().parent().clone();
             // for cloning page navigation tabs
             copy.find('.clone-page-btn').val(num_tabs);
+            copy.find('.clone-page-btn').attr('disabled', false)
             copy.find('.delete-page-btn').val(num_tabs);
             copy.find('.pagenumber').val(num_tabs);
             copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');

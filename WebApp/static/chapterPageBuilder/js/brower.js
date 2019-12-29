@@ -30,9 +30,6 @@ $(document).ready(function () {
   $("body").on('DOMSubtreeModified', ".tab-content-no", function () {
     data_save = true;
   });
-
-
-
 })
 
 // Preview purpose
@@ -41,11 +38,11 @@ $("#previewBtn").on("click",function(e){
   e.preventDefault();
   $("#SaveBtn").click();
   setTimeout(function(){
-    window.open($('#previewBtn').attr('href'))
-  }, 7000)
+    let link = $("#previewBtn").attr('href');
+    loadPreview(link, 1, 'Preview')
+  }, 4000)
+
 })
-
-
 
 $("#SaveBtn").on("click",function(e){
   $(this).html(`<i class='fa fa-spinner fa-spin '></i> Saving`);
@@ -80,3 +77,49 @@ $("#SaveBtn").on("click",function(e){
     });
   }, 3000)
 });
+
+$('#save-and-exit-btn').click(function (e) {
+  e.preventDefault();
+
+  window.alert = function () {
+  };
+  window.onbeforeunload = function () {
+  };
+  $('#SaveBtn').click();
+  setTimeout(function(){
+      var href = $('#goBackBtn').attr('href');
+      location.href = href;
+  }, 5000)
+});
+
+function loadPreview(link, ShowCloseBoxonInit = false, message) {
+  $('#examiframeholder').addClass('examiframeholder')
+  var ribbon = `<div class="ribbon blue"><span>${message}</span></div>`
+  $('#iframeholder').append(`
+      <iframe src = ${link} height = 100% width = 100%></iframe>
+  `);
+  if(message){
+    $('#iframeholder').append(`
+      ${ribbon}
+  `);
+  }
+  $('iframe').on('load', function () {
+      if ($(this).contents().find('#survey_already_taken').is(':visible')) {
+          $('#closeiframebtn').css('display', 'block')
+      }
+      if (link != this.contentWindow.location.href && link + '/' != this.contentWindow.location.href) {
+          $('#closeiframebtn').css('display', 'block')
+      }
+      if (ShowCloseBoxonInit) {
+          $('#closeiframebtn').css('display', 'block')
+      }
+      
+      $(this).contents().find('.closebtn, #hamburg-nav, #closechatopen').remove()
+  });
+}
+
+$('#closeiframebtn').click(function () {
+  $('#examiframeholder').removeClass('examiframeholder')
+  $('#closeiframebtn').css('display', 'none')
+  $('#iframeholder').empty();
+})
