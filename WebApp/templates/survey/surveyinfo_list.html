@@ -54,7 +54,7 @@
                                                         {{ category.Category_Name }}
                                                     </a>
                                                 </div>
-                                                {% if category.Category_Name|lower == "general" and "teachers" in request.path or category.Category_Name|lower == "system" and "teachers" in request.path %}
+                                                {% if "teachers" in request.path or category.Category_Name|lower == "session" or category.Category_Name|lower == "course" %}
                                                 {% else %}
                                                     <button class=" {{ category.Category_Name }} btn btn-success"
                                                             id="category_Add_Button{{ category.Category_Name }}"

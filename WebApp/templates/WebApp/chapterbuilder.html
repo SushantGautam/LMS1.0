@@ -109,7 +109,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        height: 80vh;
+        height: 70vh;
     }
 
     .pagenumber>canvas {
@@ -177,6 +177,12 @@
     .chapter-description:hover .edit-type-btn {
         display: block;
         cursor: pointer;
+    }
+    .tabs-for-download {
+        width: 80vw;
+    height: -webkit-fill-available;
+    max-height: 80vh;
+    max-width: 177.78vh;
     }
 </style>
 
@@ -891,10 +897,19 @@
             return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
         };
 
-        $('#quiz_create_link').click(function () {
+        $('#quiz_create_link').click(function (e) {
+            e.preventDefault();
             $('#quiz-modal').modal('toggle');
+            let link = $("#quiz_create_link").attr('href');
+            loadPreview(link, 1)
         })
 
+        $('#survey_create_link').click(function (e) {
+            e.preventDefault();
+            $('#survey-modal').modal('toggle');
+            let link = $("#survey_create_link").attr('href');
+            loadPreview(link, 1)
+        })
         setTimeout(function () {
             $.ajax({
                 url: "{% url 'retrieve-chapter-files' %}",

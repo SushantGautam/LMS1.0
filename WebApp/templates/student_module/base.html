@@ -4,65 +4,66 @@
 
 <head>
     {% block head %}
-    {% block meta %}
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% endblock meta %}
+        {% block meta %}
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <!-- Meta, title, CSS, favicons, etc. -->
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% endblock meta %}
 
-    <title>Student {% block title %}{% endblock %}</title>
+        <title>Student {% block title %}{% endblock %}</title>
 
-    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
-    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <!-- Bootstrap -->
-    <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %} " rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
-    <!-- bootstrap-daterangepicker -->
-    <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
-    <!-- bootstrap-progressbar -->
-    <link href="{% static 'vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
-    <!-- JQVMap -->
-    <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet" />
-    <!-- Custom Theme Style -->
-    <link href="{% static '/build/css/theme.min.css' %}" rel="stylesheet">
-    <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
+        <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
+        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+        <!-- Bootstrap -->
+        <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %} " rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+        <!-- NProgress -->
+        <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
+        <!-- bootstrap-daterangepicker -->
+        <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+        <!-- iCheck -->
+        <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+        <!-- bootstrap-progressbar -->
+        <link href="{% static 'vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}"
+              rel="stylesheet">
+        <!-- JQVMap -->
+        <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/>
+        <!-- Custom Theme Style -->
+        <link href="{% static '/build/css/theme.min.css' %}" rel="stylesheet">
+        <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
 
 
-    {#    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">#}
+        {#    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">#}
 
-    {% block stylesheets %}
-    {% endblock stylesheets %}
+        {% block stylesheets %}
+        {% endblock stylesheets %}
 
 
     {% endblock head %}
 </head>
 
 <body class="{% block body_class %}nav-md {% endblock body_class %}">
-    {% block body %}
+{% block body %}
     <div class="se-pre-con"></div>
 
     <div class="container body">
         <div class="main_container">
 
             {% block sidebar %}
-            <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
-                {% include "student_module/theme/sidebar.html" %}
-            </div>
+                <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
+                    {% include "student_module/theme/sidebar.html" %}
+                </div>
             {% endblock sidebar %}
 
             {% block top_navigation %}
-            <div class="top_nav">
-                {% include "student_module/theme/top_navigation.html" %}
-            </div>
+                <div class="top_nav">
+                    {% include "student_module/theme/top_navigation.html" %}
+                </div>
             {% endblock top_navigation %}
 
             <div class="right_col">
@@ -77,7 +78,7 @@
             </div>
         </div>
         {% block footer %}
-        {% include "student_module/theme/footer.html" %}
+            {% include "student_module/theme/footer.html" %}
         {% endblock footer %}
     </div>
 
@@ -114,7 +115,7 @@
     <script src="{% static 'vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script>
     <!-- starrr -->
     <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script>
-    
+
     <script>
         $(window).load(function () {
             // Animate loader off screen
@@ -133,8 +134,13 @@
     {% endblock %}
     <!-- Custom Theme Scripts -->
     <script src=" {% static '/build/js/custom.js' %}"></script>
-
-    {% endblock body %}
+    <script>
+        window.addEventListener('beforeunload', function (e) {
+            // the absence of a returnValue property on the event will guarantee the browser unload happens
+            $(".se-pre-con").fadeIn("fast");
+        });
+    </script>
+{% endblock body %}
 </body>
 
 </html>

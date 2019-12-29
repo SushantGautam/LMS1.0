@@ -29,17 +29,18 @@
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
 
-    <script type="text/javascript"
+    <script type="text/javascript" crossorigin="anonymous"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel='manifest' href='/manifest.webmanifest'>
 
 
     <!-- Loads <model-viewer> for modern browsers: -->
-    <script type="module"
-            src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+    <script type="module" crossorigin="anonymous"
+            src="{% static '3D_Viewer/model-viewer.js' %}">
     </script>
 
     <!-- Loads <model-viewer> for old browsers like IE11: -->
-    <script nomodule
+    <script nomodule crossorigin="anonymous"
             src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
     </script>
 
@@ -50,20 +51,31 @@
 
 <div class="se-pre-con"></div>
 <style>
+    .custom-poster {
+        width: 100%;
+        height: 100%;
+        background-image: url(/static/3D_Viewer/3DLoading.gif);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 20vh;
+
+    }
 
     .owl-carousel .owl-item img {
         display: block;
         width: auto;
         height: -webkit-fill-available;
+
     }
 
     .owl-prev {
         position: fixed;
         bottom: 3vh;
-        left: 3.5%;
+        left: 2%;
 
         border-radius: 50%;
         color: #337ab7 !important;
+        box-shadow: 2px 2px 3px #999;
 
     }
 
@@ -74,9 +86,10 @@
     .owl-next {
         position: fixed;
         bottom: 3vh;
-        right: 3.5%;
+        right: 2%;
         border-radius: 50%;
         color: #337ab7 !important;
+        box-shadow: 2px 2px 3px #999;
     }
 
     html {
@@ -157,6 +170,14 @@
     .sidenav .closebtn {
         position: fixed;
         top: 15px;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    .sidenav .editbtn {
+        position: fixed;
+        top: 80px;
         right: 25px;
         font-size: 36px;
         margin-left: 50px;
@@ -253,7 +274,20 @@
     border-radius: 50%;
     padding: 0.5px 2px;
 " class="fa fa-times-circle"></i></div>
+
     </a>
+
+    {% if '/teachers' in request.path %}
+        <a href="chapterpagebuilder">
+            <div class="editbtn"><i style="
+    color: #6f41d6;
+    padding: 0.5px 2px;
+    text-shadow: 2px 2px #f9f5f5;
+" class="fa fa-pencil"></i></div>
+        </a>
+    {% endif %}
+
+
     <div class="profile clearfix">
 
         <div class="profile_pic">
@@ -490,7 +524,9 @@
                             {% endif %}
                             <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
                             <li>Sound <input id="chatsound" type="checkbox" checked></li>
-                            <li id="speakContent"><i class="fa fa-music"> </i> Read</li>
+                            <li id="speakContent">
+                                <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
+                            </li>
 
                         </ul>
                     </div>
@@ -498,18 +534,17 @@
                          style="padding-right: 9px!important; padding-left:0px!important">
                         <div class="col-md-8 col-sm-8 col-xs-9">
                             <span id="reloadcontent" class="text-center" style="margin-bottom: 5px;"> <i
-                                class="fa fa-refresh"> Reload Content  </i></span>
-                                <div style=" margin-top:5px">
-                                    <span id="google_translate_element"></span>
-                                </div>
+                                    class="fa fa-refresh"> Reload Content  </i></span>
+                            <div style=" margin-top:5px">
+                                <span id="google_translate_element"></span>
+                            </div>
                         </div>
                         <div class="col-md-4 col-sm-4 col-xs-3">
-                                <span id="closechatbox" style="float:right; color:red "> <i class="fa fa-3x fa-close"></i></span>
+                            <span id="closechatbox" style="float:right; color:rgb(119, 42, 42) "> <i
+                                    class="fa fa-3x fa-close"></i></span>
 
                         </div>
-                       
-                        
-                      
+
 
                     </div>
 
@@ -522,7 +557,9 @@
                   ">
 
 
-                    <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white ">
+                    <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white "
+                         style="{{ ifteacher|yesno:' ,width: -webkit-fill-available;' }} ">
+
                         <div class="row upbarchat">
 
 
@@ -570,7 +607,7 @@
                     </div>
                     {% if "teachers" in request.path %}
                         <div class="col-md-4 col-sm-4 col-xs-4 bg-white ">
-                           
+
 
                             <!-- =============================================================== -->
                             <!-- member list -->
@@ -655,12 +692,13 @@
                       margin-right: 0px!important;
                       margin-left: 0px!important;">
                     <div class="chat-box bg-white">
-                        <div class="input-group">
+                        <div class="input-group notranslate">
                             <input id="chatmessageinput"
                                    class="form-control border no-shadow no-rounded"
                                    placeholder="Type your message here" required>
                             <span class="input-group-btn">
-                                    <button style="padding: 17px;margin:0px" class="btn btn-success no-rounded" type="button"
+                                    <button style="padding: 17px;margin:0px" class="btn btn-success no-rounded"
+                                            type="button"
                                             onclick="sendMessageWritten()">Send</button>
                                 </span>
                         </div><!-- /input-group -->
@@ -817,9 +855,10 @@
     });
 
 
-    $('#closechatbox').on('click mouseover', function () {
-        $('.chatonly').hide();
+    $('#closechatbox').on('click mouseover', function (e) {
         $('#closechatopen').show();
+        $('.chatonly').hide();
+
     });
 
     $('#closechatopen').on('click mouseover', function () {
@@ -891,6 +930,7 @@
     })
 
     function loadexam(link, ShowCloseBoxonInit = false) {
+
         $('#examiframeholder').addClass('examiframeholder')
         $('#iframeholder').append(`
             <iframe src = ${link} height = 100% width = 100%></iframe>
@@ -1095,8 +1135,9 @@
                                         alt="Here is a 3D Object."
                                         auto-rotate
                                         camera-controls
-                                        poster="/static/3D_Viewer/3DLoading.gif"
-                                        ar style = "height: 100%;width: 100%;">
+                                        style = "height: 100%;width: 100%;">
+                                                <div class="custom-poster" slot="poster"></div>
+
                                     </model-viewer></div>
 
                                 </div>
@@ -1199,7 +1240,7 @@
         $('.owl-carousel').owlCarousel({
             nav: true,
             slideBy: 4,
-            dots:false,
+            dots: false,
             items: parseInt($('#totalpages').text()),
             navText: ["<i class=' fa fa-chevron-circle-left'></i>",
                 "<i class='fa  fa-chevron-circle-right'></i>"],
@@ -1222,7 +1263,7 @@
         $('#next-btn').off().click(function () {
             pauseAllVideos();
             if (currentpage < data.numberofpages) {
-                currentpage += 1;
+                currentpage = parseInt(currentpage) + 1;
                 changePage(currentpage)
 
             }
@@ -1231,14 +1272,14 @@
         $('#prev-btn').off().click(function () {
             pauseAllVideos();
             if (currentpage != 1) {
-                currentpage -= 1;
+                currentpage = parseInt(currentpage) - 1;
                 changePage(currentpage)
             }
         });
 
         $('.thumbnails').on('click', function () {
             pauseAllVideos();
-            currentpage = parseInt($(this).attr('value'))
+            currentpage = parseInt($(this).attr('value'));
             changePage(currentpage)
 
 
@@ -1254,7 +1295,7 @@
 
     function changePage(page_number) {
         Layout(x)
-        $('#currentpage').text(page_number);
+        $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
         document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
         {% if ifteacher %}
@@ -1262,6 +1303,9 @@
         {% else %}
             // updatePageByStudent(); //TBI
         {% endif %}
+        localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
+        speechSynthesis.cancel();
+
     }
 
 
@@ -1459,21 +1503,21 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);
     }
 
-    showFoo(15000);
+    showFoo(2000);
 
     $(window).on("mouseover touchstart click", function () {
-        showFoo(15000);
+        showFoo(2000);
     });
 </script>
 <script>
@@ -1558,38 +1602,78 @@
 
 
     });
+    var availablevoices;
+    speechSynthesis.onvoiceschanged = function () {
+        availablevoices = window.speechSynthesis.getVoices();
 
+    };
 
-    $('#speakContent').click(function () {
+    function speakContent() {
 
-        speechSynthesis.cancel()
-        var text = $('#container').children(":visible").text()
+        if (speechSynthesis.speaking) speechSynthesis.cancel();
+
+        var text = $('#container').children(":visible").text();
         var msg = new SpeechSynthesisUtterance();
-        var voices = window.speechSynthesis.getVoices();
-        msg.voice = voices[0];
+        msg.onstart = function () {
+            $('#speakContent').html('<div onClick="speechSynthesis.cancel();"><i class="fa fa-pause"> </i> Stop</div>');
+        };
+        msg.onend = function () {
+
+            $('#speakContent').html('<div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>');
+        };
+        msg.onerror = function () {
+
+            $('#speakContent').html('<div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>');
+        };
+
+        selectedTranslation = document.getElementsByClassName('goog-te-combo')[0].value ? document.getElementsByClassName('goog-te-combo')[0].value : 0;
+        if (selectedTranslation) {
+            if (selectedTranslation === "id") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "zh-CN") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "cs") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "ko") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "nl") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "en") msg.lang = "en-GB";
+            else if (selectedTranslation === "et") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "fr") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "ne") msg.lang = "hi";
+            else if (selectedTranslation === "ru") msg.lang = selectedTranslation;
+            else if (selectedTranslation === "vi") msg.lang = selectedTranslation;
+            else msg.lang = "en-GB";
+        }
         msg.rate = 1;
         msg.pitch = 1;
         msg.text = text;
         speechSynthesis.speak(msg);
 
-    });
+    }
 
-
-    $('#container').mouseleave(function () {
-
-        $('.closechatopen').show();
-    });
 
     $('#container').click(function () {
 
         $('.chatonly').hide();
+        $('.closechatopen').show();
+        $('.closenav').click();
+
     });
 
 
     $(window).load(function () {
         // Animate loader off screen
         $(".se-pre-con").fadeOut("slow");
-        $('#togglefull').click();
+
+
+        // retrieve slide number
+        if (parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}")) >= 1) {
+            currentpage = parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}"));
+            changePage(currentpage)
+
+        }
+
+
+        // save chapter number for course
+        localStorage.setItem("chapter_for_course" + {{ course.pk }}, {{ chapter.pk }});
+
 
     });
 
@@ -1609,7 +1693,40 @@
     });
 
 
+    window.addEventListener('beforeunload', function (e) {
 
+        // the absence of a returnValue property on the event will guarantee the browser unload happens
+        $(".se-pre-con").fadeIn("slow", function () {
+            $(".se-pre-con").fadeOut("slow");
+
+        });
+        speechSynthesis.cancel();
+
+    });
+
+
+</script>
+
+<script>
+    // This is the service worker with the Advanced caching
+
+    // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
+
+    // Check compatibility for the browser we're running this in
+    if ("serviceWorker" in navigator) {
+        if (navigator.serviceWorker.controller) {
+            console.log("[PWA Builder] active service worker found, no need to register");
+        } else {
+            // Register the service worker
+            navigator.serviceWorker
+                .register("/pwabuilder-sw.js", {
+                    scope: "/"
+                })
+                .then(function (reg) {
+                    console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+                });
+        }
+    }
 
 </script>
 

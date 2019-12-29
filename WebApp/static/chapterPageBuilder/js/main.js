@@ -156,7 +156,7 @@ class Textbox {
 
 
             var a = document.getElementsByClassName("current")[0];
-            
+
             $('#' + a.id).append(dom);
             $('#editor' + id).summernote({
                 fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
@@ -440,7 +440,7 @@ class Quiz {
                             <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
                             </div>
                             <div class="row text-center">
-                            <span class = "quiz-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                            <span class = "quiz-name " style = "bottom: 0px; width:100% ;">
                             ${quiz_span_name}</span>
 
                             </div>
@@ -515,7 +515,7 @@ class Survey {
                                     <span class="resizable-text-only" style = "width:100%; font-size: ${font_size}">${name} </span>
                                 </div>
                                 <div class="row text-center">
-                                    <span class = "survey-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                    <span class = "survey-name " style = "bottom: 0px; width:100% ;">
                                     ${survey_span_name}</span>
                                     </div>
                                 </button>
@@ -524,7 +524,7 @@ class Survey {
                         </div>    
                     </div>
             `;
-            
+
         // href = ${link}
         this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
@@ -1126,7 +1126,7 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
 
     $('.survey-div button').off().on('click', function (e) {
         e.preventDefault()
-        link = $(this).parent().parent().find('a')[0].href            
+        link = $(this).parent().parent().find('a')[0].href
         if(link){
             surveypk = (link.split('/')[6]).match(/\d+/);
             if (window.location.href.indexOf("/teachers") > -1) {
@@ -1787,14 +1787,14 @@ $(document).ready(function () {
 
     $('#loadingDiv').hide();
 
- 
+
     // title click function
     $(".tlimit").on("click", function () {
         $("#title_id").css({
             'display': 'block'
         });
     });
-    
+
     // Making sidebar tools draggable
     $(".draggable").draggable({
         helper: "clone",
@@ -1830,7 +1830,7 @@ $(document).ready(function () {
         newpagefunction();
     });
     setslider()
-    
+
     $('.tabs-to-click > ul > li:first').remove()
     changePage('1');
 
@@ -1901,7 +1901,7 @@ $(document).ready(function () {
 
     // $('#survey_create_link').on('click', function(){
     //     console.log('hello')
-        
+
     // })
 
     $("#importzipfile").change(function (e) {
@@ -1945,7 +1945,7 @@ $(document).ready(function () {
             error: function (errorThrown) {
                 console.log(errorThrown)
                 alert(errorThrown.responseJSON.message)
-            }, 
+            },
             complete: function() {
                 $('#loadingDiv').hide();
             }
@@ -2147,7 +2147,7 @@ function newpagefunction(new_page_num){
     if ($(".tabs-to-click ul li").last().length == 0) {
         var num_tabs = 1
     } else if(new_page_num){
-        var num_tabs =  new_page_num   
+        var num_tabs =  new_page_num
     } else {
         var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
     }
@@ -2175,7 +2175,7 @@ function newpagefunction(new_page_num){
     //             <input type = "color" value = "#ffffff" class="page-background">
     //     </p>`
     // );
-    
+
     $('#tab').attr('value', num_tabs)
     // $('#copy_tab').attr('value', num_tabs)
 
@@ -2188,7 +2188,7 @@ function newpagefunction(new_page_num){
     if(!window.firstload){
         changePage('tab'+num_tabs)
     }
-    
+
 }
 
 function displaypagenumbers() {
@@ -2341,7 +2341,7 @@ function display(data = "", currentPage='1') {
                 });
                 return
             }
-            
+
         });
     }
 }
@@ -2490,9 +2490,9 @@ function updateData(prev_page, prev_data){
         var pages = {}
         backgroundcolor = $("#tab").css('background-color')
         pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
-        
+
         data = {
-            'numberofpages': numberofpages, 
+            'numberofpages': numberofpages,
             'chaptertitle': $('#chaptertitle').text(),
             'pages': pages,
             'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
@@ -2510,7 +2510,7 @@ function storethumbnails(prev_page){
 }
 
 function changePage(page_number){
-    let prev_page = window.currentPage.replace( /^\D+/g, '')    
+    let prev_page = window.currentPage.replace( /^\D+/g, '')
     if(window.firstload){
         // newpagefunction()
         window.firstload = false
@@ -2530,7 +2530,7 @@ function changePage(page_number){
         //     resolve('success')
         // })
         updateData(prev_page, prev_data)
-        
+
         $('#copy_tab').html($('#tab').html())
         $('#copy_tab').attr('value', prev_page)
         $('#tab'+window.currentPage).css('display', 'block')
@@ -2574,7 +2574,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
     if (confirmation == false) {
         return false
     }
-    
+
     if ($(this).parent().parent().parent().find('li')[0].classList.contains('current')) {
         setThumbnailok = false
         if ($(this).parent().parent().parent().prev().find('li').length != 0)
@@ -2588,7 +2588,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
     }
     $(this).parent().parent().parent().remove();
     delete data.pages[this.value]
-    
+
     numberofloops = Object.keys(data.pages).length +1
     for(x = this.value; x <= numberofloops ; x++){
         $('.pagenumber[value="'+(parseInt(x)+1)+'"').parent().find('.clone-page-btn').attr({
@@ -2600,7 +2600,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
         $('.pagenumber[value="'+(parseInt(x)+1)+'"').attr({
             "value": x,
             "onclick": "changePage('tab"+x+"')"
-        })        
+        })
         data.pages[x] = (data.pages[parseInt(x)+1])
         delete data.pages[parseInt(x)+1]
     }
@@ -2645,7 +2645,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
                 data.pages[parseInt(x)+1] = data.pages[x]
                 // delete data.pages[parseInt(x)]
             }
-        
+
             data.pages[parseInt(this.value)+1] = data.pages[this.value]
 
             $('.current.pagenumber').removeClass('current')
@@ -2665,7 +2665,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
                     dropfunction(event, ui)
                 }
             });
-        
+
             displaypagenumbers();
             $(this).attr('disabled', false)
         }, 200)

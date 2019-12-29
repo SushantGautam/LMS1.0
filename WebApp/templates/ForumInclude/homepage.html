@@ -11,25 +11,26 @@
             <div class="media v-middle">
                 <div class="media-body">
                     <h2 class="text-headline margin-none" style="color:#368BC1">
-                        Recent Threads
+                        Recent Threads 
                     </h2>
 
                 </div>
                 {% if request.user.is_authenticated %}
                 {% if not '/students' in request.path %}
                 <div class="media-right">
-                    <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
+                    <a  class="btn btn-white btn-fla  custom-size-font " href="{% if '/teachers' in request.path %}
                     {% url 'teacher_create_topic' %}
                      {% elif '/forum' in request.path %}
                     /forum/topic/create
                      {% endif %}">
-                        <i class="fa fa-fw fa-plus"></i> Sub Category
+                        <i class="fa fa-fw fa-plus "></i> Sub Category
+                        
                     </a>
                 </div>
                 {% endif %}
 
                 <div class="media-right">
-                    <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
+                    <a class="btn btn-white btn-flat custom-size-font" href="{% if '/teachers' in request.path %}
                     /teachers/forum/create_thread
                     {% elif '/students' in request.path %}
                     /students/forum/create_thread
@@ -37,7 +38,7 @@
                     /forum/t/create
                     {% endif %}">
                         <i class="fa fa-fw fa-plus"></i>
-                        Ask New Question</a>
+                        Ask New Question  </a>
                 </div>
                 {% endif %}
 
