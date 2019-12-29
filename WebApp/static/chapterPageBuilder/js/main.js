@@ -1943,9 +1943,12 @@ $(document).ready(function () {
                 setslider()
             },
             error: function (errorThrown) {
-                $('#tabs-for-download').find('#loadingDiv').empty();
                 console.log(errorThrown)
                 alert(errorThrown.responseJSON.message)
+            }, 
+            complete: function() {
+                console.log('dfkshj')
+                $('#loadingDiv').hide();
             }
         });
     });
