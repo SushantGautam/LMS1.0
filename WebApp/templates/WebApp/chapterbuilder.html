@@ -53,11 +53,26 @@
       top:0;bottom:0;
       left:0;right:0;
     } */
+    .inner-sidebar{
+        height: 100vh;
+        overflow: auto;
+    }
+    @media all and (max-width:500px){
+        .inner-sidebar{
+            height: auto;
+           
+        }
+
+    }
     .upper{
         -webkit-user-select: none; /* Safari 3.1+ */
         -moz-user-select: none; /* Firefox 2+ */
         -ms-user-select: none; /* IE 10+ */
         user-select: none; 
+
+    }
+    .lower{
+     
     }
     #tabs-for-download{
         margin: 0;
@@ -204,176 +219,183 @@
         <div class="editor row" style=" height: -webkit-fill-available;">
 
             <!-- Preview Bar must be here... -->
-            <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar">
-                <section class="upper">
+            <div class=" col-xs-12 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar">
+               <div class="inner-sidebar">
+                    <section class="upper">
 
-                    <br>
-                    <div class="row" style="margin:auto">
-                        <ul class="nav nav-tabs" style="font-size: 12px;">
-                            <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
-                            <li><a data-toggle="tab" href="#menu1">Layout</a></li>
-                        </ul>
-                    </div>
-
-
-                    <hr class="white-hr">
-
-                    <div class="row" style="margin:auto">
-                        <div class="tab-content">
-
-                            <div id="home" class="tab-pane fade in active">
-
-                                <div class="home-tab-1 ">
-
-                                    <div class="draggable builder textbox draggable-style ">
-                                        <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
-
-                                        <span class="smaller-font">Text Box</span>
+                            <br>
+                            <div class="row" style="margin:auto">
+                                <ul class="nav nav-tabs" style="font-size: 12px;">
+                                    <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
+                                    <li><a data-toggle="tab" href="#menu1">Layout</a></li>
+                                </ul>
+                            </div>
+        
+        
+                            <hr class="white-hr">
+        
+                            <div class="row" style="margin:auto">
+                                <div class="tab-content">
+        
+                                    <div id="home" class="tab-pane fade in active">
+        
+                                        <div class="home-tab-1 ">
+        
+                                            <div class="draggable builder textbox draggable-style ">
+                                                <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
+        
+                                                <span class="smaller-font">Text Box</span>
+                                            </div>
+        
+                                            <div class="draggable builder picture draggable-style ">
+                                                <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
+                                                <span class="smaller-font">Picture</span>
+                                            </div>
+        
+                                            <div class="draggable builder video draggable-style ">
+                                                <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
+                                                <span class="smaller-font">Video</span>
+                                            </div>
+        
+                                            <div class="draggable builder buttons draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
+                                                <span class="smaller-font">Button</span>
+                                            </div>
+        
+                                            <div class="draggable builder 3dobject draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
+                                                <span class="smaller-font">3D Object</span>
+                                            </div>
+        
+                                            <div class="draggable builder Pdf draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
+                                                <span class="smaller-font">PDF</span>
+                                            </div>
+        
+                                            <div class="draggable builder quiz draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/quiz.png' %}">
+                                                <span class="smaller-font">Quiz</span>
+                                            </div>
+        
+                                            <div class="draggable builder survey draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/survey.png' %}">
+                                                <span class="smaller-font">Survey</span>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div class="draggable builder picture draggable-style ">
-                                        <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
-                                        <span class="smaller-font">Picture</span>
+                                    <div id="menu1" class="tab-pane fade">
+                                        <div class="home-tab-2">
+                                            <div class="draggable  layout grid">
+                                                <!-- <svg aria-hidden="true" data-prefix="fal" data-icon="columns"
+                                              class="svg-inline--fa fa-columns fa-w-16 fa-3x " role="img" xmlns="http://www.w3.org/2000/svg"
+                                              viewbox="0 0 512 512">
+                                              <path fill="currentColor"
+                                                d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM240 448H48c-8.837 0-16-7.163-16-16V96h208v352zm240-16c0 8.837-7.163 16-16 16H272V96h208v336z">
+                                              </path>
+                                            </svg> -->
+        
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
+                                                    alt="like this">
+        
+                                            </div>
+        
+                                            <div class="draggable  layout grid-1">
+        
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
+                                                    alt="like this">
+        
+                                            </div>
+        
+                                            <div class="draggable  layout title-slide">
+        
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
+                                                    alt="like this">
+                                            </div>
+        
+                                            <div class="draggable  layout title-content-details">
+        
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
+                                                    alt="like this">
+                                            </div>
+        
+                                            <div class="draggable layout pdf-text">
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
+                                                    alt="like this">
+                                            </div>
+        
+                                            <div class="draggable  layout title-content-details">
+        
+                                                <!-- <img src="images/saveimg5.png" alt="like this"  > -->
+                                            </div>
+                                        </div>
+        
                                     </div>
-
-                                    <div class="draggable builder video draggable-style ">
-                                        <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
-                                        <span class="smaller-font">Video</span>
+        
+                                </div>
+        
+                            </div>
+        
+        
+                            <hr class="white-hr ">
+                            
+        
+        
+                        </section>
+        
+        
+                        <section class="lower">
+                                <div class="row" style="margin:auto">
+                                        <h3 class="media-content-builder text-center" style="margin-top:16px; font-size:15px">Media
+                                            Items </h3>
+                
                                     </div>
-
-                                    <div class="draggable builder buttons draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
-                                        <span class="smaller-font">Button</span>
+                            <div class="row" style="margin:auto">
+                                <div class="media-items-tabs">
+                                    <!-- Tab links -->
+                                    <div class="tab">
+                                        <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
+                                        <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
+                                        <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
+                                        <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
                                     </div>
-
-                                    <div class="draggable builder 3dobject draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
-                                        <span class="smaller-font">3D Object</span>
+        
+                                    <!-- Tab content -->
+                                    <div id="image-gallery" class="tabcontent file-content">
+                                        <h3>Images</h3>
+                                        <div class="individual-file">
+        
+                                        </div>
+                                        <p>Nothing to show here...</p>
                                     </div>
-
-                                    <div class="draggable builder Pdf draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
-                                        <span class="smaller-font">PDF</span>
+        
+                                    <div id="video-gallery" class="tabcontent file-content">
+                                        <h3>Videos</h3>
+                                        <p>Nothing to show here...</p>
                                     </div>
-
-                                    <div class="draggable builder quiz draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/quiz.png' %}">
-                                        <span class="smaller-font">Quiz</span>
+        
+                                    <div id="pdf-gallery" class="tabcontent file-content">
+                                        <h3>PDF</h3>
+                                        <p>Nothing to show here...</p>
                                     </div>
-
-                                    <div class="draggable builder survey draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/survey.png' %}">
-                                        <span class="smaller-font">Survey</span>
+        
+                                    <div id="3d-gallery" class="tabcontent file-content">
+                                        <h3>3D Files</h3>
+                                        <p>Nothing to show here...</p>
                                     </div>
                                 </div>
+        
                             </div>
-                            <div id="menu1" class="tab-pane fade">
-                                <div class="home-tab-2">
-                                    <div class="draggable  layout grid">
-                                        <!-- <svg aria-hidden="true" data-prefix="fal" data-icon="columns"
-                                      class="svg-inline--fa fa-columns fa-w-16 fa-3x " role="img" xmlns="http://www.w3.org/2000/svg"
-                                      viewbox="0 0 512 512">
-                                      <path fill="currentColor"
-                                        d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM240 448H48c-8.837 0-16-7.163-16-16V96h208v352zm240-16c0 8.837-7.163 16-16 16H272V96h208v336z">
-                                      </path>
-                                    </svg> -->
+        
+                        </section>
 
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
-                                            alt="like this">
-
-                                    </div>
-
-                                    <div class="draggable  layout grid-1">
-
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
-                                            alt="like this">
-
-                                    </div>
-
-                                    <div class="draggable  layout title-slide">
-
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
-                                            alt="like this">
-                                    </div>
-
-                                    <div class="draggable  layout title-content-details">
-
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
-                                            alt="like this">
-                                    </div>
-
-                                    <div class="draggable layout pdf-text">
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
-                                            alt="like this">
-                                    </div>
-
-                                    <div class="draggable  layout title-content-details">
-
-                                        <!-- <img src="images/saveimg5.png" alt="like this"  > -->
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <hr class="white-hr ">
-                    <div class="row" style="margin:auto">
-                        <h3 class="media-content-builder text-center" style="margin-top:16px; font-size:15px">Media
-                            Items </h3>
-
-                    </div>
-
-
-                </section>
-
-                <section class="lower">
-                    <div class="row" style="margin:auto">
-                        <div class="media-items-tabs">
-                            <!-- Tab links -->
-                            <div class="tab">
-                                <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
-                                <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
-                                <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
-                                <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
-                            </div>
-
-                            <!-- Tab content -->
-                            <div id="image-gallery" class="tabcontent file-content">
-                                <h3>Images</h3>
-                                <div class="individual-file">
-
-                                </div>
-                                <p>Nothing to show here...</p>
-                            </div>
-
-                            <div id="video-gallery" class="tabcontent file-content">
-                                <h3>Videos</h3>
-                                <p>Nothing to show here...</p>
-                            </div>
-
-                            <div id="pdf-gallery" class="tabcontent file-content">
-                                <h3>PDF</h3>
-                                <p>Nothing to show here...</p>
-                            </div>
-
-                            <div id="3d-gallery" class="tabcontent file-content">
-                                <h3>3D Files</h3>
-                                <p>Nothing to show here...</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </section>
+               </div>
+               
 
 
             </div>
 
-            <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style=" height:100vh; padding: 0px!important;">
+            <div class="  col-xs-12 col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style=" height:100vh; padding: 0px!important;">
+                
                 <div id="navbar-title" >
                     <a href="
                     {% if 'teachers' in request.path %}
@@ -422,7 +444,7 @@
             </div>
             <!-- sidebar must be here.... -->
 
-            <div class="  col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar" style="padding:0px!important">
+            <div class="  col-xs-12 col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar" style="padding:0px!important">
 
                 <div class="chapter-select ">
                     <h3>Chapter Lists</h3>

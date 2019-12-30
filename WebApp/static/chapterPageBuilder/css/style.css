@@ -75,6 +75,16 @@ body {
 
 
 }
+@media all and (max-width:900){
+    #navbar-title{
+        height: 8vh;
+    }
+    .tab-content-no{
+        height: 92vh;
+    }
+
+
+}
 
 
 /* ====Home==== */
@@ -94,7 +104,7 @@ body {
 .sidebar {
     background-color: #ddd;
     /* zoom: 75%; */
-    height: 100vh;
+    
     
 
 }
