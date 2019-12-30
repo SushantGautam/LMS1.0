@@ -263,7 +263,8 @@ class video {
         var now = Math.floor(Math.random() * 900000) + 100000;
         let position = {top, left, height, width};
         let videoobj;
-        let message = ""
+        let message = "";
+        console.log(link)
         // if(link!=null){
         //     videoobj = `<div id='${now}'><div>
         //  <script>
@@ -1843,7 +1844,14 @@ $(document).ready(function () {
     setslider()
 
     $('.tabs-to-click > ul > li:first').remove()
-    changePage('1');
+
+    if(localStorage.getItem(`chapter_${chapterID}_currentPage`) && localStorage.getItem(`chapter_${chapterID}_currentPage`) <= data.numberofpages && localStorage.getItem(`chapter_${chapterID}_currentPage`) > 0){
+        window.firstload = false
+        changePage(localStorage.getItem(`chapter_${chapterID}_currentPage`));
+    }else{
+        changePage('1');
+    }
+
 
     // Button Form Submit
     $('#btn-submit').on('click', function () {
@@ -2304,7 +2312,7 @@ function display(data = "", currentPage='1') {
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
                                 let link;
-                                if (css_value.hasOwnProperty('online_link')) {
+                                if (css_value.hasOwnProperty('online_link') && css_value.online_link) {
                                     link = css_value.online_link
                                 } else {
                                     link = css_value.local_link
@@ -2555,6 +2563,7 @@ function changePage(page_number){
         }
         display(data)
     }
+    localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
 }
 
 // Media File deletion
@@ -2625,37 +2634,38 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
 
 // clone Page function
 $('.tabs-to-click').on('click', '.clone-page-btn', function () {
+    var prev_data = $('#tab').clone()
     $(this).attr('disabled', true)
     var promise = new Promise((resolve,reject) => {
-        updateData(this.value, $('#tab').clone())
+        updateData(window.currentPage, prev_data)
         resolve('success')
     })
     source = this.value
-    numberofloops = Object.keys(data.pages).length
+    // numberofloops = Object.keys(data.pages).length
     $.each($('.pagenumber'), function(){
         if (this.value > source){
+            let new_value = parseInt(this.value)+1
             $(this).attr({
-                "value": parseInt(this.value)+1,
-                "onclick": "changePage('tab"+(parseInt(this.value)+1)+"')"
+                "value": new_value,
+                "onclick": "changePage('tab"+new_value+"')"
             });
-            $(this).find('.clone-page-btn').attr({
-                "value": parseInt(this.value)+1,
+            $(this).parent().find('.clone-page-btn').attr({
+                "value": new_value,
             });
-            $(this).find('.delete-page-btn').attr({
-                "value": parseInt(this.value)+1,
+            $(this).parent().find('.delete-page-btn').attr({
+                "value": new_value,
             });
         }
     });
     numberofloops = Object.keys(data.pages).length
     promise.then((successmessage) => {
         setTimeout(() => {
+            window.currentPage = 'tab'+(parseInt(window.currentPage) + 1)
             for(x = numberofloops; x >= (parseInt(this.value)+1) ; x--){
                 data.pages[parseInt(x)+1] = data.pages[x]
                 // delete data.pages[parseInt(x)]
             }
-
-            data.pages[parseInt(this.value)+1] = data.pages[this.value]
-
+            data.pages[parseInt(source)+1] = data.pages[source]
             $('.current.pagenumber').removeClass('current')
             var num_tabs = parseInt(this.value)+1;
             let copy = $(this).parent().parent().parent().clone();
@@ -2666,7 +2676,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
             copy.find('.pagenumber').val(num_tabs);
             copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');
             $(this).parent().parent().parent().after(copy);
-            changePage('tab'+num_tabs)
+            // changePage('tab'+num_tabs)
             // ===================================================================================
             $(".editor-canvas").droppable({
                 drop: function (event, ui) {
@@ -2675,8 +2685,11 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
             });
 
             displaypagenumbers();
-            $(this).attr('disabled', false)
+            
         }, 200)
+        setTimeout(() => {
+            $(this).attr('disabled', false)
+        },2000)
     })
 });
 
