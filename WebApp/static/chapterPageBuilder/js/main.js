@@ -263,7 +263,8 @@ class video {
         var now = Math.floor(Math.random() * 900000) + 100000;
         let position = {top, left, height, width};
         let videoobj;
-        let message = ""
+        let message = "";
+        console.log(link)
         // if(link!=null){
         //     videoobj = `<div id='${now}'><div>
         //  <script>
@@ -2311,7 +2312,7 @@ function display(data = "", currentPage='1') {
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
                                 let link;
-                                if (css_value.hasOwnProperty('online_link')) {
+                                if (css_value.hasOwnProperty('online_link') && css_value.online_link) {
                                     link = css_value.online_link
                                 } else {
                                     link = css_value.local_link
