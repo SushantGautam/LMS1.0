@@ -51,7 +51,15 @@
       top:0;bottom:0;
       left:0;right:0;
     } */
-
+    .upper{
+        -webkit-user-select: none; /* Safari 3.1+ */
+        -moz-user-select: none; /* Firefox 2+ */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none; 
+    }
+    #tabs-for-download{
+        margin: 0;
+    }
     .tlimit {
 
         min-width: 130px;
@@ -69,7 +77,8 @@
         align-items: flex-start;
         min-height: 100%;
         background-color: whitesmoke;
-        overflow: hidden
+        overflow: hidden;
+        height: 100vh;
     }
 
     .icon-bar {
@@ -356,8 +365,8 @@
 
             </div>
 
-            <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style="padding: 0px!important;">
-                <div id="navbar-title" style="height: 9vh;">
+            <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style=" height:100vh; padding: 0px!important;">
+                <div id="navbar-title" >
                     <a href="
                     {% if 'teachers' in request.path %}
                     {% url 'teacher_chapterinfo_detail' course chapter %}
