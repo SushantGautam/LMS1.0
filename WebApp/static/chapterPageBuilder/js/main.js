@@ -156,7 +156,7 @@ class Textbox {
 
 
             var a = document.getElementsByClassName("current")[0];
-            
+
             $('#' + a.id).append(dom);
             $('#editor' + id).summernote({
                 fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
@@ -356,7 +356,7 @@ class video {
 // =====================For Button==============================
 
 class Button {
-    constructor(top, left, link = null, height = null, width = null, name = 'Button') {
+    constructor(top, left, link = null, height = null, width = null, name = 'Button', font_size) {
         let id = (new Date).getTime();
         let position = {top, left, height, width};
         let button_link = ""
@@ -364,19 +364,25 @@ class Button {
             button_link = 'href = ' + link
         }
         let html = `
-                    <div class="btn-div">
+                    <div class="btn-div" data-width = "${width}">
                         <div class="options">
                             <i class="fas fa-trash" id=${id}></i>
                             <i class="fas fa-link"   id=${id} ></i>
                             <i class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
-                        <a class="btn btn-button" ${button_link} id=${id + 1}  target="_blank" style = "height: 100%; width:100%;">
+
+                        <div class="button-name-builder ">
+                        <a ${button_link} id=${id + 1}  target="_blank">
                         
-                        <svg viewBox="0 0 56 18" style="width=inherit; height=-webkit-fill-available">
-                            <text x="0" y="15">${name}</text>
-                        </svg>
-                        </a>
+                        <button class="custom-btn-only"style="width:100%; height:100%">
+                            <div class="row text-center" width=100%>
+                            <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
+                            </div>
+                            <div class="row text-center">
+                            </div>    
+                        </button>
+
                     </div>
     
             `;
@@ -440,7 +446,7 @@ class Quiz {
                             <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
                             </div>
                             <div class="row text-center">
-                            <span class = "quiz-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                            <span class = "quiz-name " style = "bottom: 0px; width:100% ;">
                             ${quiz_span_name}</span>
 
                             </div>
@@ -515,7 +521,7 @@ class Survey {
                                     <span class="resizable-text-only" style = "width:100%; font-size: ${font_size}">${name} </span>
                                 </div>
                                 <div class="row text-center">
-                                    <span class = "survey-name " style = "position:absolute; bottom: 0px; width:100% ;text-align:left; margin-left:14px">
+                                    <span class = "survey-name " style = "bottom: 0px; width:100% ;">
                                     ${survey_span_name}</span>
                                     </div>
                                 </button>
@@ -524,7 +530,7 @@ class Survey {
                         </div>    
                     </div>
             `;
-            
+
         // href = ${link}
         this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
@@ -985,16 +991,10 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
     });
 }
 
-function ButtonFunction(top = null, left = null, link = null, height = null, width = null, name = 'Button') {
-    const btns = new Button(top, left, link, height, width, name);
+function ButtonFunction(top = null, left = null, link = null, height = null, width = null, name = 'Button', font_size) {
+    const btns = new Button(top, left, link, height, width, name, font_size);
 
     btns.renderDiagram();
-
-    // $('.btn').attr('contentEditable', true);
-
-    $('.btn').on('click', function () {
-        // alert('say me more!!')
-    })
 
     const div1 = $('i').parent();
 
@@ -1031,6 +1031,17 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
             });
         },
     });
+
+    $('.btn-div').on('resize', function(){
+        old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
+        div_width = $(this).width();
+        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+        $(this).find('.resizable-text-only').css(
+            'font-size', font + 'px'
+        )
+        $(this).data('width', positionConvert(div_width, $('#tabs-for-download').width()))
+    })
+
 }
 
 function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
@@ -1051,7 +1062,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
                 loadPreview(link, 1)
             }
         }
-    })
+    });
 
 
     const div1 = $('i').parent();
@@ -1126,7 +1137,7 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
 
     $('.survey-div button').off().on('click', function (e) {
         e.preventDefault()
-        link = $(this).parent().parent().find('a')[0].href            
+        link = $(this).parent().parent().find('a')[0].href
         if(link){
             surveypk = (link.split('/')[6]).match(/\d+/);
             if (window.location.href.indexOf("/teachers") > -1) {
@@ -1787,14 +1798,14 @@ $(document).ready(function () {
 
     $('#loadingDiv').hide();
 
- 
+
     // title click function
     $(".tlimit").on("click", function () {
         $("#title_id").css({
             'display': 'block'
         });
     });
-    
+
     // Making sidebar tools draggable
     $(".draggable").draggable({
         helper: "clone",
@@ -1830,7 +1841,7 @@ $(document).ready(function () {
         newpagefunction();
     });
     setslider()
-    
+
     $('.tabs-to-click > ul > li:first').remove()
     changePage('1');
 
@@ -1846,7 +1857,7 @@ $(document).ready(function () {
         } else {
             $('#' + btn_id).removeAttr('href');
         }
-        $('#' + btn_id).find('text').text(btn_name);
+        $('#' + btn_id).parent().parent().find('.resizable-text-only').text(btn_name);
         $('#btn-modal').modal('hide');
     })
 
@@ -1899,11 +1910,6 @@ $(document).ready(function () {
         $('#survey-link').val(`/students/questions_student_detail/detail/${$(this).val().trim()}`)
     });
 
-    // $('#survey_create_link').on('click', function(){
-    //     console.log('hello')
-        
-    // })
-
     $("#importzipfile").change(function (e) {
         var confirmation = confirm('All current data will be replaced! Are you sure you want to continue?')
         if (confirmation == false) {
@@ -1943,9 +1949,11 @@ $(document).ready(function () {
                 setslider()
             },
             error: function (errorThrown) {
-                $('#tabs-for-download').find('#loadingDiv').empty();
                 console.log(errorThrown)
                 alert(errorThrown.responseJSON.message)
+            },
+            complete: function() {
+                $('#loadingDiv').hide();
             }
         });
     });
@@ -2145,7 +2153,7 @@ function newpagefunction(new_page_num){
     if ($(".tabs-to-click ul li").last().length == 0) {
         var num_tabs = 1
     } else if(new_page_num){
-        var num_tabs =  new_page_num   
+        var num_tabs =  new_page_num
     } else {
         var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
     }
@@ -2173,7 +2181,7 @@ function newpagefunction(new_page_num){
     //             <input type = "color" value = "#ffffff" class="page-background">
     //     </p>`
     // );
-    
+
     $('#tab').attr('value', num_tabs)
     // $('#copy_tab').attr('value', num_tabs)
 
@@ -2186,7 +2194,7 @@ function newpagefunction(new_page_num){
     if(!window.firstload){
         changePage('tab'+num_tabs)
     }
-    
+
 }
 
 function displaypagenumbers() {
@@ -2239,9 +2247,10 @@ function display(data = "", currentPage='1') {
                                     css_value.tops,
                                     css_value.left,
                                     css_value.link,
-                                    Buttoncss_value.height,
+                                    css_value.height,
                                     css_value.width,
-                                    css_value.btn_name
+                                    css_value.btn_name,
+                                    css_value.font_size
                                 );
                             });
                         }
@@ -2339,7 +2348,7 @@ function display(data = "", currentPage='1') {
                 });
                 return
             }
-            
+
         });
     }
 }
@@ -2411,8 +2420,9 @@ function updateData(prev_page, prev_data){
                 'left': $(this)[0].style.left,
                 'width': $(this)[0].style.width,
                 'height': $(this)[0].style.height,
-                'link': $(this).children("a").attr('href'),
-                'btn_name': $(this).children("a").text(),
+                'link': $(this).find("a").attr('href'),
+                'btn_name': $(this).find(".resizable-text-only").text(),
+                'font_size': $(this).find('.resizable-text-only').css('font-size')
             }
             );
         }
@@ -2488,9 +2498,9 @@ function updateData(prev_page, prev_data){
         var pages = {}
         backgroundcolor = $("#tab").css('background-color')
         pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
-        
+
         data = {
-            'numberofpages': numberofpages, 
+            'numberofpages': numberofpages,
             'chaptertitle': $('#chaptertitle').text(),
             'pages': pages,
             'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
@@ -2508,7 +2518,7 @@ function storethumbnails(prev_page){
 }
 
 function changePage(page_number){
-    let prev_page = window.currentPage.replace( /^\D+/g, '')    
+    let prev_page = window.currentPage.replace( /^\D+/g, '')
     if(window.firstload){
         // newpagefunction()
         window.firstload = false
@@ -2528,7 +2538,7 @@ function changePage(page_number){
         //     resolve('success')
         // })
         updateData(prev_page, prev_data)
-        
+
         $('#copy_tab').html($('#tab').html())
         $('#copy_tab').attr('value', prev_page)
         $('#tab'+window.currentPage).css('display', 'block')
@@ -2572,7 +2582,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
     if (confirmation == false) {
         return false
     }
-    
+
     if ($(this).parent().parent().parent().find('li')[0].classList.contains('current')) {
         setThumbnailok = false
         if ($(this).parent().parent().parent().prev().find('li').length != 0)
@@ -2586,7 +2596,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
     }
     $(this).parent().parent().parent().remove();
     delete data.pages[this.value]
-    
+
     numberofloops = Object.keys(data.pages).length +1
     for(x = this.value; x <= numberofloops ; x++){
         $('.pagenumber[value="'+(parseInt(x)+1)+'"').parent().find('.clone-page-btn').attr({
@@ -2598,7 +2608,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
         $('.pagenumber[value="'+(parseInt(x)+1)+'"').attr({
             "value": x,
             "onclick": "changePage('tab"+x+"')"
-        })        
+        })
         data.pages[x] = (data.pages[parseInt(x)+1])
         delete data.pages[parseInt(x)+1]
     }
@@ -2643,7 +2653,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
                 data.pages[parseInt(x)+1] = data.pages[x]
                 // delete data.pages[parseInt(x)]
             }
-        
+
             data.pages[parseInt(this.value)+1] = data.pages[this.value]
 
             $('.current.pagenumber').removeClass('current')
@@ -2651,6 +2661,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
             let copy = $(this).parent().parent().parent().clone();
             // for cloning page navigation tabs
             copy.find('.clone-page-btn').val(num_tabs);
+            copy.find('.clone-page-btn').attr('disabled', false)
             copy.find('.delete-page-btn').val(num_tabs);
             copy.find('.pagenumber').val(num_tabs);
             copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');
@@ -2662,7 +2673,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
                     dropfunction(event, ui)
                 }
             });
-        
+
             displaypagenumbers();
             $(this).attr('disabled', false)
         }, 200)
