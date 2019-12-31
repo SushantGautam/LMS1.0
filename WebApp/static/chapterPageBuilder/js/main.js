@@ -2641,6 +2641,7 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
         resolve('success')
     })
     source = this.value
+    destination = parseInt(source)+1
     // numberofloops = Object.keys(data.pages).length
     $.each($('.pagenumber'), function(){
         if (this.value > source){
@@ -2660,22 +2661,26 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
     numberofloops = Object.keys(data.pages).length
     promise.then((successmessage) => {
         setTimeout(() => {
-            window.currentPage = 'tab'+(parseInt(window.currentPage) + 1)
+            // window.currentPage = 'tab'+(parseInt(window.currentPage) + 1)
             for(x = numberofloops; x >= (parseInt(this.value)+1) ; x--){
                 data.pages[parseInt(x)+1] = data.pages[x]
                 // delete data.pages[parseInt(x)]
             }
-            data.pages[parseInt(source)+1] = data.pages[source]
-            $('.current.pagenumber').removeClass('current')
+            data.pages[destination] = data.pages[source]
+            // $('.current.pagenumber').removeClass('current')
             var num_tabs = parseInt(this.value)+1;
             let copy = $(this).parent().parent().parent().clone();
             // for cloning page navigation tabs
+            copy.find('.pagenumber').removeClass('current')
             copy.find('.clone-page-btn').val(num_tabs);
             copy.find('.clone-page-btn').attr('disabled', false)
             copy.find('.delete-page-btn').val(num_tabs);
             copy.find('.pagenumber').val(num_tabs);
             copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');
             $(this).parent().parent().parent().after(copy);
+            if(source < window.currentPage){
+                window.currentPage = 'tab'+ (parseInt(window.currentPage)+1)
+            }
             // changePage('tab'+num_tabs)
             // ===================================================================================
             $(".editor-canvas").droppable({
