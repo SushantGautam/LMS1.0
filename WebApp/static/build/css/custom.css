@@ -2,7 +2,9 @@ html, body {
     height: 100%;
     font-family: 'Poppins', sans-serif !important;
 }
-
+body{
+    background-color:white;
+}
 .tableTitleRow {
     max-width: 50%;
 }
