@@ -1570,11 +1570,19 @@ def import_chapter(request):
                                 data['pages'][u][0][div][value]['link'] = j
                 if div == 'quizdiv':
                     for value in range(len(values)):
-                        data['pages'][u][0][div][value].pop('link')
+                        data['pages'][u][0][div][value]['quiz_btn_name'] = "Create Quiz"
+                        try:
+                            data['pages'][u][0][div][value].pop('link')
+                        except Exception as e:
+                            print(e)
 
                 if div == 'surveydiv':
                     for value in range(len(values)):
-                        data['pages'][u][0][div][value].pop('link')
+                        data['pages'][u][0][div][value]['survey_btn_name'] = "Create Survey"
+                        try:
+                            data['pages'][u][0][div][value].pop('link')
+                        except Exception as e:
+                            print(e)
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
