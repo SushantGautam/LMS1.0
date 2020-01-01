@@ -126,6 +126,22 @@
                 <p style="margin-left: 10px; overflow-wrap:break-word; "> {{ object.Course_Description }} </p>
                 <hr>
             </div>
+            {% if not "students" in request.path %}
+                <!-- Quick Survey Button -->
+                <button type="button" class="btn qts-button" id="new_survey_btn"
+                        data-toggle="modal"
+                        data-target="#survey_content_modal"><i class="fa fa-plus"></i> Survey
+                </button>
+                <!-- End of Quick Survey Button -->
+
+                <button type="button" class="btn qts-button" id="exam_paper_popup"
+                        data-toggle="modal"
+                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
+                </button>
+                <hr>
+            {% endif %}
+
+
 
             <table class="table">
                 {% if quizcount %}
@@ -190,38 +206,17 @@
                         {#                        </td>#}
 
                         <td style="border-top:0; ">
-                            {% if 'students' in request.path %}
-                            {% else %}
-                                <button type="button" class="btn qts-button" id="exam_paper_popup"
-                                        data-toggle="modal"
-                                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
-                                </button>
-                            {% endif %}
+
                         </td>
                     </tr>
                 {% else %}
                     No Active Exams
-                    {% if not "students" in request.path %}
-                        <button style="float: right" type="button" class="btn qts-button" id="exam_paper_popup"
-                                data-toggle="modal"
-                                data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
-                        </button>
-                    {% endif %}
 
                     <hr>
 
 
 
 
-                {% endif %}
-
-                {% if not "students" in request.path %}
-                    <!-- Quick Survey Button -->
-                    <button style="float: right" type="button" class="btn qts-button" id="new_survey_btn"
-                            data-toggle="modal"
-                            data-target="#survey_content_modal"><i class="fa fa-plus"></i> Survey
-                    </button>
-                    <!-- End of Quick Survey Button -->
                 {% endif %}
                 <tr>
                     {% if surveycount %}
