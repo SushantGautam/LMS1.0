@@ -7,7 +7,7 @@
 </style>
 
 <div id="survey_content_modal" class="modal fade"
-     style="height: -webkit-fill-available;    width: -webkit-fill-available; z-index:10000; ">
+     style="height: -webkit-fill-available;    width: -webkit-fill-available;">
     <div class="modal-dialog">
         <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
             <div class="modal-header">
@@ -26,8 +26,8 @@
 </div>
 
 <div id="quiz_create_popup" class="modal fade"
-     style="height: -webkit-fill-available;     width: -webkit-fill-available;     z-index: 10000;">
-    <div class="modal-dialog" style="    width: 80%;">
+     style="height: -webkit-fill-available;     width: -webkit-fill-available;">
+    <div class="modal-dialog">
         <div class="modal-content"
              style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;width: -webkit-fill-available">
             <div class="modal-header">
@@ -149,11 +149,7 @@
                 console.log(response['quiz_id']);
                 $(".note-editable").append(`<a onclick="loadexam('${response['student_url']}')">Take Quick Quiz</a>`);
                 close_quick_model("quiz_create_popup");
-                try {
-                    sendMessageWrittenToStudents();
-                } catch (err) {
-                    location.reload();
-                }
+                sendMessageWrittenToStudents();
                 $(".note-editable").append(`<a onclick="loadexam('/quiz/markingfilter/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
                 sendMessageWrittenToTeachers();
                 loadexam("/quiz/markingfilter/" + response['quiz_id'] + "/", '_blank', 1);  //open popup

@@ -2,238 +2,230 @@
 
 
 <table class="table table-bordered ">
-
-    <tbody>
-    <tr>
-        <td><p>Quiz</p></td>
-        <td><p>{{ quiz.title }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Description</p></td>
-        <td><p>{{ quiz.description }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Course </p></td>
-        <td><p>{{ quiz.course_code }}</p></td>
-    </tr>
-    <tr>
-        <td><p> Chapter</p></td>
-        <td><p> {{ quiz.chapter_code }}</p></td>
-
-    </tr>
-    <tr>
-        <td><p>Type of quiz</p></td>
-        <td><p>{% if quiz.pre_test %}Pre Test <br>{% endif %}
-            {% if quiz.post_test %}Post Test <br>{% endif %}
-            {% if quiz.exam_paper %}Exam <br>{% endif %}</p></td>
-    </tr>
-    <tr>
-        <td><p>Url</p></td>
-        <td><p>{{ quiz.url }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Quiz Feature</p></td>
-        <td><p>{% if quiz.random_order %}Random Order <br>{% endif %}
-            {% if quiz.single_attempt %}Single Attempt <br>{% endif %}
-
-    </tr>
-    <tr>
-        <td><p>Status</p></td>
-        <td><p>{% if quiz.draft is True %} Inactive<br>{% endif %}
-            {% if quiz.draft is False %} Active <br>{% endif %} </p>
-        </td>
-
-
-    </tr>
-
+       
+    <tbody> 
+      <tr>
+          <td><p>Quiz</p></td> 
+          <td>  <p>{{quiz.title}}</p></td>
+      </tr>
+      <tr>
+          <td><p>Description</p></td> 
+          <td>  <p>{{quiz.description}}</p></td>
+      </tr>
+      <tr>
+          <td><p>Course </p></td> 
+          <td>  <p>{{ quiz.course_code }}</p></td>
+      </tr>
+      <tr>
+          <td><p> Chapter</p></td> 
+          <td>  <p> {{ quiz.chapter_code }}</p></td>
+  
+      </tr>
+      <tr>
+          <td><p>Type of quiz</p></td> 
+          <td>  <p>{% if quiz.pre_test  %}Pre Test <br>{% endif %}
+            {% if quiz.post_test  %}Post Test <br>{% endif %}
+            {% if quiz.exam_paper  %}Exam <br>{% endif %}</p></td>
+      </tr>
+      <tr>
+          <td><p>Url</p></td> 
+          <td>  <p>{{quiz.url}}</p></td>
+      </tr> 
+      <tr>
+          <td><p>Quiz Feature</p></td> 
+          <td>  <p>{% if quiz.random_order  %}Random Order <br>{% endif %}
+            {% if quiz.single_attempt  %}Single Attempt <br>{% endif %}
+            
+      </tr> 
+      <tr>
+          <td><p>Status</p></td> 
+          <td>  <p>{% if quiz.draft is True  %} Inactive<br>{% endif %}
+            {% if quiz.draft is False  %} Active <br>{% endif %} </p>
+            </td>
+            
+            
+      </tr>
+  
     </tbody>
-</table>
+  </table>
+
+
 
 
 <div class="quiz-question-list">
 
-    <a href="#mcqn_list" data-toggle="collapse">
+  <a href="#mcqn_list" data-toggle="collapse">
 
-        <p class="exam-results text-center">
-      <span class="exam-results">
-                                      <i class="fa fa-list"></i>
+    <p class="exam-results text-center">
+      <span class="exam-results">LIST OF MCQUESTIONS</span> <span class="fa fa-chevron-down" style="color:white"></span>
+      <a href="{% url 'mcquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
+                                                                               style="float: right">ADD MCQ +</span></a>
 
-          LIST OF MCQUESTIONS</span> <span class="fa fa-chevron-down" style="color:white"></span>
-            <a href="{% url 'mcquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
-                                                                                     style="float: right">ADD MCQ +</span></a>
+    </p>
 
-        </p>
-
-    </a>
+  </a>
 
 
-    <div id="mcqn_list" class="collapse">
-        <ul>
-            {% for quest in quiz.mcquestion.all %}
-                <div class="mcq-list-details">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-9">
+  <div id="mcqn_list" class="collapse">
+    <ul>
+      {% for quest in quiz.mcquestion.all %}
+        <div class="mcq-list-details">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-9">
 
-                                <li class="quiz-listing">  {{ quest.content }}</li>
-
-
-                            </div>
+                <li class="quiz-listing">  {{ quest.content }}</li>
 
 
-                            <div class="col-md-1 text-right " style="line-height: 24px;">
-                                {% if quest.get_answers %}
-
-                                    <a class="button-color-only1" href="#mcans_list_{{ quest.id }}"
-                                       data-toggle="collapse">Options</a>
-
-                                {% endif %}
-
-                            </div>
-                            <div class="col-md-1 text-right">
-
-                                <form action="{% url 'mcquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}"
-                                      method="get">
-                                    <input class="button-color-only" type="submit" value="Edit">
-                                </form>
-
-                            </div>
-                            <div class="col-md-1 text-right ">
-                                <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}"
-                                      method="get">
-                                    <input class="button-color-only" type="submit" value="Remove">
-                                </form>
-                            </div>
+              </div>
 
 
-                        </div>
+              <div class="col-md-1 text-right " style="line-height: 24px;">
+                {% if quest.get_answers %}
 
-                    </div>
+                  <a class="button-color-only1" href="#mcans_list_{{ quest.id }}" data-toggle="collapse">Options</a>
+
+                {% endif %}
+
+              </div>
+              <div class="col-md-1 text-right">
+
+                <form action="{% url 'mcquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}" method="get">
+                  <input class="button-color-only" type="submit" value="Edit">
+                </form>
+
+              </div>
+              <div class="col-md-1 text-right ">
+                <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}" method="get">
+                  <input class="button-color-only" type="submit" value="Remove">
+                </form>
+              </div>
+             
+
+            </div>
+
+          </div>
 
 
-                </div>
+        </div>
 
 
-                <div id="mcans_list_{{ quest.id }}" class=" correct-list collapse">
-                    <ul>
-                        {% for ans in quest.get_answers %}
-                            <li class="quiz-answer-listing"></li>
-                            {{ forloop.counter }} <span>)&nbsp;</span>
-                            {{ ans.content }}{% if ans.correct %} -> <span class="mcq-correct">Correct</span>
-                            {% endif %}
-                        {% endfor %}
-                        </li>
-                    </ul>
-                </div>
-
-
+        <div id="mcans_list_{{ quest.id }}" class=" correct-list collapse">
+          <ul>
+            {% for ans in quest.get_answers %}
+              <li class="quiz-answer-listing"></li>
+              {{ forloop.counter }} <span>)&nbsp;</span>
+              {{ ans.content }}{% if ans.correct %} -> <span class="mcq-correct">Correct</span>
+              {% endif %}
             {% endfor %}
+            </li>
+          </ul>
+        </div>
 
 
-        </ul>
-    </div>
+      {% endfor %}
+
+
+    </ul>
+  </div>
 </div>
 <div class="quiz-question-list">
-    <a href="#tfqn_list" data-toggle="collapse">
+  <a href="#tfqn_list" data-toggle="collapse">
 
-        <p class="exam-results text-center">
-      <span class="exam-results">                            <i class="fa fa-bookmark "></i>
- LIST OF TFQUESTIONS</span> <span class="fa fa-chevron-down" style="color:white"></span>
-            <a href="{% url 'tfquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
-                                                                                     style="float: right">ADD TFQ +</span></a>
+    <p class="exam-results text-center">
+      <span class="exam-results">LIST OF TFQUESTIONS</span> <span class="fa fa-chevron-down" style="color:white"></span>
+      <a href="{% url 'tfquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
+                                                                               style="float: right">ADD TFQ +</span></a>
 
-        </p>
+    </p>
 
-    </a>
+  </a>
 
-    <div id="tfqn_list" class="collapse">
-        <ul>
-            {% for quest in quiz.tfquestion.all %}
-                <div class="tfq-list-details">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-10">
+  <div id="tfqn_list" class="collapse">
+    <ul>
+      {% for quest in quiz.tfquestion.all %}
+        <div class="tfq-list-details">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-10">
 
-                                <li class="quiz-listing">  {{ quest.content }}</li>
-
-
-                            </div>
-                            <div class="col-md-1 text-right">
-
-                                <form action="{% url 'tfquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}"
-                                      method="get">
-                                    <input class="button-color-only" type="submit" value="Edit">
-                                </form>
-
-                            </div>
-                            <div class="col-md-1 text-right " style="line-height: 24px;">
-                                <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
+                <li class="quiz-listing">  {{ quest.content }}</li>
 
 
-                            </div>
+              </div>
+              <div class="col-md-1 text-right">
 
-                        </div>
+                <form action="{% url 'tfquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}" method="get">
+                  <input class="button-color-only" type="submit" value="Edit">
+                </form>
 
-                    </div>
+              </div>
+              <div class="col-md-1 text-right " style="line-height: 24px;">
+                <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
 
 
-                </div>
+              </div>
+             
+            </div>  
 
-            {% endfor %}
+          </div>
 
-        </ul>
-    </div>
+
+        </div>
+
+      {% endfor %}
+
+    </ul>
+  </div>
 </div>
 <div class="quiz-question-list">
-    <a href="#esqn_list" data-toggle="collapse">
+  <a href="#esqn_list" data-toggle="collapse">
 
-        <p class="exam-results text-center">
-            <span class="exam-results">                             <i class="fa fa-align-right  "></i>
- LIST OF SHORT ANSWER QUESTIONS</span> <span class="fa fa-chevron-down"
-                                             style="color:white"></span>
-            <a href="{% url 'saquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
-                                                                                     style="float: right">ADD SAQ +</span></a>
+    <p class="exam-results text-center">
+      <span class="exam-results">LIST OF SHORT ANSWER QUESTIONS</span> <span class="fa fa-chevron-down"
+                                                                             style="color:white"></span>
+      <a href="{% url 'saquestion_create_from_quiz' quiz_id=quiz.id %}"> <span class="add-mcq-details"
+                                                                               style="float: right">ADD SAQ +</span></a>
 
-        </p>
+    </p>
 
-    </a>
+  </a>
 
-    <div id="esqn_list" class="collapse">
-        <ul>
-            {% for quest in quiz.saquestion.all %}
-                <div class="saq-list-details">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-10">
+  <div id="esqn_list" class="collapse">
+    <ul>
+      {% for quest in quiz.saquestion.all %}
+        <div class="saq-list-details">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-10">
 
-                                <li class="quiz-listing">  {{ quest.content }}</li>
-
-
-                            </div>
-                            <div class="col-md-1 text-right">
-
-                                <form action="{% url 'saquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}"
-                                      method="get">
-                                    <input class="button-color-only" type="submit" value="Edit">
-                                </form>
+                <li class="quiz-listing">  {{ quest.content }}</li>
 
 
-                            </div>
-                            <div class="col-md-1 text-right " style="line-height: 24px;">
-                                <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
+              </div>
+              <div class="col-md-1 text-right">
+
+                <form action="{% url 'saquestion_update_from_quiz' pk=quest.id quiz_id=quiz.id %}" method="get">
+                  <input class="button-color-only" type="submit" value="Edit">
+                </form>
 
 
-                            </div>
-
-                        </div>
-
-                    </div>
+              </div>
+              <div class="col-md-1 text-right " style="line-height: 24px;">
+                <a class="button-color-only1" href="" data-toggle="collapse">Remove</a>
 
 
-                </div>
-            {% endfor %}
-        </ul>
-    </div>
+              </div>
+            
+            </div>
+
+          </div>
+
+
+        </div>
+      {% endfor %}
+    </ul>
+  </div>
 
 </div>
 

@@ -1,5 +1,4 @@
 {% load static %}
-{% block sidebar_class %}  {% endblock sidebar_class %}
 <div class="left_col scroll-view">
 
 
@@ -14,9 +13,8 @@
 
     <div class="clearfix"></div>
 
-
     <!-- menu profile quick info -->
-    <div class="profile clearfix" style="padding-top: 8vh">
+    <div class="profile clearfix">
         {% if request.user.is_authenticated %}
             <div class="profile_pic">
                 <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img"/>
@@ -133,9 +131,8 @@
             <hr>
             <div style=" padding: 10px;">
 
-                <a href="http://ublcloud.me/media/app/lms-app.apk"><img
-                        style='height: 100%; width: 100%; object-fit: contain'
-                        src="{% static "3D_Viewer/google-play-badge.svg" %}"></a>
+              <a href="http://ublcloud.me/media/app/lms-app.apk" ><img style='height: 100%; width: 100%; object-fit: contain'
+                     src="{% static "3D_Viewer/google-play-badge.svg" %}"></a>
             </div>
         </div>
 

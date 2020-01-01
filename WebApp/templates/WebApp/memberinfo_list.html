@@ -67,27 +67,13 @@
     <h2 class="tableHeader">List of Members</h2>
 
     <nav id="navbar_parent" class="navbar navbar-light" style="background-color: grey">
-        <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-md-8 col-sm-8 col-xs-12">
-                                <ul class="nav navbar-nav navbar-center member-list">
-                                        <li><a class="navbar-brand" id="all_button" href="#">All</a></li>
-                                        <li><a class="navbar-brand" id="teacher_button" href="#">Teacher</a></li>
-                                        <li><a class="navbar-brand" id="student_button" href="#">Student</a></li>
-                                    </ul>
-                        </div>
-                        <div class="col-md-4 col-sm-4 col-xs-12 blocked-members">
-                                <span class="span-member" style="margin:2px"><a href="{% url 'memberinfo_list_inactive' %}" style="color: white">View
-                                        Blocked Members</a></span>
-                        </div>
-            
-                    </div>
-
-        </div>
-       
-
-        
-        
+        <ul class="nav navbar-nav navbar-center member-list">
+            <li><a class="navbar-brand" id="all_button" href="#">All</a></li>
+            <li><a class="navbar-brand" id="teacher_button" href="#">Teacher</a></li>
+            <li><a class="navbar-brand" id="student_button" href="#">Student</a></li>
+        </ul>
+        <span style="float:right; margin:15px"><a href="{% url 'memberinfo_list_inactive' %}" style="color: white">View
+                Blocked Members</a></span>
     </nav>
     <hr class="header_hr">
     <div class="col-md-12 col-sm-12 col-xs-12">
