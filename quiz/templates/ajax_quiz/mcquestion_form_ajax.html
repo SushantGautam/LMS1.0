@@ -138,6 +138,6 @@
         $("#id_course_code").val('{{ course_from_quiz }}');
         $("#div_id_cent_code").hide();
         $("#id_cent_code").val('{{ request.user.Center_Code.id }}');
-        $('.modal-dialog').css("width", "40vw");
+        $('.modal-dialog').css("width", "80%").css("height", "90vh").css("overflow-y", "scroll");
     </script>
 {% endblock customjss %}
