@@ -160,7 +160,7 @@ class SurveyInfoCreateView(CreateView):
 # class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
 #     model = SurveyInfo
 #     form_class = SurveyInfoForm
-#     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+#     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html
 
 class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
@@ -182,6 +182,8 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo')
             context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo')
             context['category_name'] = self.request.GET['category_name']
+            if self.request.GET['category_name'] == "Session":
+                context['form']['Session_Code'].initial = self.request.GET['Session_Code']
         return context
 
     def form_valid(self, form):

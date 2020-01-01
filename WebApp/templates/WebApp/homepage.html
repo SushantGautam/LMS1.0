@@ -2,543 +2,543 @@
 {% load humanize %}
 {% load static %}
 {% block stylesheets %}
-<style>
-    #word-cloud {
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-        margin-left: auto;
-    }
+    <link rel='manifest' href='/manifest.webmanifest'>
+    <style>
+        #word-cloud {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            margin-left: auto;
+        }
 
-    body,
-    html {
-        margin: 0;
-        padding: 0;
-    }
-</style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 {% endblock %}
 {% block content %}
 
 
-{% include 'WebApp/theme/alerts.html' %}
+    {% include 'WebApp/theme/alerts.html' %}
 
-<div class="container_main" id="adminHome">
-    <div class="row top_tiles">
-        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="tile-stats" id="student_tile">
-                <div class="icon"><img src="/static/images/student_icon.png" id="student_icon"></div>
-                <div class="count">{{ studentcount }}</div>
-                <h3>Student</h3>
-                <p></p>
+    <div class="container_main" id="adminHome">
+        <div class="row top_tiles">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats" id="student_tile">
+                    <div class="icon"><img src="/static/images/student_icon.png" id="student_icon"></div>
+                    <div class="count">{{ studentcount }}</div>
+                    <h3>Student</h3>
+                    <p></p>
+                </div>
             </div>
-        </div>
-        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="tile-stats" id="teacher_tile">
-                <div class="icon"><img src="/static/images/teacher_icon.png" id="teacher_icon"></div>
-                <div class="count">{{ teachercount }}</div>
-                <h3>Teacher</h3>
-                <p></p>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats" id="teacher_tile">
+                    <div class="icon"><img src="/static/images/teacher_icon.png" id="teacher_icon"></div>
+                    <div class="count">{{ teachercount }}</div>
+                    <h3>Teacher</h3>
+                    <p></p>
+                </div>
             </div>
-        </div>
-        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="tile-stats" id="total_tile">
-                <div class="icon"><img src="/static/images/total_icon.png" id="total_icon"></div>
-                <div class="count">{{ totalcount }}</div>
-                <a href="{% url 'memberinfo_list' %}">
-                    <h3> Members</h3>
-                </a>
-                <p></p>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats" id="total_tile">
+                    <div class="icon"><img src="/static/images/total_icon.png" id="total_icon"></div>
+                    <div class="count">{{ totalcount }}</div>
+                    <a href="{% url 'memberinfo_list' %}">
+                        <h3> Members</h3>
+                    </a>
+                    <p></p>
+                </div>
             </div>
-        </div>
-        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="tile-stats" id="course_tile">
-                <div class="icon"><img src="/static/images/courses.png" id="course_icon"></div>
-                <div class="count">{{ coursecount }}</div>
-                <a href="{% url 'courseinfo_list' %}">
-                    <h3>Courses</h3>
-                </a>
-                <p></p>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats" id="course_tile">
+                    <div class="icon"><img src="/static/images/courses.png" id="course_icon"></div>
+                    <div class="count">{{ coursecount }}</div>
+                    <a href="{% url 'courseinfo_list' %}">
+                        <h3>Courses</h3>
+                    </a>
+                    <p></p>
+                </div>
             </div>
-        </div>
 
-    </div>
-    <hr>
-    <br>
-    <div class="col-md-6 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title">
-                <h2 style="font-size: 2em"><a href="{% url 'inninginfo_list' %}">&nbsp;<b>Sessions</b><span
+        </div>
+        <hr>
+        <br>
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="title">
+                    <h2 style="font-size: 2em"><a href="{% url 'inninginfo_list' %}">&nbsp;<b>Sessions</b><span
                             class="thread">{{ sessioncount.count }}</span></a></h2>
-            </div>
-            <ul class="list-group" data-hover-z="0.5" data-animated="">
-
-                {% for session in sessioncount %}
-                <li class="list-group-item ">
-                    <div class="media-body">
-                        <b><span class="forum"><a
-                                    href="{{ session.get_absolute_url }}">{{ session.Inning_Name|truncatechars:68 }}</a></span>
-                            <!-- <span class="thread">{{ survey.Category_Code }}</span> -->
-                        </b>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="panel panel-default">
-            <div class="title">
-                <a href="{% url 'courseinfo_list' %}">
-                    <h2 style="font-size: 2em">&nbsp;<b>COURSES</b></h2>
-                </a>
-            </div>
-            <ul class="list-group">
-                {% for object in course %}
-
-                <li class="list-group-item ">
-                    <div class="media-body">
-                        <b><a href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></b>
-                    </div>
-                </li>
-                {% endfor %}
-
-            </ul>
-
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title">
-                <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b>FORUM</b><span
-                            class="thread">{{ threadcount }}</span></a></h2>
-            </div>
-            <ul class="list-group" data-hover-z="0.5" data-animated="">
-
-                {% for object in thread %}
-                <li class="list-group-item ">
-                    <div class="media-body">
-                        <b><span class="forum"><a
-                                    href="{{ object.get_absolute_url }}">{{ object.title|truncatechars:68 }}</a></span><span
-                                class="thread">{{ object.pub_date|naturaltime }}</span></b>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="panel panel-default">
-            <div class="title">
-                <h2 style="font-size: 2em"><a href="{% url 'surveyinfo_list' %}">&nbsp;<b>SURVEY</b><span
-                            class="thread">{{ surveycount.count }}</span></a></h2>
-            </div>
-            <ul class="list-group" data-hover-z="0.5" data-animated="">
-
-                {% for survey in surveycount %}
-                {% if survey.Category_Code|stringformat:"s" == "General" or survey.Category_Code|stringformat:"s" == "System" %}
-                <li class="list-group-item ">
-                    <div class="media-body">
-
-                        <b><span class="forum"><a
-                                    href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title|truncatechars:68 }}</a></span><span
-                                class="thread">{{ survey.Category_Code }}</span></b>
-
-                    </div>
-                </li>
-                {% endif %}
-                {% if survey.Category_Code|stringformat:"s" == "Session" or survey.Category_Code|stringformat:"s" == "Course" %}
-                {% if survey.Center_Code == request.user.Center_Code %}
-                <li class="list-group-item ">
-                    <div class="media-body">
-                        <b><span class="forum"><a
-                                    href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title|truncatechars:68 }}</a></span><span
-                                class="thread">{{ survey.Category_Code }}</span></b>
-                    </div>
-                </li>
-                {% endif %}
-                {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-
-
-    <!-- <div class="col-lg-4" id='calendar'></div> -->
-    <!-- <div class="col-lg-4 col-xs-12">
-                <div class="fc-view-container " style="">
-                    <div class="fc-view fc-listMonth-view fc-list-view fc-widget-content" style="">
-                        <div class="fc-scroller" style="overflow: hidden auto; height: 317px;">
-                            <table class="fc-list-table">
-                                <tbody>
-                                    <tr class="fc-list-heading" data-date="2019-07-01">
-                                        <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                                1,
-                                                2019</span><span class="fc-list-heading-alt">Monday</span></td>
-                                    </tr>
-                                    <tr class="fc-list-item">
-                                        <td class="fc-list-item-time fc-widget-content">12:00am</td>
-                                        <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                        </td>
-                                        <td class="fc-list-item-title fc-widget-content"><a>All Day Event</a></td>
-                                    </tr>
-                                    <tr class="fc-list-heading" data-date="2019-07-07">
-                                        <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                                7,
-                                                2019</span><span class="fc-list-heading-alt">Sunday</span></td>
-                                    </tr>
-                                    <tr class="fc-list-item">
-                                        <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
-                                        <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                        </td>
-                                        <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
-                                    </tr>
-                                    <tr class="fc-list-heading" data-date="2019-07-08">
-                                        <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                                8,
-                                                2019</span><span class="fc-list-heading-alt">Monday</span></td>
-                                    </tr>
-                                    <tr class="fc-list-item">
-                                        <td class="fc-list-item-time fc-widget-content">all-day</td>
-                                        <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                        </td>
-                                        <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
-                                    </tr>
-                                    <tr class="fc-list-heading" data-date="2019-07-09">
-                                        <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                                9,
-                                                2019</span><span class="fc-list-heading-alt">Tuesday</span></td>
-                                    </tr>
-                                    <tr class="fc-list-item">
-                                        <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
-                                        <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                        </td>
-                                        <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
-                                    </tr>
-                                    <tr class="fc-list-heading" data-date="2019-07-12">
-                                        <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                                12,
-                                                2019</span><span class="fc-list-heading-alt">Friday</span></td>
-                                    </tr>
-                                    <tr class="fc-list-item">
-                                        <td class="fc-list-item-time fc-widget-content">10:30am</td>
-                                        <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                        </td>
-                                        <td class="fc-list-item-title fc-widget-content"><a>Meeting</a></td>
-                                    </tr>
-                                    <tr class="fc-list-heading" data-date="2019-07-13">
-                                        <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                                13,
-                                                2019</span><span class="fc-list-heading-alt">Saturday</span></td>
-                                    </tr>
-                                    <tr class="fc-list-item">
-                                        <td class="fc-list-item-time fc-widget-content">7:00pm - 10:30pm</td>
-                                        <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                        </td>
-                                        <td class="fc-list-item-title fc-widget-content"><a>Birthday Party</a></td>
-                                    </tr>
-                                    <tr class="fc-list-heading" data-date="2019-07-26">
-                                        <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                                26,
-                                                2019</span><span class="fc-list-heading-alt">Friday</span></td>
-                                    </tr>
-                                    <tr class="fc-list-item">
-                                        <td class="fc-list-item-time fc-widget-content">12:00pm</td>
-                                        <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                        </td>
-                                        <td class="fc-list-item-title fc-widget-content"><a>Lunch</a></td>
-                                    </tr>
-                                    <tr class="fc-list-heading" data-date="2019-07-28">
-                                        <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
-                                                28,
-                                                2019</span><span class="fc-list-heading-alt">Sunday</span></td>
-                                    </tr>
-                                    <tr class="fc-list-item fc-has-url">
-                                        <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
-                                        <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
-                                        </td>
-                                        <td class="fc-list-item-title fc-widget-content"><a href="http://google.com/">Click
-                                                for Google</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
-            </div> -->
-    <!-- <div class="containerMessage col-lg-4 panel panel-default" id="adminMessageContainer">
+                <ul class="list-group" data-hover-z="0.5" data-animated="">
 
-                <div class="discussions" style="display: block;">
-                    <div class="search-header">
-                        <h4>Private chat</h4>
-
-                    </div>
-
-                    <hr>
-
-                    <div class="status online">
-                        <img class="onlineUser" src="/static/images/suted.jpg" alt="avatar">
-                        <div class="onlineIcon"></div>
-                        <div class="content">
-                            <h5>Rojan Bade</h5>
-                            <span>Please review and sign the binding agreement</span>
-                        </div>
-                    </div>
-
-                    <div class="status online">
-                        <img class="onlineUser" src="/static/images/suted.jpg" alt="avatar">
-                        <div class="onlineIcon"></div>
-                        <div class="content">
-                            <h5>Rojan Bade</h5>
-                            <span>Please review and sign the binding agreement</span>
-                        </div>
-                    </div>
-
-                    <div class="status online">
-                        <img class="onlineUser" src="/static/images/suted.jpg" alt="avatar">
-                        <div class="onlineIcon"></div>
-                        <div class="content">
-                            <h5>Rojan Bade</h5>
-                            <span>Please review and sign the binding agreement</span>
-                        </div>
-                    </div>
-
-                    <div class="status online">
-                        <img class="onlineUser" src="/static/images/suted.jpg" alt="avatar">
-                        <div class="onlineIcon"></div>
-                        <div class="content">
-                            <h5>Rojan Bade</h5>
-                            <span>Please review and sign the binding agreement</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div>
-                    <ul class="users" style="display: none">
-
-                        <div class="search-header">
-                            <h4>Groups</h4>
-                            <div id="form-btn">
-                                <input type="text" placeholder="Search.." name="search">
-                                <button type="submit"><i class="fa fa-search fa-lg"></i></button>
+                    {% for session in sessioncount %}
+                        <li class="list-group-item ">
+                            <div class="media-body">
+                                <b><span class="forum"><a
+                                        href="{{ session.get_absolute_url }}">{{ session.Inning_Name|truncatechars:68 }}</a></span>
+                                    <!-- <span class="thread">{{ survey.Category_Code }}</span> -->
+                                </b>
                             </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="panel panel-default">
+                <div class="title">
+                    <a href="{% url 'courseinfo_list' %}">
+                        <h2 style="font-size: 2em">&nbsp;<b>COURSES</b></h2>
+                    </a>
+                </div>
+                <ul class="list-group">
+                    {% for object in course %}
+
+                        <li class="list-group-item ">
+                            <div class="media-body">
+                                <b><a href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></b>
+                            </div>
+                        </li>
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="title">
+                    <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b>FORUM</b><span
+                            class="thread">{{ threadcount }}</span></a></h2>
+                </div>
+                <ul class="list-group" data-hover-z="0.5" data-animated="">
+
+                    {% for object in thread %}
+                        <li class="list-group-item ">
+                            <div class="media-body">
+                                <b><span class="forum"><a
+                                        href="{{ object.get_absolute_url }}">{{ object.title|truncatechars:68 }}</a></span><span
+                                        class="thread">{{ object.pub_date|naturaltime }}</span></b>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="panel panel-default">
+                <div class="title">
+                    <h2 style="font-size: 2em"><a href="{% url 'surveyinfo_list' %}">&nbsp;<b>SURVEY</b><span
+                            class="thread">{{ surveycount.count }}</span></a></h2>
+                </div>
+                <ul class="list-group" data-hover-z="0.5" data-animated="">
+
+                    {% for survey in surveycount %}
+                        {% if survey.Category_Code|stringformat:"s" == "General" or survey.Category_Code|stringformat:"s" == "System" %}
+                            <li class="list-group-item ">
+                                <div class="media-body">
+
+                                    <b><span class="forum"><a
+                                            href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title|truncatechars:68 }}</a></span><span
+                                            class="thread">{{ survey.Category_Code }}</span></b>
+
+                                </div>
+                            </li>
+                        {% endif %}
+                        {% if survey.Category_Code|stringformat:"s" == "Session" or survey.Category_Code|stringformat:"s" == "Course" %}
+                            {% if survey.Center_Code == request.user.Center_Code %}
+                                <li class="list-group-item ">
+                                    <div class="media-body">
+                                        <b><span class="forum"><a
+                                                href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title|truncatechars:68 }}</a></span><span
+                                                class="thread">{{ survey.Category_Code }}</span></b>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- <div class="col-lg-4" id='calendar'></div> -->
+        <!-- <div class="col-lg-4 col-xs-12">
+                    <div class="fc-view-container " style="">
+                        <div class="fc-view fc-listMonth-view fc-list-view fc-widget-content" style="">
+                            <div class="fc-scroller" style="overflow: hidden auto; height: 317px;">
+                                <table class="fc-list-table">
+                                    <tbody>
+                                        <tr class="fc-list-heading" data-date="2019-07-01">
+                                            <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                                    1,
+                                                    2019</span><span class="fc-list-heading-alt">Monday</span></td>
+                                        </tr>
+                                        <tr class="fc-list-item">
+                                            <td class="fc-list-item-time fc-widget-content">12:00am</td>
+                                            <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                            </td>
+                                            <td class="fc-list-item-title fc-widget-content"><a>All Day Event</a></td>
+                                        </tr>
+                                        <tr class="fc-list-heading" data-date="2019-07-07">
+                                            <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                                    7,
+                                                    2019</span><span class="fc-list-heading-alt">Sunday</span></td>
+                                        </tr>
+                                        <tr class="fc-list-item">
+                                            <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
+                                            <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                            </td>
+                                            <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
+                                        </tr>
+                                        <tr class="fc-list-heading" data-date="2019-07-08">
+                                            <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                                    8,
+                                                    2019</span><span class="fc-list-heading-alt">Monday</span></td>
+                                        </tr>
+                                        <tr class="fc-list-item">
+                                            <td class="fc-list-item-time fc-widget-content">all-day</td>
+                                            <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                            </td>
+                                            <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
+                                        </tr>
+                                        <tr class="fc-list-heading" data-date="2019-07-09">
+                                            <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                                    9,
+                                                    2019</span><span class="fc-list-heading-alt">Tuesday</span></td>
+                                        </tr>
+                                        <tr class="fc-list-item">
+                                            <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
+                                            <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                            </td>
+                                            <td class="fc-list-item-title fc-widget-content"><a>Long Event</a></td>
+                                        </tr>
+                                        <tr class="fc-list-heading" data-date="2019-07-12">
+                                            <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                                    12,
+                                                    2019</span><span class="fc-list-heading-alt">Friday</span></td>
+                                        </tr>
+                                        <tr class="fc-list-item">
+                                            <td class="fc-list-item-time fc-widget-content">10:30am</td>
+                                            <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                            </td>
+                                            <td class="fc-list-item-title fc-widget-content"><a>Meeting</a></td>
+                                        </tr>
+                                        <tr class="fc-list-heading" data-date="2019-07-13">
+                                            <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                                    13,
+                                                    2019</span><span class="fc-list-heading-alt">Saturday</span></td>
+                                        </tr>
+                                        <tr class="fc-list-item">
+                                            <td class="fc-list-item-time fc-widget-content">7:00pm - 10:30pm</td>
+                                            <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                            </td>
+                                            <td class="fc-list-item-title fc-widget-content"><a>Birthday Party</a></td>
+                                        </tr>
+                                        <tr class="fc-list-heading" data-date="2019-07-26">
+                                            <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                                    26,
+                                                    2019</span><span class="fc-list-heading-alt">Friday</span></td>
+                                        </tr>
+                                        <tr class="fc-list-item">
+                                            <td class="fc-list-item-time fc-widget-content">12:00pm</td>
+                                            <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                            </td>
+                                            <td class="fc-list-item-title fc-widget-content"><a>Lunch</a></td>
+                                        </tr>
+                                        <tr class="fc-list-heading" data-date="2019-07-28">
+                                            <td class="fc-widget-header" colspan="3"><span class="fc-list-heading-main">July
+                                                    28,
+                                                    2019</span><span class="fc-list-heading-alt">Sunday</span></td>
+                                        </tr>
+                                        <tr class="fc-list-item fc-has-url">
+                                            <td class="fc-list-item-time fc-widget-content">12:00am - 12:00am</td>
+                                            <td class="fc-list-item-marker fc-widget-content"><span class="fc-event-dot"></span>
+                                            </td>
+                                            <td class="fc-list-item-title fc-widget-content"><a href="http://google.com/">Click
+                                                    for Google</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+        <!-- <div class="containerMessage col-lg-4 panel panel-default" id="adminMessageContainer">
+
+                    <div class="discussions" style="display: block;">
+                        <div class="search-header">
+                            <h4>Private chat</h4>
+
                         </div>
 
                         <hr>
 
-                        <div class="groups">
-                            <li>
-                                <a href="#">
-                                    <div class="status online">
-                                        <img class="onlineUser2" src="/static/images/suted.jpg" alt="avatar">
-                                        <div class="onlineIcon"></div>
-                                        <div class="content1">
-                                            <h5>Rojan Bade</h5>
-                                            <span>Banepa, Nepal</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#">
-                                    <div class="status online">
-                                        <img class="onlineUser2" src="/static/images/suted.jpg" alt="avatar">
-                                        <div class="onlineIcon"></div>
-                                        <div class="content1">
-                                            <h5>Rojan Bade</h5>
-                                            <span>Banepa, Nepal</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-
-
-                            <li>
-                                <a href="#">
-                                    <div class="status online">
-                                        <img class="onlineUser2" src="/static/images/suted.jpg" alt="avatar">
-                                        <div class="onlineIcon"></div>
-                                        <div class="content1">
-                                            <h5>Rojan Bade</h5>
-                                            <span>Banepa, Nepal</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#">
-                                    <div class="status online">
-                                        <img class="onlineUser2" src="/static/images/suted.jpg" alt="avatar">
-                                        <div class="onlineIcon"></div>
-                                        <div class="content1">
-                                            <h5>Rojan Bade</h5>
-                                            <span>Banepa, Nepal</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
+                        <div class="status online">
+                            <img class="onlineUser" src="/static/images/suted.jpg" alt="avatar">
+                            <div class="onlineIcon"></div>
+                            <div class="content">
+                                <h5>Rojan Bade</h5>
+                                <span>Please review and sign the binding agreement</span>
+                            </div>
                         </div>
 
-                    </ul>
-                </div>
-            </div> -->
+                        <div class="status online">
+                            <img class="onlineUser" src="/static/images/suted.jpg" alt="avatar">
+                            <div class="onlineIcon"></div>
+                            <div class="content">
+                                <h5>Rojan Bade</h5>
+                                <span>Please review and sign the binding agreement</span>
+                            </div>
+                        </div>
 
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="panel panel-default">
-                <div class="title text-center">
-                    <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
+                        <div class="status online">
+                            <img class="onlineUser" src="/static/images/suted.jpg" alt="avatar">
+                            <div class="onlineIcon"></div>
+                            <div class="content">
+                                <h5>Rojan Bade</h5>
+                                <span>Please review and sign the binding agreement</span>
+                            </div>
+                        </div>
+
+                        <div class="status online">
+                            <img class="onlineUser" src="/static/images/suted.jpg" alt="avatar">
+                            <div class="onlineIcon"></div>
+                            <div class="content">
+                                <h5>Rojan Bade</h5>
+                                <span>Please review and sign the binding agreement</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <ul class="users" style="display: none">
+
+                            <div class="search-header">
+                                <h4>Groups</h4>
+                                <div id="form-btn">
+                                    <input type="text" placeholder="Search.." name="search">
+                                    <button type="submit"><i class="fa fa-search fa-lg"></i></button>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="groups">
+                                <li>
+                                    <a href="#">
+                                        <div class="status online">
+                                            <img class="onlineUser2" src="/static/images/suted.jpg" alt="avatar">
+                                            <div class="onlineIcon"></div>
+                                            <div class="content1">
+                                                <h5>Rojan Bade</h5>
+                                                <span>Banepa, Nepal</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#">
+                                        <div class="status online">
+                                            <img class="onlineUser2" src="/static/images/suted.jpg" alt="avatar">
+                                            <div class="onlineIcon"></div>
+                                            <div class="content1">
+                                                <h5>Rojan Bade</h5>
+                                                <span>Banepa, Nepal</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+
+
+                                <li>
+                                    <a href="#">
+                                        <div class="status online">
+                                            <img class="onlineUser2" src="/static/images/suted.jpg" alt="avatar">
+                                            <div class="onlineIcon"></div>
+                                            <div class="content1">
+                                                <h5>Rojan Bade</h5>
+                                                <span>Banepa, Nepal</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#">
+                                        <div class="status online">
+                                            <img class="onlineUser2" src="/static/images/suted.jpg" alt="avatar">
+                                            <div class="onlineIcon"></div>
+                                            <div class="content1">
+                                                <h5>Rojan Bade</h5>
+                                                <span>Banepa, Nepal</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+
+                        </ul>
+                    </div>
+                </div> -->
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="title text-center">
+                        <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud"
+                         style="padding-top:13em; width:100%;"></div>
                 </div>
-                <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; width:100%;"></div>
             </div>
         </div>
+
+
     </div>
-
-
-
-    
-</div>
 
 
 {% endblock %}
 {% block customjss %}
-<script>
-    var config = {
-        trace: true,
-        spiralResolution: 1, //Lower = better resolution
-        spiralLimit: 360 * 5,
-        lineHeight: 0.8,
-        xWordPadding: 0,
-        yWordPadding: 3,
-        font: "sans-serif"
-    }
-    var values = {{ get_top_thread_keywords | safe  }};
-    var words = values.map(function (word) {
-        return {
-            word: word,
-            freq: Math.floor(Math.random() * 50) + 10
+    <script>
+        var config = {
+            trace: true,
+            spiralResolution: 1, //Lower = better resolution
+            spiralLimit: 360 * 5,
+            lineHeight: 0.8,
+            xWordPadding: 0,
+            yWordPadding: 3,
+            font: "sans-serif"
         }
-    })
-
-    words.sort(function (a, b) {
-        return -1 * (a.freq - b.freq);
-    });
-
-    var cloud = document.getElementById("word-cloud");
-    cloud.style.position = "relative";
-    cloud.style.fontFamily = config.font;
-
-    var traceCanvas = document.createElement("canvas");
-    traceCanvas.width = cloud.offsetWidth;
-    traceCanvas.height = cloud.offsetHeight;
-    var traceCanvasCtx = traceCanvas.getContext("2d");
-    cloud.appendChild(traceCanvas);
-
-    var startPoint = {
-        x: cloud.offsetWidth / 2,
-        y: cloud.offsetHeight / 2
-    };
-
-    var wordsDown = [];
-    /* ======================= END SETUP ======================= */
-
-
-
-
-
-    /* =======================  PLACEMENT FUNCTIONS =======================  */
-    function createWordObject(word, freq) {
-        var wordContainer = document.createElement("div");
-        var wordLink = document.createElement("a");
-        wordContainer.style.position = "absolute";
-        wordContainer.style.fontSize = freq + "px";
-        wordContainer.style.lineHeight = config.lineHeight;
-        /*    wordContainer.style.transform = "translateX(-50%) translateY(-50%)";
-        wordContainer.appendChild(document.createTextNode(word));*/
-
-        wordLink.setAttribute(`href`, `/forum/search/(%3FP${word}.*)/`);
-        wordLink.appendChild(document.createTextNode(word));
-        wordContainer.appendChild(wordLink);
-
-        return wordContainer;
-    }
-
-    function placeWord(word, x, y) {
-
-        cloud.appendChild(word);
-        word.style.left = x - word.offsetWidth / 2 + "px";
-        word.style.top = y - word.offsetHeight / 2 + "px";
-
-        wordsDown.push(word.getBoundingClientRect());
-    }
-
-    function trace(x, y) {
-        //     traceCanvasCtx.lineTo(x, y);
-        //     traceCanvasCtx.stroke();
-        traceCanvasCtx.fillRect(x, y, 1, 1);
-    }
-
-    function spiral(i, callback) {
-        angle = config.spiralResolution * i;
-        x = (1 + angle) * Math.cos(angle);
-        y = (1 + angle) * Math.sin(angle);
-        return callback ? callback() : null;
-    }
-
-    function intersect(word, x, y) {
-        cloud.appendChild(word);
-
-        word.style.left = x - word.offsetWidth / 2 + "px";
-        word.style.top = y - word.offsetHeight / 2 + "px";
-
-        var currentWord = word.getBoundingClientRect();
-
-        cloud.removeChild(word);
-
-        for (var i = 0; i < wordsDown.length; i += 1) {
-            var comparisonWord = wordsDown[i];
-
-            if (!(currentWord.right + config.xWordPadding < comparisonWord.left - config.xWordPadding ||
-                currentWord.left - config.xWordPadding > comparisonWord.right + config.wXordPadding ||
-                currentWord.bottom + config.yWordPadding < comparisonWord.top - config.yWordPadding ||
-                currentWord.top - config.yWordPadding > comparisonWord.bottom + config.yWordPadding)) {
-
-                return true;
+        var values = {{ get_top_thread_keywords | safe  }};
+        var words = values.map(function (word) {
+            return {
+                word: word,
+                freq: Math.floor(Math.random() * 50) + 10
             }
+        })
+
+        words.sort(function (a, b) {
+            return -1 * (a.freq - b.freq);
+        });
+
+        var cloud = document.getElementById("word-cloud");
+        cloud.style.position = "relative";
+        cloud.style.fontFamily = config.font;
+
+        var traceCanvas = document.createElement("canvas");
+        traceCanvas.width = cloud.offsetWidth;
+        traceCanvas.height = cloud.offsetHeight;
+        var traceCanvasCtx = traceCanvas.getContext("2d");
+        cloud.appendChild(traceCanvas);
+
+        var startPoint = {
+            x: cloud.offsetWidth / 2,
+            y: cloud.offsetHeight / 2
+        };
+
+        var wordsDown = [];
+        /* ======================= END SETUP ======================= */
+
+
+
+
+
+        /* =======================  PLACEMENT FUNCTIONS =======================  */
+        function createWordObject(word, freq) {
+            var wordContainer = document.createElement("div");
+            var wordLink = document.createElement("a");
+            wordContainer.style.position = "absolute";
+            wordContainer.style.fontSize = freq + "px";
+            wordContainer.style.lineHeight = config.lineHeight;
+            /*    wordContainer.style.transform = "translateX(-50%) translateY(-50%)";
+            wordContainer.appendChild(document.createTextNode(word));*/
+
+            wordLink.setAttribute(`href`, `/forum/search/(%3FP${word}.*)/`);
+            wordLink.appendChild(document.createTextNode(word));
+            wordContainer.appendChild(wordLink);
+
+            return wordContainer;
         }
 
-        return false;
-    }
+        function placeWord(word, x, y) {
 
-    /* =======================  END PLACEMENT FUNCTIONS =======================  */
+            cloud.appendChild(word);
+            word.style.left = x - word.offsetWidth / 2 + "px";
+            word.style.top = y - word.offsetHeight / 2 + "px";
 
+            wordsDown.push(word.getBoundingClientRect());
+        }
 
+        function trace(x, y) {
+            //     traceCanvasCtx.lineTo(x, y);
+            //     traceCanvasCtx.stroke();
+            traceCanvasCtx.fillRect(x, y, 1, 1);
+        }
 
+        function spiral(i, callback) {
+            angle = config.spiralResolution * i;
+            x = (1 + angle) * Math.cos(angle);
+            y = (1 + angle) * Math.sin(angle);
+            return callback ? callback() : null;
+        }
 
+        function intersect(word, x, y) {
+            cloud.appendChild(word);
 
-    /* =======================  LETS GO! =======================  */
-    (function placeWords() {
-        for (var i = 0; i < words.length; i += 1) {
+            word.style.left = x - word.offsetWidth / 2 + "px";
+            word.style.top = y - word.offsetHeight / 2 + "px";
 
-            var word = createWordObject(words[i].word, words[i].freq);
+            var currentWord = word.getBoundingClientRect();
 
-            for (var j = 0; j < config.spiralLimit; j++) {
-                //If the spiral function returns true, we've placed the word down and can break from the j loop
-                if (spiral(j, function () {
-                    if (!intersect(word, startPoint.x + x, startPoint.y + y)) {
-                        placeWord(word, startPoint.x + x, startPoint.y + y);
-                        return true;
-                    }
-                })) {
-                    break;
+            cloud.removeChild(word);
+
+            for (var i = 0; i < wordsDown.length; i += 1) {
+                var comparisonWord = wordsDown[i];
+
+                if (!(currentWord.right + config.xWordPadding < comparisonWord.left - config.xWordPadding ||
+                    currentWord.left - config.xWordPadding > comparisonWord.right + config.wXordPadding ||
+                    currentWord.bottom + config.yWordPadding < comparisonWord.top - config.yWordPadding ||
+                    currentWord.top - config.yWordPadding > comparisonWord.bottom + config.yWordPadding)) {
+
+                    return true;
                 }
             }
+
+            return false;
         }
-    })();
+
+        /* =======================  END PLACEMENT FUNCTIONS =======================  */
+
+
+
+
+
+        /* =======================  LETS GO! =======================  */
+        (function placeWords() {
+            for (var i = 0; i < words.length; i += 1) {
+
+                var word = createWordObject(words[i].word, words[i].freq);
+
+                for (var j = 0; j < config.spiralLimit; j++) {
+                    //If the spiral function returns true, we've placed the word down and can break from the j loop
+                    if (spiral(j, function () {
+                        if (!intersect(word, startPoint.x + x, startPoint.y + y)) {
+                            placeWord(word, startPoint.x + x, startPoint.y + y);
+                            return true;
+                        }
+                    })) {
+                        break;
+                    }
+                }
+            }
+        })();
         /* ======================= WHEW. THAT WAS FUN. We should do that again sometime ... ======================= */
 
 
 
-    /* =======================  Draw the placement spiral if trace lines is on ======================= */
+        /* =======================  Draw the placement spiral if trace lines is on ======================= */
         // (function traceSpiral() {
 
         //     traceCanvasCtx.beginPath();
@@ -562,6 +562,28 @@
         //     }
         // })();
 
-</script>
+    </script>
+    <script>
+        // This is the service worker with the Advanced caching
+
+        // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
+
+        // Check compatibility for the browser we're running this in
+        if ("serviceWorker" in navigator) {
+            if (navigator.serviceWorker.controller) {
+                console.log("[PWA Builder] active service worker found, no need to register");
+            } else {
+                // Register the service worker
+                navigator.serviceWorker
+                    .register("/pwabuilder-sw.js", {
+                        scope: "/"
+                    })
+                    .then(function (reg) {
+                        console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+                    });
+            }
+        }
+
+    </script>
 
 {% endblock %}

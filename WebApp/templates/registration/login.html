@@ -64,10 +64,32 @@
         crossorigin="anonymous"></script>
 
 <script>
+
+    try {
+        localStorage.clear();
+
+        self.caches.delete('pwabuilder-adv-cache');
+
+    } catch (err) {
+        console.log("Caches not clear");
+    }
+
+    try {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            for (let registration of registrations) {
+                registration.unregister()
+            }
+        });
+    } catch (err) {
+        console.log("Service worker not clear");
+    }
+
+
     Print.postMessage('loginRequired');
     setTimeout(function () {
         $('div.alert').fadeOut('slow');
     }, 3000);
+
 </script>
 
 </body>

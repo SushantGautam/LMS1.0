@@ -29,13 +29,15 @@
     <script src="{% static 'js/modernizr.js' %}"></script>
 
 
-    <!-- Loads <model-viewer> for modern browsers: -->
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
-    </script>
+     <!-- Loads <model-viewer> for modern browsers: -->
+        <script type="module" crossorigin="anonymous"
+                src="{% static '3D_Viewer/model-viewer.js' %}">
+        </script>
 
-    <!-- Loads <model-viewer> for old browsers like IE11: -->
-    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
-    </script>
+        <!-- Loads <model-viewer> for old browsers like IE11: -->
+        <script nomodule crossorigin="anonymous"
+                src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+        </script>
 
     <title>Course Builder</title>
 </head>
@@ -51,15 +53,38 @@
       top:0;bottom:0;
       left:0;right:0;
     } */
+    .inner-sidebar{
+        height: 100vh;
+        overflow: auto;
+    }
+    @media all and (max-width:500px){
+        .inner-sidebar{
+            height: auto;
+           
+        }
 
+    }
+    .upper{
+        -webkit-user-select: none; /* Safari 3.1+ */
+        -moz-user-select: none; /* Firefox 2+ */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none; 
+
+    }
+    .lower{
+     
+    }
+    #tabs-for-download{
+        margin: 0;
+    }
     .tlimit {
 
-        min-width: 130px;
+       
         color: rgba(0, 0, 0, 0.6);
         font-size: 19px;
         text-transform: uppercase;
     }
-    
+
     .preview-bar {
 
         width: 20%;
@@ -69,7 +94,8 @@
         align-items: flex-start;
         min-height: 100%;
         background-color: whitesmoke;
-        overflow: hidden
+        overflow: hidden;
+        height: 100vh;
     }
 
     .icon-bar {
@@ -109,7 +135,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        height: 80vh;
+        height: 70vh;
     }
 
     .pagenumber>canvas {
@@ -178,6 +204,12 @@
         display: block;
         cursor: pointer;
     }
+    .tabs-for-download {
+        width: 80vw;
+    height: -webkit-fill-available;
+    max-height: 80vh;
+    max-width: 177.78vh;
+    }
 </style>
 
 <body>
@@ -187,177 +219,184 @@
         <div class="editor row" style=" height: -webkit-fill-available;">
 
             <!-- Preview Bar must be here... -->
-            <div class=" col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar">
-                <section class="upper">
+            <div class=" col-xs-12 col-sm-2 col-md-2 col-lg-2 col-xl-2 sidebar hidden-xs">
+               <div class="inner-sidebar">
+                    <section class="upper">
 
-                    <br>
-                    <div class="row" style="margin:auto">
-                        <ul class="nav nav-tabs" style="font-size: 12px;">
-                            <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
-                            <li><a data-toggle="tab" href="#menu1">Layout</a></li>
-                        </ul>
-                    </div>
-
-
-                    <hr class="white-hr">
-
-                    <div class="row" style="margin:auto">
-                        <div class="tab-content">
-
-                            <div id="home" class="tab-pane fade in active">
-
-                                <div class="home-tab-1 ">
-
-                                    <div class="draggable builder textbox draggable-style ">
-                                        <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
-
-                                        <span class="smaller-font">Text Box</span>
+                            <br>
+                            <div class="row" style="margin:auto">
+                                <ul class="nav nav-tabs" style="font-size: 12px;">
+                                    <li class="active"><a data-toggle="tab" href="#home">New Content</a></li>
+                                    <li><a data-toggle="tab" href="#menu1">Layout</a></li>
+                                </ul>
+                            </div>
+        
+        
+                            <hr class="white-hr">
+        
+                            <div class="row" style="margin:auto">
+                                <div class="tab-content">
+        
+                                    <div id="home" class="tab-pane fade in active">
+        
+                                        <div class="home-tab-1 ">
+        
+                                            <div class="draggable builder textbox draggable-style ">
+                                                <img src="{% static 'chapterPageBuilder/icons/textbox.svg' %}">
+        
+                                                <span class="smaller-font">Text Box</span>
+                                            </div>
+        
+                                            <div class="draggable builder picture draggable-style ">
+                                                <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
+                                                <span class="smaller-font">Picture</span>
+                                            </div>
+        
+                                            <div class="draggable builder video draggable-style ">
+                                                <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
+                                                <span class="smaller-font">Video</span>
+                                            </div>
+        
+                                            <div class="draggable builder buttons draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
+                                                <span class="smaller-font">Button</span>
+                                            </div>
+        
+                                            <div class="draggable builder 3dobject draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
+                                                <span class="smaller-font">3D Object</span>
+                                            </div>
+        
+                                            <div class="draggable builder Pdf draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
+                                                <span class="smaller-font">PDF</span>
+                                            </div>
+        
+                                            <div class="draggable builder quiz draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/quiz.png' %}">
+                                                <span class="smaller-font">Quiz</span>
+                                            </div>
+        
+                                            <div class="draggable builder survey draggable-style">
+                                                <img src="{% static 'chapterPageBuilder/icons/survey.png' %}">
+                                                <span class="smaller-font">Survey</span>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div class="draggable builder picture draggable-style ">
-                                        <img src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
-                                        <span class="smaller-font">Picture</span>
+                                    <div id="menu1" class="tab-pane fade">
+                                        <div class="home-tab-2">
+                                            <div class="draggable  layout grid">
+                                                <!-- <svg aria-hidden="true" data-prefix="fal" data-icon="columns"
+                                              class="svg-inline--fa fa-columns fa-w-16 fa-3x " role="img" xmlns="http://www.w3.org/2000/svg"
+                                              viewbox="0 0 512 512">
+                                              <path fill="currentColor"
+                                                d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM240 448H48c-8.837 0-16-7.163-16-16V96h208v352zm240-16c0 8.837-7.163 16-16 16H272V96h208v336z">
+                                              </path>
+                                            </svg> -->
+        
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
+                                                    alt="like this">
+        
+                                            </div>
+        
+                                            <div class="draggable  layout grid-1">
+        
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
+                                                    alt="like this">
+        
+                                            </div>
+        
+                                            <div class="draggable  layout title-slide">
+        
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
+                                                    alt="like this">
+                                            </div>
+        
+                                            <div class="draggable  layout title-content-details">
+        
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
+                                                    alt="like this">
+                                            </div>
+        
+                                            <div class="draggable layout pdf-text">
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
+                                                    alt="like this">
+                                            </div>
+        
+                                            <div class="draggable  layout title-content-details">
+        
+                                                <!-- <img src="images/saveimg5.png" alt="like this"  > -->
+                                            </div>
+                                        </div>
+        
                                     </div>
-
-                                    <div class="draggable builder video draggable-style ">
-                                        <img src="{% static 'chapterPageBuilder/icons/video.svg' %}">
-                                        <span class="smaller-font">Video</span>
+        
+                                </div>
+        
+                            </div>
+        
+        
+                            <hr class="white-hr ">
+                            
+        
+        
+                        </section>
+        
+        
+                        <section class="lower">
+                                <div class="row" style="margin:auto">
+                                        <h3 class="media-content-builder text-center" style="margin-top:16px; font-size:15px">Media
+                                            Items </h3>
+                
                                     </div>
-
-                                    <div class="draggable builder buttons draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/button.svg' %}">
-                                        <span class="smaller-font">Button</span>
+                            <div class="row" style="margin:auto">
+                                <div class="media-items-tabs">
+                                    <!-- Tab links -->
+                                    <div class="tab">
+                                        <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
+                                        <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
+                                        <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
+                                        <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
                                     </div>
-
-                                    <div class="draggable builder 3dobject draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}">
-                                        <span class="smaller-font">3D Object</span>
+        
+                                    <!-- Tab content -->
+                                    <div id="image-gallery" class="tabcontent file-content">
+                                        <h3>Images</h3>
+                                        <div class="individual-file">
+        
+                                        </div>
+                                        <p>Nothing to show here...</p>
                                     </div>
-
-                                    <div class="draggable builder Pdf draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}">
-                                        <span class="smaller-font">PDF</span>
+        
+                                    <div id="video-gallery" class="tabcontent file-content">
+                                        <h3>Videos</h3>
+                                        <p>Nothing to show here...</p>
                                     </div>
-
-                                    <div class="draggable builder quiz draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/quiz.png' %}">
-                                        <span class="smaller-font">Quiz</span>
+        
+                                    <div id="pdf-gallery" class="tabcontent file-content">
+                                        <h3>PDF</h3>
+                                        <p>Nothing to show here...</p>
                                     </div>
-
-                                    <div class="draggable builder survey draggable-style">
-                                        <img src="{% static 'chapterPageBuilder/icons/survey.png' %}">
-                                        <span class="smaller-font">Survey</span>
+        
+                                    <div id="3d-gallery" class="tabcontent file-content">
+                                        <h3>3D Files</h3>
+                                        <p>Nothing to show here...</p>
                                     </div>
                                 </div>
+        
                             </div>
-                            <div id="menu1" class="tab-pane fade">
-                                <div class="home-tab-2">
-                                    <div class="draggable  layout grid">
-                                        <!-- <svg aria-hidden="true" data-prefix="fal" data-icon="columns"
-                                      class="svg-inline--fa fa-columns fa-w-16 fa-3x " role="img" xmlns="http://www.w3.org/2000/svg"
-                                      viewbox="0 0 512 512">
-                                      <path fill="currentColor"
-                                        d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM240 448H48c-8.837 0-16-7.163-16-16V96h208v352zm240-16c0 8.837-7.163 16-16 16H272V96h208v336z">
-                                      </path>
-                                    </svg> -->
+        
+                        </section>
 
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
-                                            alt="like this">
-
-                                    </div>
-
-                                    <div class="draggable  layout grid-1">
-
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
-                                            alt="like this">
-
-                                    </div>
-
-                                    <div class="draggable  layout title-slide">
-
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
-                                            alt="like this">
-                                    </div>
-
-                                    <div class="draggable  layout title-content-details">
-
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
-                                            alt="like this">
-                                    </div>
-
-                                    <div class="draggable layout pdf-text">
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
-                                            alt="like this">
-                                    </div>
-
-                                    <div class="draggable  layout title-content-details">
-
-                                        <!-- <img src="images/saveimg5.png" alt="like this"  > -->
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <hr class="white-hr ">
-                    <div class="row" style="margin:auto">
-                        <h3 class="media-content-builder text-center" style="margin-top:16px; font-size:15px">Media
-                            Items </h3>
-
-                    </div>
-
-
-                </section>
-
-                <section class="lower">
-                    <div class="row" style="margin:auto">
-                        <div class="media-items-tabs">
-                            <!-- Tab links -->
-                            <div class="tab">
-                                <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
-                                <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
-                                <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
-                                <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
-                            </div>
-
-                            <!-- Tab content -->
-                            <div id="image-gallery" class="tabcontent file-content">
-                                <h3>Images</h3>
-                                <div class="individual-file">
-
-                                </div>
-                                <p>Nothing to show here...</p>
-                            </div>
-
-                            <div id="video-gallery" class="tabcontent file-content">
-                                <h3>Videos</h3>
-                                <p>Nothing to show here...</p>
-                            </div>
-
-                            <div id="pdf-gallery" class="tabcontent file-content">
-                                <h3>PDF</h3>
-                                <p>Nothing to show here...</p>
-                            </div>
-
-                            <div id="3d-gallery" class="tabcontent file-content">
-                                <h3>3D Files</h3>
-                                <p>Nothing to show here...</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </section>
+               </div>
+               
 
 
             </div>
 
-            <div class="  col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style="padding: 0px!important;">
-                <div id="navbar-title" style="height: 9vh;">
+            <div class="  col-xs-12 col-sm-8 col-md-8 col-lg-8 col-xl-8 canvas" style=" height:100vh; padding: 0px!important;">
+                
+                <div id="navbar-title" >
                     <a href="
                     {% if 'teachers' in request.path %}
                     {% url 'teacher_chapterinfo_detail' course chapter %}
@@ -391,17 +430,21 @@
                 <div>
                     <!-- Editor -->
                     <div class="tabs col-md-12 col-sm-12 col-lg-12" id="tabs-for-download">
-                        <div class="editor-canvas" id="element-container">
-                            <p id="tab1" class="tab-content-no   droppable editor-canvas current ">
+                        <!-- <div class="editor-canvas" id="element-container"> -->
+                        <input type="color" value="#ffffff" class="page-background">
+                        <p id="tab" value="0" class="tab-content-no   droppable editor-canvas current">
 
-                            </p>
-                        </div>
+                        </p>
+                        <p id="copy_tab" value="0" style="display: none;">
+
+                        </p>
+                        <!-- </div> -->
                     </div>
                 </div>
             </div>
             <!-- sidebar must be here.... -->
 
-            <div class="  col-xs-2 col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar" style="padding:0px!important">
+            <div class="  col-xs-12 col-sm-2 col-md-2  col-lg-2 col-xl-2 preview-bar hidden-xs" style="padding:0px!important">
 
                 <div class="chapter-select ">
                     <h3>Chapter Lists</h3>
@@ -438,7 +481,7 @@
                             <div class="img1 showSingle" target="1">
                                 <div class="tabs-to-click">
                                     <ul>
-                                        <li class="tabs-link current pagenumber" onclick="openTab(event,'tab1')"></li>
+                                        <li class="tabs-link current pagenumber" onclick="changePage('tab1')"></li>
 
                                     </ul>
                                     <div class="button-builder text-center">
@@ -458,6 +501,16 @@
         </div>
     </div>
 
+    <div id="examiframeholder">
+        <div id="closeiframebtn" class="closeiframebtn">
+            <button>
+                <i class="fa fa-times">
+                </i>
+
+            </button>
+        </div>
+        <div id="iframeholder"></div>
+    </div>
     <!-- Button Modal -->
     <div id="btn-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -658,8 +711,8 @@
                             <div class="col-md-12">
 
                                 <div class="new-survey">
-                                    <a
-                                        id="survey_create_link" href = "{% url 'courseinfo_detail' course %}" target="_blank">
+                                    <a id="survey_create_link" href="{% url 'courseinfo_detail' course %}"
+                                        target="_blank">
                                         <h5> <span
                                                 style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
                                                 New Survey </span> </h5>
@@ -723,7 +776,7 @@
 
         </div>
     </div>
-    
+
     <!-- Link Modal -->
     <div id="link-video-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -821,9 +874,10 @@
 
     <!-- End of link modal -->
 
+
     <script>
-
-
+        var setThumbnailok = false;
+        var currentPage = '1';
         var data = {{ data | safe}};
         var courseID = '{{course}}';
         var chapterID = '{{chapter}}';
@@ -862,21 +916,6 @@
             });
         })();
 
-        $('#save-and-exit-btn').click(function (e) {
-            e.preventDefault();
-
-            window.alert = function () {
-            };
-            window.onbeforeunload = function () {
-            };
-            $('#SaveBtn').click();
-            setTimeout(function(){
-                var href = $('#goBackBtn').attr('href');
-                location.href = href;
-
-            }, 6000)
-        });
-
         $(document).ready(function () {
             let trunc = truncateString(`{{chapterdetails.Summary}}`);
             $('#chapter-description').find('p').text(trunc);
@@ -891,10 +930,19 @@
             return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
         };
 
-        $('#quiz_create_link').click(function () {
+        $('#quiz_create_link').click(function (e) {
+            e.preventDefault();
             $('#quiz-modal').modal('toggle');
+            let link = $("#quiz_create_link").attr('href');
+            loadPreview(link, 1)
         })
 
+        $('#survey_create_link').click(function (e) {
+            e.preventDefault();
+            $('#survey-modal').modal('toggle');
+            let link = $("#survey_create_link").attr('href');
+            loadPreview(link, 1)
+        })
         setTimeout(function () {
             $.ajax({
                 url: "{% url 'retrieve-chapter-files' %}",
