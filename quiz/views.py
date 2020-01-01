@@ -506,7 +506,7 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['answers_formset'] = AnsFormset(self.request.POST)
+            context['answers_formset'] = AnsFormset(self.request.POST),
             context['quiz_id'] = self.request.POST.get("quiz_id", None)
         else:
             context['answers_formset'] = AnsFormset()
@@ -518,7 +518,7 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         vform = super().form_valid(form)
         context = self.get_context_data()
-        ans = context['answers_formset']
+        ans = context['answers_formset'][0]
         if context['quiz_id'] is not None:
             get_object_or_404(Quiz, id=context['quiz_id']).mcquestion.add(self.object)
         with transaction.atomic():

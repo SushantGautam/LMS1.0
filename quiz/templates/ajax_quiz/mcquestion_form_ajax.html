@@ -10,6 +10,7 @@
     <div class="row">
 
         {{ form.content|as_crispy_field }}
+
         <div id="option_dynamic_append">
             {{ answers_formset|crispy }}
         </div>
@@ -21,13 +22,26 @@
         <hr>
 
 
-        {{ form.answer_order|as_crispy_field }}
-        {{ form.figure|as_crispy_field }}
-        {{ form.score|as_crispy_field }}
-        {{ form.explanation|as_crispy_field }}
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse1">More Options</a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
 
-        {{ form.course_code|as_crispy_field }}
-        {{ form.cent_code|as_crispy_field }}
+                    {{ form.answer_order|as_crispy_field }}
+                    {{ form.figure|as_crispy_field }}
+                    {{ form.score|as_crispy_field }}
+                    {{ form.explanation|as_crispy_field }}
+
+                    {{ form.course_code|as_crispy_field }}
+                    {{ form.cent_code|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+
 
     </div>
     {% if quiz_id %}
