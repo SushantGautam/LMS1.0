@@ -65,16 +65,25 @@
 
 <script>
 
-    localStorage.clear();
+    try {
+        localStorage.clear();
 
-    self.caches.delete('pwabuilder-adv-cache');
+        self.caches.delete('pwabuilder-adv-cache');
 
+    } catch (err) {
+        console.log("Caches not clear");
+    }
 
-    navigator.serviceWorker.getRegistrations().then(function (registrations) {
-        for (let registration of registrations) {
-            registration.unregister()
-        }
-    });
+    try {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            for (let registration of registrations) {
+                registration.unregister()
+            }
+        });
+    } catch (err) {
+        console.log("Service worker not clear");
+    }
+
 
     Print.postMessage('loginRequired');
     setTimeout(function () {
