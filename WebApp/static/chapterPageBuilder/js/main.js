@@ -1952,8 +1952,18 @@ $(document).ready(function () {
                 $('#tab').empty();
                 $('.tabs-to-click > ul').empty();
                 data = success_data;
-                window.currentPage = '1'
-                display(data,1)
+                if(localStorage.getItem(`chapter_${chapterID}_currentPage`) && localStorage.getItem(`chapter_${chapterID}_currentPage`) <= data.numberofpages && localStorage.getItem(`chapter_${chapterID}_currentPage`) > 0){
+                    window.firstload = false
+                    // changePage(localStorage.getItem(`chapter_${chapterID}_currentPage`));
+                    window.currentPage = localStorage.getItem(`chapter_${chapterID}_currentPage`)
+                    display(data, localStorage.getItem(`chapter_${chapterID}_currentPage`))
+                }else{
+                    // changePage('1');
+                    window.currentPage = '1'
+                    display(data,1)
+                }
+                // window.currentPage = '1'
+                // display(data,1)
                 setslider()
             },
             error: function (errorThrown) {

@@ -1484,14 +1484,15 @@ def save_json(request):
 
 
 def export_chapter(request, course, chapter):
-    coursename = CourseInfo.objects.get(id=course).Course_Name
+    obj = CourseInfo.objects.get(id=course)
+    coursename = obj.Course_Name
     path = settings.MEDIA_ROOT
     dir_name = path + '/chapterBuilder/' + str(course) + '/' + str(chapter)
     if not os.path.exists(dir_name):
         return HttpResponse('No directory')
-    zipfile = shutil.make_archive(path + '/export/' + str(coursename) + '_Chapter' + str(chapter), 'zip', dir_name)
+    zipfile = shutil.make_archive(path + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_', 'zip', dir_name)
 
-    return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '.zip')
+    return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_' + '.zip')
 
 
 def import_chapter(request):
