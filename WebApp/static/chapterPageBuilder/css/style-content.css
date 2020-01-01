@@ -2,7 +2,6 @@
 .bg-white {
     background-color: #fff;
     padding: 0 !important;
-
 }
 
 
@@ -10,30 +9,30 @@
 }
 
 .friend-list {
-
-    list-style: none;
-
-    /* height: -webkit-fill-available; */
-
-    /* padding: 0px!important; */
-
-    /* min-height: 50vh; */
-
-    margin: 0;
-
-    /* padding-right: 10px !important; */
-
-    padding-left: 0;
-
-    background-color: white;
-
-    height: 50vh;
-    overflow: auto;
+    
+list-style: none;
+    
+/* height: -webkit-fill-available; */
+    
+/* padding: 0px!important; */
+    
+/* min-height: 50vh; */
+    
+margin: 0;
+    
+/* padding-right: 10px !important; */
+    
+padding-left: 0;
+    
+background-color:white;
+    
+height: 50vh;
+overflow:auto;
 }
 
 .friend-list li {
     border-bottom: 1px solid #eee;
-
+    
 }
 
 .friend-list li a img {
@@ -224,7 +223,7 @@ a:hover, a:active, a:focus {
     border: 2px solid #3c8dbc;
 
     transition: all 0.3s ease;
-    z-index: 9999;
+    z-index: 500;
 
     user-select: none;
 }
@@ -268,8 +267,7 @@ a:hover, a:active, a:focus {
     margin: 27px;
     margin: 0 8px;
 }
-
-.chat-nav li:hover {
+.chat-nav li:hover{
     color: black;
 }
 
@@ -422,12 +420,12 @@ a:hover, a:active, a:focus {
 .content-title {
     color: white;
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     display: none;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .content-title1 {
@@ -437,7 +435,7 @@ a:hover, a:active, a:focus {
     position: relative;
     top: 0;
     left: 0;
-    z-index: 102;
+    z-index: 100;
 }
 
 .overall-contents:hover .content-title1 {
@@ -536,8 +534,7 @@ a:hover, a:active, a:focus {
 
 @media only screen and (max-width: 600px) {
     .full-chat-container {
-        width: 433px;
-        max-width: 95vw;
+        width: 310px;
     }
 }
 
@@ -648,8 +645,7 @@ body {
 .chapterbuttons {
     background-color: #DDDDDD
 }
-
-.owl-item {
-    width: auto !important;
+.owl-item{
+    width: auto!important;
 }
 

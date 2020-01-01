@@ -1,34 +1,33 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ object.Inning_Name }}</li>
+<li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Inning_Name }}</li>
 {% endblock %}
 {% block content %}
-    <div class="outerdiv">
-        {% include 'WebApp/theme/alerts.html' %}
+<div class="outerdiv">
+    {% include 'WebApp/theme/alerts.html' %}
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="col-md-9 col-sm-12 col-xs-12 text-center">
-                <h2 class="detailListHeader">Session Detail</h2>
-            </div>
-            <div class="col-md-3 col-sm-12 col-xs-12 text-center" id="buttons">
-                <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
-                <a class="btn-sm btn-danger inning-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
-                    Session</a>
-                <form method="post" action="{% url 'inninginfo_delete' pk=object.pk %}"
-                      id="deleteInning{{ object.pk }}">
-                    {% csrf_token %}
-                    <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
-                    <input type="hidden" value="{{ object.pk }}" name="inning_id">
-                </form>
-            </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-9 col-sm-12 col-xs-12 text-center">
+            <h2 class="detailListHeader">Session Detail</h2>
         </div>
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <hr class="header_hr">
-            <br>
-            <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
-                <h5><b>
+        <div class="col-md-3 col-sm-12 col-xs-12 text-center" id="buttons">
+            <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
+            <a class="btn-sm btn-danger inning-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
+                Session</a>
+            <form method="post" action="{% url 'inninginfo_delete' pk=object.pk %}" id="deleteInning{{ object.pk }}">
+                {% csrf_token %}
+                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                <input type="hidden" value="{{object.pk}}" name="inning_id">
+            </form>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <hr class="header_hr">
+        <br>
+        <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
+            <h5><b>
                     <table class="table table-bordered table-striped">
                         <tr>
                             <td>Center Code</td>
@@ -65,196 +64,89 @@
                             <td>Status</td>
                             <td>{% if object.Use_Flag == True %}
                                 Active
-                            {% else %}
+                                {% else %}
                                 Inactive
-                            {% endif %}</td>
+                                {% endif %}</td>
                         </tr>
 
                     </table>
 
                 </b></h5>
-            </div>
-            <div class="col-md-5 col-sm-12 col-xs-12 text-center">
-                <h5>
-                    <b>
-
-                        <h3><b>List of Students</b></h3>
-                        <table class="table table-bordered table-striped">
-                            <tr>
-                                <td>
-                                    <h4><b>{{ object.Groups }} Students &nbsp; ( {{ object.Groups.Students.count }}
-                                        )</b>
-                                        <span style="font-size: 15px;float:right;"> <a
-                                                href="{{ object.Groups.get_update_url }}"><u>Edit</u>
-                                        </a></span>
-                                    </h4>
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>{% for students in object.Groups.Students.all %}{{ forloop.counter }}.
-                                    &nbsp; {{ students }}<br>{% endfor %}</td>
-                            </tr>
-
-                        </table>
-                    </b>
-                </h5>
-            </div>
-            <div class="col-md-7 col-sm-12 col-xs-12 text-center">
-                <h5>
-                    <b>
-                        <h3><b>List of Teachers</b></h3>
-                        <table class="table table-bordered table-striped">
-                            <tr>
-                                <td>
-                                    <h4><b>Courses</b></h4>
-                                </td>
-                                <td>
-                                    <h4><b>Teachers</b></h4>
-                                </td>
-                            </tr>
-                            {% for groups in object.Course_Group.all %}
-                                <tr>
-
-                                    <td><a style="float: left" href="{{ groups.get_update_url }}"><i
-                                            class="fa fa-edit"></i></a><a
-                                            href="{{ groups.get_absolute_url }}">{{ groups }}</a></td>
-                                    <td>{% for teachers in groups.Teacher_Code.all %}
-                                        {{ teachers }}<br>{% endfor %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    </b>
-                </h5>
-            </div>
         </div>
-        <br>
-        <!-- <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top: 30px;">
+        <div class="col-md-5 col-sm-12 col-xs-12 text-center">
+            <h5>
+                <b>
+
+                    <h3><b>List of Students</b></h3>
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <td>
+                                <h4><b>{{ object.Groups }} Students &nbsp; ( {{ object.Groups.Students.count }}
+                                        )</b>
+                                    <span style="font-size: 15px;float:right;"> <a
+                                            href="{{ object.Groups.get_update_url }}"><u>Edit</bu>
+                                        </a></span>
+                                </h4>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{% for students in object.Groups.Students.all %}{{ forloop.counter }}.
+                                &nbsp; {{ students }}<br>{% endfor %}</td>
+                        </tr>
+
+                    </table>
+                </b>
+            </h5>
+        </div>
+        <div class="col-md-7 col-sm-12 col-xs-12 text-center">
+            <h5>
+                <b>
+                    <h3><b>List of Teachers</b></h3>
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <td>
+                                <h4><b>Courses</b></h4>
+                            </td>
+                            <td>
+                                <h4><b>Teachers</b></h4>
+                            </td>
+                        </tr>
+                        {% for groups in object.Course_Group.all %}
+                        <tr>
+
+                            <td> <a style="float: left" href="{{ groups.get_update_url }}"><i
+                                        class="fa fa-edit"></i></a><a
+                                    href="{{ groups.get_absolute_url }}">{{ groups }}</a></td>
+                            <td>{% for teachers in groups.Teacher_Code.all %}
+                                {{ teachers }}<br>{% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </b>
+            </h5>
+        </div>
+    </div>
+    <br>
+    <!-- <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top: 30px;">
         <a class="btn-lg btn-sm btn-primary" href="{% url 'groupmapping_create' %}">Assign Student</a>
         &nbsp;&nbsp;&nbsp;
         <a class="btn-lg btn-sm btn-primary" href="{% url 'inninggroup_create' %}">Assign Course</a>
     </div> -->
-
-        <div class="row text-center" style="    padding: 30px;">
-
-            <button class=" Session btn btn-success"
-                    id="category_Add_ButtonSession"
-                    style="    float: left;   "
-                    data-toggle="modal"
-                    data-target="#survey_form_modal">Add Session Survey
-            </button>
-
-            {% if SessionSurvey %}
-                <h3><b>List of Surveys</b></h3>
-
-
-                <table id="table_survey" class="table table-striped table-bordered bg-white nowrap">
-                    <thead class="thead-light bg-primary">
-                    <td>Survey Title</td>
-                    <td>Start Date</td>
-                    <td>End Date</td>
-
-                    </thead>
-
-                    <tbody>
-
-                    {% for survey in SessionSurvey %}
-
-                        <tr>
-                            <td>
-                                <a href="{% url 'surveyinfo_detail' pk=survey.id %}">{{ survey.Survey_Title }}</a>
-                            </td>
-                            <td>{{ survey.Start_Date }}</td>
-                            <td>{{ survey.End_Date }}</td>
-
-
-                        </tr>
-
-                    {% endfor %}
-
-
-                    </tbody>
-
-                </table>
-
-
-            {% else %}
-                <h4><b>No Survey Created for this session.</b></h4>
-            {% endif %}
-
-        </div>
-
-        <div id="survey_form_modal" class="modal fade" style="height: -webkit-fill-available;">
-            <div class="modal-dialog">
-                <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Create Survey</h4>
-                    </div>
-                    <div class="modal-body" id="surveyForm">
-                        <div>
-                            <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 
 
 {% endblock %}
 {% block customjss %}
-    <script>
-        $(document).on('click', '.inning-confirm-delete', function () {
-            ans = confirm('Are you sure you want to delete this Session?');
-            if (ans == true) {
-                $(`#deleteInning${this.id}`).submit();
-            } else {
-                return false;
-            }
-        });
-    </script>
-
-    <script>
-        $('#category_Add_ButtonSession').on('click', function () {
-            $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
-            $.ajax({
-                type: "GET",
-                data: {'category_name': 'Session', 'Session_Code':{{ object.pk }}},
-                url: "/survey/surveyinfo_ajax/",  // URL to your view that serves new info
-                success: function (data) {
-                    $("#surveyForm").html(data);
-                },
-                complete: function () {
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                }
-            });
-        });
-    </script>
-    <script>
-        function survey_create_content(response) {
-            //location.reload();
-            console.log(response['url']);
-            window.location.href = String(response['url']);
+<script>
+    $(document).on('click', '.inning-confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Session?');
+        if (ans == true) {
+            $(`#deleteInning${this.id}`).submit();
+        } else {
+            return false;
         }
-    </script>
-
-    {% if SessionSurvey %}
-        <script type="text/javascript">
-
-
-            $(document).ready(function () {
-
-                var table_survey = $('#table_survey').DataTable({
-                    responsive: true,
-                    dom: 'lBfrtip',
-                    buttons: []
-
-                });
-            });
-        </script>
-    {% endif %}
+    });
+</script>
 {% endblock %}

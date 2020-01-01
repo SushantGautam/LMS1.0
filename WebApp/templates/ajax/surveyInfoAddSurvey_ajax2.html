@@ -28,19 +28,19 @@
     {% csrf_token %}
     <div id="smartwizard" class="sw-theme-dots">
         <ul>
+            <li><a href="#step-1">Step 1<br/><small>Add question</small></a></li>
+            <li><a href="#step-2">Step 2 <br><small>Survey Information</small></a></li>
 
         </ul>
         <div>
             <div id="step-1">
-                <h2 class="StepTitle text-center" style="padding: 0em 0 !important;
-            
-            ">Add question</h2>
+                <h2 class="StepTitle text-center">Add question</h2>
                 <div class="col-xs-12">
                     <div class="col-md-12">
                         <div class="selectQuestionType">
                             <div class="btn-group" id="switchButtons" data-toggle="buttons">
                                 <label class="mcq_question btn btn-default btn-on btn-md active">
-                                    <input type="radio" value="1" name="multifeatured_ule[module_id][switchButtons]"
+                                    <input type="radio" value="1" name="multifeatured_module[module_id][switchButtons]"
                                            checked="checked">MCQ</label>
                                 <label class="short_question btn btn-default btn-off btn-md ">
                                     <input type="radio" value="0"
@@ -104,40 +104,20 @@
                 </div>
             </div>
             <div id="step-2">
-                <div class="row">
-
-                    <div class="col-md-12 text-center">
-                        <button class="btn btn-amber-500" type="button" data-toggle="collapse"
-                                data-target="#collapseExample"
-                                aria-expanded="false" aria-controls="collapseExample">
-                            Edit More Information
-                        </button>
+                <label class="control-label " id="categoryTitle" for="first-name">Category :
+                    <span class="text text-black">{{ category_name }}</span>
+                </label>
+                <h2 class="StepTitle text-center">Survey Information</h2>
+                <div class="col-xs-12">
+                    <div class="col-md-12">
+                        {{ form|crispy }}
                     </div>
+
+
+                    <div class="text-danger survey_error"></div>
+
                 </div>
-
-                <div class="collapse" id="collapseExample">
-
-                    <label class="control-label " id="categoryTitle" for="first-name">Category :
-                        <span class="text text-black">{{ category_name }}</span>
-                    </label>
-                    <h2 class="StepTitle text-center" style="padding: 0em 0 !important;
-            ">Survey Information</h2>
-                    <div class="col-xs-12">
-                        <div class="col-md-12">
-                            {{ form|crispy }}
-                        </div>
-
-                        <div class="text-danger survey_error"></div>
-
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <button class="btn btn-primary" type="submit">Submit</button>
-                    </div>
-                </div>
-
+                <button class="btn btn-primary" type="submit">Submit</button>
 
             </div>
 
@@ -174,63 +154,63 @@
     <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
     <script>
         $(document).ready(function () {
-            {#$("#smartwizard").smartWizard({selected: 0,});#}
+            $("#smartwizard").smartWizard({selected: 0,});
 
         });
-        {#$("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {#}
-        {#    if (stepNumber == 1) {#}
-        {#        if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {#}
-        {#            $(".survey_error").html("End Date must be greater than Start Date");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#        if (new Date() >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {#}
-        {#            $(".survey_error").html("End Date must be greater than Current Date");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#        if ($("#id_Survey_Title").val() === "") {#}
-        {#            $(".survey_error").html("Survey Title cannot be empty");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#        if ($("#id_Course_Code").val() === "" && $("#id_Course_Code").prop("required")) {#}
-        {#            $(".survey_error").html("Please Select a Course");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#        if ($("#id_Session_Code").val() === "" && $("#id_Session_Code").prop("required")) {#}
-        {#            $(".survey_error").html("Please Select a Session");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#    }#}
-        {#    if (stepNumber == 0) {#}
-        {#        var non_empty_count = 0;#}
-        {#        var non_empty_op_count = 0;#}
-        {#        for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {#}
-        {#            if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {#}
-        {#                non_empty_count++;#}
-        {#                for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {#}
-        {#                    if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {#}
-        {#                        non_empty_op_count++;#}
-        {#                    }#}
-        {#                }#}
-        {#                if (non_empty_op_count < 2) {#}
-        {#                    $(".question_error").html("Enter at least two option for each questions");#}
-        {#                    console.log("question op error: " + cnt);#}
-        {#                    e.preventDefault()#}
-        {#                }#}
-        {#                non_empty_op_count = 0;#}
-        {#            }#}
-        {#        }#}
-        {#        for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {#}
-        {#            if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {#}
-        {#                non_empty_count++;#}
-        {#            }#}
-        {#        }#}
-        {#        if (non_empty_count < 1) {#}
-        {#            $(".question_error").html("Please enter at least one question");#}
-        {#            e.preventDefault()#}
-        {#        }#}
-        {#    }#}
-        {##}
+        $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
+            if (stepNumber == 1) {
+                if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
+                    $(".survey_error").html("End Date must be greater than Start Date");
+                    e.preventDefault();
+                }
+                if (new Date() >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
+                    $(".survey_error").html("End Date must be greater than Current Date");
+                    e.preventDefault();
+                }
+                if ($("#id_Survey_Title").val() === "") {
+                    $(".survey_error").html("Survey Title cannot be empty");
+                    e.preventDefault();
+                }
+                if ($("#id_Course_Code").val() === "" && $("#id_Course_Code").prop("required")) {
+                    $(".survey_error").html("Please Select a Course");
+                    e.preventDefault();
+                }
+                if ($("#id_Session_Code").val() === "" && $("#id_Session_Code").prop("required")) {
+                    $(".survey_error").html("Please Select a Session");
+                    e.preventDefault();
+                }
+            }
+            if (stepNumber == 0) {
+                var non_empty_count = 0;
+                var non_empty_op_count = 0;
+                for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {
+                    if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {
+                        non_empty_count++;
+                        for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {
+                            if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {
+                                non_empty_op_count++;
+                            }
+                        }
+                        if (non_empty_op_count < 2) {
+                            $(".question_error").html("Enter at least two option for each questions");
+                            console.log("question op error: " + cnt);
+                            e.preventDefault()
+                        }
+                        non_empty_op_count = 0;
+                    }
+                }
+                for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {
+                    if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {
+                        non_empty_count++;
+                    }
+                }
+                if (non_empty_count < 1) {
+                    $(".question_error").html("Please enter at least one question");
+                    e.preventDefault()
+                }
+            }
 
+        });
     </script>
     <script>
         function cloneMore(selector, append_after, type) {
@@ -268,13 +248,7 @@
             var newel_id = String(
                 '#div_id_questioninfo-' + questionId + '-Question_Name'
             );
-
-
             var question_counter = parseInt(questionId) + 1;
-
-            $('#abc' + questionId).click();
-            $('#abc' + questionId).click();
-
             var counter_el = `<p>${question_counter}</p>`;
             $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;'></div>`);
             $('#new_que_div' + questionId).prepend(counter_el);
@@ -289,8 +263,7 @@
         });
 
         function addOption(event, questionId, selector, append_after, type, type2) {
-            if (event) event.preventDefault();
-
+            event.preventDefault();
             var optionId = $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val();
             // console.log(optionId
             var str1 = String(type + '-' + questionId);
@@ -416,12 +389,5 @@
             });
         });
 
-    </script>
-
-    <script>
-        if ($('#id_questioninfo-0-Question_Name').val() === "") {
-            addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
-            addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
-        }
     </script>
 {% endblock customjss %}

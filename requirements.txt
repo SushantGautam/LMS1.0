@@ -33,4 +33,3 @@ django-decorator-include
 sentry-sdk==0.13.1
 django-url-filter
 python-resize-image
-django-cors-headers

@@ -57,7 +57,7 @@ class SurveyInfo(models.Model):
     )
     Course_Code = ForeignKey(
         'WebApp.CourseInfo', blank=True,
-        related_name="surveyinfo", on_delete=models.CASCADE, null=True
+        related_name="surveyinfo", on_delete=models.DO_NOTHING, null=True
     )
 
     Added_By = ForeignKey(
