@@ -119,6 +119,8 @@ class MemberInfo(AbstractUser):
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
+
+
     @property
     def get_user_type(self):
         if self.Is_CenterAdmin and self.Is_Teacher and self.Is_Student:
@@ -163,9 +165,9 @@ class MemberInfo(AbstractUser):
 
     def __str__(self):
         if self.first_name and self.last_name:
-            return self.first_name + " " + self.last_name + " (" + self.username + ")"
+            return self.first_name + " " + self.last_name
         else:
-            return "-- (" + self.username + ")"
+            return "-- " + self.username
 
     # def create_user(self, username, email=None, password=None, **extra_fields):
     #     extra_fields.setdefault('is_staff', True)
@@ -231,7 +233,7 @@ class ChapterInfo(models.Model):
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
-        related_name="chapterinfos", on_delete=models.CASCADE
+        related_name="chapterinfos", on_delete=models.DO_NOTHING
     )
 
     class Meta:

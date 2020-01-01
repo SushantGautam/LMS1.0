@@ -21,12 +21,11 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '210.127.211.100', '103.41.247.44', '192.168.1.29']
+ALLOWED_HOSTS = ['127.0.0.1', '210.127.211.100', '103.41.247.44','192.168.1.29']
 
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +37,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
-    'corsheaders',
     'django_filters',
     'import_export',
     'WebApp',
@@ -50,9 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -175,7 +171,6 @@ STATICFILES_DIRS = (
 )  # /opt/soundshelter/soundshelter/soundshelter/static
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 django_heroku.settings(locals())
 
@@ -207,15 +202,3 @@ REST_FRAMEWORK = {
 #     send_default_pii=True,
 #     debug=True,
 # )
-
-
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-#         'LOCATION': '.cache',
-#     }
-# }
-
-CORS_ORIGIN_ALLOW_ALL = True
-
-WHITENOISE_MAX_AGE = 43200

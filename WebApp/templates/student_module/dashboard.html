@@ -3,10 +3,7 @@
 {% block title %}
     Dashboard
 {% endblock %}
-
 {% block stylesheets %}
-    <link rel='manifest' href='/manifest.webmanifest'>
-
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
 
 {% endblock stylesheets %}
@@ -45,12 +42,12 @@
             Welcome to Student Portal
         </b></h1>
     </div>
-    <div class=" row col-md-12 col-sm-12 col-xs-12" style="background-color: grey; margin-bottom: 15px!important;">
+    <div class=" row col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
         <h3 style="color: white"><b>Overview</b></h3>
     </div>
 
 
-    <div class="courses-lists-only" style="margin:16px 0">
+    <div class="courses-lists-only" style="margin:10px 0">
         <div class=" text-center">
             <h4 style=""><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
                                 of my Courses </a></span></h4>
@@ -94,7 +91,7 @@
                                         overflow: hidden;
                                         white-space: normal;
                                         text-overflow: ellipsis;">
-                                <a onclick="RetrieveChatper('{{ object.Course_Code.student_get_absolute_url }}',{{ object.Course_Code.pk }})">
+                                <a href="{{ object.Course_Code.student_get_absolute_url }}">
                                     <button type="button" style="text-align:center;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                             ">CONTINUE <i class="fa fa-arrow-right"></i>
                                     </button>
@@ -129,8 +126,8 @@
 
     <div class="row">
 
-        <div class="padding_homepage col-md-8 col-sm-12 col-xs-12">
-            <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
+        <div class="padding_homepage col-md-8 col-sm-12 col-xs-12" style="max-height: 50vh;overflow:auto">
+            <div class="panel panel-default">
                 <div class="title text-center">
                     <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
                             href="{% url 'student_myassignmentinfo_list' %}">List
@@ -156,8 +153,8 @@
                 </ul>
             </div>
         </div>
-        <div class="padding_homepage col-md-4 col-sm-12 col-xs-12 ">
-            <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
+        <div class="padding_homepage col-md-4 col-sm-12 col-xs-12 " style="max-height: 50vh;overflow:auto">
+            <div class="panel panel-default">
                 <div class="title text-center">
                     <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
                 </div>
@@ -229,17 +226,6 @@
 
 
     <script>
-        function RetrieveChatper(urlx, coursepk) {
-            let chapterVal = localStorage.getItem("chapter_for_course" + coursepk);
-
-
-            if (chapterVal >= 1) {
-                window.location.href = "/students/courseinfo/" + coursepk + "/chapterinfo/" + chapterVal + "/contents";
-            } else
-                window.location.href = urlx;
-
-        }
-
         Highcharts.chart('container', {
             chart: {
                 type: 'scatter',
@@ -525,7 +511,7 @@
             autoplayHoverPause: true,
             loop: false,
             margin: 10,
-            rewind: true,
+            rewind:true,
             nav: true,
             autoplay: true,
             navText: ["<i class=' fa fa-chevron-circle-left fa-2x'></i>",
@@ -543,28 +529,6 @@
                 }
             }
         })
-    </script>
-    <script>
-        // This is the service worker with the Advanced caching
-
-        // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
-
-        // Check compatibility for the browser we're running this in
-        if ("serviceWorker" in navigator) {
-            if (navigator.serviceWorker.controller) {
-                console.log("[PWA Builder] active service worker found, no need to register");
-            } else {
-                // Register the service worker
-                navigator.serviceWorker
-                    .register("/pwabuilder-sw.js", {
-                        scope: "/"
-                    })
-                    .then(function (reg) {
-                        console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
-                    });
-            }
-        }
-
     </script>
 
 {% endblock %}

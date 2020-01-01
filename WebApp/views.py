@@ -636,7 +636,7 @@ def CourseInfoDeleteView(request, pk):
 
         except:
             messages.error(request,
-                           "Cannot delete courses if have any chapters, association with inning groups, survey, quiz or forum. Please make sure all associations with this chapters are deleted. ")
+                           "Cannot delete courses with chapters")
             return redirect('courseinfo_detail', pk=pk)
 
 
@@ -812,11 +812,6 @@ class InningInfoCreateView(CreateView):
 
 class InningInfoDetailView(DetailView):
     model = InningInfo
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
-        return context
 
 
 class InningInfoUpdateView(UpdateView):
@@ -1459,7 +1454,7 @@ def save_video(request):
 def save_json(request):
     if request.method == "POST":
         jsondata = json.loads(request.POST['json'])
-        # htmldata = json.loads(request.POST['htmlfile'])
+        htmldata = json.loads(request.POST['htmlfile'])
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
         path = settings.MEDIA_ROOT
@@ -1471,10 +1466,10 @@ def save_json(request):
         with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)
 
-        # # for saving all html data of page for API purposes
-        # with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + 'html.txt',
-        #           'w') as outfile:
-        #     json.dump(htmldata, outfile, indent=4)
+        # for saving all html data of page for API purposes
+        with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + 'html.txt',
+                  'w') as outfile:
+            json.dump(htmldata, outfile, indent=4)
 
         chapterObj = ChapterInfo.objects.get(id=chapterID)
         chapterObj.Page_Num = int(jsondata['numberofpages'])
@@ -1484,15 +1479,14 @@ def save_json(request):
 
 
 def export_chapter(request, course, chapter):
-    obj = CourseInfo.objects.get(id=course)
-    coursename = obj.Course_Name
+    coursename = CourseInfo.objects.get(id=course).Course_Name
     path = settings.MEDIA_ROOT
     dir_name = path + '/chapterBuilder/' + str(course) + '/' + str(chapter)
     if not os.path.exists(dir_name):
         return HttpResponse('No directory')
-    zipfile = shutil.make_archive(path + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_', 'zip', dir_name)
+    zipfile = shutil.make_archive(path + '/export/' + str(coursename) + '_Chapter' + str(chapter), 'zip', dir_name)
 
-    return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_' + '.zip')
+    return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '.zip')
 
 
 def import_chapter(request):
@@ -1533,10 +1527,10 @@ def import_chapter(request):
 
             continue
         zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
-
+    
     for u, v in data['pages'].items():
         for x in v:
-            for (div, values) in x.items():
+            for(div,values) in x.items():
                 if div == 'pic':
                     for value in range(len(values)):
                         for i, j in values[value].items():
@@ -1552,7 +1546,7 @@ def import_chapter(request):
                                 p = (j.split('/'))
                                 p[3], p[4] = courseID, chapterID
                                 j = '/'.join(p)
-                                data['pages'][u][0][div][value]['local_link'] = j
+                                data['pages'][u][0][div][value]['local_link'] = j   
                 if div == '_3d':
                     for value in range(len(values)):
                         for i, j in values[value].items():
@@ -1571,19 +1565,11 @@ def import_chapter(request):
                                 data['pages'][u][0][div][value]['link'] = j
                 if div == 'quizdiv':
                     for value in range(len(values)):
-                        data['pages'][u][0][div][value]['quiz_btn_name'] = "Create Quiz"
-                        try:
-                            data['pages'][u][0][div][value].pop('link')
-                        except Exception as e:
-                            print(e)
+                        data['pages'][u][0][div][value].pop('link')
 
                 if div == 'surveydiv':
                     for value in range(len(values)):
-                        data['pages'][u][0][div][value]['survey_btn_name'] = "Create Survey"
-                        try:
-                            data['pages'][u][0][div][value].pop('link')
-                        except Exception as e:
-                            print(e)
+                        data['pages'][u][0][div][value].pop('link')
     return JsonResponse(data)
     # -------------------------------------------------------------------------------------------------------
 
@@ -1729,21 +1715,3 @@ def gitpull(request):
     process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
     output = process.communicate()[0]
     return HttpResponse(output)
-
-
-def ServiceWorker(request):
-    with open('WebApp/templates/WebApp/PWA/pwabuilder-sw.js', 'r') as f:
-        data = f.read()
-    return HttpResponse(data, content_type='text/javascript')
-
-
-def OfflineApp(request):
-    with open('WebApp/templates/WebApp/PWA/offline.html', 'r') as f:
-        data = f.read()
-    return HttpResponse(data, )
-
-
-def manifestwebmanifest(request):
-    with open('WebApp/templates/WebApp/PWA/manifest.webmanifest', 'r') as f:
-        data = f.read()
-    return HttpResponse(data, )
