@@ -149,7 +149,11 @@
                 console.log(response['quiz_id']);
                 $(".note-editable").append(`<a onclick="loadexam('${response['student_url']}')">Take Quick Quiz</a>`);
                 close_quick_model("quiz_create_popup");
-                sendMessageWrittenToStudents();
+                try {
+                    sendMessageWrittenToStudents();
+                } catch (err) {
+                    location.reload();
+                }
                 $(".note-editable").append(`<a onclick="loadexam('/quiz/markingfilter/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
                 sendMessageWrittenToTeachers();
                 loadexam("/quiz/markingfilter/" + response['quiz_id'] + "/", '_blank', 1);  //open popup
