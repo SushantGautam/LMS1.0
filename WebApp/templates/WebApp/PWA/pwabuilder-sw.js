@@ -115,7 +115,7 @@ self.addEventListener("fetch", function (event) {
             // console.log('contains media ' + event.request.url);
             TryfromCache(event.request);
             // console.log('Going for cacheFirstFetch ' + event.request.url);
-            return cacheFirstFetch(event);
+            return networkFirstFetch(event);
         }
         // console.log('Going for networkFirstFetch ' + event.request.url);
         networkFirstFetch(event);
