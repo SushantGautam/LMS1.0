@@ -535,14 +535,14 @@ class surveyFilterCategory_student(ListView):
                 my_queryset = system_survey
 
         if date_filter == "active":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
             print(date_filter, "query", len(my_queryset))
         elif date_filter == "expire":
             my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
             print(date_filter, "query", len(my_queryset))
-        elif date_filter == "live":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
-            print(date_filter, "query", len(my_queryset))
+        # elif date_filter == "live":
+        #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+        #     print(date_filter, "query", len(my_queryset))
 
         return my_queryset
 

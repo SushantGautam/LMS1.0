@@ -64,7 +64,7 @@ def start(request):
     if request.user.Is_Teacher:
         wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
         thread_keywords = get_top_thread_keywords(request, 10)
-    
+
         mycourse = InningGroup.objects.filter(Teacher_Code=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
         if mycourse:
@@ -81,9 +81,8 @@ def start(request):
                                                                Assignment_Deadline__gte=datetime_now)
 
         return render(request, "teacher_module/homepage.html",
-                      {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments, 'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
-
-
+                      {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments,
+                       'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
 
 
 def teacher_editprofile(request):
@@ -427,6 +426,7 @@ class MyAssignmentsListView(ListView):
         context['expiredAssignment'].append(expiredAssignment)
         return context
 
+
 def submitStudentscore(request, Answer_id, score):
     if request.method == "GET":
 
@@ -437,8 +437,8 @@ def submitStudentscore(request, Answer_id, score):
 
     else:
         return HttpResponse("You are not allowed to do this")
-   
-    
+
+
 def ProfileView(request):
     return render(request, 'teacher_module/profile.html')
 
@@ -1205,14 +1205,14 @@ class teacherSurveyFilterCategory(ListView):
                 my_queryset = system_survey
 
         if date_filter == "active":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
             print(date_filter, "query", len(my_queryset))
         elif date_filter == "expire":
             my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
             print(date_filter, "query", len(my_queryset))
-        elif date_filter == "live":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
-            print(date_filter, "query", len(my_queryset))
+        # elif date_filter == "live":
+        #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+        #     print(date_filter, "query", len(my_queryset))
 
         return my_queryset
 
@@ -1669,6 +1669,8 @@ def Thread_related_to_user(request):
 
 
 from textblob import TextBlob
+
+
 def get_top_thread_keywords(request, number_of_keyword):
     obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
     word_counter = {}
@@ -1683,7 +1685,6 @@ def get_top_thread_keywords(request, number_of_keyword):
 
     popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
     return popular_words[:number_of_keyword]
-
 
 
 import operator

@@ -541,14 +541,14 @@ class surveyFilterCategory(ListView):
             my_queryset = my_queryset.filter(Category_Code__Category_Name__iexact=category_name)
             print(category_name, "query", len(my_queryset))
         if date_filter == "active":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
             print(date_filter, "query", len(my_queryset))
         elif date_filter == "expire":
             my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
             print(date_filter, "query", len(my_queryset))
-        elif date_filter == "live":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
-            print(date_filter, "query", len(my_queryset))
+        # elif date_filter == "live":
+        #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+        #     print(date_filter, "query", len(my_queryset))
 
         return my_queryset
 
