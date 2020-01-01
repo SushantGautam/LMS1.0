@@ -210,14 +210,6 @@
 
                     <hr>
 
-                    {% if not "students" in request.path %}
-                        <!-- Quick Survey Button -->
-                        <button style="float: right" type="button" class="btn qts-button" id="new_survey_btn"
-                                data-toggle="modal"
-                                data-target="#survey_content_modal"><i class="fa fa-plus"></i> Survey
-                        </button>
-                        <!-- End of Quick Survey Button -->
-                    {% endif %}
 
 
                 {% endif %}
@@ -295,7 +287,14 @@
                     {% endif %}
 
                 </tr>
-
+                {% if not "students" in request.path %}
+                    <!-- Quick Survey Button -->
+                    <button style="float: right" type="button" class="btn qts-button" id="new_survey_btn"
+                            data-toggle="modal"
+                            data-target="#survey_content_modal"><i class="fa fa-plus"></i> Survey
+                    </button>
+                    <!-- End of Quick Survey Button -->
+                {% endif %}
 
                 <tr>
                     {% if numberOfQuizExclExams.count %}
