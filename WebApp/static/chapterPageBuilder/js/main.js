@@ -2372,6 +2372,9 @@ function display(data = "", currentPage='1') {
 }
 
 function updateData(prev_page, prev_data){
+    if(prev_page == 0){
+        return
+    }
     var promise = new Promise((resolve,reject) => {
         setThumbnails(prev_page)
         resolve('success')
