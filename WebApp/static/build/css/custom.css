@@ -413,6 +413,10 @@ table {
 .js-switch {
     clear: both;
 }
+.custom-panel-body{
+    max-height: 50vh; 
+    overflow: auto;
+}
 
 /* top nav bar edited */
 #topNavSpan {
