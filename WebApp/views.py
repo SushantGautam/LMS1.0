@@ -1494,7 +1494,7 @@ def export_chapter(request, course, chapter):
 
     return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_' + '.zip')
 
-
+import re
 def import_chapter(request):
     chapterID = request.POST['chapterID']
     courseID = request.POST['courseID']
@@ -1520,7 +1520,7 @@ def import_chapter(request):
     for file in zip.namelist():
         if zip.getinfo(file).filename.endswith('.txt') and 'html' not in zip.getinfo(file).filename:
             with zip.open(zip.getinfo(file).filename) as json_file:
-                my_json = json_file.read().decode('utf8').replace("'", '"')
+                my_json = json_file.read().decode('utf8')
 
                 data = json.loads(my_json)
 
