@@ -217,16 +217,19 @@ ul.messages li img.image, img.image {
 }
 
 .span-member {
-    line-height: 38px;
+    line-height: 42px;
 }
 
 @media all and (max-width: 767px) {
     .blocked-members {
-        text-align: left;
+        text-align: right;
+        padding-top:18px
     }
-
+    .nav.navbar-nav.member-list > li > a {
+        font-size: 14px;
+    }
     .span-member {
-        line-height: 22px;
+        line-height: 0px;
 
     }
 
