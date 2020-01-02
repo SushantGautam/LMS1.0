@@ -1385,7 +1385,7 @@ def save_3d_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '&&&' + str(
                 request.user.pk)
             # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
