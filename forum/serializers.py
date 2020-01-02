@@ -12,7 +12,7 @@ class ThreadQuerysetSerializer(serializers.ModelSerializer):
 
 
 class ThreadSerializer(serializers.ModelSerializer):
-    nodegroup = serializers.ReadOnlyField(source='topic.node_group')
+    nodegroup = serializers.ReadOnlyField(source='topic.node_group.pk')
 
     class Meta:
         model = models.Thread

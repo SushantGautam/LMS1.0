@@ -2,9 +2,11 @@ html, body {
     height: 100%;
     font-family: 'Poppins', sans-serif !important;
 }
-body{
-    background-color:white;
+
+body {
+    background-color: white;
 }
+
 .tableTitleRow {
     max-width: 50%;
 }
@@ -223,11 +225,13 @@ ul.messages li img.image, img.image {
 @media all and (max-width: 767px) {
     .blocked-members {
         text-align: right;
-        padding-top:18px
+        padding-top: 18px
     }
+
     .nav.navbar-nav.member-list > li > a {
         font-size: 14px;
     }
+
     .span-member {
         line-height: 0px;
 
@@ -1300,30 +1304,35 @@ article {
 
     .nav-sm .container.body .col-md-3.left_col {
 
-       
+
     }
 
 }
-.timeline .block{
 
-    margin: 0px!important;
+.timeline .block {
+
+    margin: 0px !important;
 }
-.block_content{
-    margin-top: 50px!important;
+
+.block_content {
+    margin-top: 50px !important;
 }
-.thread-font{
-    font-size:18px;
-    font-weight:600;
+
+.thread-font {
+    font-size: 18px;
+    font-weight: 600;
 }
-@media all and (max-width:415px){
-    .thread-font{
-        font-size:13px;
+
+@media all and (max-width: 415px) {
+    .thread-font {
+        font-size: 13px;
         font-size: 600;
 
     }
+
     #Undobtn {
-        margin-left: 0px!important;
-        margin-top: 0px!important;
+        margin-left: 0px !important;
+        margin-top: 0px !important;
     }
 }
 
@@ -1911,6 +1920,7 @@ input[type=checkbox], input[type=radio] {
 
 .se-pre-con {
     position: fixed;
+    -webkit-transition: opacity 5s ease-in-out;
     left: 0px;
     top: 0px;
     width: 100%;
