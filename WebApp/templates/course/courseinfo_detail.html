@@ -166,7 +166,7 @@
                                         </div>
                                         <div id="collapseTwoc" class="panel-collapse collapse" role="tabpanel"
                                              aria-labelledby="headingTwobb">
-                                            <div class="panel-body">
+                                            <div class="panel-body custom-panel-body">
                                                 {% for eachquiz in quizcount %}
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
@@ -250,7 +250,7 @@
                                         </div>
                                         <div id="collapseTwocd" class="panel-collapse collapse" role="tabpanel"
                                              aria-labelledby="headingTwobbv">
-                                            <div class="panel-body">
+                                            <div class="panel-body custom-panel-body">
                                                 {% for eachquiz in surveycount %}
                                                     <br> {{ eachquiz.Survey_Title }}
                                                     {% if "students" in request.path %}-
@@ -316,7 +316,7 @@
                                         </div>
                                         <div id="collapseTwocn" class="panel-collapse collapse" role="tabpanel"
                                              aria-labelledby="headingTwobbx">
-                                            <div class="panel-body">
+                                            <div class="panel-body custom-panel-body">
                                                 {% for eachquiz in numberOfQuizExclExams %}
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
