@@ -1948,7 +1948,6 @@ $(document).ready(function () {
                 $('#loadingDiv').show();
             },
             success: function (success_data) {
-                $('#tabs-for-download').find('#loadingDiv').empty();
                 $('#tab').empty();
                 $('.tabs-to-click > ul').empty();
                 data = success_data;
@@ -1965,13 +1964,14 @@ $(document).ready(function () {
                 // window.currentPage = '1'
                 // display(data,1)
                 setslider()
+                $('.pagenumber[value='+window.currentPage+']').addClass('current')
             },
             error: function (errorThrown) {
                 console.log(errorThrown)
                 alert(errorThrown.responseJSON.message)
             },
             complete: function() {
-                $('#loadingDiv').hide();
+                $('#loadingDiv').remove();
             }
         });
     });

@@ -1,11 +1,9 @@
 from rest_framework import serializers
 
 from forum import models
-from forum.models import Thread, Post
 
 
 class ThreadQuerysetSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.ThreadQueryset
         fields = (
@@ -14,6 +12,7 @@ class ThreadQuerysetSerializer(serializers.ModelSerializer):
 
 
 class ThreadSerializer(serializers.ModelSerializer):
+    nodegroup = serializers.ReadOnlyField(source='topic.node_group.pk')
 
     class Meta:
         model = models.Thread
@@ -31,12 +30,12 @@ class ThreadSerializer(serializers.ModelSerializer):
             'order',
             'hidden',
             'closed',
+            'nodegroup',
+
         )
 
 
-
 class PostSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Post
         fields = (
@@ -53,7 +52,6 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Notification
         fields = (
@@ -67,7 +65,6 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 
 class AppendixSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Appendix
         fields = (
@@ -79,7 +76,6 @@ class AppendixSerializer(serializers.ModelSerializer):
 
 
 class NodeGroupSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.NodeGroup
         fields = (
@@ -91,7 +87,6 @@ class NodeGroupSerializer(serializers.ModelSerializer):
 
 
 class TopicSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Topic
         fields = (
@@ -105,7 +100,6 @@ class TopicSerializer(serializers.ModelSerializer):
 
 
 class ForumAvatarSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.ForumAvatar
         fields = (
