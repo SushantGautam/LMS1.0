@@ -1852,13 +1852,13 @@ $(document).ready(function () {
 
     $('.tabs-to-click > ul > li:first').remove()
 
-    if(localStorage.getItem(`chapter_${chapterID}_currentPage`) && localStorage.getItem(`chapter_${chapterID}_currentPage`) <= data.numberofpages && localStorage.getItem(`chapter_${chapterID}_currentPage`) > 0){
-        window.firstload = false
-        changePage(localStorage.getItem(`chapter_${chapterID}_currentPage`));
-    }else{
-        changePage('1');
-    }
-
+    // if(localStorage.getItem(`chapter_${chapterID}_currentPage`) && localStorage.getItem(`chapter_${chapterID}_currentPage`) <= data.numberofpages && localStorage.getItem(`chapter_${chapterID}_currentPage`) > 0){
+    //     window.firstload = false
+    //     changePage(localStorage.getItem(`chapter_${chapterID}_currentPage`));
+    // }else{
+    //     changePage('1');
+    // }
+    changePage('1');
 
     // Button Form Submit
     $('#btn-submit').on('click', function () {
@@ -2583,7 +2583,7 @@ function changePage(page_number){
         }
         display(data)
     }
-    localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
+    // localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
 }
 
 // Media File deletion
