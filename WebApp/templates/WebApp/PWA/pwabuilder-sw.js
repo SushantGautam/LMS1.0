@@ -3,7 +3,7 @@
 const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
     /* Add an array of files to precache for your app */
-    '/offline.html',
+    '/offline.html', '/static/images/logo_orange.png',
     '/',
     // '/profile',
     // '/quiz',
