@@ -42,7 +42,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
-
+import re
 class Changestate(View):
     def post(self, request):
         quizid = self.request.POST["quiz_id"]
@@ -1343,8 +1343,9 @@ def save_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
                 request.user.pk) + '.' + media.name.split('.')[-1]
+            # name = "".join(re.findall("[a-zA-Z0-9]+", name))
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
 
@@ -1384,8 +1385,9 @@ def save_3d_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + obj.name.split('.')[0] + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '&&&' + str(
                 request.user.pk)
+            # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
@@ -1412,8 +1414,10 @@ def save_video(request):
 
         # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
         # Eg: 561561561&&&test.jpg&&&17
-        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(
+        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
+        # name = "".join(re.findall("[a-zA-Z]+", name))
+
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(name, media)
         return JsonResponse({'media_name': name})
@@ -1494,7 +1498,6 @@ def export_chapter(request, course, chapter):
 
     return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_' + '.zip')
 
-import re
 def import_chapter(request):
     chapterID = request.POST['chapterID']
     courseID = request.POST['courseID']

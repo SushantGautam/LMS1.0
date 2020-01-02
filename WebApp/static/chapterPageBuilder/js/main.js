@@ -171,6 +171,13 @@ class Textbox {
                     ['insert', ['']],
                     // ['view', ['fullscreen', 'codeview', 'help']],
                 ],
+                callbacks: {
+                    onPaste: function (e) {
+                        var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+                        e.preventDefault();
+                        document.execCommand('insertText', false, bufferText);
+                    }
+                }
             });
             $('#editor' + id).parent().find('.note-statusbar').remove();
             $('#editor' + id).parent().find('.note-editable').html(message);
@@ -1845,13 +1852,13 @@ $(document).ready(function () {
 
     $('.tabs-to-click > ul > li:first').remove()
 
-    if(localStorage.getItem(`chapter_${chapterID}_currentPage`) && localStorage.getItem(`chapter_${chapterID}_currentPage`) <= data.numberofpages && localStorage.getItem(`chapter_${chapterID}_currentPage`) > 0){
-        window.firstload = false
-        changePage(localStorage.getItem(`chapter_${chapterID}_currentPage`));
-    }else{
-        changePage('1');
-    }
-
+    // if(localStorage.getItem(`chapter_${chapterID}_currentPage`) && localStorage.getItem(`chapter_${chapterID}_currentPage`) <= data.numberofpages && localStorage.getItem(`chapter_${chapterID}_currentPage`) > 0){
+    //     window.firstload = false
+    //     changePage(localStorage.getItem(`chapter_${chapterID}_currentPage`));
+    // }else{
+    //     changePage('1');
+    // }
+    changePage('1');
 
     // Button Form Submit
     $('#btn-submit').on('click', function () {
@@ -2372,6 +2379,9 @@ function display(data = "", currentPage='1') {
 }
 
 function updateData(prev_page, prev_data){
+    if(prev_page == 0){
+        return
+    }
     var promise = new Promise((resolve,reject) => {
         setThumbnails(prev_page)
         resolve('success')
@@ -2573,7 +2583,7 @@ function changePage(page_number){
         }
         display(data)
     }
-    localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
+    // localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
 }
 
 // Media File deletion
