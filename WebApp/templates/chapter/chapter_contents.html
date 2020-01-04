@@ -1323,7 +1323,11 @@
             // updatePageByStudent(); //TBI
         {% endif %}
         localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
-        speechSynthesis.cancel();
+
+        try {
+            speechSynthesis.cancel();
+        } catch (e) {
+        }
 
     }
 
@@ -1622,10 +1626,15 @@
 
     });
     var availablevoices;
-    speechSynthesis.onvoiceschanged = function () {
-        availablevoices = window.speechSynthesis.getVoices();
 
-    };
+    try {
+        speechSynthesis.onvoiceschanged = function () {
+            availablevoices = window.speechSynthesis.getVoices();
+
+        };
+    } catch (e) {
+    }
+
 
     function speakContent() {
 
