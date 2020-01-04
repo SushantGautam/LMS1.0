@@ -54,6 +54,7 @@ $("#SaveBtn").on("click",function(e){
     var numberofpages = 0
     
     data.numberofpages = $('.pagenumber').length
+    data.chaptertitle = $('#chaptertitle').text()
     var json=JSON.stringify(data);
     $.ajax({
       url: save_json_url,
