@@ -72,7 +72,7 @@ class MemberInfo(AbstractUser):
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
         _('staff status'),
-        default=True,
+        default=True, #to make admin widgets accessible
         help_text=_('Designates whether the user can log into this admin site.'),
     )
     is_superuser = models.BooleanField(
