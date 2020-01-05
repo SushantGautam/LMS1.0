@@ -481,7 +481,7 @@
 </div>
 
 {% block customjss %}
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
     <script>
 
         if (parseInt('{{object.Course_Level}}'))
