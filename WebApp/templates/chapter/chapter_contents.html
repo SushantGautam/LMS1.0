@@ -1325,7 +1325,7 @@
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
-        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div")
+        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
         {% if ifteacher %}
             updatePageByTeacher();
         {% else %}
