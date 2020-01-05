@@ -496,8 +496,9 @@ a:hover, a:active, a:focus {
 }
 
 .thumbnails {
-    display: inline-block;
+  
     margin-right: 10px;
+    border: 1px solid black;
 }
 
 /* .thumbnails img {
@@ -650,6 +651,6 @@ body {
 }
 
 .owl-item {
-    width: auto !important;
+    
 }
 

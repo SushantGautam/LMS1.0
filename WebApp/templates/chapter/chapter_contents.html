@@ -61,12 +61,7 @@
 
     }
 
-    .owl-carousel .owl-item img {
-        display: block;
-        width: auto;
-        height: -webkit-fill-available;
-
-    }
+    
 
     .owl-prev {
         position: fixed;
@@ -459,6 +454,8 @@
 
 
             <div id="thumbnail-slider" class="owl-carousel owl-theme thumbnail-container">
+                    
+                   
 
 
             </div>
@@ -1243,26 +1240,38 @@
     }
 
     $(document).ready(function () {
-        setThumbnails();
-        $('.owl-carousel').owlCarousel({
-            nav: true,
-            slideBy: 4,
-            dots: false,
-            items: parseInt($('#totalpages').text()),
-            navText: ["<i class=' fa fa-chevron-circle-left'></i>",
-                "<i class='fa  fa-chevron-circle-right'></i>"],
-            responsive: {
-                0: {
-                    items: 1
-                },
-                600: {
-                    items: 3
-                },
-                1000: {
-                    items: 5
+       
+       setThumbnails();
+            $('.owl-carousel').owlCarousel({
+                nav: true,
+                // slideBy: 5,
+                rewind: true,
+                dots: false,
+                margin:10,
+                responsiveClass:true,
+                startPosition:0,
+                
+                
+                // items: parseInt($('#totalpages').text()),
+                navText: ["<i class=' fa fa-chevron-circle-left'></i>",
+                    "<i class='fa  fa-chevron-circle-right'></i>"],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    300: {
+                        items:2
+                    },
+                    600: {
+                        items: 3
+                    },
+                    1000: {
+                        items: 8
+                    }
                 }
-            }
-        })
+            })
+           
+        
         Layout(x)
         x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
@@ -1304,7 +1313,7 @@
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
-        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
+        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div")
         {% if ifteacher %}
             updatePageByTeacher();
         {% else %}
@@ -1510,12 +1519,12 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 ,  .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);
