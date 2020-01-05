@@ -51,6 +51,18 @@
 
 <div class="se-pre-con"></div>
 <style>
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        -webkit-transition: opacity 3s ease-in-out;
+        background: url(/static/images/uLMS2019_Loading_SVG.svg) center no-repeat #fff;
+    }
+
     .custom-poster {
         width: 100%;
         height: 100%;
@@ -520,7 +532,7 @@
                                     Offline<i class="fa fa-book"> </i></li>
                             {% endif %}
                             <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
-                            <li>Sound <input id="chatsound" type="checkbox" checked></li>
+                            <li id="chatsoundArea">Sound <input id="chatsound" type="checkbox" checked></li>
                             <li id="speakContent">
                                 <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
                             </li>
@@ -916,7 +928,7 @@
 
     $('.page-contents').on('click', '.chapterbuttons', function (e) {
         console.log(this)
-        if($(this).hasClass('btn-div')){
+        if ($(this).hasClass('btn-div')) {
             return
         }
         e.preventDefault()
@@ -1320,7 +1332,11 @@
             // updatePageByStudent(); //TBI
         {% endif %}
         localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
-        speechSynthesis.cancel();
+
+        try {
+            speechSynthesis.cancel();
+        } catch (e) {
+        }
 
     }
 
@@ -1619,10 +1635,15 @@
 
     });
     var availablevoices;
-    speechSynthesis.onvoiceschanged = function () {
-        availablevoices = window.speechSynthesis.getVoices();
 
-    };
+    try {
+        speechSynthesis.onvoiceschanged = function () {
+            availablevoices = window.speechSynthesis.getVoices();
+
+        };
+    } catch (e) {
+    }
+
 
     function speakContent() {
 
@@ -1702,6 +1723,7 @@
     }
 
     $(document).ready(function () {
+        fontResize();
         fontResize();
     });
     $(window).resize(function () {

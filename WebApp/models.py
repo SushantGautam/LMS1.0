@@ -72,7 +72,7 @@ class MemberInfo(AbstractUser):
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
         _('staff status'),
-        default=False,
+        default=True, #to make admin widgets accessible
         help_text=_('Designates whether the user can log into this admin site.'),
     )
     is_superuser = models.BooleanField(
@@ -106,7 +106,7 @@ class MemberInfo(AbstractUser):
     Is_Student = models.BooleanField(default=True)
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
-    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices)
+    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
 
     # Relationship Fields
     Center_Code = ForeignKey(
