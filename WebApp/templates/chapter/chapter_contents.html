@@ -1523,7 +1523,6 @@
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
 
 
-
 </script>
 <script type="text/javascript"
         src="{% static 'vendorsx/timeago.js' %}"></script>
@@ -1536,12 +1535,12 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $(".thumbnail-slider, #prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 ,  .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $(".thumbnail-slider, #prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 ,  .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);
@@ -1549,8 +1548,17 @@
 
     showFoo(2000);
 
+
     $(window).on("mouseover touchstart click", function () {
         showFoo(2000);
+    });
+
+
+    $(".content-title1").click(function AlertSave() {
+        $(".content-title1").hide();
+        setTimeout(function () {
+            $(".content-title1").show();
+        }, 3000);
     });
 </script>
 <script>
