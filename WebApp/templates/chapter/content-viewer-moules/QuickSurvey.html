@@ -70,6 +70,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             $('#QuickQuiz').click(function () {
+                $('.chatonly').hide();
+                $('#closechatopen').show();
+
                 $.ajax({
                     type: "GET",
                     data: {
@@ -85,6 +88,9 @@
                 });
             });
             $('#QuickSurvey').click(function () {
+
+                $('.chatonly').hide();
+                $('#closechatopen').show();
                 console.log("survey_create");
                 $.ajax({
                     type: "GET",
