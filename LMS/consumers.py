@@ -38,7 +38,7 @@ def storeChat(message, room_name):
                 "sender_id":data['sender_id'],
                 "sender_name": data['sender_name'],
                 "sender_icon": data['sender_icon'],
-                "message": data['chat_message'],
+                "chat_message": data['chat_message'],
                 "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
             json.dump(chat_story, outfile, indent=4)
