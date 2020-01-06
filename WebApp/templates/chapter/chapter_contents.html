@@ -1498,6 +1498,20 @@
 
 </script>
 
+<script>
+    $(document).ready(function(){
+        // var chatdetails = `{{chat_details |safe }}`
+        {% for chat in chat_details %}
+            var details = JSON.parse(`{{ chat | safe }}`)
+            if (details.sender_id == '{{ request.user.id }}') {
+                AddSelfMessageToChat(details)
+            } else {
+                AddOtherMessageToChat(details)
+            }
+        {% endfor %}
+    })
+</script>
+
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -1540,8 +1554,6 @@
     });
 </script>
 <script>
-
-
     function CheckIfToScrollChat() {
         var isScrolledToBottom = 0;
         var out = document.getElementById("chat-box-content");

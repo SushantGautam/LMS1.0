@@ -1,5 +1,6 @@
 import json
 import os
+import glob
 import shutil
 import uuid
 import zipfile  # For import/export of compressed zip folder
@@ -1642,7 +1643,6 @@ def ThreeDViewer(request, urlpath=None):
 
     return render(request, '3D_Viewer/render_template.html', {'objpath': urlpath, 'mtlpath': mtlurlpath})
 
-
 class ContentsView(TemplateView):
     template_name = 'chapter/chapter_contents.html'
 
@@ -1654,6 +1654,7 @@ class ContentsView(TemplateView):
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
+        context['chat_details'] = []
         path = settings.MEDIA_ROOT
 
         try:
@@ -1663,6 +1664,22 @@ class ContentsView(TemplateView):
         except Exception as e:
             print(e)
             context['data'] = ""
+
+        list_of_files = glob.glob(path+'/chatlog/chapterchat' + str(chapterID) + '/*.txt') # * means all if need specific format then *.txt
+        for x in range(50):
+            try:
+                latest_file = max(list_of_files, key=os.path.getctime)
+                list_of_files.remove(latest_file)
+
+                f = open(latest_file, 'r')
+                if f.mode == 'r':
+                    contents =f.read()
+                    context['chat_details'].insert(0, contents)
+                f.close()
+
+            except Exception as e:
+                pass
+        # print(context['chat_details'])
         return context
 
 
