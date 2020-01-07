@@ -1,4 +1,5 @@
 from channels import Group
+import time
 
 
 # Connected to websocket.connect
@@ -34,13 +35,13 @@ def storeChat(message, room_name):
     currenttime = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-4]
     if data['chat_message']:
         with open(path + '/chatlog/' + room_name + '/' + currenttime + '.txt', 'w') as outfile:
-            chat_story = {
-                "sender_id":data['sender_id'],
-                "sender_name": data['sender_name'],
-                "sender_icon": data['sender_icon'],
-                "chat_message": data['chat_message'],
-                "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            }
-            json.dump(chat_story, outfile, indent=4)
+            # chat_story = {
+            #     "sender_id":data['sender_id'],
+            #     "sender_name": data['sender_name'],
+            #     "sender_icon": data['sender_icon'],
+            #     "chat_message": data['chat_message'],
+            #     "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            # }
+            json.dump(data, outfile, indent=4)
     else:
         return

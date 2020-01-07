@@ -1674,6 +1674,7 @@ class ContentsView(TemplateView):
                 f = open(latest_file, 'r')
                 if f.mode == 'r':
                     contents =f.read()
+                    contents.replace('`', '')
                     context['chat_details'].insert(0, contents)
                 f.close()
 
