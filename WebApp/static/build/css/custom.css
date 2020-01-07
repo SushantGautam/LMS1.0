@@ -413,8 +413,9 @@ table {
 .js-switch {
     clear: both;
 }
-.custom-panel-body{
-    max-height: 50vh; 
+
+.custom-panel-body {
+    max-height: 50vh;
     overflow: auto;
 }
 
@@ -1934,6 +1935,11 @@ input[type=checkbox], input[type=radio] {
     /* http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif */
 }
 
+.se-pre-con:active {
+    display: none;
+}
+
+
 .se-pre-con-ajax {
     position: fixed;
     left: 0px;
@@ -2097,7 +2103,8 @@ label .asteriskField {
     height: auto !important;
     overflow: hidden !important;
 }
-.menu_section{
-    background-color:#2A3F54!important
+
+.menu_section {
+    background-color: #2A3F54 !important
 }
 

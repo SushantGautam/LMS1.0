@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
 
     <script type="text/javascript" crossorigin="anonymous"
-            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            src="{% static 'vendorsx/jquery/jquery3.4.1.min.js' %}"></script>
     <link rel='manifest' href='/manifest.webmanifest'>
 
 
@@ -41,7 +41,7 @@
 
     <!-- Loads <model-viewer> for old browsers like IE11: -->
     <script nomodule crossorigin="anonymous"
-            src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+            src="{% static '3D_Viewer/model-viewer-legacy.js' %}">
     </script>
 
 
@@ -63,6 +63,7 @@
         background: url(/static/images/uLMS2019_Loading_SVG.svg) center no-repeat #fff;
     }
 
+
     .custom-poster {
         width: 100%;
         height: 100%;
@@ -73,12 +74,6 @@
 
     }
 
-    .owl-carousel .owl-item img {
-        display: block;
-        width: auto;
-        height: -webkit-fill-available;
-
-    }
 
     .owl-prev {
         position: fixed;
@@ -535,7 +530,7 @@
                                     Offline<i class="fa fa-book"> </i></li>
                             {% endif %}
                             <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
-                            <li>Sound <input id="chatsound" type="checkbox" checked></li>
+                            <li id="chatsoundArea">Sound <input id="chatsound" type="checkbox" checked></li>
                             <li id="speakContent">
                                 <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
                             </li>
@@ -580,7 +575,7 @@
                             <ul class="chat" id="chat-box-content">
                                 <li class="left clearfix">
                                       <span class="chat-img pull-left">
-                                          <img class="chat-avatar" src="https://bootdey.com/img/Content/user_3.jpg"
+                                          <img class="chat-avatar" src="{% static 'images/user_3.jpg' %}"
                                                alt="User Avatar">
                                       </span>
                                     <div class="chat-body clearfix">
@@ -597,7 +592,7 @@
                                 </li>
                                 <li class="right clearfix">
                                       <span class="chat-img pull-right">
-                                          <img class="chat-avatar" src="https://bootdey.com/img/Content/user_1.jpg"
+                                          <img class="chat-avatar" src="{% static 'images/user_3.jpg' %}"
                                                alt="User Avatar">
                                       </span>
                                     <div class="chat-body clearfix">
@@ -1255,26 +1250,38 @@
     }
 
     $(document).ready(function () {
+
         setThumbnails();
         $('.owl-carousel').owlCarousel({
             nav: true,
-            slideBy: 4,
+            // slideBy: 5,
+            rewind: true,
             dots: false,
-            items: parseInt($('#totalpages').text()),
+            margin: 10,
+            responsiveClass: true,
+            startPosition: 0,
+
+
+            // items: parseInt($('#totalpages').text()),
             navText: ["<i class=' fa fa-chevron-circle-left'></i>",
                 "<i class='fa  fa-chevron-circle-right'></i>"],
             responsive: {
                 0: {
                     items: 1
                 },
+                300: {
+                    items: 2
+                },
                 600: {
                     items: 3
                 },
                 1000: {
-                    items: 5
+                    items: 8
                 }
             }
         })
+
+
         Layout(x)
         x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
@@ -1323,7 +1330,11 @@
             // updatePageByStudent(); //TBI
         {% endif %}
         localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
-        speechSynthesis.cancel();
+
+        try {
+            speechSynthesis.cancel();
+        } catch (e) {
+        }
 
     }
 
@@ -1523,10 +1534,13 @@
 
 </script>
 <script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"></script>
+<script async type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+
+
+</script>
 <script type="text/javascript"
-        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
+        src="{% static 'vendorsx/timeago.js' %}"></script>
 
 
 <script>
@@ -1536,12 +1550,12 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $(".thumbnail-slider, #prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $(".thumbnail-slider, #prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 ,  .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);
@@ -1549,9 +1563,20 @@
 
     showFoo(2000);
 
+
     $(window).on("mouseover touchstart click", function () {
         showFoo(2000);
     });
+
+
+    $(".content-title1").click(function AlertSave() {
+        $(".content-title1").hide();
+        setTimeout(function () {
+            $(".content-title1").show();
+        }, 3000);
+    });
+
+
 </script>
 <script>
     function CheckIfToScrollChat() {
@@ -1634,10 +1659,15 @@
 
     });
     var availablevoices;
-    speechSynthesis.onvoiceschanged = function () {
-        availablevoices = window.speechSynthesis.getVoices();
 
-    };
+    try {
+        speechSynthesis.onvoiceschanged = function () {
+            availablevoices = window.speechSynthesis.getVoices();
+
+        };
+    } catch (e) {
+    }
+
 
     function speakContent() {
 
@@ -1718,11 +1748,17 @@
 
     $(document).ready(function () {
         fontResize();
+        fontResize();
     });
     $(window).resize(function () {
         fontResize();
     });
 
+
+    $(".se-pre-con").click(function () {
+            $(".se-pre-con").fadeOut("fast");
+        }
+    );
 
     window.addEventListener('beforeunload', function (e) {
 

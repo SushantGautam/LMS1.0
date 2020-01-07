@@ -208,7 +208,7 @@ class MyCoursesListView(ListView):
         queryset = self.request.GET.get('studentmycoursequery')
         if queryset:
             queryset = queryset.strip()
-            qset = qset.filter(Course_Name__contains=queryset)
+            qset = qset.filter(Course_Name__icontains=queryset)
             if not len(qset):
                 messages.error(
                     self.request, 'Sorry no courses found! Try with a different keyword')
@@ -262,7 +262,7 @@ class CourseInfoListView(ListView):
         query = self.request.GET.get('coursequery')
         if query:
             query = query.strip()
-            qs = qs.filter(Course_Name__contains=query)
+            qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
                 messages.error(
                     self.request, 'Sorry no course found! Try with a different keyword')

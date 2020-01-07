@@ -19,7 +19,7 @@
 
         <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
 
-        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+        {#        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>#}
 
         <!-- Bootstrap -->
         <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -163,13 +163,13 @@
             $('#alert-message').fadeOut('slow');
         }, 3000);
     </script>
-    <script>
-        $('#feedbackbtn').click(function () {
-            $('.w3-container').html(`<iframe style="height: 90vh; width: 100%"
-          src="https://docs.google.com/forms/d/e/1FAIpQLSfKpfYtiFs5YLnIMALd3rxUa2q1cgYTuM7owdcmGiNhAyhy3w/viewform?embedded=true&entry.511019843={{ request.path }}"
-          frameborder="0px"></iframe>`);
-        })
-    </script>
+    {#    <script>#}
+    {#        $('#feedbackbtn').click(function () {#}
+    {#            $('.w3-container').html(`<iframe style="height: 90vh; width: 100%"#}
+    {#          src="https://docs.google.com/forms/d/e/1FAIpQLSfKpfYtiFs5YLnIMALd3rxUa2q1cgYTuM7owdcmGiNhAyhy3w/viewform?embedded=true&entry.511019843={{ request.path }}"#}
+    {#          frameborder="0px"></iframe>`);#}
+    {#        })#}
+    {#    </script>#}
 
 
     <script>
@@ -185,21 +185,25 @@
 
 {#Dont Remove this Google analytics code-sushant#}
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-149010152-1"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
+{#<script async src="https://www.googletagmanager.com/gtag/js?id=UA-149010152-1"></script>#}
 
-    function gtag() {
-        dataLayer.push(arguments);
-    }
+{#<script>#}
+{#    window.dataLayer = window.dataLayer || [];#}
+{##}
+{#    function gtag() {#}
+{#        dataLayer.push(arguments);#}
+{#    }#}
+{##}
+{#    gtag('js', new Date());#}
+{##}
+{#    gtag('config', 'UA-149010152-1');#}
+{#    gtag('config', 'GA_TRACKING_ID', {#}
+{#        'user_id': '{{ user.id }}|{{ user.Center_Code.Center_Name }}'#}
+{#    });#}
+{#</script>#}
 
-    gtag('js', new Date());
 
-    gtag('config', 'UA-149010152-1');
-    gtag('config', 'GA_TRACKING_ID', {
-        'user_id': '{{ user.id }}|{{ user.Center_Code.Center_Name }}'
-    });
-</script>
+
 
 </body>
 

@@ -83,12 +83,12 @@ function positionConvert(element, divider) {
     return parseFloat(element) * 100 / parseFloat(divider)
 }
 
-function convertFontToREM(font){
-    return parseFloat(font)/14;
+function convertFontToREM(font) {
+    return parseFloat(font) / 14;
 }
 
-function convertFontToPX(font){
-    return parseFloat(font)*14;
+function convertFontToPX(font) {
+    return parseFloat(font) * 14;
 }
 
 // Initializing Elements
@@ -179,6 +179,9 @@ class Textbox {
                     }
                 }
             });
+            $('.note-editable').css('font-size', '30px');
+
+
             $('#editor' + id).parent().find('.note-statusbar').remove();
             $('#editor' + id).parent().find('.note-editable').html(message);
             // $('#editor' + id).parent().find('.note-editable').each(function(){
@@ -448,7 +451,7 @@ class Quiz {
                         
                         </div> 
                         <div class="button-name-builder ">
-                        <a ${quiz_link} id = ${id+1} target= "_blank">
+                        <a ${quiz_link} id = ${id + 1} target= "_blank">
                             <button class="custom-btn-only"style="width:100%; height:100%">
                             <div class="row text-center" width=100%>
                             <span class="resizable-text-only " style = "width:100%; font-size: ${font_size}">${name} </span>
@@ -1040,10 +1043,10 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
         },
     });
 
-    $('.btn-div').on('resize', function(){
+    $('.btn-div').on('resize', function () {
         old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
         div_width = $(this).width();
-        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width / old_div_width);
         $(this).find('.resizable-text-only').css(
             'font-size', font + 'px'
         )
@@ -1060,12 +1063,12 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
     $('.quiz-div button').off().on('click', function (e) {
         e.preventDefault()
         link = $(this).parent().parent().find('a')[0].href
-        if(link){
+        if (link) {
             quizpk = (link.split('/')[4]).match(/\d+/);
             if (window.location.href.indexOf("/teachers") > -1) {
                 link = "/quiz/markingfilter/" + quizpk
                 loadPreview(link, 1)
-            }else{
+            } else {
                 link = "/quiz/detail/" + quizpk
                 loadPreview(link, 1)
             }
@@ -1126,10 +1129,10 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
         },
     });
 
-    $('.quiz-div').on('resize', function(){
+    $('.quiz-div').on('resize', function () {
         old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
         div_width = $(this).width();
-        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width / old_div_width);
         $(this).find('.resizable-text-only').css(
             'font-size', font + 'px'
         )
@@ -1146,12 +1149,12 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
     $('.survey-div button').off().on('click', function (e) {
         e.preventDefault()
         link = $(this).parent().parent().find('a')[0].href
-        if(link){
+        if (link) {
             surveypk = (link.split('/')[6]).match(/\d+/);
             if (window.location.href.indexOf("/teachers") > -1) {
                 link = "/teachers/surveyinfodetail/detail/" + surveypk
                 loadPreview(link, 1)
-            }else{
+            } else {
                 link = "/survey/surveyinfo/detail/" + surveypk
                 loadPreview(link, 1)
             }
@@ -1211,10 +1214,10 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
         },
     });
 
-    $('.survey-div').on('resize', function(){
+    $('.survey-div').on('resize', function () {
         old_div_width = revertpositionConvert(parseFloat($(this).data('width')), $('#tabs-for-download').width());
         div_width = $(this).width();
-        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width/old_div_width);
+        font = parseFloat($(this).find('.resizable-text-only').css('font-size')) * (div_width / old_div_width);
         $(this).find('.resizable-text-only').css(
             'font-size', font + 'px'
         )
@@ -1796,6 +1799,7 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
         readURL($(this));
     });
 }
+
 // End of Element Function
 
 $(document).ready(function () {
@@ -1958,26 +1962,26 @@ $(document).ready(function () {
                 $('#tab').empty();
                 $('.tabs-to-click > ul').empty();
                 data = success_data;
-                if(localStorage.getItem(`chapter_${chapterID}_currentPage`) && localStorage.getItem(`chapter_${chapterID}_currentPage`) <= data.numberofpages && localStorage.getItem(`chapter_${chapterID}_currentPage`) > 0){
+                if (localStorage.getItem(`chapter_${chapterID}_currentPage`) && localStorage.getItem(`chapter_${chapterID}_currentPage`) <= data.numberofpages && localStorage.getItem(`chapter_${chapterID}_currentPage`) > 0) {
                     window.firstload = false
                     // changePage(localStorage.getItem(`chapter_${chapterID}_currentPage`));
                     window.currentPage = localStorage.getItem(`chapter_${chapterID}_currentPage`)
                     display(data, localStorage.getItem(`chapter_${chapterID}_currentPage`))
-                }else{
+                } else {
                     // changePage('1');
                     window.currentPage = '1'
-                    display(data,1)
+                    display(data, 1)
                 }
                 // window.currentPage = '1'
                 // display(data,1)
                 setslider()
-                $('.pagenumber[value='+window.currentPage+']').addClass('current')
+                $('.pagenumber[value=' + window.currentPage + ']').addClass('current')
             },
             error: function (errorThrown) {
                 console.log(errorThrown)
                 alert(errorThrown.responseJSON.message)
             },
-            complete: function() {
+            complete: function () {
                 $('#loadingDiv').remove();
             }
         });
@@ -2121,8 +2125,8 @@ function displaypagenumbers() {
     })
 }
 
-function setslider(){
-    if(data.pages){
+function setslider() {
+    if (data.pages) {
         $.each(data.pages, function (key, value) {
             if (value[0]['thumbnail'] == "") {
                 $(".tabs-to-click ul").append(`
@@ -2174,11 +2178,11 @@ function setslider(){
     }
 }
 
-function newpagefunction(new_page_num){
+function newpagefunction(new_page_num) {
     if ($(".tabs-to-click ul li").last().length == 0) {
         var num_tabs = 1
-    } else if(new_page_num){
-        var num_tabs =  new_page_num
+    } else if (new_page_num) {
+        var num_tabs = new_page_num
     } else {
         var num_tabs = $(".tabs-to-click ul li").last().val() + 1;
     }
@@ -2216,8 +2220,8 @@ function newpagefunction(new_page_num){
         }
     });
     displaypagenumbers();
-    if(!window.firstload){
-        changePage('tab'+num_tabs)
+    if (!window.firstload) {
+        changePage('tab' + num_tabs)
     }
 
 }
@@ -2228,13 +2232,13 @@ function displaypagenumbers() {
     })
 }
 
-function display(data = "", currentPage='1') {
+function display(data = "", currentPage = '1') {
     $('#tab').empty()
     $('#tab').css('background-color', '#fff')
     $('#chaptertitle').text(chaptertitle);
-    if(data.pages){
+    if (data.pages) {
         $.each(data.pages, function (key, value) {
-            if(key == window.currentPage){
+            if (key == window.currentPage) {
                 // $('.tabs-to-click > ul > div > li')[key - 1].click()
                 $.each(value, function (count) {
                     // -------------------------------
@@ -2378,19 +2382,19 @@ function display(data = "", currentPage='1') {
     }
 }
 
-function updateData(prev_page, prev_data){
-    if(prev_page == 0){
+function updateData(prev_page, prev_data) {
+    if (prev_page == 0) {
         return
     }
-    var promise = new Promise((resolve,reject) => {
+    var promise = new Promise((resolve, reject) => {
         setThumbnails(prev_page)
         resolve('success')
     })
     promise.then((successmessage) => {
         // $('#tab').empty()
-        setTimeout(function(){
+        setTimeout(function () {
             storethumbnails(prev_page)
-        },1000)
+        }, 1000)
     })
     var textdiv = [];
     var picdiv = [];
@@ -2401,7 +2405,7 @@ function updateData(prev_page, prev_data){
     var quizdiv = [];
     var surveydiv = [];
 
-    const obj=$(prev_data).children();
+    const obj = $(prev_data).children();
 
     let tops;
     let left;
@@ -2409,8 +2413,8 @@ function updateData(prev_page, prev_data){
     let height;
     let content;
     let numberofpages = $('.pagenumber').length;
-    $.each( obj, function( i, value ) {
-        if(value.classList.contains('textdiv')){
+    $.each(obj, function (i, value) {
+        if (value.classList.contains('textdiv')) {
             var clone = $(this).find('.note-editable').clone();
             // clone.find('div').remove();
             // $(clone).each(function(){
@@ -2421,145 +2425,165 @@ function updateData(prev_page, prev_data){
             // })
             var content_html = clone.html();
             textdiv.push(
-            {
-                'tops': $(this)[0].style.top,
-                'left': $(this)[0].style.left,
-                'width': $(this)[0].style.width,
-                'height': $(this)[0].style.height,
-                'content': content_html
-            }
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'content': content_html
+                }
             );
         }
-        if(value.classList.contains('pic')){
+        if (value.classList.contains('pic')) {
             picdiv.push(
-            {
-                'tops': $(this)[0].style.top,
-                'left': $(this)[0].style.left,
-                'width': $(this)[0].style.width,
-                'height': $(this)[0].style.height,
-                'background-image': $(this).find("img").attr('src')
-            }
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'background-image': $(this).find("img").attr('src')
+                }
             );
         }
-        if(value.classList.contains('btn-div')){
+        if (value.classList.contains('btn-div')) {
             buttondiv.push(
-            {
-                'tops': $(this)[0].style.top,
-                'left': $(this)[0].style.left,
-                'width': $(this)[0].style.width,
-                'height': $(this)[0].style.height,
-                'link': $(this).find("a").attr('href'),
-                'btn_name': $(this).find(".resizable-text-only").text(),
-                'font_size': $(this).find('.resizable-text-only').css('font-size')
-            }
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'link': $(this).find("a").attr('href'),
+                    'btn_name': $(this).find(".resizable-text-only").text(),
+                    'font_size': $(this).find('.resizable-text-only').css('font-size')
+                }
             );
         }
-        if(value.classList.contains('pdfdiv')){
+        if (value.classList.contains('pdfdiv')) {
             pdf.push(
-            {
-                'tops': $(this)[0].style.top,
-                'left': $(this)[0].style.left,
-                'width': $(this)[0].style.width,
-                'height': $(this)[0].style.height,
-                'link': $(this).find('object').attr('data'),
-            }
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'link': $(this).find('object').attr('data'),
+                }
             );
         }
-        if(value.classList.contains('video-div')){
+        if (value.classList.contains('video-div')) {
             online_link = $(this).find('iframe').attr('src');
             local_link = $(this).find('video > source').attr('src');
 
             video.push(
-            {
-                'tops': $(this)[0].style.top,
-                'left': $(this)[0].style.left,
-                'width': $(this)[0].style.width,
-                'height': $(this)[0].style.height,
-                'online_link': online_link,
-                'local_link': local_link
-            }
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'online_link': online_link,
+                    'local_link': local_link
+                }
             );
         }
-        if(value.classList.contains('_3dobj-div')){
+        if (value.classList.contains('_3dobj-div')) {
             link = $(this).find('model-viewer').attr('src');
 
             _3d.push(
-            {
-                'tops': $(this)[0].style.top,
-                'left': $(this)[0].style.left,
-                'width': $(this)[0].style.width,
-                'height': $(this)[0].style.height,
-                'link': link,
-            }
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'link': link,
+                }
             );
         }
-        if(value.classList.contains('quiz-div')){
+        if (value.classList.contains('quiz-div')) {
             quizdiv.push(
-            {
-                'tops': $(this)[0].style.top,
-                'left': $(this)[0].style.left,
-                'width': $(this)[0].style.width,
-                'height': $(this)[0].style.height,
-                'link': $(this).find("a").attr('href'),
-                'quiz_btn_name': $(this).find(".resizable-text-only").text(),
-                'quiz_name': $(this).find('.quiz-name').text(),
-                'font_size': $(this).find('.resizable-text-only').css('font-size')
-            }
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'link': $(this).find("a").attr('href'),
+                    'quiz_btn_name': $(this).find(".resizable-text-only").text(),
+                    'quiz_name': $(this).find('.quiz-name').text(),
+                    'font_size': $(this).find('.resizable-text-only').css('font-size')
+                }
             );
         }
-        if(value.classList.contains('survey-div')){
+        if (value.classList.contains('survey-div')) {
             surveydiv.push(
-            {
-                'tops': $(this)[0].style.top,
-                'left': $(this)[0].style.left,
-                'width': $(this)[0].style.width,
-                'height': $(this)[0].style.height,
-                'link': $(this).find("a").attr('href'),
-                'survey_btn_name': $(this).find(".resizable-text-only").text(),
-                'survey_name': $(this).find('.survey-name').text(),
-                'font_size': $(this).find('.resizable-text-only').css('font-size')
-            }
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'link': $(this).find("a").attr('href'),
+                    'survey_btn_name': $(this).find(".resizable-text-only").text(),
+                    'survey_name': $(this).find('.survey-name').text(),
+                    'font_size': $(this).find('.resizable-text-only').css('font-size')
+                }
             );
         }
     });
-    if(!data.pages){
+    if (!data.pages) {
         var pages = {}
         backgroundcolor = $("#tab").css('background-color')
-        pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
+        pages[prev_page] = [{
+            'textdiv': textdiv,
+            'pic': picdiv,
+            'btn-div': buttondiv,
+            'pdf': pdf,
+            'video': video,
+            '_3d': _3d,
+            'quizdiv': quizdiv,
+            'surveydiv': surveydiv,
+            'backgroundcolor': backgroundcolor
+        }]
 
         data = {
             'numberofpages': numberofpages,
             'chaptertitle': $('#chaptertitle').text(),
             'pages': pages,
-            'canvasheight': positionConvert($('#tabs-for-download').css('height'),$('body').height()),
+            'canvasheight': positionConvert($('#tabs-for-download').css('height'), $('body').height()),
             'canvaswidth': positionConvert($('#tabs-for-download').css('width'), $('body').width()),
         };
-    } else{
+    } else {
         backgroundcolor = $("#tab").css('background-color')
-        data.pages[prev_page] = [{'textdiv': textdiv,'pic':picdiv, 'btn-div':buttondiv, 'pdf': pdf, 'video': video, '_3d': _3d, 'quizdiv':quizdiv, 'surveydiv':surveydiv, 'backgroundcolor': backgroundcolor}]
+        data.pages[prev_page] = [{
+            'textdiv': textdiv,
+            'pic': picdiv,
+            'btn-div': buttondiv,
+            'pdf': pdf,
+            'video': video,
+            '_3d': _3d,
+            'quizdiv': quizdiv,
+            'surveydiv': surveydiv,
+            'backgroundcolor': backgroundcolor
+        }]
     }
 }
 
-function storethumbnails(prev_page){
-    thumbnail = ($('.pagenumber[value= '+prev_page+']')[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+function storethumbnails(prev_page) {
+    thumbnail = ($('.pagenumber[value= ' + prev_page + ']')[0].style['background-image']).replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
     data.pages[prev_page][0].thumbnail = thumbnail
 }
 
-function changePage(page_number){
-    let prev_page = window.currentPage.replace( /^\D+/g, '')
-    if(window.firstload){
+function changePage(page_number) {
+    let prev_page = window.currentPage.replace(/^\D+/g, '')
+    if (window.firstload) {
         // newpagefunction()
         window.firstload = false
-        if(data.pages){
+        if (data.pages) {
             $('.pagenumber[value=1]').addClass('current')
             // $('#add-page-btn').click();
             display(data)
             return
-        }else {
+        } else {
             newpagefunction()
         }
-    } else{
-        window.currentPage = page_number.replace( /^\D+/g, '')
+    } else {
+        window.currentPage = page_number.replace(/^\D+/g, '')
         let prev_data = $('#tab').clone()
         // var promise = new Promise((resolve,reject) => {
         //     setThumbnails(prev_page)
@@ -2569,10 +2593,10 @@ function changePage(page_number){
 
         $('#copy_tab').html($('#tab').html())
         $('#copy_tab').attr('value', prev_page)
-        $('#tab'+window.currentPage).css('display', 'block')
-        if(prev_page != window.currentPage){
-            $('.tabs-to-click ul li[value= '+window.currentPage+']').addClass('current')
-            $('.tabs-to-click ul li[value= '+prev_page+']').removeClass('current')
+        $('#tab' + window.currentPage).css('display', 'block')
+        if (prev_page != window.currentPage) {
+            $('.tabs-to-click ul li[value= ' + window.currentPage + ']').addClass('current')
+            $('.tabs-to-click ul li[value= ' + prev_page + ']').removeClass('current')
             // promise.then((successmessage) => {
             //     // $('#tab').empty()
             //     setTimeout(function(){
@@ -2626,29 +2650,29 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
     $(this).parent().parent().parent().remove();
     delete data.pages[this.value]
 
-    numberofloops = Object.keys(data.pages).length +1
-    for(x = this.value; x <= numberofloops ; x++){
-        $('.pagenumber[value="'+(parseInt(x)+1)+'"').parent().find('.clone-page-btn').attr({
+    numberofloops = Object.keys(data.pages).length + 1
+    for (x = this.value; x <= numberofloops; x++) {
+        $('.pagenumber[value="' + (parseInt(x) + 1) + '"').parent().find('.clone-page-btn').attr({
             "value": parseInt(x),
         });
-        $('.pagenumber[value="'+(parseInt(x)+1)+'"').parent().find('.delete-page-btn').attr({
+        $('.pagenumber[value="' + (parseInt(x) + 1) + '"').parent().find('.delete-page-btn').attr({
             "value": parseInt(x),
         });
-        $('.pagenumber[value="'+(parseInt(x)+1)+'"').attr({
+        $('.pagenumber[value="' + (parseInt(x) + 1) + '"').attr({
             "value": x,
-            "onclick": "changePage('tab"+x+"')"
+            "onclick": "changePage('tab" + x + "')"
         })
-        data.pages[x] = (data.pages[parseInt(x)+1])
-        delete data.pages[parseInt(x)+1]
+        data.pages[x] = (data.pages[parseInt(x) + 1])
+        delete data.pages[parseInt(x) + 1]
     }
-    var promise = new Promise((resolve,reject) => {
+    var promise = new Promise((resolve, reject) => {
         displaypagenumbers()
         resolve('success')
     })
     promise.then((successmessage) => {
-        setTimeout(function(){
+        setTimeout(function () {
             window.currentPage = $('.pagenumber.current').attr('value')
-        },200)
+        }, 200)
     })
 });
 
@@ -2656,19 +2680,19 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
 $('.tabs-to-click').on('click', '.clone-page-btn', function () {
     var prev_data = $('#tab').clone()
     $(this).attr('disabled', true)
-    var promise = new Promise((resolve,reject) => {
+    var promise = new Promise((resolve, reject) => {
         updateData(window.currentPage, prev_data)
         resolve('success')
     })
     source = this.value
-    destination = parseInt(source)+1
+    destination = parseInt(source) + 1
     // numberofloops = Object.keys(data.pages).length
-    $.each($('.pagenumber'), function(){
-        if (this.value > source){
-            let new_value = parseInt(this.value)+1
+    $.each($('.pagenumber'), function () {
+        if (this.value > source) {
+            let new_value = parseInt(this.value) + 1
             $(this).attr({
                 "value": new_value,
-                "onclick": "changePage('tab"+new_value+"')"
+                "onclick": "changePage('tab" + new_value + "')"
             });
             $(this).parent().find('.clone-page-btn').attr({
                 "value": new_value,
@@ -2682,13 +2706,13 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
     promise.then((successmessage) => {
         setTimeout(() => {
             // window.currentPage = 'tab'+(parseInt(window.currentPage) + 1)
-            for(x = numberofloops; x >= (parseInt(this.value)+1) ; x--){
-                data.pages[parseInt(x)+1] = data.pages[x]
+            for (x = numberofloops; x >= (parseInt(this.value) + 1); x--) {
+                data.pages[parseInt(x) + 1] = data.pages[x]
                 // delete data.pages[parseInt(x)]
             }
             data.pages[destination] = data.pages[source]
             // $('.current.pagenumber').removeClass('current')
-            var num_tabs = parseInt(this.value)+1;
+            var num_tabs = parseInt(this.value) + 1;
             let copy = $(this).parent().parent().parent().clone();
             // for cloning page navigation tabs
             copy.find('.pagenumber').removeClass('current')
@@ -2698,8 +2722,8 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
             copy.find('.pagenumber').val(num_tabs);
             copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');
             $(this).parent().parent().parent().after(copy);
-            if(source < window.currentPage){
-                window.currentPage = 'tab'+ (parseInt(window.currentPage)+1)
+            if (source < window.currentPage) {
+                window.currentPage = 'tab' + (parseInt(window.currentPage) + 1)
             }
             // changePage('tab'+num_tabs)
             // ===================================================================================
@@ -2710,11 +2734,11 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
             });
 
             displaypagenumbers();
-            
+
         }, 200)
         setTimeout(() => {
             $(this).attr('disabled', false)
-        },2000)
+        }, 2000)
     })
 });
 
@@ -2779,10 +2803,10 @@ async function setThumbnails(prev_page) {
     })
 
     html2canvas($('#tab')[0]).then(canvas => {
-        $('.pagenumber[value= '+prev_page+']').each(function () {
-                if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
-                    resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
-                }
+        $('.pagenumber[value= ' + prev_page + ']').each(function () {
+            if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
+                resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
+            }
         });
     });
     setThumbnailok = false
