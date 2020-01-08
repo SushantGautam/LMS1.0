@@ -2742,6 +2742,24 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
     })
 });
 
+$('.tabs-to-click').on('mouseover', '.delete-page-btn', function () {
+    $(this).addClass('tooltip1')
+    $(this).append('<span class="tooltiptext">Remove Page</span>')
+});
+$('.tabs-to-click').on('mouseout', '.delete-page-btn', function () {
+    $(this).removeClass('tooltip1')
+    $(this).find('.tooltiptext').remove()
+});
+
+$('.tabs-to-click').on('mouseover', '.clone-page-btn', function () {
+    $(this).addClass('tooltip1')
+    $(this).append('<span class="tooltiptext">Clone Page</span>')
+});
+$('.tabs-to-click').on('mouseout', '.clone-page-btn', function () {
+    $(this).removeClass('tooltip1')
+    $(this).find('.tooltiptext').remove()
+});
+
 $('#tabs-for-download').on('click', '.textdiv', function () {
     $this = $('.note-editable:focus')
     if ($('.note-editable:focus').html() == "Type Something Here...") {
