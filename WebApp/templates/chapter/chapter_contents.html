@@ -1270,10 +1270,14 @@
                     items: 1
                 },
                 300: {
-                    items: 2
+                    items: 2,
+                    margin:5
+                },
+                400:{
+                    items: 3
                 },
                 600: {
-                    items: 3
+                    items: 5
                 },
                 1000: {
                     items: 8
@@ -1536,12 +1540,12 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $(".thumbnail-slider, #prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $(".thumbnail-slider , #prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
         idleTimer = setTimeout(function () {
-            $(".thumbnail-slider, #prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 ,  .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+            $(".thumbnail-slider , #prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 ,  .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
 
             idleState = true;
         }, time);

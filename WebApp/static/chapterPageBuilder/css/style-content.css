@@ -299,6 +299,15 @@ a:hover, a:active, a:focus {
     /* scrollbar-width: thin; */
     right: 0;
 }
+.custom-carousel{
+    min-height: 55px;
+}
+.thumbnail-slider {
+    padding: 5px!important;
+}
+
+
+
 
 .thumb-img {
     height: -webkit-fill-available;
