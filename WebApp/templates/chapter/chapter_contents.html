@@ -1581,6 +1581,12 @@
     }
 
     function AddOtherMessageToChat(data) {
+        if ('currenttime' in data) {
+            datetimevalue = data.currenttime.split('-')
+            var currenttime = new Date(datetimevalue[0], parseInt(datetimevalue[1])-1, datetimevalue[2], datetimevalue[3], datetimevalue[4], datetimevalue[5], datetimevalue[6]).toISOString()
+        } else {
+            var currenttime = new Date().toISOString()
+        }
         var CheckIfToScrollChatx = CheckIfToScrollChat()
         $("#chat-box-content").append(`<li class="left clearfix">
                     	<span class="chat-img pull-left">
@@ -1589,7 +1595,7 @@
                                 <div class="chat-body clearfix">
                                     <div class="header">
                                         <strong class="primary-font"> ` + data.sender_name + "&nbsp;" + ` </strong>
-                                  <small class="pull-right text-muted">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time>    </small>
+                                  <small class="pull-right text-muted">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + currenttime + `></time>    </small>
                                     </div>
                                     <p>
                                         ` + data.chat_message + `
@@ -1611,15 +1617,22 @@
 
 
     function AddSelfMessageToChat(data) {
+        console.log(data)
+        if ('currenttime' in data) {
+            datetimevalue = data.currenttime.split('-')
+            var currenttime = new Date(datetimevalue[0], parseInt(datetimevalue[1])-1, datetimevalue[2], datetimevalue[3], datetimevalue[4], datetimevalue[5], datetimevalue[6]).toISOString()
+        } else {
+            var currenttime = new Date().toISOString()
+        }
         var CheckIfToScrollChatx = CheckIfToScrollChat()
         $("#chat-box-content").append(`<li class="right clearfix">
                     	<span class="chat-img pull-right">
-                    		<img class="chat-avatar" src="` + data.sender_icon + `" alt="` + data.sender_id + `">
+                    		<img class="chat-avatar" src=" {{ request.user.Avatar }}" alt="` + data.sender_id + `">
                     	</span>
                                 <div class="chat-body clearfix">
                                     <div class="header">
                                         <strong class="primary-font"> You </strong>
-                                   <div class="pull-right text-muted">         <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time> </div>
+                                   <div class="pull-right text-muted">         <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + currenttime + `></time> </div>
                                     </div>
                                     <p>
                                         ` + data.chat_message + `
