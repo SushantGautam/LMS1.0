@@ -833,7 +833,7 @@
         pauseAllVideos(); // change tab text for demo
     })
     $(document).keydown(function (e) {
-        if ($('#lightbox').css('display') == 'none') {
+        if ($('#lightbox').css('display') == 'none' && $(document.activeElement)[0] == $('body')[0] && !$(document.activeElement).hasClass('modal-open')) {
             if (e.keyCode == '39') {
                 $('#next-btn').click();
                 return false
@@ -1583,7 +1583,7 @@
     function AddOtherMessageToChat(data) {
         if ('currenttime' in data) {
             datetimevalue = data.currenttime.split('-')
-            var currenttime = new Date(datetimevalue[0], parseInt(datetimevalue[1])-1, datetimevalue[2], datetimevalue[3], datetimevalue[4], datetimevalue[5], datetimevalue[6]).toISOString()
+            var currenttime = new Date(Date.UTC(datetimevalue[0], parseInt(datetimevalue[1])-1, datetimevalue[2], datetimevalue[3], datetimevalue[4], datetimevalue[5], datetimevalue[6])).toISOString()
         } else {
             var currenttime = new Date().toISOString()
         }
@@ -1617,10 +1617,9 @@
 
 
     function AddSelfMessageToChat(data) {
-        console.log(data)
         if ('currenttime' in data) {
             datetimevalue = data.currenttime.split('-')
-            var currenttime = new Date(datetimevalue[0], parseInt(datetimevalue[1])-1, datetimevalue[2], datetimevalue[3], datetimevalue[4], datetimevalue[5], datetimevalue[6]).toISOString()
+            var currenttime = new Date(Date.UTC(datetimevalue[0], parseInt(datetimevalue[1])-1, datetimevalue[2], datetimevalue[3], datetimevalue[4], datetimevalue[5], datetimevalue[6])).toISOString()
         } else {
             var currenttime = new Date().toISOString()
         }
