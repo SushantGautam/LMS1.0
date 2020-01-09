@@ -1665,12 +1665,10 @@ class ContentsView(TemplateView):
             print(e)
             context['data'] = ""
 
-        list_of_files = glob.glob(path+'/chatlog/chapterchat' + str(chapterID) + '/*.txt') # * means all if need specific format then *.txt
-        for x in range(50):
-            try:
-                latest_file = max(list_of_files, key=os.path.getctime)
-                list_of_files.remove(latest_file)
+        list_of_files = sorted(glob.iglob(path+'/chatlog/chapterchat' + str(chapterID) + '/*.txt'), key=os.path.getctime, reverse=True)[:50]
 
+        for latest_file in list_of_files:
+            try:
                 f = open(latest_file, 'r')
                 if f.mode == 'r':
                     contents =f.read()
@@ -1680,7 +1678,6 @@ class ContentsView(TemplateView):
 
             except Exception as e:
                 pass
-        # print(context['chat_details'])
         return context
 
 

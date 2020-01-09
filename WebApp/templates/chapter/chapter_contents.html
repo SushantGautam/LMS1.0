@@ -1313,6 +1313,16 @@
 
 
     function changePage(page_number) {
+        if(page_number >= parseInt($('#totalpages').text())){
+            $('#next-btn').css('visibility', 'hidden')
+        }else{
+            $('#next-btn').css('visibility', 'visible')
+        }
+        if(page_number <= 1){
+            $('#prev-btn').css('visibility', 'hidden')
+        }else{
+            $('#prev-btn').css('visibility', 'visible')
+        }
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
