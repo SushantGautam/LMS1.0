@@ -138,8 +138,10 @@
                 console.log(response)
                 sendMessageWrittenToStudents();
                 $(".note-editable").append(`<a onclick="loadexam('/teachers/surveyinfodetail/detail/` + response['quiz_id'] + `', 1)">View Quick Survey Submissions</a>`);
-                sendMessageWrittenToTeachers();
-                loadexam('/teachers/surveyinfodetail/detail/' + response['quiz_id'], 1); //shows with close button 1
+                setTimeout(function() {
+                    sendMessageWrittenToTeachers();
+                    loadexam('/teachers/surveyinfodetail/detail/' + response['quiz_id'], 1); //shows with close button 1
+                })
 
                 //window.location.href = String(response['url']);
             }

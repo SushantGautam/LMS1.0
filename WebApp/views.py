@@ -1,5 +1,6 @@
 import json
 import os
+import glob
 import shutil
 import uuid
 import zipfile  # For import/export of compressed zip folder
@@ -592,7 +593,7 @@ class CourseInfoListView(ListView):
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
-            qs = qs.filter(Course_Name__icontains=query)
+            qs = qs.filter(Course_Name__contains=query)
             if not len(qs):
                 messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
@@ -1642,7 +1643,6 @@ def ThreeDViewer(request, urlpath=None):
 
     return render(request, '3D_Viewer/render_template.html', {'objpath': urlpath, 'mtlpath': mtlurlpath})
 
-
 class ContentsView(TemplateView):
     template_name = 'chapter/chapter_contents.html'
 
@@ -1654,6 +1654,7 @@ class ContentsView(TemplateView):
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
+        context['chat_details'] = []
         path = settings.MEDIA_ROOT
 
         try:
@@ -1663,6 +1664,20 @@ class ContentsView(TemplateView):
         except Exception as e:
             print(e)
             context['data'] = ""
+
+        list_of_files = sorted(glob.iglob(path+'/chatlog/chapterchat' + str(chapterID) + '/*.txt'), key=os.path.getctime, reverse=True)[:50]
+
+        for latest_file in list_of_files:
+            try:
+                f = open(latest_file, 'r')
+                if f.mode == 'r':
+                    contents =f.read()
+                    contents = contents.replace('`', '')
+                    context['chat_details'].insert(0, contents)
+                f.close()
+
+            except Exception as e:
+                pass
         return context
 
 

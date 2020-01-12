@@ -2135,12 +2135,23 @@ function setslider() {
                         <li class="tabs-link pagenumber" value="${key}" onclick="changePage('tab${key}')"></li>
                         <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
                                 <p style="display:inline-block">${key}</p> 
-                                <span style="float:right ">
-                                    <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                                <span style="float:right" >
+                                    <button class="clone-page-btn"  value="${key}">
+                                    <span  data-title= "Clone Page" >
+                                    <i class="fa fa-clone " aria-hidden="true"></i>
+                                    </span>
+                                    
+                                    </button>
                                 </span>
 
-                                <spannewpage style="float:right ">
-                                    <button class="delete-page-btn" value="${key}"><i class="fa fa-times " aria-hidden="true"></i></button>
+                                <span style="float:right">
+                                    <button class="delete-page-btn"   value="${key}">
+                                    <span data-title= "Delete Page">
+                                    <i class="fa fa-times " aria-hidden="true"></i>
+                                    </span>
+
+                                   
+                                    </button>
                                 </span>
                             </div>
                         
@@ -2160,13 +2171,24 @@ function setslider() {
                     </li>
                     <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
                         <p style="display:inline-block">${key}</p> 
-                        <span style="float:right ">
-                            <button class="clone-page-btn" value="${key}"><i class="fa fa-clone " aria-hidden="true"></i></button>
+                        <span style="float:right" >
+                        <button class="clone-page-btn"  value="${key}">
+                        <span  data-title= "Clone Page" >
+                        <i class="fa fa-clone " aria-hidden="true"></i>
+                        </span>
+                        
+                        </button>
+                    </span>
+
+                    <span style="float:right">
+                        <button class="delete-page-btn"   value="${key}">
+                        <span data-title= "Delete Page">
+                        <i class="fa fa-times " aria-hidden="true"></i>
                         </span>
 
-                        <spannewpage style="float:right ">
-                            <button class="delete-page-btn" value="${key}"><i class="fa fa-times " aria-hidden="true"></i></button>
-                        </span>
+                       
+                        </button>
+                    </span>
                     </div>
                             
                     <hr class="white-hr"/>
@@ -2191,13 +2213,24 @@ function newpagefunction(new_page_num) {
             <li class="tabs-link pagenumber current" value="${num_tabs}" onclick="changePage('tab${num_tabs}')"></li>
             <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
                     <p style="display:inline-block"></p> 
-                    <span style="float:right ">
-                        <button class="clone-page-btn" value="${num_tabs}"><i class="fa fa-clone " aria-hidden="true"></i></button>
-                    </span>
+                    <span style="float:right" >
+                                    <button class="clone-page-btn"  value="${key}">
+                                    <span  data-title= "Clone Page" >
+                                    <i class="fa fa-clone " aria-hidden="true"></i>
+                                    </span>
+                                    
+                                    </button>
+                                </span>
 
-                    <spannewpage style="float:right ">
-                        <button class="delete-page-btn" value="${num_tabs}"><i class="fa fa-times " aria-hidden="true"></i></button>
-                    </span>
+                                <span style="float:right">
+                                    <button class="delete-page-btn"   value="${key}">
+                                    <span data-title= "Delete Page">
+                                    <i class="fa fa-times " aria-hidden="true"></i>
+                                    </span>
+
+                                   
+                                    </button>
+                                </span>
                 </div>
             
             <hr class="white-hr"/>
@@ -2741,6 +2774,8 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
         }, 2000)
     })
 });
+
+
 
 $('#tabs-for-download').on('click', '.textdiv', function () {
     $this = $('.note-editable:focus')
