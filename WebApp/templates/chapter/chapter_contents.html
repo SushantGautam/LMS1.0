@@ -8,9 +8,8 @@
     {% define 0 as ifteacher %}
 {% endif %}
 
-
+{% block head %}
 <head>
-
     <link rel="icon"
           type="image/png"
           href="/static/images/logo.png"/>
@@ -23,7 +22,7 @@
     <link href="{% static 'build/css/theme.min.css' %}" rel="stylesheet">
     <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
-    <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet">
+    <!-- <link href="{% static 'chapterPageBuilder/css/style.css' %}" rel="stylesheet"> -->
 
     <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
@@ -46,220 +45,13 @@
 
 
 </head>
+{% endblock head %}
+
+
 <body>
-
-
 <div class="se-pre-con"></div>
-<style>
 
-    .se-pre-con {
-        position: fixed;
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        -webkit-transition: opacity 3s ease-in-out;
-        background: url(/static/images/uLMS2019_Loading_SVG.svg) center no-repeat #fff;
-    }
-
-    .custom-poster {
-        width: 100%;
-        height: 100%;
-        background-image: url(/static/3D_Viewer/3DLoading.gif);
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: 20vh;
-
-    }
-
-    .owl-carousel .owl-item img {
-        display: block;
-        width: auto;
-        height: -webkit-fill-available;
-
-    }
-
-    .owl-prev {
-        position: fixed;
-        bottom: 3vh;
-        left: 2%;
-
-        border-radius: 50%;
-        color: #337ab7 !important;
-        box-shadow: 2px 2px 3px #999;
-
-    }
-
-    .owl-carousel .owl-nav.disabled, .owl-carousel .owl-dots.disabled {
-        display: block !important;
-    }
-
-    .owl-next {
-        position: fixed;
-        bottom: 3vh;
-        right: 2%;
-        border-radius: 50%;
-        color: #337ab7 !important;
-        box-shadow: 2px 2px 3px #999;
-    }
-
-    html {
-        font-size: 13px;
-    }
-
-    body {
-        font-family: "Lato", sans-serif;
-    }
-
-    .examiframeholder {
-        height: 100vh;
-        width: 100%;
-        top: 0;
-        left: 0;
-        position: absolute;
-        z-index: 9999;
-    }
-
-    .closeiframebtn {
-        display: none;
-        position: fixed;
-        float: right;
-        top: 60vh;
-        right: 1%;
-        cursor: pointer;
-        bottom: 0;
-        /* background-color: white; */
-        /* width: 100%; */
-        /* left: 48%; */
-        text-align: center
-    }
-
-    .closeiframebtn button {
-        background-color: #2A3F54;
-        height: 75px;
-        width: 75px;
-        border-radius: 50%;
-    }
-
-    .closeiframebtn i {
-        /* float: right; */
-        font-size: xx-large;
-        font-weight: bold;
-        color: white;
-        /* border-bottom: groove; */
-        /* text-align: center; */
-
-    }
-
-    .sidenav {
-        height: 100%;
-        width: 0;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-        left: -5px;
-        background-color: black;
-        overflow-x: hidden;
-        transition: 0.5s;
-        padding-top: 10px;
-        border-right: 5px solid #2A3F54;
-    }
-
-    .sidenav a {
-        padding: 8px 8px 8px 32px;
-        text-decoration: none;
-        font-size: 13px;
-        color: white;
-        display: block;
-        transition: 0.3s;
-    }
-
-    .sidenav a:hover {
-        color: #f1f1f1;
-    }
-
-    .sidenav .closebtn {
-        position: fixed;
-        top: 15px;
-        right: 25px;
-        font-size: 36px;
-        margin-left: 50px;
-    }
-
-    .sidenav .editbtn {
-        position: fixed;
-        top: 80px;
-        right: 25px;
-        font-size: 36px;
-        margin-left: 50px;
-    }
-
-    @media screen and (max-height: 450px) {
-        .sidenav {
-            padding-top: 15px;
-        }
-
-        .sidenav a {
-            font-size: 18px;
-        }
-    }
-
-    .focus-page:focus {
-        color: blue;
-    }
-
-    @media screen and (max-width: 567px) {
-        .custom-btn-only {
-            height: auto !important;
-        }
-    }
-
-    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-        margin-bottom: .5em;
-        font-family: inherit;
-        font-weight: 500;
-        line-height: 1.2;
-        color: inherit
-    }
-
-    .h1, h1 {
-        font-size: 2.5em
-    }
-
-    .h2, h2 {
-        font-size: 2em
-    }
-
-    .h3, h3 {
-        font-size: 1.75em
-    }
-
-    .h4, h4 {
-        font-size: 1.5em
-    }
-
-    .h5, h5 {
-        font-size: 1.25em
-    }
-
-    .h6, h6 {
-        font-size: 1rem
-    }
-
-
-    .custom-carousel {
-        position: relative;
-    }
-
-
-    .owl-nav {
-        font-size: 50px;
-    }
-
-</style>
-
-
+{% block sidenav %}
 <div id="mySidenav" class="sidenav" style="z-index: 9999; position:relative; height: 100vh">
     <div id="closenave" style="right:0px" style="right:0px"><a id="closenav" href="javascript:void(0)" style="
     right: 25px;
@@ -417,6 +209,10 @@
 
     }
 </script>
+
+
+{% endblock sidenav %}
+
 <div class="container-fluid">
     <!-- For Title -->
 
@@ -439,17 +235,14 @@
               </span>
             </div>
 
+            {% if not connection_offline %}
             <span class="glyphicon glyphicon-th" id="hamburg-nav"
 
                   style="font-size: 25px;cursor:pointer;top:20px;left: 20px;z-index: 121;position: fixed;color:#339af0;"
             ></span>
+            {% endif %}
             <div id="page-contents" class="page-contents"></div>
-            <script>
-                $('#hamburg-nav').on('click mouseover', function () {
-                    openNav();
-                });
-            </script>
-
+           
 
         </div>
         <div class="progress progress-striped">
@@ -462,38 +255,14 @@
             {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
         {% else %}
             {% include "chapter/Content_Viewer_WebSocket_students.html" %}
-
         {% endif %}
 
 
 
         <div class="container custom-carousel thumbnail-slider" style="position:fixed; bottom:10px">
-
-
             <div id="thumbnail-slider" class="owl-carousel owl-theme thumbnail-container">
-
-
             </div>
-
         </div>
-
-
-        <!-- <div id="thumb-next-btn" class="thumb-nav-button" style="right:9.5%; padding-top: 5vh;
-    padding-left: 5vh;">
-            <i class="fa  fa-chevron-circle-right  fa-2x" style="
-    bottom: 3.5vh;
-    right:8% ;
-    position: fixed;
-        text-shadow: 2px 2px 2px white;"></i>
-        </div>
-        <div id="thumb-prev-btn" class="thumb-nav-button" style="left:7%;padding-top: 5vh;
-    padding-right: 5vh; ">
-            <i class=" fa fa-chevron-circle-left fa-2x" style="
-    bottom: 3.5vh;left:8%;
-    position: fixed;
-    text-shadow: 2px 2px 2px white;
-"></i>
-        </div> -->
 
         <div class="content-footer1 text-center">
             Page <span id="currentpage"></span> of <span id="totalpages"></span>
@@ -509,230 +278,231 @@
         <!-- For Footer -->
 
         <div class="row page-slide">
-
         </div>
 
 
-        <div class="chatonly" style="display: none">
-            <div class=" full-chat-container  bootstrap snippet">
+        
+    </div>
+    
+    {% block chatui %}
+    <div class="chatonly" style="display: none">
+        <div class=" full-chat-container  bootstrap snippet">
 
 
-                <div class="row upbarchat">
-                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding-left: 0px!important;">
-                        <ul class="chat-nav " style="padding-left: 0px;">
-                            {% if ifteacher %}
-                                <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
-                                    <i
-                                            class="fa fa-pencil"></i></li>
+            <div class="row upbarchat">
+                <div class="col-md-6 col-sm-6 col-xs-6" style="padding-left: 0px!important;">
+                    <ul class="chat-nav " style="padding-left: 0px;">
+                        {% if ifteacher %}
+                            <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
+                                <i
+                                        class="fa fa-pencil"></i></li>
 
-                                <li id="QuickSurvey" data-toggle="modal" data-target="#survey_content_modal">Quick
-                                    Survey
+                            <li id="QuickSurvey" data-toggle="modal" data-target="#survey_content_modal">Quick
+                                Survey
 
-                                    <i class="fa fa-pencil"></i></li>
-                                <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>
-                            {% else %}
-                                <li id="followteacher" class="offline-followteacher">Teacher
-                                    Offline<i class="fa fa-book"> </i></li>
-                            {% endif %}
-                            <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
-                            <li>Sound <input id="chatsound" type="checkbox" checked></li>
-                            <li id="speakContent">
-                                <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
+                                <i class="fa fa-pencil"></i></li>
+                            <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>
+                        {% else %}
+                            <li id="followteacher" class="offline-followteacher">Teacher
+                                Offline<i class="fa fa-book"> </i></li>
+                        {% endif %}
+                        <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
+                        <li>Sound <input id="chatsound" type="checkbox" checked></li>
+                        <li id="speakContent">
+                            <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 "
+                     style="padding-right: 9px!important; padding-left:0px!important">
+                    <div class="col-md-8 col-sm-8 col-xs-9">
+                        <span id="reloadcontent" class="text-center" style="margin-bottom: 5px;"> <i
+                                class="fa fa-refresh"> Reload Content  </i></span>
+                        <div style=" margin-top:5px">
+                            <span id="google_translate_element"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-3">
+                        <span id="closechatbox" style="float:right; color:rgb(119, 42, 42) "> <i
+                                class="fa fa-3x fa-close"></i></span>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="row" style="
+                  margin-right: 0px!important;
+                  margin-left: 0px!important;
+              ">
+
+
+                <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white "
+                     style="{{ ifteacher|yesno:' ,width: -webkit-fill-available;' }} ">
+
+                    <div class="row upbarchat">
+
+
+                    </div>
+                    <div class="chat-message">
+                        <ul class="chat" id="chat-box-content">
+                            <li class="left clearfix">
+                                  <span class="chat-img pull-left">
+                                      <img class="chat-avatar" src="https://bootdey.com/img/Content/user_3.jpg"
+                                           alt="User Avatar">
+                                  </span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">UBL BOT</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12
+                                            mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Hello! Try sending a message to everyone online now.
+                                    </p>
+                                </div>
+                            </li>
+                            <li class="right clearfix">
+                                  <span class="chat-img pull-right">
+                                      <img class="chat-avatar" src="https://bootdey.com/img/Content/user_1.jpg"
+                                           alt="User Avatar">
+                                  </span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">UBL BOT</strong>
+                                        <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13
+                                            mins
+                                            ago</small>
+                                    </div>
+                                    <p>
+                                        Your messages history are cleared on page reload for now.
+                                    </p>
+                                </div>
                             </li>
 
                         </ul>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 "
-                         style="padding-right: 9px!important; padding-left:0px!important">
-                        <div class="col-md-8 col-sm-8 col-xs-9">
-                            <span id="reloadcontent" class="text-center" style="margin-bottom: 5px;"> <i
-                                    class="fa fa-refresh"> Reload Content  </i></span>
-                            <div style=" margin-top:5px">
-                                <span id="google_translate_element"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-sm-4 col-xs-3">
-                            <span id="closechatbox" style="float:right; color:rgb(119, 42, 42) "> <i
-                                    class="fa fa-3x fa-close"></i></span>
-
-                        </div>
-
-
-                    </div>
 
                 </div>
+                {% if "teachers" in request.path %}
+                    <div class="col-md-4 col-sm-4 col-xs-4 bg-white ">
 
 
-                <div class="row" style="
-                      margin-right: 0px!important;
-                      margin-left: 0px!important;
-                  ">
+                        <!-- =============================================================== -->
+                        <!-- member list -->
+                        <div class="friend-list-height" style="overflow: auto;">
 
 
-                    <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white "
-                         style="{{ ifteacher|yesno:' ,width: -webkit-fill-available;' }} ">
+                            <ul id="friend-list" class="friend-list">
+                                {#                                    <li class="active ">#}
+                                {#                                        <a href="#" class="clearfix">#}
+                                {#                                            <div class="phead"><span class="time text-muted" style="font-size: 12px;">Just now</span>#}
+                                {##}
+                                {#                                                <span class="chat-alert label label-danger">1</span></div>#}
+                                {#                                            <br>#}
+                                {#                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""#}
+                                {#                                                 class="img-circle">#}
+                                {##}
+                                {##}
+                                {#                                            <h5>BOT</h5>#}
+                                {##}
+                                {#                                        </a>#}
+                                {##}
+                                {##}
+                                {#                                    </li>#}
+                                {#                                    <li class=" ">#}
+                                {#                                        <a href="#" class="clearfix">#}
+                                {#                                            <div class="phead"><span class="time text-muted" style="font-size: 12px;">Just now</span>#}
+                                {##}
+                                {#                                                <span class="chat-alert label label-danger">1</span></div>#}
+                                {#                                            <br>#}
+                                {#                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""#}
+                                {#                                                 class="img-circle">#}
+                                {##}
+                                {##}
+                                {#                                            <h5>BOT</h5>#}
+                                {##}
+                                {#                                        </a>#}
+                                {##}
+                                {#                                    </li>#}
+                                {#                                    <li class=" ">#}
+                                {#                                        <a href="#" class="clearfix">#}
+                                {#                                            <div class="phead"><span class="time text-muted" style="font-size: 12px;">Just now</span>#}
+                                {##}
+                                {#                                                <span class="chat-alert label label-danger">1</span></div>#}
+                                {#                                            <br>#}
+                                {#                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""#}
+                                {#                                                 class="img-circle">#}
+                                {##}
+                                {##}
+                                {#                                            <h5>BOT</h5>#}
+                                {##}
+                                {#                                        </a>#}
+                                {##}
+                                {#                                    </li>#}
+                                {#                                    <li class=" ">#}
+                                {#                                        <a href="#" class="clearfix">#}
+                                {#                                            <div class="phead"><span class="time text-muted" style="font-size: 12px;">Just now</span>#}
+                                {##}
+                                {#                                                <span class="chat-alert label label-danger">1</span></div>#}
+                                {#                                            <br>#}
+                                {#                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""#}
+                                {#                                                 class="img-circle">#}
+                                {##}
+                                {##}
+                                {#                                            <h5>BOT</h5>#}
+                                {##}
+                                {#                                        </a>#}
+                                {##}
+                                {#                                    </li>#}
 
-                        <div class="row upbarchat">
-
-
-                        </div>
-                        <div class="chat-message">
-                            <ul class="chat" id="chat-box-content">
-                                <li class="left clearfix">
-                                      <span class="chat-img pull-left">
-                                          <img class="chat-avatar" src="https://bootdey.com/img/Content/user_3.jpg"
-                                               alt="User Avatar">
-                                      </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font">UBL BOT</strong>
-                                            <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12
-                                                mins
-                                                ago</small>
-                                        </div>
-                                        <p>
-                                            Hello! Try sending a message to everyone online now.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="right clearfix">
-                                      <span class="chat-img pull-right">
-                                          <img class="chat-avatar" src="https://bootdey.com/img/Content/user_1.jpg"
-                                               alt="User Avatar">
-                                      </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font">UBL BOT</strong>
-                                            <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13
-                                                mins
-                                                ago</small>
-                                        </div>
-                                        <p>
-                                            Your messages history are cleared on page reload for now.
-                                        </p>
-                                    </div>
-                                </li>
 
                             </ul>
                         </div>
 
+
                     </div>
-                    {% if "teachers" in request.path %}
-                        <div class="col-md-4 col-sm-4 col-xs-4 bg-white ">
+                {% endif %}
 
-
-                            <!-- =============================================================== -->
-                            <!-- member list -->
-                            <div class="friend-list-height" style="overflow: auto;">
-
-
-                                <ul id="friend-list" class="friend-list">
-                                    {#                                    <li class="active ">#}
-                                    {#                                        <a href="#" class="clearfix">#}
-                                    {#                                            <div class="phead"><span class="time text-muted" style="font-size: 12px;">Just now</span>#}
-                                    {##}
-                                    {#                                                <span class="chat-alert label label-danger">1</span></div>#}
-                                    {#                                            <br>#}
-                                    {#                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""#}
-                                    {#                                                 class="img-circle">#}
-                                    {##}
-                                    {##}
-                                    {#                                            <h5>BOT</h5>#}
-                                    {##}
-                                    {#                                        </a>#}
-                                    {##}
-                                    {##}
-                                    {#                                    </li>#}
-                                    {#                                    <li class=" ">#}
-                                    {#                                        <a href="#" class="clearfix">#}
-                                    {#                                            <div class="phead"><span class="time text-muted" style="font-size: 12px;">Just now</span>#}
-                                    {##}
-                                    {#                                                <span class="chat-alert label label-danger">1</span></div>#}
-                                    {#                                            <br>#}
-                                    {#                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""#}
-                                    {#                                                 class="img-circle">#}
-                                    {##}
-                                    {##}
-                                    {#                                            <h5>BOT</h5>#}
-                                    {##}
-                                    {#                                        </a>#}
-                                    {##}
-                                    {#                                    </li>#}
-                                    {#                                    <li class=" ">#}
-                                    {#                                        <a href="#" class="clearfix">#}
-                                    {#                                            <div class="phead"><span class="time text-muted" style="font-size: 12px;">Just now</span>#}
-                                    {##}
-                                    {#                                                <span class="chat-alert label label-danger">1</span></div>#}
-                                    {#                                            <br>#}
-                                    {#                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""#}
-                                    {#                                                 class="img-circle">#}
-                                    {##}
-                                    {##}
-                                    {#                                            <h5>BOT</h5>#}
-                                    {##}
-                                    {#                                        </a>#}
-                                    {##}
-                                    {#                                    </li>#}
-                                    {#                                    <li class=" ">#}
-                                    {#                                        <a href="#" class="clearfix">#}
-                                    {#                                            <div class="phead"><span class="time text-muted" style="font-size: 12px;">Just now</span>#}
-                                    {##}
-                                    {#                                                <span class="chat-alert label label-danger">1</span></div>#}
-                                    {#                                            <br>#}
-                                    {#                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt=""#}
-                                    {#                                                 class="img-circle">#}
-                                    {##}
-                                    {##}
-                                    {#                                            <h5>BOT</h5>#}
-                                    {##}
-                                    {#                                        </a>#}
-                                    {##}
-                                    {#                                    </li>#}
-
-
-                                </ul>
-                            </div>
-
-
-                        </div>
-                    {% endif %}
-
-
-                </div>
-
-                <div class="row" style="
-                      margin-right: 0px!important;
-                      margin-left: 0px!important;">
-                    <div class="chat-box bg-white">
-                        <div class="input-group notranslate">
-                            <input id="chatmessageinput"
-                                   class="form-control border no-shadow no-rounded"
-                                   placeholder="Type your message here" required>
-                            <span class="input-group-btn">
-                                    <button style="padding: 17px;margin:0px" class="btn btn-success no-rounded"
-                                            type="button"
-                                            onclick="sendMessageWritten()">Send</button>
-                                </span>
-                        </div><!-- /input-group -->
-                    </div>
-                </div>
-
-
-                <!--=========================================================-->
-                <!-- selected chat -->
 
             </div>
+
+            <div class="row" style="
+                  margin-right: 0px!important;
+                  margin-left: 0px!important;">
+                <div class="chat-box bg-white">
+                    <div class="input-group notranslate">
+                        <input id="chatmessageinput"
+                               class="form-control border no-shadow no-rounded"
+                               placeholder="Type your message here" required>
+                        <span class="input-group-btn">
+                                <button style="padding: 17px;margin:0px" class="btn btn-success no-rounded"
+                                        type="button"
+                                        onclick="sendMessageWritten()">Send</button>
+                            </span>
+                    </div><!-- /input-group -->
+                </div>
+            </div>
+
+
+            <!--=========================================================-->
+            <!-- selected chat -->
+
         </div>
-
-
     </div>
-
 
     <div class="closechatopen float" id="closechatopen" style=" z-index: 500!important;">
 
         <i class="fa fa-file-text my-float"></i>
 
     </div>
+
+    {% endblock chatui %}
 
     <div id="examiframeholder">
         <div id="closeiframebtn" class="closeiframebtn">
@@ -744,7 +514,7 @@
         </div>
         <div id="iframeholder"></div>
     </div>
-
+    
 </body>
 
 <!-- jQuery -->
@@ -763,7 +533,11 @@
 
 
     var currentpage = 1;
+
     var roomName = "chapterchat{{chapter.id}}";
+
+    {% if not connection_offline %}
+    {% block chatwebsocket %}
     var chatSocket;
 
     function startWebsocket() {
@@ -814,7 +588,9 @@
             })
         );
     });
+    {% endblock %}
 
+    {% endif %}
     lightbox.option({
         'resizeDuration': 200,
         'wrapAround': true
@@ -866,7 +642,7 @@
         }
     });
 
-
+    {% if not connection_offline %}
     $('#closechatbox').on('click mouseover', function (e) {
         $('#closechatopen').show();
         $('.chatonly').hide();
@@ -882,12 +658,11 @@
             updateStudentOnlineBox("");
         {% endif  %}
     });
+    {% endif %}
+
     {% if data %}
         var data = {{ data | safe}};
     {% endif %}
-
-    // container_height = $('body').height() - $('.content-title1').height() - $('.content-footer1').height()
-    // $('#container').css('height', container_height * 100 / $('body').height() + "%")
 
     function pauseAllVideos() {
         $('iframe').each(function () {
@@ -902,7 +677,15 @@
     }
 
     $(document).ready(function () {
+        $('#hamburg-nav').on('click mouseover', function () {
+            openNav();
+        });
 
+        $('#container').click(function () {
+            $('.chatonly').hide();
+            $('.closechatopen').show();
+            $('.closenav').click();
+        });
         $('#page-contents').on('click', '.iframefullscreenbtn', function () {
             // check if fullscreen mode is available
             if (document.fullscreenEnabled ||
@@ -930,7 +713,6 @@
     });
 
     $('.page-contents').on('click', '.chapterbuttons', function (e) {
-        console.log(this)
         if ($(this).hasClass('btn-div')) {
             return
         }
@@ -1338,6 +1120,80 @@
     }
 
 
+    
+    function getProgressWidth() {
+        let w = (window.currentpage / parseFloat('{{data.numberofpages}}')) * 100;
+        $('.progress-bar').css('width', w + '%')
+    }
+
+</script>
+
+
+<script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"></script>
+
+
+
+<script>
+    let idleTimer = null;
+    let idleState = false;
+
+    function showFoo(time) {
+        clearTimeout(idleTimer);
+        if (idleState == true) {
+            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+
+        }
+        idleState = false;
+        idleTimer = setTimeout(function () {
+            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
+
+            idleState = true;
+        }, time);
+    }
+
+    showFoo(2000);
+
+    $(window).on("mouseover touchstart click", function () {
+        showFoo(2000);
+    });
+
+    $(window).load(function () {
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("slow");
+
+
+        // retrieve slide number
+        if (parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}")) >= 1) {
+            currentpage = parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}"));
+            changePage(currentpage)
+
+        }
+
+
+        // save chapter number for course
+        localStorage.setItem("chapter_for_course" + {{ course.pk }}, {{ chapter.pk }});
+
+
+    });
+
+    function fontResize() {
+        if (window.innerWidth > 567) {
+            var perc = parseInt($('.container12').width()) / 80;
+            $('.container12').css('font-size', perc);
+        }
+
+    }
+
+    $(document).ready(function () {
+        fontResize();
+    });
+    $(window).resize(function () {
+        fontResize();
+    });
+</script>
+
+{% if not connection_offline %}
+<script>
     function sendMessageWrittenToTeachers() {
         if ($('.note-editable').html()) {
             chatSocket.send(
@@ -1501,14 +1357,6 @@
 
     }
 
-    function getProgressWidth() {
-        let w = (window.currentpage / parseFloat('{{data.numberofpages}}')) * 100;
-        $('.progress-bar').css('width', w + '%')
-    }
-
-</script>
-
-<script>
     $(document).ready(function(){
         // var chatdetails = `{{chat_details |safe }}`
         {% for chat in chat_details %}
@@ -1541,6 +1389,7 @@
     })
 </script>
 
+
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -1551,37 +1400,12 @@
 
 
 </script>
-<script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"></script>
 <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
 
 
-<script>
-    let idleTimer = null;
-    let idleState = false;
-
-    function showFoo(time) {
-        clearTimeout(idleTimer);
-        if (idleState == true) {
-            $("#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .thumbnail-slider , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
-
-        }
-        idleState = false;
-        idleTimer = setTimeout(function () {
-            $("#prev-btn , #hamburg-nav, #next-btn,  .closebtn, .editbtn, .content-title1 , .thumbnail-slider , .content-footer1, #thumb-next-btn , #thumb-prev-btn, .float").addClass("inactive");
-
-            idleState = true;
-        }, time);
-    }
-
-    showFoo(2000);
-
-    $(window).on("mouseover touchstart click", function () {
-        showFoo(2000);
-    });
-</script>
 <script>
     function CheckIfToScrollChat() {
         var isScrolledToBottom = 0;
@@ -1721,50 +1545,6 @@
     }
 
 
-    $('#container').click(function () {
-
-        $('.chatonly').hide();
-        $('.closechatopen').show();
-        $('.closenav').click();
-
-    });
-
-
-    $(window).load(function () {
-        // Animate loader off screen
-        $(".se-pre-con").fadeOut("slow");
-
-
-        // retrieve slide number
-        if (parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}")) >= 1) {
-            currentpage = parseInt(localStorage.getItem("ChapterPageNumber_{{chapter.id}}"));
-            changePage(currentpage)
-
-        }
-
-
-        // save chapter number for course
-        localStorage.setItem("chapter_for_course" + {{ course.pk }}, {{ chapter.pk }});
-
-
-    });
-
-    function fontResize() {
-        if (window.innerWidth > 567) {
-            var perc = parseInt($('.container12').width()) / 80;
-            $('.container12').css('font-size', perc);
-        }
-
-    }
-
-    $(document).ready(function () {
-        fontResize();
-    });
-    $(window).resize(function () {
-        fontResize();
-    });
-
-
     window.addEventListener('beforeunload', function (e) {
 
         // the absence of a returnValue property on the event will guarantee the browser unload happens
@@ -1801,6 +1581,8 @@
     }
 
 </script>
+
+{% endif %}
 
 
 
