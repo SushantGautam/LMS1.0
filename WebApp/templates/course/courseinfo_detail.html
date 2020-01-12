@@ -78,16 +78,20 @@
                         {% else %}
                             {{ object.get_update_url }}
                         {% endif %}"><b><u>Edit Course</u></b></a>
+                        {% if '/teachers' not in request.path %}
+
                         <span style="float: right;">
                         <a id="{{ object.pk }}" class="course-confirm-delete"
                            style="color: rgb(255, 0, 0);cursor:pointer">Delete</a>
                     </span>
-                        <form method="post" action="{% url 'courseinfo_delete' pk=object.pk %}"
+                    <form method="post" action="{% url 'courseinfo_delete' pk=object.pk %}"
                               id="deleteCourse{{ object.pk }}">
                             {% csrf_token %}
                             <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
                             <input type="hidden" value="{{ object.pk }}" name="course_id">
                         </form>
+                    {% endif %}
+                        
                     </div>
                 {% endif %}
             </div>
