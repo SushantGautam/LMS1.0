@@ -34,7 +34,7 @@ def storeChat(message, room_name):
     if not os.path.exists(os.path.join(path, 'chatlog/' + room_name)):
         os.makedirs(os.path.join(path, 'chatlog/' + room_name))
     data = json.loads(message.content['text'])
-    currenttime = datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
+    currenttime = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
     data['currenttime'] = currenttime
     # pathfilelist = [path,'chatlog',room_name + '' + currenttime + '.txt']
     # # pathfile = reduce(os.path.join, pathfilelist)
