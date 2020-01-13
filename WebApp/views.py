@@ -1655,6 +1655,7 @@ class ContentsView(TemplateView):
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
         context['chat_details'] = []
+        context['connection_offline'] = False
         path = settings.MEDIA_ROOT
 
         try:
@@ -1679,6 +1680,46 @@ class ContentsView(TemplateView):
             except Exception as e:
                 pass
         return context
+
+class OfflineContentsView(ContentsView):
+    template_name = 'chapter/offlineviewer.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['connection_offline'] = True
+        return context
+
+import shutil
+import time
+def get_static_files(request):
+    if not (os.path.exists(os.path.join(settings.MEDIA_URL, 'staticfiles.zip'))):
+        list_of_files = [
+            'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+            'static/vendorsx/font-awesome/css/font-awesome.min.css',
+            'static/build/css/theme.min.css',
+            'static/chapterPageBuilder/css/style-content.css',
+            'static/chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css',
+            'static/chapterPageBuilder/js/owl-carousel/owl.carousel.js',
+            'static/images/blankpage.jpg',
+            'static/images/uLMS2019_Loading_SVG.svg',
+            'static/lightbox/css/lightbox.css',
+            'static/lightbox/images/close.png',
+            'static/lightbox/images/loading.gif',
+            'static/lightbox/images/next.png',
+            'static/lightbox/images/prev.png',
+        ]
+
+        path = settings.MEDIA_ROOT
+        for src in list_of_files:
+            dst = os.path.join(path, src)
+            dstfolder = os.path.dirname(dst)
+            if not os.path.exists(dstfolder):
+                os.makedirs(dstfolder)
+            shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
+        # time.sleep(2)
+        shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
+
+    return redirect(settings.MEDIA_URL + '/staticfiles.zip')
 
 
 from quiz.views import Sitting
