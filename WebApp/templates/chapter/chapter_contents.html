@@ -63,7 +63,6 @@
         background: url(/static/images/uLMS2019_Loading_SVG.svg) center no-repeat #fff;
     }
 
-
     .custom-poster {
         width: 100%;
         height: 100%;
@@ -74,6 +73,12 @@
 
     }
 
+    .owl-carousel .owl-item img {
+        display: block;
+        width: auto;
+        height: -webkit-fill-available;
+
+    }
 
     .owl-prev {
         position: fixed;
@@ -473,7 +478,7 @@
         </div>
 
 
-       
+
 
         <div class="content-footer1 text-center">
             Page <span id="currentpage"></span> of <span id="totalpages"></span>
@@ -813,7 +818,7 @@
         pauseAllVideos(); // change tab text for demo
     })
     $(document).keydown(function (e) {
-        if ($('#lightbox').css('display') == 'none') {
+        if ($('#lightbox').css('display') == 'none' && $(document.activeElement)[0] == $('body')[0] && !$(document.activeElement).hasClass('modal-open')) {
             if (e.keyCode == '39') {
                 $('#next-btn').click();
                 return false
@@ -1235,19 +1240,13 @@
     }
 
     $(document).ready(function () {
-
         setThumbnails();
         $('.owl-carousel').owlCarousel({
             nav: true,
             // slideBy: 5,
             rewind: true,
             dots: false,
-            margin: 10,
-            responsiveClass: true,
-            startPosition: 0,
-
-
-            // items: parseInt($('#totalpages').text()),
+            items: parseInt($('#totalpages').text()),
             navText: ["<i class=' fa fa-chevron-circle-left'></i>",
                 "<i class='fa  fa-chevron-circle-right'></i>"],
             responsive: {
@@ -1256,7 +1255,7 @@
                 },
                 300: {
                     items: 2
-                   
+
                 },
                 400:{
                     items: 3
@@ -1269,8 +1268,6 @@
                 }
             }
         })
-
-
         Layout(x)
         x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
@@ -1309,6 +1306,16 @@
 
 
     function changePage(page_number) {
+        if(page_number >= parseInt($('#totalpages').text())){
+            $('#next-btn').css('visibility', 'hidden')
+        }else{
+            $('#next-btn').css('visibility', 'visible')
+        }
+        if(page_number <= 1){
+            $('#prev-btn').css('visibility', 'hidden')
+        }else{
+            $('#prev-btn').css('visibility', 'visible')
+        }
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
@@ -1498,6 +1505,39 @@
 
 </script>
 
+<script>
+    $(document).ready(function(){
+        // var chatdetails = `{{chat_details |safe }}`
+        {% for chat in chat_details %}
+            chat_data = `{{chat|escapejs}}`
+
+            var details = JSON.parse(chat_data)
+            if (details.sender_id == '{{ request.user.id }}') {
+
+                if ('SendOnlyToTeachers' in details && window.location.href.indexOf("/teachers") > -1){
+                    AddSelfMessageToChat(details)
+                }
+                if ('SendOnlyToStudents' in details && window.location.href.indexOf("/students") > -1){
+                    AddSelfMessageToChat(details)
+                }
+                if (!('SendOnlyToTeachers' in details) && !('SendOnlyToStudents' in details)) {
+                    AddSelfMessageToChat(details)
+                }
+            } else {
+                if ('SendOnlyToTeachers' in details && window.location.href.indexOf("/teachers") > -1){
+                    AddOtherMessageToChat(details)
+                }
+                if ('SendOnlyToStudents' in details && window.location.href.indexOf("/students") > -1){
+                    AddOtherMessageToChat(details)
+                }
+                if (!('SendOnlyToTeachers' in details) && !('SendOnlyToStudents' in details)) {
+                    AddOtherMessageToChat(details)
+                }
+            }
+        {% endfor %}
+    })
+</script>
+
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -1525,7 +1565,7 @@
     function showFoo(time) {
         clearTimeout(idleTimer);
         if (idleState == true) {
-            $(" .thumbnail-slider ,#prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
+            $(".thumbnail-slider, #prev-btn , #hamburg-nav, #next-btn , .closebtn, .editbtn, .closechatopen , .content-title1 , .content-footer1 , #thumb-next-btn , #thumb-prev-btn , .float").removeClass("inactive");
 
         }
         idleState = false;
@@ -1538,24 +1578,11 @@
 
     showFoo(2000);
 
-
     $(window).on("mouseover touchstart click", function () {
         showFoo(2000);
     });
-
-
-    $(".content-title1").click(function AlertSave() {
-        $(".content-title1").hide();
-        setTimeout(function () {
-            $(".content-title1").show();
-        }, 3000);
-    });
-
-
 </script>
 <script>
-
-
     function CheckIfToScrollChat() {
         var isScrolledToBottom = 0;
         var out = document.getElementById("chat-box-content");
@@ -1564,6 +1591,12 @@
     }
 
     function AddOtherMessageToChat(data) {
+        if ('currenttime' in data) {
+            datetimevalue = data.currenttime.split('-')
+            var currenttime = new Date(Date.UTC(datetimevalue[0], parseInt(datetimevalue[1])-1, datetimevalue[2], datetimevalue[3], datetimevalue[4], datetimevalue[5], datetimevalue[6])).toISOString()
+        } else {
+            var currenttime = new Date().toISOString()
+        }
         var CheckIfToScrollChatx = CheckIfToScrollChat()
         $("#chat-box-content").append(`<li class="left clearfix">
                     	<span class="chat-img pull-left">
@@ -1572,7 +1605,7 @@
                                 <div class="chat-body clearfix">
                                     <div class="header">
                                         <strong class="primary-font"> ` + data.sender_name + "&nbsp;" + ` </strong>
-                                  <small class="pull-right text-muted">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time>    </small>
+                                  <small class="pull-right text-muted">  <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + currenttime + `></time>    </small>
                                     </div>
                                     <p>
                                         ` + data.chat_message + `
@@ -1594,15 +1627,21 @@
 
 
     function AddSelfMessageToChat(data) {
+        if ('currenttime' in data) {
+            datetimevalue = data.currenttime.split('-')
+            var currenttime = new Date(Date.UTC(datetimevalue[0], parseInt(datetimevalue[1])-1, datetimevalue[2], datetimevalue[3], datetimevalue[4], datetimevalue[5], datetimevalue[6])).toISOString()
+        } else {
+            var currenttime = new Date().toISOString()
+        }
         var CheckIfToScrollChatx = CheckIfToScrollChat()
         $("#chat-box-content").append(`<li class="right clearfix">
                     	<span class="chat-img pull-right">
-                    		<img class="chat-avatar" src="` + data.sender_icon + `" alt="` + data.sender_id + `">
+                    		<img class="chat-avatar" src=" {{ request.user.Avatar }}" alt="` + data.sender_id + `">
                     	</span>
                                 <div class="chat-body clearfix">
                                     <div class="header">
                                         <strong class="primary-font"> You </strong>
-                                   <div class="pull-right text-muted">         <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + new Date().toISOString() + `></time> </div>
+                                   <div class="pull-right text-muted">         <i class="fa fa-clock-o"></i> <time   class="timeago" datetime= ` + currenttime + `></time> </div>
                                     </div>
                                     <p>
                                         ` + data.chat_message + `
@@ -1724,7 +1763,6 @@
     }
 
     $(document).ready(function () {
-        fontResize();
         fontResize();
     });
     $(window).resize(function () {
