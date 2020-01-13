@@ -1694,14 +1694,16 @@ import time
 def get_static_files(request):
     if not (os.path.exists(os.path.join(settings.MEDIA_URL, 'staticfiles.zip'))):
         list_of_files = [
-            'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
-            'static/vendorsx/font-awesome/css/font-awesome.min.css',
+            'static/3D_Viewer/model-viewer.js',
             'static/build/css/theme.min.css',
             'static/chapterPageBuilder/css/style-content.css',
             'static/chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css',
             'static/chapterPageBuilder/js/owl-carousel/owl.carousel.js',
             'static/images/blankpage.jpg',
             'static/images/uLMS2019_Loading_SVG.svg',
+            'static/js/modernizr.js',
+            'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+            'static/vendorsx/font-awesome/css/font-awesome.min.css',
             'static/lightbox/css/lightbox.css',
             'static/lightbox/images/close.png',
             'static/lightbox/images/loading.gif',

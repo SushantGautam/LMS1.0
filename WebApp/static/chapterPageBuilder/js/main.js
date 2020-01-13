@@ -2214,7 +2214,7 @@ function newpagefunction(new_page_num) {
             <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
                     <p style="display:inline-block"></p> 
                     <span style="float:right" >
-                                    <button class="clone-page-btn"  value="${key}">
+                                    <button class="clone-page-btn"  value="${num_tabs}">
                                     <span  data-title= "Clone Page" >
                                     <i class="fa fa-clone " aria-hidden="true"></i>
                                     </span>
@@ -2223,7 +2223,7 @@ function newpagefunction(new_page_num) {
                                 </span>
 
                                 <span style="float:right">
-                                    <button class="delete-page-btn"   value="${key}">
+                                    <button class="delete-page-btn"   value="${num_tabs}">
                                     <span data-title= "Delete Page">
                                     <i class="fa fa-times " aria-hidden="true"></i>
                                     </span>
