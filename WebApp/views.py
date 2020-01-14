@@ -1704,15 +1704,20 @@ def get_static_files(request):
             'static/js/modernizr.js',
             'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
             'static/vendorsx/font-awesome/css/font-awesome.min.css',
+            
             'static/lightbox/css/lightbox.css',
+            'static/lightbox/js/lightbox.js',
             'static/lightbox/images/close.png',
             'static/lightbox/images/loading.gif',
             'static/lightbox/images/next.png',
             'static/lightbox/images/prev.png',
+            
             'static/vendorsx/bootstrap/dist/css/bootstrap.css',
             'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
             'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
             'static/vendorsx/jquery/dist/jquery.min.js',
+            'static/vendorsx/font-awesome/css/font-awesome.min.css',
+            'static/vendorsx/font-awesome/fonts/fontawesome-webfont.woff2?v=4.6.3'
         ]
 
         path = settings.MEDIA_ROOT

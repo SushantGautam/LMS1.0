@@ -23,7 +23,10 @@
     <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
     <link href="{% static 'chapterPageBuilder/css/style-content.css' %}" rel="stylesheet">
+
+    {% if not connection_offline %}
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
+    {% endif %}
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
 
     <script type="text/javascript" crossorigin="anonymous"
@@ -520,8 +523,10 @@
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/modernizr.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
 
+{% if not connection_offline %}
+<script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
+{% endif %}
 
 <script type="text/javascript">
     {% if not data %}
@@ -1092,11 +1097,12 @@
 
         });
 
-
-        $('#chatmessageinput').summernote({
-            toolbar: []
-        });
-        $('#chatmessageinput').parent().find('.note-statusbar').remove();
+        {% if not connection_offline %}
+            $('#chatmessageinput').summernote({
+                toolbar: []
+            });
+            $('#chatmessageinput').parent().find('.note-statusbar').remove();
+        {% endif %}
     });
 
 
