@@ -1103,10 +1103,13 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
         });
         var btn_id = parseInt(e.currentTarget.id) + 1
         $('#quiz-form input[type=text]').val('');
-        $('#quiz-btn-name').val($(this).parent().parent().find('button').text().trim());
+        $('#quiz-btn-name').val($(this).parent().parent().find('.resizable-text-only').text().trim());
         var link = $(this).parent().parent().find('a').attr('href');
         if (link != undefined) {
             link = link.replace('http://', '');
+        } else {
+            $('#quiz-btn-name').parent().hide()
+            $('#quiz-name').parent().parent().hide()
         }
         $('#quiz-link').val(link);
         $('#quiz-name').val($(this).parent().parent().find('.quiz-name').text().trim());
@@ -1188,10 +1191,13 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
         });
         var btn_id = parseInt(e.currentTarget.id) + 1
         $('#survey-form input[type=text]').val('');
-        $('#survey-btn-name').val($(this).parent().parent().find('a').text().trim());
-        var link = $(this).parent().parent().find('button').attr('href');
+        $('#survey-btn-name').val($(this).parent().parent().find('.resizable-text-only').text().trim());
+        var link = $(this).parent().parent().find('a').attr('href');
         if (link != undefined) {
             link = link.replace('http://', '');
+        } else {
+            $('#survey-btn-name').parent().hide()
+            $('#survey-name').parent().parent().hide()
         }
         $('#survey-link').val(link);
         $('#survey-name').val($(this).parent().parent().find('.survey-name').text().trim());
@@ -1903,6 +1909,9 @@ $(document).ready(function () {
     $('#myTable').on('click', '.selectquiz', function () {
         $('#quiz-name').val($(this).closest('td').prev('td').text().trim())
         $('#quiz-link').val(`/quiz/quiz${$(this).val().trim()}/take/`)
+        $('#quiz-btn-name').parent().show()
+        $('#quiz-name').parent().parent().show()
+        $('#survey-submit').click()
     })
     // ======================================================================
 
@@ -1927,6 +1936,10 @@ $(document).ready(function () {
     $('#mySurveyTable').on('click', '.selectsurvey', function () {
         $('#survey-name').val($(this).closest('td').prev('td').text().trim())
         $('#survey-link').val(`/students/questions_student_detail/detail/${$(this).val().trim()}`)
+
+        $('#survey-btn-name').parent().show()
+        $('#survey-name').parent().parent().show()
+        $('#survey-submit').click()
     });
 
     $("#importzipfile").change(function (e) {
@@ -2214,7 +2227,7 @@ function newpagefunction(new_page_num) {
             <div style="position:absolute; top:0px;left:0;right:0; margin-top:5px;padding-left:5px">
                     <p style="display:inline-block"></p> 
                     <span style="float:right" >
-                                    <button class="clone-page-btn"  value="${key}">
+                                    <button class="clone-page-btn"  value="${num_tabs}">
                                     <span  data-title= "Clone Page" >
                                     <i class="fa fa-clone " aria-hidden="true"></i>
                                     </span>
@@ -2223,7 +2236,7 @@ function newpagefunction(new_page_num) {
                                 </span>
 
                                 <span style="float:right">
-                                    <button class="delete-page-btn"   value="${key}">
+                                    <button class="delete-page-btn"   value="${num_tabs}">
                                     <span data-title= "Delete Page">
                                     <i class="fa fa-times " aria-hidden="true"></i>
                                     </span>
