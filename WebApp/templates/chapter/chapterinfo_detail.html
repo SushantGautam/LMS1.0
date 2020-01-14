@@ -64,7 +64,7 @@
 
         {% if '/students' not in request.path %}
 
-            <div class="col-md-12 col-sm-12 col-xs-12">
+            <div id="edit-delete" class="col-md-12 col-sm-12 col-xs-12">
                 <br>
                 <a style="margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
         /teachers{{ object.get_update_url }}
@@ -353,6 +353,7 @@
 </div>
 
 {% block customjss %}
+
     <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
     <script>
         $(document).on('click', '.chapter-confirm-delete', function () {
@@ -363,6 +364,22 @@
                 return false;
             }
         });
+    </script>
+    <script>
+        let params = new URLSearchParams(location.search);
+        $(document).ready(function() {
+
+       
+        if (params.get('ifquiz')){
+            $('.left_col, .top_nav , .breadcrumb  , .detailListHeader , #buttons , #add-newassignment-btn , .header_hr , #edit-delete , #footerText').remove(); 
+            $('#pre_test_popup') .click();
+           
+        }
+        params.get('ifquiz')
+         });
+    
+    
+    
     </script>
 
     <script>
