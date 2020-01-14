@@ -1717,7 +1717,7 @@ def get_static_files(request):
             'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
             'static/vendorsx/jquery/dist/jquery.min.js',
             'static/vendorsx/font-awesome/css/font-awesome.min.css',
-            'static/vendorsx/font-awesome/fonts/fontawesome-webfont.woff2?v=4.6.3'
+            'static/vendorsx/font-awesome/fonts/fontawesome-webfont.woff2'
         ]
 
         path = settings.MEDIA_ROOT
