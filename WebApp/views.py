@@ -1709,6 +1709,10 @@ def get_static_files(request):
             'static/lightbox/images/loading.gif',
             'static/lightbox/images/next.png',
             'static/lightbox/images/prev.png',
+            'static/vendorsx/bootstrap/dist/css/bootstrap.css',
+            'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+            'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
+            'static/vendorsx/jquery/dist/jquery.min.js',
         ]
 
         path = settings.MEDIA_ROOT

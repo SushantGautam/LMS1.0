@@ -21,7 +21,8 @@ urlpatterns = [
                   path('', decorator_include(login_required, 'WebApp.urls')),
                   path('students/', decorator_include(login_required, 'WebApp.student_module.urls')),
                   path('teachers/', decorator_include(login_required, 'WebApp.teacher_module.urls')),
-
+                    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/offline_contents',
+         views.OfflineContentsView.as_view(), name='offlinecontentviewer'),
                   url(r'^$', views.start, name='start'),
                   path('forum/', include('forum.urls')),
                   path('survey/', include('survey.urls')),
