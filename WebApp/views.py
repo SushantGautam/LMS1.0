@@ -1692,6 +1692,7 @@ import time
 def get_static_files(request):
     # if not (os.path.exists(os.path.join(settings.MEDIA_URL, 'staticfiles.zip'))):
     list_of_files = [
+        'static/lightbox',
         'static/3D_Viewer/model-viewer.js',
         'static/build/css/theme.min.css',
         'static/chapterPageBuilder/css/style-content.css',
@@ -1703,28 +1704,27 @@ def get_static_files(request):
         'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
         'static/vendorsx/font-awesome/css/font-awesome.min.css',
         
-        'static/lightbox/css/lightbox.css',
-        'static/lightbox/js/lightbox.js',
-        'static/lightbox/images/close.png',
-        'static/lightbox/images/loading.gif',
-        'static/lightbox/images/next.png',
-        'static/lightbox/images/prev.png',
-        
         'static/vendorsx/bootstrap/dist/css/bootstrap.css',
         'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
         'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
         'static/vendorsx/jquery/dist/jquery.min.js',
-        'static/vendorsx/font-awesome/css/font-awesome.min.css',
-        'static/vendorsx/font-awesome/fonts/fontawesome-webfont.woff2'
+        'static/vendorsx/font-awesome',
+
+        'static/pdfjs',
     ]
 
     path = settings.MEDIA_ROOT
     for src in list_of_files:
         dst = os.path.join(path, src)
-        dstfolder = os.path.dirname(dst)
-        if not os.path.exists(dstfolder):
-            os.makedirs(dstfolder)
-        shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
+        if not os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
+            dstfolder = os.path.dirname(dst)
+            if not os.path.exists(dstfolder):
+                os.makedirs(dstfolder)
+        if os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
+            if not (os.path.exists(dst)):
+                shutil.copytree(settings.BASE_DIR+'/WebApp/' +src, dst)
+        else:
+            shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
     # time.sleep(2)
     shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
 
