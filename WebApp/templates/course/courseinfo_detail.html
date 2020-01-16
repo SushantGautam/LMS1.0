@@ -19,17 +19,18 @@
 <div class="outerdiv">
     {% include 'WebApp/theme/alerts.html' %}
 
-    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+    <div class=" course-info col-md-12 col-sm-12 col-xs-12 text-center">
         <h2 class="detailListHeader">Course Information</h2>
     </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <hr class="header_hr" style="margin-bottom: 5px;margin-top: 5px;">
+       
+        <hr class="course-info header_hr" style="margin-bottom: 5px;margin-top: 5px;">
         <div class="col-md-6 col-sm-12 col-xs-12 no-padding">
-            <h3 align="center"><b>{{ object.Course_Name }}</b></h3>
+            <h3  class ="course-info" align="center"><b>{{ object.Course_Name }}</b></h3>
             <br>
 
-            <img class="card-img-top" src="
+            <img class="course-info card-img-top" src="
                             {% if object.Course_Cover_File %}
                                 /media/{{ object.Course_Cover_File }}
                             {% else %}
@@ -44,7 +45,7 @@
             <div class="courseDetailStyle1 row" style="margin-top: 10px">
 
 
-                <div class="col-lg-6" style="font-size: 15px;">
+                <div class="course-info 5col-lg-6" style="font-size: 15px;">
 
                     <h5 align="center">
                         {% if topic %}
@@ -95,6 +96,7 @@
                     </div>
                 {% endif %}
             </div>
+       
             <table class="table">
 
                 <tr>
@@ -125,13 +127,13 @@
                     </td>
                 </tr>
             </table>
-            <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class=" course-info col-md-12 col-sm-12 col-xs-12 no-padding">
                 <h4 align="center"><b>Course Description</b></h4>
                 <p style="margin-left: 10px; overflow-wrap:break-word; "> {{ object.Course_Description }} </p>
                 <hr>
             </div>
             {% if not "students" in request.path %}
-                <!-- Quick Survey Button -->
+                <!-- Quick   Button -->
                 <button type="button" class="btn qts-button" id="new_survey_btn"
                         data-toggle="modal"
                         data-target="#survey_content_modal"><i class="fa fa-plus"></i> Survey
@@ -149,13 +151,13 @@
 
             <table class="table">
                 {% if quizcount %}
-                    <tr>
+                    <tr class="course-info">
                         <td style="border-top:0 ">
                             <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
     width: -webkit-fill-available;
 ">
 
-                                <div class="panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
+                                <div class=" panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
 
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="headingTwobb">
@@ -298,7 +300,7 @@
                 </tr>
 
 
-                <tr>
+                <tr class="course-info">
                     {% if numberOfQuizExclExams.count %}
                         <td>
 
@@ -391,13 +393,13 @@
         <div class="col-md-6 col-sm-12 xol-xs-12">
             <div class="col-md-12 col-sm-12 xol-xs-12">
                 <div class="col-md-8 col-sm-12 col-xs-12 text-center">
-                    <h2 class="subHeader">Chapters</h2>
+                    <h2 class="course-info subHeader">Chapters</h2>
 
 
                 </div>
 
                 {% if '/students' not in request.path %}
-                    <div class="col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
+                    <div class=" course-info col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
                         <button type="button" class="btn-sm btn-success" data-toggle="modal"
                                 data-target="#exampleModal1"
                                 id="add-newchapter-btn">
@@ -408,7 +410,7 @@
                 <div class="col-md-12 col-sm-12 xol-xs-12">
                     <script> var lastchapter = 0;</script>
                     {% for o in chapters %}
-                        <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
+                        <div class=" course-info col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
                             <div class="col-md-8 col-sm-8 col-xs-12">
                                 <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}</h5>
                                 <h4>
@@ -557,6 +559,22 @@
             console.log(response['student_url']);
             location.reload();
         }
+    </script>
+    <script>
+        let params = new URLSearchParams(location.search);
+        $(document).ready(function() {
+
+       
+        if (params.get('ifsurvey')){
+            $('.left_col, .top_nav , .breadcrumb  , #exam_paper_popup , .courseDetailStyle1 , #course-info-teacher , .course-info').remove(); 
+            $('#new_survey_btn') .click();
+           
+        }
+        params.get('ifsurvey')
+         });
+    
+    
+    
     </script>
 {% endblock %}
 

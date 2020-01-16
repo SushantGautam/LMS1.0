@@ -638,7 +638,7 @@
                         <div class="col-md-12">
 
                             <div class="new-quiz">
-                                <a href="{% url 'chapterinfo_detail' course chapter %}" target="_blank"
+                                <a href="{% url 'chapterinfo_detail' course chapter %}?ifquiz6=1" target="_blank"
                                    id="quiz_create_link">
                                     <h5> <span
                                             style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
@@ -651,7 +651,7 @@
 
                             <div class="select-quiz text-left">
                                 <h5> Select Existing Quiz
-                                </h5>
+                                </h5>3
                                 <input class="form-control" id="myInput" type="text" placeholder="Search..">
                             </div>
                             <div class="modal-table-container" style="height:200px;overflow:auto">
@@ -750,7 +750,7 @@
                         <div class="col-md-12">
 
                             <div class="new-survey">
-                                <a id="survey_create_link" href="{% url 'courseinfo_detail' course %}"
+                                <a id="survey_create_link" href="{% url 'courseinfo_detail' course %}?ifsurvey=1"
                                    target="_blank">
                                     <h5> <span
                                             style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
@@ -973,7 +973,7 @@
         e.preventDefault();
         $('#quiz-modal').modal('toggle');
         let link = $("#quiz_create_link").attr('href');
-        loadPreview(link, 1)
+            loadPreview(link, 1)
     })
 
     $('#survey_create_link').click(function (e) {
