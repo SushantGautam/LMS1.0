@@ -2005,6 +2005,14 @@ $(document).ready(function () {
 let sidebarWidth = $(".sidebar").width(); // get width of sidebar
 let toolbarheight = $('.editor-toolbar').height();
 
+
+function clearPage(page_number){
+    $('#tab').empty();
+    if(page_number in data.pages){
+        data.pages[page_number] = ''
+    }
+}
+
 function dropfunction(event, ui) {
     if (ui.helper.hasClass('textbox')) {
         TextboxFunction(
@@ -2042,6 +2050,7 @@ function dropfunction(event, ui) {
             null, '13%', '15%'
         );
     } else if (ui.helper.hasClass('grid-1')) {
+        clearPage(window.currentPage)
         PictureFunction(
             top = 0 + '%',
             left = 0 + '%',
@@ -2056,6 +2065,7 @@ function dropfunction(event, ui) {
             height = "45%", width = '100% '
         );
     } else if (ui.helper.hasClass('grid')) {
+        clearPage(window.currentPage)
         VideoFunction(
             top = 0 + '%',
             left = 0 + '%',
@@ -2070,6 +2080,7 @@ function dropfunction(event, ui) {
             height = "45%", width = "100%"
         );
     } else if (ui.helper.hasClass('title-slide')) {
+        clearPage(window.currentPage)
         PictureFunction(
             top = 0 + '%',
             left = 0 + '%',
@@ -2087,6 +2098,7 @@ function dropfunction(event, ui) {
             message = "Your Content Here"
         );
     } else if (ui.helper.hasClass('title-content-details')) {
+        clearPage(window.currentPage)
         TextboxFunction(
             top = "0%",
             left = 0 + '%',
