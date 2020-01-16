@@ -1399,7 +1399,6 @@ def save_3d_file(request):
         return JsonResponse(data={"message": "success", "objname": objname})
 
 
-@csrf_exempt
 def save_video(request):
     if request.method == "POST":
         chapterID = request.POST['chapterID']
@@ -1460,7 +1459,6 @@ def save_video(request):
     '''
 
 
-@csrf_exempt
 def save_json(request):
     if request.method == "POST":
         jsondata = json.loads(request.POST['json'])
