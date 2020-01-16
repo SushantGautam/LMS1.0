@@ -109,7 +109,7 @@ function convertFontToPX(font) {
 // });
 
 class Textbox {
-    constructor(top = 0, left = 0, height = null, width = null, message = "Type Something Here...") {
+    constructor(top = 0, left = 0, height = null, width = null, message = "") {
         let id = (new Date).getTime();
         let position = {
             top, left, height, width
@@ -158,7 +158,12 @@ class Textbox {
             var a = document.getElementsByClassName("current")[0];
 
             $('#' + a.id).append(dom);
+            let placeholder = ''
+            if(!message){
+                placeholder = 'Type Something here...'
+            }
             $('#editor' + id).summernote({
+                placeholder: placeholder,
                 fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
                 toolbar: [
                     ['style', ['style']],
@@ -728,7 +733,7 @@ class _3Dobject {
 // ====================== End of initializing elements ========================
 
 // Element Functions
-function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "Type Something Here...") {
+function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "") {
     const textBox = new Textbox(top, left, height, width, message);
 
     textBox.renderDiagram();
@@ -2803,17 +2808,17 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
 
 
 
-$('#tabs-for-download').on('click', '.textdiv', function () {
-    $this = $('.note-editable:focus')
-    if ($('.note-editable:focus').html() == "Type Something Here...") {
-        $('.note-editable:focus').html("")
-    }
-    $($this).on('focusout', function () {
-        if ($($this).html() == "") {
-            $($this).html("Type Something Here...")
-        }
-    })
-});
+// $('#tabs-for-download').on('click', '.textdiv', function () {
+//     $this = $('.note-editable:focus')
+//     if ($('.note-editable:focus').html() == "Type Something Here...") {
+//         $('.note-editable:focus').html("")
+//     }
+//     $($this).on('focusout', function () {
+//         if ($($this).html() == "") {
+//             $($this).html("Type Something Here...")
+//         }
+//     })
+// });
 
 async function resizeImage(url, width, height, callback, dive) {
     var sourceImage = new Image();
