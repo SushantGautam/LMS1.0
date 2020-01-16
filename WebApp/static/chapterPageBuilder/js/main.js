@@ -109,7 +109,7 @@ function convertFontToPX(font) {
 // });
 
 class Textbox {
-    constructor(top = 0, left = 0, height = null, width = null, message = "Type Something Here...") {
+    constructor(top = 0, left = 0, height = null, width = null, message = "") {
         let id = (new Date).getTime();
         let position = {
             top, left, height, width
@@ -158,7 +158,12 @@ class Textbox {
             var a = document.getElementsByClassName("current")[0];
 
             $('#' + a.id).append(dom);
+            let placeholder = ''
+            if(!message){
+                placeholder = 'Type Something here...'
+            }
             $('#editor' + id).summernote({
+                placeholder: placeholder,
                 fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
                 toolbar: [
                     ['style', ['style']],
@@ -274,7 +279,6 @@ class video {
         let position = {top, left, height, width};
         let videoobj;
         let message = "";
-        console.log(link)
         // if(link!=null){
         //     videoobj = `<div id='${now}'><div>
         //  <script>
@@ -304,10 +308,10 @@ class video {
             `
             }
         } else {
-            message = "drag and drop video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>";
+            message = "Add video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>";
             videoobj = `<div class="progress video-text-div">
-            <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>`;
+                <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>`;
         }
         let html =
             `<div class='video-div'>
@@ -659,7 +663,7 @@ class _3Dobject {
         let message = "";
         var _3dobj;
         if (file == null) {
-            message = "Drag and drop 3D objects here..."
+            message = "Add 3D objects here..."
         }
         if (file != null) {
             _3dobj = `
@@ -729,7 +733,7 @@ class _3Dobject {
 // ====================== End of initializing elements ========================
 
 // Element Functions
-function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "Type Something Here...") {
+function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "") {
     const textBox = new Textbox(top, left, height, width, message);
 
     textBox.renderDiagram();
@@ -877,6 +881,8 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
         data.append('chapterID', chapterID);
         data.append('courseID', courseID);
         data.append('type', 'pic');
+        data.append('csrfmiddlewaretoken', csrf_token);
+       
         $.ajax({
             url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
             data: data,
@@ -952,10 +958,6 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
                         div.append(`<div class="loader" id="loadingDiv"></div>`)
                         $('#loadingDiv').show();
                     },
-                    error: function (errorThrown) {
-                        alert("Failed to upload Image. Try Again!!")
-                        div.find('#loadingDiv').remove();
-                    },
                     success: function (data) {
                         div.find('#loadingDiv').remove();
                         div.find('p').text("");
@@ -971,6 +973,7 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
                     },
                     error: function (data, status, errorThrown) {
                         alert(data.responseJSON.message);
+                        div.find('#loadingDiv').remove();
                     }
                 });
 
@@ -1264,11 +1267,13 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
     });
 
     function upload(file) {
+        let pdfdiv = $('#pdfdiv-drag').parent().parent();
         const data = new FormData();
         data.append("file-0", file);
         data.append('chapterID', chapterID);
         data.append('courseID', courseID);
-        data.append('type', 'pic');
+        data.append('type', 'pdf');
+        data.append('csrfmiddlewaretoken', csrf_token);
         $.ajax({
             url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
             data: data,
@@ -1277,23 +1282,24 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
             method: 'POST',
             type: 'POST',
             beforeSend: function () {
-                div.append(`<div class="loader" id="loadingDiv"></div>`)
+                pdfdiv.append(`<div class="loader" id="loadingDiv"></div>`)
                 $('#loadingDiv').show();
             },
-            error: function (errorThrown) {
-                alert("Failed to upload PDF")
-                div.find('#loadingDiv').remove();
-            },
             success: function (data) {
-                div.append(`
-                    <object data="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}" type="application/pdf" width="100%" height="100%">
-                        alt : <a href="/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}">test.pdf</a>
-                    </object>
-                `);
-
+                PDFFunction(
+                    $(pdfdiv)[0].style.top,
+                    $(pdfdiv)[0].style.left,
+                    `/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}`,
+                    $(pdfdiv)[0].style.height,
+                    $(pdfdiv)[0].style.width,
+                );
+                pdfdiv.remove();
             },
             error: function (data, status, errorThrown) {
                 alert(data.responseJSON.message);
+            },
+            complete: function () {
+                $('#loadingDiv').remove();
             }
         });
         let div = $('#pdf-actions1').parent();
@@ -1364,10 +1370,6 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
                         div.append(`<div class="loader" id="loadingDiv"></div>`)
                         $('#loadingDiv').show();
                     },
-                    error: function (errorThrown) {
-                        alert("Failed to upload PDF")
-                        div.find('#loadingDiv').remove();
-                    },
                     success: function (data) {
                         PDFFunction(
                             $(div)[0].style.top,
@@ -1380,6 +1382,10 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
                     },
                     error: function (data, status, errorThrown) {
                         alert(data.responseJSON.message);
+                        alert("Failed to upload PDF");
+                    },
+                    complete: function () {
+                        $('#loadingDiv').remove();
                     }
                 });
 
@@ -1475,88 +1481,88 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
         },
     });
 
-    $('.video-div').on('drop', function (e) {
-        e.stopPropagation();
-        e.preventDefault();
+    // $('.video-div').on('drop', function (e) {
+    //     e.stopPropagation();
+    //     e.preventDefault();
 
 
-        $(this).css({
-            'padding': '5px'
-        })
+    //     $(this).css({
+    //         'padding': '5px'
+    //     })
 
-        const files = e.originalEvent.dataTransfer.files;
-        var file = files[0];
-        upload(file);
-    });
+    //     const files = e.originalEvent.dataTransfer.files;
+    //     var file = files[0];
+    //     upload(file);
+    // });
 
-    function upload(file) {
-        var data = new FormData();
+    // function upload(file) {
+    //     var data = new FormData();
 
-        data.append("FileName", file);
-        data.append('chapterID', chapterID);
-        data.append('courseID', courseID);
-        data.append('type', 'video');
-        $.ajax({
-            xhr: function () {
-                var xhr = new window.XMLHttpRequest();
+    //     data.append("FileName", file);
+    //     data.append('chapterID', chapterID);
+    //     data.append('courseID', courseID);
+    //     data.append('type', 'video');
+    //     $.ajax({
+    //         xhr: function () {
+    //             var xhr = new window.XMLHttpRequest();
 
-                xhr.upload.addEventListener("progress", function (evt) {
-                    $('#progress-bar').css("display", "block");
+    //             xhr.upload.addEventListener("progress", function (evt) {
+    //                 $('#progress-bar').css("display", "block");
 
-                    if (evt.lengthComputable) {
-                        var percentComplete = evt.loaded / evt.total;
-                        percentComplete = parseInt(percentComplete * 100);
-                        console.log(percentComplete);
-                        // $('#progress-bar-fill').css('width', percentComplete + '%');
-                        $("#progress-bar").attr('aria-valuenow', percentComplete).css('width', percentComplete + '%').text(percentComplete + '%');
+    //                 if (evt.lengthComputable) {
+    //                     var percentComplete = evt.loaded / evt.total;
+    //                     percentComplete = parseInt(percentComplete * 100);
+    //                     console.log(percentComplete);
+    //                     // $('#progress-bar-fill').css('width', percentComplete + '%');
+    //                     $("#progress-bar").attr('aria-valuenow', percentComplete).css('width', percentComplete + '%').text(percentComplete + '%');
 
-                        if (percentComplete === 100) {
-                            // $('#progress-bar').css("display", "none");
-                            let div = $('#video-drag').parent().parent();
-                            $('#video-drag').css({
-                                'display': 'none'
-                            });
+    //                     if (percentComplete === 100) {
+    //                         // $('#progress-bar').css("display", "none");
+    //                         let div = $('#video-drag').parent().parent();
+    //                         $('#video-drag').css({
+    //                             'display': 'none'
+    //                         });
 
-                            div.append(`
-                                    <video width="400" height="200" controls>
-                                    <source src="../uploads/${data.media_name}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            `);
+    //                         div.append(`
+    //                                 <video width="400" height="200" controls>
+    //                                 <source src="../uploads/${data.media_name}" type="video/mp4">
+    //                                 Your browser does not support the video tag.
+    //                             </video>
+    //                         `);
 
-                            $(div).hover(function () {
-                                $(this).css("border", "1px solid red");
-                            }, function () {
-                                $(this).css("border", '0')
-                            })
+    //                         $(div).hover(function () {
+    //                             $(this).css("border", "1px solid red");
+    //                         }, function () {
+    //                             $(this).css("border", '0')
+    //                         })
 
-                            $('.video-div').resizable({
-                                containment: $('.editor-canvas'),
-                                grid: [20, 20],
-                                autoHide: true,
-                                minWidth: 150,
-                                minHeight: 150
-                            });
-                        }
+    //                         $('.video-div').resizable({
+    //                             containment: $('.editor-canvas'),
+    //                             grid: [20, 20],
+    //                             autoHide: true,
+    //                             minWidth: 150,
+    //                             minHeight: 150
+    //                         });
+    //                     }
 
-                    }
-                }, false);
+    //                 }
+    //             }, false);
 
-                return xhr;
-            },
-            url: save_video_url,
-            data: data,
-            contentType: false,
-            processData: false,
-            method: 'POST',
-            type: 'POST',
-            success: function (data) {
-                console.log(data);
-            }
+    //             return xhr;
+    //         },
+    //         url: save_video_url,
+    //         data: data,
+    //         contentType: false,
+    //         processData: false,
+    //         method: 'POST',
+    //         type: 'POST',
+    //         success: function (data) {
+    //             console.log(data);
+    //         }
 
-        });
+    //     });
 
-    }
+    // }
 
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -1568,6 +1574,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                 $.each(input.files, function (i, file) {
                     data.append('file-' + i, file);
                 });
+                data.append('csrfmiddlewaretoken', csrf_token);
                 data.append('chapterID', chapterID);
                 data.append('courseID', courseID);
                 data.append('type', 'video');
@@ -1621,7 +1628,6 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                             if (evt.lengthComputable) {
                                 var percentComplete = evt.loaded / evt.total;
                                 percentComplete = parseInt(percentComplete * 100);
-                                console.log(percentComplete);
                                 $('#percentcomplete').text(percentComplete + '%')
                                 $('#progress-bar-fill').css('width', percentComplete + '%');
 
@@ -2005,6 +2011,14 @@ $(document).ready(function () {
 let sidebarWidth = $(".sidebar").width(); // get width of sidebar
 let toolbarheight = $('.editor-toolbar').height();
 
+
+function clearPage(page_number){
+    $('#tab').empty();
+    if(page_number in data.pages){
+        data.pages[page_number] = ''
+    }
+}
+
 function dropfunction(event, ui) {
     if (ui.helper.hasClass('textbox')) {
         TextboxFunction(
@@ -2042,6 +2056,7 @@ function dropfunction(event, ui) {
             null, '13%', '15%'
         );
     } else if (ui.helper.hasClass('grid-1')) {
+        clearPage(window.currentPage)
         PictureFunction(
             top = 0 + '%',
             left = 0 + '%',
@@ -2056,6 +2071,7 @@ function dropfunction(event, ui) {
             height = "45%", width = '100% '
         );
     } else if (ui.helper.hasClass('grid')) {
+        clearPage(window.currentPage)
         VideoFunction(
             top = 0 + '%',
             left = 0 + '%',
@@ -2070,6 +2086,7 @@ function dropfunction(event, ui) {
             height = "45%", width = "100%"
         );
     } else if (ui.helper.hasClass('title-slide')) {
+        clearPage(window.currentPage)
         PictureFunction(
             top = 0 + '%',
             left = 0 + '%',
@@ -2087,6 +2104,7 @@ function dropfunction(event, ui) {
             message = "Your Content Here"
         );
     } else if (ui.helper.hasClass('title-content-details')) {
+        clearPage(window.currentPage)
         TextboxFunction(
             top = "0%",
             left = 0 + '%',
@@ -2790,17 +2808,17 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
 
 
 
-$('#tabs-for-download').on('click', '.textdiv', function () {
-    $this = $('.note-editable:focus')
-    if ($('.note-editable:focus').html() == "Type Something Here...") {
-        $('.note-editable:focus').html("")
-    }
-    $($this).on('focusout', function () {
-        if ($($this).html() == "") {
-            $($this).html("Type Something Here...")
-        }
-    })
-});
+// $('#tabs-for-download').on('click', '.textdiv', function () {
+//     $this = $('.note-editable:focus')
+//     if ($('.note-editable:focus').html() == "Type Something Here...") {
+//         $('.note-editable:focus').html("")
+//     }
+//     $($this).on('focusout', function () {
+//         if ($($this).html() == "") {
+//             $($this).html("Type Something Here...")
+//         }
+//     })
+// });
 
 async function resizeImage(url, width, height, callback, dive) {
     var sourceImage = new Image();
