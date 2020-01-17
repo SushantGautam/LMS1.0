@@ -44,6 +44,15 @@ Course
                     </h2>
 
 
+          {% if courses.Course_Code.get_teachers_of_this_course%}
+          Teacher(s): &nbsp
+           {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
+                 -  {{ eachTeacher }}
+                        {% endfor%}
+                        {% endif %}
+
+
+
                     <hr>
 
                     <h5 class="courseDescription" style="padding-bottom: 10px;">

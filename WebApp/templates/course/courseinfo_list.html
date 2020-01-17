@@ -86,6 +86,14 @@
             {% if object.Use_Flag == False %}<i
               style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
           </h2>
+
+          {% if courses.Course_Code.get_teachers_of_this_course%}
+          Teacher(s): &nbsp
+           {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
+                 -  {{ eachTeacher }}
+                        {% endfor%}
+                        {% endif %}
+
           <hr />
           <h5 class="lectureDescription" style="padding-bottom: 5px;">
             {% if object.Course_Description %}

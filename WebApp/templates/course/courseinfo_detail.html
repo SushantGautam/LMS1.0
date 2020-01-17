@@ -120,6 +120,19 @@
                         {% endif %}
                     </td>
                 </tr>
+
+                                <tr>
+                    <td>Teachers</td>
+                    <td>
+          {% if object.get_teachers_of_this_course%}
+                       {% for eachTeacher in object.get_teachers_of_this_course%}
+               - {{ eachTeacher }}   &nbsp
+                        {% endfor%}
+                         {% else %}
+                         No Teachers Assigned Yet
+                        {% endif %}
+                    </td>
+                </tr>
             </table>
             <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
                 <h4 align="center"><b>Course Description</b></h4>
