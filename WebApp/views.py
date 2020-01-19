@@ -1728,7 +1728,14 @@ def get_static_files(request):
     # time.sleep(2)
     shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
 
-    return redirect(settings.MEDIA_URL + '/staticfiles.zip')
+    html = '''IF your file doesn\'t download automatically. <br>
+    <a id = "downloadlink" href = "{}" download> Click Here!!</a>
+    <script>
+    document.getElementById('downloadlink').click();
+    </script>
+    '''
+
+    return HttpResponse(html.format(settings.MEDIA_URL + '/staticfiles.zip'))
 
 
 from quiz.views import Sitting

@@ -2043,9 +2043,6 @@ $('#survey_create_link').click(function(e){
 function modalcloseFunction(){
     $('#closeiframebtn').click();
     tempVarStorage.click()
-    if(tempVarStorage) {
-        tempVarStorage = undefined
-    }
 }
 
 let sidebarWidth = $(".sidebar").width(); // get width of sidebar
