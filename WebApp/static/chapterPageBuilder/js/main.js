@@ -868,15 +868,16 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
     })
 
     $('.pic').on('drop', function (e) {
+        
         e.stopPropagation();
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
         var file = files[0];
-        upload(file);
+        upload(file, $(this));
     });
 
-    function upload(file) {
-        let div = $('#picture-drag').parent().parent();
+    function upload(file, element) {
+        let div = element;
         const data = new FormData();
         data.append("file-0", file);
         data.append('chapterID', chapterID);
