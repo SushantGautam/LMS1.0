@@ -1267,11 +1267,11 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
         var file = files[0];
-        upload(file);
+        upload(file, $(this));
     });
 
-    function upload(file) {
-        let pdfdiv = $('#pdfdiv-drag').parent().parent();
+    function upload(file, element) {
+        let pdfdiv = element;
         const data = new FormData();
         data.append("file-0", file);
         data.append('chapterID', chapterID);
