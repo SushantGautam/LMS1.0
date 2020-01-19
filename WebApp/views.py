@@ -599,10 +599,14 @@ class CourseInfoListView(ListView):
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
-
 class CourseInfoCreateView(CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 
 class CourseInfoDetailView(DetailView):
