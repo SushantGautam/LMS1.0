@@ -1732,8 +1732,11 @@ def get_static_files(request):
     # time.sleep(2)
     shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
 
-    html = '''Click below to begin download. <br>
+    html = '''IF your file doesn\'t download automatically. <br>
     <a id = "downloadlink" href = "{}" download> Click Here!!</a>
+    <script>
+    document.getElementById('downloadlink').click();
+    </script>
     '''
 
     return HttpResponse(html.format(settings.MEDIA_URL + '/staticfiles.zip'))
