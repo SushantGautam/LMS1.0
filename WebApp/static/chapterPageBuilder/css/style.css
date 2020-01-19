@@ -1482,3 +1482,6 @@ html {
     opacity: 1;
   }
   /* end of tooltip */
+
+/* To remove the 'Drag Image or text Here' from summernote textbox */
+  .note-editor.dragover .note-dropzone {display:none!important}
