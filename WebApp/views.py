@@ -630,6 +630,14 @@ class CourseInfoUpdateView(UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
 
 def CourseInfoDeleteView(request, pk):
     if request.method == 'POST':
