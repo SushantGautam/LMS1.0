@@ -117,6 +117,7 @@ small, .small {
     -moz-border-radius: 50em;
     -webkit-border-radius: 50em;
     max-width: -webkit-fill-available;
+    max-width: -moz-available;
 }
 
 img {
@@ -311,6 +312,7 @@ a:hover, a:active, a:focus {
 
 .thumb-img {
     height: -webkit-fill-available;
+    height: -moz-available;
     /* padding-left: 10px; */
     /* padding-right: 10px; */
 }
@@ -410,7 +412,10 @@ a:hover, a:active, a:focus {
     overflow-y: auto;
     overflow-x: hidden;
     width: 100vw;
-    height: -webkit-fill-available;
+    height: -moz-available;          /* WebKit-based browsers will ignore this. */
+    height: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    height: 100%;
+    
     max-height: 100vh;
     max-width: 177.78vh;
     margin: auto;
@@ -436,6 +441,7 @@ a:hover, a:active, a:focus {
     display: none;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
     background-color: rgba(0, 0, 0, 0.6);
 }
 
@@ -443,6 +449,7 @@ a:hover, a:active, a:focus {
 
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
     position: relative;
     top: 0;
     left: 0;
@@ -456,6 +463,7 @@ a:hover, a:active, a:focus {
 .content-footer1 {
     color: white;
     width: fit-content;
+    width: -moz-fit-content;
     font-size: 1.2rem;
     font-weight: 200;
     padding-right: 10px;
@@ -472,6 +480,7 @@ a:hover, a:active, a:focus {
     display: block;
     transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
     margin-right: auto;
     left: 0;
     right: 0;
@@ -671,6 +680,7 @@ body {
         height: 100%;
         z-index: 9999;
         -webkit-transition: opacity 3s ease-in-out;
+        -moz-transition: opacity 3s ease-in-out;
         background: url(/static/images/uLMS2019_Loading_SVG.svg) center no-repeat #fff;
     }
 
@@ -688,6 +698,7 @@ body {
         display: block;
         width: auto;
         height: -webkit-fill-available;
+        height: -moz-available;
 
     }
 

@@ -1218,6 +1218,7 @@ article {
 
 .gridContentsList:hover .card-img-top {
     -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
     transform: scale(1.2);
     transition: .3s ease-in-out;
 
@@ -1926,6 +1927,7 @@ input[type=checkbox], input[type=radio] {
 .se-pre-con {
     position: fixed;
     -webkit-transition: opacity 5s ease-in-out;
+    -moz-transition: opacity 5s ease-in-out;
     left: 0px;
     top: 0px;
     width: 100%;
