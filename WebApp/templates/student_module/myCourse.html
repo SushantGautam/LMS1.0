@@ -8,7 +8,8 @@ Course
 {% endblock %}
 {% block content %}
 <div class="courseInfoListClass">
-    <h2 class="tableHeader">List of Courses</h2>
+    <h2 class="tableHeader">List of Courses
+List of Courses</h2>
 
 
     <hr class="header_hr">
@@ -35,12 +36,24 @@ Course
                             {% else %}
                                 {% static 'images/course.jpg' %}
                             {% endif %}" alt="Card image cap" width="100%" height="180px" style="object-fit: cover">
-                    </a>
-                </div>
+                    </a>                
+                </div>              
                 <div class="card-body" id="cardInfo">
                     <h2 class="card-title"><strong><a
                                 href="{{ courses.Course_Code.student_get_absolute_url }}">{{ courses.Course_Code.Course_Name }}</a></strong>
                     </h2>
+
+
+
+          {% if courses.Course_Code.get_teachers_of_this_course%}
+          Teacher(s): &nbsp
+           {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
+                 -  {{ eachTeacher }}
+                        {% endfor%}
+                        {% endif %}
+
+
+                        
                     <hr>
                     <h5 class="courseDescription" style="padding-bottom: 10px;">
                         {% if courses.Course_Code.Course_Description %}

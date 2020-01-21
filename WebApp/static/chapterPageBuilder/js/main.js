@@ -1,4 +1,5 @@
 var firstload = true;
+var tempVarStorage;
 var tobedeletedfiles = {
     'pic': [],
     'video': [],
@@ -867,15 +868,16 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
     })
 
     $('.pic').on('drop', function (e) {
+        
         e.stopPropagation();
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
         var file = files[0];
-        upload(file);
+        upload(file, $(this));
     });
 
-    function upload(file) {
-        let div = $('#picture-drag').parent().parent();
+    function upload(file, element) {
+        let div = element;
         const data = new FormData();
         data.append("file-0", file);
         data.append('chapterID', chapterID);
@@ -1086,6 +1088,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
     });
 
     $('.quiz-div .fa-link').bind("click", function (e) {
+        tempVarStorage = $(this)
         $.ajax({
             url: `/quiz/api/v1/quiz/?course_code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
             processData: false,
@@ -1174,6 +1177,7 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
     });
 
     $('.survey-div .fa-link').on("click", function (e) {
+        tempVarStorage = $(this)
         $.ajax({
             url: `/survey/api/v1/surveyinfo/?Course_Code=${courseID}`, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
             processData: false,
@@ -1263,11 +1267,11 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
         var file = files[0];
-        upload(file);
+        upload(file, $(this));
     });
 
-    function upload(file) {
-        let pdfdiv = $('#pdfdiv-drag').parent().parent();
+    function upload(file, element) {
+        let pdfdiv = element;
         const data = new FormData();
         data.append("file-0", file);
         data.append('chapterID', chapterID);
@@ -1910,6 +1914,9 @@ $(document).ready(function () {
         $('#' + quiz_id).parent().parent().find('.resizable-text-only').text(quiz_name);
         $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
         $('#quiz-modal').modal('hide');
+        if(tempVarStorage){
+            tempVarStorage = undefined
+        }
     })
 
     $('#myTable').on('click', '.selectquiz', function () {
@@ -1937,6 +1944,9 @@ $(document).ready(function () {
         $('#' + survey_id).parent().parent().find('.resizable-text-only').text(survey_name);
         $('#' + survey_id).parent().parent().find('.survey-name').text(survey_span_name)
         $('#survey-modal').modal('hide');
+        if(tempVarStorage){
+            tempVarStorage = undefined
+        }
     })
 
     $('#mySurveyTable').on('click', '.selectsurvey', function () {
@@ -2005,8 +2015,36 @@ $(document).ready(function () {
             }
         });
     });
-
+    
+    
+    
 });
+$('#quiz_create_link').click(function(e){
+    $('#iframeholder iframe').on('load', function(){
+        var iframe = $('#iframeholder iframe').contents();
+        $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button',function(){
+            setTimeout(() => {
+                modalcloseFunction()
+            }, 1500)
+        });
+    });
+   
+})
+$('#survey_create_link').click(function(e){
+    $('#iframeholder iframe').on('load', function(){
+        var iframe = $('#iframeholder iframe').contents();
+        $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button',function(){
+            setTimeout(() => {
+                modalcloseFunction()
+            }, 1500)
+        });
+    });
+   
+})
+function modalcloseFunction(){
+    $('#closeiframebtn').click();
+    tempVarStorage.click()
+}
 
 let sidebarWidth = $(".sidebar").width(); // get width of sidebar
 let toolbarheight = $('.editor-toolbar').height();
@@ -2101,7 +2139,6 @@ function dropfunction(event, ui) {
             top = "62%",
             left = 0 + '%',
             height = "35%", width = "100%",
-            message = "Your Content Here"
         );
     } else if (ui.helper.hasClass('title-content-details')) {
         clearPage(window.currentPage)
@@ -2109,13 +2146,13 @@ function dropfunction(event, ui) {
             top = "0%",
             left = 0 + '%',
             height = "10%", width = "100%",
-            message = "Your Title Here"
+            
         );
         TextboxFunction(
             top = "13%",
             left = 0 + '%',
             height = "84%", width = "100%",
-            message = "Your Content Here"
+            
         );
     } else if (ui.helper.hasClass('pdf-text')) {
         PDFFunction(

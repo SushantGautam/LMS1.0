@@ -599,10 +599,14 @@ class CourseInfoListView(ListView):
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
-
 class CourseInfoCreateView(CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 
 class CourseInfoDetailView(DetailView):
@@ -1728,7 +1732,14 @@ def get_static_files(request):
     # time.sleep(2)
     shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
 
-    return redirect(settings.MEDIA_URL + '/staticfiles.zip')
+    html = '''IF your file doesn\'t download automatically. <br>
+    <a id = "downloadlink" href = "{}" download> Click Here!!</a>
+    <script>
+    document.getElementById('downloadlink').click();
+    </script>
+    '''
+
+    return HttpResponse(html.format(settings.MEDIA_URL + '/staticfiles.zip'))
 
 
 from quiz.views import Sitting

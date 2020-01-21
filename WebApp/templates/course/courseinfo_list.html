@@ -5,68 +5,55 @@
   <h2 class="tableHeader">List of Courses</h2>
 
   <hr class="header_hr">
-  <div class="row">
   {% if 'teachers' in request.path %}
-  
-      <div class="col-md-8 col-sm-8 col-xs-12">
-          <form method="get" action="">
-            <div class="col-md-7 col-sm-7 col-xs-7">
-              <input type="text" name="teacher_coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
-                class="form-control" />
-            </div>
-            <div class="col-md-5 col-sm-5 col-xs-5">
-                <button class="btn btn-default" type="submit">
-                    <i class="fa fa-search"></i>&nbsp;Search
-                  </button>
-      
-            </div>
-            
-          </form>
-        </div>
-        {% elif 'students' in request.path %}
-        <div class="col-md-8 col-sm-8 col-xs-12">
-          <form method="get" action="">
-              <div class="col-md-7 col-sm-7 col-xs-7">
-                  <input type="text" name="coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
-                  class="form-control" />
-            </div>
-            <div class="col-md-5 col-sm-5 col-xs-5">
-                <button class="btn btn-default" type="submit">
-                  <i class="fa fa-search"></i>&nbsp;Search
-                </button>
-            </div>
-          </form>
-        </div>
-        {% else %}
-        <div class="col-md-8 col-sm-8 col-xs-12">
-          <form method="get" action="">
-              <div class="col-md-7 col-sm-7 col-xs-7">
-                 <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
-                  class="form-control" />
-            </div>
-            <div class="col-md-5 col-sm-5 col-xs-5">
-            <button class="btn btn-default" type="submit">
-              <i class="fa fa-search"></i>&nbsp;Search
-            </button>
-            </div>
-          </form>
-        </div>
-        {% endif %}
-      
-        {% if 'students' not in request.path %}
-        <div class="col-md-4 col-sm-4 col-xs-12 btn-createnew">
-          <a class="btn btn-success"  href="
-                  {% if '/teachers' in request.path %}
-                      {% url 'teacher_courseinfo_create' %}
-                  {% else %}
-                      {% url 'courseinfo_create' %}
-                  {% endif %}">Create  Course</a>
-        </div>
-        {% endif %}
-        <br /><br /><br />
-
+  <div class="col-md-8 col-sm-6 col-xs-12">
+    <form method="get" action="">
+      <div class="col-md-4">
+        <input type="text" name="teacher_coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
+          class="form-control" />
+      </div>
+      <button class="btn btn-default" type="submit">
+        <i class="fa fa-search"></i>&nbsp;Search
+      </button>
+    </form>
   </div>
-  
+  {% elif 'students' in request.path %}
+  <div class="col-md-8 col-sm-6 col-xs-12">
+    <form method="get" action="">
+      <div class="col-md-4">
+        <input type="text" name="coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
+          class="form-control" />
+      </div>
+      <button class="btn btn-default" type="submit">
+        <i class="fa fa-search"></i>&nbsp;Search
+      </button>
+    </form>
+  </div>
+  {% else %}
+  <div class="col-md-8 col-sm-6 col-xs-12">
+    <form method="get" action="">
+      <div class="col-md-4">
+        <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
+          class="form-control" />
+      </div>
+      <button class="btn btn-default" type="submit">
+        <i class="fa fa-search"></i>&nbsp;Search
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  {% if 'students' not in request.path %}
+  <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
+    <a class="btn btn-success" style="float: right;" href="
+            {% if '/teachers' in request.path %}
+                {% url 'teacher_courseinfo_create' %}
+            {% else %}
+                {% url 'courseinfo_create' %}
+            {% endif %}">Create new Course</a>
+  </div>
+  {% endif %}
+  <br /><br /><br />
 
   <div class="container" id="divID">
     {% include 'WebApp/theme/alerts.html' %}
@@ -99,6 +86,14 @@
             {% if object.Use_Flag == False %}<i
               style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
           </h2>
+
+          {% if object.get_teachers_of_this_course%}
+          Teacher(s): &nbsp
+           {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp
+                 -  {{ eachTeacher }}
+                        {% endfor%}
+                        {% endif %}
+
           <hr />
           <h5 class="lectureDescription" style="padding-bottom: 5px;">
             {% if object.Course_Description %}
@@ -106,7 +101,7 @@
             padding-right: 10px;
             line-height: 1.5em;
             height: 3em;
-            overflow-wrap:break-word; 
+            overflow-wrap:break-word;
             overflow: hidden;
             white-space: normal;
             text-overflow: ellipsis;">
@@ -117,7 +112,7 @@
             padding-right: 10px;
             line-height: 1.5em;
             height: 3em;
-            overflow-wrap:break-word; 
+            overflow-wrap:break-word;
             overflow: hidden;
             white-space: normal;
             text-overflow: ellipsis;">

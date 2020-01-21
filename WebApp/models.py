@@ -185,7 +185,7 @@ class CourseInfo(models.Model):
     Updated_DateTime = DateTimeField(auto_now=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
-    Course_Provider = CharField(max_length=250)
+    Course_Provider = CharField(max_length=250, blank=True, null=True)
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -209,6 +209,12 @@ class CourseInfo(models.Model):
 
     def get_update_url(self):
         return reverse('courseinfo_update', args=(self.pk,))
+
+        
+    def get_teachers_of_this_course(self):
+        teachers_of_this_course_id= InningGroup.objects.filter(Course_Code=self.pk).values('Teacher_Code')
+        teachers_of_this_course= MemberInfo.objects.filter(pk__in= teachers_of_this_course_id)
+        return teachers_of_this_course
 
     # def get_exam_quiz(self):
     #     return Quiz.objects.get(exam_paper=True, course_code=self.id)
