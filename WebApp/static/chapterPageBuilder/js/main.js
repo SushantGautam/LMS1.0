@@ -164,18 +164,21 @@ class Textbox {
                 placeholder = 'Type Something here...'
             }
             $('#editor' + id).summernote({
+                followingToolbar: false,
+                disableResizeEditor: true,
                 placeholder: placeholder,
                 fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
                 toolbar: [
                     ['style', ['style']],
-                    ['font', ['bold', 'underline', 'clear']],
+                    ['font', ['bold', 'underline', 'clear', 'strikethrough', 'superscript', 'subscript']],
                     ['fontsize', ['fontsize']],
                     ['fontname', ['fontname']],
                     ['color', ['color']],
                     ['para', ['ul', 'ol', 'paragraph']],
                     ['table', ['table']],
-                    ['insert', ['']],
-                    // ['view', ['fullscreen', 'codeview', 'help']],
+                    ['insert', ['link', 'hr']],
+                    ['height', ['height']],
+                    ['view', ['help']],
                 ],
                 callbacks: {
                     onPaste: function (e) {

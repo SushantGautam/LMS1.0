@@ -1488,3 +1488,13 @@ html {
     background-color: #17a2b8;
     border: 1px solid #17a2b8;
 }
+
+.note-toolbar .btn-sm {
+    font-size: 12px !important;
+    padding: 0px;
+    min-width: 25px !important;
+}
+
+.note-editor.note-frame .note-editing-area {
+    height: 100%;
+}
