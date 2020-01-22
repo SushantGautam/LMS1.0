@@ -189,6 +189,7 @@ class Textbox {
                 }
             });
             $('.note-editable').css('font-size', '30px');
+            $('.note-toolbar').css('display', 'none')
 
 
             $('#editor' + id).parent().find('.note-statusbar').remove();
