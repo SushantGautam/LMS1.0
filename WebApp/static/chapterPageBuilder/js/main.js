@@ -214,7 +214,12 @@ class picture {
         let position = {top, left, width, height};
         let message = "";
         if (pic == null) {
-            message = "Drag and drop images here..."
+            message = `
+                <div class = "file-upload-icon">
+                    <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
+                </div>
+                Drag and drop images here...
+                `
         }
         let img = '';
         if (pic != null) {
@@ -312,7 +317,8 @@ class video {
             `
             }
         } else {
-            message = "Add video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>";
+            message = `
+            Add video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>`;
             videoobj = `<div class="progress video-text-div">
                 <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
             </div>`;
@@ -601,7 +607,11 @@ class PDF {
         `
             message = ''
         } else {
-            message = "drag and drop files here...";
+            message = `
+            <div class = "file-upload-icon">
+                <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
+            </div>
+            drag and drop files here...`;
             pdfobj = "";
         }
         let html = `
@@ -667,7 +677,11 @@ class _3Dobject {
         let message = "";
         var _3dobj;
         if (file == null) {
-            message = "Add 3D objects here..."
+            message = `
+            <div class = "file-upload-icon">
+                <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
+            </div>
+            Add 3D objects here...`
         }
         if (file != null) {
             _3dobj = `
@@ -2742,6 +2756,10 @@ function changePage(page_number) {
     }
     // localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
 }
+
+$('#tab').on('click', '.file-upload-icon', function(){
+    $(this).closest('.ui-draggable').find('.fa-upload').click();
+})
 
 // Media File deletion
 function deleteFile() {

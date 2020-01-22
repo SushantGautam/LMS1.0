@@ -1498,3 +1498,15 @@ html {
 .note-editor.note-frame .note-editing-area {
     height: 100%;
 }
+
+.file-upload-icon {
+    height: 85px;
+    width: 85px;
+    margin: auto;
+    cursor: pointer;
+}
+
+.file-upload-icon:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+}
