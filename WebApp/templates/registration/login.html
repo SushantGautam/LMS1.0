@@ -11,7 +11,7 @@
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
     <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/floating-labels.css' %}"/>
-{#    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet"/>#}
+    {#    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet"/>#}
 </head>
 <body>
 
@@ -37,16 +37,17 @@
 
 <form class="form-signin" method="POST" action="" id="FormID">
     {% csrf_token %}
+    <a href="/">
+        <div class="text-center mb-4">
+            <img class="mb-4" src="{% static 'images/logo_orange.png' %}" alt="UBL-logo-orange" width="80%"/>
+        </div>
 
-    <div class="text-center mb-4">
-        <img class="mb-4" src="{% static 'images/logo_orange.png' %}" alt="UBL-logo-orange" width="80%"/>
-    </div>
-
-    <h1 class="mb-4" style="color: gray; text-align: center">
-        <hr>
-        u-LMS 2019
-        <hr>
-    </h1>
+        <h1 class="mb-4" style="color: gray; text-align: center">
+            <hr>
+            u-LMS 2019
+            <hr>
+        </h1>
+    </a>
 
     {% include 'WebApp/theme/alerts.html' %}
 

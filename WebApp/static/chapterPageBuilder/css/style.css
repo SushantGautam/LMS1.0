@@ -1276,10 +1276,6 @@ span.btnlink input {
     display: none
 }
 
-.over {
-    border: solid 2px #17a2b8;
-}
-
 .content-title1 {
     height: 5%;
 }
@@ -1485,3 +1481,20 @@ html {
 
 /* To remove the 'Drag Image or text Here' from summernote textbox */
   .note-editor.dragover .note-dropzone {display:none!important}
+
+/* End of remove the 'Drag Image or text Here' */
+
+.over {
+    background-color: #17a2b8;
+    border: 1px solid #17a2b8;
+}
+
+.note-toolbar .btn-sm {
+    font-size: 12px !important;
+    padding: 0px;
+    min-width: 25px !important;
+}
+
+.note-editor.note-frame .note-editing-area {
+    height: 100%;
+}

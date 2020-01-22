@@ -58,10 +58,10 @@ class MemberInfo(AbstractUser):
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
-        _('username'),
+        _('        Username for Login'),
         max_length=150,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. Used for login'),
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. Unique in the system.'),
         validators=[username_validator],
         error_messages={
             'unique': _("A user with that username already exists."),
@@ -72,7 +72,7 @@ class MemberInfo(AbstractUser):
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
         _('staff status'),
-        default=True, #to make admin widgets accessible
+        default=True,  # to make admin widgets accessible
         help_text=_('Designates whether the user can log into this admin site.'),
     )
     is_superuser = models.BooleanField(
@@ -89,7 +89,8 @@ class MemberInfo(AbstractUser):
         ),
     )
 
-    Member_ID = models.CharField(max_length=150, blank=True, null=True,
+    Member_ID = models.CharField(max_length=150, blank=True, null=True, verbose_name='Registration ID',
+
                                  help_text=_('ID assigned by university/Roll No'))
     password = models.CharField(_('password'), max_length=264)
     Member_Permanent_Address = models.CharField(max_length=500, blank=True, null=True)
@@ -210,10 +211,9 @@ class CourseInfo(models.Model):
     def get_update_url(self):
         return reverse('courseinfo_update', args=(self.pk,))
 
-        
     def get_teachers_of_this_course(self):
-        teachers_of_this_course_id= InningGroup.objects.filter(Course_Code=self.pk).values('Teacher_Code')
-        teachers_of_this_course= MemberInfo.objects.filter(pk__in= teachers_of_this_course_id)
+        teachers_of_this_course_id = InningGroup.objects.filter(Course_Code=self.pk).values('Teacher_Code')
+        teachers_of_this_course = MemberInfo.objects.filter(pk__in=teachers_of_this_course_id)
         return teachers_of_this_course
 
     # def get_exam_quiz(self):

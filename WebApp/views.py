@@ -593,7 +593,7 @@ class CourseInfoListView(ListView):
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
-            qs = qs.filter(Course_Name__contains=query)
+            qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
                 messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
@@ -629,6 +629,14 @@ class CourseInfoDetailView(DetailView):
 class CourseInfoUpdateView(UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 
 def CourseInfoDeleteView(request, pk):
