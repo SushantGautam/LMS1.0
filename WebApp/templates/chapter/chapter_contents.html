@@ -343,7 +343,7 @@
 
 
                 <div class="{{ ifteacher|yesno:'col-md-8 col-sm-8 col-xs-8,col-md-12' }}  bg-white "
-                     style="{{ ifteacher|yesno:' ,width: -webkit-fill-available;' }} ">
+                     style="{{ ifteacher|yesno:' ,width: -webkit-fill-available;width: -moz-available;' }} ">
 
                     <div class="row upbarchat">
 
@@ -525,7 +525,7 @@
 <script src="{% static 'js/modernizr.js' %}"></script>
 
 {% if not connection_offline %}
-<script src="{% static 'chapterPageBuilder/SummerNote/summernote.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/SummerNote/summernote.min.js' %}"></script>
 {% endif %}
 
 <script type="text/javascript">

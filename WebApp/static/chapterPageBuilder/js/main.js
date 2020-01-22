@@ -164,18 +164,21 @@ class Textbox {
                 placeholder = 'Type Something here...'
             }
             $('#editor' + id).summernote({
+                followingToolbar: false,
+                disableResizeEditor: true,
                 placeholder: placeholder,
                 fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '36', '48', '56', '64', '72'],
                 toolbar: [
                     ['style', ['style']],
-                    ['font', ['bold', 'underline', 'clear']],
+                    ['font', ['bold', 'underline', 'clear', 'strikethrough', 'superscript', 'subscript']],
                     ['fontsize', ['fontsize']],
                     ['fontname', ['fontname']],
                     ['color', ['color']],
                     ['para', ['ul', 'ol', 'paragraph']],
                     ['table', ['table']],
-                    ['insert', ['']],
-                    // ['view', ['fullscreen', 'codeview', 'help']],
+                    ['insert', ['link', 'hr']],
+                    ['height', ['height']],
+                    ['view', ['help']],
                 ],
                 callbacks: {
                     onPaste: function (e) {
@@ -868,15 +871,16 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
     })
 
     $('.pic').on('drop', function (e) {
+        
         e.stopPropagation();
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
         var file = files[0];
-        upload(file);
+        upload(file, $(this));
     });
 
-    function upload(file) {
-        let div = $('#picture-drag').parent().parent();
+    function upload(file, element) {
+        let div = element;
         const data = new FormData();
         data.append("file-0", file);
         data.append('chapterID', chapterID);
@@ -1266,11 +1270,11 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
         var file = files[0];
-        upload(file);
+        upload(file, $(this));
     });
 
-    function upload(file) {
-        let pdfdiv = $('#pdfdiv-drag').parent().parent();
+    function upload(file, element) {
+        let pdfdiv = element;
         const data = new FormData();
         data.append("file-0", file);
         data.append('chapterID', chapterID);
@@ -1846,8 +1850,15 @@ $(document).ready(function () {
 
     $(".editor-canvas").droppable({
         drop: function (event, ui) {
+            $(this).removeClass("over");
             dropfunction(event, ui)
-        }
+        },
+        over: function (event, ui) {
+            $(this).addClass("over");
+        },
+        out: function (event, ui) {
+            $(this).removeClass("over");
+        },
     });
     // $("body").on('DOMSubtreeModified', "#tab", function() {
     //     console.log('changed');
@@ -2022,7 +2033,9 @@ $('#quiz_create_link').click(function(e){
     $('#iframeholder iframe').on('load', function(){
         var iframe = $('#iframeholder iframe').contents();
         $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button',function(){
-            modalcloseFunction()
+            setTimeout(() => {
+                modalcloseFunction()
+            }, 1500)
         });
     });
    
@@ -2031,7 +2044,9 @@ $('#survey_create_link').click(function(e){
     $('#iframeholder iframe').on('load', function(){
         var iframe = $('#iframeholder iframe').contents();
         $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button',function(){
-            modalcloseFunction()
+            setTimeout(() => {
+                modalcloseFunction()
+            }, 1500)
         });
     });
    
@@ -2039,9 +2054,6 @@ $('#survey_create_link').click(function(e){
 function modalcloseFunction(){
     $('#closeiframebtn').click();
     tempVarStorage.click()
-    if(tempVarStorage) {
-        tempVarStorage = undefined
-    }
 }
 
 let sidebarWidth = $(".sidebar").width(); // get width of sidebar
@@ -2056,39 +2068,57 @@ function clearPage(page_number){
 }
 
 function dropfunction(event, ui) {
+    let top = ui.helper.position().top;
+    let left = ui.helper.position().left;
+    
+    $(this).removeClass("over");
+    if (ui.helper.offset().top < $('#tab').offset().top) {
+        top = $('#tab').position().top
+    }
+
+    if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
+        top = $('#tab').height() - (0.25 * $('#tab').height())
+    }
+
+    if (ui.helper.offset().left + (0.20 * $('#tab').width()) > $('#tab').width() && !ui.helper.hasClass('button')) {   // 0.25 is multiplied to sum the height of element to the current pointer position
+        left = $('#tab').width() - (0.40 * $('#tab').width()) + sidebarWidth
+    }
+    else if (ui.helper.offset().left > $('#tab').width() && ui.helper.hasClass('button')) {
+        left = $('#tab').width() - (0.15 * $('#tab').width()) + sidebarWidth
+    }
     if (ui.helper.hasClass('textbox')) {
         TextboxFunction(
-            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
             "20%", "35%");
     } else if (ui.helper.hasClass('picture')) {
         PictureFunction(
-            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-            (positionConvert(ui.helper.position().left - sidebarWidth, $('#tabs-for-download').width())) + '%',
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert(left - sidebarWidth, $('#tabs-for-download').width())) + '%',
             null, '40%', '30%'
         );
     } else if (ui.helper.hasClass('video')) {
         VideoFunction(
-            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
             null, '30%', '40%'
         );
     } else if (ui.helper.hasClass('buttons')) {
         ButtonFunction(
-            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
             null, '13%', '15%'
         );
     } else if (ui.helper.hasClass('quiz')) {
         QuizFunction(
-            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
             null, '13%', '15%'
         );
     } else if (ui.helper.hasClass('survey')) {
         SurveyFunction(
-            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
             null, '13%', '15%'
         );
     } else if (ui.helper.hasClass('grid-1')) {
@@ -2169,14 +2199,14 @@ function dropfunction(event, ui) {
 
     } else if (ui.helper.hasClass('3dobject')) {
         _3dFunction(
-            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
             null, '30%', '40%'
         );
     } else if (ui.helper.hasClass('Pdf')) {
         PDFFunction(
-            (positionConvert(ui.helper.position().top, $('#tabs-for-download').height())) + '%',
-            (positionConvert((ui.helper.position().left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
             null, '30%', '40%'
         );
     }

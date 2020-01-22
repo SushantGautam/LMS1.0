@@ -263,6 +263,14 @@ class CourseInfoUpdateView(UpdateView):
     form_class = CourseInfoForm
     template_name = 'teacher_module/courseinfo_form.html'
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
     #     context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
