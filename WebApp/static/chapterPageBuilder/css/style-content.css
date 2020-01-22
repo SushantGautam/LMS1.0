@@ -463,7 +463,7 @@ a:hover, a:active, a:focus {
 .content-footer1 {
     color: white;
     width: fit-content;
-    width: -moz-fit-content;
+    width: -moz-fit-content;/* FOR MOZILLA FIREFOX*/
     font-size: 1.2rem;
     font-weight: 200;
     padding-right: 10px;
