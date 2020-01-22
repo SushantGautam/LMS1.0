@@ -3,74 +3,84 @@
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item" aria-current="page"><a href="{% url 'memberinfo_list' %}">Member</a></li>
-{% if object.username %}
-<li class="breadcrumb-item" aria-current="page"><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></li>
-{% endif %}
-<li class="breadcrumb-item active" aria-current="page">
-    {% if '/memberinfo/create/' == request.path %}
-    Create New Member
-    {% else %}
-    Edit Member Info
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'memberinfo_list' %}">Member</a></li>
+    {% if object.username %}
+        <li class="breadcrumb-item" aria-current="page"><a
+                href="{{ object.get_absolute_url }}">{{ object.username }}</a></li>
     {% endif %}
-</li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {% if '/memberinfo/create/' == request.path %}
+            Create New Member
+        {% else %}
+            Edit Member Info
+        {% endif %}
+    </li>
 {% endblock %}
 {% block content %}
-{% include 'WebApp/theme/alerts.html' %}
+    {% include 'WebApp/theme/alerts.html' %}
 
 
-<div class="headerDiv">
-    <h2 class="infoFormHeader">
-        {% if '/memberinfo/create/' == request.path %}
-        Create New Member
-        {% else %}
-        Edit Member Info
-        {% endif %}
-    </h2>
-    <hr class="header_hr">
-</div>
+    <div class="headerDiv">
+        <h2 class="infoFormHeader">
+            {% if '/memberinfo/create/' == request.path %}
+                Create New Member
+            {% else %}
+                Edit Member Info
+            {% endif %}
+        </h2>
+        <hr class="header_hr">
+    </div>
 
-<div id='form-errors'>{{ form_errors }}</div>
-<div id='form-errors'>{{ form.non_field_errors }}</div>
-
-
-<form method="post" id="FormID">
-    {% csrf_token %}
-    {% crispy form %}
-</form>
-
-{% include 'WebApp/theme/alerts.html' %}
-<div class="x_content">
+    <div id='form-errors'>{{ form_errors }}</div>
+    <div id='form-errors'>{{ form.non_field_errors }}</div>
 
 
-</div>
+    <form method="post" id="FormID">
+        {% csrf_token %}
+        {% crispy form %}
+    </form>
+
+    {% include 'WebApp/theme/alerts.html' %}
+    <div class="x_content">
+
+
+    </div>
 
 
 
 {% endblock %}
 
 {% block customjss %}
-<script>
+    <script>
 
 
+        $('#id_Member_ID').change(function () {
+            //suggest username
 
-    $('#id_first_name').change(function () {
-        //suggest username
+            if (window.location.href.indexOf("create") >= -1) {
+                $('#id_username').val($('#id_Member_ID').val());
+            }
+        });
 
-        if (window.location.href.indexOf("create") >= -1) {
-            $('#id_username').val($('#id_first_name').val() + $('#id_last_name').val());
-        }
-    });
+        {##}
+        {##}
+        {#    $('#id_first_name').change(function () {#}
+        {#        //suggest username#}
+        {##}
+        {#        if (window.location.href.indexOf("create") >= -1) {#}
+        {#            $('#id_username').val($('#id_first_name').val() + $('#id_last_name').val());#}
+        {#        }#}
+        {#    });#}
+        {##}
+        {#    $('#id_last_name').change(function () {#}
+        {#        //suggest username#}
+        {##}
+        {#        if (window.location.href.indexOf("create") >= -1) {#}
+        {#            $('#id_username').val($('#id_first_name').val() + $('#id_last_name').val());#}
+        {#        }#}
+        {#    });#}
+        {##}
 
-    $('#id_last_name').change(function () {
-        //suggest username
 
-        if (window.location.href.indexOf("create") >= -1) {
-            $('#id_username').val($('#id_first_name').val() + $('#id_last_name').val());
-        }
-    });
-
-
-
-</script>
+    </script>
 {% endblock %}
