@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import SessionAuthentication
 
+from WebApp.student_module.views import Topic_related_to_user
 from forum import models, serializers
 from forum.models import Thread, Post
 from forum.serializers import ThreadSerializer, PostSerializer
@@ -18,8 +19,6 @@ class ThreadViewSet(viewsets.ModelViewSet):
     queryset = models.Thread.objects.all()
     serializer_class = serializers.ThreadSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -71,3 +70,23 @@ class ForumAvatarViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+from rest_framework.response import Response
+
+
+class StudnetTopic(viewsets.ModelViewSet):
+    """ViewSet for the ForumAvatar class"""
+
+    queryset = models.Topic.objects.all()
+    serializer_class = serializers.TopicSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        queryset = Topic_related_to_user(request)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
