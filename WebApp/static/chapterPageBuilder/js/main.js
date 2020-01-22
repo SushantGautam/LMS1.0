@@ -1934,7 +1934,7 @@ $(document).ready(function () {
         $('#quiz-link').val(`/quiz/quiz${$(this).val().trim()}/take/`)
         $('#quiz-btn-name').parent().show()
         $('#quiz-name').parent().parent().show()
-        $('#survey-submit').click()
+        $('#quiz-submit').click()
     })
     // ======================================================================
 
