@@ -107,10 +107,11 @@
 
         $(document).ready(function () {
 
-            var table_main = $('#QuizTable').DataTable({
-                responsive: true,
-                dom: 'lBfrtip',
-                buttons: []
+		var table_main = $('#QuizTable').DataTable({
+			responsive: true,
+			dom: 'lBfrtip',
+			buttons: [],
+			"bSort" : false
 
             });
         });

@@ -75,7 +75,8 @@ class QuizListView(ListView):
     model = Quiz
 
     def get_queryset(self):
-        queryset = super(QuizListView, self).get_queryset()
+        queryset = super(QuizListView, self).get_queryset().order_by('-pk')
+        print(queryset.values('pk', 'title'))
         return queryset.filter(cent_code=self.request.user.Center_Code)
 
 
