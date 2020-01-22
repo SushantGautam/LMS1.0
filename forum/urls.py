@@ -14,7 +14,7 @@ router.register(r'post', api.PostViewSet)
 router.register(r'notification', api.NotificationViewSet)
 router.register(r'nodegroup', api.NodeGroupViewSet)
 router.register(r'topic', api.TopicViewSet)
-router.register(r'studnetTopic', api.StudnetTopic)
+router.register(r'studentTopic', api.StudnetTopic)
 
 urlpatterns = [
     path(r'^page/(?P<page>[0-9]+)/$', views.Index.as_view(), name='index'),
