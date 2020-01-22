@@ -90,7 +90,7 @@
           {% if object.get_teachers_of_this_course%}
           Teacher(s): &nbsp
            {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp
-                 -  {{ eachTeacher }}
+                 -{{ eachTeacher }}
                         {% endfor%}
                         {% endif %}
 
