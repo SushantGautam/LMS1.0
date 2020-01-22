@@ -1080,6 +1080,8 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
                 link = "/quiz/detail/" + quizpk
                 loadPreview(link, 1)
             }
+        } else {
+            $(this).closest('.quiz-div').find('.fa-link').click()
         }
     });
 
@@ -1170,6 +1172,8 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
                 link = "/survey/surveyinfo/detail/" + surveypk
                 loadPreview(link, 1)
             }
+        } else {
+            $(this).closest('.survey-div').find('.fa-link').click()
         }
     })
 
