@@ -87,3 +87,8 @@ urlpatterns += (
     path('offline.html', views.OfflineApp),
     path('manifest.webmanifest', views.manifestwebmanifest),
 )
+
+# For static files
+urlpatterns += (
+    path('get_static_files', views.get_static_files, name= 'get_static_files'),   #for downloading static files for mobile development
+)
