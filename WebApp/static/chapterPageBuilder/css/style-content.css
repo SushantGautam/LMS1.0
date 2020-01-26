@@ -224,10 +224,18 @@ a:hover, a:active, a:focus {
 
     border: 2px solid #3c8dbc;
 
+    -webkit-transition: all 0.3s ease;
+
     transition: all 0.3s ease;
     z-index: 9999;
 
-    user-select: none;
+    -webkit-user-select: none;
+
+       -moz-user-select: none;
+
+        -ms-user-select: none;
+
+            user-select: none;
 }
 
 .full-chat-container {
@@ -256,6 +264,7 @@ a:hover, a:active, a:focus {
     border-radius: 50px;
     text-align: center;
     box-shadow: 2px 2px 3px #999;
+    -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease;
 }
 
@@ -323,6 +332,10 @@ a:hover, a:active, a:focus {
     margin-top: 0;
 
     margin-bottom: 0px !important;
+
+    width: -webkit-max-content;
+
+    width: -moz-max-content;
 
     width: max-content; /*Subtract 25px - the width of your image */
 }
@@ -393,7 +406,8 @@ a:hover, a:active, a:focus {
     }
 
     .image-fitting {
-        object-fit: contain !important;
+        -o-object-fit: contain !important;
+           object-fit: contain !important;
         height: auto !important;
     }
 
@@ -429,7 +443,8 @@ a:hover, a:active, a:focus {
 }
 
 .image-fitting {
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
 }
 
 
@@ -462,6 +477,7 @@ a:hover, a:active, a:focus {
 
 .content-footer1 {
     color: white;
+    width: -webkit-fit-content;
     width: fit-content;
     width: -moz-fit-content;/* FOR MOZILLA FIREFOX*/
     font-size: 1.2rem;
@@ -783,6 +799,7 @@ body {
         left: -5px;
         background-color: black;
         overflow-x: hidden;
+        -webkit-transition: 0.5s;
         transition: 0.5s;
         padding-top: 10px;
         border-right: 5px solid #2A3F54;
@@ -794,6 +811,7 @@ body {
         font-size: 13px;
         color: white;
         display: block;
+        -webkit-transition: 0.3s;
         transition: 0.3s;
     }
 
