@@ -1733,8 +1733,10 @@ def get_static_files(request):
             if not os.path.exists(dstfolder):
                 os.makedirs(dstfolder)
         if os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
-            if not (os.path.exists(dst)):
-                shutil.copytree(settings.BASE_DIR+'/WebApp/' +src, dst)
+            if (os.path.exists(dst)):   #if folder exists already, removes it and copy again
+                shutil.rmtree(dst)
+            # if not (os.path.exists(dst)):
+            shutil.copytree(settings.BASE_DIR+'/WebApp/' +src, dst)
         else:
             shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
     # time.sleep(2)
