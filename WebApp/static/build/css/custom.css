@@ -70,6 +70,7 @@ body {
     -moz-column-break-inside: avoid;
     column-break-inside: avoid;
     opacity: 1;
+    -webkit-transition: all .2s ease;
     transition: all .2s ease
 }
 
@@ -118,7 +119,8 @@ body {
 ul.messages li .message_date {
     float: right;
     text-align: right;
-    margin-block-start: -38px;
+    -webkit-margin-before: -38px;
+            margin-block-start: -38px;
 }
 
 ul.messages li .message_wrapper {
@@ -246,6 +248,8 @@ ul.messages li img.image, img.image {
 }
 
 .navbar-nav.navbar-center {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
 
 }
@@ -438,6 +442,7 @@ table {
     border-radius: 5px;
     background-clip: padding-box;
     background: rgb(60, 212, 111);
+    -webkit-transition: all 300ms ease-in-out;
     transition: all 300ms ease-in-out;
 }
 
@@ -449,11 +454,21 @@ table {
 .splashDiv {
     width: 100%;
     height: 80vh;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
 }
 
 #ubl_logo_orange {
@@ -762,9 +777,15 @@ a.star {
 .status {
     width: 300px;
     height: 80px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     padding: 5px;
     margin-left: -30px;
     margin-top: 30px;
@@ -807,7 +828,8 @@ a.star {
     border-radius: 50%;
     width: 10px;
     height: 10px;
-    align-content: inline;
+    -ms-flex-line-pack: inline;
+        align-content: inline;
     margin-left: -15px;
     margin-top: 30px;
 }
@@ -817,10 +839,17 @@ a.star {
 .inputField {
     width: 100%;
     position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-flow: row;
-    justify-content: flex-end;
-    align-items: center;
+    -ms-flex-flow: row;
+        flex-flow: row;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
 }
 
 #fname {
@@ -834,7 +863,9 @@ a.star {
     font-size: 15px;
     margin-bottom: 5px;
     margin-left: 5px;
-    justify-content: flex-start;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
 }
 
 .fa-location-arrow {
@@ -843,9 +874,12 @@ a.star {
 
 article {
     min-height: 100%;
+    display: -ms-grid;
     display: grid;
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: 100%;
+    -ms-grid-rows: auto 1fr auto;
+        grid-template-rows: auto 1fr auto;
+    -ms-grid-columns: 100%;
+        grid-template-columns: 100%;
 }
 
 .msg_footer {
@@ -872,7 +906,8 @@ article {
     border-radius: 50%;
     width: 10px;
     height: 10px;
-    align-content: inline;
+    -ms-flex-line-pack: inline;
+        align-content: inline;
     margin-left: -15px;
     margin-top: 20px;
 }
@@ -880,9 +915,15 @@ article {
 .status1 {
     width: 300px;
     height: 100px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     padding: 10px;
     margin-left: -30px;
 }
@@ -1006,18 +1047,31 @@ article {
 
 .search-header {
     width: auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    align-content: center;
+    -ms-flex-flow: row;
+        flex-flow: row;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    -ms-flex-line-pack: center;
+        align-content: center;
 }
 
 #form-btn {
     width: 170px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-flow: row;
-    justify-content: flex-end;
-    align-items: center;
+    -ms-flex-flow: row;
+        flex-flow: row;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     padding: 3px;
     margin-top: 10px;
 }
@@ -1044,16 +1098,32 @@ article {
 }
 
 .courseDetailStyle {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
 }
 
 .courseDetailStyle1 {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
 
 }
 
@@ -1079,12 +1149,14 @@ article {
 }
 
 .middle {
+    -webkit-transition: .5s ease;
     transition: .5s ease;
     opacity: 0;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     text-align: center;
 }
@@ -1095,8 +1167,10 @@ article {
     display: block;
     width: 100%;
     height: auto;
+    -webkit-transition: .5s ease;
     transition: .5s ease;
-    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
 }
 
 .courseimagediv:hover .courseimage {
@@ -1149,8 +1223,13 @@ article {
     background-color: white;
     border-radius: 0.25rem;
     box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
     overflow: hidden;
 }
 
@@ -1169,11 +1248,23 @@ article {
 
 #avatarDiv {
 
+    display: -webkit-box;
+
+    display: -ms-flexbox;
+
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
 }
 
 #editButton {
@@ -1218,8 +1309,8 @@ article {
 
 .gridContentsList:hover .card-img-top {
     -webkit-transform: scale(1.2);
-    -moz-transform: scale(1.2);
     transform: scale(1.2);
+    -webkit-transition: .3s ease-in-out;
     transition: .3s ease-in-out;
 
 }
@@ -1388,8 +1479,6 @@ article {
 .box-part:hover {
     color: #FFF;
     -webkit-transition: all 1s ease-out;
-    -moz-transition: all 1s ease-out;
-    -o-transition: all 1s ease-out;
     transition: all 1s ease-out;
 }
 
@@ -1445,6 +1534,8 @@ article {
 
 .degree {
     /*90 + ( 360 * .1 )*/
+    background-image: -webkit-linear-gradient(left, transparent 50%, white 50%),
+    -webkit-linear-gradient(left, white 50%, transparent 50%);
     background-image: linear-gradient(90deg, transparent 50%, white 50%),
     linear-gradient(90deg, white 50%, transparent 50%);
 }
@@ -1749,6 +1840,8 @@ input[type=checkbox], input[type=radio] {
 
 @media all and (max-width: 535px) {
     .exam-results {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
         margin-bottom: 8px;
     }
@@ -2036,6 +2129,7 @@ input[type=checkbox], input[type=radio] {
     border-right: 0;
     display: block;
     padding: 20px 5px;
+    -webkit-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
 }
 
@@ -2073,6 +2167,7 @@ label .asteriskField {
 
 .student_card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    -webkit-transition: 0.3s;
     transition: 0.3s;
     width: 40%;
     border-radius: 5px;

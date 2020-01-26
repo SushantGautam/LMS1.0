@@ -23,6 +23,8 @@ input[type="search"] {
   font-size: 25px !important;
   cursor: pointer;
   padding-right: 30px;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
   display: inline-flex;
   padding-top: 10px;
   float: right;
@@ -39,6 +41,8 @@ input[type="search"] {
 }
 
 .filteringSearchBar {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 
@@ -48,12 +52,17 @@ input[type="search"] {
 }
 
 .coursesFilteringSearchBar {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   padding-left: 2%;
   padding-top: 1%;
-  align-content: flex-end;
+  -ms-flex-line-pack: end;
+      align-content: flex-end;
 }
 .filteringSearchBar1 {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   margin-left: 10%;
 }
@@ -104,7 +113,6 @@ input[type="search"] {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-transform: translate(0, 0);
-  -ms-transform: translate(0, 0);
   transform: translate(0, 0);
 }
 
@@ -113,14 +121,19 @@ input[type="search"] {
 }
 
 .gridContents {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .gridContentsList {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   padding: 1rem;
 }
@@ -141,8 +154,13 @@ input[type="search"] {
   background-color: white;
     border-radius: 1rem;
   box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 /* ======================= LIST VIEW ======================== */
 
@@ -240,9 +258,14 @@ input[type="search"] {
   height: auto;
 }
 #surveyContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 #surveyView,
 .x_title {
@@ -263,8 +286,12 @@ input[type="search"] {
   line-height: 1.285em;
   font-weight: bold;
   color: #1ebeb4;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 form {
   word-spacing: 0.2em;
@@ -283,8 +310,10 @@ form {
 .pollButtons .btn-info {
   background-color: #354254;
   border: none;
+  -webkit-transition-property: background-color;
   transition-property: background-color;
-  transition-duration: 0.5s;
+  -webkit-transition-duration: 0.5s;
+          transition-duration: 0.5s;
 }
 
 .pollButtons .btn-info:hover {
@@ -294,8 +323,11 @@ form {
 
 #pollsQuestions {
   margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
 }
 .title {
@@ -306,8 +338,12 @@ form {
   padding-left: 70px;
 }
 .radioInputs li {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 #pollsQuestions #pollsOptions {
   font-size: 16px;
@@ -326,7 +362,8 @@ form {
 }
 
 .questionLists .card:hover {
-  transform: scale(1.1, 1.1);
+  -webkit-transform: scale(1.1, 1.1);
+          transform: scale(1.1, 1.1);
 }
 
 .questionLists .card-title {
@@ -360,9 +397,16 @@ form {
 
 .questionLists .pollButtons {
   width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .questionLists {
@@ -370,11 +414,15 @@ form {
   width: 25rem;
 }
 .questionLists .card_labels {
-  justify-content: flex-start;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
   margin: 15px;
 }
 .card-body ul {
-  padding-inline-start: 20px !important;
+  -webkit-padding-start: 20px !important;
+     -moz-padding-start: 20px !important;
+          padding-inline-start: 20px !important;
   padding-top: 10px;
 }
 .categoryContainer {
@@ -384,8 +432,12 @@ form {
 @media (max-width: 767px) {
   .categoryContainer {
     margin-left: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
   }
 }
 
@@ -415,10 +467,15 @@ form {
 }
 .categoryContainer .card-text {
   margin-top: 13px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-    justify-content: space-around;
+    -ms-flex-pack: distribute;
+        justify-content: space-around;
   height: 40px;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 #categoryIcons {
@@ -430,8 +487,12 @@ form {
 .liveSurveyCreateButton {
     margin-top: 28px;
     margin-left: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
 }
 
 /*@media screen and (min-width: 768px) and (max-width: 1400px) {*/
@@ -443,15 +504,22 @@ form {
 @media (max-width: 767px) {
     .liveSurveyCreateButton {
         margin-left: 0;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        justify-content: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
     }
 }
 
 @media (max-width: 767px) {
     #surveyheader {
+        display: -ms-grid;
         display: grid;
-        justify-content: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
     }
 }
 
@@ -480,8 +548,12 @@ form {
 }
 
 #status {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   z-index: 0;
 }
 #switchButtons .btn-default.btn-on.active {
@@ -493,12 +565,18 @@ form {
   color: white;
 }
 #searchBarSurvey {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: flex-end;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
   margin-top: 30px;
 }
 
 #surveySearch {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
   /*padding-right: 30px;*/
 }
@@ -537,6 +615,8 @@ form {
 .hR {
   margin-right: 50px;
   height: 2px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   /*flex-direction: auto;*/
   background-color: white;
@@ -633,8 +713,12 @@ form {
 
 #switchButtons {
   /* margin-bottom: -20px; */
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 .questionSection {
   padding-bottom: 10px;
@@ -643,6 +727,8 @@ form {
   color: white;
 }
 #option_Button {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 #option_Button .btn-success {
@@ -711,6 +797,7 @@ form {
   position: absolute;
   top: 30px;
   right: 30px;
+  -webkit-transition: ease 0.25s all;
   transition: ease 0.25s all;
   -webkit-transform: translate(50%, -50%);
   transform: translate(50%, -50%);
