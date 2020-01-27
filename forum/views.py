@@ -15,6 +15,8 @@ from django.utils.translation import ugettext as _
 from django.views.generic import ListView
 from textblob import TextBlob
 
+# These views are only for admin. So  AdminAuthMxnCls is used.     AuthCheck(request, admn=1) is used for func based views.
+from LMS.auth_views import AdminAuthMxnCls, AuthCheck
 from .forms import ThreadForm, ThreadEditForm, AppendixForm, ForumAvatarForm, ReplyForm, TopicForm, TopicEditForm, \
     PostEditForm
 from .misc import get_query
@@ -40,21 +42,23 @@ def get_thread_ordering(request):
 
 
 def Topic_related_to_user(request):
-    return (Topic.objects.filter(center_associated_with=request.user.Center_Code) | Topic.objects.filter(center_associated_with__isnull=True))
+    return (Topic.objects.filter(center_associated_with=request.user.Center_Code) | Topic.objects.filter(
+        center_associated_with__isnull=True))
 
 
 def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
 
+
 # Create your views here.
-class Index(LoginRequiredMixin, ListView):
+class Index(AdminAuthMxnCls, LoginRequiredMixin, ListView):
     model = Thread
     template_name = 'forum/index.html'
     context_object_name = 'threads'
 
     # def get_queryset(self):
     #     nodegroups = NodeGroup.objects.all()
-        
+
     #     threadqueryset = Thread.objects.none()
     #     for ng in nodegroups:
     #         thread_counter = 0
@@ -63,7 +67,7 @@ class Index(LoginRequiredMixin, ListView):
     #             thread_counter += topic.thread_count
     #             threads = Thread.objects.visible().filter(topic=topic.pk).order_by('pub_date').filter(
     #                 topic_id__in=Topic_related_to_user(self.request))[:4]
-               
+
     #             threadqueryset |= threads
     #         if thread_counter == 0:
     #             nodegroups = nodegroups.exclude(pk = ng.pk)
@@ -76,11 +80,13 @@ class Index(LoginRequiredMixin, ListView):
 
         for ng in nodegroups:
             thread_counter = 0
-            topics = Topic.objects.filter(node_group=ng.pk, center_associated_with= self.request.user.Center_Code) | Topic.objects.filter(node_group=ng.pk, center_associated_with__isnull= True)
+            topics = Topic.objects.filter(node_group=ng.pk,
+                                          center_associated_with=self.request.user.Center_Code) | Topic.objects.filter(
+                node_group=ng.pk, center_associated_with__isnull=True)
             for topic in topics:
                 thread_counter += topic.threads_count
             if thread_counter == 0:
-                nodegroups = nodegroups.exclude(pk = ng.pk)
+                nodegroups = nodegroups.exclude(pk=ng.pk)
             else:
                 thread = Thread.objects.filter(topic_id__in=topics).order_by('-pub_date')[:4]
                 threads += thread
@@ -95,7 +101,7 @@ class Index(LoginRequiredMixin, ListView):
         return context
 
 
-class NodeGroupView(LoginRequiredMixin, ListView):
+class NodeGroupView(AdminAuthMxnCls, LoginRequiredMixin, ListView):
     model = Topic
     template_name = 'forum/nodegroup.html'
     context_object_name = 'topics'
@@ -121,7 +127,7 @@ class NodeGroupView(LoginRequiredMixin, ListView):
                 thread = Thread.objects.filter(
                     topic=topic.pk).order_by('pub_date')[0]
                 reply_count = Post.objects.filter(thread=thread.pk).count()
-            
+
             except:
                 thread = None
             latest_threads.append([topic, thread, reply_count])
@@ -134,7 +140,7 @@ class NodeGroupView(LoginRequiredMixin, ListView):
         return context
 
 
-class TopicView(LoginRequiredMixin, ListView):
+class TopicView(AdminAuthMxnCls, LoginRequiredMixin, ListView):
     model = Thread
     paginate_by = 20
     template_name = 'forum/topic.html'
@@ -159,7 +165,7 @@ class TopicView(LoginRequiredMixin, ListView):
         return context
 
 
-class ThreadView(LoginRequiredMixin, ListView):
+class ThreadView(AdminAuthMxnCls, LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/thread.html'
@@ -209,20 +215,23 @@ class ThreadView(LoginRequiredMixin, ListView):
                 reverse('forum:thread', kwargs={'pk': thread_id})
             )
 
-def ThreadList_LoadMoreViewAjax(request, pk, count ):
+
+def ThreadList_LoadMoreViewAjax(request, pk, count):
+    AuthCheck(request, admn=1)
     return render(request, 'ForumInclude/LoadMoreAjax.html', {
-        'MoreReply' : Post.objects.filter(
+        'MoreReply': Post.objects.filter(
             thread_id=pk
         ).select_related(
             'user'
         ).prefetch_related(
             'user__forum_avatar'
-        ).order_by('pub_date')[5*count:(1+count)*5]
-    
+        ).order_by('pub_date')[5 * count:(1 + count) * 5]
+
     })
 
 
 def user_info(request, pk):
+    AuthCheck(request, admn=1)
     u = User.objects.get(pk=pk)
     return render(request, 'forum/user_info.html', {
         'title': u.username,
@@ -232,7 +241,7 @@ def user_info(request, pk):
     })
 
 
-class UserThreads(LoginRequiredMixin, ListView):
+class UserThreads(AdminAuthMxnCls, LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/user_threads.html'
@@ -254,7 +263,7 @@ class UserThreads(LoginRequiredMixin, ListView):
         return context
 
 
-class UserPosts(LoginRequiredMixin, ListView):
+class UserPosts(AdminAuthMxnCls, LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
     template_name = 'forum/user_replies.html'
@@ -276,7 +285,7 @@ class UserPosts(LoginRequiredMixin, ListView):
         return context
 
 
-class SearchView(LoginRequiredMixin, ListView):
+class SearchView(AdminAuthMxnCls, LoginRequiredMixin, ListView):
     model = Thread
     paginate_by = 10
     template_name = 'forum/search.html'
@@ -305,6 +314,7 @@ class SearchView(LoginRequiredMixin, ListView):
 
 
 def search_redirect(request):
+    AuthCheck(request, admn=1)
     if request.method == 'GET':
         keyword = request.GET.get('keyword')
         return HttpResponseRedirect(reverse('forum:search', kwargs={'keyword': keyword}))
@@ -314,8 +324,9 @@ def search_redirect(request):
 
 @login_required
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
+    AuthCheck(request, admn=1)
     topic = None
-    topics =  Topic.objects.all()
+    topics = Topic.objects.all()
     node_group = NodeGroup.objects.all()
     fixed_nodegroup = NodeGroup.objects.filter(pk=nodegroup_pk)
     if topic_pk:
@@ -326,9 +337,8 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
     # print('topics', topics, nodegroup_pk)
     if request.method == 'POST':
         form = ThreadForm(request.POST, user=request.user)
-       
+
         if form.is_valid():
-          
             t = form.save()
             return HttpResponseRedirect(reverse('forum:thread', kwargs={'pk': t.pk}))
     else:
@@ -342,11 +352,12 @@ def create_thread(request, topic_pk=None, nodegroup_pk=None):
 import operator
 from django.db.models import Q
 from functools import reduce
-from operator import or_
-def ThreadSearchAjax(request, topic_id, threadkeywordList):
 
+
+def ThreadSearchAjax(request, topic_id, threadkeywordList):
+    AuthCheck(request, admn=1)
     threadkeywordList = threadkeywordList.split("_")
-    RelevantThread=[]
+    RelevantThread = []
     if topic_id:
         RelevantThread = Thread.objects.filter(topic=topic_id)
         pass
@@ -354,12 +365,13 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
         RelevantTopics = Topic_related_to_user(request).values_list('pk')
         RelevantThread = Thread.objects.filter(topic__in=RelevantTopics)
         pass
-    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList )))[:5]
-    return render(request, 'forum/ThreadSearchAjax.html', {'RelevantThread':RelevantThread})
+    RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList)))[:5]
+    return render(request, 'forum/ThreadSearchAjax.html', {'RelevantThread': RelevantThread})
 
 
 @login_required
 def create_topic(request, nodegroup_pk=None):
+    AuthCheck(request, admn=1)
     node_group = NodeGroup.objects.filter(pk=nodegroup_pk)
     if request.method == 'POST':
         form = TopicForm(request.POST, user=request.user)
@@ -375,6 +387,8 @@ def create_topic(request, nodegroup_pk=None):
 
 @login_required
 def edit_thread(request, pk):
+    AuthCheck(request, admn=1)
+
     thread = Thread.objects.get(pk=pk)
     if thread.reply_count < 0:
         return HttpResponseForbidden(_('Editing is not allowed when thread has been replied'))
@@ -393,6 +407,7 @@ def edit_thread(request, pk):
 
 @login_required
 def edit_post(request, pk):
+    AuthCheck(request, admn=1)
     post = Post.objects.get(pk=pk)
     if not post.user == request.user:
         return HttpResponseForbidden(_('You are not allowed to edit other\'s thread'))
@@ -409,6 +424,7 @@ def edit_post(request, pk):
 
 @login_required
 def edit_topic(request, pk):
+    AuthCheck(request, admn=1)
     topic = Topic.objects.get(pk=pk)
     if not topic.user == request.user:
         return HttpResponseForbidden(_('You are not allowed to edit other\'s thread'))
@@ -473,7 +489,7 @@ def notification_view(request):
     })
 
 
-class NotificationView(LoginRequiredMixin, ListView):
+class NotificationView(AdminAuthMxnCls, LoginRequiredMixin, ListView):
     model = Notification
     paginate_by = 20
     template_name = 'forum/notifications.html'
