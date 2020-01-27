@@ -39,10 +39,10 @@
                                 </div>
                             </li>
                             <li class="surveyViewDates">
-                                <i class="fa fa-calendar"></i><label>Start date: {{ object.Start_Date }}</label>
+                                <i class="fa fa-calendar"></i><label>Start date: <span class = "datecon">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
                             </li>
                             <li class="surveyViewDates">
-                                <i class="fa fa-calendar"></i><label>End date: {{ object.End_Date }}</label>
+                                <i class="fa fa-calendar"></i><label>End date: <span class = "datecon">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
                             </li>
                             <li class="surveyViewDates">
                                 <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
@@ -392,14 +392,14 @@ margin: 0 auto"></div>
                             {% if survey.id == object.id %}
                                 <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
                                 <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-danger text-center">{{ survey.Created_Date }}</h4>
-                                <h4 class="text-danger text-center">{{ survey.Updated_Date }}</h4>
+                                <h4 class="text-danger text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
+                                <h4 class="text-danger text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
                             {% else %}
                                 <h4 class="text-info text-center"><a
                                         href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
                                 <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-info text-center">{{ survey.Created_Date }}</h4>
-                                <h4 class="text-info text-center">{{ survey.Updated_Date }}</h4>
+                                <h4 class="text-info text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
+                                <h4 class="text-info text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
                             {% endif %}
 
                         </div>
