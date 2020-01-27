@@ -1078,7 +1078,7 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
 
 }
 
-function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Play Quiz', quiz_span_name = "", font_size) {
+function QuizFunction(top = null, left = null, link = null, height = null, width = null, name = 'Select Quiz', quiz_span_name = "", font_size) {
     const quiz = new Quiz(top, left, link, height, width, name, quiz_span_name, font_size);
 
     quiz.renderDiagram();
@@ -1170,7 +1170,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
 
 }
 
-function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Take Survey', survey_span_name = "", font_size) {
+function SurveyFunction(top = null, left = null, link = null, height = null, width = null, name = 'Select Survey', survey_span_name = "", font_size) {
     const survey = new Survey(top, left, link, height, width, name, survey_span_name, font_size);
 
     survey.renderDiagram();
@@ -1929,10 +1929,16 @@ $(document).ready(function () {
 
     // quiz Form Submit
     $('#quiz-submit').on('click', function () {
-        var quiz_name = $('#quiz-btn-name').val();
+        var quiz_name;
         var quiz_span_name = $('#quiz-name').val();
         var quiz_link = $('#quiz-link').val();
         var quiz_id = $('#quiz_id').val();
+        if($('#quiz-btn-name').val() == 'Select Quiz' && quiz_link != ""){
+            quiz_name = "Play Quiz"
+        } else {
+           quiz_name = $('#quiz-btn-name').val()
+        }
+        
         if (quiz_link != "") {
             $('#' + quiz_id).attr({
                 "href": `${quiz_link}`
@@ -1959,10 +1965,17 @@ $(document).ready(function () {
 
     // survey Form Submit
     $('#survey-submit').on('click', function () {
-        var survey_name = $('#survey-btn-name').val();
-        var survey_span_name = $('#survey-name').val();
+        var survey_name;
         var survey_link = $('#survey-link').val();
         var survey_id = $('#survey_id').val();
+        var survey_span_name = $('#survey-name').val();
+
+        if($('#survey-btn-name').val() == 'Select Survey' && survey_link != ""){
+            survey_name = "Take Survey"
+        } else {
+            survey_name = $('#survey-btn-name').val()
+        }        
+        
         if (survey_link != "") {
             $('#' + survey_id).attr({
                 "href": `${survey_link}`
