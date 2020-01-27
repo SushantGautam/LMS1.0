@@ -32,7 +32,8 @@
                         {% csrf_token %} <br><br>
                         <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
                         <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
-                        <a class="text-center" href="{% static 'importcsv_sample.csv' %}" style="padding-top: 2em;">
+                        <a target="_blank" class="text-center" href="{% static 'importcsv_sample.csv' %}"
+                           style="padding-top: 2em;">
                             <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
                         </a><br>
 

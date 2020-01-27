@@ -107,7 +107,7 @@
 
         <p class="exam-results text-center">
          <span class="exam-results"> <i class="fa fa-list"></i>&nbsp;LIST OF MCQUESTIONS {% if quiz.has_mcqs %} <span class="fa fa-chevron-down"
-            style="color:white"></span>{% endif %}</span> 
+            style="color:white"></span>{% endif %}</span>
             <a href="" id="mcq_choose_button" data-toggle="modal"
                data-target="#question_form_popup">
                 <span class="add-mcq-details" style="float: right;margin-right: 10px;"> CHOOSE PREVIOUS MCQ </span>
@@ -192,7 +192,7 @@
         <p class="exam-results text-center">
             <span class="exam-results"> <i class="fa fa-bookmark "></i>&nbsp;LIST OF TFQUESTIONS {% if quiz.has_tfqs %}<span class="fa fa-chevron-down"
                 style="color:white"></span> {% endif %}</span>
-            
+
             <a href="" id="tfq_choose_button" data-toggle="modal"
                data-target="#question_form_popup">
                 <span class="add-mcq-details" style="float: right;margin-right: 10px;"> CHOOSE PREVIOUS TFQ </span>
@@ -253,25 +253,25 @@
             
                     <span class="exam-results"> <i class="fa fa-align-right  "></i>&nbsp;LIST OF SHORT ANSWER QUESTIONS  {% if quiz.has_saqs %}<span class="fa fa-chevron-down"
                         style="color:white"></span>{% endif %}</span>
-                   
 
-            
-            
+
+
+
                     <a href="" id="saq_choose_button" data-toggle="modal"
                     data-target="#question_form_popup">
                      <span class="add-mcq-details" style="float: right;margin-right: 10px;">CHOOSE PREVIOUS SAQ </span>
                  </a>
 
-            
-           
+
+
                     <a href="" id="saq_create_button" data-toggle="modal"
                     data-target="#question_form_popup">
                      <span class="add-mcq-details" style="float: right">ADD SAQ +</span>
                  </a>
-         
-           
-            
-           
+
+
+
+
         </p>
 
     </a>
@@ -313,7 +313,7 @@
             {% endfor %}
         </ul>
     </div>
-    {% if user.Is_Teacher %}
+    {% if '/teachers' in request.path %}
         <a href="/quiz/markingfilter/{{ quiz.pk }}/" class="btn btn-primary btn-lg active" role="button"
            aria-pressed="true">Assign Marks to Submitted Answers</a>
     {% endif %}

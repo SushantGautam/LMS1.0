@@ -1,7 +1,7 @@
+import glob
 import json
 import os
-import glob
-import shutil
+import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
@@ -27,7 +27,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
@@ -43,7 +43,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
 
-import re
+
 class Changestate(View):
     def post(self, request):
         quizid = self.request.POST["quiz_id"]
@@ -599,10 +599,11 @@ class CourseInfoListView(ListView):
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
+
 class CourseInfoCreateView(CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
-    
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
@@ -1356,7 +1357,8 @@ def save_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
+                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
                 request.user.pk) + '.' + media.name.split('.')[-1]
             # name = "".join(re.findall("[a-zA-Z0-9]+", name))
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
@@ -1398,7 +1400,8 @@ def save_3d_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
+                re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '&&&' + str(
                 request.user.pk)
             # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
@@ -1426,7 +1429,8 @@ def save_video(request):
 
         # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
         # Eg: 561561561&&&test.jpg&&&17
-        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
+        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
+            re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
         # name = "".join(re.findall("[a-zA-Z]+", name))
 
@@ -1505,9 +1509,14 @@ def export_chapter(request, course, chapter):
     dir_name = path + '/chapterBuilder/' + str(course) + '/' + str(chapter)
     if not os.path.exists(dir_name):
         return HttpResponse('No directory')
-    zipfile = shutil.make_archive(path + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_', 'zip', dir_name)
+    zipfile = shutil.make_archive(
+        path + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) + '_' + str(chapter) + '_',
+        'zip', dir_name)
 
-    return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_' + '.zip')
+    return redirect(
+        settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) + '_' + str(
+            chapter) + '_' + '.zip')
+
 
 def import_chapter(request):
     chapterID = request.POST['chapterID']
@@ -1653,8 +1662,25 @@ def ThreeDViewer(request, urlpath=None):
 
     return render(request, '3D_Viewer/render_template.html', {'objpath': urlpath, 'mtlpath': mtlurlpath})
 
+
 class ContentsView(TemplateView):
     template_name = 'chapter/chapter_contents.html'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
+                pass
+            else:
+                raise ObjectDoesNotExist
+        except:
+            if '/students/' in request.path:
+                return redirect('student_courseinfo_detail', pk=self.kwargs.get('course'))
+            elif '/teachers/' in request.path:
+                return redirect('teacher_courseinfo_detail', pk=self.kwargs.get('course'))
+            else:
+                return redirect('courseinfo_detail', pk=self.kwargs.get('course'))
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1676,13 +1702,14 @@ class ContentsView(TemplateView):
             print(e)
             context['data'] = ""
 
-        list_of_files = sorted(glob.iglob(path+'/chatlog/chapterchat' + str(chapterID) + '/*.txt'), key=os.path.getctime, reverse=True)[:50]
+        list_of_files = sorted(glob.iglob(path + '/chatlog/chapterchat' + str(chapterID) + '/*.txt'),
+                               key=os.path.getctime, reverse=True)[:50]
 
         for latest_file in list_of_files:
             try:
                 f = open(latest_file, 'r')
                 if f.mode == 'r':
-                    contents =f.read()
+                    contents = f.read()
                     contents = contents.replace('`', '')
                     context['chat_details'].insert(0, contents)
                 f.close()
@@ -1691,13 +1718,15 @@ class ContentsView(TemplateView):
                 pass
         return context
 
+
 class OfflineContentsView(ContentsView):
     template_name = 'chapter/offlineviewer.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['connection_offline'] = True
         return context
+
 
 import shutil
 import time
@@ -1751,18 +1780,18 @@ def get_static_files_info(request):
 def make_zip_file(list_of_files):
     path = settings.MEDIA_ROOT
     for src in list_of_files:
-            dst = os.path.join(path, src)
-            if not os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
-                dstfolder = os.path.dirname(dst)
-                if not os.path.exists(dstfolder):
-                    os.makedirs(dstfolder)
-            if os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
-                if (os.path.exists(dst)):   #if folder exists already, removes it and copy again
-                    shutil.rmtree(dst)
-                shutil.copytree(settings.BASE_DIR+'/WebApp/' +src, dst)
-            else:
-                shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
-                shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
+        dst = os.path.join(path, src)
+        if not os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
+            dstfolder = os.path.dirname(dst)
+            if not os.path.exists(dstfolder):
+                os.makedirs(dstfolder)
+        if os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
+            if (os.path.exists(dst)):   #if folder exists already, removes it and copy again
+                shutil.rmtree(dst)
+            shutil.copytree(settings.BASE_DIR+'/WebApp/' +src, dst)
+        else:
+            shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
+            shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
 
 
 def get_static_files(request):
