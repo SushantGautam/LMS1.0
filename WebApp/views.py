@@ -4,7 +4,7 @@ import glob
 import shutil
 import uuid
 import zipfile  # For import/export of compressed zip folder
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 # import vimeo  # from PyVimeo for uploading videos to vimeo.com
@@ -1701,56 +1701,72 @@ class OfflineContentsView(ContentsView):
 
 import shutil
 import time
-def get_static_files(request):
-    # if not (os.path.exists(os.path.join(settings.MEDIA_URL, 'staticfiles.zip'))):
-    list_of_files = [
-        'static/lightbox',
-        'static/3D_Viewer/model-viewer.js',
-        'static/build/css/theme.min.css',
-        'static/chapterPageBuilder/css/style-content.css',
-        'static/chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css',
-        'static/chapterPageBuilder/js/owl-carousel/owl.carousel.js',
-        'static/images/blankpage.jpg',
-        'static/images/uLMS2019_Loading_SVG.svg',
-        'static/js/modernizr.js',
-        'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
-        'static/vendorsx/font-awesome/css/font-awesome.min.css',
+
+def get_static_files_info(request):
+    path = settings.MEDIA_ROOT
+    if not os.path.exists(os.path.join(path, 'static_files_info.txt')):
+        now = datetime.now()
+        json_data = {
+            "last_modified": now.strftime("%m/%d/%Y, %H:%M:%S"),
+            "list_of_files": [
+                'static/lightbox',
+                'static/3D_Viewer/model-viewer.js',
+                'static/build/css/theme.min.css',
+                'static/chapterPageBuilder/css/style-content.css',
+                'static/chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css',
+                'static/chapterPageBuilder/js/owl-carousel/owl.carousel.js',
+                'static/images/blankpage.jpg',
+                'static/images/uLMS2019_Loading_SVG.svg',
+                'static/js/modernizr.js',
+                'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+                'static/vendorsx/font-awesome/css/font-awesome.min.css',
+                
+                'static/vendorsx/bootstrap/dist/css/bootstrap.css',
+                'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+                'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
+                'static/vendorsx/jquery/dist/jquery.min.js',
+                'static/vendorsx/font-awesome',
+
+                'static/pdfjs',
+            ]
+        }
+        with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+            json.dump(json_data, json_file)
+        make_zip_file(json_data['list_of_files'])
+    else:
+        with open(os.path.join(path, 'static_files_info.txt')) as json_file:
+            json_data = json.load(json_file)
+        json_file_info_date = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S")
         
-        'static/vendorsx/bootstrap/dist/css/bootstrap.css',
-        'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
-        'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
-        'static/vendorsx/jquery/dist/jquery.min.js',
-        'static/vendorsx/font-awesome',
+        if os.path.exists(os.path.join(path, 'staticfiles.zip')):
+            file_modified_time = time.ctime(os.path.getmtime(os.path.join(path, 'staticfiles.zip')))
+            file_modified_time = datetime.strptime(file_modified_time, '%a %b %d %H:%M:%S %Y')
+            if(file_modified_time < json_file_info_date):
+                make_zip_file(json_data['list_of_files'])
+        else:
+            make_zip_file(json_data['list_of_files'])
 
-        'static/pdfjs',
-    ]
-
+    return JsonResponse(json_data)
+    
+def make_zip_file(list_of_files):
     path = settings.MEDIA_ROOT
     for src in list_of_files:
-        dst = os.path.join(path, src)
-        if not os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
-            dstfolder = os.path.dirname(dst)
-            if not os.path.exists(dstfolder):
-                os.makedirs(dstfolder)
-        if os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
-            if (os.path.exists(dst)):   #if folder exists already, removes it and copy again
-                shutil.rmtree(dst)
-            # if not (os.path.exists(dst)):
-            shutil.copytree(settings.BASE_DIR+'/WebApp/' +src, dst)
-        else:
-            shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
-    # time.sleep(2)
-    shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
+            dst = os.path.join(path, src)
+            if not os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
+                dstfolder = os.path.dirname(dst)
+                if not os.path.exists(dstfolder):
+                    os.makedirs(dstfolder)
+            if os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
+                if (os.path.exists(dst)):   #if folder exists already, removes it and copy again
+                    shutil.rmtree(dst)
+                shutil.copytree(settings.BASE_DIR+'/WebApp/' +src, dst)
+            else:
+                shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
+                shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
 
-    # html = '''IF your file doesn\'t download automatically. <br>
-    # <a id = "downloadlink" href = "{}" download> Click Here!!</a>
-    # <script>
-    # document.getElementById('downloadlink').click();
-    # </script>
-    # '''
 
+def get_static_files(request):
     return redirect(settings.MEDIA_URL + '/staticfiles.zip')
-
 
 from quiz.views import Sitting
 
