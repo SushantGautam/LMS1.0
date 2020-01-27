@@ -137,19 +137,6 @@
 
 {% block customjss %}
 <script>
-    function DateConvert(date){
-        date = new Date(date);
-        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit'};
-        let newdate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes())).toLocaleString("en-US", options)
-        return newdate
-    }
-
-    window.onload = function(){
-        $('.datecon').each(function(){
-            $(this).text(DateConvert($(this).text()))
-        })
-    }
-
     $(document).on('click', '.confirm-deactivate', function (event) {
         ans = confirm('Are you sure you want to deactivate this Member?');
         if (ans == true) {
