@@ -1733,8 +1733,8 @@ import time
 
 def get_static_files_info(request):
     path = settings.MEDIA_ROOT
+    now = datetime.now()
     if not os.path.exists(os.path.join(path, 'static_files_info.txt')):
-        now = datetime.now()
         json_data = {
             "last_modified": now.strftime("%m/%d/%Y, %H:%M:%S"),
             "list_of_files": [
@@ -1768,9 +1768,12 @@ def get_static_files_info(request):
         json_file_info_date = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S")
         
         if os.path.exists(os.path.join(path, 'staticfiles.zip')):
-            file_modified_time = time.ctime(os.path.getmtime(os.path.join(path, 'staticfiles.zip')))
+            file_modified_time = time.ctime(os.path.getmtime(os.path.join(path, 'static_files_info.txt')))
             file_modified_time = datetime.strptime(file_modified_time, '%a %b %d %H:%M:%S %Y')
-            if(file_modified_time < json_file_info_date):
+            if(file_modified_time > json_file_info_date):
+                json_data['last_modified'] = now.strftime("%m/%d/%Y, %H:%M:%S")
+                with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+                    json.dump(json_data, json_file)
                 make_zip_file(json_data['list_of_files'])
         else:
             make_zip_file(json_data['list_of_files'])
