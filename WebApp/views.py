@@ -1775,7 +1775,8 @@ def get_static_files_info(request):
         else:
             make_zip_file(json_data['list_of_files'])
 
-    return JsonResponse(json_data)
+    last_modified = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S").timestamp()
+    return HttpResponse(int(last_modified))
     
 def make_zip_file(list_of_files):
     path = settings.MEDIA_ROOT
