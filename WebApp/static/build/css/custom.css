@@ -1416,14 +1416,13 @@ article {
 }
 
 .thread-font {
-    font-size: 18px;
-    font-weight: 600;
-}
+    font-size: 16px;}
+    
 
 @media all and (max-width: 415px) {
     .thread-font {
         font-size: 13px;
-        font-size: 600;
+        
 
     }
 
@@ -2205,3 +2204,10 @@ label .asteriskField {
     background-color: #2A3F54 !important
 }
 
+/* forum-thread */
+.timeline .tags {
+    position: absolute;
+    top: 14px;
+    left: 0;
+    width: auto!important;
+}
