@@ -78,7 +78,8 @@ def start(request):
         activeassignments = []
         for course in courseID:
             activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id, Course_Code=course,
-                                                               Assignment_Deadline__gte=datetime_now)
+                                                               Assignment_Deadline__gte=datetime_now,
+                                                               Chapter_Code__Use_Flag = True)
 
         return render(request, "teacher_module/homepage.html",
                       {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments,
