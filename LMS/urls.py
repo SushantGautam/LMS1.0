@@ -90,6 +90,6 @@ urlpatterns += (
 
 # For static files
 urlpatterns += (
-    path('get_static_files_info', views.get_static_files_info, name= 'get_static_files_info'),   #for downloading static files for mobile development
-    path('get_static_files', views.get_static_files, name= 'get_static_files'),   #for downloading static files for mobile development
+    path('get_static_files_info/', views.get_static_files_info, name= 'get_static_files_info'),   #for downloading static files for mobile development
+    path('get_static_files/', views.get_static_files, name= 'get_static_files'),   #for downloading static files for mobile development
 )

@@ -1731,52 +1731,62 @@ class OfflineContentsView(ContentsView):
 import shutil
 import time
 
-def get_static_files_info(request):
+def get_static_files_info(request, *args, **kwargs):
     path = settings.MEDIA_ROOT
     now = datetime.now()
-    if not os.path.exists(os.path.join(path, 'static_files_info.txt')):
+    list_of_files = [
+        'static/lightbox',
+        'static/3D_Viewer/model-viewer.js',
+        'static/build/css/theme.min.css',
+        'static/chapterPageBuilder/css/style-content.css',
+        'static/chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css',
+        'static/chapterPageBuilder/js/owl-carousel/owl.carousel.js',
+        'static/images/blankpage.jpg',
+        'static/images/uLMS2019_Loading_SVG.svg',
+        'static/js/modernizr.js',
+        'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+        'static/vendorsx/font-awesome/css/font-awesome.min.css',
+        
+        'static/vendorsx/bootstrap/dist/css/bootstrap.css',
+        'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+        'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
+        'static/vendorsx/jquery/dist/jquery.min.js',
+        'static/vendorsx/font-awesome',
+
+        'static/pdfjs',
+    ]
+    if request.GET.get('force') == '1':
         json_data = {
             "last_modified": now.strftime("%m/%d/%Y, %H:%M:%S"),
-            "list_of_files": [
-                'static/lightbox',
-                'static/3D_Viewer/model-viewer.js',
-                'static/build/css/theme.min.css',
-                'static/chapterPageBuilder/css/style-content.css',
-                'static/chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css',
-                'static/chapterPageBuilder/js/owl-carousel/owl.carousel.js',
-                'static/images/blankpage.jpg',
-                'static/images/uLMS2019_Loading_SVG.svg',
-                'static/js/modernizr.js',
-                'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
-                'static/vendorsx/font-awesome/css/font-awesome.min.css',
-                
-                'static/vendorsx/bootstrap/dist/css/bootstrap.css',
-                'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
-                'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
-                'static/vendorsx/jquery/dist/jquery.min.js',
-                'static/vendorsx/font-awesome',
-
-                'static/pdfjs',
-            ]
+            "list_of_files": list_of_files
         }
         with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
             json.dump(json_data, json_file)
-        make_zip_file(json_data['list_of_files'])
+        make_zip_file(list_of_files)
     else:
-        with open(os.path.join(path, 'static_files_info.txt')) as json_file:
-            json_data = json.load(json_file)
-        json_file_info_date = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S")
-        
-        if os.path.exists(os.path.join(path, 'staticfiles.zip')):
-            file_modified_time = time.ctime(os.path.getmtime(os.path.join(path, 'static_files_info.txt')))
-            file_modified_time = datetime.strptime(file_modified_time, '%a %b %d %H:%M:%S %Y')
-            if(file_modified_time > json_file_info_date):
-                json_data['last_modified'] = now.strftime("%m/%d/%Y, %H:%M:%S")
-                with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
-                    json.dump(json_data, json_file)
-                make_zip_file(json_data['list_of_files'])
+        if not os.path.exists(os.path.join(path, 'static_files_info.txt')):
+            json_data = {
+                "last_modified": now.strftime("%m/%d/%Y, %H:%M:%S"),
+                "list_of_files": list_of_files
+            }
+            with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+                json.dump(json_data, json_file)
+            make_zip_file(list_of_files)
         else:
-            make_zip_file(json_data['list_of_files'])
+            with open(os.path.join(path, 'static_files_info.txt')) as json_file:
+                json_data = json.load(json_file)
+            json_file_info_date = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S")
+            
+            if os.path.exists(os.path.join(path, 'staticfiles.zip')):
+                file_modified_time = time.ctime(os.path.getmtime(os.path.join(path, 'static_files_info.txt')))
+                file_modified_time = datetime.strptime(file_modified_time, '%a %b %d %H:%M:%S %Y')
+                if(file_modified_time > json_file_info_date):
+                    json_data['last_modified'] = now.strftime("%m/%d/%Y, %H:%M:%S")
+                    with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+                        json.dump(json_data, json_file)
+                    make_zip_file(list_of_files)
+            else:
+                make_zip_file(list_of_files)
 
     last_modified = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S").timestamp()
     return HttpResponse(int(last_modified))
