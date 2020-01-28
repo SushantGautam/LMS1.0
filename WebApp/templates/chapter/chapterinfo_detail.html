@@ -94,8 +94,8 @@
 
                 <tr>
                     <td>Status</td>
-                    <td>{% if object.Use_Flag is True %}Active{% elif object.Use_Flag is False %}
-                        Inactive{% endif %}</td>
+                    <td>{% if object.Use_Flag is True %}<span style = "color:green">Active</span>{% elif object.Use_Flag is False %}
+                        <span class="text-danger"><b>Inactive</b></span>{% endif %}</td>
                 </tr>
 
                 <tr>
@@ -252,6 +252,9 @@
     </div>
     <div class="col-md-12">
         <hr class="header_hr">
+        {% if object.Use_Flag is False %}
+            <p style = "color:red">Note: Chapter is inactive, therefore assignments are not assigned to students.</p>
+        {% endif %}
         {% for o in assignments %}
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
                 <div class="col-md-8 col-sm-8 col-xs-8">
