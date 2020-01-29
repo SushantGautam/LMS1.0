@@ -4,7 +4,7 @@ import os
 import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pandas as pd
 # import vimeo  # from PyVimeo for uploading videos to vimeo.com
@@ -479,7 +479,7 @@ def ImportCsvFile(request):
         filename = fs.save(new_file_name + '.' + extension, media)
         path = os.path.join(path, filename)
 
-        df = pd.read_csv(path)
+        df = pd.read_csv(path, delimiter=';|,', engine='python')
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         saved_id = []
@@ -521,10 +521,13 @@ def ImportCsvFile(request):
                 obj.save()
                 saved_id.append(obj.id)
 
-            except:
+
+            except Exception as e:
                 for j in saved_id:
                     MemberInfo.objects.filter(id=j).delete()
-                msg = "Can't Upload all data. Problem in " + str(i + 1) + "th row of data while uploading."
+                msg = "Can't Upload all data. Problem in " + str(
+                    i + 1) + "th row of data while uploading. <br><br> " + "<br> ".join(
+                    ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>" + str(e)
                 return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         return JsonResponse(data={"message": "All data has been Uploaded Sucessfully", "class": "text-success",
                                   "rmclass": "text-danger"})
@@ -1731,6 +1734,7 @@ class OfflineContentsView(ContentsView):
 import shutil
 import time
 
+
 def get_static_files_info(request, *args, **kwargs):
     path = settings.MEDIA_ROOT
     now = datetime.now()
@@ -1746,7 +1750,7 @@ def get_static_files_info(request, *args, **kwargs):
         'static/js/modernizr.js',
         'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
         'static/vendorsx/font-awesome/css/font-awesome.min.css',
-        
+
         'static/vendorsx/bootstrap/dist/css/bootstrap.css',
         'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
         'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
@@ -1776,11 +1780,11 @@ def get_static_files_info(request, *args, **kwargs):
             with open(os.path.join(path, 'static_files_info.txt')) as json_file:
                 json_data = json.load(json_file)
             json_file_info_date = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S")
-            
+
             if os.path.exists(os.path.join(path, 'staticfiles.zip')):
                 file_modified_time = time.ctime(os.path.getmtime(os.path.join(path, 'static_files_info.txt')))
                 file_modified_time = datetime.strptime(file_modified_time, '%a %b %d %H:%M:%S %Y')
-                if(file_modified_time > json_file_info_date):
+                if (file_modified_time > json_file_info_date):
                     json_data['last_modified'] = now.strftime("%m/%d/%Y, %H:%M:%S")
                     with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
                         json.dump(json_data, json_file)
@@ -1790,26 +1794,28 @@ def get_static_files_info(request, *args, **kwargs):
 
     last_modified = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S").timestamp()
     return HttpResponse(int(last_modified))
-    
+
+
 def make_zip_file(list_of_files):
     path = settings.MEDIA_ROOT
     for src in list_of_files:
         dst = os.path.join(path, src)
-        if not os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
+        if not os.path.isdir(settings.BASE_DIR + '/WebApp/' + src):
             dstfolder = os.path.dirname(dst)
             if not os.path.exists(dstfolder):
                 os.makedirs(dstfolder)
-        if os.path.isdir(settings.BASE_DIR+'/WebApp/' +src):
-            if (os.path.exists(dst)):   #if folder exists already, removes it and copy again
+        if os.path.isdir(settings.BASE_DIR + '/WebApp/' + src):
+            if (os.path.exists(dst)):  # if folder exists already, removes it and copy again
                 shutil.rmtree(dst)
-            shutil.copytree(settings.BASE_DIR+'/WebApp/' +src, dst)
+            shutil.copytree(settings.BASE_DIR + '/WebApp/' + src, dst)
         else:
-            shutil.copy(settings.BASE_DIR+'/WebApp/' +src, dst)
+            shutil.copy(settings.BASE_DIR + '/WebApp/' + src, dst)
             shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
 
 
 def get_static_files(request):
     return redirect(settings.MEDIA_URL + '/staticfiles.zip')
+
 
 from quiz.views import Sitting
 
