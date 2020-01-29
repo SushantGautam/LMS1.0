@@ -234,7 +234,7 @@ class MyAssignmentsListView(ListView):
             Sessions += InningInfo.objects.filter(Groups__id=group.id)
 
         for session in Sessions:
-            for coursegroup in session.Course_Group.all():
+            for coursegroup in session.Course_Group.filter(Course_Code__Use_Flag=True):
                 Courses.add(coursegroup.Course_Code)
 
         for course in Courses:
