@@ -80,16 +80,20 @@
     <script>
         $('#retakeSurveyBtn').on('click', function () {
             current_progress = -10000;
+            
             $.ajax({
                 type: "GET",
                 data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
                 url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
                 success: function (data) {
+                
                     $("#surveyForm").html(data);
+                    
+
                 },
                 complete: function () {
+                    $(".modal-backdrop ").removeClass("modal-backdrop");
                     $(".se-pre-con-ajax").fadeOut("fast");
-
                 },
 
             });
