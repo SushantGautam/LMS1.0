@@ -39,8 +39,8 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for CourseInfo
-    path('courseinfo/', views.CourseInfoListView.as_view(),
-         name='student_courseinfo_list'),
+#     path('courseinfo/', views.CourseInfoListView.as_view(),
+#          name='student_courseinfo_list'),
     path('courseinfo/mycourses', views.MyCoursesListView.as_view(),
          name='student_mycourses_list'),
     path('courseinfo/detail/forum/<int:course>',

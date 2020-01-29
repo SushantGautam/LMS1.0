@@ -120,9 +120,10 @@
                     <td>Status</td>
                     <td>
                         {% if object.Use_Flag == True %}
-                            Active
+                        <span style = "color:green"> <b>Active</b>
+                        </span>
                         {% elif object.Use_Flag == False %}
-                            Deactivated
+                        <span class="text-danger"><b>Inactive</b></span>
                         {% endif %}
                     </td>
                 </tr>
@@ -350,18 +351,7 @@
                                                         <p style="color: #00A000">
                                                             {{ eachquiz.draft|yesno:"Inactive, Active" }}
                                                         <p>
-                                                        <tr>
-                                                            <td>Teachers</td>
-                                                            <td>
-                                                                {% if object.get_teachers_of_this_course %}
-                                                                    {% for eachTeacher in object.get_teachers_of_this_course %}
-                                                                        - {{ eachTeacher }}   &nbsp
-                                                                    {% endfor %}
-                                                                {% else %}
-                                                                    No Teachers Assigned Yet
-                                                                {% endif %}
-                                                            </td>
-                                                        </tr>
+                                                   
                                                         <hr>
                                                     {% else %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
@@ -423,7 +413,15 @@
             <h2 class="course-info subHeader">Chapters</h2>
 
 
+
         </div>
+<div class="col-md-12">
+        {% if object.Use_Flag is False %}
+        <p style = "color:red">Note: Course is inactive, therefore chapters and assignments are not assigned to students.</p>
+    {% endif %}
+
+</div>   
+        
 
         {% if '/students' not in request.path %}
             <div class=" course-info col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
@@ -434,6 +432,7 @@
                 </button>
             </div>
         {% endif %}
+       
         <div class="col-md-12 col-sm-12 xol-xs-12">
             <script> var lastchapter = 0;</script>
             {% for o in chapters %}

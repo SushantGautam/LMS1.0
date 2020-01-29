@@ -58,7 +58,7 @@ def start(request):
         activeassignments = []
         if sessions:
             for session in sessions:
-                course = session.Course_Group.all()
+                course = session.Course_Group.filter(Course_Code__Use_Flag=True)
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
@@ -185,7 +185,7 @@ class MyCoursesListView(ListView):
         courses = InningGroup.objects.none()
         if sessions:
             for session in sessions:
-                course = session.Course_Group.all()
+                course = session.Course_Group.filter(Course_Code__Use_Flag=True)
                 courses |= course
 
         courses = courses.distinct()
@@ -234,7 +234,7 @@ class MyAssignmentsListView(ListView):
             Sessions += InningInfo.objects.filter(Groups__id=group.id)
 
         for session in Sessions:
-            for coursegroup in session.Course_Group.all():
+            for coursegroup in session.Course_Group.filter(Course_Code__Use_Flag=True):
                 Courses.add(coursegroup.Course_Code)
 
         for course in Courses:
