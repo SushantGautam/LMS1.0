@@ -22,7 +22,7 @@
             <div class="modal-content">
                 <div class="modal-header text-center">
                     <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </h4>
@@ -54,7 +54,7 @@
                             <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit
                                 File
                             </button>
-                            <button class="btn btn-primary" data-dismiss="modal" aria-label="Close"
+                            <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
                                     style="margin:3em auto 2em auto">Close
                             </button>
                         </div>
@@ -321,6 +321,14 @@
 
 
         });
+
+
+        $('.closeImportCSV').click(function () {
+
+            window.location.reload();
+
+        })
+
     </script>
 
 {% endblock %}
