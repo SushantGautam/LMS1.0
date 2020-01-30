@@ -259,7 +259,14 @@
         {% for o in assignments %}
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
                 <div class="col-md-8 col-sm-8 col-xs-8">
-                    <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
+                    <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
+
+                        {% if o.Use_Flag == False %}
+                            <span class="text-danger" ><b>[Inactive]</b></span>
+                            
+                            
+                            {% endif %}
+                    </h5>
                     <h5>
                         <b style="color: #000000">{{ o.Assignment_Topic }}</b>
                     </h5>
