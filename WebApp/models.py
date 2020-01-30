@@ -11,6 +11,7 @@ from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField,
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from datetime import datetime
 # from quiz.models import Quiz
 
 fs = FileSystemStorage(location='LMS')
@@ -116,7 +117,7 @@ class MemberInfo(AbstractUser):
     )
 
     def get_student_courses(self):
-        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk), End_Date__gt=datetime_now)
+        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk), End_Date__gt=datetime.now())
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
