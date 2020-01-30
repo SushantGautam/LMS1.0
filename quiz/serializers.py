@@ -25,7 +25,7 @@ class MCQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.MCQuestion
         fields = (
-            'pk','figure', 'content', 'course_code', 'explanation', 'cent_code', 'answer_order'
+            'pk','figure', 'content', 'course_code', 'explanation', 'cent_code', 'answer_order', 'score'
         )
 
 class TF_QuestionSerializer(serializers.ModelSerializer):
@@ -33,7 +33,7 @@ class TF_QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.TF_Question
         fields = (
-            'pk','figure', 'content', 'course_code', 'explanation', 'cent_code', 'correct'
+            'pk','figure', 'content', 'course_code', 'explanation', 'cent_code', 'correct', 'score'
         )
 
 class SA_QuestionSerializer(serializers.ModelSerializer):
@@ -41,7 +41,7 @@ class SA_QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SA_Question
         fields = (
-            'pk','figure', 'content', 'course_code', 'explanation', 'cent_code'
+            'pk','figure', 'content', 'course_code', 'explanation', 'cent_code', 'score'
         )
 
 class AnswerSerializer(serializers.ModelSerializer):
@@ -65,5 +65,5 @@ class SittingSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Sitting
         fields = (
-            'pk','user', 'quiz', 'quiz_title','question_order', 'question_list', 'incorrect_questions', 'current_score', 'complete', 'user_answers', 'start', 'end', 'objects'
+            'pk','user', 'quiz', 'quiz_title','question_order', 'question_list', 'incorrect_questions', 'current_score', 'complete', 'user_answers', 'start', 'end', 'objects', 'score_list'
         )        

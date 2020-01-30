@@ -737,7 +737,7 @@ class Sitting(models.Model):
     score_list = models.CharField(
         max_length=1024,
         verbose_name=_("Score List"),
-        validators=[validate_comma_separated_integer_list])
+        validators=[])
 
     incorrect_questions = models.CharField(
         max_length=1024,
