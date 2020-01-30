@@ -438,7 +438,14 @@
             {% for o in chapters %}
                 <div class=" course-info col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
                     <div class="col-md-8 col-sm-8 col-xs-12">
-                        <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}</h5>
+                        <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}
+                            
+                            {% if o.Use_Flag == False %}
+                            <span class="text-danger" ><b>[Inactive]</b></span>
+                            
+                            
+                            {% endif %}
+                        </h5>
                         <h4>
                             <b style="color: #000000">{{ o.Chapter_Name }}</b>
                         </h4>
