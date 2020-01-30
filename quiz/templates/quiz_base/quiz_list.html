@@ -50,7 +50,7 @@
                 </td>
 
                 <td>
-                    {{ quiz.updated_date }}
+                    {{ quiz.updated_date|date:"d/m/Y   h:i a"  }}
                 </td>
 
                 <td>{% if quiz.draft is True %}
