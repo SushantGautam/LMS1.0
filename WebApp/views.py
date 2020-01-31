@@ -465,7 +465,7 @@ def MemberInfoDeactivate(request, pk):
 
     return redirect('memberinfo_detail', pk=pk)
 
-
+# The following function is for importing the students from the csv file. Used in Memberinfo and GroupMapping
 def ImportCsvFile(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:            
         media = request.FILES['import_csv']
@@ -506,6 +506,9 @@ def ImportCsvFile(request, *args, **kwargs):
                 else:
                     obj.Member_Gender = ''
 
+                # This is to check if the url contains the query parameter groupmappingpk.
+                # groupmappingpk is added to url when this function is called from groupmapping_detail.html.
+                # If groupmappingpk is in the url then the csv file containing all members are students only.
                 if request.GET.get('groupmappingpk'):
                     obj.Is_Student = True
                 else:
@@ -522,11 +525,15 @@ def ImportCsvFile(request, *args, **kwargs):
                 obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
                 obj.set_password('00000')
                 obj.save()
+
+                # Following is to add the new students to the group from which they were imported.
+                # groupmappingpk contains the primary key of the group that is used to call the function.
                 if request.GET.get('groupmappingpk'):
+                    # If no group exist then raise the exception to terminate the process
                     if GroupMapping.objects.filter(pk = request.GET.get('groupmappingpk')).exists():
                         g = GroupMapping.objects.get(pk = request.GET.get('groupmappingpk'))
                     else:
-                        raise Exception
+                        raise Exception('Group %s does not exist' % request.GET.get('groupmappingpk'))
                     obj.groupmapping_set.add(g)
                 saved_id.append(obj.id)
 
