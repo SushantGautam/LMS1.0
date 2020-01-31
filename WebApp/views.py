@@ -466,8 +466,8 @@ def MemberInfoDeactivate(request, pk):
     return redirect('memberinfo_detail', pk=pk)
 
 
-def ImportCsvFile(request):
-    if request.method == "POST" and request.FILES['import_csv']:
+def ImportCsvFile(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:            
         media = request.FILES['import_csv']
         center_id = request.user.Center_Code.id
         file_name = uuid.uuid4()
@@ -506,19 +506,28 @@ def ImportCsvFile(request):
                 else:
                     obj.Member_Gender = ''
 
-                if df.iloc[i]['Teacher'] == 1:
-                    obj.Is_Teacher = True
-                else:
-                    obj.Is_Teacher = False
-
-                if df.iloc[i]['Student'] == 1:
+                if request.GET.get('groupmappingpk'):
                     obj.Is_Student = True
                 else:
-                    obj.Is_Student = False
+                    if df.iloc[i]['Teacher'] == 1:
+                        obj.Is_Teacher = True
+                    else:
+                        obj.Is_Teacher = False
+
+                    if df.iloc[i]['Student'] == 1:
+                        obj.Is_Student = True
+                    else:
+                        obj.Is_Student = False
 
                 obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
                 obj.set_password('00000')
                 obj.save()
+                if request.GET.get('groupmappingpk'):
+                    if GroupMapping.objects.filter(pk = request.GET.get('groupmappingpk')).exists():
+                        g = GroupMapping.objects.get(pk = request.GET.get('groupmappingpk'))
+                    else:
+                        raise Exception
+                    obj.groupmapping_set.add(g)
                 saved_id.append(obj.id)
 
 
