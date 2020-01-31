@@ -61,7 +61,7 @@
     </div>
     <!-- End of model -->
 
-    <span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
+  
 
     {% comment %} End {% endcomment %}
 
@@ -79,18 +79,15 @@
                         <td>Register Agent</td>
                         <td>{{ object.Register_Agent }}</td>
                     </tr>
-                    <tr>
-                        <td>Enrolled Students</td>
-                        <td> {% for students in object.Students.all %}
-                            {{ students }}<br>{% endfor %}</td>
-                    </tr>
+               
                 </table>
             </b>
         </h5>
         <br>
         <div class="text-center">
+              <span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn" style="border:1px solid black; padding:8px; cursor:pointer"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span></a>&nbsp;&nbsp;&nbsp;
             <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Group Mapping</a>
-            <a class="btn-sm btn-danger groupmapping-confirm-delete" id="{{ object.pk }}"
+            <a class="btn btn-danger groupmapping-confirm-delete" id="{{ object.pk }}"
                 style="cursor: pointer;">Delete Group Mapping</a>
             <form method="post" action="{% url 'groupmapping_delete' pk=object.pk %}"
                 id="deleteGroupMapping{{ object.pk }}">
@@ -99,6 +96,10 @@
             </form>
         </div>
     </div>
+</div> 
+<div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:20px"> 
+        <h5 class="detailListHeader2">Enrolled Students</h5>
+
 </div>
 <div class="membertable col-md-12 col-sm-12 col-xs-12 table-responsive">
     <table class="table table-striped dt-responsive table-bordered bg-white nowrap">
@@ -113,47 +114,33 @@
             <td>Email</td>
             <td>Phone</td>
             <td>Gender</td>
-            <td>Student</td>
-            <td>Teacher</td>
+            
             <td>Temporary Address</td>
             <td>Permanent Address</td>
             <td>Birthdate</td>
             <td>Type</td>
-            <td class="text-center">Action</td>
+            
         </tr>
         </thead>
-        {% for object in object_list %}
-            {% if object.id != request.user.id %}
+        {% for object in object.Students.all %}
+            
                 <tr>
                     <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
                     <td style="vertical-align: middle;"><b><a
                             href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
                     <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
                     <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
-                    <td>{{ object.first_name }}</td>
-                    <td>{{ object.last_name }}</td>
+                    <td style="vertical-align: middle;">{{ object.first_name }}</td>
+                    <td style="vertical-align: middle;">{{ object.last_name }}</td>
                     <td style="vertical-align: middle;">{{ object.email }}</td>
                     <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
                     <td style="vertical-align: middle;">
                         {{ object.get_Member_Gender_display }}
                     </td>
-                    <td>
-                        {% if object.Is_Student == True %}
-                            1
-                        {% else %}
-                            0
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if object.Is_Teacher == True %}
-                            1
-                        {% else %}
-                            0
-                        {% endif %}
-                    </td>
-                    <td>{{ object.Member_Temporary_Address }}</td>
-                    <td>{{ object.Member_Permanent_Address }}</td>
-                    <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
+                 
+                    <td style="vertical-align: middle;">{{ object.Member_Temporary_Address }}</td>
+                    <td style="vertical-align: middle;">{{ object.Member_Permanent_Address }}</td>
+                    <td style="vertical-align: middle;">{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
                     <td style="vertical-align: middle;">
                         {% if object.Is_Teacher == True and object.Is_Student == True %}
                             Teacher, Student
@@ -165,17 +152,9 @@
                             Not Assigned
                         {% endif %}
                     </td>
-                    <td class="text-center">
-                        <a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
-                        <a class="btn btn-sm btn-danger confirm-delete" id="{{ object.id }}">Delete</a>
-                        <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
-                              id="delete_form{{ object.id }}">
-                            {% csrf_token %}
-                            <input type="hidden">
-                        </form>
-                    </td>
+                   
                 </tr>
-            {% endif %}
+          
         {% endfor %}
     </table>
 </div>

@@ -294,7 +294,12 @@ ul.messages li img.image, img.image {
     font-weight: bold;
     color: #009999;
 }
-
+.detailListHeader2 {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #009999;
+}
 @media all and (max-width: 767px) {
     .detailListHeader {
         text-align: center;
