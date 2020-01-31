@@ -100,6 +100,85 @@
         </div>
     </div>
 </div>
+<div class="membertable col-md-12 col-sm-12 col-xs-12 table-responsive">
+    <table class="table table-striped dt-responsive table-bordered bg-white nowrap">
+        <thead class="thead-light bg-primary">
+        <tr class="tableTitleRow">
+            <td class="text-center">S. No.</td>
+            <td>Username</td>
+            <td>Member ID</td>
+            <td>Full Name</td>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Email</td>
+            <td>Phone</td>
+            <td>Gender</td>
+            <td>Student</td>
+            <td>Teacher</td>
+            <td>Temporary Address</td>
+            <td>Permanent Address</td>
+            <td>Birthdate</td>
+            <td>Type</td>
+            <td class="text-center">Action</td>
+        </tr>
+        </thead>
+        {% for object in object_list %}
+            {% if object.id != request.user.id %}
+                <tr>
+                    <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
+                    <td style="vertical-align: middle;"><b><a
+                            href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
+                    <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
+                    <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
+                    <td>{{ object.first_name }}</td>
+                    <td>{{ object.last_name }}</td>
+                    <td style="vertical-align: middle;">{{ object.email }}</td>
+                    <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
+                    <td style="vertical-align: middle;">
+                        {{ object.get_Member_Gender_display }}
+                    </td>
+                    <td>
+                        {% if object.Is_Student == True %}
+                            1
+                        {% else %}
+                            0
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if object.Is_Teacher == True %}
+                            1
+                        {% else %}
+                            0
+                        {% endif %}
+                    </td>
+                    <td>{{ object.Member_Temporary_Address }}</td>
+                    <td>{{ object.Member_Permanent_Address }}</td>
+                    <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
+                    <td style="vertical-align: middle;">
+                        {% if object.Is_Teacher == True and object.Is_Student == True %}
+                            Teacher, Student
+                        {% elif object.Is_Teacher == True %}
+                            Teacher
+                        {% elif object.Is_Student == True %}
+                            Student
+                        {% else %}
+                            Not Assigned
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
+                        <a class="btn btn-sm btn-danger confirm-delete" id="{{ object.id }}">Delete</a>
+                        <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
+                              id="delete_form{{ object.id }}">
+                            {% csrf_token %}
+                            <input type="hidden">
+                        </form>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
 {% block customjss %}
 <script>
