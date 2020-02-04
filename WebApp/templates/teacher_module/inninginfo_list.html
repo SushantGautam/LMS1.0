@@ -1,5 +1,10 @@
-{% extends "base.html" %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
+
+{% block title %}
+    My Sessions
+{% endblock %}
+
 
 {% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -10,6 +15,7 @@
 {% block breadcrumb %}
 <li class="breadcrumb-item active" aria-current="page">Session</li>
 {% endblock %}
+
 {% block content %}
 <div class="inningInfoListClass">
     <hr class="header_hr">
@@ -25,13 +31,6 @@
    
     <div class="col-md-12 col-sm-12 col-xs-12">
         <hr class="header_hr">
-        <div class="row">
-                {% if request.user.Is_CenterAdmin %}
-                <div class="btn-createnew">
-                        <a class="btn btn-sm btn-success" href="{% url 'inninginfo_create' %}">Register New Session</a>
-                    </div>
-                {% endif %}
-        </div>
       
         <div class="table-responsive" id="tableView">
           
@@ -154,3 +153,4 @@
 </script>
 
 {% endblock %}
+

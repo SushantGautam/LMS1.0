@@ -308,17 +308,11 @@ urlpatterns += (
 
 # url patterns for session manager
 urlpatterns += (
-     path('inninginfo/<int:pk>/sessionmanager', views.SessionManager.as_view(),
+     path('inninginfo/<int:pk>/sessionmanager/', views.SessionManager.as_view(),
           name='session-manager'),
      path('inninginfo/<int:pk>/sessionmanager/manage/', views.SessionManagerCreateView.as_view(),
           name='session-manager-create'),
      path('inninginfo/<int:sessionpk>/sessionmanager/update/<int:pk>/', views.SessionManagerUpdateView.as_view(),
           name='session-manager-update'),
 
-     path('mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
-         name='mysession_list_inactive'),
-    path('mysessions/', views.SessionAdminInningInfoListView.as_view(), name='mysession_list'),
-    path('mysessions/<int:pk>/', views.SessionAdminInningInfoDetailView.as_view(), name='mysession_detail'),
-
-          
 )

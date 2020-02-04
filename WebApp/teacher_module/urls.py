@@ -220,3 +220,10 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          admin_views.ContentsView.as_view(), name='teacher_contentviewer'),
 )
+
+urlpatterns += (
+     path('teachers/mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
+         name='mysession_list_inactive'),
+    path('teachers/mysessions/', views.SessionAdminInningInfoListView.as_view(), name='teachers_mysession_list'),
+    path('teachers/mysessions/<int:pk>/', views.SessionAdminInningInfoDetailView.as_view(), name='teachers_mysession_detail'),
+)

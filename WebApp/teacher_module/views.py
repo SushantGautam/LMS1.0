@@ -1713,3 +1713,29 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
         pass
     RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList)))[:5]
     return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread': RelevantThread})
+
+
+class SessionAdminInningInfoListView(ListView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_list.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now(), inningmanager__memberinfoobj__pk = self.request.user.pk)
+
+class SessionAdminInningInfoListViewInactive(ListView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_list_inactive.html'
+
+    def get_queryset(self):
+        return InningManager.objects.filter(sessioninfoobj__Center_Code=self.request.user.Center_Code, sessioninfoobj__End_Date__lte=datetime.now(), inningmanager__memberinfoobj__pk = self.request.user.pk)
+
+class SessionAdminInningInfoDetailView(DetailView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
+        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk = self.kwargs['pk'])
+        return context
