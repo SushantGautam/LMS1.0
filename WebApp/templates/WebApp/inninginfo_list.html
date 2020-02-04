@@ -26,10 +26,11 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <hr class="header_hr">
         <div class="row">
+                {% if request.user.Is_CenterAdmin %}
                 <div class="btn-createnew">
                         <a class="btn btn-sm btn-success" href="{% url 'inninginfo_create' %}">Register New Session</a>
                     </div>
-    
+                {% endif %}
         </div>
       
         <div class="table-responsive" id="tableView">
@@ -51,7 +52,13 @@
                 <tr>
                     <td style="vertical-align: middle;">{{ forloop.counter }}</td>
                     <td style="vertical-align: middle;"><B><a
-                                href="{{ object.get_absolute_url }}">{{ object.Inning_Name }}</a></B></td>
+                                href="
+                                    {% if request.user.is_admin and 'mysessions' not in request.path %}
+                                        {{ object.get_absolute_url }}
+                                    {% elif 'mysessions' in request.path %}
+                                        {% url 'mysession_detail' object.pk %}
+                                    {% endif %}
+                                ">{{ object.Inning_Name }}</a></B></td>
                     <td style="vertical-align: middle;">{{ object.Groups }}</td>
                     <td style="vertical-align: middle;">{{ object.Course_Group.count }}</td>
                     <td style="vertical-align: middle;">{{ object.Start_Date }}</td>

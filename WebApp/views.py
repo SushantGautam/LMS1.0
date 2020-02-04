@@ -39,9 +39,9 @@ from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
-    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm
+    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, InningManagerForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, InningManager
 
 
 class Changestate(View):
@@ -849,6 +849,8 @@ class InningInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
+        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk = self.kwargs['pk'])
         return context
 
 
@@ -1917,3 +1919,60 @@ def manifestwebmanifest(request):
     with open('WebApp/templates/WebApp/PWA/manifest.webmanifest', 'r') as f:
         data = f.read()
     return HttpResponse(data, )
+
+class SessionManager(TemplateView):
+    template_name = 'WebApp/sessionmanager.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['session'] = self.kwargs.get('pk')
+        context['sessionManagerExist'] = False
+        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs.get('pk')).exists():
+            context["session_managers"] = InningManager.objects.get(sessioninfoobj__pk = self.kwargs.get('pk'))
+            context['sessionManagerExist'] = True
+        return context
+
+class SessionManagerCreateView(CreateView):
+    model = InningManager
+    form_class = InningManagerForm
+    template_name = 'WebApp/sessionmanager_form.html'
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('session-manager', self.kwargs.get('sessionpk'))
+
+class SessionManagerUpdateView(UpdateView):
+    model = InningManager
+    form_class = InningManagerForm
+    template_name = 'WebApp/sessionmanager_form.html'
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('session-manager', self.kwargs.get('sessionpk'))
+
+class SessionAdminInningInfoListView(ListView):
+    model = InningInfo
+    template_name = 'WebApp/inninginfo_list.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now(), inningmanager__memberinfoobj__pk = self.request.user.pk)
+
+class SessionAdminInningInfoListViewInactive(ListView):
+    model = InningInfo
+    template_name = 'WebApp/inninginfo_list_inactive.html'
+
+    def get_queryset(self):
+        return InningManager.objects.filter(sessioninfoobj__Center_Code=self.request.user.Center_Code, sessioninfoobj__End_Date__lte=datetime.now(), inningmanager__memberinfoobj__pk = self.request.user.pk)
+
+class SessionAdminInningInfoDetailView(DetailView):
+    model = InningInfo
+    template_name = 'WebApp/inninginfo_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
+        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk = self.kwargs['pk'])
+        return context

@@ -639,3 +639,10 @@ class Events(models.Model):
 
     def __str__(self):
         return self.event_name
+
+class InningManager(models.Model):
+    sessioninfoobj = models.OneToOneField('InningInfo', on_delete=models.CASCADE)
+    memberinfoobj = models.ManyToManyField('MemberInfo', blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('mysessions', args=(self.pk,))

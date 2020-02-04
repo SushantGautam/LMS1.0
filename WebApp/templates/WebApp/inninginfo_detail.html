@@ -13,6 +13,7 @@
                 <h2 class="detailListHeader">Session Detail</h2>
             </div>
             <div class="col-md-3 col-sm-12 col-xs-12 text-center" id="buttons">
+                <a class="btn-sm btn-primary" href="{% url 'session-manager' object.pk %}">Choose Session Manager</a>
                 <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
                 <a class="btn-sm btn-danger inning-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
                     Session</a>
@@ -69,7 +70,16 @@
                                 Inactive
                             {% endif %}</td>
                         </tr>
-
+                        <tr>
+                            <td>
+                                Session Managers
+                            </td>
+                            <td>
+                                {% for x in session_managers.memberinfoobj.all %}
+                                    {{x}}
+                                {% endfor %}
+                            </td>
+                        </tr>
                     </table>
 
                 </b></h5>

@@ -99,6 +99,12 @@
                         </ul>
                     </li>
 
+                    {% if request.user.inningmanager_set.all.count is not 0 %}
+                        <li>
+                            <a href="{% url 'mysession_list' %}"><i class="fa fa-trophy"></i> My Session <span></span>
+                            </a>
+                        </li>
+                    {% endif %}
 
                     <li>
                         <a href="{% url 'AchievementPage_All' %}"><i class="fa fa-trophy"></i> Achievement <span></span>

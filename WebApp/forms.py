@@ -10,7 +10,8 @@ from django.forms import SelectDateWidget
 import datetime
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
+    InningManager
 
 
 class UserRegisterForm(UserCreationForm):
@@ -351,3 +352,15 @@ class AchievementPage_All_form(forms.Form):
         self.fields['GroupMappingFilter'].queryset = kwargs['initial']['GroupMappingFilter']
 
         # (choice.pk, choice) for choice in studentfilter]
+
+
+class InningManagerForm(forms.ModelForm):
+    
+    class Meta:
+        model = InningManager
+        fields = '__all__'
+
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/static/build/js/jsi18n.js',)
+
