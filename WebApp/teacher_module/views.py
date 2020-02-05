@@ -26,7 +26,7 @@ from django_addanother.views import CreatePopupMixin
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
-    AssignAnswerInfo, MemberInfo, GroupMapping
+    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager
 from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
@@ -1727,7 +1727,7 @@ class SessionAdminInningInfoListViewInactive(ListView):
     template_name = 'teacher_module/inninginfo_list_inactive.html'
 
     def get_queryset(self):
-        return InningManager.objects.filter(sessioninfoobj__Center_Code=self.request.user.Center_Code, sessioninfoobj__End_Date__lte=datetime.now(), inningmanager__memberinfoobj__pk = self.request.user.pk)
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__lte=datetime.now(), inningmanager__memberinfoobj__pk = self.request.user.pk)
 
 class SessionAdminInningInfoDetailView(DetailView):
     model = InningInfo

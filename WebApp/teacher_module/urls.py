@@ -222,8 +222,8 @@ urlpatterns += (
 )
 
 urlpatterns += (
-     path('teachers/mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
-         name='mysession_list_inactive'),
-    path('teachers/mysessions/', views.SessionAdminInningInfoListView.as_view(), name='teachers_mysession_list'),
-    path('teachers/mysessions/<int:pk>/', views.SessionAdminInningInfoDetailView.as_view(), name='teachers_mysession_detail'),
+     path('mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
+         name='teachers_mysession_list_inactive'),
+    path('mysessions/', views.SessionAdminInningInfoListView.as_view(), name='teachers_mysession_list'),
+    path('mysessions/<int:pk>/', views.SessionAdminInningInfoDetailView.as_view(), name='teachers_mysession_detail'),
 )

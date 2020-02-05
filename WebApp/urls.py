@@ -314,5 +314,4 @@ urlpatterns += (
           name='session-manager-create'),
      path('inninginfo/<int:sessionpk>/sessionmanager/update/<int:pk>/', views.SessionManagerUpdateView.as_view(),
           name='session-manager-update'),
-
 )
