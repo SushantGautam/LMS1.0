@@ -73,10 +73,7 @@
             
                     {% for list in latest_thread_for_topics %}
                   
-            
-            
-            
-                        <tr>
+                       <tr>
                             <td class="sorting_1">
                                 <div class="icon-block half img-circle bg-grey-300">
                                     {% if list.0.topic_icon %}
@@ -118,6 +115,7 @@
                             <td> No threads yet</td>
                             {% endif %}
                         </tr>
+                        {% endfor %}
                     
                     </tbody>
             
