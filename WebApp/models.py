@@ -593,8 +593,13 @@ class InningInfo(models.Model):
     def get_absolute_url(self):
         return reverse('inninginfo_detail', args=(self.pk,))
 
+    def get_teacher_url(self):
+        return reverse('teachers_mysession_detail', args=(self.pk,))
     def get_update_url(self):
         return reverse('inninginfo_update', args=(self.pk,))
+
+    def get_teacher_update_url(self):
+        return reverse('teachers_inninggroup_update', args=(self.pk,))
 
     def __str__(self):
         return self.Inning_Name.Session_Name
@@ -639,3 +644,10 @@ class Events(models.Model):
 
     def __str__(self):
         return self.event_name
+
+class InningManager(models.Model):
+    sessioninfoobj = models.OneToOneField('InningInfo', on_delete=models.CASCADE)
+    memberinfoobj = models.ManyToManyField('MemberInfo', blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('mysessions', args=(self.pk,))

@@ -305,3 +305,13 @@ urlpatterns += (
          name='AchievementPage_All_Ajax'),
 
 )
+
+# url patterns for session manager
+urlpatterns += (
+     path('inninginfo/<int:pk>/sessionmanager/', views.SessionManager.as_view(),
+          name='session-manager'),
+     path('inninginfo/<int:pk>/sessionmanager/manage/', views.SessionManagerCreateView.as_view(),
+          name='session-manager-create'),
+     path('inninginfo/<int:sessionpk>/sessionmanager/update/<int:pk>/', views.SessionManagerUpdateView.as_view(),
+          name='session-manager-update'),
+)
