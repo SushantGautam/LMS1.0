@@ -178,17 +178,21 @@
         <a class="btn-lg btn-sm btn-primary" href="{% url 'inninggroup_create' %}">Assign Course</a>
     </div> -->
 
-        <div class="row text-center" style="    padding: 30px;">
+        <div class="row text-center" style="    padding: 20px;">
+            <h2 class="detailListHeader">List of Survey</h2>
+
+            {% if SessionSurvey %}
 
             <button class=" Session btn btn-success"
                     id="category_Add_ButtonSession"
-                    style="    float: left;   "
+                    style="    float: right; margin-bottom:20px  "
                     data-toggle="modal"
                     data-target="#survey_form_modal">Add Session Survey
             </button>
 
-            {% if SessionSurvey %}
-                <h3><b>List of Surveys</b></h3>
+            
+                
+           
 
 
                 <table id="table_survey" class="table table-striped table-bordered bg-white nowrap">

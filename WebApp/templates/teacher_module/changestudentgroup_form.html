@@ -35,7 +35,10 @@
 {% block inning_name %}
   <div class = "row text-center">
       <h3>{{ object.Inning_Name }}</h3>
-      <div class="text text-info"> Only Admin can change name.</div>
+      <div style="display:none">
+      {{ form.Inning_Name | as_crispy_field }}
+      </div>
+      <div class="text text-danger"> Only Admin can edit session name.</div>
   </div>
 {% endblock %}
 

@@ -1757,7 +1757,8 @@ class GroupMappingUpdateView(UpdateView):
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            return redirect('teachers_mysession_list')
+            messages.add_message(self.request, messages.SUCCESS,'Successfully updated.')
+            return redirect('teachers_mysession_detail', form.initial['id'])
 
 class InningGroupDetailView(DetailView):
     model = InningGroup

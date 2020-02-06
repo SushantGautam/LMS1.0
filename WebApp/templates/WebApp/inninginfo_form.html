@@ -42,16 +42,6 @@
   </h2>
   <hr class="header_hr" />
 </div>
-    <div class="headerDiv">
-  <h2 class="infoFormHeader">
-    {% if '/inninginfo/create/' == request.path %}
-    Register New Sessions
-    {% else %}
-    Edit Session
-    {% endif %}
-  </h2>
-  <hr class="header_hr" />
-</div>
 
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true" id="create_session_modal">
@@ -115,9 +105,9 @@
     <div>
       <div id="step-1">
         <h2 class="StepTitle text-center">Select Session Name</h2>
+          {% block inning_name %}
         <div class="col-md-12 col-sm-12 col-xs-12 text-center">
           <div class="col-md-9 col-sm-10 col-xs-12">
-          {% block inning_name %}
             <div class="col-md-8 col-sm-12 col-xs-12 no-padding" style="float: right;">
                     {{ form.Inning_Name | as_crispy_field }}
               <span id="step0Validate" class="text-danger"></span>
@@ -130,7 +120,7 @@
                 + Add New
               </button>
             </h1>
-          {%  endblock %}
+          
           </div>
 
           <div class="col-md-12 col-sm-12 col-xs-12 text-center">
@@ -152,6 +142,7 @@
             </p>
           </div>
         </div>
+      {%  endblock %} 
       </div>
       <div id="step-2">
       <h2 class="StepTitle text-center">Select the duration of the Session</h2>
