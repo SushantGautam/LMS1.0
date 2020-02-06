@@ -189,7 +189,14 @@
 
                         <tr>
                             <td>
-                                <a href="{% url 'surveyinfo_detail' pk=survey.id %}">{{ survey.Survey_Title }}</a>
+                                <a href="
+                                {% if '/mysession' in request.path %}
+                                    {% url 'surveyinfodetail' pk=survey.id %}
+                                {% else %}
+                                    {% url 'surveyinfo_detail' pk=survey.id %}
+                                {% endif %}
+                                
+                                ">{{ survey.Survey_Title }}</a>
                             </td>
                             <td>{{ survey.Start_Date }}</td>
                             <td>{{ survey.End_Date }}</td>
