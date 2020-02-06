@@ -1945,7 +1945,7 @@ class SessionManagerCreateView(CreateView):
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            return redirect('session-manager', self.kwargs.get('sessionpk'))
+            return redirect('session-manager', self.kwargs.get('pk'))
 
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
