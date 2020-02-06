@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'teachers_mysession_list' %}">Session</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Inning_Name }}</li>
 {% endblock %}
 

@@ -1,164 +1,176 @@
 {% load static %}
 
-{% block content %}
     <div class="outerdiv">
         {% include 'WebApp/theme/alerts.html' %}
-       
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 text-center">
-            <h2 class="detailListHeader">Session Detail</h2>
-        </div>
-        {% if request.user.Is_CenterAdmin and '/mysession' not in request.path %}
-            <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 text-center" id="buttons">
-                <a class="btn-sm btn-primary" href="{% url 'session-manager' object.pk %}">Session Manager</a>
-                <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
-                <a class="btn-sm btn-danger inning-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
-                    Session</a>
-                <form method="post" action="{% url 'inninginfo_delete' pk=object.pk %}"
-                    id="deleteInning{{ object.pk }}">
-                    {% csrf_token %}
-                    <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
-                    <input type="hidden" value="{{ object.pk }}" name="inning_id">
-                </form>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 text-center">
+                <h2 class="detailListHeader">Session Detail</h2>
             </div>
-        {% endif %}
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <hr class="header_hr">
-   
-        <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
-            <h5><b>
-                <table class="table table-bordered table-striped">
-                    <tr>
-                        <td>Center Code</td>
-                        <td>{{ object.Center_Code }}</td>
-                    </tr>
-                    <tr>
-                        <td>Session Name</td>
-                        <td>{{ object.Inning_Name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Student Group Name</td>
-                        <td>{{ object.Groups }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>Start Date</td>
-                        <td>{{ object.Start_Date }}</td>
-                    </tr>
-                    <tr>
-                        <td>End Date</td>
-                        <td>{{ object.End_Date }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>Courses</td>
-                        <td> {% for groups in object.Course_Group.all %} {{ groups }}<br>{% endfor %}</td>
-                    </tr>
-
-                    <tr>
-                        <td>Register Agent</td>
-                        <td>{{ object.Register_Agent }}</td>
-                    </tr>
-                    <tr>
-                        <td>Status</td>
-                        <td>{% if object.Use_Flag == True %}
-                            Active
-                        {% else %}
-                            Inactive
-                        {% endif %}</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Session Managers
-                        </td>
-                        <td>
-                            {% for x in session_managers.memberinfoobj.all %}
-                                {{x}}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table>
-
-            </b></h5>
+            {% if request.user.Is_CenterAdmin and '/mysession' not in request.path %}
+                <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 text-center" id="buttons">
+                    <a class="btn-sm btn-primary" href="{% url 'session-manager' object.pk %}">Session Manager</a>
+                    <a class="btn-sm btn-primary" href="{{ object.get_update_url }}">Edit Session</a>
+                    <a class="btn-sm btn-danger inning-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
+                        Session</a>
+                    <form method="post" action="{% url 'inninginfo_delete' pk=object.pk %}"
+                          id="deleteInning{{ object.pk }}">
+                        {% csrf_token %}
+                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                        <input type="hidden" value="{{ object.pk }}" name="inning_id">
+                    </form>
+                </div>
+            {% else %}
+                <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 text-center" id="buttons">
+                    <a class="btn-sm btn-primary" href="{{ object.get_teacher_update_url }}">Edit Session</a>
+                </div>
+            {% endif %}
         </div>
-    
-        <div class="col-md-5 col-sm-12 col-xs-12 text-center">
-            <h5>
-                <b>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <hr class="header_hr">
 
-                    <h3><b>List of Students</b></h3>
+            <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
+                <h5><b>
                     <table class="table table-bordered table-striped">
                         <tr>
+                            <td>Center Code</td>
+                            <td>{{ object.Center_Code }}</td>
+                        </tr>
+                        <tr>
+                            <td>Session Name</td>
+                            <td>{{ object.Inning_Name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Student Group Name</td>
+                            <td>{{ object.Groups }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Start Date</td>
+                            <td>{{ object.Start_Date }}</td>
+                        </tr>
+                        <tr>
+                            <td>End Date</td>
+                            <td>{{ object.End_Date }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Courses</td>
+                            <td> {% for groups in object.Course_Group.all %} {{ groups }}<br>{% endfor %}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Register Agent</td>
+                            <td>{{ object.Register_Agent }}</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>{% if object.Use_Flag == True %}
+                                Active
+                            {% else %}
+                                Inactive
+                            {% endif %}</td>
+                        </tr>
+                        <tr>
                             <td>
-                                <h4><b>{{ object.Groups }} Students &nbsp; ( {{ object.Groups.Students.count }}
-                                    )</b>
-                                    <span style="font-size: 15px;float:right;"> <a
-                                            href="
+                                Session Managers
+                            </td>
+                            <td>
+                                {% for x in session_managers.memberinfoobj.all %}
+                                    {{ x }}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </table>
+
+                </b></h5>
+            </div>
+
+            <div class="col-md-5 col-sm-12 col-xs-12 text-center">
+                <h5>
+                    <b>
+
+                        <h3><b>List of Students</b></h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <td>
+                                    <h4>
+                                        <a
+                                                href="
                                             {% if '/mysession' in request.path %}
                                                 {% url 'teachers_groupmapping_update' object.Groups.pk %}
                                             {% else %}
                                                 {{ object.Groups.get_update_url }}
                                             {% endif %}
-                                            "><u>Edit</u>
+                                            "><b>{{ object.Groups }} Students &nbsp;
+                                            ( {{ object.Groups.Students.count }}
+                                            )</b>
+                                        </a>
+                                        <span style="font-size: 15px;float:right;"> <a
+                                                href="
+                                            {% if '/mysession' in request.path %}
+                                                {{ object.get_teacher_update_url }}#step-3
+                                            {% else %}
+                                                {{ object.get_update_url }}#step-3
+                                            {% endif %}
+                                            "><u>Change Group</u>
                                     </a></span>
-                                </h4>
+                                    </h4>
 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{% for students in object.Groups.Students.all %}{{ forloop.counter }}.
-                                &nbsp; {{ students }}<br>{% endfor %}</td>
-                        </tr>
-
-                    </table>
-                </b>
-            </h5>
-        </div>
-        <div class="col-md-7 col-sm-12 col-xs-12 text-center">
-            <h5>
-                <b>
-                    <h3><b>List of Teachers</b></h3>
-                    <table class="table table-bordered table-striped">
-                        <tr>
-                            <td>
-                                <h4><b>Courses</b></h4>
-                            </td>
-                            <td>
-                                <h4><b>Teachers</b></h4>
-                            </td>
-                        </tr>
-                        {% for groups in object.Course_Group.all %}
+                                </td>
+                            </tr>
                             <tr>
+                                <td>{% for students in object.Groups.Students.all %}{{ forloop.counter }}.
+                                    &nbsp; {{ students }}<br>{% endfor %}</td>
+                            </tr>
 
-                                <td><a style="float: left" href="
+                        </table>
+                    </b>
+                </h5>
+            </div>
+            <div class="col-md-7 col-sm-12 col-xs-12 text-center">
+                <h5>
+                    <b>
+                        <h3><b>List of Teachers</b></h3>
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <td>
+                                    <h4><b>Courses</b></h4>
+                                </td>
+                                <td>
+                                    <h4><b>Teachers</b></h4>
+                                </td>
+                            </tr>
+                            {% for groups in object.Course_Group.all %}
+                                <tr>
+
+                                    <td><a style="float: left" href="
                                 {% if not '/mysession' in request.path %}
                                     {{ groups.get_update_url }}
                                 {% else %}
                                     {% url 'teachers_inninggroup_detail' groups.pk %}
                                 {% endif %}
                                 "><i
-                                        class="fa fa-edit"></i></a><a
-                                        href="
+                                            class="fa fa-edit"></i></a><a
+                                            href="
                                         {% if not '/mysession' in request.path %}
                                             {{ groups.get_update_url }}
                                         {% else %}
                                             {% url 'teachers_inninggroup_detail' groups.pk %}
                                         {% endif %}
                                         ">{{ groups }}</a></td>
-                                <td>{% for teachers in groups.Teacher_Code.all %}
-                                    {{ teachers }}<br>{% endfor %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </b>
-            </h5>
+                                    <td>{% for teachers in groups.Teacher_Code.all %}
+                                        {{ teachers }}<br>{% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </b>
+                </h5>
+            </div>
         </div>
-    </div>
 
 
-     
         <br>
         <!-- <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top: 30px;">
         <a class="btn-lg btn-sm btn-primary" href="{% url 'groupmapping_create' %}">Assign Student</a>
@@ -241,5 +253,3 @@
         </div>
     </div>
 
-
-{% endblock %}

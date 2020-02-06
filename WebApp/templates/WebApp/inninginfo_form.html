@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends base_file %}
 {% load static %}
 {% load crispy_forms_tags %}
 
@@ -33,6 +33,16 @@
 
 {% block content %}
 <div class="headerDiv">
+  <h2 class="infoFormHeader">
+    {% if '/inninginfo/create/' == request.path %}
+    Register New Sessions
+    {% else %}
+    Edit Session
+    {% endif %}
+  </h2>
+  <hr class="header_hr" />
+</div>
+    <div class="headerDiv">
   <h2 class="infoFormHeader">
     {% if '/inninginfo/create/' == request.path %}
     Register New Sessions
@@ -107,8 +117,9 @@
         <h2 class="StepTitle text-center">Select Session Name</h2>
         <div class="col-md-12 col-sm-12 col-xs-12 text-center">
           <div class="col-md-9 col-sm-10 col-xs-12">
+          {% block inning_name %}
             <div class="col-md-8 col-sm-12 col-xs-12 no-padding" style="float: right;">
-              {{ form.Inning_Name | as_crispy_field }}
+                    {{ form.Inning_Name | as_crispy_field }}
               <span id="step0Validate" class="text-danger"></span>
             </div>
           </div>
@@ -119,7 +130,9 @@
                 + Add New
               </button>
             </h1>
+          {%  endblock %}
           </div>
+
           <div class="col-md-12 col-sm-12 col-xs-12 text-center">
             <br><span class="text-info">These session name are already predefined by University.<br>
               Only if the session name is not defined previously you can create
@@ -256,6 +269,7 @@
     </div>
   </div>
 </form>
+
 
 {% endblock %}
 

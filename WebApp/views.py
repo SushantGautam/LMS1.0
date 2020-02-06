@@ -840,6 +840,7 @@ class InningInfoCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
+        context['base_file'] = 'base.html'
         return context
 
 
@@ -866,6 +867,7 @@ class InningInfoUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
+        context['base_file'] = 'base.html'
         return context
 
 

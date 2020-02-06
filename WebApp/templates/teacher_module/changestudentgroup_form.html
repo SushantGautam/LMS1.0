@@ -1,0 +1,188 @@
+{% extends 'WebApp/inninginfo_form.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block stylesheets %}
+{{ form.media }}
+<link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet" />
+<link href="{% static '/build/css/custom.min.css' %}" rel="stylesheet" />
+<!-- <link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard.css' %}" rel="stylesheet" /> -->
+<link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard_theme_dots.css' %}" rel="stylesheet" />
+<style>
+  .selector-available, .selector-chosen {
+      width: 280px !important;
+  }
+  .selector select {
+      width: 280px !important;
+  }
+  .selector .selector-available input {
+      width: 210px !important;
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page">
+  <a href="{{ object.get_teacher_url }}">Session</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+  {% if '/inninginfo/create/' == request.path %} Register New Session {% else %}
+  Edit Session {% endif %}
+</li>
+{% endblock %}
+
+
+{% block inning_name %}
+  <div class = "row text-center">
+      <h3>{{ object.Inning_Name }}</h3>
+      <div class="text text-info"> Only Admin can change name.</div>
+  </div>
+{% endblock %}
+
+{% block customjss %}
+
+  <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+
+  <script type="text/javascript">
+
+    // Script to validate each step in wizard
+    $(document).ready(function () {
+      $("#smartwizard").smartWizard();
+      $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
+        if (stepNumber == 0) {
+          if ($("#id_Inning_Name").val() == "") {
+            e.preventDefault()
+            $("#step0Validate").html("Select an Inning Name")
+          }
+          else {
+            $("#step0Validate").html("")
+          }
+        };
+        if (stepNumber == 1) {
+          var startDate = document.getElementById("id_Start_Date").value;
+          var endDate = document.getElementById("id_End_Date").value;
+          if ($("#id_Start_Date").val() == "") {
+            e.preventDefault()
+            $("#step1aValidate").html("Insert Start Date")
+          }
+          else if ($("#id_End_Date").val() == "") {
+            e.preventDefault()
+            $("#step1aValidate").html("")
+            $("#step1bValidate").html("Insert End Date")
+          }
+          else if (Date.parse(endDate) <= Date.parse(startDate)) {
+            e.preventDefault()
+            $("#step1aValidate").html("")
+            $("#step1bValidate").html("End date should be greater than Start date")
+          }
+          else {
+            $("#step1aValidate").html("")
+            $("#step1bValidate").html("")
+          }
+        };
+        if (stepNumber == 2) {
+          if ($("#id_Groups").val() == "") {
+            e.preventDefault()
+            $("#step2Validate").html("Select a Student Group")
+          }
+          else {
+            $("#step2Validate").html("")
+          }
+        };
+
+      });
+      $("#FormID").submit(function (e) {
+        if ($("#id_Course_Group_to").has('option').length == '0') {
+          e.preventDefault()
+          $("#step3Validate").html("Select a Course")
+        }
+        else {
+          $("#step3Validate").html("")
+
+        }
+
+      })
+    });
+
+    // toggle read more info display
+    $(".button-info").click(function () {
+      $("p.info-text").toggle();
+    });
+
+    // Display Add new session name popup modal
+    $("#add-newsession-btn").on("click", function () {
+      $("#create_session_modal_body").empty();
+      $("#create_session_modal_body").append('<div class="se-pre-con-ajax"></div>');
+
+      $.ajax({
+        type: "GET",
+        url: "{% url 'sessioninfo_create_ajax' %}", // URL to your view that serves new info
+        success: function (response) {
+          $("#create_session_modal_body").append(response);
+        },
+        error: function () {
+          console.log("Error in generating session create form");
+        },
+        complete: function () {
+          $(".se-pre-con-ajax").fadeOut("fast");
+        }
+      });
+
+    });
+
+    // Display add new student group popup modal
+    $("#add-newgroup-btn").on("click", function () {
+      $("#create_groupmapping_modal_body").empty();
+      $("#create_groupmapping_modal_body").append('<div class="se-pre-con-ajax"></div>');
+
+      $.ajax({
+        type: "GET",
+        url: "{% url 'group_create_ajax' %}", // URL to your view that serves new info
+        success: function (response) {
+          $("#create_groupmapping_modal_body").append(response);
+        },
+        error: function () {
+          console.log("Error in generating group create form");
+        },
+        complete: function () {
+          $(".se-pre-con-ajax").fadeOut("fast");
+        }
+      });
+
+    });
+
+    // Display add new teacher-course allocation popup modal
+    $("#add-inninggroup-btn").on("click", function () {
+      $("#create_inninggroup_modal_body").empty();
+      $("#create_inninggroup_modal_body").append('<div class="se-pre-con-ajax"></div>');
+
+      $.ajax({
+        type: "GET",
+        url: "{% url 'inninggroup_create_ajax' %}", // URL to your view that serves new info
+        success: function (response) {
+          $("#create_inninggroup_modal_body").append(response);
+          window.addEventListener("load", function (e) {
+            $("select.selectfilter, select.selectfilterstacked").each(function () {
+              var $el = $(this),
+                data = $el.data();
+              SelectFilter.init(
+                $el.attr("id"),
+                data.fieldName,
+                parseInt(data.isStacked, 10)
+              );
+            });
+          });
+        },
+        error: function () {
+          console.log("Error in generating group create form");
+        },
+        complete: function () {
+          $(".se-pre-con-ajax").fadeOut("fast");
+        }
+      });
+
+    });
+
+  </script>
+
+{% endblock %}

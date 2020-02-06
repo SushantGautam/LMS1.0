@@ -23,7 +23,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, GroupMappingForm, InningGroupForm
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, GroupMappingForm, InningGroupForm, InningInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
     AssignAnswerInfo, MemberInfo, GroupMapping, InningManager
@@ -1768,16 +1768,23 @@ class InningGroupDetailView(DetailView):
             return redirect('teachers_mysession_list')
 
 class InningGroupUpdateView(UpdateView):
-    model = InningGroup
-    form_class = InningGroupForm
-    template_name = 'teacher_module/inninggroup_form.html'
+    model = InningInfo
+    form_class = InningInfoForm
+    template_name = 'teacher_module/changestudentgroup_form.html'
 
     def get_form_kwargs(self):
         kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        context['base_file'] = 'teacher_module/base.html'
+        return context
+
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            return redirect('teachers_inninggroup_detail', self.kwargs.get('pk'))
+            messages.add_message(self.request, messages.SUCCESS,'Successfully updated.')
+            return redirect('teachers_mysession_detail', form.initial['id'])
