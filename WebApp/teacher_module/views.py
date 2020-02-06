@@ -23,7 +23,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, GroupMappingForm, InningGroupForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
     AssignAnswerInfo, MemberInfo, GroupMapping, InningManager
@@ -1739,3 +1739,45 @@ class SessionAdminInningInfoDetailView(DetailView):
         if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs['pk']).exists():
             context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk = self.kwargs['pk'])
         return context
+
+class GroupMappingUpdateView(UpdateView):
+    model = GroupMapping
+    form_class = GroupMappingForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "teacher_module/base.html"
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('teachers_mysession_list')
+
+class InningGroupDetailView(DetailView):
+    model = InningGroup
+    template_name = 'teacher_module/inninggroup_detail.html'
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('teachers_mysession_list')
+
+class InningGroupUpdateView(UpdateView):
+    model = InningGroup
+    form_class = InningGroupForm
+    template_name = 'teacher_module/inninggroup_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('teachers_inninggroup_detail', self.kwargs.get('pk'))

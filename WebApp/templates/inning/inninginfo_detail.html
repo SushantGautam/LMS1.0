@@ -93,7 +93,13 @@
                                     <h4><b>{{ object.Groups }} Students &nbsp; ( {{ object.Groups.Students.count }}
                                         )</b>
                                         <span style="font-size: 15px;float:right;"> <a
-                                                href="{{ object.Groups.get_update_url }}"><u>Edit</u>
+                                                href="
+                                                {% if '/mysession' in request.path %}
+                                                    {% url 'teachers_groupmapping_update' object.Groups.pk %}
+                                                {% else %}
+                                                    {{ object.Groups.get_update_url }}
+                                                {% endif %}
+                                                "><u>Edit</u>
                                         </a></span>
                                     </h4>
 
@@ -124,9 +130,21 @@
                             {% for groups in object.Course_Group.all %}
                                 <tr>
 
-                                    <td><a style="float: left" href="{{ groups.get_update_url }}"><i
+                                    <td><a style="float: left" href="
+                                    {% if not '/mysession' in request.path %}
+                                        {{ groups.get_update_url }}
+                                    {% else %}
+                                        {% url 'teachers_inninggroup_detail' groups.pk %}
+                                    {% endif %}
+                                    "><i
                                             class="fa fa-edit"></i></a><a
-                                            href="{{ groups.get_absolute_url }}">{{ groups }}</a></td>
+                                            href="
+                                            {% if not '/mysession' in request.path %}
+                                                {{ groups.get_update_url }}
+                                            {% else %}
+                                                {% url 'teachers_inninggroup_detail' groups.pk %}
+                                            {% endif %}
+                                            ">{{ groups }}</a></td>
                                     <td>{% for teachers in groups.Teacher_Code.all %}
                                         {{ teachers }}<br>{% endfor %}
                                     </td>

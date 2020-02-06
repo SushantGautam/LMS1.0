@@ -983,6 +983,11 @@ class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
+
     def get_form_kwargs(self):
         kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
