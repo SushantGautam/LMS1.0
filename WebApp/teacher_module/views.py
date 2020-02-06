@@ -1749,6 +1749,9 @@ class AttendanceListView(ListView):
     model = Attendance
     template_name = 'teacher_module/attendance/attendance_list.html'
 
+    # def get_queryset(self):
+    #     return Attendance.objects.filter(course=' #TODO make get_teacher_course function  in models.py')
+
 
 class AttendanceCreateView(CreateView):
     model = Attendance
