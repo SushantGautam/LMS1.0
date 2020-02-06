@@ -1,3 +1,6 @@
+import html
+
+from django.utils.functional import empty
 from rest_framework import serializers
 
 from forum import models
@@ -13,6 +16,10 @@ class ThreadQuerysetSerializer(serializers.ModelSerializer):
 
 class ThreadSerializer(serializers.ModelSerializer):
     nodegroup = serializers.ReadOnlyField(source='topic.node_group.pk')
+    user_name = serializers.ReadOnlyField(source='user.__str__')
+    topic_title = serializers.ReadOnlyField(source='topic.title')
+    nodegroup_title = serializers.ReadOnlyField(source='topic.node_group.title')
+    user_avatar = serializers.FileField(source='user.Member_Avatar')
 
     class Meta:
         model = models.Thread
@@ -31,7 +38,10 @@ class ThreadSerializer(serializers.ModelSerializer):
             'hidden',
             'closed',
             'nodegroup',
-
+            "user_name",
+            "topic_title",
+            "nodegroup_title",
+            "user_avatar",
         )
 
 
