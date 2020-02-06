@@ -1,12 +1,8 @@
-from django.conf.urls import url
 # from django.contrib.auth.views import login, logout
 from django.contrib.auth.decorators import login_required
-from django.urls import path, include
-from rest_framework import routers
+from django.urls import path
 
-from . import api
 from . import views
-
 
 urlpatterns = (
     # urls for Profile
@@ -286,8 +282,8 @@ urlpatterns += (
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          views.ContentsView.as_view(), name='contentviewer'),
-     # path('courseinfo/<int:course>/chapterinfo/<int:chapter>/offline_contents',
-     #     views.OfflineContentsView.as_view(), name='offlinecontentviewer'),
+    # path('courseinfo/<int:course>/chapterinfo/<int:chapter>/offline_contents',
+    #     views.OfflineContentsView.as_view(), name='offlinecontentviewer'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/preview',
          views.ContentsView.as_view(), name='previewcontentviewer'),
     path('delete-chapter-files',
@@ -301,17 +297,14 @@ urlpatterns += (
          name='AchievementPage_Student'),
     path('AchievementPage_All', views.AchievementPage_All,
          name='AchievementPage_All'),
-    path('AchievementPage_All_Ajax/<int:Inningsfilter>/<slug:studentfilter>/<int:CourseFilter>/', views.AchievementPage_All_Ajax,
+    path('AchievementPage_All_Ajax/<int:Inningsfilter>/<slug:studentfilter>/<int:CourseFilter>/',
+         views.AchievementPage_All_Ajax,
          name='AchievementPage_All_Ajax'),
 
 )
 
 # url patterns for session manager
 urlpatterns += (
-     path('inninginfo/<int:pk>/sessionmanager/', views.SessionManager.as_view(),
-          name='session-manager'),
-     path('inninginfo/<int:pk>/sessionmanager/manage/', views.SessionManagerCreateView.as_view(),
-          name='session-manager-create'),
-     path('inninginfo/<int:sessionpk>/sessionmanager/update/<int:pk>/', views.SessionManagerUpdateView.as_view(),
-          name='session-manager-update'),
+    path('inninginfo/<int:pk>/sessionmanager/update/', views.SessionManagerUpdateView.as_view(),
+         name='session-manager-update'),
 )

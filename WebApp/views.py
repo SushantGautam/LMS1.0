@@ -39,9 +39,11 @@ from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
-    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, InningManagerForm
+    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, \
+    InningManagerForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, InningManager
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
+    InningManager
 
 
 class Changestate(View):
@@ -465,9 +467,10 @@ def MemberInfoDeactivate(request, pk):
 
     return redirect('memberinfo_detail', pk=pk)
 
+
 # The following function is for importing the students from the csv file. Used in Memberinfo and GroupMapping
 def ImportCsvFile(request, *args, **kwargs):
-    if request.method == "POST" and request.FILES['import_csv']:            
+    if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
         center_id = request.user.Center_Code.id
         file_name = uuid.uuid4()
@@ -530,8 +533,8 @@ def ImportCsvFile(request, *args, **kwargs):
                 # groupmappingpk contains the primary key of the group that is used to call the function.
                 if request.GET.get('groupmappingpk'):
                     # If no group exist then raise the exception to terminate the process
-                    if GroupMapping.objects.filter(pk = request.GET.get('groupmappingpk')).exists():
-                        g = GroupMapping.objects.get(pk = request.GET.get('groupmappingpk'))
+                    if GroupMapping.objects.filter(pk=request.GET.get('groupmappingpk')).exists():
+                        g = GroupMapping.objects.get(pk=request.GET.get('groupmappingpk'))
                     else:
                         raise Exception('Group %s does not exist' % request.GET.get('groupmappingpk'))
                     obj.groupmapping_set.add(g)
@@ -850,8 +853,8 @@ class InningInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
-        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs['pk']).exists():
-            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk = self.kwargs['pk'])
+        if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk=self.kwargs['pk'])
         return context
 
 
@@ -1927,43 +1930,29 @@ def manifestwebmanifest(request):
         data = f.read()
     return HttpResponse(data, )
 
-class SessionManager(TemplateView):
-    template_name = 'WebApp/sessionmanager.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['session'] = self.kwargs.get('pk')
-        context['sessionManagerExist'] = False
-        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs.get('pk')).exists():
-            context["session_managers"] = InningManager.objects.get(sessioninfoobj__pk = self.kwargs.get('pk'))
-            context['sessionManagerExist'] = True
-        return context
-
-class SessionManagerCreateView(CreateView):
-    model = InningManager
-    form_class = InningManagerForm
-    template_name = 'WebApp/sessionmanager_form.html'
-
-    def form_valid(self, form):
-        if form.is_valid():
-            form.save()
-            return redirect('session-manager', self.kwargs.get('pk'))
-
-    def get_form_kwargs(self):
-        kwargs = super(SessionManagerCreateView, self).get_form_kwargs()
-        kwargs.update({'request': self.request})
-        return kwargs
 
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
     form_class = InningManagerForm
     template_name = 'WebApp/sessionmanager_form.html'
 
+    def get_object(self):
+        session_Manager = None
+        if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs.get('pk')).exists():
+            session_Manager = InningManager.objects.get(sessioninfoobj__pk=self.kwargs.get('pk'))
+        else:
+            session_Manager = InningManager.objects.create(
+                sessioninfoobj=InningInfo.objects.get(pk=self.kwargs.get('pk')))
+        print(session_Manager)
+        return session_Manager
+
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            return redirect('session-manager', self.kwargs.get('sessionpk'))
-            
+            messages.add_message(self.request, messages.SUCCESS, 'Session Managers Updated.')
+            # return super().form_valid(form)
+            return redirect('inninginfo_detail', self.kwargs.get('pk'))
+
     def get_form_kwargs(self):
         kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
