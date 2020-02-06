@@ -1,5 +1,10 @@
-{% extends "base.html" %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
+
+{% block title %}
+    My Sessions
+{% endblock %}
+
 
 {% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -10,10 +15,10 @@
 {% block breadcrumb %}
 <li class="breadcrumb-item active" aria-current="page">Session</li>
 {% endblock %}
+
+
 {% block content %}
-
 {% include 'inning/inninginfo_list.html' %}
-
 {% endblock %}
 
 
@@ -68,3 +73,4 @@
 </script>
 
 {% endblock %}
+

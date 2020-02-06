@@ -39,9 +39,9 @@ from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
-    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm
+    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, InningManagerForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, InningManager
 
 
 class Changestate(View):
@@ -840,6 +840,7 @@ class InningInfoCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
+        context['base_file'] = 'base.html'
         return context
 
 
@@ -849,6 +850,8 @@ class InningInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
+        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk = self.kwargs['pk'])
         return context
 
 
@@ -864,6 +867,7 @@ class InningInfoUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
+        context['base_file'] = 'base.html'
         return context
 
 
@@ -980,6 +984,11 @@ class GroupMappingDetailView(DetailView):
 class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
@@ -1917,3 +1926,45 @@ def manifestwebmanifest(request):
     with open('WebApp/templates/WebApp/PWA/manifest.webmanifest', 'r') as f:
         data = f.read()
     return HttpResponse(data, )
+
+class SessionManager(TemplateView):
+    template_name = 'WebApp/sessionmanager.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['session'] = self.kwargs.get('pk')
+        context['sessionManagerExist'] = False
+        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs.get('pk')).exists():
+            context["session_managers"] = InningManager.objects.get(sessioninfoobj__pk = self.kwargs.get('pk'))
+            context['sessionManagerExist'] = True
+        return context
+
+class SessionManagerCreateView(CreateView):
+    model = InningManager
+    form_class = InningManagerForm
+    template_name = 'WebApp/sessionmanager_form.html'
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('session-manager', self.kwargs.get('pk'))
+
+    def get_form_kwargs(self):
+        kwargs = super(SessionManagerCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+class SessionManagerUpdateView(UpdateView):
+    model = InningManager
+    form_class = InningManagerForm
+    template_name = 'WebApp/sessionmanager_form.html'
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('session-manager', self.kwargs.get('sessionpk'))
+            
+    def get_form_kwargs(self):
+        kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs

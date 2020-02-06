@@ -58,6 +58,13 @@
         </ul>
       </li> -->
 
+                    {% if request.user.inningmanager_set.all.count is not 0 %}
+                        <li>
+                            <a href="{% url 'teachers_mysession_list' %}"><i class="fa fa-trophy"></i> My Session <span></span>
+                            </a>
+                        </li>
+                    {% endif %}
+
                     <li><a><i class="fa fa-question-circle"></i> Quiz <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{% url 'teacher_quiz_list' %}">Quiz List</a></li>

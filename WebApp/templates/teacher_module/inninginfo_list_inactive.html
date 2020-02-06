@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
 
 {% block stylesheets %}
@@ -10,10 +10,9 @@
 {% block breadcrumb %}
 <li class="breadcrumb-item active" aria-current="page">Session</li>
 {% endblock %}
+
 {% block content %}
-
-{% include 'inning/inninginfo_list.html' %}
-
+{% include 'inning/inninginfo_list_inactive.html' %}
 {% endblock %}
 
 
@@ -63,8 +62,6 @@
         document.querySelector('#cardView').style.display = "none";
 
     }
-
-
 </script>
 
 {% endblock %}

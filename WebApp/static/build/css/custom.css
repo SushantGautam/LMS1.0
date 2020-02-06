@@ -1504,6 +1504,7 @@ article {
 
 /* TIMER PORTION CSS */
 
+
 .pie {
     width: 100px;
     height: 100px;
@@ -2215,4 +2216,13 @@ label .asteriskField {
     top: 14px;
     left: 0;
     width: auto!important;
+}
+/* session-list */
+.list-teachers {
+    max-height:40vh;
+    overflow: auto;
+}
+ .list-students{
+    max-height:40vh;
+    overflow: auto;
 }

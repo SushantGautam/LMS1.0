@@ -23,10 +23,10 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, GroupMappingForm, InningGroupForm, InningInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
-    AssignAnswerInfo, MemberInfo, GroupMapping
+    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager
 from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
@@ -1713,3 +1713,79 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
         pass
     RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList)))[:5]
     return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread': RelevantThread})
+
+
+class SessionAdminInningInfoListView(ListView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_list.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now(), inningmanager__memberinfoobj__pk = self.request.user.pk)
+
+class SessionAdminInningInfoListViewInactive(ListView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_list_inactive.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__lte=datetime.now(), inningmanager__memberinfoobj__pk = self.request.user.pk)
+
+class SessionAdminInningInfoDetailView(DetailView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
+        if InningManager.objects.filter(sessioninfoobj__pk = self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk = self.kwargs['pk'])
+        return context
+
+class GroupMappingUpdateView(UpdateView):
+    model = GroupMapping
+    form_class = GroupMappingForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "teacher_module/base.html"
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            messages.add_message(self.request, messages.SUCCESS,'Successfully updated.')
+            return redirect('teachers_mysession_detail', form.initial['id'])
+
+class InningGroupDetailView(DetailView):
+    model = InningGroup
+    template_name = 'teacher_module/inninggroup_detail.html'
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('teachers_mysession_list')
+
+class InningGroupUpdateView(UpdateView):
+    model = InningInfo
+    form_class = InningInfoForm
+    template_name = 'teacher_module/changestudentgroup_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        context['base_file'] = 'teacher_module/base.html'
+        return context
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            messages.add_message(self.request, messages.SUCCESS,'Successfully updated.')
+            return redirect('teachers_mysession_detail', form.initial['id'])

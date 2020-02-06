@@ -5,7 +5,8 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.resources import ModelResource
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
+    InningManager
 
 
 class CenterInfoAdminForm(forms.ModelForm):
@@ -236,3 +237,8 @@ class MessageInfoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(MessageInfo, MessageInfoAdmin)
+
+class InningManagerAdmin(admin.ModelAdmin):
+    list_display = ["sessioninfoobj",]
+
+admin.site.register(InningManager, InningManagerAdmin)
