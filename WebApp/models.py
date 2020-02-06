@@ -599,7 +599,7 @@ class InningInfo(models.Model):
         return reverse('inninginfo_update', args=(self.pk,))
 
     def get_teacher_update_url(self):
-        return reverse('teachers_inninggroup_update', args=(self.pk,))
+        return reverse('teachers_inninginfo_update', args=(self.pk,))
 
     def __str__(self):
         return self.Inning_Name.Session_Name

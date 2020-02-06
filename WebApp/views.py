@@ -20,7 +20,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -930,7 +930,15 @@ class InningGroupDetailView(DetailView):
 class InningGroupUpdateView(UpdateView):
     model = InningGroup
     form_class = InningGroupForm
+    def form_valid(self, form):
+        """If the form is valid, redirect to the supplied URL."""
+        messages.add_message(self.request, messages.SUCCESS, 'Course Teacher Allocation Updated.')
+        return HttpResponseRedirect(self.get_success_url())
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
     def get_form_kwargs(self):
         kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
@@ -1941,10 +1949,9 @@ class SessionManagerUpdateView(UpdateView):
         if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs.get('pk')).exists():
             session_Manager = InningManager.objects.get(sessioninfoobj__pk=self.kwargs.get('pk'))
         else:
-            session_Manager = InningManager.objects.create(
-                sessioninfoobj=InningInfo.objects.get(pk=self.kwargs.get('pk')))
+            session_Manager = InningManager.objects.create(sessioninfoobj= InningInfo.objects.get(pk=self.kwargs.get('pk')))
         print(session_Manager)
-        return session_Manager
+        return  session_Manager
 
     def form_valid(self, form):
         if form.is_valid():
