@@ -1947,6 +1947,11 @@ class SessionManagerCreateView(CreateView):
             form.save()
             return redirect('session-manager', self.kwargs.get('pk'))
 
+    def get_form_kwargs(self):
+        kwargs = super(SessionManagerCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
     form_class = InningManagerForm
@@ -1956,3 +1961,8 @@ class SessionManagerUpdateView(UpdateView):
         if form.is_valid():
             form.save()
             return redirect('session-manager', self.kwargs.get('sessionpk'))
+            
+    def get_form_kwargs(self):
+        kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
