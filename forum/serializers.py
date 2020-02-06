@@ -19,7 +19,7 @@ class ThreadSerializer(serializers.ModelSerializer):
     user_name = serializers.ReadOnlyField(source='user.__str__')
     topic_title = serializers.ReadOnlyField(source='topic.title')
     nodegroup_title = serializers.ReadOnlyField(source='topic.node_group.title')
-    user_avatar = serializers.FileField(source='user.Member_Avatar')
+    user_avatar = serializers.ReadOnlyField(source='user.Avatar')
 
     class Meta:
         model = models.Thread
