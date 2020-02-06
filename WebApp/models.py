@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from time import timezone
 
 from django.contrib.auth.models import AbstractUser
@@ -11,7 +12,6 @@ from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField,
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from datetime import datetime
 # from quiz.models import Quiz
 
 fs = FileSystemStorage(location='LMS')
@@ -117,7 +117,8 @@ class MemberInfo(AbstractUser):
     )
 
     def get_student_courses(self):
-        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk), End_Date__gt=datetime.now())
+        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk),
+                                            End_Date__gt=datetime.now())
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
@@ -640,9 +641,38 @@ class Events(models.Model):
     def __str__(self):
         return self.event_name
 
+
 class InningManager(models.Model):
     sessioninfoobj = models.OneToOneField('InningInfo', on_delete=models.CASCADE)
     memberinfoobj = models.ManyToManyField('MemberInfo', blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('mysessions', args=(self.pk,))
+
+
+class Attendance(models.Model):
+    # Fields
+    created = models.DateTimeField(editable=True)
+    present = models.BooleanField()
+
+    member_code = ForeignKey(
+        'MemberInfo', on_delete=models.CASCADE
+    )
+
+    course = ForeignKey(
+        'CourseInfo', on_delete=models.CASCADE
+    )
+
+    class Meta:
+        ordering = ('-created',)
+
+    def __unicode__(self):
+        return u'%s' % self.pk
+
+    def get_absolute_url(self):
+        return reverse('teacher_attendance_detail', args=(self.pk,))
+
+    def get_update_url(self):
+        return reverse('teacher_attendance_update', args=(self.pk,))
+
+

@@ -2,9 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.teacher_module import views
+from quiz import views as quizViews
 from survey import views as survey_views
 from .. import views as admin_views
-from quiz import views as quizViews
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -64,7 +64,6 @@ urlpatterns += (
          views.QuestionInfoDeleteView.as_view(), name='teacher_questioninfo_delete'),
     path('submitStudentscore/<int:Answer_id>/<int:score>/',
          views.submitStudentscore, name='submitStudentscore'),
-
 
 )
 
@@ -222,8 +221,16 @@ urlpatterns += (
 )
 
 urlpatterns += (
-     path('mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
+    path('mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
          name='teachers_mysession_list_inactive'),
     path('mysessions/', views.SessionAdminInningInfoListView.as_view(), name='teachers_mysession_list'),
     path('mysessions/<int:pk>/', views.SessionAdminInningInfoDetailView.as_view(), name='teachers_mysession_detail'),
+)
+
+urlpatterns += (
+    # urls for Attendance
+    path('attendance/', views.AttendanceListView.as_view(), name='teacher_attendance_list'),
+    path('attendance/create/', views.AttendanceCreateView.as_view(), name='teacher_attendance_create'),
+    path('attendance/detail/<int:pk>/', views.AttendanceDetailView.as_view(), name='teacher_attendance_detail'),
+    path('attendance/update/<int:pk>/', views.AttendanceUpdateView.as_view(), name='teacher_attendance_update'),
 )
