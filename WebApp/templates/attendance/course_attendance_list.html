@@ -1,0 +1,111 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% extends "teacher_module/base.html" %}
+{% block content %}
+    <div class="container"> 
+        <div class="attendance-detail">
+            <div class="course-name">
+                <span>
+                    Course:
+                </span>
+
+            </div>
+            <div class="session-detail">
+                <span>Session:</span>
+
+            </div> 
+            <div class="choose-date">
+            <span>Choose Date:</span>
+            <div class="controls ">
+                <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control" id="id_Assignment_Deadline_edit" value="2020-02-08" min="2020-02-09" max="9999-12-31">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="no-attendance-display">
+            <h3>No Attendance has taken</h3>
+            <p><a class="btn btn-default" href="{% url 'teacher_attendance_list' %}">Take Attendance</a></p>
+
+        </div>
+
+        <div id="attendance-table">
+                    {% if attendance %}
+                            <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                <tr>
+                                    <th>{% trans "Title" %}</th>
+                                    <th>{% trans "Course -> Chapter" %}</th>
+                                    <th>{% trans "No. of Questions" %}</th>
+                                    <th>{% trans "Type" %}</th>
+                                    <th>{% trans "Updated On" %}</th>
+                                    <th>{% trans "Status" %}</th>
+                                    <th>{% trans "Action" %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for a in attendance %}
+
+                                    <tr>
+                                        <td>{{ a.title }}</td>
+                                        <td>{{ a.course_code }} -> {{ quiz.chapter_code }}</td>
+                                        <td>{{ a.question_count }}</td>
+                                        <td>{% if a.pre_test %}
+                                            pre test <br>
+                                        {% endif %}
+                                            {% if quiz.post_test %}
+                                                post test <br>
+                                            {% endif %}
+                                            {% if quiz.exam_paper %}
+                                                exam <br>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {{ quiz.updated_date|date:"d/m/Y h:i a" }}
+                                        </td>
+
+                                        <td>{% if quiz.draft is True %}
+                                            Inactive
+                                        {% else %}
+                                            Active
+                                        {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="
+                                        {% if '/teachers' in request.path %}
+                                            {% url 'teacher_quiz_detail' pk=quiz.id %} 
+                                            {% else %}
+                                            {% url 'quiz_detail' pk=quiz.id %} 
+                                            {% endif %}
+                                        ">
+                                                {% trans "View details" %}
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+
+                    {% else %}
+                        <p>{% trans "There are no available quizzes" %}.</p>
+                    {% endif %}
+
+
+
+        </div>
+         
+         <div class="total-students">
+             <span>Total Present:</span>
+             <span>Total Absent:</span>
+             <span>Total Students:</span>
+
+             
+         </div>
+    </div>
+{% endblock %}   
