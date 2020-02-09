@@ -1,9 +1,10 @@
 
 <form method="POST" id="FormID">
 {% csrf_token %}
-{% for i in attendance %}
+{{ attendance }}
+{% comment %} {% for i in attendance %}
 {{ i }} <br>
-{% endfor %}
+{% endfor %} {% endcomment %}
 
 <input type = "submit"></input>
 </form> 

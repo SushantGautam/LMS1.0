@@ -391,5 +391,5 @@ class AttendanceForm(forms.ModelForm):
 from django.forms.models import modelformset_factory  
 
 AttendanceFormSet = modelformset_factory(Attendance,
-    fields =  ['present', 'member_code', 'course', 'attendance_date']
+    fields =  ['present', 'member_code', 'course', 'attendance_date','id']
 )

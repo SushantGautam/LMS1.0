@@ -1827,28 +1827,34 @@ def CourseAttendance(request, inningpk, course, attend_date):
     studentattendancejson = []
 
     if request.method == "POST":
-        modelformset = AttendanceFormSet(request.POST or None, queryset = Attendance.objects.none())
+        modelformset = AttendanceFormSet(request.POST or None, queryset = Attendance.objects.all())
 
         if modelformset.is_valid():
+            for i in modelformset.cleaned_data['entity']
             modelformset.save()
-            idno = modelformset.cleaned_data['idno']
-            entity = modelformset.cleaned_data['entity']
-            messages.success(request, '%s for %s submitted' % (idno, entity))
+            messages.success(request, 'Submitted successfully')
         return HttpResponseRedirect('/')
 
     if InningInfo.objects.filter(Inning_Name__pk = inningpk).exists():
         innings = InningInfo.objects.get(Inning_Name__pk = inningpk)
         if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
             list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
-        print(list_of_students)
+
         AttendanceFormSetx = modelformset_factory(Attendance,
-         fields= ['present', 'member_code', 'course', 'attendance_date'],
+         fields= ['present', 'member_code', 'course', 'attendance_date', 'id'],
          extra=len(list_of_students))
                                 
         for x in list_of_students:
             a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
             if a.exists():
-                studentattendancejson.append(a)
+                print(a[0].present)
+                studentattendancejson.append({
+                    'attendance_date': a[0].attendance_date,
+                    'present': a[0].present,
+                    'member_code': a[0].member_code,
+                    'course': a[0].course,
+                    'id': a[0].pk
+                })
             else:
                 studentattendancejson.append({
                     'attendance_date': attend_date,
@@ -1858,13 +1864,13 @@ def CourseAttendance(request, inningpk, course, attend_date):
                 })
         formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
                             initial=studentattendancejson)
-    context = {
-        'attendance': formset,
-        'course': CourseInfo.objects.get(pk = course),
-        'inning': InningInfo.objects.get(pk = inningpk),
-        'attend_date': attend_date,
-    }
-    return render(request, 'teacher_module/attendance/course_attendance_form.html', context)
+        context = {
+            'attendance': formset,
+            'course': CourseInfo.objects.get(pk = course),
+            'inning': InningInfo.objects.get(pk = inningpk),
+            'attend_date': attend_date,
+        }
+        return render(request, 'teacher_module/attendance/course_attendance_form.html', context)
 
         
         
