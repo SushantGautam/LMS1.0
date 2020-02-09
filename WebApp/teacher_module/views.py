@@ -1923,10 +1923,16 @@ def CourseAttendanceList(request, inningpk, course, attend_date = None):
                 })
         formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
                             initial=studentattendancejson)
+        
+        # a = InningGroup.objects.filter(Teacher_Code = u, Course_Code__pk = 1)        
+        
+        # session_list = InningInfo.objects.filter(Course_Group__in = a)
+        session_list = InningInfo.objects.filter(Course_Group__Teacher_Code__pk = request.user.pk) 
         context = {
             'attendance': formset,
             'course': CourseInfo.objects.get(pk = course),
             'inning': InningInfo.objects.get(pk = inningpk),
             'attend_date': attend_date,
+            'session_list': session_list,
         }
     return render(request, 'attendance/course_attendance_list.html', context)
