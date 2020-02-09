@@ -1821,15 +1821,27 @@ class AttendanceUpdateView(UpdateView):
     template_name = 'teacher_module/attendance/attendance_form.html'
 
 from django.forms.models import modelformset_factory  
+from WebApp.forms import AttendanceFormSet
 
 def CourseAttendance(request, inningpk, course, attend_date):
     studentattendancejson = []
+
+    if request.method == "POST":
+        modelformset = AttendanceFormSet(request.POST or None, queryset = Attendance.objects.none())
+
+        if modelformset.is_valid():
+            modelformset.save()
+            idno = modelformset.cleaned_data['idno']
+            entity = modelformset.cleaned_data['entity']
+            messages.success(request, '%s for %s submitted' % (idno, entity))
+        return HttpResponseRedirect('/')
+
     if InningInfo.objects.filter(Inning_Name__pk = inningpk).exists():
         innings = InningInfo.objects.get(Inning_Name__pk = inningpk)
         if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
             list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
         print(list_of_students)
-        AttendanceFormSet = modelformset_factory(Attendance,
+        AttendanceFormSetx = modelformset_factory(Attendance,
          fields= ['present', 'member_code', 'course', 'attendance_date'],
          extra=len(list_of_students))
                                 
@@ -1844,8 +1856,8 @@ def CourseAttendance(request, inningpk, course, attend_date):
                     'member_code': x.pk,
                     'course': course,
                 })
-    formset = AttendanceFormSet(queryset=Attendance.objects.none(),
-                          initial=studentattendancejson)
+        formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
+                            initial=studentattendancejson)
     context = {
         'attendance': formset,
         'course': CourseInfo.objects.get(pk = course),

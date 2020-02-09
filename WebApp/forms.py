@@ -387,3 +387,9 @@ class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
         fields = ['present', 'member_code', 'course', 'attendance_date']
+
+from django.forms.models import modelformset_factory  
+
+AttendanceFormSet = modelformset_factory(Attendance,
+    fields =  ['present', 'member_code', 'course', 'attendance_date']
+)
