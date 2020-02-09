@@ -4,26 +4,17 @@
 {% extends "teacher_module/base.html" %}
 {% block content %} 
 
-<div id="total-students">
-    <span>Total Present:</span>
-    <span>Total Absent:</span>
-    <span>Total Students:</span>
 
-    
-</div>
 
-<div id="attendance-table">
+<div id="update-attendance-table">
     {% if attendance %}
             <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                 <tr>
-                    <th>{% trans "Title" %}</th>
-                    <th>{% trans "Course -> Chapter" %}</th>
-                    <th>{% trans "No. of Questions" %}</th>
-                    <th>{% trans "Type" %}</th>
-                    <th>{% trans "Updated On" %}</th>
+                    <th>{% trans "Student" %}</th>
+                    <th>{% trans "Attendance" %}</th>
                     <th>{% trans "Status" %}</th>
-                    <th>{% trans "Action" %}</th>
+                   
                 </tr>
                 </thead>
                 <tbody>
@@ -34,27 +25,7 @@
                         <td>{{ a.title }}</td>
                         <td>{{ a.course_code }} -> {{ quiz.chapter_code }}</td>
                         <td>{{ a.question_count }}</td>
-                        <td>{% if a.pre_test %}
-                            pre test <br>
-                        {% endif %}
-                            {% if quiz.post_test %}
-                                post test <br>
-                            {% endif %}
-                            {% if quiz.exam_paper %}
-                                exam <br>
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {{ quiz.updated_date|date:"d/m/Y h:i a" }}
-                        </td>
-
-                        <td>{% if quiz.draft is True %}
-                            Inactive
-                        {% else %}
-                            Active
-                        {% endif %}
-                        </td>
+                      
                         <td>
                             <a href="
                         {% if '/teachers' in request.path %}
@@ -74,10 +45,16 @@
             </table>
 
     {% else %}
-        <p>{% trans "There are no available quizzes" %}.</p>
+        <p>{% trans "" %}.</p>
     {% endif %}
 
 
 
 </div>
+<div id="total-students">
+    <span>Total Present:</span>
+    <span>Total Absent:</span>
+    <span>Total Students:</span>
+</div>
+
 {% endblock %}
