@@ -6,6 +6,6 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_obj(pk):
+def getMemberFromPk(pk):
     obj = MemberInfo.objects.get(pk=int(pk))
     return obj
