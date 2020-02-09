@@ -1830,10 +1830,18 @@ def CourseAttendance(request, inningpk, course, attend_date):
         modelformset = AttendanceFormSet(request.POST or None, queryset = Attendance.objects.all())
 
         if modelformset.is_valid():
-            for i in modelformset.cleaned_data['entity']
-            modelformset.save()
+            for cn, i in enumerate(modelformset.cleaned_data):
+                print( i['id'])
+                if i['id'] is not None:
+                    print(i['present'])
+                    a = Attendance.objects.get(pk=i['id'].pk)
+                    a.present = i['present']
+                    a.save()
+                else:
+                    modelformset.forms[cn].save()
+                pass
             messages.success(request, 'Submitted successfully')
-        return HttpResponseRedirect('/')
+        return HttpResponse('success')
 
     if InningInfo.objects.filter(Inning_Name__pk = inningpk).exists():
         innings = InningInfo.objects.get(Inning_Name__pk = inningpk)
@@ -1847,7 +1855,7 @@ def CourseAttendance(request, inningpk, course, attend_date):
         for x in list_of_students:
             a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
             if a.exists():
-                print(a[0].present)
+                print(a[0].pk)
                 studentattendancejson.append({
                     'attendance_date': a[0].attendance_date,
                     'present': a[0].present,
