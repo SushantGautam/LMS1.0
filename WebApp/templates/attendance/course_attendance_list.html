@@ -43,48 +43,44 @@
             <button id = "goBtn" class="btn btn-info">Go</button>
         </div>
         </div>
-
+        {%if not attendance %}
         <div class="no-attendance-display">
             <h3>No Attendance </h3>
             <p><a class="btn btn-default" href="{% url 'teacher_attendance_list' %}">Take Attendance</a></p>
 
         </div>
+          {% else %}
 
         <div id="attendance-table">
             {% if attendance %}
+            <a class="btn btn-primary" href="{% url 'course_attendance' inning.pk course.pk  attend_date %}">
+                Edit</a>
                     <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
                         <thead>
                         <tr>
                             <th>{% trans "Roll No." %}</th>
                             <th>{% trans "Name" %}</th>
-                            <th>{% trans "Absent" %}</th>
-                            <th>{% trans "Present" %}</th>
+                            <th>{% trans "Attendance" %}</th>
+                            
                             <th>{% trans "Updated On" %}</th>
                           
                         </tr>
                         </thead>
                         <tbody>
 
+
                         {% for a in attendance %}
+                        
 
                             <tr>
+                                <td>  {% getMemberFromPk a.initial.member_code 'Member_ID' %} </td>
                                 <td>  {% getMemberFromPk a.initial.member_code 'pk' %} </td>
-                                <td>{{ a.course_code }} -> {{ quiz.chapter_code }}</td>
-                                <td>{{ a.question_count }}</td>
-                                <td>{% if a.pre_test %}
-                                    pre test <br>
-                                {% endif %}
-                                    {% if quiz.post_test %}
-                                        post test <br>
-                                    {% endif %}
-                                    {% if quiz.exam_paper %}
-                                        exam <br>
-                                    {% endif %}
-                                </td>
+                                <td>  {{a.initial.present }} </td>
+                                <td>  {{a.initial.present }} </td> 
+                                <!-- #TODO send date in the list view -->
+                            
+                            
 
-                                <td>
-                                    {{ quiz.updated_date|date:"d/m/Y h:i a" }}
-                                </td>
 
                               
                             </tr>
@@ -98,12 +94,14 @@
                 <p>{% trans "There are no available quizzes" %}.</p>
             {% endif %}
         </div>
+        
          
          <div class="total-students">
              <span>Total Present:</span>
              <span>Total Absent:</span>
              <span>Total Students:</span>
          </div>
+         {% endif%}
     </div>
 
 {% endblock %}   
