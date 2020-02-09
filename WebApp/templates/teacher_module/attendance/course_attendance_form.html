@@ -1,7 +1,13 @@
-{% for i in attendance %}
-{{ i }}
-{% endfor %}
 
-{{ course }}
-{{ inning }}
+<form method="POST" id="FormID">
+{% csrf_token %}
+{{ attendance }}
+{% comment %} {% for i in attendance %}
+{{ i }} <br>
+{% endfor %} {% endcomment %}
+
+<input type = "submit"></input>
+</form> 
+{{ course }}<br>
+{{ inning }}<br>
 {{ attend_date }}

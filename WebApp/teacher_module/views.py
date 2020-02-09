@@ -1821,22 +1821,99 @@ class AttendanceUpdateView(UpdateView):
     template_name = 'teacher_module/attendance/attendance_form.html'
 
 from django.forms.models import modelformset_factory  
+from WebApp.forms import AttendanceFormSet
 
 def CourseAttendance(request, inningpk, course, attend_date):
+    studentattendancejson = []
+    if not CourseInfo.objects.filter(pk = course).exists():
+        messages.error(request,
+                           "Course Does not exist.")
+    # if datetime.strptime(attend_date, "%Y-%M-%d") > datetime.today().date():
+    #     messages.error(request,
+    #                        "You cannot take attendance of future date.")
+    #     return HttpResponse('hello')
+
+    if request.method == "POST":
+        modelformset = AttendanceFormSet(request.POST or None, queryset = Attendance.objects.all())
+
+        if modelformset.is_valid():
+            for cn, i in enumerate(modelformset.cleaned_data):
+                print( i['id'])
+                if i['id'] is not None:
+                    print(i['present'])
+                    a = Attendance.objects.get(pk=i['id'].pk)
+                    a.present = i['present']
+                    a.save()
+                else:
+                    modelformset.forms[cn].save()
+                pass
+            messages.success(request, 'Submitted successfully')
+    else:
+        if InningInfo.objects.filter(Inning_Name__pk = inningpk).exists():
+            innings = InningInfo.objects.get(Inning_Name__pk = inningpk)
+            if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
+
+            AttendanceFormSetx = modelformset_factory(Attendance,
+            fields= ['present', 'member_code', 'course', 'attendance_date', 'id'],
+            extra=len(list_of_students))
+                                    
+            for x in list_of_students:
+                a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
+                if a.exists():
+                    print(a[0].pk)
+                    studentattendancejson.append({
+                        'attendance_date': a[0].attendance_date,
+                        'present': a[0].present,
+                        'member_code': a[0].member_code,
+                        'course': a[0].course,
+                        'id': a[0].pk
+                    })
+                else:
+                    studentattendancejson.append({
+                        'attendance_date': attend_date,
+                        'present': False,
+                        'member_code': x.pk,
+                        'course': course,
+                    })
+            formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
+                                initial=studentattendancejson)
+            context = {
+                'attendance': formset,
+                'course': CourseInfo.objects.get(pk = course),
+                'inning': InningInfo.objects.get(pk = inningpk),
+                'attend_date': attend_date,
+            }
+            return render(request, 'teacher_module/attendance/course_attendance_form.html', context)
+
+        else:
+            messages.error(request,
+                            "Inning does not exist.")
+    return redirect('course_attendance_list', inningpk, course, attend_date)
+        
+def CourseAttendanceList(request, inningpk, course, attend_date = None):
+    if attend_date == None:
+        attend_date = str(datetime.today().date())
     studentattendancejson = []
     if InningInfo.objects.filter(Inning_Name__pk = inningpk).exists():
         innings = InningInfo.objects.get(Inning_Name__pk = inningpk)
         if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
             list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
-        print(list_of_students)
-        AttendanceFormSet = modelformset_factory(Attendance,
-         fields= ['present', 'member_code', 'course', 'attendance_date'],
+
+        AttendanceFormSetx = modelformset_factory(Attendance,
+         fields= ['present', 'member_code', 'course', 'attendance_date', 'id'],
          extra=len(list_of_students))
                                 
         for x in list_of_students:
             a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
             if a.exists():
-                studentattendancejson.append(a)
+                studentattendancejson.append({
+                    'attendance_date': a[0].attendance_date,
+                    'present': a[0].present,
+                    'member_code': a[0].member_code,
+                    'course': a[0].course,
+                    'id': a[0].pk
+                })
             else:
                 studentattendancejson.append({
                     'attendance_date': attend_date,
@@ -1844,15 +1921,12 @@ def CourseAttendance(request, inningpk, course, attend_date):
                     'member_code': x.pk,
                     'course': course,
                 })
-    formset = AttendanceFormSet(queryset=Attendance.objects.none(),
-                          initial=studentattendancejson)
-    context = {
-        'attendance': formset,
-        'course': CourseInfo.objects.get(pk = course),
-        'inning': InningInfo.objects.get(pk = inningpk),
-        'attend_date': attend_date,
-    }
-    return render(request, 'teacher_module/attendance/course_attendance_form.html', context)
-
-        
-        
+        formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
+                            initial=studentattendancejson)
+        context = {
+            'attendance': formset,
+            'course': CourseInfo.objects.get(pk = course),
+            'inning': InningInfo.objects.get(pk = inningpk),
+            'attend_date': attend_date,
+        }
+    return render(request, 'attendance/course_attendance_list.html', context)

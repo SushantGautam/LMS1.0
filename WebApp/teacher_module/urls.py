@@ -240,5 +240,8 @@ urlpatterns += (
     path('attendance/update/<int:pk>/', views.AttendanceUpdateView.as_view(), name='teacher_attendance_update'),
     
     url(r'^attendance/class/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$', views.CourseAttendance, name='course_attendance'),
+    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$', views.CourseAttendanceList, name='course_attendance_list'),
+    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/$', views.CourseAttendanceList, name='course_attendance_list_nodate'),
+
 
 )
