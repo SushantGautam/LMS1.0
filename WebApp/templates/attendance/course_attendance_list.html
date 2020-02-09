@@ -16,7 +16,18 @@
 
             </div>
             <div class="session-detail">
-                <span>Session:</span><span>{{inning}}</span>
+                <span>Session:</span> 
+                <select id = "select_session">
+                    {% for session in session_list %}
+                    
+                        <option value = "{{ session.pk }}"
+                            {% if session.pk == inning.pk %}
+                                selected
+                            {% endif %}
+                        > {{ session }}</option>
+                    {% endfor %}
+                </select>
+                {% comment %} <span>{{inning}}</span> {% endcomment %}
 
             </div> 
             <div class="choose-date">
@@ -26,11 +37,13 @@
                 </div>
 
             </div>
-
+        <div>
+            <button id = "goBtn" class="btn btn-info">Go</button>
+        </div>
         </div>
 
         <div class="no-attendance-display">
-            <h3>No Attendance /h3>
+            <h3>No Attendance </h3>
             <p><a class="btn btn-default" href="{% url 'teacher_attendance_list' %}">Take Attendance</a></p>
 
         </div>
@@ -106,9 +119,12 @@
 
 {% block customjss %}   
 <script>
-    $('#id_Assignment_Deadline_edit').on('change', function(){
+
+    $('#goBtn').on('click', function(){
         changed_date = $('#id_Assignment_Deadline_edit').val()
-        window.location.href = "{% url 'course_attendance_list_nodate' inning.pk course.pk %}"+changed_date
+        session = $('#select_session').val()
+        window.location.href = "/teachers/attendance/class-list/"+session+"/1/"+changed_date
     })
+    
 </script>
 {% endblock %}   
