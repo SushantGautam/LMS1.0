@@ -253,8 +253,8 @@ class AttendanceAdminForm(forms.ModelForm):
 
 class AttendanceAdmin(admin.ModelAdmin):
     form = AttendanceAdminForm
-    list_display = ['created', 'present']
-    readonly_fields = ['created', 'present']
+    list_display = ['attendance_date', 'present']
+    readonly_fields = ['attendance_date', 'present']
 
 
 admin.site.register(Attendance, AttendanceAdmin)

@@ -375,15 +375,15 @@ class InningManagerForm(forms.ModelForm):
                                                                      Center_Code=self.request.user.Center_Code)
 
 class AttendanceForm(forms.ModelForm):
-    created = forms.DateTimeField(
+    attendance_date = forms.DateTimeField(
         input_formats=['%Y-%m-%dT%H:%M'],
         widget=forms.DateTimeInput(
             attrs={
                 'type': 'datetime-local',
                 'class': 'form-control'},
-            format='%Y-%m-%dT%H:%M')
+            format='%Y-%m-%d')
     )
 
     class Meta:
         model = Attendance
-        fields = ['present', 'member_code', 'course', 'created']
+        fields = ['present', 'member_code', 'course', 'attendance_date']

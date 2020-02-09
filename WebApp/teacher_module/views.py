@@ -1820,8 +1820,39 @@ class AttendanceUpdateView(UpdateView):
     form_class = AttendanceForm
     template_name = 'teacher_module/attendance/attendance_form.html'
 
-def CourseAttendance(request, inningpk, course, date):
-    if InningInfo.objects.filter(inning_name__pk = innningpk).exists():
-        innings = InningInfo.objects.get(inning_name__pk = innningpk)
+from django.forms.models import modelformset_factory  
+
+def CourseAttendance(request, inningpk, course, attend_date):
+    studentattendancejson = []
+    if InningInfo.objects.filter(Inning_Name__pk = inningpk).exists():
+        innings = InningInfo.objects.get(Inning_Name__pk = inningpk)
+        if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
+            list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
+        print(list_of_students)
+        AttendanceFormSet = modelformset_factory(Attendance,
+         fields= ['present', 'member_code', 'course', 'attendance_date'],
+         extra=len(list_of_students))
+                                
+        for x in list_of_students:
+            a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
+            if a.exists():
+                studentattendancejson.append(a)
+            else:
+                studentattendancejson.append({
+                    'attendance_date': attend_date,
+                    'present': False,
+                    'member_code': x.pk,
+                    'course': course,
+                })
+    formset = AttendanceFormSet(queryset=Attendance.objects.none(),
+                          initial=studentattendancejson)
+    context = {
+        'attendance': formset,
+        'course': CourseInfo.objects.get(pk = course),
+        'inning': InningInfo.objects.get(pk = inningpk),
+        'attend_date': attend_date,
+    }
+    return render(request, 'teacher_module/attendance/course_attendance_form.html', context)
+
         
-        print(innings.Group)
+        

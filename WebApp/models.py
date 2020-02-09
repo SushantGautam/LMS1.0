@@ -657,7 +657,8 @@ class InningManager(models.Model):
 
 class Attendance(models.Model):
     # Fields
-    created = models.DateTimeField(editable=True)
+    updated = models.DateTimeField(auto_now=True)
+    attendance_date = models.DateField(editable=True)
     present = models.BooleanField()
 
     member_code = ForeignKey(
@@ -669,7 +670,7 @@ class Attendance(models.Model):
     )
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ('-attendance_date',)
 
     def __unicode__(self):
         return u'%s' % self.pk
