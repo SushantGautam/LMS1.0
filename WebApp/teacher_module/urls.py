@@ -225,7 +225,12 @@ urlpatterns += (
          name='teachers_mysession_list_inactive'),
     path('mysessions/', views.SessionAdminInningInfoListView.as_view(), name='teachers_mysession_list'),
     path('mysessions/<int:pk>/', views.SessionAdminInningInfoDetailView.as_view(), name='teachers_mysession_detail'),
+
+    path('groupmapping/update/<int:pk>/', views.GroupMappingUpdateView.as_view(), name='teachers_groupmapping_update'),
+    path('inninggroup/detail/<int:pk>/', views.InningGroupDetailView.as_view(), name='teachers_inninggroup_detail'),
+    path('inninggroup/update/<int:pk>/', views.InningGroupUpdateView.as_view(), name='teachers_inninggroup_update'),
 )
+from django.conf.urls import url
 
 urlpatterns += (
     # urls for Attendance
@@ -233,4 +238,7 @@ urlpatterns += (
     path('attendance/create/', views.AttendanceCreateView.as_view(), name='teacher_attendance_create'),
     path('attendance/detail/<int:pk>/', views.AttendanceDetailView.as_view(), name='teacher_attendance_detail'),
     path('attendance/update/<int:pk>/', views.AttendanceUpdateView.as_view(), name='teacher_attendance_update'),
+    
+    url(r'^attendance/class/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$', views.CourseAttendance, name='course_attendance'),
+
 )

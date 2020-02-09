@@ -12,6 +12,9 @@ from forum.forms import TopicForm, ThreadEditForm
 
 from .models import MemberInfo
 
+from django.forms.models import modelformset_factory  
+
+
 if 'pagedown' in settings.INSTALLED_APPS:
     use_pagedown = True
     from django import forms

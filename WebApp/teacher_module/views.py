@@ -23,6 +23,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, GroupMappingForm, InningGroupForm, InningInfoForm
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
@@ -1744,6 +1745,56 @@ class SessionAdminInningInfoDetailView(DetailView):
             context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk=self.kwargs['pk'])
         return context
 
+class GroupMappingUpdateView(UpdateView):
+    model = GroupMapping
+    form_class = GroupMappingForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "teacher_module/base.html"
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            messages.add_message(self.request, messages.SUCCESS,'Successfully updated.')
+            return redirect('teachers_mysession_detail', form.initial['id'])
+
+class InningGroupDetailView(DetailView):
+    model = InningGroup
+    template_name = 'teacher_module/inninggroup_detail.html'
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('teachers_mysession_list')
+
+class InningGroupUpdateView(UpdateView):
+    model = InningInfo
+    form_class = InningInfoForm
+    template_name = 'teacher_module/changestudentgroup_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        context['base_file'] = 'teacher_module/base.html'
+        return context
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            messages.add_message(self.request, messages.SUCCESS,'Successfully updated.')
+            return redirect('teachers_mysession_detail', form.initial['id'])
+
 
 class AttendanceListView(ListView):
     model = Attendance
@@ -1768,3 +1819,40 @@ class AttendanceUpdateView(UpdateView):
     model = Attendance
     form_class = AttendanceForm
     template_name = 'teacher_module/attendance/attendance_form.html'
+
+from django.forms.models import modelformset_factory  
+
+def CourseAttendance(request, inningpk, course, attend_date):
+    studentattendancejson = []
+    if InningInfo.objects.filter(Inning_Name__pk = inningpk).exists():
+        innings = InningInfo.objects.get(Inning_Name__pk = inningpk)
+        if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
+            list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
+        print(list_of_students)
+        AttendanceFormSet = modelformset_factory(Attendance,
+         fields= ['present', 'member_code', 'course', 'attendance_date'],
+         extra=len(list_of_students))
+                                
+        for x in list_of_students:
+            a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
+            if a.exists():
+                studentattendancejson.append(a)
+            else:
+                studentattendancejson.append({
+                    'attendance_date': attend_date,
+                    'present': False,
+                    'member_code': x.pk,
+                    'course': course,
+                })
+    formset = AttendanceFormSet(queryset=Attendance.objects.none(),
+                          initial=studentattendancejson)
+    context = {
+        'attendance': formset,
+        'course': CourseInfo.objects.get(pk = course),
+        'inning': InningInfo.objects.get(pk = inningpk),
+        'attend_date': attend_date,
+    }
+    return render(request, 'teacher_module/attendance/course_attendance_form.html', context)
+
+        
+        

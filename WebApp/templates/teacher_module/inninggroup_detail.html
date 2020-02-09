@@ -1,8 +1,7 @@
-{% extends "base.html" %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{ object.InningGroup_Name }}</li>
+
 {% endblock %}
 
 {% block content%}

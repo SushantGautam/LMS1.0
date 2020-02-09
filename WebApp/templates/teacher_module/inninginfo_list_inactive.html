@@ -7,6 +7,10 @@
 <link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
 {% endblock %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">Session</li>
+{% endblock %}
+
 {% block content %}
 {% include 'inning/inninginfo_list_inactive.html' %}
 {% endblock %}

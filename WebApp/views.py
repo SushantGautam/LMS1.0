@@ -840,6 +840,7 @@ class InningInfoCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
+        context['base_file'] = 'base.html'
         return context
 
 
@@ -866,6 +867,7 @@ class InningInfoUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
+        context['base_file'] = 'base.html'
         return context
 
 
@@ -982,6 +984,11 @@ class GroupMappingDetailView(DetailView):
 class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
@@ -1940,7 +1947,12 @@ class SessionManagerCreateView(CreateView):
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            return redirect('session-manager', self.kwargs.get('sessionpk'))
+            return redirect('session-manager', self.kwargs.get('pk'))
+
+    def get_form_kwargs(self):
+        kwargs = super(SessionManagerCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
@@ -1951,3 +1963,8 @@ class SessionManagerUpdateView(UpdateView):
         if form.is_valid():
             form.save()
             return redirect('session-manager', self.kwargs.get('sessionpk'))
+            
+    def get_form_kwargs(self):
+        kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs

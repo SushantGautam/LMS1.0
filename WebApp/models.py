@@ -594,8 +594,13 @@ class InningInfo(models.Model):
     def get_absolute_url(self):
         return reverse('inninginfo_detail', args=(self.pk,))
 
+    def get_teacher_url(self):
+        return reverse('teachers_mysession_detail', args=(self.pk,))
     def get_update_url(self):
         return reverse('inninginfo_update', args=(self.pk,))
+
+    def get_teacher_update_url(self):
+        return reverse('teachers_inninggroup_update', args=(self.pk,))
 
     def __str__(self):
         return self.Inning_Name.Session_Name
@@ -652,7 +657,8 @@ class InningManager(models.Model):
 
 class Attendance(models.Model):
     # Fields
-    created = models.DateTimeField(editable=True)
+    updated = models.DateTimeField(auto_now=True)
+    attendance_date = models.DateField(editable=True)
     present = models.BooleanField()
 
     member_code = ForeignKey(
@@ -664,7 +670,7 @@ class Attendance(models.Model):
     )
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ('-attendance_date',)
 
     def __unicode__(self):
         return u'%s' % self.pk

@@ -357,6 +357,9 @@ class AchievementPage_All_form(forms.Form):
 
 
 class InningManagerForm(forms.ModelForm):
+    memberinfoobj = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.all(), required=True,
+                                              widget=FilteredSelectMultiple("Members", is_stacked=False))
+
     class Meta:
         model = InningManager
         fields = '__all__'
@@ -365,17 +368,22 @@ class InningManagerForm(forms.ModelForm):
         css = {'all': ('/static/admin/css/widgets.css',), }
         js = ('/static/build/js/jsi18n.js',)
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['memberinfoobj'].queryset = MemberInfo.objects.filter(Use_Flag=True,
+                                                                     Center_Code=self.request.user.Center_Code)
 
 class AttendanceForm(forms.ModelForm):
-    created = forms.DateTimeField(
+    attendance_date = forms.DateTimeField(
         input_formats=['%Y-%m-%dT%H:%M'],
         widget=forms.DateTimeInput(
             attrs={
                 'type': 'datetime-local',
                 'class': 'form-control'},
-            format='%Y-%m-%dT%H:%M')
+            format='%Y-%m-%d')
     )
 
     class Meta:
         model = Attendance
-        fields = ['present', 'member_code', 'course', 'created']
+        fields = ['present', 'member_code', 'course', 'attendance_date']

@@ -1504,6 +1504,7 @@ article {
 
 /* TIMER PORTION CSS */
 
+
 .pie {
     width: 100px;
     height: 100px;
@@ -1512,8 +1513,8 @@ article {
     border-radius: 50%;
     background-color: #4183d7;
     border: 2px solid #4183d7;
-    float: right;
-    margin: 20px 0;
+   
+    margin: auto;
 }
 
 .block-timer {
@@ -2215,4 +2216,13 @@ label .asteriskField {
     top: 14px;
     left: 0;
     width: auto!important;
+}
+/* session-list */
+.list-teachers {
+    max-height:40vh;
+    overflow: auto;
+}
+ .list-students{
+    max-height:40vh;
+    overflow: auto;
 }
