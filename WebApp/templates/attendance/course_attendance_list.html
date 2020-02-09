@@ -2,6 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load i18n %}
+{% load getMemberFromPk %}
 
 {% block content %}
     <div class="container"> 
@@ -67,7 +68,7 @@
                         {% for a in attendance %}
 
                             <tr>
-                                <td>{{  }}</td>
+                                <td>  {% getMemberFromPk a.initial.member_code 'pk' %} </td>
                                 <td>{{ a.course_code }} -> {{ quiz.chapter_code }}</td>
                                 <td>{{ a.question_count }}</td>
                                 <td>{% if a.pre_test %}
