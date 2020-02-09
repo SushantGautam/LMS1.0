@@ -1895,8 +1895,8 @@ def CourseAttendanceList(request, inningpk, course, attend_date = None):
     if attend_date == None:
         attend_date = str(datetime.today().date())
     studentattendancejson = []
-    if InningInfo.objects.filter(Inning_Name__pk = inningpk).exists():
-        innings = InningInfo.objects.get(Inning_Name__pk = inningpk)
+    if InningInfo.objects.filter(pk = inningpk).exists():
+        innings = InningInfo.objects.get(pk = inningpk)
         if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
             list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
 
