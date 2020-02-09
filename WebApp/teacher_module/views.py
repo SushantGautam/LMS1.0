@@ -1819,3 +1819,9 @@ class AttendanceUpdateView(UpdateView):
     model = Attendance
     form_class = AttendanceForm
     template_name = 'teacher_module/attendance/attendance_form.html'
+
+def CourseAttendance(request, inningpk, course, date):
+    if InningInfo.objects.filter(inning_name__pk = innningpk).exists():
+        innings = InningInfo.objects.get(inning_name__pk = innningpk)
+        
+        print(innings.Group)
