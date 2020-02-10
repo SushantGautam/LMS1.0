@@ -40,7 +40,7 @@
 
             </div>
         <div>
-            <button id = "goBtn" class="btn btn-info">Go</button>
+            <button id = "goBtn" class="btn btn-info" style="display:none">Go</button>
         </div>
         </div>
         {%if not attendance %}
@@ -93,8 +93,8 @@
         
          
          <div class="total-students">
-             <span>Total Present:</span><span></span>
-             <span>Total Absent:</span><span></span>
+             <span>Total Present:</span><span id = "student_present"></span>
+             <span>Total Absent:</span><span id = "student_absent"></span>
              <span>Total Students:</span><span>{{ attendance|length }}</span>
          </div>
          {% endif%}
@@ -111,5 +111,23 @@
         window.location.href = "/teachers/attendance/class-list/"+session+"/1/"+changed_date
     })
     
+    var present = 0;
+    var absent = 0;
+
+    $('#select_session, #id_Assignment_Deadline_edit').on('change', function(){
+        $('#goBtn').css('display','block')
+    })
+
+    {% for x in attendance %}
+        {% if x.initial.present %}
+            present++;
+        {% else %}
+            absent++;
+        {% endif %}
+    {% endfor %}
+    console.log(present)
+    $('#student_present').text(present)
+    $('#student_absent').text(absent)
+
 </script>
 {% endblock %}   
