@@ -23,7 +23,8 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, GroupMappingForm, InningGroupForm, InningInfoForm
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, GroupMappingForm, InningGroupForm, \
+    InningInfoForm
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
@@ -1745,6 +1746,7 @@ class SessionAdminInningInfoDetailView(DetailView):
             context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk=self.kwargs['pk'])
         return context
 
+
 class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
@@ -1762,24 +1764,48 @@ class GroupMappingUpdateView(UpdateView):
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            messages.add_message(self.request, messages.SUCCESS,'Successfully updated.')
+            messages.add_message(self.request, messages.SUCCESS, 'Successfully updated.')
             return redirect('teachers_mysession_detail', form.initial['id'])
+
 
 class InningGroupDetailView(DetailView):
     model = InningGroup
     template_name = 'teacher_module/inninggroup_detail.html'
+
     def form_valid(self, form):
         if form.is_valid():
             form.save()
             return redirect('teachers_mysession_list')
 
+
 class InningGroupUpdateView(UpdateView):
+    model = InningGroup
+    form_class = InningGroupForm
+    template_name = 'teacher_module/inning_group_update.html'
+
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS, 'Course Teacher Allocation Updated.')
+        return redirect('teachers_inninggroup_detail', self.kwargs.get('pk'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "teacher_module/base.html"
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+
+class InningInfoUpdateView(UpdateView):
     model = InningInfo
     form_class = InningInfoForm
     template_name = 'teacher_module/changestudentgroup_form.html'
 
     def get_form_kwargs(self):
-        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
 
@@ -1792,7 +1818,7 @@ class InningGroupUpdateView(UpdateView):
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            messages.add_message(self.request, messages.SUCCESS,'Successfully updated.')
+            messages.add_message(self.request, messages.SUCCESS, 'Successfully updated.')
             return redirect('teachers_mysession_detail', form.initial['id'])
 
 
@@ -1820,7 +1846,7 @@ class AttendanceUpdateView(UpdateView):
     form_class = AttendanceForm
     template_name = 'teacher_module/attendance/attendance_form.html'
 
-from django.forms.models import modelformset_factory  
+from django.forms.models import modelformset_factory
 from WebApp.forms import AttendanceFormSet
 
 def CourseAttendance(request, inningpk, course, attend_date):
@@ -1857,7 +1883,7 @@ def CourseAttendance(request, inningpk, course, attend_date):
             AttendanceFormSetx = modelformset_factory(Attendance,
             fields= ['present', 'member_code', 'course', 'attendance_date', 'id'],
             extra=len(list_of_students))
-                                    
+
             for x in list_of_students:
                 a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
                 if a.exists():
@@ -1890,7 +1916,7 @@ def CourseAttendance(request, inningpk, course, attend_date):
             messages.error(request,
                             "Inning does not exist.")
     return redirect('course_attendance_list', inningpk, course, attend_date)
-        
+
 def CourseAttendanceList(request, inningpk, course, attend_date = None):
     if attend_date == None:
         attend_date = str(datetime.today().date())
@@ -1903,7 +1929,7 @@ def CourseAttendanceList(request, inningpk, course, attend_date = None):
         AttendanceFormSetx = modelformset_factory(Attendance,
          fields= ['present', 'member_code', 'course', 'attendance_date', 'id'],
          extra=len(list_of_students))
-                                
+
         for x in list_of_students:
             a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
             if a.exists():
@@ -1926,11 +1952,11 @@ def CourseAttendanceList(request, inningpk, course, attend_date = None):
                 })
         formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
                             initial=studentattendancejson)
-        
-        # a = InningGroup.objects.filter(Teacher_Code = u, Course_Code__pk = 1)        
-        
+
+        # a = InningGroup.objects.filter(Teacher_Code = u, Course_Code__pk = 1)
+
         # session_list = InningInfo.objects.filter(Course_Group__in = a)
-        session_list = InningInfo.objects.filter(Course_Group__Teacher_Code__pk = request.user.pk) 
+        session_list = InningInfo.objects.filter(Course_Group__Teacher_Code__pk = request.user.pk)
         context = {
             'attendance': formset,
             'course': CourseInfo.objects.get(pk = course),
@@ -1939,3 +1965,4 @@ def CourseAttendanceList(request, inningpk, course, attend_date = None):
             'session_list': session_list,
         }
     return render(request, 'attendance/course_attendance_list.html', context)
+
