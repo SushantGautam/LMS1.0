@@ -5,20 +5,26 @@
 {% load getMemberFromPk %}
 
 {% block content %}
-    <div class="container"> 
-        <div class="attendance-detail">
-            <div class="course-name">
-                <span>
-                    <span style="font-size:18px"> <b> Course: </b> </span> 
-                </span>
-                <span>{{course}}</span>
-                <span>
-
-                </span>
-
-            </div>
+    <div class="container col-md-12 col-sm-12 col-xs-12"> 
+        <div class="row" style="margin: 20px 0;">
+            <div class="col-md-4 col-sm-4 col-xs-12 ">
+           
+                <div class="course-name">
+                 
+                        <span style="font-size:18px"> <b> Course: </b> </span> 
+                   
+                    <div>{{course}}</div>
+                    
+    
+                </div>
+                
+                
+                
+            
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="session-detail">
-                <span>Session:</span> 
+                <div style="font-size:18px"> <b> Session: </b> </div> 
                 <select id = "select_session">
                     {% for session in session_list %}
                     
@@ -32,17 +38,29 @@
                 {% comment %} <span>{{inning}}</span> {% endcomment %}
 
             </div> 
-            <div class="choose-date">
-            <span style="font-size:18px"> <b> Choose Date: </b> </span>
-            <div class="controls ">
-                <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control" id="id_Assignment_Deadline_edit" value="{{attend_date}}">
-                </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="choose-date ">
+                   
+                <span style="font-size:18px"> <b> Choose Date: </b> </span>
+           
+            
+                <div class="controls ">
+                    <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control" id="id_Assignment_Deadline_edit" value="{{attend_date}}">
+                    </div>
+           
+            
+            
 
+        </div>
+            <div>
+                <button id = "goBtn" class="btn btn-info" style="display:none; margin-top:15px">Go</button>
             </div>
-        <div>
-            <button id = "goBtn" class="btn btn-info" style="display:none">Go</button>
         </div>
+
         </div>
+        
+        
         {%if not attendance %}
         <div class="no-attendance-display">
             <h3>No Attendance </h3>
@@ -53,8 +71,7 @@
 
         <div id="attendance-table">
             {% if attendance %}
-            <a class="btn btn-primary" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
-                Edit</a>
+           
                     <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
                         <thead>
                         <tr>
@@ -85,6 +102,8 @@
                         </tbody>
 
                     </table>
+                    <a class="btn btn-primary"  href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
+                        Edit</a>
 
             {% else %}
                 <p>{% trans "There are no available quizzes" %}.</p>
@@ -93,9 +112,18 @@
         
          
          <div class="total-students">
-             <span>Total Present:</span><span id = "student_present"></span>
-             <span>Total Absent:</span><span id = "student_absent"></span>
-             <span>Total Students:</span><span>{{ attendance|length }}</span>
+             <div>
+                <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span style="font-size:16px;" id = "student_present"></span>
+             </div>
+             <div>
+                <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span style="font-size:16px;" id = "student_absent"></span>
+             </div>
+             <div>
+                <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span style="font-size:16px;">{{ attendance|length }}</span>
+             </div>
+            
+            
+             
          </div>
          {% endif%}
     </div>
