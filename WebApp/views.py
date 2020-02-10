@@ -905,6 +905,11 @@ class InningGroupCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
+
 
 class InningGroupCreateAjax(AjaxableResponseMixin, CreateView):
     model = InningGroup
@@ -986,6 +991,10 @@ class GroupMappingCreateView(CreateView):
         kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
 
 
 class GroupMappingDetailView(DetailView):
