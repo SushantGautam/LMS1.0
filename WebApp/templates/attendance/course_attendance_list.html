@@ -59,7 +59,9 @@
         </div>
 
         </div>
-        
+        <div class="col-md-12">
+            <hr class="header_hr">
+        </div>
         
         {%if not attendance %}
         <div class="no-attendance-display">
@@ -70,10 +72,11 @@
           {% else %}
 
         <div id="attendance-table">
-            {% if attendance %}
+            {% if attendance %} 
+            <h3 class="detailListHeader2 ">Attendance List</h3>
            
                     <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
-                        <thead>
+                        <thead class="thead-light bg-primary">
                         <tr>
                             <th>{% trans "Roll No." %}</th>
                             <th>{% trans "Name" %}</th>
@@ -104,6 +107,10 @@
                     </table>
                     <a class="btn btn-primary"  href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
                         Edit</a>
+
+
+
+                        
 
             {% else %}
                 <p>{% trans "There are no available quizzes" %}.</p>
@@ -156,6 +163,20 @@
     console.log(present)
     $('#student_present').text(present)
     $('#student_absent').text(absent)
+
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        
+        var table_main = $('#QuizTable').DataTable({
+            responsive: true,
+           
+            buttons: [],
+
+        });
+    });
+
 
 </script>
 {% endblock %}   
