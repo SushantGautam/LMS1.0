@@ -40,7 +40,7 @@
 
             </div>
         <div>
-            <button id = "goBtn" class="btn btn-info">Go</button>
+            <button id = "goBtn" class="btn btn-info" style="display:none">Go</button>
         </div>
         </div>
         {%if not attendance %}
@@ -73,16 +73,12 @@
                         
 
                             <tr>
-                                <td>  {% getMemberFromPk a.initial.member_code 'Member_ID' %} </td>
-                                <td>  {% getMemberFromPk a.initial.member_code 'pk' %} </td>
+                                <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
+                                <td>  {{ a.initial.member_code }} </td>
                                 <td>  {{a.initial.present }} </td>
-                                <td>  {{a.initial.present }} </td> 
+                                <td>  {{a.initial.updated }} </td> 
                                 <!-- #TODO send date in the list view -->
-                            
-                            
-
-
-                              
+  
                             </tr>
 
                         {% endfor %}
@@ -97,9 +93,9 @@
         
          
          <div class="total-students">
-             <span>Total Present:</span>
-             <span>Total Absent:</span>
-             <span>Total Students:</span>
+             <span>Total Present:</span><span id = "student_present"></span>
+             <span>Total Absent:</span><span id = "student_absent"></span>
+             <span>Total Students:</span><span>{{ attendance|length }}</span>
          </div>
          {% endif%}
     </div>
@@ -115,5 +111,23 @@
         window.location.href = "/teachers/attendance/class-list/"+session+"/1/"+changed_date
     })
     
+    var present = 0;
+    var absent = 0;
+
+    $('#select_session, #id_Assignment_Deadline_edit').on('change', function(){
+        $('#goBtn').css('display','block')
+    })
+
+    {% for x in attendance %}
+        {% if x.initial.present %}
+            present++;
+        {% else %}
+            absent++;
+        {% endif %}
+    {% endfor %}
+    console.log(present)
+    $('#student_present').text(present)
+    $('#student_absent').text(absent)
+
 </script>
 {% endblock %}   
