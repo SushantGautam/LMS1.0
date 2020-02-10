@@ -1930,12 +1930,33 @@ def CourseAttendanceList(request, inningpk, course, attend_date = None):
         # a = InningGroup.objects.filter(Teacher_Code = u, Course_Code__pk = 1)        
         
         # session_list = InningInfo.objects.filter(Course_Group__in = a)
-        session_list = InningInfo.objects.filter(Course_Group__Teacher_Code__pk = request.user.pk) 
+        ig = InningGroup.objects.filter(Teacher_Code = request.user)
+        print(ig)
+        # session_list = InningInfo.objects.filter(Course_Group__in = ig)
+        session_course = []
+        for i in ig:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk = request.user.pk, Inning_Name__pk = i.pk, Use_Flag = True, End_Date__gt=datetime_now).distinct()
+            if inning_info.exists():
+                session_course.append([
+                    {
+                        'course' : i.Course_Code,
+                        'session' : inning_info, 
+                    },
+                ])
+        print(session_course)
+
+        # session_list = InningInfo.objects.filter(Course_Group__Teacher_Code__pk = request.user.pk, Use_Flag = True, End_Date__gt=datetime_now).distinct()
+        session_list = []
+        for i in session_course:
+            for m in i:
+                session_list.append(m['session'])
+        print(session_list)
         context = {
             'attendance': formset,
             'course': CourseInfo.objects.get(pk = course),
             'inning': InningInfo.objects.get(pk = inningpk),
             'attend_date': attend_date,
             'session_list': session_list,
+            'session_course': session_course,
         }
     return render(request, 'attendance/course_attendance_list.html', context)

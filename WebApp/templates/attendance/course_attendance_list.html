@@ -11,23 +11,35 @@
                 <span>
                     <span style="font-size:18px"> <b> Course: </b> </span> 
                 </span>
-                <span>{{course}}</span>
                 <span>
-
+                    <select id = "select_course">
+                    {% for s in session_course %}
+                    {% for eac in s.0.session %}
+                        <option value = "{{ s.0.course.pk }}" class = "{{ eac.pk }}"
+                            {% if s.0.course.pk == course.pk %}
+                                selected
+                            {% endif %}
+                        > {{ s.0.course }}</option>
+                    {% endfor %}
+                    {% endfor %}
+                </select>
                 </span>
 
             </div>
             <div class="session-detail">
                 <span>Session:</span> 
                 <select id = "select_session">
-                    {% for session in session_list %}
-                    
+                    {% for x in session_list %}
+                        {% for session in x %}
+
                         <option value = "{{ session.pk }}"
                             {% if session.pk == inning.pk %}
                                 selected
                             {% endif %}
                         > {{ session }}</option>
                     {% endfor %}
+                    {% endfor %}
+
                 </select>
                 {% comment %} <span>{{inning}}</span> {% endcomment %}
 
@@ -108,7 +120,13 @@
     $('#goBtn').on('click', function(){
         changed_date = $('#id_Assignment_Deadline_edit').val()
         session = $('#select_session').val()
-        window.location.href = "/teachers/attendance/class-list/"+session+"/1/"+changed_date
+        course = $('#select_course').val()
+        if(changed_date && session && course) {
+            window.location.href = "/teachers/attendance/class-list/"+session+"/1/"+changed_date
+        } else {
+            alert('Please Select Course and Session')
+        }
+
     })
     
     var present = 0;
@@ -125,9 +143,38 @@
             absent++;
         {% endif %}
     {% endfor %}
-    console.log(present)
     $('#student_present').text(present)
     $('#student_absent').text(absent)
 
+
+    $(document).ready(function () {
+        $("#select_session").on("change", function () {
+selectSessionOnChange();
+        });
+
+    });
+
+        function selectSessionOnChange(){
+                        var levelClass = $("#select_session").find('option:selected').attr('value');
+            console.log(levelClass);
+            $('#select_course').val('')
+            $('#select_course option').each(function () {
+
+                var self = $(this);
+            console.log(self)  ;
+            self.removeAttr('selected');
+
+                if (self.hasClass(levelClass) || typeof (levelClass) == "undefined") {
+                    self.show();
+                    console.log(self)
+                    self.attr('selected','selected')
+                } else {
+                    self.hide();
+                }
+            });
+            // $("#select_course").val($("#select_course option:visible").val());
+
+        }
+selectSessionOnChange();
 </script>
 {% endblock %}   
