@@ -1,14 +1,15 @@
 {% load static %}
 
 {% block content %}
+    {% include 'WebApp/theme/alerts.html' %}
 
-<div class="outerdiv">
+    <div class="outerdiv">
 
-    <h2 class="detailListHeader">Course Allocation Information</h2>
-    <hr class="header_hr">
-    <br>
-    <div class="col-md-6 col-sm-12 col-xs-12 col-md-offset-3">
-        <h5><b>
+        <h2 class="detailListHeader">Course Allocation Information</h2>
+        <hr class="header_hr">
+        <br>
+        <div class="col-md-6 col-sm-12 col-xs-12 col-md-offset-3">
+            <h5><b>
                 <table class="table table-striped table-bordered">
                     <!-- <tr>
                         <td>Session</td>
@@ -32,38 +33,38 @@
                     </tr>
                 </table>
             </b>
-        </h5>
-        <br>
-        <div class="text-center">
+            </h5>
+            <br>
+            <div class="text-center">
 
-            <a class="btn btn-primary" href="
+                <a class="btn btn-primary" href="
             {% if '/teachers' in request.path %}
                 {% url 'teachers_inninggroup_update' object.pk %}
             {% else %}
                 {{ object.get_update_url }}
             {% endif %}
             ">Edit Teacher Allocation</a>
-            <a class="btn-sm btn-danger inninggroup-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
-                Teacher Allocation</a>
-            <form method="post" action="{% url 'inninggroup_delete' pk=object.pk %}"
-                id="deleteInningGroup{{ object.pk }}">
-                {% csrf_token %}
-                <input type="hidden" value="{{object.pk}}" name="inninggroup_id">
-            </form>
+                <a class="btn-sm btn-danger inninggroup-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
+                    Teacher Allocation</a>
+                <form method="post" action="{% url 'inninggroup_delete' pk=object.pk %}"
+                      id="deleteInningGroup{{ object.pk }}">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ object.pk }}" name="inninggroup_id">
+                </form>
+            </div>
         </div>
-    </div>
 
-</div>
+    </div>
 {% endblock %}
 {% block customjss %}
-<script>
-    $(document).on('click', '.inninggroup-confirm-delete', function () {
-        ans = confirm('Are you sure you want to delete this Teacher Allocation?');
-        if (ans == true) {
-            $(`#deleteInningGroup${this.id}`).submit();
-        } else {
-            return false;
-        }
-    });
-</script>
+    <script>
+        $(document).on('click', '.inninggroup-confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Teacher Allocation?');
+            if (ans == true) {
+                $(`#deleteInningGroup${this.id}`).submit();
+            } else {
+                return false;
+            }
+        });
+    </script>
 {% endblock %}

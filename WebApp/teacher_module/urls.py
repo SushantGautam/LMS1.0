@@ -229,6 +229,8 @@ urlpatterns += (
     path('groupmapping/update/<int:pk>/', views.GroupMappingUpdateView.as_view(), name='teachers_groupmapping_update'),
     path('inninggroup/detail/<int:pk>/', views.InningGroupDetailView.as_view(), name='teachers_inninggroup_detail'),
     path('inninggroup/update/<int:pk>/', views.InningGroupUpdateView.as_view(), name='teachers_inninggroup_update'),
+     path('inninginfo/update/<int:pk>/', views.InningInfoUpdateView.as_view(), name='teachers_inninginfo_update'),
+
 )
 from django.conf.urls import url
 

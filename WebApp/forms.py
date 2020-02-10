@@ -357,12 +357,16 @@ class AchievementPage_All_form(forms.Form):
 
 
 class InningManagerForm(forms.ModelForm):
-    memberinfoobj = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.all(), required=True,
-                                              widget=FilteredSelectMultiple("Members", is_stacked=False))
+    memberinfoobj = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.all(), required=False,
+                                                   widget=FilteredSelectMultiple("Members", is_stacked=False),
+                                                   label="Please select Session Admin(s)")
 
     class Meta:
         model = InningManager
         fields = '__all__'
+        widgets = {
+            'sessioninfoobj': forms.HiddenInput(),
+        }
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
@@ -372,7 +376,7 @@ class InningManagerForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
         self.fields['memberinfoobj'].queryset = MemberInfo.objects.filter(Use_Flag=True,
-                                                                     Center_Code=self.request.user.Center_Code)
+                                                                          Center_Code=self.request.user.Center_Code)
 
 class AttendanceForm(forms.ModelForm):
     attendance_date = forms.DateTimeField(
@@ -388,7 +392,7 @@ class AttendanceForm(forms.ModelForm):
         model = Attendance
         fields = ['present', 'member_code', 'course', 'attendance_date']
 
-from django.forms.models import modelformset_factory  
+from django.forms.models import modelformset_factory
 
 AttendanceFormSet = modelformset_factory(Attendance,
     fields =  ['present', 'member_code', 'course', 'attendance_date','id']
