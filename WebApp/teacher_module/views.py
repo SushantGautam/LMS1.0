@@ -1912,14 +1912,17 @@ def CourseAttendanceList(request, inningpk, course, attend_date = None):
                     'present': a[0].present,
                     'member_code': a[0].member_code,
                     'course': a[0].course,
-                    'id': a[0].pk
+                    'id': a[0].pk,
+                    'updated': a[0].updated,
+
                 })
             else:
                 studentattendancejson.append({
                     'attendance_date': attend_date,
                     'present': False,
-                    'member_code': x.pk,
+                    'member_code': x,
                     'course': course,
+                    'updated': None
                 })
         formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
                             initial=studentattendancejson)

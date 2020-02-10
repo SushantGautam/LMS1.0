@@ -73,16 +73,12 @@
                         
 
                             <tr>
-                                <td>  {% getMemberFromPk a.initial.member_code 'Member_ID' %} </td>
-                                <td>  {% getMemberFromPk a.initial.member_code 'pk' %} </td>
+                                <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
+                                <td>  {{ a.initial.member_code }} </td>
                                 <td>  {{a.initial.present }} </td>
-                                <td>  {{a.initial.present }} </td> 
+                                <td>  {{a.initial.updated }} </td> 
                                 <!-- #TODO send date in the list view -->
-                            
-                            
-
-
-                              
+  
                             </tr>
 
                         {% endfor %}
@@ -97,9 +93,9 @@
         
          
          <div class="total-students">
-             <span>Total Present:</span>
-             <span>Total Absent:</span>
-             <span>Total Students:</span>
+             <span>Total Present:</span><span></span>
+             <span>Total Absent:</span><span></span>
+             <span>Total Students:</span><span>{{ attendance|length }}</span>
          </div>
          {% endif%}
     </div>
