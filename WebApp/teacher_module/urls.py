@@ -2,9 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.teacher_module import views
+from quiz import views as quizViews
 from survey import views as survey_views
 from .. import views as admin_views
-from quiz import views as quizViews
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -64,7 +64,6 @@ urlpatterns += (
          views.QuestionInfoDeleteView.as_view(), name='teacher_questioninfo_delete'),
     path('submitStudentscore/<int:Answer_id>/<int:score>/',
          views.submitStudentscore, name='submitStudentscore'),
-
 
 )
 
@@ -222,7 +221,7 @@ urlpatterns += (
 )
 
 urlpatterns += (
-     path('mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
+    path('mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
          name='teachers_mysession_list_inactive'),
     path('mysessions/', views.SessionAdminInningInfoListView.as_view(), name='teachers_mysession_list'),
     path('mysessions/<int:pk>/', views.SessionAdminInningInfoDetailView.as_view(), name='teachers_mysession_detail'),
@@ -233,4 +232,18 @@ urlpatterns += (
      path('inninginfo/update/<int:pk>/', views.InningInfoUpdateView.as_view(), name='teachers_inninginfo_update'),
 
 )
+from django.conf.urls import url
 
+urlpatterns += (
+    # urls for Attendance
+    path('attendance/', views.AttendanceListView.as_view(), name='teacher_attendance_list'),
+    path('attendance/create/', views.AttendanceCreateView.as_view(), name='teacher_attendance_create'),
+    path('attendance/detail/<int:pk>/', views.AttendanceDetailView.as_view(), name='teacher_attendance_detail'),
+    path('attendance/update/<int:pk>/', views.AttendanceUpdateView.as_view(), name='teacher_attendance_update'),
+    
+    url(r'^attendance/class/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$', views.CourseAttendance, name='course_attendance'),
+    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$', views.CourseAttendanceList, name='course_attendance_list'),
+    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/$', views.CourseAttendanceList, name='course_attendance_list_nodate'),
+
+
+)

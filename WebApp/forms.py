@@ -12,7 +12,7 @@ from django.forms import SelectDateWidget
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
-    InningManager
+    InningManager, Attendance
 
 
 class UserRegisterForm(UserCreationForm):
@@ -377,3 +377,23 @@ class InningManagerForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['memberinfoobj'].queryset = MemberInfo.objects.filter(Use_Flag=True,
                                                                           Center_Code=self.request.user.Center_Code)
+
+class AttendanceForm(forms.ModelForm):
+    attendance_date = forms.DateTimeField(
+        input_formats=['%Y-%m-%dT%H:%M'],
+        widget=forms.DateTimeInput(
+            attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'},
+            format='%Y-%m-%d')
+    )
+
+    class Meta:
+        model = Attendance
+        fields = ['present', 'member_code', 'course', 'attendance_date']
+
+from django.forms.models import modelformset_factory
+
+AttendanceFormSet = modelformset_factory(Attendance,
+    fields =  ['present', 'member_code', 'course', 'attendance_date','id']
+)

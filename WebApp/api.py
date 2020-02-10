@@ -27,7 +27,7 @@ class MemberInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.MemberInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filter_fields  = ['id', 'username']
+    filter_fields = ['id', 'username']
 
 
 class CourseInfoViewSet(viewsets.ModelViewSet):
@@ -37,7 +37,7 @@ class CourseInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CourseInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filter_fields  = ['id',]
+    filter_fields = ['id', ]
 
 
 class ChapterInfoViewSet(viewsets.ModelViewSet):
@@ -47,7 +47,7 @@ class ChapterInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ChapterInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['id','Course_Code' ]
+    filter_fields = ['id', 'Course_Code']
 
 
 class InningInfoViewSet(viewsets.ModelViewSet):
@@ -57,7 +57,7 @@ class InningInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.InningInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filter_fields  = ['Groups',]
+    filter_fields = ['Groups', ]
 
 
 class SessionInfoViewSet(viewsets.ModelViewSet):
@@ -99,7 +99,7 @@ class InningGroupViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.InningGroupSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filter_fields  = ['id',]
+    filter_fields = ['id', ]
 
 
 class GroupMappingViewSet(viewsets.ModelViewSet):
@@ -109,7 +109,7 @@ class GroupMappingViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.GroupMappingSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filter_fields  = ['Students',]
+    filter_fields = ['Students', ]
 
 
 class AssignmentInfoViewSet(viewsets.ModelViewSet):
@@ -147,3 +147,11 @@ class ChapterContent(generics.GenericAPIView):
         except Exception as e:
             return Response(status=status.HTTP_404_NOT_FOUND, data={'data': 'Chapter File does not exist'})
         return Response(status=status.HTTP_200_OK, data={'data': data})
+
+
+class AttendanceViewSet(viewsets.ModelViewSet):
+    """ViewSet for the Attendance class"""
+
+    queryset = models.Attendance.objects.all()
+    serializer_class = serializers.AttendanceSerializer
+    permission_classes = [permissions.IsAuthenticated]

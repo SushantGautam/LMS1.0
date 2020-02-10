@@ -57,6 +57,8 @@ router.register(r'groupmapping', api.GroupMappingViewSet)
 router.register(r'assignmentinfo', api.AssignmentInfoViewSet)
 router.register(r'assignanswerinfo', api.AssignAnswerInfoViewSet)
 router.register(r'questioninfo', api.QuestionInfoViewSet)
+router.register(r'attendance', api.AttendanceViewSet)
+
 
 urlpatterns += [
     # urls for Django Rest Framework API
