@@ -1,13 +1,117 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load getMemberFromPk %}
 
-<form method="POST" id="FormID">
-{% csrf_token %}
-{{ attendance }}
-{% comment %} {% for i in attendance %}
-{{ i }} <br>
-{% endfor %} {% endcomment %}
 
-<input type = "submit"></input>
-</form> 
-{{ course }}<br>
-{{ inning }}<br>
-{{ attend_date }}
+
+
+
+
+{% block content %} 
+
+
+
+<div id="attendance-table">
+    {% if attendance %} 
+    <h3 class="detailListHeader2 ">Attendance List</h3>
+   
+            <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
+                <thead class="thead-light bg-primary">
+                
+                    <th>{% trans "Roll No." %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Attendance" %}
+                       select all <input type="checkbox" class="selectAll" name="selectAll" value="all"> 
+                    </th>
+                    
+                    <th>{% trans "Attendance Date" %}</th>
+                  
+                
+                </thead>
+                <tbody>
+                    {% for a in attendance %}
+                        
+
+                    <tr>
+                       
+                        
+                        <td>  {{ a.initial.member_code }} </td>
+                        <td>  {% getMemberFromPk a.initial.member_code 'Member_ID' %} </td>
+                        <td>  {{a.present }} </td>
+                        <td>  {{ attend_date }} </td> 
+                        <!-- #TODO send date in the list view -->
+
+                    </tr>
+
+                {% endfor %}
+                 
+                
+                </tbody>
+
+            </table>
+            <a class="btn btn-primary"  href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
+                Edit</a>
+
+            <div class="row">
+                <div class="total-students">
+                    <div>
+                       <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span style="font-size:16px;" id = "student_present"></span>
+                    </div>
+                    <div>
+                       <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span style="font-size:16px;" id = "student_absent"></span>
+                    </div>
+                    <div>
+                       <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span style="font-size:16px;">{{ attendance|length }}</span>
+                    </div>
+                   
+                   
+                    
+                </div>  
+
+            </div>
+                
+                
+
+    {% else %}
+        <p>{% trans "There are no available attendance" %}.</p>
+      
+    {% endif %}
+</div>
+
+
+
+{% endblock %}
+{% block customjss %}  
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        
+        var table_main = $('#QuizTable').DataTable({
+            responsive: true,
+            select:true,
+           
+            buttons: [
+        'selectAll',
+        'selectNone'
+    ],          
+
+        });
+    });
+
+
+</script>
+<script>
+    $(document).ready( function () {
+        var  DT1 = $('#').DataTable();
+      $("#QuizTable").on( "click", function(e) {
+          if ($(this).is( ":checked" )) {
+              DT1.rows(  ).select();        
+          } else {
+              DT1.rows(  ).deselect(); 
+          }
+      });
+      } );
+</script>
+{% endblock %}
