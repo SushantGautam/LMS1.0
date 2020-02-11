@@ -32,6 +32,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
 
+from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -89,6 +90,8 @@ class AjaxableResponseMixin:
 
 
 def ProfileView(request):
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     return render(request, 'WebApp/profile.html')
 
 
@@ -632,7 +635,7 @@ class CourseInfoCreateView(CreateView):
         return kwargs
 
 
-class CourseInfoDetailView(DetailView):
+class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
     model = CourseInfo
 
     def get_context_data(self, **kwargs):

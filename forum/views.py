@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
@@ -217,7 +217,8 @@ class ThreadView(AdminAuthMxnCls, LoginRequiredMixin, ListView):
 
 
 def ThreadList_LoadMoreViewAjax(request, pk, count):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     return render(request, 'ForumInclude/LoadMoreAjax.html', {
         'MoreReply': Post.objects.filter(
             thread_id=pk
@@ -231,7 +232,8 @@ def ThreadList_LoadMoreViewAjax(request, pk, count):
 
 
 def user_info(request, pk):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     u = User.objects.get(pk=pk)
     return render(request, 'forum/user_info.html', {
         'title': u.username,
@@ -314,7 +316,8 @@ class SearchView(AdminAuthMxnCls, LoginRequiredMixin, ListView):
 
 
 def search_redirect(request):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     if request.method == 'GET':
         keyword = request.GET.get('keyword')
         return HttpResponseRedirect(reverse('forum:search', kwargs={'keyword': keyword}))
@@ -324,7 +327,8 @@ def search_redirect(request):
 
 @login_required
 def create_thread(request, topic_pk=None, nodegroup_pk=None):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     topic = None
     topics = Topic.objects.all()
     node_group = NodeGroup.objects.all()
@@ -355,7 +359,8 @@ from functools import reduce
 
 
 def ThreadSearchAjax(request, topic_id, threadkeywordList):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     threadkeywordList = threadkeywordList.split("_")
     RelevantThread = []
     if topic_id:
@@ -371,7 +376,8 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
 
 @login_required
 def create_topic(request, nodegroup_pk=None):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     node_group = NodeGroup.objects.filter(pk=nodegroup_pk)
     if request.method == 'POST':
         form = TopicForm(request.POST, user=request.user)
@@ -387,7 +393,8 @@ def create_topic(request, nodegroup_pk=None):
 
 @login_required
 def edit_thread(request, pk):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
 
     thread = Thread.objects.get(pk=pk)
     if thread.reply_count < 0:
@@ -407,7 +414,8 @@ def edit_thread(request, pk):
 
 @login_required
 def edit_post(request, pk):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     post = Post.objects.get(pk=pk)
     if not post.user == request.user:
         return HttpResponseForbidden(_('You are not allowed to edit other\'s thread'))
@@ -424,7 +432,8 @@ def edit_post(request, pk):
 
 @login_required
 def edit_topic(request, pk):
-    AuthCheck(request, admn=1)
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     topic = Topic.objects.get(pk=pk)
     if not topic.user == request.user:
         return HttpResponseForbidden(_('You are not allowed to edit other\'s thread'))

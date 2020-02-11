@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 
+from WebApp.models import CourseInfo
+
 
 class AdminAuthMxnCls:
     def get(self, request, *args, **kwargs):
@@ -41,4 +43,17 @@ def AuthCheck(request, admn=0, tchr=0, stdn=0):
     else:
         messages.error(request,
                        'The path you entered into the system was not suitable for your role and you were redirected.')
-        return redirect('login')
+        return 2
+
+
+class CourseAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if CourseAuth(request,
+                                                                   kwargs.get(
+                                                                       'pk')).Center_Code == 1 else returnMessageFunc(
+            request)
+
+
+def CourseAuth(request, pk):
+    return 1 if CourseInfo.objects.get(
+        pk=pk).Center_Code == request.user.Center_Code else returnMessageFunc(request)
