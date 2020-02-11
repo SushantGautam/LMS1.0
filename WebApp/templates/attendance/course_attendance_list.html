@@ -6,63 +6,70 @@
 
 {% block content %}
     <div class="container"> 
-        <div class="attendance-detail">
-            <div class="course-name">
-                <span>
-                    <span style="font-size:18px"> <b> Course: </b> </span> 
-                </span>
-                <span>
-                    <select id = "select_course">
-                    {% for s in session_course %}
-                    {% for eac in s.0.session %}
-                        <option value = "{{ s.0.course.pk }}" class = "{{ eac.pk }}"
-                            {% if s.0.course.pk == course.pk %}
-                                selected
-                            {% endif %}
-                        > {{ s.0.course }}</option>
-                    {% endfor %}
-                    {% endfor %}
-                </select>
-                </span>
-
+        <div class="attendance-detail col-md-12">
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="course-name">
+                    <span>
+                        <span style="font-size:18px"> <b> Course: </b> </span> 
+                    </span>
+                    <div>
+                        <select id = "select_course">
+                        {% for s in session_course %}
+                        {% for eac in s.0.session %}
+                            <option value = "{{ s.0.course.pk }}" class = "{{ eac.pk }}"
+                                {% if s.0.course.pk == course.pk %}
+                                    selected
+                                {% endif %}
+                            > {{ s.0.course }}</option>
+                        {% endfor %}
+                        {% endfor %}
+                    </select>
+                </div>
+    
+                </div>
             </div>
-            <div class="session-detail">
-                <div style="font-size:18px"> <b> Session: </b> </div> 
-                <select id = "select_session">
-                    {% for x in session_list %}
-                        {% for session in x %}
-
-                        <option value = "{{ session.pk }}"
-                            {% if session.pk == inning.pk %}
-                                selected
-                            {% endif %}
-                        > {{ session }}</option>
-                    {% endfor %}
-                    {% endfor %}
-
-                </select>
-                {% comment %} <span>{{inning}}</span> {% endcomment %}
-
-            </div> 
-        </div>
-        <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="choose-date ">
-                   
-                <span style="font-size:18px"> <b> Choose Date: </b> </span>
-           
-            
-                <div class="controls ">
-                    <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control" id="id_Assignment_Deadline_edit" value="{{attend_date}}">
-                    </div>
-           
-            
-            
-
-        </div>
-            <div>
-                <button id = "goBtn" class="btn btn-info" style="display:none; margin-top:15px">Go</button>
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="session-detail">
+                    <div style="font-size:18px"> <b> Session: </b> </div> 
+                    <select id = "select_session">
+                        {% for x in session_list %}
+                            {% for session in x %}
+    
+                            <option value = "{{ session.pk }}"
+                                {% if session.pk == inning.pk %}
+                                    selected
+                                {% endif %}
+                            > {{ session }}</option>
+                        {% endfor %}
+                        {% endfor %}
+    
+                    </select>
+                    {% comment %} <span>{{inning}}</span> {% endcomment %}
+    
+                </div> 
             </div>
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="choose-date ">
+                       
+                    <span style="font-size:18px"> <b> Choose Date: </b> </span>
+               
+                
+                    <div class="controls ">
+                        <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control" id="id_Assignment_Deadline_edit" value="{{attend_date}}">
+                        </div>
+               
+                
+                
+    
+            </div>
+                <div>
+                    <button id = "goBtn" class="btn btn-info" style="display:none; margin-top:15px">Go</button>
+                </div>
+            </div>
+           
+         
         </div>
+        
 
         </div>
         <div class="col-md-12">
