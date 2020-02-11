@@ -32,6 +32,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
 
+from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -89,6 +90,8 @@ class AjaxableResponseMixin:
 
 
 def ProfileView(request):
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     return render(request, 'WebApp/profile.html')
 
 
@@ -622,7 +625,7 @@ class CourseInfoListView(ListView):
         return qs
 
 
-class CourseInfoCreateView(CreateView):
+class CourseInfoCreateView(AdminAuthMxnCls, CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
 
@@ -632,7 +635,7 @@ class CourseInfoCreateView(CreateView):
         return kwargs
 
 
-class CourseInfoDetailView(DetailView):
+class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
     model = CourseInfo
 
     def get_context_data(self, **kwargs):
@@ -649,7 +652,7 @@ class CourseInfoDetailView(DetailView):
         return context
 
 
-class CourseInfoUpdateView(UpdateView):
+class CourseInfoUpdateView(CourseAuthMxnCls, AdminAuthMxnCls, UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
 
@@ -664,6 +667,8 @@ class CourseInfoUpdateView(UpdateView):
 
 def CourseInfoDeleteView(request, pk):
     if request.method == 'POST':
+        if AuthCheck(request, admn=1) == 2 or CourseAuth(request, pk) == 2:
+            return redirect('login')
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = CourseInfo.objects.get(pk=pk)

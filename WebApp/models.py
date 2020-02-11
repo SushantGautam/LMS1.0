@@ -166,6 +166,10 @@ class MemberInfo(AbstractUser):
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.username + ")"
+        # if self.first_name and self.last_name:
+        #     return self.first_name + " " + self.last_name + " (" + self.username + ")"
+        # else:
+        #     return "-- (" + self.username + ")"
 
     # def create_user(self, username, email=None, password=None, **extra_fields):
     #     extra_fields.setdefault('is_staff', True)

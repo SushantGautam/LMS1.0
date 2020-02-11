@@ -5,157 +5,261 @@
 {% load getMemberFromPk %}
 
 {% block content %}
-    <div class="container col-md-12 col-sm-12 col-xs-12"> 
-        <div class="row" style="margin: 20px 0;">
-            <div class="col-md-4 col-sm-4 col-xs-12 ">
-           
+    <div class="container">
+        <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="course-name">
-                 
+                    <span>
                         <span style="font-size:18px"> <b> Course: </b> </span> 
-                   
-                    <div>{{course}}</div>
-                    
+                    </span>
+                    <span>
+                    {% if not inning and course %}
+    
+                        <select id="select_course">
+                                <option value="{{ course.pk }}" class="{{ course.pk }}"
+                                        selected
+                                > {{ course }}</option>
+                            </select>
+                    {% else %}
+                        <select id="select_course">
+                            {% for s in session_course %}
+                                {% for eac in s.0.session %}
+                                    <option value="{{ s.0.course.pk }}" class="{{ eac.pk }}"
+                                            {% if s.0.course.pk == course.pk %}
+                                            selected
+                                            {% endif %}
+                                    > {{ s.0.course }}</option>
+                                {% endfor %}
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                    </span>
     
                 </div>
-                
-                
-                
-            
-        </div>
-        <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="session-detail">
-                <div style="font-size:18px"> <b> Session: </b> </div> 
-                <select id = "select_session">
-                    {% for session in session_list %}
-                    
-                        <option value = "{{ session.pk }}"
-                            {% if session.pk == inning.pk %}
-                                selected
-                            {% endif %}
-                        > {{ session }}</option>
-                    {% endfor %}
-                </select>
-                {% comment %} <span>{{inning}}</span> {% endcomment %}
 
-            </div> 
-        </div>
-        <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="choose-date ">
-                   
-                <span style="font-size:18px"> <b> Choose Date: </b> </span>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="session-detail">
+                    <div style="font-size:18px"><b> Session: </b></div>
+                    <select id="select_session">
+                        {% for x in session_list %}
+                            {% for session in x %}
+    
+                                <option value="{{ session.pk }}"
+                                        {% if session.pk == inning.pk %}
+                                        selected
+                                        {% endif %}
+                                > {{ session }}</option>
+                            {% endfor %}
+                        {% endfor %}
+    
+                    </select>
+                    {% comment %} <span>{{inning}}</span> {% endcomment %}
+    
+                </div>
+            </div>
            
             
-                <div class="controls ">
-                    <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control" id="id_Assignment_Deadline_edit" value="{{attend_date}}">
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="choose-date ">
+    
+                    <span style="font-size:18px"> <b> Choose Date: </b> </span>
+    
+    
+                    <div class="controls ">
+                        <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control"
+                               id="id_Assignment_Deadline_edit" value="{{ attend_date }}">
                     </div>
-           
-            
-            
-
-        </div>
-            <div>
-                <button id = "goBtn" class="btn btn-info" style="display:none; margin-top:15px">Go</button>
+    
+    
+                </div>
+                <div>
+                    <button id="goBtn" class="btn btn-info" style="margin-top:15px">Go</button>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="choose-date ">
+                           
+                        <span style="font-size:18px"> <b> Choose Date: </b> </span>
+                   
+                    
+                        <div class="controls ">
+                            <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control" id="id_Assignment_Deadline_edit" value="{{attend_date}}">
+                            </div>
+                   
+                    
+                    
+        
+                </div>
+                    <div>
+                        <button id = "goBtn" class="btn btn-info" style="display:none; margin-top:15px">Go</button>
+                    </div>
+                </div>
+               
+             
             </div>
         </div>
+       
+        
 
-        </div>
-        
-        
-        {%if not attendance %}
+    </div>
+    <div class="col-md-12">
+        <hr class="header_hr">
+    </div>
+
+    {% if not attendance %}
         <div class="no-attendance-display">
             <h3>No Attendance </h3>
             <p><a class="btn btn-default" href="{% url 'teacher_attendance_list' %}">Take Attendance</a></p>
 
         </div>
-          {% else %}
+    {% else %}
 
         <div id="attendance-table">
             {% if attendance %}
-           
-                    <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
-                        <thead>
+                <h3 class="detailListHeader2 ">Attendance List</h3>
+
+                <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
+                    <thead class="thead-light bg-primary">
+                    <tr>
+                        <th>{% trans "Roll No." %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Attendance" %}</th>
+
+                        <th>{% trans "Updated On" %}</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+                    {% for a in attendance %}
+
+
                         <tr>
-                            <th>{% trans "Roll No." %}</th>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Attendance" %}</th>
-                            
-                            <th>{% trans "Updated On" %}</th>
-                          
+                            <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
+                            <td>  {{ a.initial.member_code }} </td>
+                            <td>  {{ a.initial.present }} </td>
+                            <td>  {{ a.initial.updated }} </td>
+
                         </tr>
-                        </thead>
-                        <tbody>
+
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+                <a class="btn btn-primary" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
+                    Edit</a>
 
 
-                        {% for a in attendance %}
-                        
 
-                            <tr>
-                                <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
-                                <td>  {{ a.initial.member_code }} </td>
-                                <td>  {{a.initial.present }} </td>
-                                <td>  {{a.initial.updated }} </td> 
-                                <!-- #TODO send date in the list view -->
-  
-                            </tr>
 
-                        {% endfor %}
-                        </tbody>
-
-                    </table>
-                    <a class="btn btn-primary"  href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
-                        Edit</a>
 
             {% else %}
                 <p>{% trans "There are no available quizzes" %}.</p>
             {% endif %}
         </div>
-        
-         
-         <div class="total-students">
-             <div>
-                <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span style="font-size:16px;" id = "student_present"></span>
-             </div>
-             <div>
-                <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span style="font-size:16px;" id = "student_absent"></span>
-             </div>
-             <div>
-                <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span style="font-size:16px;">{{ attendance|length }}</span>
-             </div>
-            
-            
-             
-         </div>
-         {% endif%}
+
+
+        <div class="total-students">
+            <div>
+                <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
+                    style="font-size:16px;" id="student_present"></span>
+            </div>
+            <div>
+                <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span
+                    style="font-size:16px;" id="student_absent"></span>
+            </div>
+            <div>
+                <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
+                    style="font-size:16px;">{{ attendance|length }}</span>
+            </div>
+
+
+        </div>
+    {% endif %}
     </div>
 
-{% endblock %}   
+{% endblock %}
 
-{% block customjss %}   
-<script>
+{% block customjss %}
+    <script>
 
-    $('#goBtn').on('click', function(){
-        changed_date = $('#id_Assignment_Deadline_edit').val()
-        session = $('#select_session').val()
-        window.location.href = "/teachers/attendance/class-list/"+session+"/1/"+changed_date
-    })
-    
-    var present = 0;
-    var absent = 0;
+        $('#goBtn').on('click', function () {
+            changed_date = $('#id_Assignment_Deadline_edit').val()
+            session = $('#select_session').val()
+            course = $('#select_course').val()
+            if (changed_date && session && course) {
+                window.location.href = "/teachers/attendance/class-list/" + session + "/1/" + changed_date
+            } else {
+                alert('Please Select Course and Session')
+            }
 
-    $('#select_session, #id_Assignment_Deadline_edit').on('change', function(){
-        $('#goBtn').css('display','block')
-    })
+        })
 
-    {% for x in attendance %}
-        {% if x.initial.present %}
-            present++;
+        var present = 0;
+        var absent = 0;
+
+        {#$('#select_session, #id_Assignment_Deadline_edit').on('change', function () {#}
+        {#    $('#goBtn').css('display', 'block')#}
+        {#})
+        #}
+
+        {% for x in attendance %}
+            {% if x.initial.present %}
+                present++;
+            {% else %}
+                absent++;
+            {% endif %}
+        {% endfor %}
+        $('#student_present').text(present)
+        $('#student_absent').text(absent)
+
+
+        $(document).ready(function () {
+            $("#select_session").on("change", function () {
+                selectSessionOnChange();
+            });
+
+        });
+
+        function selectSessionOnChange() {
+            var levelClass = $("#select_session").find('option:selected').attr('value');
+            $('#select_course').val('')
+            $('#select_course option').each(function () {
+
+                var self = $(this);
+                console.log(self);
+                self.removeAttr('selected');
+
+                if (self.hasClass(levelClass) || typeof (levelClass) == "undefined") {
+                    self.show();
+                    self.prop('selected', true);
+
+                } else {
+                    self.hide();
+                }
+
+            });
+            // $("#select_course").val($("#select_course option:visible").val());
+
+        }
+        {% if not inning and course%}
         {% else %}
-            absent++;
+            selectSessionOnChange();
         {% endif %}
-    {% endfor %}
-    console.log(present)
-    $('#student_present').text(present)
-    $('#student_absent').text(absent)
+    </script>
+    <script type="text/javascript">
 
-</script>
+        $(document).ready(function () {
+
+            var table_main = $('#QuizTable').DataTable({
+                responsive: true,
+
+                buttons: [],
+
+            });
+        });
+
+
+    </script>
 {% endblock %}   
