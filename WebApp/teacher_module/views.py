@@ -1997,6 +1997,6 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
         'attend_date': attend_date,
         'session_list': set(session_list),
         'session_course': session_course,
-    }
+        'todays_date': datetime_now,    }
 
     return render(request, 'attendance/course_attendance_list.html', context)

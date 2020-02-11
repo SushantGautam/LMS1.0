@@ -4,15 +4,20 @@
 {% load i18n %}
 {% load getMemberFromPk %}
 
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">Attendance</li>
+
+{% endblock %}
+
 {% block content %}
     <div class="container">
         <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="course-name">
-                    <span>
+                    
                         <span style="font-size:18px"> <b> Course: </b> </span> 
-                    </span>
-                    <span>
+                  
+                    <div>
                     {% if not inning and course %}
     
                         <select id="select_course">
@@ -33,7 +38,7 @@
                             {% endfor %}
                         </select>
                     {% endif %}
-                    </span>
+                    </div>
     
                 </div>
 
@@ -76,24 +81,7 @@
                 <div>
                     <button id="goBtn" class="btn btn-info" style="margin-top:15px">Go</button>
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-12">
-                    <div class="choose-date ">
-                           
-                        <span style="font-size:18px"> <b> Choose Date: </b> </span>
-                   
-                    
-                        <div class="controls ">
-                            <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control" id="id_Assignment_Deadline_edit" value="{{attend_date}}">
-                            </div>
-                   
-                    
-                    
-        
-                </div>
-                    <div>
-                        <button id = "goBtn" class="btn btn-info" style="display:none; margin-top:15px">Go</button>
-                    </div>
-                </div>
+                
                
              
             </div>
@@ -105,18 +93,29 @@
     <div class="col-md-12">
         <hr class="header_hr">
     </div>
-
-    {% if not attendance %}
-        <div class="no-attendance-display">
-            <h3>No Attendance </h3>
-            <p><a class="btn btn-default" href="{% url 'teacher_attendance_list' %}">Take Attendance</a></p>
+    
+    
+    {% if not attendance and not inning  %}
+        <div class="no-attendance-display text-center">
+            <h3 style="font-size:24px; text-transform:uppercase;"> <b>No Attendance!!</b>
+                 </h3>
+            
 
         </div>
     {% else %}
 
-        <div id="attendance-table">
+        <div id=" container attendance-table">
             {% if attendance %}
+            
+           
+            
+
+            
+
+
                 <h3 class="detailListHeader2 ">Attendance List</h3>
+                <a class="btn btn-primary pull-right" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
+                    Edit</a>
 
                 <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
                     <thead class="thead-light bg-primary">
@@ -147,20 +146,26 @@
                     </tbody>
 
                 </table>
-                <a class="btn btn-primary" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
-                    Edit</a>
+            
+             
+                {% if todays_date|date:"Y-m-d" == attend_date %}
+            <p class="text-center"><a class="btn btn-default btn-success" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">Take Attendance</a></p>
+          {% endif %}
 
+
+               
+               
 
 
 
 
             {% else %}
-                <p>{% trans "There are no available quizzes" %}.</p>
+                <p>{% trans "There are no available attendance" %}.</p>
             {% endif %}
         </div>
 
 
-        <div class="total-students">
+        <div class="total-students" style="margin-top: 30px; ">
             <div>
                 <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
                     style="font-size:16px;" id="student_present"></span>
@@ -199,10 +204,6 @@
         var present = 0;
         var absent = 0;
 
-        {#$('#select_session, #id_Assignment_Deadline_edit').on('change', function () {#}
-        {#    $('#goBtn').css('display', 'block')#}
-        {#})
-        #}
 
         {% for x in attendance %}
             {% if x.initial.present %}
