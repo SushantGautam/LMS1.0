@@ -165,10 +165,7 @@ class MemberInfo(AbstractUser):
         return reverse('memberinfo_update', args=(self.pk,))
 
     def __str__(self):
-        if self.first_name and self.last_name:
-            return self.first_name + " " + self.last_name + " (" + self.username + ")"
-        else:
-            return "-- (" + self.username + ")"
+        return self.first_name + " " + self.last_name + " (" + self.username + ")"
 
     # def create_user(self, username, email=None, password=None, **extra_fields):
     #     extra_fields.setdefault('is_staff', True)
