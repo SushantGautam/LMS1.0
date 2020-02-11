@@ -7,7 +7,12 @@
 
 
 
+{% block breadcrumb %}
 
+<li class="breadcrumb-item active" aria-current="page"><a href="{% url  'attendance'   %}">Attendance</a></li>
+<li class="breadcrumb-item active" aria-current="page">Update</li>
+
+{% endblock %}
 
 {% block content %} 
 
@@ -51,8 +56,9 @@
                 </tbody>
 
             </table>
-            <a class="btn btn-primary"  href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
+            <a class="btn btn-primary" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
                 Edit</a>
+
 
             <div class="row">
                 <div class="total-students">
