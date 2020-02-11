@@ -23,6 +23,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
+from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm
 from WebApp.forms import GroupMappingForm, InningGroupForm, \
     InningInfoForm
@@ -244,7 +245,7 @@ class CourseInfoCreateView(CreateView):
         return reverse_lazy('teacher_courseinfo_detail', kwargs={'pk': self.object.pk})
 
 
-class CourseInfoDetailView(DetailView):
+class CourseInfoDetailView(TeacherAuthMxnCls, CourseAuthMxnCls, DetailView):
     model = CourseInfo
     template_name = 'teacher_module/courseinfo_detail.html'
 
