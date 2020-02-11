@@ -229,21 +229,27 @@ urlpatterns += (
     path('groupmapping/update/<int:pk>/', views.GroupMappingUpdateView.as_view(), name='teachers_groupmapping_update'),
     path('inninggroup/detail/<int:pk>/', views.InningGroupDetailView.as_view(), name='teachers_inninggroup_detail'),
     path('inninggroup/update/<int:pk>/', views.InningGroupUpdateView.as_view(), name='teachers_inninggroup_update'),
-     path('inninginfo/update/<int:pk>/', views.InningInfoUpdateView.as_view(), name='teachers_inninginfo_update'),
+    path('inninginfo/update/<int:pk>/', views.InningInfoUpdateView.as_view(), name='teachers_inninginfo_update'),
 
 )
 from django.conf.urls import url
 
 urlpatterns += (
     # urls for Attendance
-    path('attendance/', views.AttendanceListView.as_view(), name='teacher_attendance_list'),
+    path('attendance-home/', views.AttendanceListView.as_view(), name='teacher_attendance_list'),
     path('attendance/create/', views.AttendanceCreateView.as_view(), name='teacher_attendance_create'),
     path('attendance/detail/<int:pk>/', views.AttendanceDetailView.as_view(), name='teacher_attendance_detail'),
     path('attendance/update/<int:pk>/', views.AttendanceUpdateView.as_view(), name='teacher_attendance_update'),
-    
-    url(r'^attendance/class/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$', views.CourseAttendance, name='course_attendance'),
-    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$', views.CourseAttendanceList, name='course_attendance_list'),
-    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/$', views.CourseAttendanceList, name='course_attendance_list_nodate'),
 
+    url(r'^attendance/class/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$',
+        views.CourseAttendance, name='course_attendance'),
+    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$',
+        views.CourseAttendanceList, name='course_attendance_list'),
+    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/$', views.CourseAttendanceList,
+        name='course_attendance_list_nodate'),
+
+    url(r'^attendance/$', views.CourseAttendanceList, name='attendance'),
+    path('courseinfo/detail/<int:course>/attendance/', views.CourseAttendanceList,
+         name='teacher_courseinfo_detail_attendance'),
 
 )
