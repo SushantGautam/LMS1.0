@@ -61,8 +61,8 @@ class PostSerializer(serializers.ModelSerializer):
             'hidden',
             'thread',
             'user',
-            'user_avatar'
-            'user_name'
+            'user_avatar',
+            'user_name',
         )
 
 
