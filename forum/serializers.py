@@ -46,6 +46,9 @@ class ThreadSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    user_avatar = serializers.ReadOnlyField(source='user.Avatar')
+    user_name = serializers.ReadOnlyField(source='user.__str__')
+
     class Meta:
         model = models.Post
         fields = (
@@ -58,6 +61,8 @@ class PostSerializer(serializers.ModelSerializer):
             'hidden',
             'thread',
             'user',
+            'user_avatar'
+            'user_name'
         )
 
 
