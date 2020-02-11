@@ -23,9 +23,9 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, GroupMappingForm, InningGroupForm, \
-    InningInfoForm
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm
+from WebApp.forms import GroupMappingForm, InningGroupForm, \
+    InningInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
     AssignAnswerInfo, MemberInfo, GroupMapping, InningManager, Attendance
@@ -1783,7 +1783,6 @@ class InningGroupUpdateView(UpdateView):
     form_class = InningGroupForm
     template_name = 'teacher_module/inning_group_update.html'
 
-
     def form_valid(self, form):
         messages.add_message(self.request, messages.SUCCESS, 'Course Teacher Allocation Updated.')
         return redirect('teachers_inninggroup_detail', self.kwargs.get('pk'))
@@ -1846,25 +1845,27 @@ class AttendanceUpdateView(UpdateView):
     form_class = AttendanceForm
     template_name = 'teacher_module/attendance/attendance_form.html'
 
+
 from django.forms.models import modelformset_factory
 from WebApp.forms import AttendanceFormSet
 
+
 def CourseAttendance(request, inningpk, course, attend_date):
     studentattendancejson = []
-    if not CourseInfo.objects.filter(pk = course).exists():
+    if not CourseInfo.objects.filter(pk=course).exists():
         messages.error(request,
-                           "Course Does not exist.")
+                       "Course Does not exist.")
     # if datetime.strptime(attend_date, "%Y-%M-%d") > datetime.today().date():
     #     messages.error(request,
     #                        "You cannot take attendance of future date.")
     #     return HttpResponse('hello')
 
     if request.method == "POST":
-        modelformset = AttendanceFormSet(request.POST or None, queryset = Attendance.objects.all())
+        modelformset = AttendanceFormSet(request.POST or None, queryset=Attendance.objects.all())
 
         if modelformset.is_valid():
             for cn, i in enumerate(modelformset.cleaned_data):
-                print( i['id'])
+                print(i['id'])
                 if i['id'] is not None:
                     print(i['present'])
                     a = Attendance.objects.get(pk=i['id'].pk)
@@ -1875,17 +1876,18 @@ def CourseAttendance(request, inningpk, course, attend_date):
                 pass
             messages.success(request, 'Submitted successfully')
     else:
-        if InningInfo.objects.filter(pk = inningpk).exists():
-            innings = InningInfo.objects.get(pk = inningpk)
-            if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
-                list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
+        if InningInfo.objects.filter(pk=inningpk).exists():
+            innings = InningInfo.objects.get(pk=inningpk)
+            if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
 
             AttendanceFormSetx = modelformset_factory(Attendance,
-            fields= ['present', 'member_code', 'course', 'attendance_date', 'id'],
-            extra=len(list_of_students))
+                                                      fields=['present', 'member_code', 'course', 'attendance_date',
+                                                              'id'],
+                                                      extra=len(list_of_students))
 
             for x in list_of_students:
-                a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
+                a = Attendance.objects.filter(member_code__pk=x.pk, attendance_date=attend_date, course__pk=course)
                 if a.exists():
                     print(a[0].pk)
                     studentattendancejson.append({
@@ -1893,7 +1895,8 @@ def CourseAttendance(request, inningpk, course, attend_date):
                         'present': a[0].present,
                         'member_code': a[0].member_code,
                         'course': a[0].course,
-                        'id': a[0].pk
+                        'id': a[0].pk,
+                        'updated': a[0].updated,
                     })
                 else:
                     studentattendancejson.append({
@@ -1903,35 +1906,39 @@ def CourseAttendance(request, inningpk, course, attend_date):
                         'course': course,
                     })
             formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
-                                initial=studentattendancejson)
+                                         initial=studentattendancejson)
             context = {
                 'attendance': formset,
-                'course': CourseInfo.objects.get(pk = course),
-                'inning': InningInfo.objects.get(pk = inningpk),
+                'course': CourseInfo.objects.get(pk=course),
+                'inning': InningInfo.objects.get(pk=inningpk),
                 'attend_date': attend_date,
             }
             return render(request, 'teacher_module/attendance/course_attendance_form.html', context)
 
         else:
             messages.error(request,
-                            "Inning does not exist.")
+                           "Inning does not exist.")
     return redirect('course_attendance_list', inningpk, course, attend_date)
 
-def CourseAttendanceList(request, inningpk, course, attend_date = None):
+
+def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
+    formset = None
+    session_list = []
+    session_course = []
     if attend_date == None:
         attend_date = str(datetime.today().date())
     studentattendancejson = []
-    if InningInfo.objects.filter(pk = inningpk).exists():
-        innings = InningInfo.objects.get(pk = inningpk)
-        if MemberInfo.objects.filter(pk__in = innings.Groups.Students.all()).exists():
-            list_of_students = MemberInfo.objects.filter(pk__in = innings.Groups.Students.all())
+    if InningInfo.objects.filter(pk=inningpk).exists():
+        innings = InningInfo.objects.get(pk=inningpk)
+        if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+            list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
 
         AttendanceFormSetx = modelformset_factory(Attendance,
-         fields= ['present', 'member_code', 'course', 'attendance_date', 'id'],
-         extra=len(list_of_students))
+                                                  fields=['present', 'member_code', 'course', 'attendance_date', 'id'],
+                                                  extra=len(list_of_students))
 
         for x in list_of_students:
-            a = Attendance.objects.filter(member_code__pk = x.pk, attendance_date = attend_date, course__pk = course)
+            a = Attendance.objects.filter(member_code__pk=x.pk, attendance_date=attend_date, course__pk=course)
             if a.exists():
                 studentattendancejson.append({
                     'attendance_date': a[0].attendance_date,
@@ -1951,39 +1958,44 @@ def CourseAttendanceList(request, inningpk, course, attend_date = None):
                     'updated': None
                 })
         formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
-                            initial=studentattendancejson)
+                                     initial=studentattendancejson)
 
-        # a = InningGroup.objects.filter(Teacher_Code = u, Course_Code__pk = 1)
+    # session_list = InningInfo.objects.filter(Course_Group__in = a)
+    ig = InningGroup.objects.filter(Teacher_Code=request.user)
+    # session_list = InningInfo.objects.filter(Course_Group__in = ig)
 
-        # session_list = InningInfo.objects.filter(Course_Group__in = a)
-        ig = InningGroup.objects.filter(Teacher_Code = request.user)
-        print(ig)
-        # session_list = InningInfo.objects.filter(Course_Group__in = ig)
-        session_course = []
+    if not inningpk and course:
+        c = CourseInfo.objects.get(pk=course)
+        if c:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                    Course_Group__Course_Code__pk=c.pk, Use_Flag=True,
+                                                    End_Date__gt=datetime_now).distinct()
+            session_list.append(inning_info)
+
+    else:
         for i in ig:
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk = request.user.pk, Inning_Name__pk = i.pk, Use_Flag = True, End_Date__gt=datetime_now).distinct()
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                    Inning_Name__pk=i.pk, Use_Flag=True,
+                                                    End_Date__gt=datetime_now).distinct()
             if inning_info.exists():
                 session_course.append([
                     {
-                        'course' : i.Course_Code,
-                        'session' : inning_info, 
+                        'course': i.Course_Code,
+                        'session': inning_info,
                     },
                 ])
-        print(session_course)
 
-        # session_list = InningInfo.objects.filter(Course_Group__Teacher_Code__pk = request.user.pk, Use_Flag = True, End_Date__gt=datetime_now).distinct()
-        session_list = []
         for i in session_course:
             for m in i:
                 session_list.append(m['session'])
-        print(session_list)
-        context = {
-            'attendance': formset,
-            'course': CourseInfo.objects.get(pk = course),
-            'inning': InningInfo.objects.get(pk = inningpk),
-            'attend_date': attend_date,
-            'session_list': session_list,
-            'session_course': session_course,
-        }
-    return render(request, 'attendance/course_attendance_list.html', context)
 
+    context = {
+        'attendance': formset,
+        'course': CourseInfo.objects.get(pk=course) if course else None,
+        'inning': InningInfo.objects.get(pk=inningpk) if inningpk else None,
+        'attend_date': attend_date,
+        'session_list': set(session_list),
+        'session_course': session_course,
+    }
+
+    return render(request, 'attendance/course_attendance_list.html', context)
