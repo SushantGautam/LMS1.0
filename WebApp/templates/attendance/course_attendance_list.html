@@ -5,41 +5,42 @@
 {% load getMemberFromPk %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Attendance</li>
+    <li class="breadcrumb-item active" aria-current="page">Attendance</li>
 
 {% endblock %}
 
 {% block content %}
+    {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
         <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="course-name">
-                    
-                        <span style="font-size:18px"> <b> Course: </b> </span> 
-                  
+
+                    <span style="font-size:18px"> <b> Course: </b> </span>
+
                     <div>
-                    {% if not inning and course %}
-    
-                        <select id="select_course">
+                        {% if not inning and course %}
+
+                            <select id="select_course">
                                 <option value="{{ course.pk }}" class="{{ course.pk }}"
                                         selected
                                 > {{ course }}</option>
                             </select>
-                    {% else %}
-                        <select id="select_course">
-                            {% for s in session_course %}
-                                {% for eac in s.0.session %}
-                                    <option value="{{ s.0.course.pk }}" class="{{ eac.pk }}"
-                                            {% if s.0.course.pk == course.pk %}
-                                            selected
-                                            {% endif %}
-                                    > {{ s.0.course }}</option>
+                        {% else %}
+                            <select id="select_course">
+                                {% for s in session_course %}
+                                    {% for eac in s.0.session %}
+                                        <option value="{{ s.0.course.pk }}" class="{{ eac.pk }}"
+                                                {% if s.0.course.pk == course.pk %}
+                                                selected
+                                                {% endif %}
+                                        > {{ s.0.course }}</option>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                        </select>
-                    {% endif %}
+                            </select>
+                        {% endif %}
                     </div>
-    
+
                 </div>
 
             </div>
@@ -49,7 +50,7 @@
                     <select id="select_session">
                         {% for x in session_list %}
                             {% for session in x %}
-    
+
                                 <option value="{{ session.pk }}"
                                         {% if session.pk == inning.pk %}
                                         selected
@@ -57,64 +58,63 @@
                                 > {{ session }}</option>
                             {% endfor %}
                         {% endfor %}
-    
+
                     </select>
                     {% comment %} <span>{{inning}}</span> {% endcomment %}
-    
+
                 </div>
             </div>
-           
-            
+
+
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="choose-date ">
-    
+
                     <span style="font-size:18px"> <b> Choose Date: </b> </span>
-    
-    
+
+
                     <div class="controls ">
                         <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control"
                                id="id_Assignment_Deadline_edit" value="{{ attend_date }}">
                     </div>
-    
-    
+
+
                 </div>
                 <div>
                     <button id="goBtn" class="btn btn-info" style="margin-top:15px">Go</button>
                 </div>
-                
-               
-             
+
+
             </div>
         </div>
-       
-        
+
 
     </div>
     <div class="col-md-12">
         <hr class="header_hr">
     </div>
-    
-    
-    {% if not attendance and not inning  %}
+
+
+    {% if not attendance and not inning %}
         <div class="no-attendance-display text-center">
-            <h3 style="font-size:24px; text-transform:uppercase;"> <b>No Attendance!!</b>
-                 </h3>
-            
+            <h3 style="font-size:24px; text-transform:uppercase;"><b>No Attendance!!</b>
+            </h3>
+
 
         </div>
     {% else %}
 
         <div id=" container attendance-table">
             {% if attendance %}
-            
-           
-            
 
-            
+
+
+
+
 
 
                 <h3 class="detailListHeader2 ">Attendance List</h3>
-                <a class="btn btn-primary pull-right" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
+                <a class="btn btn-primary pull-right"
+                   href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
                     Edit</a>
 
                 <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
@@ -146,15 +146,17 @@
                     </tbody>
 
                 </table>
-            
-             
+
+
                 {% if todays_date|date:"Y-m-d" == attend_date %}
-            <p class="text-center"><a class="btn btn-default btn-success" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">Take Attendance</a></p>
-          {% endif %}
+                    <p class="text-center"><a class="btn btn-default btn-success"
+                                              href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">Take
+                        Attendance</a></p>
+                {% endif %}
 
 
-               
-               
+
+
 
 
 
