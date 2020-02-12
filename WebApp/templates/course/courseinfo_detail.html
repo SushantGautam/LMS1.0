@@ -91,6 +91,11 @@
                             <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
                             <input type="hidden" value="{{ object.pk }}" name="course_id">
                         </form>
+                    {% else %}
+                    <span style="float: right;">
+                        <a  href='attendance/'
+                           style="color: green; cursor:pointer"><i class="fa fa-group-o"></i> <b> ATTENDANCE </b></a></a>
+                    </span>
                     {% endif %}
 
                     </div>
