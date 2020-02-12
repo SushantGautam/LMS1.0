@@ -378,6 +378,7 @@ class InningManagerForm(forms.ModelForm):
         self.fields['memberinfoobj'].queryset = MemberInfo.objects.filter(Use_Flag=True,
                                                                           Center_Code=self.request.user.Center_Code)
 
+
 class AttendanceForm(forms.ModelForm):
     attendance_date = forms.DateTimeField(
         input_formats=['%Y-%m-%dT%H:%M'],
@@ -392,8 +393,28 @@ class AttendanceForm(forms.ModelForm):
         model = Attendance
         fields = ['present', 'member_code', 'course', 'attendance_date']
 
+
 from django.forms.models import modelformset_factory
 
-AttendanceFormSet = modelformset_factory(Attendance,
-    fields =  ['present', 'member_code', 'course', 'attendance_date','id']
-)
+AttendanceFormSetForm = modelformset_factory(Attendance,
+                                             fields=['present', 'member_code', 'course', 'attendance_date', 'id']
+                                             )
+
+
+class AttendanceFormSetFormT(forms.ModelForm):
+    # attendance_date = forms.DateTimeField(
+    #     input_formats=['%Y-%m-%dT%H:%M'],
+    #     widget=forms.DateTimeInput(
+    #         attrs={
+    #             'type': 'datetime-local',
+    #             'class': 'form-control'},
+    #         format='%Y-%m-%d')
+    # )
+    # present = forms.BooleanField(label='')
+
+    class Meta:
+        model = Attendance
+        fields = ['present', 'member_code', 'course', 'attendance_date']
+        widgets = {'member_code': forms.HiddenInput(),
+                   'course': forms.HiddenInput(),
+                   'attendance_date': forms.HiddenInput(), }
