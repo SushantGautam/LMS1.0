@@ -30,7 +30,7 @@
                     <th>{% trans "Roll No." %}</th>
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Attendance" %}
-                        <span style="float: right;">select all <input type="checkbox" class="selectAll" name="selectAll"
+                        <span style="float: right;">Select All <input type="checkbox" id="select_all"
                                                                       value="all"></span>
                     </th>
 
@@ -103,29 +103,34 @@
         $(document).ready(function () {
 
             var table_main = $('#QuizTable').DataTable({
-                responsive: true,
-                select: true,
+                    responsive: true,
+                    paging: false,
 
-                buttons: [
-                    'selectAll',
-                    'selectNone'
-                ],
-
-            });
+                })
+            ;
         });
 
 
     </script>
+
+
+
     <script>
-        $(document).ready(function () {
-            var DT1 = $('#').DataTable();
-            $("#QuizTable").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    DT1.rows().select();
-                } else {
-                    DT1.rows().deselect();
-                }
-            });
+        //select all checkboxes
+        $("#select_all").change(function () {  //"select all" change
+            $("[id^=id_form-]").prop('checked', $(this).prop("checked")); //change all "[id^=id_form-]" checked status
+        });
+
+        //"[id^=id_form-]" change
+        $('[id^=id_form-]').change(function () {
+            //uncheck "select all", if one of the listed checkbox item is unchecked
+            if (false == $(this).prop("checked")) { //if this item is unchecked
+                $("#select_all").prop('checked', false); //change "select all" checked status to false
+            }
+            //check "select all" if all checkbox items are checked
+            if ($('[id^=id_form-]:checked').length == $('[id^=id_form-]').length) {
+                $("#select_all").prop('checked', true);
+            }
         });
     </script>
 {% endblock %}

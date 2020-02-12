@@ -418,3 +418,5 @@ class AttendanceFormSetFormT(forms.ModelForm):
         widgets = {'member_code': forms.HiddenInput(),
                    'course': forms.HiddenInput(),
                    'attendance_date': forms.HiddenInput(), }
+        labels = {
+            "present": "", }

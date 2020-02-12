@@ -1866,13 +1866,13 @@ def CourseAttendance(request, inningpk, course, attend_date):
         modelformset = AttendanceFormSetForm(request.POST or None, queryset=Attendance.objects.all())
 
         for cn, i in enumerate(modelformset.cleaned_data):
-            if not isinstance(i['id'], int) and i['id']:
+            if not isinstance(i['id'], int) and len(i) and i['id'] if len(i) else 0:
                 a = Attendance.objects.get(pk=i['id'].pk)
                 a.present = i['present']
                 a.save()
             else:
-                print(modelformset.forms[cn])
-                modelformset.forms[cn].save()
+                k = modelformset.forms[cn]
+                k.save()
         pass
         messages.success(request, 'Submitted successfully')
 
