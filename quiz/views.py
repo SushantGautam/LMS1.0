@@ -1051,7 +1051,7 @@ class QuizSAQChoosePrevious(UpdateView):
 
 
 def FilterMarkingForTeachers(request, Quiz_Id):
-    filtered = Sitting.objects.filter(user__Center_Code=request.user.Center_Code, quiz=Quiz_Id)
+    filtered = Sitting.objects.filter(user__Center_Code=request.user.Center_Code, quiz=Quiz_Id, complete=True)
     quiz = Quiz.objects.get(id=Quiz_Id)
 
     return render(request, 'quiz/sitting_filter.html', {'sitting_list': filtered, 'quiz': quiz})
