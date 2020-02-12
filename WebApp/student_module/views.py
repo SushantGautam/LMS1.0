@@ -46,6 +46,7 @@ from quiz.views import QuizUserProgressView, Sitting, Progress
 
 
 def start(request):
+    global courses, activeassignments, sessions, batches
     if request.user.Is_Student:
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []

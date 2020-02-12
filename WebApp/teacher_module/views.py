@@ -1976,7 +1976,7 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
     else:
         for i in ig:
             inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
-                                                    Inning_Name__pk=i.pk, Use_Flag=True,
+                                                    Course_group__pk=i.pk, Use_Flag=True,
                                                     End_Date__gt=datetime_now).distinct()
             if inning_info.exists():
                 session_course.append([
