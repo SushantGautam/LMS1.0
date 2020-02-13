@@ -62,7 +62,7 @@
                     </tbody>
 
                 </table>
-                <button class="btn btn-success" type="submit" href="#">
+                <button class="btn btn-success formsubmitBtn" type="submit" href="#">
                     Submit
                 </button>
             </form>
@@ -100,21 +100,25 @@
 {% endblock %}
 {% block customjss %}
     <script type="text/javascript">
-
+        var submitFlag = false;
         $(document).ready(function () {
 
             var table_main = $('#QuizTable').DataTable({
-                    responsive: true,
-                    paging: false,
+                responsive: true,
+                paging: true,
 
-                })
-            ;
+            });
+            $('.formsubmitBtn').on('click', function (e) {
+                if (submitFlag === false) {
+                    e.preventDefault()
+                    submitFlag = true;
+                    table_main.settings()[0]._iDisplayLength = table_main.settings()[0].fnRecordsTotal();
+                    table_main.draw();
+                    $('.formsubmitBtn').click();
+                }
+            });
         });
-
-
     </script>
-
-
 
     <script>
         //select all checkboxes
