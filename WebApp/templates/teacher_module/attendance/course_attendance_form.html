@@ -114,8 +114,9 @@
                     e.preventDefault()
                     submitFlag = true;
                     table_main.destroy()
-                    {#table_main.settings()[0]._iDisplayLength = table_main.settings()[0].fnRecordsTotal();#}
-                    {#table_main.draw();#}
+
+                    // table_main.settings()[0]._iDisplayLength = table_main.settings()[0].fnRecordsTotal();
+                    // table_main.draw();
                     $('.formsubmitBtn').click();
                 }
             });
