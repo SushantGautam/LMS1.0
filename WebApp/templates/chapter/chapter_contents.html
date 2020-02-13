@@ -1633,9 +1633,9 @@
                 // $('.logoutBtn, .apkdownloadBtn, .profileBtn').remove();
                 $('#sidebar-buttom').remove()
 
-                $(document).on('click touchstart touchmove touchend', function () {
+                $(document).on('click tap taphold swipe touchmove touchend', function () {
                     toggleFullScreen();
-                    $(document).unbind('click touchstart touchmove touchend')
+                    $(document).unbind('click tap taphold swipe touchstart touchmove touchend')
                 });
             }
         });
