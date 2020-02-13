@@ -1629,14 +1629,23 @@
         var params = new URLSearchParams(location.search);
         $(document).ready(function () {
 
-            if (params.get('mobileViewer')) {
+            if (params.get('mobileViewer') == 1) {
                 // $('.logoutBtn, .apkdownloadBtn, .profileBtn').remove();
                 $('#sidebar-buttom').remove()
+
+                $(document).on('click touchstart touchmove touchend', function () {
+                    toggleFullScreen();
+                    $(document).unbind('click touchstart touchmove touchend')
+                });
             }
         });
-        params.get('mobileViewer')
+        //params.get('mobileViewer')
+
+
     </script>
 {% endif %}
+
+
 
 
 
