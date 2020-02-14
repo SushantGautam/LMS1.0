@@ -62,7 +62,7 @@
                     </tbody>
 
                 </table>
-                <button class="btn btn-success" type="submit" href="#">
+                <button class="btn btn-success formsubmitBtn" type="submit" href="#">
                     Submit
                 </button>
             </form>
@@ -100,38 +100,35 @@
 {% endblock %}
 {% block customjss %}
     <script type="text/javascript">
-
+        var submitFlag = false;
         $(document).ready(function () {
 
             var table_main = $('#QuizTable').DataTable({
-                    responsive: true,
-                    paging: false,
+                stateSave: true,
+                responsive: true,
+                paging: true,
 
-                })
-            ;
+            });
+            $('.formsubmitBtn').on('click', function (e) {
+                if (submitFlag === false) {
+                    e.preventDefault()
+                    submitFlag = true;
+                    table_main.destroy()
+
+                    // table_main.settings()[0]._iDisplayLength = table_main.settings()[0].fnRecordsTotal();
+                    // table_main.draw();
+                    $('.formsubmitBtn').click();
+                }
+            });
+            $("#select_all").change(function (e) {  //"select all" change
+                var cells = table_main.column(2).cells().nodes();
+                $(cells).find(':checkbox').prop('checked', $(this).is(':checked'));
+            });
         });
-
-
     </script>
 
-
-
     <script>
-        //select all checkboxes
-        $("#select_all").change(function () {  //"select all" change
-            $("[id^=id_form-]").prop('checked', $(this).prop("checked")); //change all "[id^=id_form-]" checked status
-        });
 
-        //"[id^=id_form-]" change
-        $('[id^=id_form-]').change(function () {
-            //uncheck "select all", if one of the listed checkbox item is unchecked
-            if (false == $(this).prop("checked")) { //if this item is unchecked
-                $("#select_all").prop('checked', false); //change "select all" checked status to false
-            }
-            //check "select all" if all checkbox items are checked
-            if ($('[id^=id_form-]:checked').length == $('[id^=id_form-]').length) {
-                $("#select_all").prop('checked', true);
-            }
-        });
+
     </script>
 {% endblock %}
