@@ -1131,6 +1131,10 @@
 
 
     function changePage(page_number) {
+        {% if not connection_offline %}
+            chapterProgressStopFunction()
+            chapterProgressFunction()
+        {% endif %}
         if (page_number >= parseInt($('#totalpages').text())) {
             $('#next-btn').css('visibility', 'hidden')
         } else {
@@ -1631,7 +1635,7 @@
 
             if (params.get('mobileViewer') == 1) {
                 // $('.logoutBtn, .apkdownloadBtn, .profileBtn').remove();
-                $('#sidebar-buttom').remove()
+                $('#sidebar-buttom, #hamburg-nav, .closebtn, #reloadcontent').remove()
 
                 $(document).on('click tap taphold swipe touchmove touchend', function () {
                     toggleFullScreen();
@@ -1640,9 +1644,38 @@
             }
         });
         //params.get('mobileViewer')
-
-
     </script>
+
+    // Chapter Progress save feature
+    {% if not connection_offline %}
+    <script>
+        var chapterProgress;
+        var currentPageUpdateOnServer = 0;
+
+        function chapterProgressFunction() {
+            if (currentPageUpdateOnServer === 0 || window.currentPage > currentPageUpdateOnServer) {
+                chapterProgress = setTimeout(function () {
+                    $.ajax({
+                        url: "{% url 'pageupdateajax' course.pk chapter.pk %}",
+                        type: "post",
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                            'currentpage': window.currentpage,
+                            'totalpages': data.numberofpages,
+                        },
+                        success: function (data) {
+                            window.currentPageUpdateOnServer = parseInt(data)
+                        },
+                    })
+                }, 1000);
+            }
+        }
+
+        function chapterProgressStopFunction() {
+            clearTimeout(chapterProgress);
+        }
+    </script>
+    {% endif %}
 {% endif %}
 
 

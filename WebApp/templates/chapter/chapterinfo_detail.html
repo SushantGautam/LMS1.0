@@ -71,6 +71,11 @@
     {% else %}
         {{ object.get_update_url }}
     {% endif %}"><b><u>Edit Chapter</u></b></a>
+                {% if 'teachers' in request.path %}
+                    <span style="color: green; cursor:pointer"><a
+                            href="{% url 'chapter_student_progress' object.Course_Code.id object.pk %}"> <i
+                            class="fa fa-tasks"></i> View Progress</a> </span>
+                {% endif %}
                 <span>
                     <a id="{{ object.pk }}" class="chapter-confirm-delete"
                        style="color: rgb(255, 0, 0);cursor:pointer;float: right;margin-right: 60px;">Delete</a>
@@ -94,7 +99,7 @@
 
                 <tr>
                     <td>Status</td>
-                    <td>{% if object.Use_Flag is True %}<span style = "color:green"> <b>Active</b>
+                    <td>{% if object.Use_Flag is True %}<span style="color:green"> <b>Active</b>
                         </span>{% elif object.Use_Flag is False %}
                         <span class="text-danger"><b>Inactive</b></span>{% endif %}</td>
                 </tr>
@@ -254,7 +259,7 @@
     <div class="col-md-12">
         <hr class="header_hr">
         {% if object.Use_Flag is False %}
-            <p style = "color:red">Note: Chapter is inactive, therefore assignments are not assigned to students.</p>
+            <p style="color:red">Note: Chapter is inactive, therefore assignments are not assigned to students.</p>
         {% endif %}
         {% for o in assignments %}
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
@@ -262,10 +267,10 @@
                     <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
 
                         {% if o.Use_Flag == False %}
-                            <span class="text-danger" ><b>[Inactive]</b></span>
-                            
-                            
-                            {% endif %}
+                            <span class="text-danger"><b>[Inactive]</b></span>
+
+
+                        {% endif %}
                     </h5>
                     <h5>
                         <b style="color: #000000">{{ o.Assignment_Topic }}</b>
@@ -378,19 +383,18 @@
     </script>
     <script>
         let params = new URLSearchParams(location.search);
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-       
-        if (params.get('ifquiz')){
-            $('.left_col, .top_nav , .breadcrumb  , .detailListHeader , #buttons , #add-newassignment-btn , .header_hr , #edit-delete , #footerText').remove(); 
-            $('#pre_test_popup') .click();
-           
-        }
-        params.get('ifquiz')
-         });
-    
-    
-    
+
+            if (params.get('ifquiz')) {
+                $('.left_col, .top_nav , .breadcrumb  , .detailListHeader , #buttons , #add-newassignment-btn , .header_hr , #edit-delete , #footerText').remove();
+                $('#pre_test_popup').click();
+
+            }
+            params.get('ifquiz')
+        });
+
+
     </script>
 
     <script>

@@ -1,11 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
-from django.urls import path
 
 from WebApp.student_module import views
 from WebApp.views import ContentsView
-from survey import views as surveyViews
 from quiz import views as quizViews
+from survey import views as surveyViews
 
 #
 # urlpatterns = (
@@ -39,8 +38,8 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for CourseInfo
-#     path('courseinfo/', views.CourseInfoListView.as_view(),
-#          name='student_courseinfo_list'),
+    #     path('courseinfo/', views.CourseInfoListView.as_view(),
+    #          name='student_courseinfo_list'),
     path('courseinfo/mycourses', views.MyCoursesListView.as_view(),
          name='student_mycourses_list'),
     path('courseinfo/detail/forum/<int:course>',
@@ -155,4 +154,9 @@ urlpatterns += (
 urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          ContentsView.as_view(), name='student_contentviewer'),
+)
+
+urlpatterns += (
+    path('pageupdateajax/<int:course>/<int:chapter>/',
+         views.PageUpdateAjax, name='pageupdateajax'),
 )

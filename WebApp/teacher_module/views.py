@@ -1,4 +1,5 @@
 # from django.core.checks import messages
+import os
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -2007,3 +2008,89 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
     }
 
     return render(request, 'attendance/course_attendance_list.html', context)
+
+
+# chapter progress of students function
+def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=None, totalPage=None):
+    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
+    try:
+        os.makedirs(path)
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    if os.path.isfile(student_data_file):
+        student_file = open(student_data_file, "r")
+        if student_file.mode == 'r':
+            x = student_file.read()
+            x = x.split(',')
+            LastPageNumberFromFileSystem, totalPage = x[0], x[1]
+            student_file.close()
+        if currentPageNumber is None:
+            return LastPageNumberFromFileSystem, totalPage
+        if int(currentPageNumber) > int(LastPageNumberFromFileSystem):
+            student_file = open(student_data_file, "w+")
+            if currentPageNumber and totalPage:
+                student_file.write(currentPageNumber + "," + totalPage)
+                student_file.close()
+        else:
+            student_file = open(student_data_file, "r")
+            if student_file.mode == 'r':
+                x = student_file.read()
+                x = x.split(',')
+                LastPageNumberFromFileSystem, totalPage = x[0], x[1]
+                student_file.close()
+    else:
+        student_file = open(student_data_file, "w+")
+        if currentPageNumber and totalPage:
+            student_file.write(currentPageNumber + "," + totalPage)
+        else:
+            student_file.write("0,0")
+
+        student_file.close()
+        # create student data file with data (currentPageNumber, totalPage)
+    return currentPageNumber, totalPage
+
+
+def chapterStudentProgress(request, course, pk, inningpk=None):
+    session_list = []
+    studentjson = []
+
+    course = get_object_or_404(CourseInfo, pk=course)
+    chapter = get_object_or_404(ChapterInfo, pk=pk)
+
+    if course and chapter:
+        inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                Course_Group__Course_Code__pk=course.pk, Use_Flag=True,
+                                                End_Date__gt=datetime_now).distinct()
+        session_list.append(inning_info)
+
+        if inning_info.count() > 0:
+            if inningpk:
+                if inning_info.filter(pk=inningpk).exists():
+                    innings = inning_info.get(pk=inningpk)
+                else:
+                    innings = inning_info.all().first()
+            else:
+                innings = inning_info.all().first()
+
+            if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
+
+            for x in list_of_students:
+                currentPage, totalpage = maintainLastPageofStudent(str(course.pk), str(chapter.pk), str(x.id))
+                studentjson.append({
+                    'member_code': x,
+                    'currentpage': currentPage,
+                    'totalpage': totalpage,
+                    'progresspercent': int(currentPage) * 100 / int(totalpage) if int(totalpage) else 1
+                })
+
+    context = {
+        'course': course,
+        'chapter': chapter,
+        'inning': InningInfo.objects.get(pk=inningpk) if inningpk else None,
+        'session_list': session_list,
+        'studentjson': studentjson,
+    }
+
+    return render(request, 'teacher_module/chapterProgress.html', context)
