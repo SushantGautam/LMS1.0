@@ -25,7 +25,7 @@ Course
     <div class="container" id="divID">
         {% include 'WebApp/theme/alerts.html' %}
         {% for courses in response %}
-        <div class="col-md-3 col-sm-6 col-xs-12" id="listCard">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="listCard">
             <div class="gridContentsList">
                 <div class="card-header">
                     <a href="{{ courses.Course_Code.student_get_absolute_url }}">
@@ -44,12 +44,17 @@ Course
 
 
 
-          {% if courses.Course_Code.get_teachers_of_this_course%}
-          Teacher(s): &nbsp
-           {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
-                 -{{ eachTeacher }}
-                        {% endfor%}
-                        {% endif %}
+          {% if courses.Course_Code.get_teachers_of_this_course%} 
+          <p style="height:50px ; padding: 10px; overflow:auto" > 
+            Teacher(s): &nbsp
+            {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
+                  -{{ eachTeacher }}
+            {% endfor%}
+
+          </p>
+
+         
+        {% endif %}
 
 
                         

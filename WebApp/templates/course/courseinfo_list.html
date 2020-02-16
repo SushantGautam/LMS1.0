@@ -64,9 +64,10 @@
   <div class="container" id="divID">
     {% include 'WebApp/theme/alerts.html' %}
     {% for object in object_list %}
-    <div class="col-xl-2 col-md-3 col-sm-6 col-xs-12" id="listCard">
+    <div class=" col-md-4 col-sm-6 col-xs-12" id="listCard">
       <div class="gridContentsList">
         <div class="card-header">
+          
           <a href="{% if '/students' in request.path %}
                                 {{ object.student_get_absolute_url }}
                             {% elif '/teachers' in request.path %}
@@ -88,17 +89,22 @@
                                         {{ object.student_get_absolute_url }}
                                       {% else %}
                                         {{ object.get_absolute_url }}
-                                      {% endif %}">{{ object.Course_Name }}</a></strong>
+                                      {% endif %}">{{ object.Course_Name }} </a></strong>
             {% if object.Use_Flag == False %}<i
               style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
           </h2>
 
           {% if object.get_teachers_of_this_course%}
-          Teacher(s): &nbsp
-           {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp
-                 -{{ eachTeacher }}
-                        {% endfor%}
-                        {% endif %}
+             <p style="max-height: 40px;"> 
+              Teacher(s): &nbsp
+              {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp
+                    -{{ eachTeacher }}
+                           {% endfor%}
+
+             </p>
+
+      
+          {% endif %}
 
           <hr />
           <h5 class="lectureDescription" style="padding-bottom: 5px;">
