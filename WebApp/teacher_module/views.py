@@ -24,7 +24,8 @@ from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
 from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm, AttendanceFormSetForm, \
+    AttendanceFormSetFormT
 from WebApp.forms import GroupMappingForm, InningGroupForm, \
     InningInfoForm
 from WebApp.forms import UserUpdateForm
@@ -1848,10 +1849,10 @@ class AttendanceUpdateView(UpdateView):
 
 
 from django.forms.models import modelformset_factory
-from WebApp.forms import AttendanceFormSet
 
 
 def CourseAttendance(request, inningpk, course, attend_date):
+    global list_of_students
     studentattendancejson = []
     if not CourseInfo.objects.filter(pk=course).exists():
         messages.error(request,
@@ -1862,29 +1863,27 @@ def CourseAttendance(request, inningpk, course, attend_date):
     #     return HttpResponse('hello')
 
     if request.method == "POST":
-        modelformset = AttendanceFormSet(request.POST or None, queryset=Attendance.objects.all())
+        modelformset = AttendanceFormSetForm(request.POST or None, queryset=Attendance.objects.all())
 
-        if modelformset.is_valid():
-            for cn, i in enumerate(modelformset.cleaned_data):
-                print(i['id'])
-                if i['id'] is not None:
-                    print(i['present'])
-                    a = Attendance.objects.get(pk=i['id'].pk)
-                    a.present = i['present']
-                    a.save()
-                else:
-                    modelformset.forms[cn].save()
-                pass
-            messages.success(request, 'Submitted successfully')
+        for cn, i in enumerate(modelformset.cleaned_data):
+            if not isinstance(i['id'], int) and len(i) and i['id'] if len(i) else 0:
+                a = Attendance.objects.get(pk=i['id'].pk)
+                a.present = i['present']
+                a.save()
+            else:
+                k = modelformset.forms[cn]
+                k.save()
+        pass
+        messages.success(request, 'Submitted successfully')
+
     else:
         if InningInfo.objects.filter(pk=inningpk).exists():
             innings = InningInfo.objects.get(pk=inningpk)
             if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
                 list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
 
-            AttendanceFormSetx = modelformset_factory(Attendance,
-                                                      fields=['present', 'member_code', 'course', 'attendance_date',
-                                                              'id'],
+            AttendanceFormSetx = modelformset_factory(Attendance, form=AttendanceFormSetFormT,
+
                                                       extra=len(list_of_students))
 
             for x in list_of_students:
@@ -1903,7 +1902,7 @@ def CourseAttendance(request, inningpk, course, attend_date):
                     studentattendancejson.append({
                         'attendance_date': attend_date,
                         'present': False,
-                        'member_code': x.pk,
+                        'member_code': x,
                         'course': course,
                     })
             formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
@@ -1976,7 +1975,7 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
     else:
         for i in ig:
             inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
-                                                    Inning_Name__pk=i.pk, Use_Flag=True,
+                                                    Course_Group__pk=i.pk, Use_Flag=True,
                                                     End_Date__gt=datetime_now).distinct()
             if inning_info.exists():
                 session_course.append([
@@ -1985,18 +1984,26 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
                         'session': inning_info,
                     },
                 ])
-
+                # for i in inning_info:
+                #     if len(session_list) > 0:
+                #         for m in session_list:
+                #             for n in m:
+                #                 if not i.pk == n.pk:
+                #                     session_list.append(inning_info)
+                #     else:
+                #         session_list.append(inning_info)
         for i in session_course:
             for m in i:
-                session_list.append(m['session'])
-
+                session_list += (list(m['session'].values_list('pk', flat=True)))
+        session_list = [InningInfo.objects.filter(pk__in=set(session_list))]
     context = {
         'attendance': formset,
         'course': CourseInfo.objects.get(pk=course) if course else None,
         'inning': InningInfo.objects.get(pk=inningpk) if inningpk else None,
         'attend_date': attend_date,
-        'session_list': set(session_list),
+        'session_list': session_list,
         'session_course': session_course,
-        'todays_date': datetime_now,    }
+        'todays_date': datetime_now,
+    }
 
     return render(request, 'attendance/course_attendance_list.html', context)

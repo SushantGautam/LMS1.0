@@ -12,7 +12,7 @@
 
 {% block content %}
 
-        {% include 'WebApp/theme/alerts.html' %}
+    {% include 'WebApp/theme/alerts.html' %}
 
     <h2>{% trans "List of Submitted Answers" %}</h2>
 
@@ -57,12 +57,21 @@
                 <tr>
                     <td>{{ sitting.user }}</td>
                     <td>{{ sitting.quiz }}</td>
-                    <td>{{ sitting.end|date }}</td>
+                    {% if sitting.complete %}
+                        <td>{{ sitting.end|date }}</td>
+                    {% else %}
+                        <td><i class="fa fa-hourglass"></i></td>
+
+                    {% endif %}
                     <td>{{ sitting.get_percent_correct }}</td>
                     <td>
-                        <a href="{% url 'quiz_marking_detail' pk=sitting.id %}">
-                            {% trans "View details" %}
-                        </a>
+                        {% if sitting.complete %}
+                            <a href="{% url 'quiz_marking_detail' pk=sitting.id %}">
+                                <span class="text text-bold"> {% trans "View details" %} </span>
+                            </a>
+                        {% else %}
+                            Not Submitted
+                        {% endif %}
                 </tr>
 
             {% endfor %}
@@ -104,7 +113,7 @@
         </tbody>
     </table>
 
-<br>
+    <br>
 
     <script>
         function askIfRemoveAll() {

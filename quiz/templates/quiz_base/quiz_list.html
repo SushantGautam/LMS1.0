@@ -6,10 +6,11 @@
             <h2>{% trans "List of quizzes" %}</h2>
         </div>
         <div class="col-md-6  icon-for-quiz text-right">
-            <a class="icon-quiz-list" href="{% url 'quizfw' %}">
-                <i class="fa fa-plus fa-2x"></i>
-            </a>
-
+            {% if not '/teachers' in request.path %}
+                <a class="icon-quiz-list" href="{% url 'quizfw' %}">
+                    <i class="fa fa-plus fa-2x"></i>
+                </a>
+            {% endif %}
         </div>
     </div>
 
