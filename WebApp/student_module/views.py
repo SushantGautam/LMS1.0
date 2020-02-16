@@ -33,10 +33,10 @@ from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, Ass
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
-
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
+from ..teacher_module.views import maintainLastPageofStudent
 
 datetime_now = datetime.now()
 
@@ -63,14 +63,16 @@ def start(request):
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
-                    Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id, Chapter_Code__Use_Flag = True)[:7]
+                    Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id,
+                    Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
-            
+
     return render(request, 'student_module/dashboard.html',
                   {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                   'activeAssignments': activeassignments, 'sittings': sittings, 'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
+                   'activeAssignments': activeassignments, 'sittings': sittings, 'wordCloud': wordCloud,
+                   'get_top_thread_keywords': thread_keywords})
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -145,7 +147,7 @@ def calendar(request):
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
-                    Course_Code=course.Course_Code.id, Chapter_Code__Use_Flag = True)[:7]
+                    Course_Code=course.Course_Code.id, Chapter_Code__Use_Flag=True)[:7]
 
         student_group = request.user.groupmapping_set.all()
         student_session = InningInfo.objects.filter(Groups__in=student_group)
@@ -164,8 +166,9 @@ def calendar(request):
         my_queryset = None
         my_queryset = general_survey | session_survey | course_survey | system_survey
         my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
-           
-        return render(request, 'student_module/calendar.html', {'activeassignments':activeassignments, 'activesurvey':my_queryset})
+
+        return render(request, 'student_module/calendar.html',
+                      {'activeassignments': activeassignments, 'activesurvey': my_queryset})
 
 
 class MyCoursesListView(ListView):
@@ -240,11 +243,13 @@ class MyAssignmentsListView(ListView):
 
         for course in Courses:
             Assignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag = True))
+                Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True))
             activeAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True, Chapter_Code__Use_Flag = True))
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True,
+                Chapter_Code__Use_Flag=True))
             expiredAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True, Chapter_Code__Use_Flag = True))
+                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True,
+                Chapter_Code__Use_Flag=True))
         context['Assignment'].append(Assignment)
         context['activeAssignment'].append(activeAssignment)
         context['expiredAssignment'].append(expiredAssignment)
@@ -1017,7 +1022,6 @@ def get_top_thread_keywords(request, number_of_keyword):
     return popular_words[:number_of_keyword]
 
 
-
 class QuizUserProgressView(TemplateView):
     template_name = 'student_quiz/progress.html'
 
@@ -1042,3 +1046,14 @@ class QuizUserProgressDetailView(DetailView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+
+def PageUpdateAjax(request, course, chapter):
+    if request.method == 'POST':
+        currentPageNumber = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
+                                                      currentPageNumber=request.POST['currentpage'],
+                                                      totalPage=request.POST['totalpages'])
+    else:
+        currentPageNumber = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
+                                                      )
+    return HttpResponse(currentPageNumber)

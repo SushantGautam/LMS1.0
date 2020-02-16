@@ -1131,6 +1131,8 @@
 
 
     function changePage(page_number) {
+        chapterProgressStopFunction()
+        chapterProgressFunction()
         if (page_number >= parseInt($('#totalpages').text())) {
             $('#next-btn').css('visibility', 'hidden')
         } else {
@@ -1640,8 +1642,39 @@
             }
         });
         //params.get('mobileViewer')
+    </script>
 
+    // Chapter Progress save feature
+    <script>
+        var chapterProgress;
+        var currentPageUpdateOnServer = 0;
 
+        function chapterProgressFunction() {
+            if (currentPageUpdateOnServer === 0 || window.currentPage > currentPageUpdateOnServer) {
+                chapterProgress = setTimeout(function () {
+                    $.ajax({
+                        url: "{% url 'pageupdateajax' course.pk chapter.pk %}",
+                        type: "post",
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                            'currentpage': window.currentpage,
+                            'totalpages': data.numberofpages,
+                        },
+                        success: function (data) {
+                            window.currentPageUpdateOnServer = parseInt(data)
+                        },
+                    })
+                }, 1000);
+            }
+        }
+
+        function chapterProgressStopFunction() {
+            clearTimeout(chapterProgress);
+        }
+
+        {#if currentPageNumber not changes within 3 seconds:#}
+        {#  if currentPageUpdateOnServer === 0 or (currentPageUpdateOnServer > currentPageNumber):#}
+        {#     currentPageUpdateOnServer  = MaintainLastPageofStudentAJAX(CurrentPageNumber, totalPage, courseid, chapterid, studentid)#}
     </script>
 {% endif %}
 

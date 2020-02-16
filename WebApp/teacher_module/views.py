@@ -1,4 +1,5 @@
 # from django.core.checks import messages
+import os
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -2007,3 +2008,45 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
     }
 
     return render(request, 'attendance/course_attendance_list.html', context)
+
+
+# chapter progress of students function
+def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=None, totalPage=None):
+    print(totalPage)
+    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
+    try:
+        os.makedirs(path)
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    if os.path.isfile(student_data_file):
+        student_file = open(student_data_file, "r")
+        if student_file.mode == 'r':
+            x = student_file.read()
+            x = x.split(',')
+            LastPageNumberFromFileSystem, totalPage = x[0], x[1]
+            student_file.close()
+        if currentPageNumber is None:
+            return LastPageNumberFromFileSystem
+        if int(currentPageNumber) > int(LastPageNumberFromFileSystem):
+            student_file = open(student_data_file, "w+")
+            if currentPageNumber and totalPage:
+                student_file.write(currentPageNumber + "," + totalPage)
+                student_file.close()
+        else:
+            student_file = open(student_data_file, "r")
+            if student_file.mode == 'r':
+                x = student_file.read()
+                x = x.split(',')
+                LastPageNumberFromFileSystem, totalPage = x[0], x[1]
+                student_file.close()
+    else:
+        student_file = open(student_data_file, "w+")
+        if currentPageNumber and totalPage:
+            student_file.write(currentPageNumber + "," + totalPage)
+        else:
+            student_file.write("0,0")
+
+        student_file.close()
+        # create student data file with data (currentPageNumber, totalPage)
+    return currentPageNumber
