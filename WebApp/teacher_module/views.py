@@ -2012,7 +2012,6 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
 
 # chapter progress of students function
 def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=None, totalPage=None):
-    print(totalPage)
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
     try:
         os.makedirs(path)
@@ -2050,3 +2049,46 @@ def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=
         student_file.close()
         # create student data file with data (currentPageNumber, totalPage)
     return currentPageNumber
+
+
+def chapterStudentProgress(request, course, pk, inningpk=None):
+    session_list = []
+    studentjson = []
+
+    course = get_object_or_404(CourseInfo, pk=course)
+    chapter = get_object_or_404(ChapterInfo, pk=pk)
+
+    if course and chapter:
+        inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                Course_Group__Course_Code__pk=course.pk, Use_Flag=True,
+                                                End_Date__gt=datetime_now).distinct()
+        session_list.append(inning_info)
+
+        if inning_info.count() > 0:
+            if inningpk:
+                if inning_info.filter(pk=inningpk).exists():
+                    innings = inning_info.get(pk=inningpk)
+                else:
+                    innings = inning_info.all().first()
+            else:
+                innings = inning_info.all().first()
+
+            if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
+
+            for x in list_of_students:
+                currentPage = maintainLastPageofStudent(str(course.pk), str(chapter.pk), str(x.id))
+                studentjson.append({
+                    'member_code': x,
+                    'page_progress': currentPage,
+                })
+
+    context = {
+        'course': course,
+        'chapter': chapter,
+        'inning': InningInfo.objects.get(pk=inningpk) if inningpk else None,
+        'session_list': session_list,
+        'studentjson': studentjson,
+    }
+
+    return render(request, 'teacher_module/chapterProgress.html', context)

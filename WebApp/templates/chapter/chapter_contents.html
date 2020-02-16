@@ -1674,10 +1674,6 @@
         function chapterProgressStopFunction() {
             clearTimeout(chapterProgress);
         }
-
-        {#if currentPageNumber not changes within 3 seconds:#}
-        {#  if currentPageUpdateOnServer === 0 or (currentPageUpdateOnServer > currentPageNumber):#}
-        {#     currentPageUpdateOnServer  = MaintainLastPageofStudentAJAX(CurrentPageNumber, totalPage, courseid, chapterid, studentid)#}
     </script>
     {% endif %}
 {% endif %}
