@@ -259,4 +259,7 @@ urlpatterns += (
 urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/student_progress/',
          views.chapterStudentProgress, name='chapter_student_progress'),
+    path('inninginfo/<int:inningpk>/courseinfo/<int:course>/chapterinfo/<int:pk>/student_progress/',
+         views.chapterStudentProgress, name='chapter_student_progress_inning'),
+
 )
