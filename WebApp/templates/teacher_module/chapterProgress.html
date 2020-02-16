@@ -10,6 +10,15 @@
 {% endblock %}
 
 {% block content %}
+    <style>
+        .progress, chapter {
+            width: 500px
+        }
+
+        .chapter-progress {
+            background: -webkit-linear-gradient(left, red 0%, blue 50%, green 100%); /* Chrome10-25,Safari5.1-6 */
+        }
+    </style>
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
         <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
@@ -60,7 +69,13 @@
                             <tr>
                                 <td>  {{ a.member_code.Member_ID }} </td>
                                 <td>  {{ a.member_code.username }} </td>
-                                <td>  {{ a.page_progress }} </td>
+                                <td>
+                                    <div class="progress chapter">
+                                        <div class="chapter-progress progress-bar" role="progressbar"
+                                             style="width: {{ a.progresspercent }}%;">
+                                        </div>
+                                    </div>
+                                </td>
 
                             </tr>
 

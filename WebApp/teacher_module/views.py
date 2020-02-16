@@ -2077,10 +2077,12 @@ def chapterStudentProgress(request, course, pk, inningpk=None):
                 list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
 
             for x in list_of_students:
-                currentPage = maintainLastPageofStudent(str(course.pk), str(chapter.pk), str(x.id))
+                currentPage, totalpage = maintainLastPageofStudent(str(course.pk), str(chapter.pk), str(x.id))
                 studentjson.append({
                     'member_code': x,
-                    'page_progress': currentPage,
+                    'currentpage': currentPage,
+                    'totalpage': totalpage,
+                    'progresspercent': int(currentPage) * 100 / int(totalpage) if int(totalpage) else 1
                 })
 
     context = {
