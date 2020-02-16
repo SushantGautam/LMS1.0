@@ -1131,8 +1131,10 @@
 
 
     function changePage(page_number) {
-        chapterProgressStopFunction()
-        chapterProgressFunction()
+        {% if not connection_offline %}
+            chapterProgressStopFunction()
+            chapterProgressFunction()
+        {% endif %}
         if (page_number >= parseInt($('#totalpages').text())) {
             $('#next-btn').css('visibility', 'hidden')
         } else {
@@ -1645,6 +1647,7 @@
     </script>
 
     // Chapter Progress save feature
+    {% if not connection_offline %}
     <script>
         var chapterProgress;
         var currentPageUpdateOnServer = 0;
@@ -1676,6 +1679,7 @@
         {#  if currentPageUpdateOnServer === 0 or (currentPageUpdateOnServer > currentPageNumber):#}
         {#     currentPageUpdateOnServer  = MaintainLastPageofStudentAJAX(CurrentPageNumber, totalPage, courseid, chapterid, studentid)#}
     </script>
+    {% endif %}
 {% endif %}
 
 
