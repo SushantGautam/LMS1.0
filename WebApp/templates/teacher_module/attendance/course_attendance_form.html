@@ -22,6 +22,32 @@
     <div id="attendance-table">
         {% if attendance %}
             <h3 class="detailListHeader2 ">Attendance List</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6 col-sm-6 col-xs-12"> 
+                        <div class="total-students">
+                            <div>
+                                <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
+                                    style="font-size:16px;" id="student_present"></span>
+                            </div>
+                            <div>
+                                <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span
+                                    style="font-size:16px;" id="student_absent"></span>
+                            </div>
+                            <div>
+                                <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
+                                    style="font-size:16px;">{{ attendance|length }}</span>
+                            </div>
+        
+        
+                        </div>
+
+                    </div>
+                  
+                </div>
+            
+
+            </div>
             <form method="POST">
                 {% csrf_token %} {{ attendance.management_form }}
 
@@ -67,25 +93,7 @@
                 </button>
             </form>
 
-            <div class="row">
-                <div class="total-students">
-                    <div>
-                        <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
-                            style="font-size:16px;" id="student_present"></span>
-                    </div>
-                    <div>
-                        <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span
-                            style="font-size:16px;" id="student_absent"></span>
-                    </div>
-                    <div>
-                        <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
-                            style="font-size:16px;">{{ attendance|length }}</span>
-                    </div>
-
-
-                </div>
-
-            </div>
+          
 
 
 
@@ -99,6 +107,8 @@
 
 {% endblock %}
 {% block customjss %}
+
+
     <script type="text/javascript">
         var submitFlag = false;
         $(document).ready(function () {
@@ -127,8 +137,5 @@
         });
     </script>
 
-    <script>
-
-
-    </script>
+   
 {% endblock %}

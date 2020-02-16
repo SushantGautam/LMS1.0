@@ -12,7 +12,27 @@
 {% block content %}
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
-        <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
+        <div class="attendance-detail col-md-12 col-sm-12 col-xs-12"> 
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="session-detail">
+                    <div style="font-size:18px"><b> Session: </b></div>
+                    <select id="select_session">
+                        {% for x in session_list %}
+                            {% for session in x %}
+
+                                <option value="{{ session.pk }}"
+                                        {% if session.pk == inning.pk %}
+                                        selected
+                                        {% endif %}
+                                > {{ session }}</option>
+                            {% endfor %}
+                        {% endfor %}
+
+                    </select>
+                    {% comment %} <span>{{inning}}</span> {% endcomment %}
+
+                </div>
+            </div>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="course-name">
 
@@ -44,26 +64,7 @@
                 </div>
 
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-12">
-                <div class="session-detail">
-                    <div style="font-size:18px"><b> Session: </b></div>
-                    <select id="select_session">
-                        {% for x in session_list %}
-                            {% for session in x %}
-
-                                <option value="{{ session.pk }}"
-                                        {% if session.pk == inning.pk %}
-                                        selected
-                                        {% endif %}
-                                > {{ session }}</option>
-                            {% endfor %}
-                        {% endfor %}
-
-                    </select>
-                    {% comment %} <span>{{inning}}</span> {% endcomment %}
-
-                </div>
-            </div>
+          
 
 
             <div class="col-md-4 col-sm-4 col-xs-12">
@@ -102,7 +103,40 @@
 
         </div>
     {% else %}
+   <div class="row">
+       <div class="col-md-12 col-sm-12 col-xs-12">
+           <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="total-students" style="margin-top: 30px; ">
+                <div>
+                    <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
+                        style="font-size:16px;" id="student_present"></span>
+                </div>
+                <div>
+                    <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span
+                        style="font-size:16px;" id="student_absent"></span>
+                </div>
+                <div>
+                    <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
+                        style="font-size:16px;">{{ attendance|length }}</span>
+                </div>
+    
+    
+            </div>
+    
+           </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            
+                <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
+                <input type="radio" name="mychart" class="mychart" id= "column" value="column" onclick= "chartfunc()" checked>Column
+                <input type="radio" name="mychart" class="mychart" id= "bar" value="bar" onclick= "chartfunc()">Bar
+                <input type="radio" name="mychart" class="mychart" id= "pie" value="pie" onclick= "chartfunc()">Pie
+                <input type="radio" name="mychart" class="mychart" id= "line" value="line" onclick= "chartfunc()">Line
+            
+        </div>
+       </div>
+   </div>      
+    
         <div id=" container attendance-table">
             {% if attendance %}
                 <h3 class="detailListHeader2 ">Attendance List</h3>
@@ -160,28 +194,152 @@
         </div>
 
 
-        <div class="total-students" style="margin-top: 30px; ">
-            <div>
-                <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
-                    style="font-size:16px;" id="student_present"></span>
-            </div>
-            <div>
-                <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span
-                    style="font-size:16px;" id="student_absent"></span>
-            </div>
-            <div>
-                <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
-                    style="font-size:16px;">{{ attendance|length }}</span>
-            </div>
-
-
-        </div>
+       
     {% endif %}
     </div>
 
 {% endblock %}
 
 {% block customjss %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/highchart_data.js' %}"></script>
+
+<script>
+    var chart1;
+
+    $(function () {    
+
+
+        // Create the chart
+        
+        var options = {
+            chart: {
+               events: {
+                    drilldown: function (e) {
+                        if (!e.seriesOptions) {
+        
+                            var chart = this;
+        
+                                
+        
+                            // Show the loading label
+                            chart.showLoading('Loading ...');
+        
+                            setTimeout(function () {
+                                chart.hideLoading();
+                                chart.addSeriesAsDrilldown(e.point, series);
+                            }, 1000); 
+                        }
+        
+                    }
+                },
+                plotBorderWidth: 0
+            },
+        
+            title: {
+                text: 'Student Attendance Record',
+            },
+            //
+           
+            //
+            xAxis: {
+                    type: 'category',
+                     categories: ['Present', 'Absent'],
+                    
+            },
+            //
+            yAxis: {
+                       
+        
+        
+                    title: {
+                        margin: 10,
+                        text: 'Attendance'
+                    },      
+            },
+            //
+            legend: {
+                enabled: true,
+            },
+            //
+            plotOptions: {
+                series: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                pie: {
+                    plotBorderWidth: 0,
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    size: '100%',
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}: <b>{point.y}</b>'
+                    }
+                }
+            },
+            //
+             series: [{
+                
+                colorByPoint: true,
+                data: [2, 2]
+            }],
+            //
+            drilldown: {
+                series: []
+            }
+        };
+        
+        // Column chart
+        options.chart.renderTo = 'container';
+        options.chart.type = 'column';
+        chart1 = new Highcharts.Chart(options);
+        
+        chartfunc = function()
+        {
+        var column = document.getElementById('column');
+        var bar = document.getElementById('bar');
+        var pie = document.getElementById('pie');
+        var line = document.getElementById('line');
+        
+                
+        if(column.checked)
+            {
+                
+                options.chart.renderTo = 'container';
+                options.chart.type = 'column';
+                var chart1 = new Highcharts.Chart(options);
+            }
+        else if(bar.checked)
+            {
+                options.chart.renderTo = 'container';
+                options.chart.type = 'bar';
+                var chart1 = new Highcharts.Chart(options);
+            }
+        else if(pie.checked)
+            {
+                options.chart.renderTo = 'container';
+                options.chart.type = 'pie';
+                var chart1 = new Highcharts.Chart(options);
+            }
+        else
+            {
+                options.chart.renderTo = 'container';
+                options.chart.type = 'line';
+                var chart1 = new Highcharts.Chart(options);
+            }
+        
+        }
+        
+        
+        });
+        
+        
+</script>
+
     <script>
 
         $('#goBtn').on('click', function () {
@@ -198,6 +356,7 @@
 
         var present = 0;
         var absent = 0;
+        
 
 
         {% for x in attendance %}
@@ -211,10 +370,18 @@
         $('#student_absent').text(absent)
 
 
+
         $(document).ready(function () {
+
             $("#select_session").on("change", function () {
                 selectSessionOnChange();
             });
+
+            
+        chart1.update({
+            series: [{
+            data: [present , absent] }],
+          });
 
         });
 
@@ -250,6 +417,7 @@
 
             var table_main = $('#QuizTable').DataTable({
                 responsive: true,
+                stateSave: true,
 
                 buttons: [],
 
