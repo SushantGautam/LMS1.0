@@ -1050,10 +1050,10 @@ class QuizUserProgressDetailView(DetailView):
 
 def PageUpdateAjax(request, course, chapter):
     if request.method == 'POST':
-        currentPageNumber = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
-                                                      currentPageNumber=request.POST['currentpage'],
-                                                      totalPage=request.POST['totalpages'])
+        currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
+                                                                 currentPageNumber=request.POST['currentpage'],
+                                                                 totalPage=request.POST['totalpages'])
     else:
-        currentPageNumber = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
-                                                      )
+        currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
+                                                                 )
     return HttpResponse(currentPageNumber)

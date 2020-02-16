@@ -2026,7 +2026,7 @@ def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=
             LastPageNumberFromFileSystem, totalPage = x[0], x[1]
             student_file.close()
         if currentPageNumber is None:
-            return LastPageNumberFromFileSystem
+            return LastPageNumberFromFileSystem, totalPage
         if int(currentPageNumber) > int(LastPageNumberFromFileSystem):
             student_file = open(student_data_file, "w+")
             if currentPageNumber and totalPage:
@@ -2048,7 +2048,7 @@ def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=
 
         student_file.close()
         # create student data file with data (currentPageNumber, totalPage)
-    return currentPageNumber
+    return currentPageNumber, totalPage
 
 
 def chapterStudentProgress(request, course, pk, inningpk=None):
