@@ -343,7 +343,7 @@ def upload_to(instance, filename):
 
 class AssignmentQuestionInfo(models.Model):
     Question_Title = CharField(max_length=4000)
-    Question_Score = IntegerField(blank=True, null=True)
+    Question_Score = IntegerField(blank=False, null=True, default=10)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -354,7 +354,7 @@ class AssignmentQuestionInfo(models.Model):
         ('S', 'Short Answer'),
         ('F', 'File Upload'),
     )
-    Answer_Type = CharField(max_length=1, choices=Answer_Choices)
+    Answer_Type = CharField(max_length=1, choices=Answer_Choices, default='S')
 
     Assignment_Code = ForeignKey(
         'AssignmentInfo',
