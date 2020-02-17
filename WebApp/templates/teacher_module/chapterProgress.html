@@ -22,7 +22,7 @@
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
         <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
-            <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="session-detail">
                     <div style="font-size:18px"><b> Session: </b></div>
                     <select id="select_session" class="form-control">
@@ -177,8 +177,12 @@
 
             var table_main = $('#QuizTable').DataTable({
                 responsive: true,
+                stateSave: true,
 
                 buttons: [],
+                columnDefs: [
+                { "width": "33%", "targets": 2 }
+              ]
 
             });
         });
