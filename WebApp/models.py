@@ -354,7 +354,7 @@ class AssignmentQuestionInfo(models.Model):
         ('S', 'Short Answer'),
         ('F', 'File Upload'),
     )
-    Answer_Type = CharField(max_length=1, choices=Answer_Choices)
+    Answer_Type = CharField(max_length=1, choices=Answer_Choices, default='S')
 
     Assignment_Code = ForeignKey(
         'AssignmentInfo',
