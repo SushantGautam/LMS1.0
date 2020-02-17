@@ -106,7 +106,7 @@
    <div class="row">
        <div class="col-md-12 col-sm-12 col-xs-12">
            <div class="col-md-6 col-sm-6 col-xs-12">
-            <div class="total-students" style="margin-top: 30px; ">
+            <div class="total-students text-center" style="margin-top: 30px; ">
                 <div>
                     <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
                         style="font-size:16px;" id="student_present"></span>
@@ -121,16 +121,28 @@
                 </div>
     
     
-            </div>
+            </div> 
+           <div class="take-attendance" style="margin-top: 70px;">
+            {% if todays_date|date:"Y-m-d" == attend_date %}
+            <p class="text-center"><a class="btn btn-default btn-success"
+                                      href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">Take
+                Attendance</a></p>
+        {% endif %}
+
+           </div>
+
+         
+
+
     
            </div>
-        <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="col-md-6 col-sm-6 col-xs-12 text-center">
             
                 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
-                <input type="radio" name="mychart" class="mychart" id= "column" value="column" onclick= "chartfunc()" checked>Column
-                <input type="radio" name="mychart" class="mychart" id= "bar" value="bar" onclick= "chartfunc()">Bar
-                <input type="radio" name="mychart" class="mychart" id= "pie" value="pie" onclick= "chartfunc()">Pie
+                <input type="radio" name="mychart" class="mychart" id= "column" value="column" onclick= "chartfunc()" checked>Column &nbsp;
+                <input type="radio" name="mychart" class="mychart" id= "bar" value="bar" onclick= "chartfunc()">Bar &nbsp;
+                <input type="radio" name="mychart" class="mychart" id= "pie" value="pie" onclick= "chartfunc()">Pie &nbsp;
                 <input type="radio" name="mychart" class="mychart" id= "line" value="line" onclick= "chartfunc()">Line
             
         </div>
@@ -175,11 +187,7 @@
                 </table>
 
 
-                {% if todays_date|date:"Y-m-d" == attend_date %}
-                    <p class="text-center"><a class="btn btn-default btn-success"
-                                              href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">Take
-                        Attendance</a></p>
-                {% endif %}
+              
 
 
 
