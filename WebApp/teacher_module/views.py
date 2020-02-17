@@ -177,6 +177,8 @@ class MyCourseListView(ListView):
             self.request.GET,
             queryset=courses
         ).qs
+        filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
+
         paginator = Paginator(filtered_qs, 8)
         page = self.request.GET.get('page')
         try:

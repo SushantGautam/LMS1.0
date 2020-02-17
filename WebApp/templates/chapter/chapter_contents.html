@@ -313,6 +313,21 @@
                                 <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
                             </li>
 
+                            <li id="chapterProgressView">
+                                <a href="{% url 'chapter_student_progress' course.pk chapter.pk %}?iframe=1">
+                                    <div>
+                                        <i class="fa fa-tasks"> </i> Progress
+                                    </div>
+                                </a>
+                            </li>
+                            <li id="attendanceView">
+                                <a href="{% url 'teacher_courseinfo_detail_attendance' course.pk %}?iframe=1">
+                                    <div>
+                                        <i class="fa fa-tasks"> </i> Attendance
+                                    </div>
+                                </a>
+                            </li>
+
                         </ul>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 "
@@ -748,6 +763,18 @@
             }
         });
     }
+
+    $('#chapterProgressView').on('click', function (e) {
+        e.preventDefault()
+        var link = $(this).find('a')[0].href
+        loadexam(link, true)
+    })
+
+    $('#attendanceView').on('click', function (e) {
+        e.preventDefault()
+        var link = $(this).find('a')[0].href
+        loadexam(link, true)
+    })
 
     $('#closeiframebtn').click(function () {
         $('#examiframeholder').removeClass('examiframeholder')
@@ -1648,33 +1675,33 @@
 
     <!-- Chapter Progress save feature -->
     {% if not connection_offline %}
-    <script>
-        var chapterProgress;
-        var currentPageUpdateOnServer = 0;
+        <script>
+            var chapterProgress;
+            var currentPageUpdateOnServer = 0;
 
-        function chapterProgressFunction() {
-            if (currentPageUpdateOnServer === 0 || window.currentPage > currentPageUpdateOnServer) {
-                chapterProgress = setTimeout(function () {
-                    $.ajax({
-                        url: "{% url 'pageupdateajax' course.pk chapter.pk %}",
-                        type: "post",
-                        data: {
-                            'csrfmiddlewaretoken': '{{ csrf_token }}',
-                            'currentpage': window.currentpage,
-                            'totalpages': data.numberofpages,
-                        },
-                        success: function (data) {
-                            window.currentPageUpdateOnServer = parseInt(data)
-                        },
-                    })
-                }, 1000);
+            function chapterProgressFunction() {
+                if (currentPageUpdateOnServer === 0 || window.currentPage > currentPageUpdateOnServer) {
+                    chapterProgress = setTimeout(function () {
+                        $.ajax({
+                            url: "{% url 'pageupdateajax' course.pk chapter.pk %}",
+                            type: "post",
+                            data: {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                'currentpage': window.currentpage,
+                                'totalpages': data.numberofpages,
+                            },
+                            success: function (data) {
+                                window.currentPageUpdateOnServer = parseInt(data)
+                            },
+                        })
+                    }, 1000);
+                }
             }
-        }
 
-        function chapterProgressStopFunction() {
-            clearTimeout(chapterProgress);
-        }
-    </script>
+            function chapterProgressStopFunction() {
+                clearTimeout(chapterProgress);
+            }
+        </script>
     {% endif %}
 {% endif %}
 
