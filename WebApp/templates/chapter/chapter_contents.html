@@ -312,7 +312,7 @@
                             <li id="speakContent">
                                 <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
                             </li>
-
+                            {% if '/teachers' in request.path %}
                             <li id="chapterProgressView">
                                 <a href="{% url 'chapter_student_progress' course.pk chapter.pk %}?iframe=1">
                                     <div>
@@ -327,7 +327,7 @@
                                     </div>
                                 </a>
                             </li>
-
+                            {% endif %}
                         </ul>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 "
