@@ -2047,7 +2047,6 @@ def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=
             student_file.write("0,0")
 
         student_file.close()
-        # create student data file with data (currentPageNumber, totalPage)
     return currentPageNumber, totalPage
 
 
@@ -2078,11 +2077,15 @@ def chapterStudentProgress(request, course, pk, inningpk=None):
 
             for x in list_of_students:
                 currentPage, totalpage = maintainLastPageofStudent(str(course.pk), str(chapter.pk), str(x.id))
+                if totalpage is not None and int(totalpage) > 0 and int(currentPage) > 0:
+                    progresspercent = int(currentPage) * 100 / int(totalpage)
+                else:
+                    progresspercent = 1
                 studentjson.append({
                     'member_code': x,
                     'currentpage': currentPage,
                     'totalpage': totalpage,
-                    'progresspercent': int(currentPage) * 100 / int(totalpage) if int(totalpage) else 1
+                    'progresspercent': progresspercent,
                 })
 
     context = {
