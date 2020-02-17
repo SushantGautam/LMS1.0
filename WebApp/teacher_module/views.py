@@ -2011,7 +2011,7 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
 
 
 # chapter progress of students function
-def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=None, totalPage=None):
+def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=None, totalPage=None, createFile=True):
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
     try:
         os.makedirs(path)
@@ -2040,13 +2040,16 @@ def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=
                 LastPageNumberFromFileSystem, totalPage = x[0], x[1]
                 student_file.close()
     else:
-        student_file = open(student_data_file, "w+")
-        if currentPageNumber and totalPage:
-            student_file.write(currentPageNumber + "," + totalPage)
-        else:
-            student_file.write("0,0")
+        if createFile:
+            student_file = open(student_data_file, "w+")
+            if currentPageNumber and totalPage:
+                student_file.write(currentPageNumber + "," + totalPage)
+            else:
+                student_file.write("0,0")
 
-        student_file.close()
+            student_file.close()
+        else:
+            return None, None
     return currentPageNumber, totalPage
 
 
@@ -2076,7 +2079,8 @@ def chapterStudentProgress(request, course, pk, inningpk=None):
                 list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
 
             for x in list_of_students:
-                currentPage, totalpage = maintainLastPageofStudent(str(course.pk), str(chapter.pk), str(x.id))
+                currentPage, totalpage = maintainLastPageofStudent(str(course.pk), str(chapter.pk), str(x.id),
+                                                                   createFile=False)
                 if totalpage is not None and int(totalpage) > 0 and int(currentPage) > 0:
                     progresspercent = int(currentPage) * 100 / int(totalpage)
                 else:
