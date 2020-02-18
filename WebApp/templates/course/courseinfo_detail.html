@@ -600,17 +600,13 @@
     </script>
     <script>
         let params = new URLSearchParams(location.search);
-        $(document).ready(function() {
+        $(document).ready(function () {
+            if (params.get('ifsurvey')) {
+                $('.left_col, .top_nav , .breadcrumb  , #exam_paper_popup , .courseDetailStyle1 , #course-info-teacher , .course-info').remove();
+                $('#new_survey_btn').click();
 
-
-        if (params.get('ifsurvey')){
-            $('.left_col, .top_nav , .breadcrumb  , #exam_paper_popup , .courseDetailStyle1 , #course-info-teacher , .course-info').remove();
-            $('#new_survey_btn') .click();
-
-        }
-        params.get('ifsurvey')
-         });
-
+            }
+        });
 
 
     </script>
