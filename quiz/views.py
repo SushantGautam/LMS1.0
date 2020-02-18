@@ -344,7 +344,12 @@ class QuizTake(FormView):
 
         # if self.quiz.exam_paper is False:
         #    self.sitting.delete()
-        return redirect('student_progress_detail', pk=self.sitting.id)
+        if self.request.GET.get('iframe'):
+            return redirect(
+                reverse('student_progress_detail', kwargs={'pk': self.sitting.id}) + '?iframe=' + self.request.GET.get(
+                    'iframe'))
+        else:
+            return redirect('student_progress_detail', pk=self.sitting.id)
 
         # return render(self.request, self.result_template_name, results)
 

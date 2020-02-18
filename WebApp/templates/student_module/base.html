@@ -140,6 +140,17 @@
             $(".se-pre-con").fadeIn("fast");
         });
     </script>
+    <script>
+        let params_base = new URLSearchParams(location.search);
+        $(document).ready(function () {
+            if (params_base.get('iframe')) {
+                $('.left_col, .top_nav , .breadcrumb').remove();
+                $('.nav-md .container.body .right_col').css({
+                    'margin-left': '10px'
+                })
+            }
+        });
+    </script>
 {% endblock body %}
 </body>
 
