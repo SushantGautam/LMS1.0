@@ -9,6 +9,7 @@ from rest_framework import routers
 
 from WebApp import api
 from WebApp import views
+from WebApp.student_module.views import loginforapp
 
 urlpatterns = [
                   url(r'^admin/', admin.site.urls),
@@ -28,7 +29,9 @@ urlpatterns = [
                   path('survey/', include('survey.urls')),
                   url(r'^login/$', views.login, {'template_name': 'registration/login.html',
                                                  'redirect_authenticated_user': True}, name='login'),
-                  path('loginforapp/<slug:username>/<slug:password>/', views.loginforapp, name='loginforapp'),
+                  path(
+                      'students/courseinfo/<int:course>/chapterinfo/<int:chapter>/contentwithlogin/<slug:username>/<slug:password>/',
+                      loginforapp, name='loginforapp'),
 
                   url(r'^.*logout/$', views.logout,
                       {'template_name': 'registration/logout.html', 'next_page': '/'}, name='logout'),
@@ -60,7 +63,6 @@ router.register(r'assignanswerinfo', api.AssignAnswerInfoViewSet)
 router.register(r'questioninfo', api.QuestionInfoViewSet)
 router.register(r'attendance', api.AttendanceViewSet)
 
-
 urlpatterns += [
     # urls for Django Rest Framework API
     path('api/v1/', include(router.urls)),
@@ -84,7 +86,6 @@ handler403 = 'WebApp.views.error_403'
 handler404 = 'WebApp.views.error_404'
 handler500 = 'WebApp.views.error_500'
 
-
 urlpatterns += (
     path('pwabuilder-sw.js', views.ServiceWorker),
     path('offline.html', views.OfflineApp),
@@ -93,6 +94,8 @@ urlpatterns += (
 
 # For static files
 urlpatterns += (
-    path('get_static_files_info/', views.get_static_files_info, name= 'get_static_files_info'),   #for downloading static files for mobile development
-    path('get_static_files/', views.get_static_files, name= 'get_static_files'),   #for downloading static files for mobile development
+    path('get_static_files_info/', views.get_static_files_info, name='get_static_files_info'),
+    # for downloading static files for mobile development
+    path('get_static_files/', views.get_static_files, name='get_static_files'),
+    # for downloading static files for mobile development
 )
