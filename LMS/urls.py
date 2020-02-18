@@ -30,7 +30,7 @@ urlpatterns = [
                   url(r'^login/$', views.login, {'template_name': 'registration/login.html',
                                                  'redirect_authenticated_user': True}, name='login'),
                   path(
-                      'students/courseinfo/<int:course>/chapterinfo/<int:chapter>/contentwithlogin/<slug:username>/<slug:password>/',
+                      'students/courseinfo/<int:course>/chapterinfo/<int:chapter>/contentforapp/<slug:username>/<slug:password>/',
                       loginforapp, name='loginforapp'),
 
                   url(r'^.*logout/$', views.logout,
