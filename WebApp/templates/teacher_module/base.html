@@ -56,6 +56,11 @@
 
 
     {% endblock head %}
+    <style>
+        body {
+            background-color: white;
+        }
+    </style>
 </head>
 
 <body class="{% block body_class %}nav-md {% endblock body_class %}">
@@ -159,7 +164,14 @@
     {% block customjss %}
 
     {% endblock %}
-
+    <script>
+        let params_base = new URLSearchParams(location.search);
+        $(document).ready(function () {
+            if (params_base.get('iframe')) {
+                $('.left_col, .top_nav , .breadcrumb').remove();
+            }
+        });
+    </script>
 {% endblock body %}
 </body>
 

@@ -10,7 +10,7 @@ import pandas as pd
 # import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash, authenticate
+from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.hashers import make_password
@@ -1980,10 +1980,16 @@ class SessionManagerUpdateView(UpdateView):
         return kwargs
 
 
+from django.contrib.auth import authenticate, login as auth_login
+
+
 def loginforapp(request, username, password):
     user = authenticate(username=username, password=password)
     if user is not None:
-        login(request, user)
-        return HttpResponse('success')
+        auth_login(request, user)
+        if request.user.is_authenticated:
+            return HttpResponse('pass')
+        else:
+            return HttpResponse('failed')
     else:
         return HttpResponse('failed')
