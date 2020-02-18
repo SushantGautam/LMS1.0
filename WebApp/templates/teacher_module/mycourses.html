@@ -45,11 +45,20 @@ Course
 
 
           {% if courses.Course_Code.get_teachers_of_this_course%}
-          Teacher(s): &nbsp
-           {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
-                 -{{ eachTeacher }}
-                        {% endfor%}
-                        {% endif %}
+                <p style="max-height: 40px;">
+                            Teacher(s):
+                            {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
+                                    -{{ eachTeacher }}
+                                            {% endfor%}
+                </p>                     
+         {% endif %}
+
+
+
+                        
+                        
+              
+                          
 
 
 
