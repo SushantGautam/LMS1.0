@@ -1069,7 +1069,7 @@ def loginforapp(request, course, chapter, username, password):
         auth_login(request, user)
         if request.user.is_authenticated:
             return redirect(
-                "/students/courseinfo/" + str(course) + "/chapterinfo/" + str(chapter) + "/contents " + '?mobileViewer=1',
+                "/students/courseinfo/" + str(course) + "/chapterinfo/" + str(chapter) + "/contents" + '?mobileViewer=1',
                 )
         else:
             return HttpResponse('failed')
