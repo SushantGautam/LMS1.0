@@ -360,7 +360,11 @@
             session = $('#select_session').val()
             course = $('#select_course').val()
             if (changed_date && session && course) {
-                window.location.href = "/teachers/attendance/class-list/" + session + "/" + course + "/" + changed_date
+                if (params_base.get('iframe')) {
+                    window.location.href = "/teachers/attendance/class-list/" + session + "/" + course + "/" + changed_date + '?iframe=1'
+                } else {
+                    window.location.href = "/teachers/attendance/class-list/" + session + "/" + course + "/" + changed_date
+                }
             } else {
                 alert('Please Select Course and Session')
             }
