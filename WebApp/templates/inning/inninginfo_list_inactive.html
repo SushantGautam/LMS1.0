@@ -75,8 +75,10 @@
                         </h5>
                         <h5 class="card-title"><b>Student Group &nbsp; : </b>&nbsp;{{ object.Groups }}</h5>
                         <h5 class="card-title"><b><u>Courses :</u></b></h5>
-                        <span class="card-title"> {% for groups in object.Course_Group.all %}{{ groups.Course_Code }}
-                            {% endfor %}</span><br>
+                        <span class="card-title"> <p style="height:40px; overflow:auto; padding:0 10px">
+                            {% for groups in object.Course_Group.all %}{{ groups.Course_Code }}
+                            {% endfor %}
+                        </p></span><br>
 
                         <h5 class="card-title"><b>Start Date : </b>&nbsp;{{ object.Start_Date|date:'Y M d' }}</h5>
                         <h5 class="card-title"><b>End Date : </b>&nbsp;{{ object.End_Date|date:'Y M d' }}</h5>
