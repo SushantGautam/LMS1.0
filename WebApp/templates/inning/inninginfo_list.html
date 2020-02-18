@@ -26,13 +26,7 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <hr class="header_hr">
-        <div class="row">
-            {% if request.user.Is_CenterAdmin and '/mysessions' not in request.path %}
-                <div class="btn-createnew">
-                    <a class="btn btn-sm btn-success" href="{% url 'inninginfo_create' %}">Register New Session</a>
-                </div>
-            {% endif %}
-        </div>
+      
 
         <div class="table-responsive" id="tableView">
 
@@ -93,9 +87,11 @@
                             </h5>
                             <h5 class="card-title"><b>Student Group &nbsp; : </b>&nbsp;{{ object.Groups }}</h5>
                             <h5 class="card-title"><b><u>Courses :</u></b></h5>
-                            <span class="card-title"> {% for groups in object.Course_Group.all %}
+                            <span class="card-title"><p style="height:40px; overflow:auto;padding:0 10px"> {% for groups in object.Course_Group.all %}
                                 {{ groups.Course_Code }}
-                            {% endfor %}</span><br>
+                            {% endfor %}
+                          </p>
+                        </span><br>
 
                             <h5 class="card-title"><b>Start Date : </b>&nbsp;{{ object.Start_Date|date:'Y M d' }}</h5>
                             <h5 class="card-title"><b>End Date : </b>&nbsp;{{ object.End_Date|date:'Y M d' }}</h5>

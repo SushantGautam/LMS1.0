@@ -95,7 +95,7 @@
           </h2>
 
           {% if object.get_teachers_of_this_course%}
-             <p style="max-height: 40px;"> 
+             <p style="height: 40px; overflow:auto"> 
               Teacher(s): &nbsp
               {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp
                     -{{ eachTeacher }}
