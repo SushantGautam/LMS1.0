@@ -3,8 +3,7 @@ test:
   
   variables:
       CC_TEST_REPORTER_ID : "1d4a80a1a569fc9f5ead16221e67b0fdabee9ff989b6c9b0f6acdee047f46242"
-      PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-   
+
   before_script: 
   - "pip install virtualenv codacy-coverage"
   - "virtualenv .venv"
@@ -15,10 +14,7 @@ test:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
    
-  cache:
-      paths:
-        - .cache/pip
-        - .venv/
+
   coverage: /^TOTAL.*\s+(\d+\%)$/
   image: "python:3.6"
   script:
