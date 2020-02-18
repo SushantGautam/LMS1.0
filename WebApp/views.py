@@ -1978,18 +1978,3 @@ class SessionManagerUpdateView(UpdateView):
         kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
-
-
-from django.contrib.auth import authenticate, login as auth_login
-
-
-def loginforapp(request, username, password):
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        auth_login(request, user)
-        if request.user.is_authenticated:
-            return HttpResponse('pass')
-        else:
-            return HttpResponse('failed')
-    else:
-        return HttpResponse('failed')

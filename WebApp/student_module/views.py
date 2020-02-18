@@ -12,9 +12,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.http import JsonResponse
-from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -1058,3 +1056,22 @@ def PageUpdateAjax(request, course, chapter):
         currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
                                                                  )
     return HttpResponse(currentPageNumber)
+
+
+from django.contrib.auth import authenticate, login as auth_login
+
+from django.shortcuts import redirect, reverse
+
+
+def loginforapp(request, course, chapter, username, password):
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        auth_login(request, user)
+        if request.user.is_authenticated:
+            return redirect(
+                "/students/courseinfo/" + str(course) + "/chapterinfo/" + str(chapter) + "/contents" + '?mobileViewer=1',
+                )
+        else:
+            return HttpResponse('failed')
+    else:
+        return HttpResponse('failed')
