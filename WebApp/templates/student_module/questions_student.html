@@ -172,6 +172,12 @@
               }
           });
       });
+
+      {% if 'iframe' in request.GET %}
+          $(document).on('click', 'a', function (e) {
+              e.preventDefault()
+          })
+          $('.categoryContainer, #surveySearch').remove()
+      {% endif %}
   </script>
-    </script>
 {% endblock %}

@@ -493,7 +493,11 @@ class ParticipateSurvey(View):
             answerObject.Submit_Code = submitSurvey
             answerObject.save()
         messages.add_message(request, messages.SUCCESS, 'Your Survey has been submitted successfully.')
-        return redirect('questions_student')
+        if 'iframe' in request.GET:
+            return redirect(reverse('questions_student') + '?iframe=' + self.request.GET.get(
+                'iframe'))
+        else:
+            return redirect('questions_student')
 
 
 class surveyFilterCategory_student(ListView):
@@ -1069,8 +1073,9 @@ def loginforapp(request, course, chapter, username, password):
         auth_login(request, user)
         if request.user.is_authenticated:
             return redirect(
-                "/students/courseinfo/" + str(course) + "/chapterinfo/" + str(chapter) + "/contents" + '?mobileViewer=1',
-                )
+                "/students/courseinfo/" + str(course) + "/chapterinfo/" + str(
+                    chapter) + "/contents" + '?mobileViewer=1',
+            )
         else:
             return HttpResponse('failed')
     else:
