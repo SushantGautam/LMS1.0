@@ -579,4 +579,8 @@ def SurveyclearViewForAdmin(request, pk):
     messages.add_message(request, messages.SUCCESS,
                          'All submitted contents in this survey Deleted Successfully.')
 
-    return redirect('surveyinfo_detail', pk=pk)
+    if 'iframe' in request.GET:
+        return redirect(reverse('surveyinfo_detail', kwargs={'pk': pk}) + '?iframe=' + request.GET.get(
+            'iframe'))
+    else:
+        return redirect('surveyinfo_detail', pk=pk)

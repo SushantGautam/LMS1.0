@@ -137,7 +137,11 @@
 
             var answer = window.confirm("This will remove all student's submitted answers and cannot be undone. Continue?")
             if (answer) {
-                window.location.href = "/survey/clearsurveys/{{ object.pk }}/";
+                {% if 'iframe' in request.GET %}
+                    window.location.href = "/survey/clearsurveys/{{ object.pk }}/?iframe=1";
+                {% else %}
+                    window.location.href = "/survey/clearsurveys/{{ object.pk }}/";
+                {% endif %}
             } else {
                 //some code
             }
