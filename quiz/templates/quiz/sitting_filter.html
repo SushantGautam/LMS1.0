@@ -72,6 +72,7 @@
                         {% else %}
                             Not Submitted
                         {% endif %}
+                    </td>
                 </tr>
 
             {% endfor %}
@@ -127,7 +128,7 @@
 
     </script>
 
-    <a onclick="askIfRemoveAll()" class="btn btn-danger btn-2x" style="
+    <a onclick="askIfRemoveAll()" class="deleteallanswers btn btn-danger btn-2x" style="
     float: left;
 ">
         <span class="glyphicon glyphicon-remove"></span> Delete All Submitted Answers
@@ -157,11 +158,22 @@
         $(document).ready(function () {
             var table_main = $('#MarkingList').DataTable({
                 dom: 'lBfrtip',
-                buttons: []
-
+                buttons: [],
+                {% if 'iframe' in request.GET %}
+                    columnDefs: [{
+                        targets: -1,
+                        visible: false
+                    }]
+                {% endif %}
             });
         });
 
+        {% if 'iframe' in request.GET %}
+            $('.deleteallanswers').remove()
+            $(document).on('click', 'a', function (e) {
+                e.preventDefault()
+            })
+        {% endif %}
 
     </script>
 {% endblock %}
