@@ -113,7 +113,7 @@
     <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
     <!-- Custom Theme Scripts -->
     <script src=" {% static 'build/js/custom.js' %}"></script>
-    
+
     <!-- Custom JS -->
     <script src=" {% static 'js/common.js' %}"></script>
 
@@ -180,7 +180,17 @@
             $(".se-pre-con").fadeIn("fast");
         });
     </script>
-
+    <script>
+        {% if 'iframe' in request.GET %}
+            $('.left_col, .top_nav , .breadcrumb, .edit-buttons, #retakeSurveyBtn, .deleteallsurveyanswers').remove();
+            $('.nav-md .container.body .right_col').css({
+                'margin-left': '10px'
+            })
+            $(document).on('click', 'a', function (e) {
+                e.preventDefault()
+            })
+        {% endif %}
+    </script>
     {% block customjss %}{% endblock %}
 
 {% endblock %}
@@ -203,8 +213,6 @@
 {#        'user_id': '{{ user.id }}|{{ user.Center_Code.Center_Name }}'#}
 {#    });#}
 {#</script>#}
-
-
 
 
 </body>
