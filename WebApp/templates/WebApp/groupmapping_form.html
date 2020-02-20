@@ -37,27 +37,29 @@
 <div class="headerDiv">
     <h2 class="infoFormHeader">
         {% if '/groupmapping/create/' == request.path %}
-        Create New Student Group
+            Create New Student Group
         {% else %}
-        Edit Student Group
+            Edit Student Group
         {% endif %}
     </h2>
     <hr class="header_hr">
 </div>
-<div class="col-md-7 col-md-offset-2 text-center" style="margin-top: 3%">
-    <form method="post" id="FormID">
-        {% csrf_token %}
-
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            {{ form.GroupMapping_Name|as_crispy_field }}
-        </div>
-        <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-1 text-center">
-            {{ form.Students }}
-        </div>
-        {% if '/groupmapping/create/' == request.path %}
-        <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-            <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
-        </div>
+    <div class="col-md-7 col-md-offset-2 text-center" style="margin-top: 3%">
+        <form method="post" id="FormID">
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="m-2 alert alert-danger" style="width: max-content;">{{ form.errors }}</div>
+            {% endif %}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                {{ form.GroupMapping_Name|as_crispy_field }}
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-1 text-center">
+                {{ form.Students }}
+            </div>
+            {% if '/groupmapping/create/' == request.path %}
+                <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                    <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                </div>
         {% else %}
         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
             <label>
