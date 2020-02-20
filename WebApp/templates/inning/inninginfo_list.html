@@ -26,7 +26,13 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <hr class="header_hr">
-      
+        <div class="row">
+            {% if request.user.Is_CenterAdmin and '/mysessions' not in request.path %}
+                <div class="btn-createnew">
+                    <a class="btn btn-sm btn-success" href="{% url 'inninginfo_create' %}">Register New Session</a>
+                </div>
+            {% endif %}
+        </div>
 
         <div class="table-responsive" id="tableView">
 
@@ -70,12 +76,8 @@
         </div>
 
         <div id="cardView" style="display:none;padding: 0;" class="col-md-12 col-sm-12 col-xs-12">
-            {% if request.user.Is_CenterAdmin and '/mysessions' not in request.path %}
-                <div class="btn-createnew">
-                    <a class="btn btn-success" href="{% url 'inninginfo_create' %}">Register New Session</a>
-                </div>
-            {% endif %}
-            <br><br><br>
+
+        <br><br><br>
             <div class="container" id="divID">
                 {% for object in object_list %}
 

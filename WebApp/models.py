@@ -122,6 +122,19 @@ class MemberInfo(AbstractUser):
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
+    def get_teacher_courses(self):
+        courses = []
+        session_list = []
+        ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
+        for i in ig:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
+                                                    Course_Group__pk=i.pk, Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
+            if inning_info.exists():
+                courses.append(i.Course_Code)
+                session_list.append(inning_info)
+        return {'courses': courses, 'session': session_list}
+
     @property
     def get_user_type(self):
         if self.Is_CenterAdmin and self.Is_Teacher and self.Is_Student:

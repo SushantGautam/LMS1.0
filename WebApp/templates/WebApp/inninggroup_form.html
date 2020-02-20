@@ -49,7 +49,7 @@
     <form method="post" id="FormID">
         {% csrf_token %}
 
-
+        {{ form.errors }}
         <div class="col-md-12 col-sm-12 col-xs-12 ">
             {{ form.Course_Code|as_crispy_field }}
         </div>

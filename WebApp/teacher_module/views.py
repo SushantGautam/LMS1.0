@@ -55,7 +55,6 @@ from quiz.models import Progress
 
 from django.http import JsonResponse
 
-from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 User = get_user_model()
@@ -69,19 +68,18 @@ def start(request):
     if request.user.Is_Teacher:
         wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
         thread_keywords = get_top_thread_keywords(request, 10)
-
-        mycourse = InningGroup.objects.filter(Teacher_Code=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
-        if mycourse:
-            for course in mycourse:
-                session = InningInfo.objects.filter(Course_Group=course.id, End_Date__gt=datetime_now)
-                sessions += session
-        courseID = []
-        for groups in mycourse:
-            courseID.append(groups.Course_Code.id)
 
+        x = request.user.get_teacher_courses()
+        mycourse = x['courses']
+        sessions_list = x['session']
+        x = [x for x in sessions_list]
+        for y in x:
+            for z in y:
+                if z not in sessions:
+                    sessions.append(z)
         activeassignments = []
-        for course in courseID:
+        for course in mycourse:
             activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id, Course_Code=course,
                                                                Assignment_Deadline__gte=datetime_now,
                                                                Chapter_Code__Use_Flag=True)
@@ -162,24 +160,24 @@ class MyCourseListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id,
-                                             Center_Code=self.request.user.Center_Code)
-        context['courses'] = courses
-        sessions = []
-        if context['courses']:
-            for course in context['courses']:
-                # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=course.id, End_Date__gt=datetime_now)
-                sessions += session
-        context['sessions'] = sessions
-
-        filtered_qs = MyCourseFilter(
-            self.request.GET,
-            queryset=courses
-        ).qs
-        filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
-
-        paginator = Paginator(filtered_qs, 8)
+        # courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id,
+        #                                      Center_Code=self.request.user.Center_Code)
+        # context['courses'] = courses
+        # sessions = []
+        # if context['courses']:
+        #     for course in context['courses']:
+        #         # Filtering out only active sessions
+        #         session = InningInfo.objects.filter(Groups__id=course.id, End_Date__gt=datetime_now)
+        #         sessions += session
+        # context['sessions'] = sessions
+        #
+        # filtered_qs = MyCourseFilter(
+        #     self.request.GET,
+        #     queryset=courses
+        # ).qs
+        # filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
+        courses = self.request.user.get_teacher_courses()['courses']
+        paginator = Paginator(courses, 8)
         page = self.request.GET.get('page')
         try:
             response = paginator.page(page)
