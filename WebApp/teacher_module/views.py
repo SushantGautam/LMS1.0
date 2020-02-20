@@ -1788,6 +1788,7 @@ class InningGroupUpdateView(UpdateView):
 
     def form_valid(self, form):
         messages.add_message(self.request, messages.SUCCESS, 'Course Teacher Allocation Updated.')
+        self.object = form.save()
         return redirect('teachers_inninggroup_detail', self.kwargs.get('pk'))
 
     def get_context_data(self, **kwargs):
