@@ -618,19 +618,23 @@
     });
 
 
-
+    var submitted = false;
     $(".submitAnswer").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
+        if (submitted) {
+            return false
+        }
+        submitted = true;
         var answerdata = new FormData();
         if ($(`#id_Assignment_File${this.id}`).val()) {
             var answer_file = $(`#id_Assignment_File${this.id}`)[0].files[0];
-        }else {
+        } else {
             var answer_file = 0;
         }
 
-        if ($(`#id_Assignment_Answer${this.id}`).val()){
+        if ($(`#id_Assignment_Answer${this.id}`).val()) {
             var answer_text = $(`#id_Assignment_Answer${this.id}`).val();
-        }else{
+        } else {
             var answer_text = '';
         }
 
@@ -655,18 +659,20 @@
                     console.log('Success')
                     location.reload()
                 },
-                error: function () {
-                    console.log('Error in posting chapter create form')
+                error: function (e) {
+                    submitted = false;
+                    alert(e.responseJSON.msg)
+                    console.log('Error in submitting file. ' + e.responseJSON.msg)
                 }
             });
         }
     });
 </script>
 
-<script>
-    $(".answerButton").click(function () {
-        $(`#answerContent${this.id}`).toggle();
-    });
+    <script>
+        $(".answerButton").click(function () {
+            $(`#answerContent${this.id}`).toggle();
+        });
     $(".moreButton").click(function () {
         $(`#questionContent${this.id}`).toggle();
     });

@@ -376,7 +376,8 @@ class InningManagerForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
         self.fields['memberinfoobj'].queryset = MemberInfo.objects.filter(Use_Flag=True,
-                                                                          Center_Code=self.request.user.Center_Code)
+                                                                          Center_Code=self.request.user.Center_Code,
+                                                                          Is_Teacher=True)
 
 
 class AttendanceForm(forms.ModelForm):

@@ -1730,6 +1730,7 @@ class ContentsView(TemplateView):
             if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
                 pass
             else:
+                messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
                 raise ObjectDoesNotExist
         except:
             if '/students/' in request.path:
@@ -1971,7 +1972,6 @@ class SessionManagerUpdateView(UpdateView):
         else:
             session_Manager = InningManager.objects.create(
                 sessioninfoobj=InningInfo.objects.get(pk=self.kwargs.get('pk')))
-        print(session_Manager)
         return session_Manager
 
     def form_valid(self, form):
@@ -1985,6 +1985,26 @@ class SessionManagerUpdateView(UpdateView):
         kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
+
+def viewteacherAttendance(request, attend_date, courseid, teacherid):
+    attend_date = datetime.strptime(str(attend_date), "%m%d%Y").strftime("%m%d%Y")
+    print(attend_date)
+    path = os.path.join(settings.MEDIA_ROOT, ".teacherAttendanceData", str(courseid), attend_date)
+
+    teacher_data_file = os.path.join(path, str(teacherid) + '.txt')
+
+    if os.path.isfile(teacher_data_file):
+        with open(teacher_data_file) as json_file:
+            data = json.load(json_file)
+            start_time = data['start_time']
+            end_time = data['end_time']
+            numberoftimesopened = int(data['numberoftimesopened'])
+            chapters = data['chapters']
+            print(data)
+            return JsonResponse(data)
+    else:
+        return HttpResponse("No attendance recorded", status=500)
 
 
 def singleUserHomePageJSON(request):

@@ -1161,6 +1161,7 @@
         {% if not connection_offline %}
             chapterProgressStopFunction()
             chapterProgressFunction()
+            teacherchapterProgressFunction()
         {% endif %}
         if (page_number >= parseInt($('#totalpages').text())) {
             $('#next-btn').css('visibility', 'hidden')
@@ -1701,6 +1702,36 @@
             function chapterProgressStopFunction() {
                 clearTimeout(chapterProgress);
             }
+        </script>
+
+        <script>
+            var teacherchapterProgress;
+
+            // var currentPageUpdateOnServer = 0;
+
+            function teacherchapterProgressFunction() {
+                console.log('hasdj')
+                //if (currentPageUpdateOnServer === 0) {
+                teacherchapterProgress = setTimeout(function () {
+                    $.ajax({
+                        url: "{% url 'taketeacherAttendance' course.pk %}",
+                        type: "get",
+                        data: {
+                            'chapterid': '{{chapter.pk }}',
+                            'pagenumber': window.currentpage,
+                        },
+                        success: function (data) {
+                            // window.currentPageUpdateOnServer = parseInt(data)
+                        },
+                    })
+                }, 100);
+                //}
+            }
+
+            function teacherchapterProgressStopFunction() {
+                clearTimeout(teacherchapterProgress);
+            }
+
         </script>
     {% endif %}
 {% endif %}

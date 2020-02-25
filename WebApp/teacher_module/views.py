@@ -1,4 +1,5 @@
 # from django.core.checks import messages
+import json
 import os
 from datetime import datetime, timedelta
 
@@ -2102,3 +2103,69 @@ def chapterStudentProgress(request, course, pk, inningpk=None):
     }
 
     return render(request, 'teacher_module/chapterProgress.html', context)
+
+
+def teacherAttendance(request, courseid, createFile=True):
+    chapters = []
+    pagenumber = []
+    if request.GET.get('chapterid'):
+        chapterid = request.GET.get('chapterid')
+        pagenumber = request.GET.get('pagenumber')
+    today = datetime_now.strftime("%m%d%Y")
+    path = os.path.join(settings.MEDIA_ROOT, ".teacherAttendanceData", str(courseid), today)
+    try:
+        os.makedirs(path)
+    except Exception as e:
+        pass
+    teacher_data_file = os.path.join(path, str(request.user.pk) + '.txt')
+
+    if os.path.isfile(teacher_data_file):
+        new_data = None
+        with open(teacher_data_file) as json_file:
+            data = json.load(json_file)
+            start_time = data['start_time']
+            # end_time = data['end_time']
+            numberoftimesopened = int(data['numberoftimesopened'])
+            new_data = data
+
+        if createFile:
+            numberoftimesopened += 1
+            new_data.update({
+                'end_time': datetime_now.strftime("%m/%d/%Y, %H:%M:%S"),
+                'numberoftimesopened': numberoftimesopened,
+            })
+            if request.GET.get('chapterid'):
+                chapters = new_data['chapters']
+                create = 0
+                for x in new_data['chapters']:
+                    if request.GET.get('chapterid') == x['chapterid']:
+                        create = 1
+                        if request.GET.get('pagenumber') not in x['pagenumber']:
+                            x['pagenumber'].append(request.GET.get('pagenumber'))
+                            break
+                if create == 0:
+                    new_data['chapters'] = new_data['chapters'] + [{
+                        'chapterid': request.GET.get('chapterid'),
+                        'pagenumber': [request.GET.get('pagenumber'), ]
+                    }]
+            with open(teacher_data_file, 'w+') as teacher_data_file:
+                json.dump(new_data, teacher_data_file, indent=4)
+    else:
+        if createFile:
+            data = {
+                'start_time': datetime_now.strftime("%m/%d/%Y, %H:%M:%S"),
+                'end_time': datetime_now.strftime("%m/%d/%Y, %H:%M:%S"),
+                'numberoftimesopened': 1,
+            }
+            if request.GET.get('chapterid'):
+                chapters.append({
+                    'chapterid': request.GET.get('chapterid'),
+                    'pagenumber': [request.GET.get('pagenumber'), ]
+                })
+                data.update({
+                    'chapters': chapters,
+                })
+            with open(teacher_data_file, 'w+') as teacher_file:
+                json.dump(data, teacher_file, indent=4)
+
+    return HttpResponse('success')
