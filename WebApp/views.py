@@ -23,6 +23,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views import View
@@ -45,6 +46,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
     InningManager
+from .student_module.views import datetime_now
 
 
 class Changestate(View):
@@ -940,6 +942,7 @@ class InningGroupDetailView(DetailView):
 class InningGroupUpdateView(UpdateView):
     model = InningGroup
     form_class = InningGroupForm
+
     def form_valid(self, form):
         """If the form is valid, redirect to the supplied URL."""
         messages.add_message(self.request, messages.SUCCESS, 'Course Teacher Allocation Updated.')
@@ -950,6 +953,7 @@ class InningGroupUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['base_file'] = "base.html"
         return context
+
     def get_form_kwargs(self):
         kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
@@ -997,6 +1001,7 @@ class GroupMappingCreateView(CreateView):
         kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['base_file'] = "base.html"
@@ -1964,9 +1969,10 @@ class SessionManagerUpdateView(UpdateView):
         if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs.get('pk')).exists():
             session_Manager = InningManager.objects.get(sessioninfoobj__pk=self.kwargs.get('pk'))
         else:
-            session_Manager = InningManager.objects.create(sessioninfoobj= InningInfo.objects.get(pk=self.kwargs.get('pk')))
+            session_Manager = InningManager.objects.create(
+                sessioninfoobj=InningInfo.objects.get(pk=self.kwargs.get('pk')))
         print(session_Manager)
-        return  session_Manager
+        return session_Manager
 
     def form_valid(self, form):
         if form.is_valid():
@@ -1979,3 +1985,44 @@ class SessionManagerUpdateView(UpdateView):
         kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
+
+def singleUserHomePageJSON(request):
+    if request.user.Is_Student:
+        courses = request.user.get_student_courses()
+        assignments = AssignmentInfo.objects.filter(
+            Assignment_Deadline__gte=datetime_now, Course_Code__in=courses.values_list('pk'),
+            Chapter_Code__Use_Flag=True)[:7]
+
+        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
+        sessions = []
+        if batches:
+            for batch in batches:
+                # Filtering out only active sessions
+                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
+                sessions += session
+
+        student_group = request.user.groupmapping_set.all()
+        student_session = InningInfo.objects.filter(Groups__in=student_group)
+        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+
+        # Predefined category name "general, session, course, system"
+        general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
+                                                   Center_Code=request.user.Center_Code, Use_Flag=True)
+        session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
+                                                   Session_Code__in=student_session, Use_Flag=True)
+        course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
+                                                  Course_Code__in=student_course, Use_Flag=True)
+        system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+
+        survey_queryset = general_survey | session_survey | course_survey | system_survey
+        survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+
+        user = MemberInfo.objects.filter(pk=request.user.pk).values('first_name', 'last_name')
+        courses_list = courses.values('id', 'Course_Code__Course_Name')
+        assignments_list = assignments.values('id', 'Assignment_Topic')
+        survey_list = survey_queryset.values('id', 'Survey_Title')
+        response = {'userinfo': list(user), 'courses': list(courses_list), 'assignments': list(assignments_list),
+                    'survey': list(survey_list)}
+        return JsonResponse(response, safe=False)

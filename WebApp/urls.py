@@ -42,6 +42,7 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for MemberInfo
+    path('singleUserHomePageAPI/', views.singleUserHomePageJSON, name='singleUserHomePage'), #for app
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
     path('memberinfo/inactive', views.MemberInfoListViewInactive.as_view(),
          name='memberinfo_list_inactive'),
