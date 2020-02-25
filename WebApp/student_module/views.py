@@ -363,8 +363,8 @@ class submitAnswer(View):
         if bool(request.FILES.get('Assignment_File', False)) == True:
             media = request.FILES['Assignment_File']
             # print(media)
-            if media.size / 1024 > 2048:
-                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+            if media.size / 1024 > 10240:
+                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 10MB"}, status=500)
             path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
