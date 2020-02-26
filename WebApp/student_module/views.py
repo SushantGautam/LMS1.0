@@ -363,8 +363,8 @@ class submitAnswer(View):
         if bool(request.FILES.get('Assignment_File', False)) == True:
             media = request.FILES['Assignment_File']
             # print(media)
-            if media.size / 1024 > 2048:
-                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+            if media.size / 1024 > 10240:
+                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 10MB"}, status=500)
             path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
@@ -1080,3 +1080,46 @@ def loginforapp(request, course, chapter, username, password):
             return HttpResponse('failed')
     else:
         return HttpResponse('failed')
+
+
+def singleUserHomePageJSON(request):
+    if request.user.Is_Student:
+        courses = request.user.get_student_courses()
+        assignments = AssignmentInfo.objects.filter(
+            Assignment_Deadline__gte=datetime_now, Course_Code__in=courses.values_list('pk'),
+            Chapter_Code__Use_Flag=True)[:7]
+
+        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
+        sessions = []
+        if batches:
+            for batch in batches:
+                # Filtering out only active sessions
+                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
+                sessions += session
+
+        student_group = request.user.groupmapping_set.all()
+        student_session = InningInfo.objects.filter(Groups__in=student_group)
+        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+
+        # Predefined category name "general, session, course, system"
+        general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
+                                                   Center_Code=request.user.Center_Code, Use_Flag=True)
+        session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
+                                                   Session_Code__in=student_session, Use_Flag=True)
+        course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
+                                                  Course_Code__in=student_course, Use_Flag=True)
+        system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+
+        survey_queryset = general_survey | session_survey | course_survey | system_survey
+        survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+
+        user = MemberInfo.objects.filter(pk=request.user.pk).values('first_name', 'last_name')
+        courses_list = courses.values('id', 'Course_Code__Course_Name')
+        assignments_list = assignments.values('id', 'Assignment_Topic')
+        survey_list = survey_queryset.values('id', 'Survey_Title')
+        response = {'userinfo': list(user), 'courses': list(courses_list), 'assignments': list(assignments_list),
+                    'survey': list(survey_list)}
+        return JsonResponse(response, safe=False)
+    else:
+        HttpResponse('You are not a student.')

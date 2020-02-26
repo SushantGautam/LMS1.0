@@ -308,3 +308,8 @@ urlpatterns += (
     path('inninginfo/<int:pk>/sessionmanager/update/', views.SessionManagerUpdateView.as_view(),
          name='session-manager-update'),
 )
+
+urlpatterns += (
+    path('attendance/<int:attend_date>/<int:courseid>/<int:teacherid>/', views.viewteacherAttendance,
+         name='teacherattendanceview'),
+)

@@ -37,6 +37,7 @@
                             {% endfor %}
                         {% endfor %}
                     </select>
+                    <button id="goBtn" class="btn btn-info"> Go</button>
                 </div>
             </div>
         </div>
@@ -110,19 +111,6 @@
 
 {% block customjss %}
     <script>
-
-        $('#goBtn').on('click', function () {
-            changed_date = $('#id_Assignment_Deadline_edit').val()
-            session = $('#select_session').val()
-            course = $('#select_course').val()
-            if (changed_date && session && course) {
-                window.location.href = "/teachers/student_progress/class-list/" + session + "/" + course + "/" + changed_date
-            } else {
-                alert('Please Select Course and Session')
-            }
-
-        })
-
         var present = 0;
         var absent = 0;
 
@@ -181,10 +169,24 @@
 
                 buttons: [],
                 columnDefs: [
-                { "width": "33%", "targets": 2 }
-              ]
+                    {"width": "33%", "targets": 2}
+                ]
 
             });
+            $('#goBtn').on('click', function (e) {
+                e.preventDefault()
+                session = $('#select_session').val()
+                console.log(session, '{{ chapter.pk }}')
+                if (session) {
+                    if (params_base.get('iframe')) {
+                        window.location.href = "/teachers/inninginfo/" + session + "/courseinfo/{{ course.pk }}" + "/chapterinfo/{{ chapter.pk }}/student_progress/" + '?iframe=1'
+                    } else {
+                        window.location.href = "/teachers/inninginfo/" + session + "/courseinfo/{{ course.pk }}" + "/chapterinfo/{{ chapter.pk }}/student_progress/"
+                    }
+                } else {
+                    alert('Please Select Session')
+                }
+            })
         });
 
 

@@ -263,3 +263,10 @@ urlpatterns += (
          views.chapterStudentProgress, name='chapter_student_progress_inning'),
 
 )
+
+# Teacher's Attendance
+
+urlpatterns += (
+    path('courseinfo/detail/<int:courseid>/take-attendance/',
+         views.teacherAttendance, name='taketeacherAttendance'),
+)
