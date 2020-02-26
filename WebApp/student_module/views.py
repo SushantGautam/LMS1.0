@@ -1081,12 +1081,13 @@ def loginforapp(request, course, chapter, username, password):
     else:
         return HttpResponse('failed')
 
+from django.db.models import F
 
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
         courses = request.user.get_student_courses()
         assignments = AssignmentInfo.objects.filter(
-            Assignment_Deadline__gte=datetime_now, Course_Code__in=courses.values_list('pk'),
+            Assignment_Deadline__lte=datetime_now, Course_Code__in=courses.values_list('pk'),
             Chapter_Code__Use_Flag=True)[:7]
 
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
@@ -1111,15 +1112,38 @@ def singleUserHomePageJSON(request):
                                                   Course_Code__in=student_course, Use_Flag=True)
         system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
+        sitting_queryset = Sitting.objects.filter(user=request.user)
+
         survey_queryset = general_survey | session_survey | course_survey | system_survey
         survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
 
-        user = MemberInfo.objects.filter(pk=request.user.pk).values('first_name', 'last_name')
-        courses_list = courses.values('id', 'Course_Code__Course_Name')
-        assignments_list = assignments.values('id', 'Assignment_Topic')
-        survey_list = survey_queryset.values('id', 'Survey_Title')
+        user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'first_name', 'last_name', 'Member_Avatar',
+                                                                    'email', 'username', 'Member_Permanent_Address',
+                                                                    'Member_Temporary_Address', 'Member_BirthDate',
+                                                                    'Member_Phone', 'Use_Flag', 'Is_Teacher',
+                                                                    'Is_Student', 'Is_CenterAdmin', 'Member_Gender',
+                                                                    'Center_Code')
+        courses_list = courses.values('id', course_name=F('Course_Code__Course_Name'),
+                                      course_description=F('Course_Code__Course_Description'),
+                                      course_cover_file=F('Course_Code__Course_Cover_File'),
+                                      course_level=F('Course_Code__Course_Level'),
+                                      course_info=F('Course_Code__Course_Info'), use_flag=F('Course_Code__Use_Flag'),
+                                      center_Code=F('Course_Code__Center_Code'),
+                                      register_agent=F('Course_Code__Register_Agent'))
+        assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
+                                              course_code=F('Course_Code__pk'), chapter_code=F('Chapter_Code__pk'),
+                                              register_agent=F('Register_Agent__pk'), )
+        survey_list = survey_queryset.values('id', 'Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover', 'Use_Flag',
+                                             'Retaken_From', 'Version_No', 'Center_Code', 'Category_Code',
+                                             'Session_Code', 'Course_Code', 'Added_By')
+        sitting_list = sitting_queryset.values('pk', 'user', 'question_order', 'question_list', 'incorrect_questions',
+                                               'current_score', 'complete', 'user_answers', 'start', 'end',
+                                               'score_list', course_name=F('quiz__course_code__Course_Name'),
+                                               course_pk=F('quiz__course_code__pk'), quiz_pk=F('quiz__pk'),
+                                               quiz_title=F('quiz__title'), single_attempt=F('quiz__single_attempt'))
+
         response = {'userinfo': list(user), 'courses': list(courses_list), 'assignments': list(assignments_list),
-                    'survey': list(survey_list)}
-        return JsonResponse(response, safe=False)
+                    'survey': list(survey_list), 'sitting': list(sitting_list)}
+        return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
     else:
         HttpResponse('You are not a student.')
