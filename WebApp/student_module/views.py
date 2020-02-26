@@ -1123,7 +1123,7 @@ def singleUserHomePageJSON(request):
                                                                     'Member_Phone', 'Use_Flag', 'Is_Teacher',
                                                                     'Is_Student', 'Is_CenterAdmin', 'Member_Gender',
                                                                     'Center_Code')
-        courses_list = courses.values('id', course_name=F('Course_Code__Course_Name'),
+        courses_list = courses.values(course_pk=F('Course_Code__pk'), course_name=F('Course_Code__Course_Name'),
                                       course_description=F('Course_Code__Course_Description'),
                                       course_cover_file=F('Course_Code__Course_Cover_File'),
                                       course_level=F('Course_Code__Course_Level'),
