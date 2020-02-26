@@ -1112,7 +1112,7 @@ def singleUserHomePageJSON(request):
                                                   Course_Code__in=student_course, Use_Flag=True)
         system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
-        sitting_queryset = Sitting.objects.filter(user=request.user)
+        sitting_queryset = Sitting.objects.filter(user=request.user).order_by('-end')[:5]
 
         survey_queryset = general_survey | session_survey | course_survey | system_survey
         survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
