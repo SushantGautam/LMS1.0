@@ -449,8 +449,11 @@ class questions_student_detail(DetailView):
 
 
         else:
-            context['can_submit'] = True
-
+            if self.object.End_Date > datetime.now(timezone.utc):
+                context['can_submit'] = True
+            else:
+                context['can_submit'] = False
+                context['datetimeexpired'] = 1
         return context
 
 

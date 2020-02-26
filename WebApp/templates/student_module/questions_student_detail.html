@@ -98,8 +98,12 @@
                 </div> -->
         </div>
 
-          <div class="text-danger" style="display: none;text-align: center;" id="survey_already_taken">You have already
-              taken this survey.
+          <div class="text-danger" style="display: none;text-align: center;" id="survey_already_taken">
+              {% if datetimeexpired %}
+                  Survey submission date has ended.
+              {% else %}
+                  You have already taken this survey.
+              {% endif %}
           </div>
 
           <form id="surveyform" method="post" action="{% url 'ParticipateSurvey' %}?iframe=1">
