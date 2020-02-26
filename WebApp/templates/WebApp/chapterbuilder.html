@@ -749,7 +749,11 @@
                         <div class="col-md-12">
 
                             <div class="new-survey">
-                                <a id="survey_create_link" href="{% url 'courseinfo_detail' course %}?ifsurvey=1"
+                                <a id="survey_create_link" href="    {% if 'teachers' in request.path %}
+                    {% url  'teacher_courseinfo_detail' course %}?ifsurvey=1
+                    {% else %}
+                    {% url  'courseinfo_detail' course %}?ifsurvey=1
+                    {% endif %}"
                                    target="_blank">
                                     <h5> <span
                                             style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create

@@ -176,10 +176,10 @@
                     {% for a in attendance %}
 
 
-                        <tr>
+                        <tr  >
                             <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
-                            <td>  {{ a.initial.member_code }} </td>
-                            <td>  {{ a.initial.present }} </td>
+                            <td >  {{ a.initial.member_code }} </td>
+                            <td style="background-color:{% if  a.initial.present %} 	 #29a329 {% else %} #cc2900 {% endif %}; color:white;  font-weight:700">  {{ a.initial.present }} </td>
                             <td>  {{ a.initial.updated }} </td>
 
                         </tr>
