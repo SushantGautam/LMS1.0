@@ -1115,7 +1115,8 @@ def singleUserHomePageJSON(request):
         sitting_queryset = Sitting.objects.filter(user=request.user).order_by('-end')[:5]
 
         survey_queryset = general_survey | session_survey | course_survey | system_survey
-        survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+        survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False).exclude(
+            submitsurvey__Student_Code__pk__in=[request.user.pk, ])
 
         user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'first_name', 'last_name', 'Member_Avatar',
                                                                     'email', 'username', 'Member_Permanent_Address',
