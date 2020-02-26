@@ -1081,7 +1081,9 @@ def loginforapp(request, course, chapter, username, password):
     else:
         return HttpResponse('failed')
 
+
 from django.db.models import F
+
 
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
@@ -1124,16 +1126,18 @@ def singleUserHomePageJSON(request):
                                                                     'Member_Phone', 'Use_Flag', 'Is_Teacher',
                                                                     'Is_Student', 'Is_CenterAdmin', 'Member_Gender',
                                                                     'Center_Code')
-        courses_list = courses.values(course_pk=F('Course_Code__pk'), course_name=F('Course_Code__Course_Name'),
-                                      course_description=F('Course_Code__Course_Description'),
-                                      course_cover_file=F('Course_Code__Course_Cover_File'),
-                                      course_level=F('Course_Code__Course_Level'),
-                                      course_info=F('Course_Code__Course_Info'), use_flag=F('Course_Code__Use_Flag'),
-                                      center_Code=F('Course_Code__Center_Code'),
-                                      register_agent=F('Course_Code__Register_Agent'))
+        courses_list = courses.values(pk=F('Course_Code__pk'), Course_Name=F('Course_Code__Course_Name'),
+                                      Course_Description=F('Course_Code__Course_Description'),
+                                      Course_Cover_File=F('Course_Code__Course_Cover_File'),
+                                      Course_Level=F('Course_Code__Course_Level'),
+                                      Course_Info=F('Course_Code__Course_Info'), Use_Flag=F('Course_Code__Use_Flag'),
+                                      Center_Code=F('Course_Code__Center_Code'),
+                                      Register_Agent=F('Course_Code__Register_Agent'))
         assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
-                                              course_code=F('Course_Code__pk'), chapter_code=F('Chapter_Code__pk'),
-                                              register_agent=F('Register_Agent__pk'), )
+                                              course_code=F('Course_Code__pk'),
+                                              course_name=F('Course_Code__Course_Name'),
+                                              chapter_code=F('Chapter_Code__pk'),
+                                              Register_Agent_Name=F('Register_Agent__pk'), )
         survey_list = survey_queryset.values('id', 'Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover', 'Use_Flag',
                                              'Retaken_From', 'Version_No', 'Center_Code', 'Category_Code',
                                              'Session_Code', 'Course_Code', 'Added_By')
