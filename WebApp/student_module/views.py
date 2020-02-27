@@ -1141,6 +1141,7 @@ def singleUserHomePageJSON(request):
                                       Center_Code=F('Course_Code__Center_Code'),
                                       Register_Agent=F('Course_Code__Register_Agent'))
         assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
+                                              'Register_DateTime',
                                               course_code=F('Course_Code__pk'),
                                               course_name=F('Course_Code__Course_Name'),
                                               chapter_code=F('Chapter_Code__pk'),
