@@ -1096,7 +1096,7 @@ def singleUserHomePageJSON(request):
     if request.user.Is_Student:
         courses = request.user.get_student_courses()
         assignments = AssignmentInfo.objects.filter(
-            Assignment_Deadline__gte=datetime_now, Course_Code__in=courses.values_list('pk'),
+            Assignment_Deadline__gte=datetime_now, Course_Code__in=courses,
             Chapter_Code__Use_Flag=True)[:7]
 
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
