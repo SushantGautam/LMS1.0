@@ -1145,7 +1145,9 @@ def singleUserHomePageJSON(request):
                                               course_code=F('Course_Code__pk'),
                                               course_name=F('Course_Code__Course_Name'),
                                               chapter_code=F('Chapter_Code__pk'),
-                                              Register_Agent_Name=F('Register_Agent__username'), )
+                                              Register_Agent_Username=F('Register_Agent__username'),
+                                              Register_Agent_Firstname=F('Register_Agent__first_name'),
+                                              Register_Agent_Lastname=F('Register_Agent__last_name'))
         survey_list = survey_queryset.values('id', 'Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover', 'Use_Flag',
                                              'Retaken_From', 'Version_No', 'Center_Code', 'Category_Code',
                                              'Session_Code', 'Course_Code', 'Added_By')
