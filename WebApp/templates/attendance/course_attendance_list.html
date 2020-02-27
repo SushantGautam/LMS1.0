@@ -358,6 +358,12 @@
 
         $('#goBtn').on('click', function () {
             changed_date = $('#id_Assignment_Deadline_edit').val()
+            c_date = new Date(changed_date)
+            now = new Date()
+            if (c_date > now) {
+                alert('Future date is not allowed')
+                return false
+            }
             session = $('#select_session').val()
             course = $('#select_course').val()
             if (changed_date && session && course) {
