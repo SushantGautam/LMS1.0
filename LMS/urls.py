@@ -9,7 +9,7 @@ from rest_framework import routers
 
 from WebApp import api
 from WebApp import views
-from WebApp.student_module.views import loginforapp
+from WebApp.student_module.views import loginforapp, singleUserHomePageJSON
 
 urlpatterns = [
                   url(r'^admin/', admin.site.urls),
@@ -98,4 +98,6 @@ urlpatterns += (
     # for downloading static files for mobile development
     path('get_static_files/', views.get_static_files, name='get_static_files'),
     # for downloading static files for mobile development
+    path('students/singleUserHomePageAPI/', singleUserHomePageJSON, name='singleUserHomePage'),  # for app
+
 )

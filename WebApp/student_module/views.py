@@ -22,6 +22,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from textblob import TextBlob
 
 from LMS import settings
@@ -1088,6 +1090,8 @@ def loginforapp(request, course, chapter, username, password):
 from django.db.models import F
 
 
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
         courses = request.user.get_student_courses()
