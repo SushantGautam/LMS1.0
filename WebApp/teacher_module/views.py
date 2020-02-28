@@ -81,7 +81,7 @@ def start(request):
                     sessions.append(z)
         activeassignments = []
         for course in mycourse:
-            activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id, Course_Code=course,
+            activeassignments += AssignmentInfo.objects.filter(Course_Code=course,
                                                                Assignment_Deadline__gte=datetime_now,
                                                                Chapter_Code__Use_Flag=True)
 
