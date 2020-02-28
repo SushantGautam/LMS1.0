@@ -2236,13 +2236,19 @@ label .asteriskField {
     overflow: auto;
 }
  .list-students{
-    max-height:40vh;
-    overflow: auto;
-}
+     max-height: 40vh;
+     overflow: auto;
+ }
 
 /* attendance */
-.total-students{
+.total-students {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     margin: 20px 0;
     padding: 15px 10px;
+}
+
+.top_nav .navbar-right {
+    margin: 0;
+    width: 60%;
+    float: right;
 }
