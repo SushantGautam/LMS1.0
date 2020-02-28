@@ -1385,7 +1385,7 @@ article {
 @media  (min-width: 310px) and (max-width: 672px) {
     .top_nav .navbar-right {
         margin: 0;
-        width: 56% !important;
+        width: 55% !important;
         float: right;
     }
     .navClass{
