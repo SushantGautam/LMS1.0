@@ -342,24 +342,29 @@
                     <div class="x_panel" id="answerContent{{ questions.pk }}" style="display: none">
                         <div class="x_content">
                             {% for answer in Answers %}
-                            {% if questions.id == answer.Question_Code.id  %}
-                            {% if answer.Assignment_Answer != '' %}
-                            <p style="margin: 0;color:#000000;">{{answer.Assignment_Answer}}</p>
-                            {% else %}
-                            <p style="margin: 0;color:#000000;">File has been Submitted</p>
+                                {% if questions.id == answer.Question_Code.id %}
+                                    {% if answer.Assignment_Answer != '' %}
+                                        <p style="margin: 0;color:#000000;">{{ answer.Assignment_Answer }}</p>
+                                    {% else %}
+                                        <p style="margin: 0;color:#000000;">File has been Submitted</p>
 
-                            <a href="{{answer.Assignment_File.url }}" target="_blank"><b style="color:#017a9b">Click
-                                    to view Submitted file</b></a>
-                            {% endif %}
-                            {% endif %}
+                                        <a href="{{ answer.Assignment_File.url }}" target="_blank"><b
+                                                style="color:#017a9b">Click
+                                            to view Submitted file</b></a>
+                                        <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
+                                                style="float: right" title="Delete Answer"><i class="fa fa-trash"
+                                                                                              aria-hidden="true"></i>
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
                             {% endfor %}
 
                             {% for answer in notAnswered %}
-                            {% if  questions.id == answer  %}
-                            <form enctype="multipart/form-data" method="post" id="{{ questions.id }}"
-                                data-parsley-validate="" class="form-horizontal form-label-left submitAnswer"
-                                novalidate="" data-id="{{ questions.id }}">
-                                {% csrf_token %}
+                                {% if  questions.id == answer %}
+                                    <form enctype="multipart/form-data" method="post" id="{{ questions.id }}"
+                                          data-parsley-validate="" class="form-horizontal form-label-left submitAnswer"
+                                          novalidate="" data-id="{{ questions.id }}">
+                                        {% csrf_token %}
                                 {% if questions.Answer_Type == 'S' %}
                                 <div class="form-group">
                                     <textarea class="form-control rounded-0" rows="5" cols="100"
@@ -684,9 +689,35 @@
         $(".answerButton").click(function () {
             $(`#answerContent${this.id}`).toggle();
         });
-    $(".moreButton").click(function () {
-        $(`#questionContent${this.id}`).toggle();
-    });
-</script>
+        $(".moreButton").click(function () {
+            $(`#questionContent${this.id}`).toggle();
+        });
+    </script>
 
+    <script>
+        $(document).ready(function () {
+            $('.deleteanswer').on('click', function () {
+                var answerpk = this.value
+                var result = confirm("Are you sure you want to delete this answer?");
+                if (!result) {
+                    return false
+                }
+                $.ajax({
+                    method: 'POST',
+                    url: "{% url 'assignanswerinfo_delete' %}",  // URL to your view that serves new info
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        'answerpk': answerpk,
+                    },
+                    success: function (response) {
+                        location.reload()
+                    },
+                    error: function (err) {
+                        console.log(err.responseText)
+                        location.reload()
+                    },
+                });
+            });
+        })
+    </script>
 {% endblock %}

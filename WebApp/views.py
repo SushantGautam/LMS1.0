@@ -23,7 +23,6 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views import View
@@ -46,7 +45,6 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
     InningManager
-from .student_module.views import datetime_now
 
 
 class Changestate(View):
@@ -1313,6 +1311,19 @@ class AssignAnswerInfoCreateView(CreateView):
 class AssignAnswerInfoDetailView(DetailView):
     model = AssignAnswerInfo
 
+def AssignAnswerInfoDelete(request):
+    if request.method == "POST":
+        answerpk = request.POST.get('answerpk')
+        if AssignAnswerInfo.objects.filter(pk=answerpk).exists():
+            AssignAnswerInfo.objects.get(pk=answerpk).delete()
+            messages.add_message(request, messages.SUCCESS, 'Deleted successfully')
+            return HttpResponse('success', status=200)
+        else:
+            messages.add_message(request, messages.ERROR, 'Answer doesn\'t exist')
+            return HttpResponse('Answer doesn\'t exist', status=404)
+    else:
+        messages.add_message(request, messages.ERROR, 'Invalid')
+        return HttpResponse('GET Method not allowed', status=403)
 
 class AssignAnswerInfoUpdateView(UpdateView):
     model = AssignAnswerInfo

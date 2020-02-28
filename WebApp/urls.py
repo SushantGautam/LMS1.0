@@ -162,6 +162,8 @@ urlpatterns += (
          views.AssignAnswerInfoDetailView.as_view(), name='assignanswerinfo_detail'),
     path('questioninfo/<int:questioncode>/assignanswerinfo/update/<int:pk>/',
          views.AssignAnswerInfoUpdateView.as_view(), name='assignanswerinfo_update'),
+    path('deleteassignanswer/',
+         views.AssignAnswerInfoDelete, name='assignanswerinfo_delete'),
 )
 
 urlpatterns += (

@@ -9,6 +9,8 @@ from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
     FileField
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
@@ -466,6 +468,10 @@ class AssignAnswerInfo(models.Model):
     def get_update_url(self):
         return reverse('assignanswerinfo_update', args=(self.pk,))
 
+
+@receiver(post_delete, sender=AssignAnswerInfo)
+def submission_delete(sender, instance, **kwargs):
+    instance.Assignment_File.delete(False)
 
 class SessionInfo(models.Model):
     Session_Name = CharField(max_length=200)
