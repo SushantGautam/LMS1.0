@@ -349,6 +349,8 @@
 
     <script>
         $(document).ready(function () {
+            $(".datetimeinput")[0].max = "9999-12-31";
+
             $("#select_session").on("change", function () {
                 selectSessionOnChange();
             });

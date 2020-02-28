@@ -35,7 +35,7 @@
     <div id='form-errors'>{{ form.non_field_errors }}</div>
 
 
-    <form method="post" id="FormID">
+    <form method="post" id="FormID" enctype="multipart/form-data">
         {% csrf_token %}
         {% crispy form %}
     </form>
