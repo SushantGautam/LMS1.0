@@ -953,7 +953,11 @@
                 return false
             } else {
                 let chapter = $('#chapterlist').val()
-                location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                {% if 'teachers' in request.path %}
+                    location.assign('/teachers/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                {% else %}
+                    location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                {% endif %}
             }
         });
     })();

@@ -338,12 +338,6 @@
 
             });
             $(document).ready(function () {
-
-                $("#select_session").on("change", function () {
-                    selectSessionOnChange();
-                });
-
-
                 chart1.update({
                     series: [{
                         data: [present, absent]
@@ -354,9 +348,22 @@
     </script>
 
     <script>
+        $(document).ready(function () {
+            $("#select_session").on("change", function () {
+                selectSessionOnChange();
+            });
+
+        });
+
 
         $('#goBtn').on('click', function () {
             changed_date = $('#id_Assignment_Deadline_edit').val()
+            c_date = new Date(changed_date)
+            now = new Date()
+            if (c_date > now) {
+                alert('Future date is not allowed')
+                return false
+            }
             session = $('#select_session').val()
             course = $('#select_course').val()
             if (changed_date && session && course) {
@@ -408,7 +415,7 @@
             // $("#select_course").val($("#select_course option:visible").val());
 
         }
-        {% if not inning and course%}
+        {% if not inning and course %}
         {% else %}
             selectSessionOnChange();
         {% endif %}

@@ -81,13 +81,16 @@ class GroupMappingSerializer(serializers.ModelSerializer):
 # AssignmentInfoSerializer
 class AssignmentInfoSerializer(serializers.ModelSerializer):
     course_name = serializers.ReadOnlyField(source='Course_Code.Course_Name')
+    course_code = serializers.ReadOnlyField(source='Course_Code.id')
+    chapter_code = serializers.ReadOnlyField(source='Chapter_Code.id')
+
     Register_Agent_Name = serializers.ReadOnlyField(source='Register_Agent.__str__')
 
     class Meta:
         model = models.AssignmentInfo
         fields = (
             'pk', 'Assignment_Topic', 'Assignment_Deadline', 'Use_Flag', 'Register_DateTime',
-            'Updated_DateTime', 'Register_Agent', 'Course_Code', 'course_name', 'Chapter_Code', 'Register_Agent_Name'
+            'Updated_DateTime', 'Register_Agent', 'course_code', 'course_name', 'chapter_code', 'Register_Agent_Name'
         )
 
 

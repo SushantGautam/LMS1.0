@@ -187,7 +187,11 @@
                 'margin-left': '10px'
             })
             $(document).on('click', 'a', function (e) {
-                e.preventDefault()
+                if ($(this).hasClass('closelink')) {
+                    return
+                } else {
+                    e.preventDefault()
+                }
             })
         {% endif %}
     </script>

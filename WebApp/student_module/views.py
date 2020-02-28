@@ -22,6 +22,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from textblob import TextBlob
 
 from LMS import settings
@@ -449,8 +451,11 @@ class questions_student_detail(DetailView):
 
 
         else:
-            context['can_submit'] = True
-
+            if self.object.End_Date > datetime.now(timezone.utc):
+                context['can_submit'] = True
+            else:
+                context['can_submit'] = False
+                context['datetimeexpired'] = 1
         return context
 
 
@@ -1082,11 +1087,16 @@ def loginforapp(request, course, chapter, username, password):
         return HttpResponse('failed')
 
 
+from django.db.models import F
+
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
         courses = request.user.get_student_courses()
         assignments = AssignmentInfo.objects.filter(
-            Assignment_Deadline__gte=datetime_now, Course_Code__in=courses.values_list('pk'),
+            Assignment_Deadline__gte=datetime_now, Course_Code__in=courses,
             Chapter_Code__Use_Flag=True)[:7]
 
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
@@ -1111,15 +1121,44 @@ def singleUserHomePageJSON(request):
                                                   Course_Code__in=student_course, Use_Flag=True)
         system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
-        survey_queryset = general_survey | session_survey | course_survey | system_survey
-        survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+        sitting_queryset = Sitting.objects.filter(user=request.user, complete=True).order_by('-end')[:5]
 
-        user = MemberInfo.objects.filter(pk=request.user.pk).values('first_name', 'last_name')
-        courses_list = courses.values('id', 'Course_Code__Course_Name')
-        assignments_list = assignments.values('id', 'Assignment_Topic')
-        survey_list = survey_queryset.values('id', 'Survey_Title')
+        survey_queryset = general_survey | session_survey | course_survey | system_survey
+        survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False).exclude(
+            submitsurvey__Student_Code__pk__in=[request.user.pk, ])
+
+        user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'first_name', 'last_name', 'Member_Avatar',
+                                                                    'email', 'username', 'Member_Permanent_Address',
+                                                                    'Member_Temporary_Address', 'Member_BirthDate',
+                                                                    'Member_Phone', 'Use_Flag', 'Is_Teacher',
+                                                                    'Is_Student', 'Is_CenterAdmin', 'Member_Gender',
+                                                                    'Center_Code')
+        courses_list = courses.values(pk=F('Course_Code__pk'), Course_Name=F('Course_Code__Course_Name'),
+                                      Course_Description=F('Course_Code__Course_Description'),
+                                      Course_Cover_File=F('Course_Code__Course_Cover_File'),
+                                      Course_Level=F('Course_Code__Course_Level'),
+                                      Course_Info=F('Course_Code__Course_Info'), Use_Flag=F('Course_Code__Use_Flag'),
+                                      Center_Code=F('Course_Code__Center_Code'),
+                                      Register_Agent=F('Course_Code__Register_Agent'))
+        assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
+                                              'Register_DateTime',
+                                              course_code=F('Course_Code__pk'),
+                                              course_name=F('Course_Code__Course_Name'),
+                                              chapter_code=F('Chapter_Code__pk'),
+                                              Register_Agent_Username=F('Register_Agent__username'),
+                                              Register_Agent_Firstname=F('Register_Agent__first_name'),
+                                              Register_Agent_Lastname=F('Register_Agent__last_name'))
+        survey_list = survey_queryset.values('id', 'Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover', 'Use_Flag',
+                                             'Retaken_From', 'Version_No', 'Center_Code', 'Category_Code',
+                                             'Session_Code', 'Course_Code', 'Added_By')
+        sitting_list = sitting_queryset.values('pk', 'user', 'question_order', 'question_list', 'incorrect_questions',
+                                               'current_score', 'complete', 'user_answers', 'start', 'end',
+                                               'score_list', course_name=F('quiz__course_code__Course_Name'),
+                                               course_pk=F('quiz__course_code__pk'), quiz_pk=F('quiz__pk'),
+                                               quiz_title=F('quiz__title'), single_attempt=F('quiz__single_attempt'))
+
         response = {'userinfo': list(user), 'courses': list(courses_list), 'assignments': list(assignments_list),
-                    'survey': list(survey_list)}
-        return JsonResponse(response, safe=False)
+                    'survey': list(survey_list), 'sitting': list(sitting_list)}
+        return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
     else:
         HttpResponse('You are not a student.')
