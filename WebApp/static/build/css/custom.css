@@ -1378,8 +1378,19 @@ article {
     margin-left: 200;
     font-size: 25px;
 }
+.cust-width{
+    width: 50%;
+}
 
-@media all and (max-width: 415px) {
+@media  (min-width: 310px) and (max-width: 672px) {
+    .top_nav .navbar-right {
+        margin: 0;
+        width: 55% !important;
+        float: right;
+    }
+    .navClass{
+        margin-top: 50px;
+    }
     nav {
         display: inline !important;
     }
@@ -1392,7 +1403,7 @@ article {
     }
 
     .toggle {
-        width: 49px;
+        width: 40px;
     }
 
     .msg-box1 {
@@ -1403,6 +1414,7 @@ article {
         position: fixed !important;
         z-index: 999;
     }
+   
 
     .nav-sm .container.body .col-md-3.left_col {
 
@@ -1410,6 +1422,7 @@ article {
     }
 
 }
+
 
 .timeline .block {
 
