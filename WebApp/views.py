@@ -2028,7 +2028,6 @@ def loginforappredirect(request, username, password):
         if request.user.is_authenticated:
             if 'url' in request.GET:
                 url = request.GET.get('url')
-                print(url)
                 return redirect(
                     url
                 )

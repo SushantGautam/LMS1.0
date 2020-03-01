@@ -919,7 +919,8 @@ class Sitting(models.Model):
         """
         answered = len(json.loads(self.user_answers))
         total = self.get_max_score
-        return answered, total
+        total_questions = len(self.question_order.split(',')[:-1])
+        return answered, total, total_questions
 
     def get_progress(self):
         answered = len(json.loads(self.user_answers))
