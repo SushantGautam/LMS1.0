@@ -2018,3 +2018,23 @@ def viewteacherAttendance(request, attend_date, courseid, teacherid):
         return HttpResponse("No attendance recorded", status=500)
 
 
+from django.contrib.auth import authenticate, login as auth_login
+
+
+def loginforappredirect(request, username, password):
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        auth_login(request, user)
+        if request.user.is_authenticated:
+            if 'url' in request.GET:
+                url = request.GET.get('url')
+                print(url)
+                return redirect(
+                    url
+                )
+            else:
+                return HttpResponse('Login Success', status=200)
+        else:
+            return HttpResponse('User is not authenticated', status=500)
+    else:
+        return HttpResponse('Incorrect Username or Password', status=500)
