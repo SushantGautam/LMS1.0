@@ -1157,6 +1157,22 @@ def singleUserHomePageJSON(request):
                                                course_pk=F('quiz__course_code__pk'), quiz_pk=F('quiz__pk'),
                                                quiz_title=F('quiz__title'), single_attempt=F('quiz__single_attempt'))
 
+        for counter, assg in enumerate(assignments_list):
+            questions = AssignmentQuestionInfo.objects.filter(Assignment_Code__pk=assg['id'])
+            answers = AssignAnswerInfo.objects.filter(Question_Code__in=questions, Student_Code=request.user)
+            if len(questions) == len(answers):
+                assignments_list[counter].update({
+                    'complete': True,
+                    'question_count': questions.count(),
+                    'answer_count': answers.count(),
+                })
+            else:
+                assignments_list[counter].update({
+                    'complete': False,
+                    'question_count': questions.count(),
+                    'answer_count': answers.count(),
+                })
+
         response = {'userinfo': list(user), 'courses': list(courses_list), 'assignments': list(assignments_list),
                     'survey': list(survey_list), 'sitting': list(sitting_list)}
         return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
