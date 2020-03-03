@@ -45,7 +45,7 @@
             <div class="courseDetailStyle1 row" style="margin-top: 10px">
 
 
-                <div class="course-info 5col-lg-6" style="font-size: 15px;">
+                <div class="course-info " style="font-size: 15px;">
 
                     <h5 align="center">
                         {% if topic %}
@@ -73,7 +73,7 @@
                     </h5>
                 </div>
                 {% if '/students' not in request.path %}
-                    <div class="col-md-6 col-sm-12 col-xs-12" style="margin-top: 10px;">
+                    <div class="col-md-7 col-sm-12 col-xs-12" style="margin-top: 10px;">
                         <a href="{% if '/teachers' in request.path %}
                     /teachers{{ object.get_update_url }}
                         {% else %}
@@ -92,9 +92,13 @@
                             <input type="hidden" value="{{ object.pk }}" name="course_id">
                         </form>
                     {% else %}
-                    <span style="float: right;">
+                    <span style="margin-left:20px;">
                         <a  href='attendance/'
                            style="color: green; cursor:pointer"><i class="fa fa-tasks"></i> <b> ATTENDANCE </b></a></a>
+                    </span>
+                    <span style="margin-left:20px">
+                        <a  href='attendance/'
+                           style="color: blue; cursor:pointer"><i class="fa fa-trophy"></i> <b> ACHIEVEMENT </b></a></a>
                     </span>
                     {% endif %}
 
