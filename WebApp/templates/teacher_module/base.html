@@ -170,7 +170,7 @@
         let params_base = new URLSearchParams(location.search);
         $(document).ready(function () {
             if (params_base.get('iframe')) {
-                $('.left_col, .top_nav , .breadcrumb').remove();
+                $('.left_col, .top_nav , .breadcrumb, footer').remove();
                 $('.nav-md .container.body .right_col').css({
                     'margin-left': '10px'
                 })

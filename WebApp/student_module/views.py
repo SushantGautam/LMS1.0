@@ -1096,7 +1096,7 @@ def singleUserHomePageJSON(request):
     if request.user.Is_Student:
         courses = request.user.get_student_courses()
         assignments = AssignmentInfo.objects.filter(
-            Assignment_Deadline__gte=datetime_now, Course_Code__in=courses,
+            Course_Code__in=courses,
             Chapter_Code__Use_Flag=True)[:7]
 
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
@@ -1124,7 +1124,7 @@ def singleUserHomePageJSON(request):
         sitting_queryset = Sitting.objects.filter(user=request.user, complete=True).order_by('-end')[:5]
 
         survey_queryset = general_survey | session_survey | course_survey | system_survey
-        survey_queryset = survey_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False).exclude(
+        survey_queryset = survey_queryset.filter(End_Date__gte=timezone.now()).exclude(
             submitsurvey__Student_Code__pk__in=[request.user.pk, ])
 
         user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'first_name', 'last_name', 'Member_Avatar',
@@ -1156,6 +1156,22 @@ def singleUserHomePageJSON(request):
                                                'score_list', course_name=F('quiz__course_code__Course_Name'),
                                                course_pk=F('quiz__course_code__pk'), quiz_pk=F('quiz__pk'),
                                                quiz_title=F('quiz__title'), single_attempt=F('quiz__single_attempt'))
+
+        for counter, assg in enumerate(assignments_list):
+            questions = AssignmentQuestionInfo.objects.filter(Assignment_Code__pk=assg['id'])
+            answers = AssignAnswerInfo.objects.filter(Question_Code__in=questions, Student_Code=request.user)
+            if len(questions) == len(answers):
+                assignments_list[counter].update({
+                    'complete': True,
+                    'question_count': questions.count(),
+                    'answer_count': answers.count(),
+                })
+            else:
+                assignments_list[counter].update({
+                    'complete': False,
+                    'question_count': questions.count(),
+                    'answer_count': answers.count(),
+                })
 
         response = {'userinfo': list(user), 'courses': list(courses_list), 'assignments': list(assignments_list),
                     'survey': list(survey_list), 'sitting': list(sitting_list)}

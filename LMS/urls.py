@@ -101,3 +101,8 @@ urlpatterns += (
     path('students/singleUserHomePageAPI/', singleUserHomePageJSON, name='singleUserHomePage'),  # for app
 
 )
+
+# Login URL get
+urlpatterns += (
+    path('loginforappredirect/<slug:username>/<slug:password>/', views.loginforappredirect, name='loginforappredirect'),
+)

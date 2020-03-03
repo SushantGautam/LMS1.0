@@ -81,7 +81,7 @@ def start(request):
                     sessions.append(z)
         activeassignments = []
         for course in mycourse:
-            activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id, Course_Code=course,
+            activeassignments += AssignmentInfo.objects.filter(Course_Code=course,
                                                                Assignment_Deadline__gte=datetime_now,
                                                                Chapter_Code__Use_Flag=True)
 
@@ -346,7 +346,7 @@ class AssignmentInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),
-                                                                     Register_Agent=self.request.user.id)
+                                                                     )
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['datetime'] = datetime.now()
@@ -385,7 +385,7 @@ class AssignmentAnswers(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
-                                                          Register_Agent=self.request.user.id)
+                                                          )
         context['questions'] = questions
         context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
         context['Assignment'] = AssignmentInfo.objects.get(pk=self.kwargs['pk'])
@@ -429,12 +429,12 @@ class MyAssignmentsListView(ListView):
         expiredAssignment = []
         activeAssignment = []
         for course in course:
-            Assignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course))
+            Assignment.append(AssignmentInfo.objects.filter(Course_Code=course))
             expiredAssignment.append(
-                AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course,
+                AssignmentInfo.objects.filter(Course_Code=course,
                                               Assignment_Deadline__lt=datetime_now))
             activeAssignment.append(
-                AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course,
+                AssignmentInfo.objects.filter(Course_Code=course,
                                               Assignment_Deadline__gte=datetime_now))
         context['Assignment'].append(Assignment)
         context['activeAssignment'].append(activeAssignment)

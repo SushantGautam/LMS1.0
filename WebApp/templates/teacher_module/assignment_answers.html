@@ -129,7 +129,7 @@
         $('.showanswer').click(function () {
             {% for answer in Answers %}
                 if (this.value == '{{ answer.id }}') {
-                    $('#answercontent').text('{{answer.Assignment_Answer}}')
+                    $('#answercontent').text(`{{answer.Assignment_Answer}}`)
 
                     if ('{{ answer.Assignment_File }}') {
                         $('#answercontent').append(`
