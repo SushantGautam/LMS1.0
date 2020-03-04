@@ -10,43 +10,168 @@
 {% endblock %}
 
 {% block content %}
-    <style>
-        .progress, chapter {
-            width: 500px
-        }
+<script src="https://code.highcharts.com/highcharts.js"></script>
 
-        .chapter-progress {
-            background: -webkit-linear-gradient(left, red 0%, blue 50%, green 100%); /* Chrome10-25,Safari5.1-6 */
+
+
+    <style>
+        .highcharts-figure, .highcharts-data-table table {
+            min-width: 310px; 
+            max-width: 800px;
+            margin: 1em auto;
         }
+        
+        #container {
+            height: 400px;
+        }
+        
+        .highcharts-data-table table {
+            font-family: Verdana, sans-serif;
+            border-collapse: collapse;
+            border: 1px solid #EBEBEB;
+            margin: 10px auto;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        .highcharts-data-table caption {
+            padding: 1em 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+        .highcharts-data-table th {
+            font-weight: 600;
+            padding: 0.5em;
+        }
+        .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+            padding: 0.5em;
+        }
+        .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+        .highcharts-data-table tr:hover {
+            background: #f1f7ff;
+        }
+        
     </style>
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
-        <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="session-detail">
-                    <div style="font-size:18px"><b> Session: </b></div>
-                    <select id="select_session" class="form-control">
-                        {% for x in session_list %}
-                            {% for session in x %}
+           <h3> Course Info </h3>
+            <div class=" courseinfo-detail-only col-md-12 col-sm-12 col-xs-12">
+               
 
-                                <option value="{{ session.pk }}"
-                                        {% if session.pk == inning.pk %}
-                                        selected
-                                        {% endif %}
-                                > {{ session }}</option>
-                            {% endfor %}
-                        {% endfor %}
-                    </select>
-                    <button id="goBtn" class="btn btn-info"> Go</button>
-                </div>
+                  
+                    <div class="col-md-6">
+                            
+                        <div class="center-name">
+                            <span style="font-size:18px"><b> Center: </b></span>
+                            <span></span>
+                            
+                        </div>
+                        <div class="time-period">
+                            <span style="font-size:18px"><b> Period: </b></span>
+                            <span></span>
+
+                        </div>
+                        <div class="session-detail">
+                            <span style="font-size:18px"><b> Session: </b></span>
+                            <select id="select_session" class="" style="width: 50%;">
+                                {% for x in session_list %}
+                                    {% for session in x %}
+        
+                                        <option value="{{ session.pk }}"
+                                                {% if session.pk == inning.pk %}
+                                                selected
+                                                {% endif %}
+                                        > {{ session }}</option>
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+                        
+                            
+                        </div>
+                       
+
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="no-student">
+                            <span style="font-size:18px"><b> No of Student: </b></span>
+                            <span></span>
+                        </div>
+                        <div class="no-chapter">
+                            <span style="font-size:18px"><b> No of Chapter: </b></span>
+                            <span></span>
+                        </div>
+                        <div class="no-quiz">
+                            <span style="font-size:18px"><b> No of quiz: </b></span>
+                            <span></span>
+                            
+                        </div>
+                    </div>
+
+                  
+                        
+
+                
+                       
+               
             </div>
-        </div>
 
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <hr class="header_hr">
+            </div>
+       
+        <h3>Chapter </h3>
+      
+        <div class=" chapter-only col-md-12 col-sm-12 col-xs-12"> 
+                    <button type="button" class=" custom-btn1 btn btn-info btn-circle">1
+                    </button>
+                    <button type="button" class=" custom-btn1 btn btn-info btn-circle">2
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">3
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">4
+                    </button>  <button type="button" class=" custom-btn1 btn btn-info btn-circle">5
+                    </button>  <button type="button" class="custom-btn1 btn btn-info btn-circle">6
+                    </button>  <button type="button" class="custom-btn1 btn btn-info btn-circle">7
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">8
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">9
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">10
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">11
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">12
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">13
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">14
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">15
+                    </button>
+                    <button type="button" class="custom-btn1 btn btn-info btn-circle">All
+                    </button>
+        </div>
+      
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <hr class="header_hr">
         </div>
-
+        <div>
+          
+<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+        Chart showing browser market shares. Clicking on individual columns
+        brings up more detailed data. This chart makes use of the drilldown
+        feature in Highcharts to easily switch between datasets.
+    </p>
+</figure>
+        </div>
+       
 
         {% if session_list.count > 0 %}
             <div class="no-attendance-display text-center">
@@ -58,25 +183,39 @@
                 {% if studentjson %}
                     <h3 class="detailListHeader2 ">Student Progress List</h3>
                     <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
-                        <thead class="thead-light bg-primary">
+                        <thead class="thead-light bg-info">
                         <tr>
-                            <th>{% trans "Roll No." %}</th>
+                            <th>{% trans " No." %}</th>
+                            <th>{% trans "Study Progress" %}</th>
                             <th>{% trans "Name" %}</th>
-                            <th>{% trans "Student Progress" %}</th>
+                            <th>{% trans "Chapter " %}</th>
+                            <th>{% trans "Study Time" %}</th>
+                            <th>{% trans "Last Visit" %}</th>
+                            <th>{% trans "Quiz Achievement" %}</th>
+
                         </tr>
                         </thead>
                         <tbody>
                         {% for a in studentjson %}
                             <tr>
                                 <td>  {{ a.member_code.Member_ID }} </td>
-                                <td>  {{ a.member_code.username }} </td>
+                               
                                 <td>
-                                    <div class="progress chapter">
-                                        <div class="chapter-progress progress-bar" role="progressbar"
-                                             style="width: {{ a.progresspercent }}%;">
+                                   
+                                        <div class="progressbar" data-animate="false">
+                                            <div class="circle" data-percent="40">
+                                                
+                                                <div></div>
+                                               
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
+                                <td>  {{ a.member_code.username }} </td>
+                                <td>  {{ a.member_code.username }} </td>
+                                <td>  {{ a.member_code.username }} </td>
+                                <td>  {{ a.member_code.username }} </td>
+                                <td>  {{ a.member_code.username }} </td>
 
                             </tr>
 
@@ -110,6 +249,349 @@
 {% endblock %}
 
 {% block customjss %}
+
+   <script>
+       $(document).ready(function(){
+           // Create the chart
+Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Browser market shares. January, 2018'
+    },
+    subtitle: {
+        text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+    },
+    accessibility: {
+        announceNewData: {
+            enabled: true
+        }
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Total percent market share'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y:.1f}%'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+    },
+
+    series: [
+        {
+            name: "Browsers",
+            colorByPoint: true,
+            data: [
+                {
+                    name: "Chrome",
+                    y: 82.74,
+                    drilldown: "Chrome"
+                },
+                {
+                    name: "Firefox",
+                    y: 10.57,
+                    drilldown: "Firefox"
+                },
+                {
+                    name: "Internet Explorer",
+                    y: 7.23,
+                    drilldown: "Internet Explorer"
+                },
+                {
+                    name: "Safari",
+                    y: 5.58,
+                    drilldown: "Safari"
+                },
+                {
+                    name: "Edge",
+                    y: 4.02,
+                    drilldown: "Edge"
+                },
+                {
+                    name: "Opera",
+                    y: 1.92,
+                    drilldown: "Opera"
+                },
+                {
+                    name: "Other",
+                    y: 7.62,
+                    drilldown: null
+                }
+            ]
+        }
+    ],
+    drilldown: {
+        series: [
+            {
+                name: "Chrome",
+                id: "Chrome",
+                data: [
+                    [
+                        "v65.0",
+                        0.1
+                    ],
+                    [
+                        "v64.0",
+                        1.3
+                    ],
+                    [
+                        "v63.0",
+                        53.02
+                    ],
+                    [
+                        "v62.0",
+                        1.4
+                    ],
+                    [
+                        "v61.0",
+                        0.88
+                    ],
+                    [
+                        "v60.0",
+                        0.56
+                    ],
+                    [
+                        "v59.0",
+                        0.45
+                    ],
+                    [
+                        "v58.0",
+                        0.49
+                    ],
+                    [
+                        "v57.0",
+                        0.32
+                    ],
+                    [
+                        "v56.0",
+                        0.29
+                    ],
+                    [
+                        "v55.0",
+                        0.79
+                    ],
+                    [
+                        "v54.0",
+                        0.18
+                    ],
+                    [
+                        "v51.0",
+                        0.13
+                    ],
+                    [
+                        "v49.0",
+                        2.16
+                    ],
+                    [
+                        "v48.0",
+                        0.13
+                    ],
+                    [
+                        "v47.0",
+                        0.11
+                    ],
+                    [
+                        "v43.0",
+                        0.17
+                    ],
+                    [
+                        "v29.0",
+                        0.26
+                    ]
+                ]
+            },
+            {
+                name: "Firefox",
+                id: "Firefox",
+                data: [
+                    [
+                        "v58.0",
+                        1.02
+                    ],
+                    [
+                        "v57.0",
+                        7.36
+                    ],
+                    [
+                        "v56.0",
+                        0.35
+                    ],
+                    [
+                        "v55.0",
+                        0.11
+                    ],
+                    [
+                        "v54.0",
+                        0.1
+                    ],
+                    [
+                        "v52.0",
+                        0.95
+                    ],
+                    [
+                        "v51.0",
+                        0.15
+                    ],
+                    [
+                        "v50.0",
+                        0.1
+                    ],
+                    [
+                        "v48.0",
+                        0.31
+                    ],
+                    [
+                        "v47.0",
+                        0.12
+                    ]
+                ]
+            },
+            {
+                name: "Internet Explorer",
+                id: "Internet Explorer",
+                data: [
+                    [
+                        "v11.0",
+                        6.2
+                    ],
+                    [
+                        "v10.0",
+                        0.29
+                    ],
+                    [
+                        "v9.0",
+                        0.27
+                    ],
+                    [
+                        "v8.0",
+                        0.47
+                    ]
+                ]
+            },
+            {
+                name: "Safari",
+                id: "Safari",
+                data: [
+                    [
+                        "v11.0",
+                        3.39
+                    ],
+                    [
+                        "v10.1",
+                        0.96
+                    ],
+                    [
+                        "v10.0",
+                        0.36
+                    ],
+                    [
+                        "v9.1",
+                        0.54
+                    ],
+                    [
+                        "v9.0",
+                        0.13
+                    ],
+                    [
+                        "v5.1",
+                        0.2
+                    ]
+                ]
+            },
+            {
+                name: "Edge",
+                id: "Edge",
+                data: [
+                    [
+                        "v16",
+                        2.6
+                    ],
+                    [
+                        "v15",
+                        0.92
+                    ],
+                    [
+                        "v14",
+                        0.4
+                    ],
+                    [
+                        "v13",
+                        0.1
+                    ]
+                ]
+            },
+            {
+                name: "Opera",
+                id: "Opera",
+                data: [
+                    [
+                        "v50.0",
+                        0.96
+                    ],
+                    [
+                        "v49.0",
+                        0.82
+                    ],
+                    [
+                        "v12.1",
+                        0.14
+                    ]
+                ]
+            }
+        ]
+    }
+});
+       })
+   </script>
+
+    <script>
+        $(document).ready(function ($) {
+            function animateElements() {
+                $('.progressbar').each(function () {
+                    var elementPos = $(this).offset().top;
+                    var topOfWindow = $(window).scrollTop();
+                    var percent = $(this).find('.circle').attr('data-percent');
+                    var percentage = parseInt(percent, 10) / parseInt(100, 10);
+                    var animate = $(this).data('animate');
+                    if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
+                        $(this).data('animate', true);
+                        $(this).find('.circle').circleProgress({
+                            startAngle: -Math.PI / 2,
+                            value: percent / 100,
+                            thickness: 14,
+                            fill: {
+                                color: '#1B58B8'
+                            }
+                        }).on('circle-animation-progress', function (event, progress, stepValue) {
+                            $(this).find('div').text((stepValue*100).toFixed(1) + "%");
+                        }).stop();
+                    }
+                });
+            }
+        
+            // Show animated elements
+            animateElements();
+            $(window).scroll(animateElements);
+        });
+    </script>
     <script>
         var present = 0;
         var absent = 0;
@@ -169,7 +651,7 @@
 
                 buttons: [],
                 columnDefs: [
-                    {"width": "33%", "targets": 2}
+                    {"width": "15%", "targets": 1}
                 ]
 
             });

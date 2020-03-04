@@ -2252,3 +2252,67 @@ label .asteriskField {
     width: 60%;
     float: right;
 }
+/* progress page */
+.courseinfo-detail-only{
+    background-color: #ededed;
+    padding:20px;
+    margin-bottom: 20px;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+}
+.custom-btn1:hover{
+    background-color:white;
+    color:black;
+    font-weight: 600    ;
+
+}
+
+/* progress bar */
+.progressbar {
+    display: inline-block;
+    width: 100px;
+  
+}
+.circle {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 10px;
+    display: inline-block;
+    position: relative;
+    text-align: center;
+}
+.circle canvas {
+    height: 60px!important;
+    width: 60px!important;
+    vertical-align: middle;
+}
+.circle div {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    line-height: 25px;
+    font-size: 12px;
+}
+.circle strong i {
+    font-style: normal;
+    font-size: 0.6em;
+    font-weight: normal;
+}
+.circle span {
+    display: block;
+    color: #aaa;
+    margin-top: 12px;
+}
+
+
+        
