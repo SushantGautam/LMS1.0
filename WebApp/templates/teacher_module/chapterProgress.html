@@ -160,17 +160,32 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <hr class="header_hr">
         </div>
-        <div>
-          
-<figure class="highcharts-figure">
-    <div id="container"></div>
-    <p class="highcharts-description">
-        Chart showing browser market shares. Clicking on individual columns
-        brings up more detailed data. This chart makes use of the drilldown
-        feature in Highcharts to easily switch between datasets.
-    </p>
-</figure>
+       
+   <div class="col-md-12 col-sm-12 col-xs-12">
+       <div class="col-md-6 col-sm-6 col-xs-12" style="position: relative; height:300px">
+         
+        <div class="progressbar" data-animate="false" style="height: 200px ;position: absolute; top:40%; left:40%; ">
+            <h3>Progress</h3>
+
+            <div class="circle2" data-percent="50">
+                
+                <div></div>
+               
+            </div>
         </div>
+
+       </div>
+       <div class="col-md-6 col-sm-6 col-xs-12"  >
+        <figure class="highcharts-figure" >
+            <div id="container"></div>
+            <p class="highcharts-description">
+     
+            </p>
+        </figure>
+       </div>
+   </div>       
+
+     
        
 
         {% if session_list.count > 0 %}
@@ -246,6 +261,74 @@
         {% endif %}
     </div>
 
+    <!-- for chapter data table -->
+    {% if session_list.count > 0 %}
+    <div class="no-attendance-display text-center">
+        <h3 style="font-size:24px; text-transform:uppercase;"><b>No Session Created</b>
+        </h3>
+    </div>
+{% else %}
+    <div id=" container student_progress-table">
+        {% if studentjson %}
+            <h3 class="detailListHeader2 ">Chapter  Progress Summary</h3>
+            <table id="ProgressTable" class="table table-striped table-bordered" style="width:100%">
+                <thead class="thead-light bg-info">
+                <tr>
+                    <th>{% trans "No." %}</th>
+                    <th>{% trans "Visited  Students" %}</th>
+                    <th>{% trans "Quiz Achievement" %}</th>
+                    <th>{% trans "Total Study Time " %}</th>
+                    <th>{% trans "Last Study Date" %}</th>
+                  
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for a in studentjson %}
+                    <tr>
+                        <td style="text-transform:uppercase; font-weight:700; color:#1b58b8 ">  chapter 1 </td>
+                       
+                        <td>  {{ a.member_code.username }} </td>
+                        <td>  {{ a.member_code.username }} </td>
+                        <td>  {{ a.member_code.username }} </td>
+                        <td>  {{ a.member_code.username }} </td>
+                 
+
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+
+            {% if todays_date|date:"Y-m-d" == attend_date %}
+                <p class="text-center"><a class="btn btn-default btn-success"
+                                          href="   {% url 'course_student_progress' inning.pk course.pk  attend_date %}">Take
+                    student_progress</a></p>
+            {% endif %}
+
+
+
+
+
+
+
+
+        {% else %}
+            <p>{% trans "There are no available student_progress" %}.</p>
+        {% endif %}
+    </div>
+
+{% endif %}
+</div>
+
+
+
+
+
+    <!-- ends -->
+
 {% endblock %}
 
 {% block customjss %}
@@ -258,10 +341,10 @@ Highcharts.chart('container', {
         type: 'column'
     },
     title: {
-        text: 'Browser market shares. January, 2018'
+        text: 'Total Achievement'
     },
     subtitle: {
-        text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+        text: ''
     },
     accessibility: {
         announceNewData: {
@@ -273,7 +356,7 @@ Highcharts.chart('container', {
     },
     yAxis: {
         title: {
-            text: 'Total percent market share'
+            text: 'Score'
         }
 
     },
@@ -301,263 +384,25 @@ Highcharts.chart('container', {
             colorByPoint: true,
             data: [
                 {
-                    name: "Chrome",
+                    name: "Total",
                     y: 82.74,
-                    drilldown: "Chrome"
+                   
                 },
                 {
-                    name: "Firefox",
+                    name: "Average",
                     y: 10.57,
-                    drilldown: "Firefox"
+                   
                 },
                 {
-                    name: "Internet Explorer",
+                    name: "My point",
                     y: 7.23,
-                    drilldown: "Internet Explorer"
-                },
-                {
-                    name: "Safari",
-                    y: 5.58,
-                    drilldown: "Safari"
-                },
-                {
-                    name: "Edge",
-                    y: 4.02,
-                    drilldown: "Edge"
-                },
-                {
-                    name: "Opera",
-                    y: 1.92,
-                    drilldown: "Opera"
-                },
-                {
-                    name: "Other",
-                    y: 7.62,
-                    drilldown: null
+                  
                 }
+              
             ]
         }
     ],
-    drilldown: {
-        series: [
-            {
-                name: "Chrome",
-                id: "Chrome",
-                data: [
-                    [
-                        "v65.0",
-                        0.1
-                    ],
-                    [
-                        "v64.0",
-                        1.3
-                    ],
-                    [
-                        "v63.0",
-                        53.02
-                    ],
-                    [
-                        "v62.0",
-                        1.4
-                    ],
-                    [
-                        "v61.0",
-                        0.88
-                    ],
-                    [
-                        "v60.0",
-                        0.56
-                    ],
-                    [
-                        "v59.0",
-                        0.45
-                    ],
-                    [
-                        "v58.0",
-                        0.49
-                    ],
-                    [
-                        "v57.0",
-                        0.32
-                    ],
-                    [
-                        "v56.0",
-                        0.29
-                    ],
-                    [
-                        "v55.0",
-                        0.79
-                    ],
-                    [
-                        "v54.0",
-                        0.18
-                    ],
-                    [
-                        "v51.0",
-                        0.13
-                    ],
-                    [
-                        "v49.0",
-                        2.16
-                    ],
-                    [
-                        "v48.0",
-                        0.13
-                    ],
-                    [
-                        "v47.0",
-                        0.11
-                    ],
-                    [
-                        "v43.0",
-                        0.17
-                    ],
-                    [
-                        "v29.0",
-                        0.26
-                    ]
-                ]
-            },
-            {
-                name: "Firefox",
-                id: "Firefox",
-                data: [
-                    [
-                        "v58.0",
-                        1.02
-                    ],
-                    [
-                        "v57.0",
-                        7.36
-                    ],
-                    [
-                        "v56.0",
-                        0.35
-                    ],
-                    [
-                        "v55.0",
-                        0.11
-                    ],
-                    [
-                        "v54.0",
-                        0.1
-                    ],
-                    [
-                        "v52.0",
-                        0.95
-                    ],
-                    [
-                        "v51.0",
-                        0.15
-                    ],
-                    [
-                        "v50.0",
-                        0.1
-                    ],
-                    [
-                        "v48.0",
-                        0.31
-                    ],
-                    [
-                        "v47.0",
-                        0.12
-                    ]
-                ]
-            },
-            {
-                name: "Internet Explorer",
-                id: "Internet Explorer",
-                data: [
-                    [
-                        "v11.0",
-                        6.2
-                    ],
-                    [
-                        "v10.0",
-                        0.29
-                    ],
-                    [
-                        "v9.0",
-                        0.27
-                    ],
-                    [
-                        "v8.0",
-                        0.47
-                    ]
-                ]
-            },
-            {
-                name: "Safari",
-                id: "Safari",
-                data: [
-                    [
-                        "v11.0",
-                        3.39
-                    ],
-                    [
-                        "v10.1",
-                        0.96
-                    ],
-                    [
-                        "v10.0",
-                        0.36
-                    ],
-                    [
-                        "v9.1",
-                        0.54
-                    ],
-                    [
-                        "v9.0",
-                        0.13
-                    ],
-                    [
-                        "v5.1",
-                        0.2
-                    ]
-                ]
-            },
-            {
-                name: "Edge",
-                id: "Edge",
-                data: [
-                    [
-                        "v16",
-                        2.6
-                    ],
-                    [
-                        "v15",
-                        0.92
-                    ],
-                    [
-                        "v14",
-                        0.4
-                    ],
-                    [
-                        "v13",
-                        0.1
-                    ]
-                ]
-            },
-            {
-                name: "Opera",
-                id: "Opera",
-                data: [
-                    [
-                        "v50.0",
-                        0.96
-                    ],
-                    [
-                        "v49.0",
-                        0.82
-                    ],
-                    [
-                        "v12.1",
-                        0.14
-                    ]
-                ]
-            }
-        ]
-    }
+ 
 });
        })
    </script>
@@ -568,12 +413,12 @@ Highcharts.chart('container', {
                 $('.progressbar').each(function () {
                     var elementPos = $(this).offset().top;
                     var topOfWindow = $(window).scrollTop();
-                    var percent = $(this).find('.circle').attr('data-percent');
+                    var percent = $(this).find('.circle , .circle2').attr('data-percent');
                     var percentage = parseInt(percent, 10) / parseInt(100, 10);
                     var animate = $(this).data('animate');
                     if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
                         $(this).data('animate', true);
-                        $(this).find('.circle').circleProgress({
+                        $(this).find('.circle , .circle2').circleProgress({
                             startAngle: -Math.PI / 2,
                             value: percent / 100,
                             thickness: 14,
@@ -645,7 +490,7 @@ Highcharts.chart('container', {
 
         $(document).ready(function () {
 
-            var table_main = $('#QuizTable').DataTable({
+            var table_main = $('#ProgressTable').DataTable({
                 responsive: true,
                 stateSave: true,
 
@@ -655,6 +500,18 @@ Highcharts.chart('container', {
                 ]
 
             });
+            
+
+                var table2_main = $('#QuizTable').DataTable({
+                    responsive: true,
+                    stateSave: true,
+    
+                    buttons: [],
+                    columnDefs: [
+                        {"width": "15%", "targets": 1}
+                    ]
+    
+                });
             $('#goBtn').on('click', function (e) {
                 e.preventDefault()
                 session = $('#select_session').val()

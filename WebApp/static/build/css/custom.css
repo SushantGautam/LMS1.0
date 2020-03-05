@@ -2313,6 +2313,38 @@ label .asteriskField {
     color: #aaa;
     margin-top: 12px;
 }
-
+/* circle 2 */
+.circle2 {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 10px;
+    display: inline-block;
+    position: relative;
+    text-align: center;
+}
+.circle2 canvas {
+    height: 150px!important;
+    width: 150px!important;
+    vertical-align: middle;
+}
+.circle2 div {
+    position: absolute;
+    top: 50px;
+    left: 28px;
+    width: 100%;
+    text-align: center;
+    line-height: 50px;
+    font-size: 19px;
+}
+.circle2 strong i {
+    font-style: normal;
+    font-size: 0.6em;
+    font-weight: normal;
+}
+.circle2 span {
+    display: block;
+    color: #aaa;
+    margin-top: 12px;
+}
 
         
