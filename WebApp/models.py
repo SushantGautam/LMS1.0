@@ -602,7 +602,6 @@ class InningInfo(models.Model):
 
     Course_Group = models.ManyToManyField(
         'InningGroup',
-
     )
 
     class Meta:

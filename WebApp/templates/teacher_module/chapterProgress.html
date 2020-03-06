@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    <script src="https://code.highcharts.com/highcharts.js"></script>
+
     <style>
         .highcharts-figure, .highcharts-data-table table {
             min-width: 310px;
@@ -105,7 +105,10 @@
                     <span style="font-size:18px"><b> No of Chapter: </b></span>
                     <span>{{ chapter_list|length }}</span>
                 </div>
-              
+                {#                <div class="no-quiz">#}
+                {#                    <span style="font-size:18px"><b> No of quiz: </b></span>#}
+                {#                    <span></span>#}
+                {#                </div>#}
             </div>
         </div>
 
@@ -113,7 +116,7 @@
             <hr class="header_hr">
         </div>
 
-        <h3>List of Chapters </h3>
+        <h3>List of Chapters</h3>
 
         <div class=" chapter-only col-md-12 col-sm-12 col-xs-12">
             {% for chapter in chapter_list %}
@@ -191,8 +194,13 @@
                                 <td>  {{ a.chapter.chapterObj.Chapter_No }}. {{ a.chapter.chapterObj.Chapter_Name }} </td>
                                 <td>  {{ a.chapter.totalstudytime }} </td>
                                 <td>  {{ a.chapter.laststudydate }} </td>
-                                <td> Avg % : {{ a.quiz.avg_percent_score }}
-                                    -- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}</td>
+                                <td class="quiztd" data-quiz_completed="{{ a.quiz.completed_quiz }}"
+                                    data-quiz_total="{{ a.quiz.quiz_count }}"
+                                    data-score_obtained="{{ a.quiz.avg_percent_score }}"> Score Obtained %
+                                    : {{ a.quiz.avg_percent_score }} <br>
+                                    -- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}<br>
+                                    -- Completed/Total Quiz
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -254,7 +262,7 @@
 {% endblock %}
 
 {% block customjss %}
-
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script>
         $(document).ready(function () {
             // Create the chart
@@ -388,7 +396,6 @@
                 columnDefs: [
                     {"width": "15%", "targets": 1}
                 ]
-
             });
 
 
@@ -416,9 +423,12 @@
                     }
                 );
                 table2_main.draw();
+                calculateProgressPercent();
+                quizProgressPercent()
             });
 
             calculateProgressPercent()
+            quizProgressPercent()
 
             function calculateProgressPercent() {
                 sum = 0
@@ -428,8 +438,49 @@
                     count++;
                 })
                 avg = sum / count;
-                console.log(sum, count, avg)
-                $('.circle2').attr('data-percent', avg)
+                $('.circle2').circleProgress({
+                    value: avg / 100,
+                });
+            }
+
+            function quizProgressPercent() {
+                completed = 0
+                total = 0
+                pending = 0
+                count = 0
+                $('.quiztd').each(function () {
+                    completed = completed + parseFloat($(this).attr('data-quiz_completed'));
+                    total = total + parseFloat($(this).attr('data-quiz_total'));
+                    count++;
+                });
+                pending = pending + (total - completed);
+                var chart = $('#container').highcharts();
+                var new_serie = [{
+                    "name": "Pending",
+                    "data": [{
+                        name: "Pending",
+                        y: pending * 100 / total
+                    }],
+                }, {
+                    "name": "Completed",
+                    "data": [{
+                        name: "Completed",
+                        y: completed * 100 / total
+                    }],
+                }, {
+                    "name": "Total Quiz",
+                    "data": [{
+                        name: "Total",
+                        y: total * 100 / total
+                    }],
+                }];
+                //alert(new_serie); // returns objects
+                for (var i = chart.series.length - 1; i >= 0; i--) {
+                    chart.series[i].remove();
+                }
+                for (var y = new_serie.length - 1; y >= 0; y--) {
+                    chart.addSeries(new_serie[y]);
+                }
             }
         });
     </script>
