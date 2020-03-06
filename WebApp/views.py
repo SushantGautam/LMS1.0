@@ -2072,9 +2072,9 @@ def CourseProgressView(request, coursepk, inningpk=None):
                             progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
                                 jsondata['contents']['totalPage'])
                         else:
-                            progresspercent = 1
+                            progresspercent = 0
                     else:
-                        progresspercent = 1
+                        progresspercent = 0
 
                     student_quiz = Quiz.objects.filter(chapter_code=chapter)
                     # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
@@ -2093,10 +2093,12 @@ def CourseProgressView(request, coursepk, inningpk=None):
                             'student': x,
                             'chapter': {
                                 'chapterObj': chapter,
-                                'laststudydate': jsondata['contents'][
-                                    'laststudydate'] if jsondata is not None else None,
-                                'totalstudytime': jsondata['contents'][
-                                    'totalstudytime'] if jsondata is not None else None,
+                                'laststudydate': datetime.strptime(jsondata['contents'][
+                                                                       'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
+                                    "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
+                                'totalstudytime': datetime.strptime(str(jsondata['contents'][
+                                                                            'totalstudytime']), "%S").strftime(
+                                    "%H:%M:%S") if jsondata is not None else "00:00:00",
                                 'currentpagenumber': int(
                                     jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
                                 'totalPage': int(

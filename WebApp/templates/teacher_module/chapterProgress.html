@@ -301,7 +301,7 @@
 
                 tooltip: {
                     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of Total<br/>'
                 },
 
                 series: [
@@ -420,6 +420,7 @@
             });
 
             calculateProgressPercent()
+
             quizProgressPercent()
 
             function calculateProgressPercent() {
@@ -448,25 +449,23 @@
                 pending = pending + (total - completed);
                 var chart = $('#container').highcharts();
                 var new_serie = [{
-                    "name": "Pending",
-                    "data": [{
-                        name: "Pending",
-                        y: pending * 100 / total
-                    }],
-                }, {
-                    "name": "Completed",
-                    "data": [{
-                        name: "Completed",
-                        y: completed * 100 / total
-                    }],
-                }, {
-                    "name": "Total Quiz",
-                    "data": [{
-                        name: "Total",
-                        y: total * 100 / total
-                    }],
-                }];
-                //alert(new_serie); // returns objects
+                    "name": "Quiz Progress",
+                    colorByPoint: true,
+                    "data": [
+                        {
+                            name: "Total",
+                            y: total * 100 / total
+                        },
+                        {
+                            name: "Completed",
+                            y: completed * 100 / total
+                        },
+                        {
+                            name: "Pending",
+                            y: pending * 100 / total
+                        },
+                    ],
+                }]
                 for (var i = chart.series.length - 1; i >= 0; i--) {
                     chart.series[i].remove();
                 }
