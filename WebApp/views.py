@@ -4,7 +4,7 @@ import os
 import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 # import vimeo  # from PyVimeo for uploading videos to vimeo.com
@@ -2096,9 +2096,8 @@ def CourseProgressView(request, coursepk, inningpk=None):
                                 'laststudydate': datetime.strptime(jsondata['contents'][
                                                                        'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
                                     "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
-                                'totalstudytime': datetime.strptime(str(jsondata['contents'][
-                                                                            'totalstudytime']), "%S").strftime(
-                                    "%H:%M:%S") if jsondata is not None else "00:00:00",
+                                'totalstudytime': timedelta(seconds=int(jsondata['contents'][
+                                                                            'totalstudytime'])) if jsondata is not None else "00:00:00",
                                 'currentpagenumber': int(
                                     jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
                                 'totalPage': int(
