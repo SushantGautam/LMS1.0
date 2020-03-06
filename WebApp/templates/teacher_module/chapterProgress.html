@@ -58,7 +58,7 @@
     </style>
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
-       
+
         <span style="font-size:18px; font-weight: 700;"> Course Info </span>
         <div class=" courseinfo-detail-only col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6">
@@ -73,7 +73,6 @@
                     <span style="font-size: 16px;">{{ inning.Start_Date }} - {{ inning.End_Date }}</span>
 
                 </div>
-           
 
 
             </div>
@@ -227,7 +226,8 @@
                                 <td>  {{ a.chapter.laststudydate }} </td>
                                 <td class="quiztd" data-quiz_completed="{{ a.quiz.completed_quiz }}"
                                     data-quiz_total="{{ a.quiz.quiz_count }}"
-                                    data-score_obtained="{{ a.quiz.avg_percent_score }}"> <span style="font-weight: 600;">Score Obtained</span>
+                                    data-score_obtained="{{ a.quiz.avg_percent_score }}"><span
+                                        style="font-weight: 600;">Score Obtained</span>
 
                                     :- {{ a.quiz.avg_percent_score }} %<br>
                                     <span style="font-weight: 600;">Completed/Total Quiz</span>
@@ -278,8 +278,8 @@
                 },
                 credits: {
                     enabled: false
-                  },
-                
+                },
+
                 legend: {
                     enabled: false
                 },
@@ -398,6 +398,7 @@
 
             $('.chapterBtn').on('click', function () {
                 chapterpk = this.value
+                $('#chapter-details').css('display', 'block')
                 {% for x in chapter_list %}
                     if (chapterpk == '{{ x.pk }}') {
                         $('#chapter-title').text('{{ x }}')
@@ -407,6 +408,7 @@
                 $.fn.dataTable.ext.search.push(
                     function (settings, data, dataIndex) {
                         if (chapterpk == 'all') {
+                            $('#chapter-details').css('display', 'none')
                             return $(table2_main.row(dataIndex).node());
                         }
                         return $(table2_main.row(dataIndex).node()).attr('data-chapterpk') == chapterpk;
