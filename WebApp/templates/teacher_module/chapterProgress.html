@@ -58,48 +58,33 @@
     </style>
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
-        <h3> Course Info </h3>
+       
+        <span style="font-size:18px; font-weight: 700;"> Course Info </span>
         <div class=" courseinfo-detail-only col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6">
 
                 <div class="center-name">
                     <span style="font-size:18px"><b> Center: </b></span>
-                    <span>{{ request.user.Center_Code }}</span>
+                    <span style="font-size: 16px;">{{ request.user.Center_Code }}</span>
 
                 </div>
                 <div class="time-period">
                     <span style="font-size:18px"><b> Period: </b></span>
-                    <span>{{ inning.Start_Date }} - {{ inning.End_Date }}</span>
+                    <span style="font-size: 16px;">{{ inning.Start_Date }} - {{ inning.End_Date }}</span>
 
                 </div>
-                <div class="session-detail">
-                    <span style="font-size:18px"><b> Session: </b></span>
-                    <select id="select_session" class="" style="width: 50%;">
-                        {% for x in session_list %}
-                            {% for session in x %}
-
-                                <option value="{{ session.pk }}"
-                                        {% if session.pk == inning.pk %}
-                                        selected
-                                        {% endif %}
-                                > {{ session }}</option>
-                            {% endfor %}
-                        {% endfor %}
-                    </select>
-
-
-                </div>
+           
 
 
             </div>
             <div class="col-md-6">
                 <div class="no-student">
                     <span style="font-size:18px"><b> No of Student: </b></span>
-                    <span>{{ number_of_students }}</span>
+                    <span style="font-size: 16px;">{{ number_of_students }}</span>
                 </div>
                 <div class="no-chapter">
                     <span style="font-size:18px"><b> No of Chapter: </b></span>
-                    <span>{{ chapter_list|length }}</span>
+                    <span style="font-size: 16px;">{{ chapter_list|length }}</span>
                 </div>
                 {#                <div class="no-quiz">#}
                 {#                    <span style="font-size:18px"><b> No of quiz: </b></span>#}
@@ -109,6 +94,26 @@
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
+            <hr class="header_hr">
+        </div>
+        <div class="session-detail">
+            <span style="font-size:18px"><b> Session: </b></span>
+            <select id="select_session" class="form-control" style="width: 50%;">
+                {% for x in session_list %}
+                    {% for session in x %}
+
+                        <option value="{{ session.pk }}"
+                                {% if session.pk == inning.pk %}
+                                selected
+                                {% endif %}
+                        > {{ session }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select>
+
+
+        </div>
+        <div class="col-md-12">
             <hr class="header_hr">
         </div>
 
@@ -128,12 +133,49 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <hr class="header_hr">
         </div>
+        <span style="font-size:18px; font-weight: 700;"> Chapter Info </span>
+        <div class=" courseinfo-detail-only col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-6">
+
+                <div class="center-name">
+                    <span style="font-size:18px"><b> Chapter Title: </b></span>
+                    <span style="font-size: 16px;">{{ request.user.Center_Code }}</span>
+
+                </div>
+                <div class="time-period">
+                    <span style="font-size:18px"><b> Visited Students: </b></span>
+                    <span style="font-size: 16px;">{{ inning.Start_Date }} - {{ inning.End_Date }}</span>
+
+                </div>
+           
+
+
+            </div>
+            <div class="col-md-6">
+                <div class="no-student">
+                    <span style="font-size:18px"><b> No of Quiz: </b></span>
+                    <span style="font-size: 16px;">{{ number_of_students }}</span>
+                </div>
+                <div class="no-chapter">
+                    <span style="font-size:18px"><b> Chapter Status: </b></span>
+                    <span style="font-size: 16px;">{{ chapter_list|length }}</span>
+                </div>
+                {#                <div class="no-quiz">#}
+                {#                    <span style="font-size:18px"><b> No of quiz: </b></span>#}
+                {#                    <span></span>#}
+                {#                </div>#}
+            </div>
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <hr class="header_hr">
+        </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6 col-sm-6 col-xs-12" style="position: relative; height:300px">
 
                 <div class="progressbar" data-animate="false"
-                     style="height: 200px ;position: absolute; top:40%; left:40%; ">
+                     style="height: 200px ;position: absolute; top:10%; left:40%; ">
                     <h3>Progress</h3>
 
                     <div class="circle2" data-percent="10">
@@ -144,7 +186,7 @@
                 </div>
 
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="col-md-6 col-sm-6 col-xs-12 text-left">
                 <figure class="highcharts-figure">
                     <div id="container"></div>
                     <p class="highcharts-description">
@@ -192,10 +234,11 @@
                                 <td>  {{ a.chapter.laststudydate }} </td>
                                 <td class="quiztd" data-quiz_completed="{{ a.quiz.completed_quiz }}"
                                     data-quiz_total="{{ a.quiz.quiz_count }}"
-                                    data-score_obtained="{{ a.quiz.avg_percent_score }}"> Score Obtained %
-                                    : {{ a.quiz.avg_percent_score }} <br>
-                                    -- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}<br>
-                                    -- Completed/Total Quiz
+                                    data-score_obtained="{{ a.quiz.avg_percent_score }}"> <span style="font-weight: 600;">Score Obtained</span>
+                                    
+                                    :- {{ a.quiz.avg_percent_score }}  %<br>
+                                     <span style="font-weight: 600;">Completed/Total Quiz</span> :- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}
+                                    
                                 </td>
                             </tr>
                         {% endfor %}
@@ -286,6 +329,10 @@
                     }
 
                 },
+                credits: {
+                    enabled: false
+                  },
+                
                 legend: {
                     enabled: false
                 },
