@@ -313,20 +313,20 @@
                                 <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
                             </li>
                             {% if '/teachers' in request.path %}
-                            <li id="chapterProgressView">
-                                <a href="{% url 'chapter_student_progress' course.pk chapter.pk %}?iframe=1">
-                                    <div>
-                                        <i class="fa fa-tasks"> </i> Progress
-                                    </div>
-                                </a>
-                            </li>
-                            <li id="attendanceView">
-                                <a href="{% url 'teacher_courseinfo_detail_attendance' course.pk %}?iframe=1">
-                                    <div>
-                                        <i class="fa fa-tasks"> </i> Attendance
-                                    </div>
-                                </a>
-                            </li>
+                                <li id="chapterProgressView">
+                                    <a href="{% url 'chapter_student_progress' course.pk chapter.pk %}?iframe=1">
+                                        <div>
+                                            <i class="fa fa-tasks"> </i> Progress
+                                        </div>
+                                    </a>
+                                </li>
+                                <li id="attendanceView">
+                                    <a href="{% url 'teacher_courseinfo_detail_attendance' course.pk %}?iframe=1">
+                                        <div>
+                                            <i class="fa fa-tasks"> </i> Attendance
+                                        </div>
+                                    </a>
+                                </li>
                             {% endif %}
                         </ul>
                     </div>
@@ -551,7 +551,7 @@
 
 
     var currentpage = 1;
-
+    var studystarttime = Date.now() / 1000 | 0; // Floors the value
     var roomName = "chapterchat{{chapter.id}}";
 
     {% if not connection_offline %}
@@ -1160,8 +1160,11 @@
     function changePage(page_number) {
         {% if not connection_offline %}
             chapterProgressStopFunction()
-            chapterProgressFunction()
-            teacherchapterProgressFunction()
+            {% if '/students' in request.path %}
+                chapterProgressFunction()
+            {% elif '/teachers' in request.path %}
+                teacherchapterProgressFunction()
+            {% endif %}
         {% endif %}
         if (page_number >= parseInt($('#totalpages').text())) {
             $('#next-btn').css('visibility', 'hidden')
@@ -1676,12 +1679,14 @@
 
     <!-- Chapter Progress save feature -->
     {% if not connection_offline %}
-        <script>
-            var chapterProgress;
-            var currentPageUpdateOnServer = 0;
+        {% if '/students' in request.path %}
+            <script>
+                var chapterProgress;
+                var currentPageUpdateOnServer = 0;
 
-            function chapterProgressFunction() {
-                if (currentPageUpdateOnServer === 0 || window.currentPage > currentPageUpdateOnServer) {
+                function chapterProgressFunction() {
+                    var timewhensendingprogress = Date.now() / 1000 | 0; // floors the value
+                    //if (currentPageUpdateOnServer) {
                     chapterProgress = setTimeout(function () {
                         $.ajax({
                             url: "{% url 'pageupdateajax' course.pk chapter.pk %}",
@@ -1690,19 +1695,23 @@
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                                 'currentpage': window.currentpage,
                                 'totalpages': data.numberofpages,
+                                'studytimeinseconds': studystarttime - timewhensendingprogress,
+                                'last_study_time': timewhensendingprogress,
                             },
                             success: function (data) {
-                                window.currentPageUpdateOnServer = parseInt(data)
+                                console.log(data)
+                                window.currentPageUpdateOnServer = parseInt(data.contents.currentpagenumber)
                             },
                         })
                     }, 1000);
+                    //}
                 }
-            }
 
-            function chapterProgressStopFunction() {
-                clearTimeout(chapterProgress);
-            }
-        </script>
+                function chapterProgressStopFunction() {
+                    clearTimeout(chapterProgress);
+                }
+            </script>
+        {% endif %}
 
         <script>
             var teacherchapterProgress;
@@ -1710,7 +1719,6 @@
             // var currentPageUpdateOnServer = 0;
 
             function teacherchapterProgressFunction() {
-                console.log('hasdj')
                 //if (currentPageUpdateOnServer === 0) {
                 teacherchapterProgress = setTimeout(function () {
                     $.ajax({

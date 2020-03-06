@@ -36,7 +36,7 @@ from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
-from ..teacher_module.views import maintainLastPageofStudent
+from ..views import chapterProgressRecord
 
 datetime_now = datetime.now()
 
@@ -1058,13 +1058,19 @@ class QuizUserProgressDetailView(DetailView):
 
 def PageUpdateAjax(request, course, chapter):
     if request.method == 'POST':
-        currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
-                                                                 currentPageNumber=request.POST['currentpage'],
-                                                                 totalPage=request.POST['totalpages'])
+        jsondata = chapterProgressRecord(str(course), str(chapter), str(request.user.id),
+                                         currentPageNumber=request.POST['currentpage'],
+                                         totalPage=request.POST['totalpages'],
+                                         fromcontents=True, studytimeinseconds=request.POST['totalpages'],
+                                         )
     else:
-        currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
-                                                                 )
-    return HttpResponse(currentPageNumber)
+        # currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
+        #                                                          )
+        jsondata = chapterProgressRecord(str(course), str(chapter), str(request.user.id), fromcontents=True,
+                                         currentPageNumber=None, totalPage=None,
+                                         studytimeinseconds=None,
+                                         )
+    return JsonResponse(jsondata)
 
 
 from django.contrib.auth import authenticate, login as auth_login

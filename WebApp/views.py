@@ -1311,6 +1311,7 @@ class AssignAnswerInfoCreateView(CreateView):
 class AssignAnswerInfoDetailView(DetailView):
     model = AssignAnswerInfo
 
+
 def AssignAnswerInfoDelete(request):
     if request.method == "POST":
         answerpk = request.POST.get('answerpk')
@@ -1324,6 +1325,7 @@ def AssignAnswerInfoDelete(request):
     else:
         messages.add_message(request, messages.ERROR, 'Invalid')
         return HttpResponse('GET Method not allowed', status=403)
+
 
 class AssignAnswerInfoUpdateView(UpdateView):
     model = AssignAnswerInfo
@@ -2037,3 +2039,157 @@ def loginforappredirect(request, username, password):
             return HttpResponse('User is not authenticated', status=500)
     else:
         return HttpResponse('Incorrect Username or Password', status=500)
+
+
+def CourseProgressView(request, coursepk, inningpk=None):
+    session_list = []
+    courseObj = get_object_or_404(CourseInfo, pk=coursepk)
+    chapters_list = courseObj.chapterinfos.all()
+    list_of_students = []
+    student_data = []
+    if coursepk:
+        inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
+                                                End_Date__gt=datetime.now()).distinct()
+        session_list.append(inning_info)
+
+        if inning_info.count() > 0:
+            if inningpk:
+                innings = get_object_or_404(inning_info, pk=inningpk)
+            else:
+                innings = inning_info.all().first()
+
+            if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
+
+            for chapter in chapters_list:
+                for x in list_of_students:
+                    jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
+                                                     createFile=False)
+                    if jsondata is not None:
+                        if int(jsondata['contents']['totalPage']) > 0 and int(
+                                jsondata['contents']['currentpagenumber']) > 0:
+                            progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                                jsondata['contents']['totalPage'])
+                        else:
+                            progresspercent = 1
+                    else:
+                        progresspercent = 1
+
+                    student_quiz = Quiz.objects.filter(chapter_code=chapter)
+                    # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
+
+                    student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+                    total_quiz_percent_score = 0
+                    temp = []
+                    for z in student_result:
+                        if z.quiz.pk in temp:
+                            student_result.get(pk=x.pk).delete()
+                        else:
+                            temp.append(z.quiz.pk)
+                            total_quiz_percent_score += float(z.get_percent_correct)
+                    student_data.append(
+                        {
+                            'student': x,
+                            'chapter': {
+                                'chapterObj': chapter,
+                                'laststudydate': jsondata['contents'][
+                                    'laststudydate'] if jsondata is not None else None,
+                                'totalstudytime': jsondata['contents'][
+                                    'totalstudytime'] if jsondata is not None else None,
+                                'currentpagenumber': int(
+                                    jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
+                                'totalPage': int(
+                                    jsondata['contents']['totalPage']) if jsondata is not None else None,
+                                'progresspercent': progresspercent,
+                            },
+                            'quiz': {
+                                'quiz_count': student_quiz.count(),
+                                'completed_quiz': student_result.filter(complete=True).count(),
+                                'progress': student_result.filter(
+                                    complete=True).count() * 100 / student_quiz.count(),
+                                # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
+                                # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
+                                'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
+                                    complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
+                            }
+                        },
+                    )
+
+    context = {
+        'session_list': session_list,
+        'student_progress_data': student_data,
+        'number_of_students': list_of_students.count(),
+        'course': courseObj,
+        'inning': innings,
+        'chapter_list': chapters_list,
+    }
+    return render(request, 'teacher_module/chapterProgress.html', context=context)
+
+
+def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fromquiz=False, totalquizcount=None,
+                          attemptedquiz=None, correctquizanswers=None, currentPageNumber=None, totalPage=None,
+                          studytimeinseconds=None, createFile=True,
+                          isjson=False
+                          ):
+    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
+    try:
+        os.makedirs(path)  # Creates the directories and subdirectories structure
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    try:
+        with open(student_data_file) as outfile:
+            jsondata = json.load(outfile)
+        isjson = True
+    except:
+        isjson = False
+    if os.path.isfile(student_data_file) and isjson:
+        if fromcontents:
+            if currentPageNumber is None:
+                return jsondata
+
+            jsondata['contents']['totalstudytime'] = int(jsondata['contents']['totalstudytime']) + int(
+                studytimeinseconds)
+            jsondata['contents']['laststudydate'] = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+
+            if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
+                jsondata['contents']['currentpagenumber'] = currentPageNumber
+                jsondata['contents']['totalPage'] = totalPage
+        # elif fromquiz:
+        #     jsondata['quiz']['totalquizcount'] = totalquizcount
+        #     jsondata['quiz']['attemptedquiz'] = attemptedquiz
+        #     jsondata['quiz']['correctquizanswers'] = correctquizanswers
+        # else:
+        #     return None
+        with open(student_data_file, "w") as outfile:
+            json.dump(jsondata, outfile, indent=4)
+    else:
+        if createFile:
+            if fromcontents:
+                jsondata = {
+                    "contents": {
+                        "laststudydate": datetime.now().strftime("%m/%d/%Y %H:%M:%S"),
+                        "totalstudytime": studytimeinseconds,
+                        "currentpagenumber": currentPageNumber,
+                        "totalPage": totalPage,
+                    },
+                    # "quiz": {},
+                }
+            # elif fromquiz:
+            #     jsondata = {
+            #         "contents":{},
+            #         "quiz":{
+            #             "totalquizcount": totalquizcount,
+            #             "attemptedquiz": attemptedquiz,
+            #             "correctquizanswers": correctquizanswers,
+            #         },
+            #     }
+            else:
+                return None
+            # student_file = open(student_data_file, "w+")
+            with open(student_data_file, "w+") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+        else:
+            return None
+    return jsondata

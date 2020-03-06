@@ -264,6 +264,15 @@ urlpatterns += (
 
 )
 
+# Course Progress
+
+urlpatterns += (
+    path('courseinfo/detail/<int:coursepk>/progress/',
+         admin_views.CourseProgressView, name='course_progress'),
+    path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
+         admin_views.CourseProgressView, name='course_progress_withinning'),
+)
+
 # Teacher's Attendance
 
 urlpatterns += (

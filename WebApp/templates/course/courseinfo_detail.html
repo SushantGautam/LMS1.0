@@ -87,20 +87,20 @@
                     </span>
                     <form method="post" action="{% url 'courseinfo_delete' pk=object.pk %}"
                               id="deleteCourse{{ object.pk }}">
-                            {% csrf_token %}
-                            <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
-                            <input type="hidden" value="{{ object.pk }}" name="course_id">
-                        </form>
-                    {% else %}
-                    <span style="margin-left:20px;">
-                        <a  href='attendance/'
+                        {% csrf_token %}
+                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                        <input type="hidden" value="{{ object.pk }}" name="course_id">
+                    </form>
+                        {% else %}
+                            <span style="margin-left:20px;">
+                        <a href='attendance/'
                            style="color: green; cursor:pointer"><i class="fa fa-tasks"></i> <b> ATTENDANCE </b></a></a>
                     </span>
-                    <span style="margin-left:20px">
-                        <a  href='attendance/'
+                            <span style="margin-left:20px">
+                        <a href='{% url 'course_progress' object.pk %}'
                            style="color: blue; cursor:pointer"><i class="fa fa-trophy"></i> <b> ACHIEVEMENT </b></a></a>
                     </span>
-                    {% endif %}
+                        {% endif %}
 
                     </div>
                 {% endif %}
