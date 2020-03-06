@@ -104,7 +104,6 @@
                 <div class="no-quiz">
                     <span style="font-size:18px"><b> No of quiz: </b></span>
                     <span></span>
-
                 </div>
             </div>
         </div>
@@ -137,7 +136,7 @@
                      style="height: 200px ;position: absolute; top:40%; left:40%; ">
                     <h3>Progress</h3>
 
-                    <div class="circle2" data-percent="50">
+                    <div class="circle2" data-percent="10">
 
                         <div></div>
 
@@ -412,9 +411,21 @@
                     }
                 );
                 table2_main.draw();
-            })
+            });
+
+            calculateProgressPercent()
+
+            function calculateProgressPercent() {
+                sum = 0
+                count = 0
+                $('.circle').each(function () {
+                    sum = sum + parseFloat($(this).attr('data-percent'));
+                    count++;
+                })
+                avg = sum / count;
+                console.log(sum, count, avg)
+                $('.circle2').attr('data-percent', avg)
+            }
         });
-
-
     </script>
 {% endblock %}

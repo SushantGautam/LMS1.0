@@ -2044,7 +2044,7 @@ def loginforappredirect(request, username, password):
 def CourseProgressView(request, coursepk, inningpk=None):
     session_list = []
     courseObj = get_object_or_404(CourseInfo, pk=coursepk)
-    chapters_list = courseObj.chapterinfos.all()
+    chapters_list = courseObj.chapterinfos.all().order_by('Chapter_No')
     list_of_students = []
     student_data = []
     if coursepk:
@@ -2084,7 +2084,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
                     temp = []
                     for z in student_result:
                         if z.quiz.pk in temp:
-                            student_result.get(pk=x.pk).delete()
+                            student_result.get(pk=z.pk).delete()
                         else:
                             temp.append(z.quiz.pk)
                             total_quiz_percent_score += float(z.get_percent_correct)
@@ -2107,7 +2107,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
                                 'quiz_count': student_quiz.count(),
                                 'completed_quiz': student_result.filter(complete=True).count(),
                                 'progress': student_result.filter(
-                                    complete=True).count() * 100 / student_quiz.count(),
+                                    complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
                                 # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                                 # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
                                 'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
