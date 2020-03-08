@@ -26,17 +26,32 @@
 <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-    $(document).ready(function () {
-        var table_main = $('#MarkingList').DataTable({
-            responsive: true,
-            dom: 'lBfrtip',
-            buttons: []
+        $(document).ready(function () {
+            var table_main = $('#MarkingList').DataTable({
+                responsive: true,
+                dom: 'lBfrtip',
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }
+                ],
+                "columnDefs": []
 
+            });
         });
-    });
 
 
-</script>
+    </script>
 {% endblock %}
