@@ -145,7 +145,7 @@
                     <span style="font-size: 16px;" id="chapter-status"></span>
                 </div>
             </div>
-            {% comment %}
+
             <div class="col-md-6">
                 <div class="no-student">
                     <span style="font-size:18px"><b> No of Quiz: </b></span>
@@ -156,7 +156,7 @@
                     <span style="font-size: 16px;" id="visited-students"></span>
                 </div>
             </div>
-            {% endcomment %}
+
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -398,11 +398,21 @@
 
             $('.chapterBtn').on('click', function () {
                 chapterpk = this.value
+                var vs = 0;
                 $('#chapter-details').css('display', 'block')
-                {% for x in chapter_list %}
-                    if (chapterpk == '{{ x.pk }}') {
-                        $('#chapter-title').text('{{ x }}')
-                        $('#chapter-status').text('{{ x.Use_Flag }}')
+                {% for x in student_progress_data %}
+                    if (chapterpk == '{{ x.chapter.chapterObj.pk|safe }}') {
+                        $('#chapter-title').text('{{ x.chapter.chapterObj|safe}}')
+                        if ('{{ x.chapter.chapterObj.Use_Flag|safe}}') {
+                            $('#chapter-status').text('Active')
+                        } else {
+                            $('#chapter-status').text('Inactive')
+                        }
+                        $('#quiz-count').text('{{ x.quiz.quiz_count|safe }}')
+                        if ('{{ x.chapter.laststudydate|safe }}' != 'None') {
+                            vs++
+                        }
+                        $('#visited-students').text(vs + ' of {{ number_of_students }}')
                     }
                 {% endfor %}
                 $.fn.dataTable.ext.search.push(

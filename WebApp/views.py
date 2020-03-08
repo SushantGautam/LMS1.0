@@ -2080,6 +2080,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
                     # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
                     student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+                    # SELECT * FROM SITTING WHERE 'user'=x AND quiz__pk IN (SELECT * FROM student_quiz)
                     total_quiz_percent_score = 0
                     temp = []
                     for z in student_result:
