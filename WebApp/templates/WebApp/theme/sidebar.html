@@ -22,10 +22,11 @@
                 <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img"/>
             </div>
 
-                <div class="profile_info"  >
-                
-                 
-                <span  >Welcome,</span>
+            <div class="profile_info">
+
+
+                <span>Welcome,</span>
+                <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
                 <h2>{{ request.user.username }}</h2>
             </div>
         {% endif %}

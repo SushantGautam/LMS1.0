@@ -21,6 +21,7 @@
             <div class="profile_info">
 
                 <span>Welcome,</span>
+                <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
                 <h2>{{ request.user.username }}</h2>
             </div>
         {% endif %}
@@ -96,8 +97,9 @@
             <hr>
             <div style=" padding: 10px;">
 
-                     <a href="http://ublcloud.me/media/app/lms-app.apk" ><img style='height: 100%; width: 100%; object-fit: contain'
-                     src="{% static "3D_Viewer/google-play-badge.svg" %}"></a>
+                <a href="http://ublcloud.me/media/app/lms-app.apk"><img
+                        style='height: 100%; width: 100%; object-fit: contain'
+                        src="{% static "3D_Viewer/google-play-badge.svg" %}"></a>
             </div>
 
 
