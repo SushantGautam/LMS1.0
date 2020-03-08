@@ -12,7 +12,7 @@
 {% block content %}
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
-        <div class="attendance-detail col-md-12 col-sm-12 col-xs-12"> 
+        <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="session-detail">
                     <div style="font-size:18px"><b> Session: </b></div>
@@ -64,7 +64,6 @@
                 </div>
 
             </div>
-          
 
 
             <div class="col-md-4 col-sm-4 col-xs-12">
@@ -89,108 +88,104 @@
         </div>
 
 
-    
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <hr class="header_hr">
-    </div>
-
-
-    {% if not attendance and not inning %}
-        <div class="no-attendance-display text-center">
-            <h3 style="font-size:24px; text-transform:uppercase;"><b>No Attendance!!</b>
-            </h3>
-
-
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <hr class="header_hr">
         </div>
-    {% else %}
-   <div class="row">
-       <div class="col-md-12 col-sm-12 col-xs-12">
-           <div class="col-md-6 col-sm-6 col-xs-12">
-            <div class="total-students text-center" style="margin-top: 30px; ">
-                <div>
-                    <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
-                        style="font-size:16px;" id="student_present"></span>
+
+
+        {% if not attendance and not inning %}
+            <div class="no-attendance-display text-center">
+                <h3 style="font-size:24px; text-transform:uppercase;"><b>No Attendance!!</b>
+                </h3>
+
+
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="total-students text-center" style="margin-top: 30px; ">
+                            <div>
+                                <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
+                                    style="font-size:16px;" id="student_present"></span>
+                            </div>
+                            <div>
+                                <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span
+                                    style="font-size:16px;" id="student_absent"></span>
+                            </div>
+                            <div>
+                                <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
+                                    style="font-size:16px;">{{ attendance|length }}</span>
+                            </div>
+
+
+                        </div>
+                        <div class="take-attendance" style="margin-top: 70px;">
+                            {% if todays_date|date:"Y-m-d" == attend_date %}
+                                <p class="text-center"><a class="btn btn-default btn-success"
+                                                          href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">Take
+                                    Attendance</a></p>
+                            {% endif %}
+
+                        </div>
+
+
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12 text-center">
+
+                        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+                        <input type="radio" name="mychart" class="mychart" id="column" value="column"
+                               onclick="chartfunc()" checked>Column &nbsp;
+                        <input type="radio" name="mychart" class="mychart" id="bar" value="bar" onclick="chartfunc()">Bar
+                        &nbsp;
+                        <input type="radio" name="mychart" class="mychart" id="pie" value="pie" onclick="chartfunc()">Pie
+                        &nbsp;
+                        <input type="radio" name="mychart" class="mychart" id="line" value="line" onclick="chartfunc()">Line
+
+                    </div>
                 </div>
-                <div>
-                    <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span
-                        style="font-size:16px;" id="student_absent"></span>
+                <div class="col-md-12">
+                    <hr class="header_hr">
                 </div>
-                <div>
-                    <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
-                        style="font-size:16px;">{{ attendance|length }}</span>
-                </div>
-    
-    
-            </div> 
-           <div class="take-attendance" style="margin-top: 70px;">
-            {% if todays_date|date:"Y-m-d" == attend_date %}
-            <p class="text-center"><a class="btn btn-default btn-success"
-                                      href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">Take
-                Attendance</a></p>
-        {% endif %}
+            </div>
 
-           </div>
+            <div id=" container attendance-table">
+                {% if attendance %}
+                    <h3 class="detailListHeader2 ">Attendance List</h3>
+                    <a class="btn btn-primary pull-right"
+                       href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
+                        Edit</a>
 
-         
+                    <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
+                        <thead class="thead-light bg-primary">
+                        <tr>
+                            <th>{% trans "Roll No." %}</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Attendance" %}</th>
 
-
-    
-           </div>
-        <div class="col-md-6 col-sm-6 col-xs-12 text-center">
-            
-                <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-
-                <input type="radio" name="mychart" class="mychart" id= "column" value="column" onclick= "chartfunc()" checked>Column &nbsp;
-                <input type="radio" name="mychart" class="mychart" id= "bar" value="bar" onclick= "chartfunc()">Bar &nbsp;
-                <input type="radio" name="mychart" class="mychart" id= "pie" value="pie" onclick= "chartfunc()">Pie &nbsp;
-                <input type="radio" name="mychart" class="mychart" id= "line" value="line" onclick= "chartfunc()">Line
-            
-        </div>
-       </div>
-       <div class="col-md-12">
-        <hr class="header_hr">
-       </div>
-   </div>      
-    
-        <div id=" container attendance-table">
-            {% if attendance %}
-                <h3 class="detailListHeader2 ">Attendance List</h3>
-                <a class="btn btn-primary pull-right"
-                   href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
-                    Edit</a>
-
-                <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
-                    <thead class="thead-light bg-primary">
-                    <tr>
-                        <th>{% trans "Roll No." %}</th>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "Attendance" %}</th>
-
-                        <th>{% trans "Updated On" %}</th>
-
-                    </tr>
-                    </thead>
-                    <tbody>
-
-
-                    {% for a in attendance %}
-
-
-                        <tr  >
-                            <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
-                            <td >  {{ a.initial.member_code }} </td>
-                            <td style="background-color:{% if  a.initial.present %} 	 #29a329 {% else %} #cc2900 {% endif %}; color:white;  font-weight:700">  {{ a.initial.present }} </td>
-                            <td>  {{ a.initial.updated }} </td>
+                            <th>{% trans "Updated On" %}</th>
 
                         </tr>
-
-                    {% endfor %}
-                    </tbody>
-
-                </table>
+                        </thead>
+                        <tbody>
 
 
-              
+                        {% for a in attendance %}
+
+
+                            <tr>
+                                <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
+                                <td>  {{ a.initial.member_code }} </td>
+                                <td style="background-color:{% if  a.initial.present %}     #29a329 {% else %} #cc2900 {% endif %}; color:white;  font-weight:700">  {{ a.initial.present }} </td>
+                                <td>  {{ a.initial.updated }} </td>
+
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+
+                    </table>
 
 
 
@@ -199,21 +194,24 @@
 
 
 
-            {% else %}
-                <p>{% trans "There are no available attendance" %}.</p>
-            {% endif %}
-        </div>
 
 
-       
-    {% endif %}
+
+                {% else %}
+                    <p>{% trans "There are no available attendance" %}.</p>
+                {% endif %}
+            </div>
+
+
+
+        {% endif %}
     </div>
 
 {% endblock %}
 
 {% block customjss %}
-<script src="{% static 'js/highcharts.js' %}"></script>
-<script src="{% static 'js/highchart_data.js' %}"></script>
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/highchart_data.js' %}"></script>
 
     <script>
         var chart1;
@@ -382,7 +380,7 @@
 
         var present = 0;
         var absent = 0;
-        
+
 
 
         {% for x in attendance %}
@@ -402,7 +400,6 @@
             $('#select_course option').each(function () {
 
                 var self = $(this);
-                console.log(self);
                 self.removeAttr('selected');
 
                 if (self.hasClass(levelClass) || typeof (levelClass) == "undefined") {
@@ -429,8 +426,19 @@
             var table_main = $('#QuizTable').DataTable({
                 responsive: true,
                 stateSave: true,
+                dom: 'lBfrtip',
 
-                buttons: [],
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }
+                ],
 
             });
         });
