@@ -175,4 +175,34 @@
 
 
     </script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var table_main = $('.table').DataTable({
+                responsive: true,
+                stateSave: true,
+                dom: 'lBfrtip',
+
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4,]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }
+                ],
+                columnDefs: []
+
+            });
+        });
+
+
+    </script>
 {% endblock %}
