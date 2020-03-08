@@ -4,7 +4,7 @@ import os
 import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 # import vimeo  # from PyVimeo for uploading videos to vimeo.com
@@ -2072,14 +2072,15 @@ def CourseProgressView(request, coursepk, inningpk=None):
                             progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
                                 jsondata['contents']['totalPage'])
                         else:
-                            progresspercent = 1
+                            progresspercent = 0
                     else:
-                        progresspercent = 1
+                        progresspercent = 0
 
                     student_quiz = Quiz.objects.filter(chapter_code=chapter)
                     # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
                     student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+                    # SELECT * FROM SITTING WHERE 'user'=x AND quiz__pk IN (SELECT * FROM student_quiz)
                     total_quiz_percent_score = 0
                     temp = []
                     for z in student_result:
@@ -2093,10 +2094,11 @@ def CourseProgressView(request, coursepk, inningpk=None):
                             'student': x,
                             'chapter': {
                                 'chapterObj': chapter,
-                                'laststudydate': jsondata['contents'][
-                                    'laststudydate'] if jsondata is not None else None,
-                                'totalstudytime': jsondata['contents'][
-                                    'totalstudytime'] if jsondata is not None else None,
+                                'laststudydate': datetime.strptime(jsondata['contents'][
+                                                                       'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
+                                    "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
+                                'totalstudytime': timedelta(seconds=int(jsondata['contents'][
+                                                                            'totalstudytime'])) if jsondata is not None else "00:00:00",
                                 'currentpagenumber': int(
                                     jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
                                 'totalPage': int(
