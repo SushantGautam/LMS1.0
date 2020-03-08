@@ -1,4 +1,4 @@
-{% extends "teacher_module/base.html" %}
+{% extends basefile %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% load i18n %}
@@ -70,7 +70,7 @@
                 </div>
                 <div class="time-period">
                     <span style="font-size:18px"><b> Period: </b></span>
-                    <span style="font-size: 16px;">{{ inning.Start_Date }} - {{ inning.End_Date }}</span>
+                    <span style="font-size: 16px;">{{ inning.Start_Date|date:"Y/m/d" }} - {{ inning.End_Date|date:"Y/m/d" }}</span>
 
                 </div>
 
@@ -85,10 +85,6 @@
                     <span style="font-size:18px"><b> No of Chapter: </b></span>
                     <span style="font-size: 16px;">{{ chapter_list|length }}</span>
                 </div>
-                {#                <div class="no-quiz">#}
-                {#                    <span style="font-size:18px"><b> No of quiz: </b></span>#}
-                {#                    <span></span>#}
-                {#                </div>#}
             </div>
         </div>
 
@@ -361,9 +357,17 @@
         $(document).ready(function () {
             $("#select_session").on("change", function () {
                 {% if 'iframe' in request.GET %}
-                    window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}/?iframe=1".replace('919', this.value);
+                    {% if '/teachers' in request.path %}
+                        window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}/?iframe=1".replace('919', this.value);
+                    {% elif '/students' or '/teachers' not in request.path %}
+                        window.location.href = "{% url 'admin_course_progress_withinning' course.pk 919 %}/?iframe=1".replace('919', this.value);
+                    {% endif %}
                 {% else %}
-                    window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}".replace('919', this.value);
+                    {% if '/teachers' in request.path %}
+                        window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}".replace('919', this.value);
+                    {% elif '/students' or '/teachers' not in request.path %}
+                        window.location.href = "{% url 'admin_course_progress_withinning' course.pk 919 %}".replace('919', this.value);
+                    {% endif %}
                 {% endif %}
             });
 

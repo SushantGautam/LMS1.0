@@ -315,3 +315,12 @@ urlpatterns += (
     path('attendance/<int:attend_date>/<int:courseid>/<int:teacherid>/', views.viewteacherAttendance,
          name='teacherattendanceview'),
 )
+
+# Course Progress
+
+urlpatterns += (
+    path('courseinfo/detail/<int:coursepk>/progress/',
+         views.CourseProgressView, name='admin_course_progress'),
+    path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
+         views.CourseProgressView, name='admin_course_progress_withinning'),
+)

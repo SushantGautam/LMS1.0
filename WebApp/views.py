@@ -2048,9 +2048,13 @@ def CourseProgressView(request, coursepk, inningpk=None):
     list_of_students = []
     student_data = []
     if coursepk:
-        inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
-                                                Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
-                                                End_Date__gt=datetime.now()).distinct()
+        if '/teachers' in request.path:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                    Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
+        else:
+            inning_info = InningInfo.objects.filter(Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
         session_list.append(inning_info)
 
         if inning_info.count() > 0:
@@ -2080,7 +2084,6 @@ def CourseProgressView(request, coursepk, inningpk=None):
                     # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
                     student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
-                    # SELECT * FROM SITTING WHERE 'user'=x AND quiz__pk IN (SELECT * FROM student_quiz)
                     total_quiz_percent_score = 0
                     temp = []
                     for z in student_result:
@@ -2118,6 +2121,10 @@ def CourseProgressView(request, coursepk, inningpk=None):
                         },
                     )
 
+    if '/teachers' in request.path:
+        basefile = "teacher_module/base.html"
+    elif '/teachers' or '/students' not in request.path:
+        basefile = "base.html"
     context = {
         'session_list': session_list,
         'student_progress_data': student_data,
@@ -2125,6 +2132,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
         'course': courseObj,
         'inning': innings,
         'chapter_list': chapters_list,
+        'basefile': basefile,
     }
     return render(request, 'teacher_module/chapterProgress.html', context=context)
 
