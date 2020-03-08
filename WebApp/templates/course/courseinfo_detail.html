@@ -27,7 +27,7 @@
 
         <hr class="course-info header_hr" style="margin-bottom: 5px;margin-top: 5px;">
         <div class="col-md-6 col-sm-12 col-xs-12 no-padding">
-            <h3  class ="course-info" align="center"><b>{{ object.Course_Name }}</b></h3>
+            <h3 class="course-info" align="center"><b>{{ object.Course_Name }}</b></h3>
             <br>
 
             <img class="course-info card-img-top" src="
@@ -81,27 +81,33 @@
                         {% endif %}"><b><u>Edit Course</u></b></a>
                         {% if '/teachers' not in request.path %}
 
-                        <span style="float: right;">
+                            <span style="float: right;">
                         <a id="{{ object.pk }}" class="course-confirm-delete"
                            style="color: rgb(255, 0, 0);cursor:pointer">Delete</a>
                     </span>
-                    <form method="post" action="{% url 'courseinfo_delete' pk=object.pk %}"
-                              id="deleteCourse{{ object.pk }}">
-                        {% csrf_token %}
-                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
-                        <input type="hidden" value="{{ object.pk }}" name="course_id">
-                    </form>
+                            <form method="post" action="{% url 'courseinfo_delete' pk=object.pk %}"
+                                  id="deleteCourse{{ object.pk }}">
+                                {% csrf_token %}
+                                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                                <input type="hidden" value="{{ object.pk }}" name="course_id">
+                            </form>
                         {% else %}
                             <span style="margin-left:20px;">
                         <a href='attendance/'
                            style="color: green; cursor:pointer"><i class="fa fa-tasks"></i> <b> ATTENDANCE </b></a></a>
                     </span>
-                            <span style="margin-left:20px">
-                        <a href='{% url 'course_progress' object.pk %}'
+
+                        {% endif %}
+                        <span style="margin-left:20px">
+                        <a href='
+                        {% if '/teachers' in request.path %}
+                            {% url 'course_progress' object.pk %}
+                        {% elif '/students' or '/teachers' not in request.path %}
+                            {% url 'admin_course_progress' object.pk %}
+                        {% endif %}
+'
                            style="color: blue; cursor:pointer"><i class="fa fa-trophy"></i> <b> ACHIEVEMENT </b></a></a>
                     </span>
-                        {% endif %}
-
                     </div>
                 {% endif %}
             </div>
@@ -129,10 +135,10 @@
                     <td>Status</td>
                     <td>
                         {% if object.Use_Flag == True %}
-                        <span style = "color:green"> <b>Active</b>
+                            <span style="color:green"> <b>Active</b>
                         </span>
                         {% elif object.Use_Flag == False %}
-                        <span class="text-danger"><b>Inactive</b></span>
+                            <span class="text-danger"><b>Inactive</b></span>
                         {% endif %}
                     </td>
                 </tr>
@@ -150,7 +156,7 @@
                     </td>
                 </tr>
 
-                            
+
             </table>
             <div class=" course-info col-md-12 col-sm-12 col-xs-12 no-padding">
                 <h4 align="center"><b>Course Description</b></h4>
@@ -360,7 +366,7 @@
                                                         <p style="color: #00A000">
                                                             {{ eachquiz.draft|yesno:"Inactive, Active" }}
                                                         <p>
-                                                   
+
                                                         <hr>
                                                     {% else %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
@@ -372,12 +378,12 @@
                                                         <hr>
                                                     {% endif %}
                                                 {% endfor %}
-                        </div>
-                        </div>
-                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                        </div>
-                        </div>
+                                </div>
+                            </div>
 
                         </td>
                         {#                        <td>#}
@@ -387,10 +393,10 @@
                         No Active Quizzes
                         <hr>
                     {% endif %}
-</tr>
+                </tr>
 
-</table>
-<!-- <p>
+            </table>
+            <!-- <p>
 
                 <a class="btn btn-primary" data-toggle="collapse" href="#quizcollapse" role="button"
                     aria-expanded="false" aria-controls="quizcollapse">
@@ -398,15 +404,15 @@
                 </a>
 
             </p> -->
-<!-- <br> -->
-<!-- <p>
+            <!-- <br> -->
+            <!-- <p>
                 <a class="btn btn-primary" data-toggle="collapse" href="#surveycollapse" role="button"
                     aria-expanded="false" aria-controls="surveycollapse">
                     {{ surveycount.count }} Surveys
                 </a>
 
             </p> -->
-<!-- <div class="collapse" id="surveycollapse">
+            <!-- <div class="collapse" id="surveycollapse">
                 <div class="card card-body">
                     {% for each in surveycount %}
                     <a href="/survey/surveyinfo/detail/{{ each.pk }}"> {{ each.Survey_Title }}</a>
@@ -415,84 +421,84 @@
             </div> -->
 
 
-</div>
-<div class="col-md-6 col-sm-12 xol-xs-12">
-    <div class="col-md-12 col-sm-12 xol-xs-12">
-        <div class="col-md-8 col-sm-12 col-xs-12 text-center">
-            <h2 class="course-info subHeader">Chapters</h2>
-
-
-
         </div>
-<div class="col-md-12">
-        {% if object.Use_Flag is False %}
-        <p style = "color:red">Note: Course is inactive, therefore chapters and assignments are not assigned to students.</p>
-    {% endif %}
+        <div class="col-md-6 col-sm-12 xol-xs-12">
+            <div class="col-md-12 col-sm-12 xol-xs-12">
+                <div class="col-md-8 col-sm-12 col-xs-12 text-center">
+                    <h2 class="course-info subHeader">Chapters</h2>
 
-</div>   
-        
 
-        {% if '/students' not in request.path %}
-            <div class=" course-info col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
-                <button type="button" class="btn-sm btn-success" data-toggle="modal"
-                        data-target="#exampleModal1"
-                        id="add-newchapter-btn">
-                    Create New Chapter
-                </button>
-            </div>
-        {% endif %}
-       
-        <div class="col-md-12 col-sm-12 xol-xs-12">
-            <script> var lastchapter = 0;</script>
-            {% for o in chapters %}
-                <div class=" course-info col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
-                    <div class="col-md-8 col-sm-8 col-xs-12">
-                        <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}
-                            
-                            {% if o.Use_Flag == False %}
-                            <span class="text-danger" ><b>[Inactive]</b></span>
-                            
-                            
-                            {% endif %}
-                        </h5>
-                        <h4>
-                            <b style="color: #000000">{{ o.Chapter_Name }}</b>
-                        </h4>
+                </div>
+                <div class="col-md-12">
+                    {% if object.Use_Flag is False %}
+                        <p style="color:red">Note: Course is inactive, therefore chapters and assignments are not
+                            assigned to students.</p>
+                    {% endif %}
+
+                </div>
+
+
+                {% if '/students' not in request.path %}
+                    <div class=" course-info col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
+                        <button type="button" class="btn-sm btn-success" data-toggle="modal"
+                                data-target="#exampleModal1"
+                                id="add-newchapter-btn">
+                            Create New Chapter
+                        </button>
                     </div>
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        <a href="{% if '/students' in request.path %}
+                {% endif %}
+
+                <div class="col-md-12 col-sm-12 xol-xs-12">
+                    <script> var lastchapter = 0;</script>
+                    {% for o in chapters %}
+                        <div class=" course-info col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}
+
+                                    {% if o.Use_Flag == False %}
+                                        <span class="text-danger"><b>[Inactive]</b></span>
+
+
+                                    {% endif %}
+                                </h5>
+                                <h4>
+                                    <b style="color: #000000">{{ o.Chapter_Name }}</b>
+                                </h4>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <a href="{% if '/students' in request.path %}
                                 {{ o.student_get_absolute_url }}
                             {% elif '/teachers' in request.path %}
                                 {{ o.teacher_get_absolute_url }}
                             {% else %}
                                {{ o.get_absolute_url }}
                             {% endif %}">
-                            <button type="button" style="float: right;width:150px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    <button type="button" style="float: right;width:150px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                 margin-top: 20px;margin-bottom: 10px;">View Chapter &nbsp;<i
-                                    class="fa fa-arrow-right"></i>
-                            </button>
-                        </a>
-                    </div>
+                                            class="fa fa-arrow-right"></i>
+                                    </button>
+                                </a>
+                            </div>
 
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <hr style="margin-top: 5px; margin-bottom: 5px;">
-                        <p>{{ o.Summary|truncatewords:40 }}</p>
-                    </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <hr style="margin-top: 5px; margin-bottom: 5px;">
+                                <p>{{ o.Summary|truncatewords:40 }}</p>
+                            </div>
+                        </div>
+                        <script> var lastchapter = {{ o.Chapter_No }};</script>
+
+                    {% endfor %}
                 </div>
-                <script> var lastchapter = {{ o.Chapter_No }};</script>
-
-            {% endfor %}
+                {#                <div>#}
+                {#                    <ul>#}
+                {#                        {% for q in exam_quiz %}#}
+                {#                            <li>{{ q.title }}</li>#}
+                {#                        {% endfor %}#}
+                {#                    </ul>#}
+                {#                </div>#}
+            </div>
         </div>
-        {#                <div>#}
-        {#                    <ul>#}
-        {#                        {% for q in exam_quiz %}#}
-        {#                            <li>{{ q.title }}</li>#}
-        {#                        {% endfor %}#}
-        {#                    </ul>#}
-        {#                </div>#}
     </div>
-</div>
-</div>
 </div>
 
 <div id="quiz_create_popup" class="modal fade">

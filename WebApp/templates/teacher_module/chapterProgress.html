@@ -1,4 +1,4 @@
-{% extends "teacher_module/base.html" %}
+{% extends basefile %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% load i18n %}
@@ -59,16 +59,19 @@
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
 
-        <span style="font-size:18px; font-weight: 700;"> Course Info </span>
+        <div style="font-size:18px; font-weight: 700; margin-bottom:20px"> [Course Info] </div>
+
+       
+    
         <div class=" courseinfo-detail-only col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6">
 
-                <div class="center-name">
-                    <span style="font-size:18px"><b> Course Title: </b></span>
+                <div class="center-name" style="padding: 10px 0;">
+                    <span style="font-size:18px;"><b> Course Title: </b></span>
                     <span style="font-size: 16px;">{{ request.user.Center_Code }}</span>
 
                 </div>
-                <div class="session-detail">
+                <div class="session-detail" style="padding: 10px 0;">
                     <span style="font-size:18px"><b> Session: </b></span>
                     <select id="select_session" class="" style="width: 50%;">
                         {% for x in session_list %}
@@ -91,13 +94,13 @@
 
             </div>
             <div class="col-md-6">
-                <div class="no-student">
+                <div class="no-student"style="padding: 10px 0;">
                     <span style="font-size:18px"><b> No of Student: </b></span>
                     <span style="font-size: 16px;">{{ number_of_students }}</span>
                 </div>
-                <div class="time-period">
+                <div class="time-period" style="padding: 10px 0;">
                     <span style="font-size:18px"><b> Period: </b></span>
-                    <span style="font-size: 16px;">{{ inning.Start_Date }} - {{ inning.End_Date }}</span>
+                    <span style="font-size: 16px;">{{ inning.Start_Date|date:"Y/m/d" }} - {{ inning.End_Date|date:"Y/m/d" }}</span>
 
                 </div>
             </div>
@@ -105,11 +108,11 @@
 
         
         
-        <div class="col-md-12">
-            <span style="font-size:18px; font-weight: 700;"> List of Chapters </span>
+        <div class="col-md-12" >
+            <span style="font-size:18px; font-weight: 700;">[List of Chapters]  </span>
         </div>
        
-
+       
         <div class=" chapter-only col-md-12 col-sm-12 col-xs-12">
             {% for chapter in chapter_list %}
                 <button type="button" class=" custom-btn1 btn btn-info btn-circle chapterBtn" value="{{ chapter.pk }}">
@@ -119,16 +122,21 @@
             <button type="button" class="custom-btn1 btn btn-info btn-circle chapterBtn" value="all">All
             </button>
         </div>
+        <div class="col-md-12">
+            <hr class="header_hr">
+
+        </div>
+        
 
 
        <div class="col-md-12">
-        <span style="font-size:18px; font-weight: 700;"> Chapter Info </span>
+        <span style="font-size:18px; font-weight: 700;"> [Chapter Info] </span>
 
        </div>
        
        
      <div class="col-md-12 col-sm-12 col-xs-12"> 
-                <div class=" chapterinfo-detail-only col-md-4 col-sm-12 col-xs-12">
+                <div id="chapter-details"  class=" chapterinfo-detail-only col-md-4 col-sm-12 col-xs-12">
                     <div class="center-name" style="padding: 10px 0;">
                         <span style="font-size:18px"><b> Chapter Title: </b></span>
                         <span id="chapter-title" style="font-size: 16px;"></span>
@@ -162,7 +170,7 @@
                                 <div></div>
 
                             </div>
-                            <div><h3>Progress</h3>
+                            <div><h3>&nbsp;&nbsp;&nbsp;Progress</h3>
                                 </div>
                         </div>
 
@@ -248,7 +256,8 @@
             // Create the chart
             Highcharts.chart('container', {
                 chart: {
-                    type: 'column'
+                    type: 'column',
+                    height:300
                 },
                 title: {
                     text: 'Total Achievement'
@@ -355,9 +364,17 @@
         $(document).ready(function () {
             $("#select_session").on("change", function () {
                 {% if 'iframe' in request.GET %}
-                    window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}/?iframe=1".replace('919', this.value);
+                    {% if '/teachers' in request.path %}
+                        window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}/?iframe=1".replace('919', this.value);
+                    {% elif '/students' or '/teachers' not in request.path %}
+                        window.location.href = "{% url 'admin_course_progress_withinning' course.pk 919 %}/?iframe=1".replace('919', this.value);
+                    {% endif %}
                 {% else %}
-                    window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}".replace('919', this.value);
+                    {% if '/teachers' in request.path %}
+                        window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}".replace('919', this.value);
+                    {% elif '/students' or '/teachers' not in request.path %}
+                        window.location.href = "{% url 'admin_course_progress_withinning' course.pk 919 %}".replace('919', this.value);
+                    {% endif %}
                 {% endif %}
             });
 
@@ -451,6 +468,7 @@
                 });
                 pending = pending + (total - completed);
                 var chart = $('#container').highcharts();
+               
                 var new_serie = [{
                     "name": "Quiz Progress",
                     colorByPoint: true,
