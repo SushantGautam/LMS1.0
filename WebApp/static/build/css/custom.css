@@ -2257,6 +2257,13 @@ label .asteriskField {
     background-color: #ededed;
     padding:20px;
     margin-bottom: 20px;
+   
+}
+.chapterinfo-detail-only{
+    background-color: #ededed;
+    padding:20px;
+    margin-bottom: 20px;
+   
 }
 
 .btn-circle {
@@ -2347,4 +2354,25 @@ label .asteriskField {
     margin-top: 12px;
 }
 
+.position-progress{
+    height: 200px ;position: absolute; top:60%; left:20%;
+}
+@media all and (max-width:767px){
+    .position-progress{
+        height: 200px ;position: absolute; top:20%; left:40%;
+    }
+    .courseinfo-detail-only{
+        background-color: #ededed;
+        padding:20px;
+        margin-bottom: 20px;
+        margin-top:0px
+    }
+
+}
+@media all and (max-width:400px){
+    .position-progress{
+        height: 200px ;position: absolute; top:20%; left:20%;
+    }
+
+}
         
