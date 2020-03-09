@@ -1159,8 +1159,8 @@
 
     function changePage(page_number) {
         {% if not connection_offline %}
-            chapterProgressStopFunction()
             {% if '/students' in request.path %}
+                chapterProgressStopFunction()
                 chapterProgressFunction()
             {% elif '/teachers' in request.path %}
                 teacherchapterProgressFunction()
