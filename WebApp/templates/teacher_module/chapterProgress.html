@@ -59,61 +59,60 @@
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
 
-        <span style="font-size:18px; font-weight: 700;"> Course Info </span>
+        <div style="font-size:18px; font-weight: 700; margin-bottom:20px"> [Course Info] </div>
+
+       
+    
         <div class=" courseinfo-detail-only col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6">
 
-                <div class="center-name">
-                    <span style="font-size:18px"><b> Center: </b></span>
+                <div class="center-name" style="padding: 10px 0;">
+                    <span style="font-size:18px;"><b> Course Title: </b></span>
                     <span style="font-size: 16px;">{{ request.user.Center_Code }}</span>
 
                 </div>
-                <div class="time-period">
+                <div class="session-detail" style="padding: 10px 0;">
+                    <span style="font-size:18px"><b> Session: </b></span>
+                    <select id="select_session" class="" style="width: 50%;">
+                        {% for x in session_list %}
+                            {% for session in x %}
+        
+                                <option value="{{ session.pk }}"
+                                        {% if session.pk == inning.pk %}
+                                        selected
+                                        {% endif %}
+                                > {{ session }}</option>
+                            {% endfor %}
+                        {% endfor %}
+                    </select>
+        
+        
+                </div>
+             
+           
+
+
+            </div>
+            <div class="col-md-6">
+                <div class="no-student"style="padding: 10px 0;">
+                    <span style="font-size:18px"><b> No of Student: </b></span>
+                    <span style="font-size: 16px;">{{ number_of_students }}</span>
+                </div>
+                <div class="time-period" style="padding: 10px 0;">
                     <span style="font-size:18px"><b> Period: </b></span>
                     <span style="font-size: 16px;">{{ inning.Start_Date|date:"Y/m/d" }} - {{ inning.End_Date|date:"Y/m/d" }}</span>
 
                 </div>
-
-
-            </div>
-            <div class="col-md-6">
-                <div class="no-student">
-                    <span style="font-size:18px"><b> No of Student: </b></span>
-                    <span style="font-size: 16px;">{{ number_of_students }}</span>
-                </div>
-                <div class="no-chapter">
-                    <span style="font-size:18px"><b> No of Chapter: </b></span>
-                    <span style="font-size: 16px;">{{ chapter_list|length }}</span>
-                </div>
             </div>
         </div>
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <hr class="header_hr">
+        
+        
+        <div class="col-md-12" >
+            <span style="font-size:18px; font-weight: 700;">[List of Chapters]  </span>
         </div>
-        <div class="session-detail">
-            <span style="font-size:18px"><b> Session: </b></span>
-            <select id="select_session" class="form-control" style="width: 50%;">
-                {% for x in session_list %}
-                    {% for session in x %}
-
-                        <option value="{{ session.pk }}"
-                                {% if session.pk == inning.pk %}
-                                selected
-                                {% endif %}
-                        > {{ session }}</option>
-                    {% endfor %}
-                {% endfor %}
-            </select>
-
-
-        </div>
-        <div class="col-md-12">
-            <hr class="header_hr">
-        </div>
-
-        <h3>List of Chapters</h3>
-
+       
+       
         <div class=" chapter-only col-md-12 col-sm-12 col-xs-12">
             {% for chapter in chapter_list %}
                 <button type="button" class=" custom-btn1 btn btn-info btn-circle chapterBtn" value="{{ chapter.pk }}">
@@ -123,66 +122,69 @@
             <button type="button" class="custom-btn1 btn btn-info btn-circle chapterBtn" value="all">All
             </button>
         </div>
-
-
-        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-12">
             <hr class="header_hr">
-        </div>
-        <span style="font-size:18px; font-weight: 700;"> Chapter Info </span>
-        <div class="courseinfo-detail-only col-md-12 col-sm-12 col-xs-12" id="chapter-details" style="display: none">
-            <div class="col-md-6">
-                <div class="center-name">
-                    <span style="font-size:18px"><b> Chapter Title: </b></span>
-                    <span style="font-size: 16px;" id="chapter-title"></span>
-
-                </div>
-                <div class="no-chapter">
-                    <span style="font-size:18px"><b> Chapter Status: </b></span>
-                    <span style="font-size: 16px;" id="chapter-status"></span>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="no-student">
-                    <span style="font-size:18px"><b> No of Quiz: </b></span>
-                    <span style="font-size: 16px;" id="quiz-count"></span>
-                </div>
-                <div class="time-period">
-                    <span style="font-size:18px"><b> Visited Students: </b></span>
-                    <span style="font-size: 16px;" id="visited-students"></span>
-                </div>
-            </div>
 
         </div>
+        
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <hr class="header_hr">
-        </div>
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="col-md-6 col-sm-6 col-xs-12" style="position: relative; height:300px">
+       <div class="col-md-12">
+        <span style="font-size:18px; font-weight: 700;"> [Chapter Info] </span>
 
-                <div class="progressbar" data-animate="false"
-                     style="height: 200px ;position: absolute; top:10%; left:40%; ">
-                    <h3>Progress</h3>
+       </div>
+       
+       
+     <div class="col-md-12 col-sm-12 col-xs-12"> 
+                <div id="chapter-details"  class=" chapterinfo-detail-only col-md-4 col-sm-12 col-xs-12">
+                    <div class="center-name" style="padding: 10px 0;">
+                        <span style="font-size:18px"><b> Chapter Title: </b></span>
+                        <span id="chapter-title" style="font-size: 16px;"></span>
+    
+                    </div>
+                    <div class="time-period" style="padding: 10px 0;">
+                        <span style="font-size:18px"><b> Visited Students: </b></span>
+                        <span id = "visited-students"style="font-size: 14px;"></span>
+    
+                    </div>
+                    <div class="no-student" style="padding: 10px 0;">
+                        <span style="font-size:18px"><b> No of Quiz: </b></span>
+                        <span id="visited-students" style="font-size: 16px;"></span>
+                    </div>
+                    <div class="no-chapter" style="padding: 10px 0;">
+                        <span style="font-size:18px"><b> Chapter Status: </b></span>
+                        <span id="chapter-status" style="font-size: 16px;"></span>
+                    </div>
 
-                    <div class="circle2" data-percent="10">
+                </div>
 
-                        <div></div>
+                <div class="col-md-8 col-sm-12 col-xs-12">
+                    <div class="col-md-5 col-sm-4 col-xs-12" style="position: relative; height:300px">
+
+                        <div class="progressbar position-progress" data-animate="false"
+                            >
+                            
+
+                            <div class="circle2" data-percent="10">
+
+                                <div></div>
+
+                            </div>
+                            <div><h3>&nbsp;&nbsp;&nbsp;Progress</h3>
+                                </div>
+                        </div>
 
                     </div>
+                    <div class="col-md-7 col-sm-8 col-xs-12 text-left">
+                        <figure class="highcharts-figure">
+                            <div id="container"></div>
+                            <p class="highcharts-description">
+
+                            </p>
+                        </figure>
+                    </div>
                 </div>
-
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12 text-left">
-                <figure class="highcharts-figure">
-                    <div id="container"></div>
-                    <p class="highcharts-description">
-
-                    </p>
-                </figure>
-            </div>
-        </div>
+    </div>  
         {% if session_list.count > 0 %}
             <div class="no-attendance-display text-center">
                 <h3 style="font-size:24px; text-transform:uppercase;"><b>No Session Created</b>
@@ -191,7 +193,11 @@
         {% else %}
             <div id=" container student_progress-table">
                 {% if student_progress_data|length is not 0 %}
-                    <h3 class="detailListHeader2 ">Student Progress List</h3>
+                     <div class="col-md-12">
+                        <h3 class="detailListHeader2 ">Student Progress List</h3>s
+
+                     </div>
+                 
                     <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
                         <thead class="thead-light bg-info">
                         <tr>
@@ -250,7 +256,8 @@
             // Create the chart
             Highcharts.chart('container', {
                 chart: {
-                    type: 'column'
+                    type: 'column',
+                    height:300
                 },
                 title: {
                     text: 'Total Achievement'
@@ -461,6 +468,7 @@
                 });
                 pending = pending + (total - completed);
                 var chart = $('#container').highcharts();
+               
                 var new_serie = [{
                     "name": "Quiz Progress",
                     colorByPoint: true,
