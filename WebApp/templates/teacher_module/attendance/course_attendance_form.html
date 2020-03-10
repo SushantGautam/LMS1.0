@@ -67,17 +67,11 @@
                     </thead>
                     <tbody>
                     {% for a in attendance %}
-
-
                         <tr>
-
-
-                            <td>  {{ a.initial.member_code }} </td>
                             <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
+                            <td>  {{ a.initial.member_code }} </td>
                             <td>
-
                                 {{ a.as_p }}
-
                             </td>
                             <td>  {{ attend_date }} </td>
                             <!-- #TODO send date in the list view -->
