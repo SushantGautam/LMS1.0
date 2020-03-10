@@ -2215,6 +2215,7 @@ function dropfunction(event, ui) {
             
         );
     } else if (ui.helper.hasClass('pdf-text')) {
+        clearPage(window.currentPage)
         PDFFunction(
             top = "0%",
             left = 0 + '%',
