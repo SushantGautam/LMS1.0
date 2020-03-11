@@ -100,7 +100,7 @@
                         </td>
                     {% endif %}
                     <td>{% if answer %}
-                        Submitted
+                        Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
                     {% elif not answer %}
                         Not Submitted
                     {% endif %}

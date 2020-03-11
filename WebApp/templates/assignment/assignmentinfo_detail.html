@@ -368,43 +368,60 @@
                                 {% if questions.Answer_Type == 'S' %}
                                 <div class="form-group">
                                     <textarea class="form-control rounded-0" rows="5" cols="100"
-                                        name="Assignment_Answer" id="id_Assignment_Answer{{questions.id}}"
-                                        placeholder="Enter your Answer" required></textarea>
+                                              name="Assignment_Answer" id="id_Assignment_Answer{{ questions.id }}"
+                                              placeholder="Enter your Answer" required></textarea>
                                     <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
-                                        id="id_Student_Code{{questions.id}}">
+                                           id="id_Student_Code{{ questions.id }}">
                                     <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                        id="id_Question_Code{{questions.id}}">
+                                           id="id_Question_Code{{ questions.id }}">
 
                                 </div>
-                                <div class="form-group text-center">
-                                    <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+
+                                    <div class="form-group text-center">
+                                        {% now "Y-m-d" as todays_date %}
+                                        {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date %}
+                                            <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
-                                    <button class="btn btn-sm btn-primary" type="reset">Reset</button>
-                                    <button type="submit" class="btn btn-sm btn-success submitAnswer"
-                                        id="answer{{questions.id}}">Submit</button>
-                                </div>
+                                            <button class="btn btn-sm btn-primary" type="reset">Reset</button>
+
+                                            <button type="submit" class="btn btn-sm btn-success submitAnswer"
+                                                    id="answer{{ questions.id }}">Submit
+                                            </button>
+                                        {% else %}
+                                            <p class="text-danger">Submission date has finished</p>
+                                        {% endif %}
+                                    </div>
+
                                 {% elif questions.Answer_Type == 'F' %}
 
-                                <div class="form-group">
-                                    <input type="file" name="Assignment_File" id="id_Assignment_File{{questions.id}}"
-                                        required />
-                                    <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
-                                        id="id_Student_Code{{questions.id}}">
-                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                        id="id_Question_Code{{questions.id}}">
-                                </div>
-                                <div class="form-group text-center">
-                                    <button class="btn btn-sm btn-primary" type="button"
-                                        id="cancelButton{{ questions.pk }}">
-                                        Cancel
-                                    </button>
-                                    <button type="submit" class="btn btn-sm btn-success submitAnswer"
-                                        id="answer{{questions.id}}">Submit</button>
-                                </div>
+                                    <div class="form-group">
+                                        <input type="file" name="Assignment_File"
+                                               id="id_Assignment_File{{ questions.id }}"
+                                               required/>
+                                        <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
+                                               id="id_Student_Code{{ questions.id }}">
+                                        <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                               id="id_Question_Code{{ questions.id }}">
+                                    </div>
+                                    <div class="form-group text-center">
+                                        {% now "Y-m-d" as todays_date %}
+                                        {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date %}
+                                            <button class="btn btn-sm btn-primary" type="button"
+                                                    id="cancelButton{{ questions.pk }}">
+                                                Cancel
+                                            </button>
+
+                                            <button type="submit" class="btn btn-sm btn-success submitAnswer"
+                                                    id="answer{{ questions.id }}">Submit
+                                            </button>
+                                        {% else %}
+                                            <p class="text-danger">Submission date has finished</p>
+                                        {% endif %}
+                                    </div>
                                 {% endif %}
-                            </form>
-                            {% endif %}
+                                    </form>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
