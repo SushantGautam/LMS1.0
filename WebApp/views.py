@@ -2054,6 +2054,10 @@ def CourseProgressView(request, coursepk, inningpk=None):
     chapters_list = courseObj.chapterinfos.all().order_by('Chapter_No')
     list_of_students = []
     student_data = []
+    if '/teachers' in request.path:
+        basefile = "teacher_module/base.html"
+    elif '/teachers' or '/students' not in request.path:
+        basefile = "base.html"
     if coursepk:
         if '/teachers' in request.path:
             inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
@@ -2138,11 +2142,16 @@ def CourseProgressView(request, coursepk, inningpk=None):
                             }
                         },
                     )
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'The course is not assosiated with any innings. Please contact administrator')
+            context = {
+                'course': courseObj,
+                'chapter_list': chapters_list,
+                'basefile': basefile,
+            }
+            return render(request, 'teacher_module/chapterProgress.html', context=context)
 
-    if '/teachers' in request.path:
-        basefile = "teacher_module/base.html"
-    elif '/teachers' or '/students' not in request.path:
-        basefile = "base.html"
     context = {
         'session_list': session_list,
         'student_progress_data': student_data,
