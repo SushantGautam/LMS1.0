@@ -1687,7 +1687,7 @@
                 function chapterProgressFunction() {
                     var timewhensendingprogress = Date.now() / 1000 | 0; // floors the value
                     //if (currentPageUpdateOnServer) {
-                    chapterProgress = setTimeout(function () {
+                    chapterProgress = setInterval(function () {
                         $.ajax({
                             url: "{% url 'pageupdateajax' course.pk chapter.pk %}",
                             type: "post",
@@ -1699,7 +1699,6 @@
                                 'last_study_time': timewhensendingprogress,
                             },
                             success: function (data) {
-                                console.log(data)
                                 window.currentPageUpdateOnServer = parseInt(data.contents.currentpagenumber)
                             },
                         })
@@ -1708,7 +1707,7 @@
                 }
 
                 function chapterProgressStopFunction() {
-                    clearTimeout(chapterProgress);
+                    clearInterval(chapterProgress);
                 }
             </script>
         {% endif %}

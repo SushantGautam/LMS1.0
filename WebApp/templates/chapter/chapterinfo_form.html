@@ -29,19 +29,24 @@
                 </label>
                 <div class="controls ">
                     <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
-                        cols="40">{{ object.Summary }}</textarea>
+                              cols="40">{{ object.Summary }}</textarea>
                 </div>
-            </div><br>
+            </div>
+            <br>
         </div>
         {#        <div class="col-md-12 col-sm-12 col-xs-12">#}
         {#            {{ form.Page_Num|as_crispy_field }}<br>#}
         {#        </div>#}
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            {{ form.mustreadtime|as_crispy_field }}<br>
+        </div>
         <div class="col-md-12 col-sm-12 col-xs-12">
             <label>
                 Publish
             </label><br>
             <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
-                &nbsp; {% elif object.Use_Flag == True %} checked {% endif %}><br> <br>
+                   &nbsp; {% elif object.Use_Flag == True %} checked {% endif %}><br> <br>
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12">

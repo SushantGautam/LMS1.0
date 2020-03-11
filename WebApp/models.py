@@ -246,7 +246,7 @@ class ChapterInfo(models.Model):
     Chapter_Name = CharField(max_length=200)
     Summary = TextField(blank=True, null=True)
     Page_Num = IntegerField(blank=True, null=True)
-
+    mustreadtime = IntegerField(blank=True, null=True)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -275,6 +275,10 @@ class ChapterInfo(models.Model):
 
     def get_update_url(self):
         return reverse('chapterinfo_update', args=(self.Course_Code.id, self.pk,))
+
+    def getmustreadtimeinformat(self):
+        return str(int(self.mustreadtime / 3600)) + ':' + str(int(self.mustreadtime % 3600 / 60)) + ':' + str(
+            int(self.mustreadtime % 60)) if self.mustreadtime is not None else None
 
     def __str__(self):
         return self.Chapter_Name
@@ -473,6 +477,7 @@ class AssignAnswerInfo(models.Model):
 def submission_delete(sender, instance, **kwargs):
     instance.Assignment_File.delete(False)
 
+
 class SessionInfo(models.Model):
     Session_Name = CharField(max_length=200)
     Description = TextField(blank=True, null=True)
@@ -615,6 +620,7 @@ class InningInfo(models.Model):
 
     def get_teacher_url(self):
         return reverse('teachers_mysession_detail', args=(self.pk,))
+
     def get_update_url(self):
         return reverse('inninginfo_update', args=(self.pk,))
 
@@ -699,5 +705,3 @@ class Attendance(models.Model):
 
     def get_update_url(self):
         return reverse('teacher_attendance_update', args=(self.pk,))
-
-
