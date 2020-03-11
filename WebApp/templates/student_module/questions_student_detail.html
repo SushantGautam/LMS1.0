@@ -106,7 +106,13 @@
               {% endif %}
           </div>
 
-          <form id="surveyform" method="post" action="{% url 'ParticipateSurvey' %}?iframe=1">
+          <form id="surveyform" method="post" action="
+                {% if request.GET.iframe %}
+                    {% url 'ParticipateSurvey' %}?iframe=1
+                {% else %}
+                    {% url 'ParticipateSurvey' %}
+               {% endif %}
+            ">
               {% csrf_token %}
               {% for question in questions %}
                   {% if question.Question_Type == "MCQ" %}
