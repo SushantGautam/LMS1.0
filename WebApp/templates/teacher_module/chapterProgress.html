@@ -124,42 +124,18 @@
         </div>
 
 
-        <div class="col-md-12">
-            <span style="font-size:18px; font-weight: 700;"> [Chapter Info] </span>
-
-        </div>
+       
 
 
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <div id="chapter-details" class=" chapterinfo-detail-only col-md-4 col-sm-12 col-xs-12">
-                <div class="center-name" style="padding: 10px 0;">
-                    <span style="font-size:18px"><b> Chapter Title: </b></span>
-                    <span id="chapter-title" style="font-size: 16px;"></span>
+ 
+            
+            <div id="attendancecontainer" class="col-md-4 col-sm-4 col-xs-12" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
-                </div>
-                <div class="time-period" style="padding: 10px 0;">
-                    <span style="font-size:18px"><b> Visited Students: </b></span>
-                    <span id="visited-students" style="font-size: 14px;"></span>
-
-                </div>
-                <div class="no-student" style="padding: 10px 0;">
-                    <span style="font-size:18px"><b> No of Quiz: </b></span>
-                    <span id="visited-students" style="font-size: 16px;"></span>
-                </div>
-                <div class="no-chapter" style="padding: 10px 0;">
-                    <span style="font-size:18px"><b> Chapter Status: </b></span>
-                    <span id="chapter-status" style="font-size: 16px;"></span>
-                </div>
-                <div class="no-chapter" style="padding: 10px 0;">
-                    <span style="font-size:18px"><b> Chapter Running Time: </b></span>
-                    <span id="chapter-runningtime" style="font-size: 16px;"></span>
-                </div>
-
-            </div>
 
             <div class="col-md-8 col-sm-12 col-xs-12">
                 <div class="col-md-5 col-sm-4 col-xs-12" style="position: relative; height:300px">
-
+                  
                     <div class="progressbar position-progress" data-animate="false">
                         <div class="circle2" data-percent="10">
                             <div></div>
@@ -179,8 +155,45 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-            <div id="attendancecontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div class="col-md-12">
+            <span style="font-size:18px; font-weight: 700;"> [Chapter Info] </span>
+
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 chapterinfo-detail-only  ">
+
+            <div id="chapter-details" class=" ">
+                <div class="col-md-6">
+                    <div class="center-name" style="padding: 5px 0;">
+                        <span style="font-size:18px"><b> Chapter Title: </b></span>
+                        <span id="chapter-title" style="font-size: 16px;"></span>
+    
+                    </div>
+                    <div class="time-period" style="padding: 5px 0;">
+                        <span style="font-size:18px"><b> Visited Students: </b></span>
+                        <span id="visited-students" style="font-size: 14px;"></span>
+    
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="no-student" style="padding: 5px 0;">
+                        <span style="font-size:18px"><b> No of Quiz: </b></span>
+                        <span id="visited-students" style="font-size: 16px;"></span>
+                    </div>
+                    <div class="no-chapter" style="padding: 5px 0;">
+                        <span style="font-size:18px"><b> Chapter Status: </b></span>
+                        <span id="chapter-status" style="font-size: 16px;"></span>
+                    </div>
+                    <div class="no-chapter" style="padding: 5px 0;">
+                        <span style="font-size:18px"><b> Chapter Running Time: </b></span>
+                        <span id="chapter-runningtime" style="font-size: 16px;"></span>
+                    </div>
+
+                </div>
+               
+             
+            </div>
+            
             <!--
             <input type="radio" name="mychart" class="mychart" id="attendancecolumn" value="column"
                    onclick="chartfunc()" checked>Column &nbsp;
@@ -385,6 +398,8 @@
                 // Create the chart
                 var options = {
                     chart: {
+                        type: 'column',
+                        height: 300,
                         events: {
                             drilldown: function (e) {
                                 if (!e.seriesOptions) {

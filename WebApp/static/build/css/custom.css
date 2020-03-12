@@ -2194,8 +2194,14 @@ label .asteriskField {
 }
 
 .student_card_container {
-    padding: 2px 16px;
-    text-align: center;
+  height: 300px;
+  width: 450px;
+}
+.student_card_container img {
+    height: 100%;
+    width: 100%; 
+    background-position: center;
+    object-fit: cover;
 }
 
 

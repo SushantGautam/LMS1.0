@@ -78,7 +78,17 @@
                     /teachers{{ object.get_update_url }}
                         {% else %}
                             {{ object.get_update_url }}
-                        {% endif %}"><b><u>Edit Course</u></b></a>
+                        {% endif %}"><span><b>Edit Course</b></span></a>
+                        <span style="margin-left:30px">
+                            <a href='
+                            {% if '/teachers' in request.path %}
+                                {% url 'course_progress' object.pk %}
+                            {% elif '/students' or '/teachers' not in request.path %}
+                                {% url 'admin_course_progress' object.pk %}
+                            {% endif %}
+    '
+                               style="color: green; cursor:pointer"><i class="fa fa-trophy"></i> <b> ACHIEVEMENT </b></a></a>
+                        </span>
                         {% if '/teachers' not in request.path %}
 
                             <span style="float: right;">
@@ -98,16 +108,7 @@
                     </span>
 
                         {% endif %}
-                        <span style="margin-left:20px">
-                        <a href='
-                        {% if '/teachers' in request.path %}
-                            {% url 'course_progress' object.pk %}
-                        {% elif '/students' or '/teachers' not in request.path %}
-                            {% url 'admin_course_progress' object.pk %}
-                        {% endif %}
-'
-                           style="color: blue; cursor:pointer"><i class="fa fa-trophy"></i> <b> ACHIEVEMENT </b></a></a>
-                    </span>
+                     
                     </div>
                 {% endif %}
             </div>

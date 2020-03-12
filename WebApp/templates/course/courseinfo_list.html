@@ -95,9 +95,9 @@
           </h2>
 
           {% if object.get_teachers_of_this_course%}
-             <p style="height: 40px; overflow:auto"> 
-              Teacher(s): &nbsp
-              {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp
+             <p style="height: 50px; overflow:auto"> 
+              Teacher(s): &nbsp;
+              {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp;
                     -{{ eachTeacher }}
                            {% endfor%}
 
@@ -112,9 +112,9 @@
             <p style="padding-left: 10px;
             padding-right: 10px;
             line-height: 1.5em;
-            height: 3em;
+            height: 3.5em;
             overflow-wrap:break-word;
-            overflow: hidden;
+            overflow: auto;
             white-space: normal;
             text-overflow: ellipsis;">
               {{ object.Course_Description }}
@@ -123,9 +123,9 @@
             <p style="padding-left: 10px;
             padding-right: 10px;
             line-height: 1.5em;
-            height: 3em;
+            height: 3.5em;
             overflow-wrap:break-word;
-            overflow: hidden;
+            overflow: auto;
             white-space: normal;
             text-overflow: ellipsis;">
               No Description
