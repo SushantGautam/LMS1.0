@@ -38,7 +38,7 @@
         {#            {{ form.Page_Num|as_crispy_field }}<br>#}
         {#        </div>#}
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-12 col-sm-12 col-xs-12 mustreadtime">
             {{ form.mustreadtime|as_crispy_field }}<br>
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -56,7 +56,7 @@
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ Course_Code.id }}"
-                class="select form-control">
+                   class="select form-control">
         </div>
 
         <div class="col-md-12" align="center">
@@ -64,3 +64,7 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('id_mustreadtime').value = document.getElementById('id_mustreadtime').value / 60
+</script>
