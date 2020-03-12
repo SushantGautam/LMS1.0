@@ -282,6 +282,7 @@ class CourseInfoUpdateView(UpdateView):
     #     context = super().get_context_data(**kwargs)
     #     context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
     #     return context
+
     def get_success_url(self, **kwargs):
         return reverse_lazy('teacher_courseinfo_detail', kwargs={'pk': self.object.pk})
 
@@ -333,6 +334,12 @@ class ChapterInfoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         return context
+
+    def form_valid(self, form):
+        form.save(commit=False)
+        form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
+        form.save()
+        return super().form_valid(form)
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('teacher_chapterinfo_detail',

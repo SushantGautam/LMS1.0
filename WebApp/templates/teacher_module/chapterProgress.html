@@ -59,10 +59,9 @@
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
 
-        <div style="font-size:18px; font-weight: 700; margin-bottom:20px"> [Course Info] </div>
+        <div style="font-size:18px; font-weight: 700; margin-bottom:20px"> [Course Info]</div>
 
-       
-    
+
         <div class=" courseinfo-detail-only col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6">
 
@@ -76,7 +75,7 @@
                     <select id="select_session" class="" style="width: 50%;">
                         {% for x in session_list %}
                             {% for session in x %}
-        
+
                                 <option value="{{ session.pk }}"
                                         {% if session.pk == inning.pk %}
                                         selected
@@ -85,16 +84,14 @@
                             {% endfor %}
                         {% endfor %}
                     </select>
-        
-        
+
+
                 </div>
-             
-           
 
 
             </div>
             <div class="col-md-6">
-                <div class="no-student"style="padding: 10px 0;">
+                <div class="no-student" style="padding: 10px 0;">
                     <span style="font-size:18px"><b> No of Student: </b></span>
                     <span style="font-size: 16px;">{{ number_of_students }}</span>
                 </div>
@@ -106,13 +103,12 @@
             </div>
         </div>
 
-        
-        
-        <div class="col-md-12" >
+
+        <div class="col-md-12">
             <span style="font-size:18px; font-weight: 700;">[List of Chapters]  </span>
         </div>
-       
-       
+
+
         <div class=" chapter-only col-md-12 col-sm-12 col-xs-12">
             {% for chapter in chapter_list %}
                 <button type="button" class=" custom-btn1 btn btn-info btn-circle chapterBtn" value="{{ chapter.pk }}">
@@ -126,65 +122,75 @@
             <hr class="header_hr">
 
         </div>
-        
 
 
-       <div class="col-md-12">
-        <span style="font-size:18px; font-weight: 700;"> [Chapter Info] </span>
+        <div class="col-md-12">
+            <span style="font-size:18px; font-weight: 700;"> [Chapter Info] </span>
 
-       </div>
-       
-       
-     <div class="col-md-12 col-sm-12 col-xs-12"> 
-                <div id="chapter-details"  class=" chapterinfo-detail-only col-md-4 col-sm-12 col-xs-12">
-                    <div class="center-name" style="padding: 10px 0;">
-                        <span style="font-size:18px"><b> Chapter Title: </b></span>
-                        <span id="chapter-title" style="font-size: 16px;"></span>
-    
-                    </div>
-                    <div class="time-period" style="padding: 10px 0;">
-                        <span style="font-size:18px"><b> Visited Students: </b></span>
-                        <span id = "visited-students"style="font-size: 14px;"></span>
-    
-                    </div>
-                    <div class="no-student" style="padding: 10px 0;">
-                        <span style="font-size:18px"><b> No of Quiz: </b></span>
-                        <span id="visited-students" style="font-size: 16px;"></span>
-                    </div>
-                    <div class="no-chapter" style="padding: 10px 0;">
-                        <span style="font-size:18px"><b> Chapter Status: </b></span>
-                        <span id="chapter-status" style="font-size: 16px;"></span>
-                    </div>
+        </div>
+
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div id="chapter-details" class=" chapterinfo-detail-only col-md-4 col-sm-12 col-xs-12">
+                <div class="center-name" style="padding: 10px 0;">
+                    <span style="font-size:18px"><b> Chapter Title: </b></span>
+                    <span id="chapter-title" style="font-size: 16px;"></span>
 
                 </div>
+                <div class="time-period" style="padding: 10px 0;">
+                    <span style="font-size:18px"><b> Visited Students: </b></span>
+                    <span id="visited-students" style="font-size: 14px;"></span>
 
-                <div class="col-md-8 col-sm-12 col-xs-12">
-                    <div class="col-md-5 col-sm-4 col-xs-12" style="position: relative; height:300px">
+                </div>
+                <div class="no-student" style="padding: 10px 0;">
+                    <span style="font-size:18px"><b> No of Quiz: </b></span>
+                    <span id="visited-students" style="font-size: 16px;"></span>
+                </div>
+                <div class="no-chapter" style="padding: 10px 0;">
+                    <span style="font-size:18px"><b> Chapter Status: </b></span>
+                    <span id="chapter-status" style="font-size: 16px;"></span>
+                </div>
+                <div class="no-chapter" style="padding: 10px 0;">
+                    <span style="font-size:18px"><b> Chapter Running Time: </b></span>
+                    <span id="chapter-runningtime" style="font-size: 16px;"></span>
+                </div>
 
-                        <div class="progressbar position-progress" data-animate="false"
-                            >
-                            
+            </div>
 
-                            <div class="circle2" data-percent="10">
+            <div class="col-md-8 col-sm-12 col-xs-12">
+                <div class="col-md-5 col-sm-4 col-xs-12" style="position: relative; height:300px">
 
-                                <div></div>
-
-                            </div>
-                            <div><h3>&nbsp;&nbsp;&nbsp;Progress</h3>
-                                </div>
+                    <div class="progressbar position-progress" data-animate="false">
+                        <div class="circle2" data-percent="10">
+                            <div></div>
                         </div>
-
+                        <div><h3>&nbsp;&nbsp;&nbsp;Progress</h3>
+                        </div>
                     </div>
-                    <div class="col-md-7 col-sm-8 col-xs-12 text-left">
-                        <figure class="highcharts-figure">
-                            <div id="container"></div>
-                            <p class="highcharts-description">
 
-                            </p>
-                        </figure>
-                    </div>
                 </div>
-    </div>  
+                <div class="col-md-7 col-sm-8 col-xs-12 text-left">
+                    <figure class="highcharts-figure">
+                        <div id="container"></div>
+                        <p class="highcharts-description">
+
+                        </p>
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+            <div id="attendancecontainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+            <!--
+            <input type="radio" name="mychart" class="mychart" id="attendancecolumn" value="column"
+                   onclick="chartfunc()" checked>Column &nbsp;
+            <input type="radio" name="mychart" class="mychart" id="attendancebar" value="bar" onclick="chartfunc()">Bar
+            &nbsp;
+            <input type="radio" name="mychart" class="mychart" id="attendancepie" value="pie" onclick="chartfunc()">Pie
+            &nbsp;
+            <input type="radio" name="mychart" class="mychart" id="attendanceline" value="line" onclick="chartfunc()">Line
+        -->
+        </div>
         {% if session_list.count > 0 %}
             <div class="no-attendance-display text-center">
                 <h3 style="font-size:24px; text-transform:uppercase;"><b>No Session Created</b>
@@ -193,11 +199,10 @@
         {% else %}
             <div id=" container student_progress-table">
                 {% if student_progress_data|length is not 0 %}
-                     <div class="col-md-12">
-                        <h3 class="detailListHeader2 ">Student Progress List</h3>s
+                    <div class="col-md-12">
+                        <h3 class="detailListHeader2 ">Student Progress List</h3>
+                    </div>
 
-                     </div>
-                 
                     <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
                         <thead class="thead-light bg-info">
                         <tr>
@@ -205,10 +210,11 @@
                             <th>{% trans "Study Progress" %}</th>
                             <th>{% trans "Name" %}</th>
                             <th>{% trans "Chapter " %}</th>
+                            <th>{% trans "Running Time" %}</th>
                             <th>{% trans "Study Time" %}</th>
                             <th>{% trans "Last Visit" %}</th>
                             <th>{% trans "Quiz Achievement" %}</th>
-
+                            <th>{% trans "Attendance" %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -224,6 +230,7 @@
                                 </td>
                                 <td>  {{ a.student.username }} </td>
                                 <td>  {{ a.chapter.chapterObj.Chapter_No }}. {{ a.chapter.chapterObj.Chapter_Name }} </td>
+                                <td>  {{ a.chapter.chapterObj.getmustreadtimeinformat }} </td>
                                 <td>  {{ a.chapter.totalstudytime }} </td>
                                 <td>  {{ a.chapter.laststudydate }} </td>
                                 <td class="quiztd" data-quiz_completed="{{ a.quiz.completed_quiz }}"
@@ -235,6 +242,9 @@
                                     <span style="font-weight: 600;">Completed/Total Quiz</span>
                                     :- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}
 
+                                </td>
+                                <td class="attendance" data-attendance="{{ a.chapter.attendance }}">
+                                    {{ a.chapter.attendance }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -251,13 +261,14 @@
 
 {% block customjss %}
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <!-- Highchart for Quiz Achievement -->
     <script>
         $(document).ready(function () {
             // Create the chart
             Highcharts.chart('container', {
                 chart: {
                     type: 'column',
-                    height:300
+                    height: 300
                 },
                 title: {
                     text: 'Total Achievement'
@@ -305,31 +316,16 @@
                     {
                         name: "Browsers",
                         colorByPoint: true,
-                        data: [
-                            {
-                                name: "Total",
-                                y: 82.74,
-
-                            },
-                            {
-                                name: "Average",
-                                y: 10.57,
-
-                            },
-                            {
-                                name: "My point",
-                                y: 7.23,
-
-                            }
-
-                        ]
+                        data: []
                     }
                 ],
 
             });
+
         })
     </script>
 
+    <!-- Circle Progress for Course Progress -->
     <script>
         $(document).ready(function ($) {
             function animateElements() {
@@ -360,6 +356,7 @@
             $(window).scroll(animateElements);
         });
     </script>
+
     <script>
         $(document).ready(function () {
             $("#select_session").on("change", function () {
@@ -377,10 +374,121 @@
                     {% endif %}
                 {% endif %}
             });
-
         });
+    </script>
 
+    <!-- Highchart for Student Attendance -->
+    <script>
+        var chart1;
+        if ($('#attendancecontainer').length > 0) {
+            $(function () {
+                // Create the chart
+                var options = {
+                    chart: {
+                        events: {
+                            drilldown: function (e) {
+                                if (!e.seriesOptions) {
+                                    var chart = this;
+                                    // Show the loading label
+                                    chart.showLoading('Loading ...');
+                                    setTimeout(function () {
+                                        chart.hideLoading();
+                                        chart.addSeriesAsDrilldown(e.point, series);
+                                    }, 1000);
+                                }
 
+                            }
+                        },
+                        plotBorderWidth: 0
+                    },
+
+                    title: {
+                        text: 'Student Attendance Record',
+                    },
+                    //
+
+                    //
+                    xAxis: {
+                        type: 'category',
+                        categories: ['Present', 'Absent'],
+                    },
+                    //
+                    yAxis: {
+                        title: {
+                            margin: 10,
+                            text: 'Attendance'
+                        },
+                    },
+                    //
+                    legend: {
+                        enabled: false,
+                    },
+                    //
+                    plotOptions: {
+                        series: {
+                            pointPadding: 0.2,
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                        pie: {
+                            plotBorderWidth: 0,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            size: '100%',
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}: <b>{point.y}</b>'
+                            }
+                        }
+                    },
+                    //
+                    series: [{
+                        name: 'Students',
+                        colorByPoint: true,
+                        data: [2, 2]
+                    }],
+                    //
+                    drilldown: {
+                        series: []
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                };
+
+                // Column chart
+                options.chart.renderTo = 'attendancecontainer';
+                options.chart.type = 'column';
+                chart1 = new Highcharts.Chart(options);
+
+                chartfunc = function () {
+                    var column = document.getElementById('attendancecolumn');
+                    var bar = document.getElementById('attendancebar');
+                    var pie = document.getElementById('attendancepie');
+                    var line = document.getElementById('attendanceline');
+
+                    if (column.checked) {
+                        options.chart.renderTo = 'attendancecontainer';
+                        options.chart.type = 'column';
+                        var chart1 = new Highcharts.Chart(options);
+                    } else if (bar.checked) {
+                        options.chart.renderTo = 'attendancecontainer';
+                        options.chart.type = 'bar';
+                        var chart1 = new Highcharts.Chart(options);
+                    } else if (pie.checked) {
+                        options.chart.renderTo = 'attendancecontainer';
+                        options.chart.type = 'pie';
+                        var chart1 = new Highcharts.Chart(options);
+                    } else {
+                        options.chart.renderTo = 'attendancecontainer';
+                        options.chart.type = 'line';
+                        var chart1 = new Highcharts.Chart(options);
+                    }
+                }
+            });
+        }
     </script>
 
     <script type="text/javascript">
@@ -394,7 +502,6 @@
                     {"width": "15%", "targets": 1}
                 ]
             });
-
 
             var table2_main = $('#QuizTable').DataTable({
                 responsive: true,
@@ -424,6 +531,7 @@
                             vs++
                         }
                         $('#visited-students').text(vs + ' of {{ number_of_students }}')
+                        $('#chapter-runningtime').text('{{ x.chapter.chapterObj.getmustreadtimeinformat|safe}}')
                     }
                 {% endfor %}
                 $.fn.dataTable.ext.search.push(
@@ -438,10 +546,12 @@
                 table2_main.draw();
                 calculateProgressPercent();
                 quizProgressPercent()
+                calculateAttendance()
             });
 
             calculateProgressPercent()
             quizProgressPercent()
+            calculateAttendance()
 
             function calculateProgressPercent() {
                 sum = 0
@@ -468,7 +578,7 @@
                 });
                 pending = pending + (total - completed);
                 var chart = $('#container').highcharts();
-               
+
                 var new_serie = [{
                     "name": "Quiz Progress",
                     colorByPoint: true,
@@ -492,6 +602,42 @@
                 }
                 for (var y = new_serie.length - 1; y >= 0; y--) {
                     chart.addSeries(new_serie[y]);
+                }
+            }
+
+            $('.attendance').each(function () {
+                if ($(this).attr('data-attendance').includes('True')) {
+                    $(this).text('Present').parent().css('background-color', '#9fe890')
+                } else if ($(this).attr('data-attendance').includes('None')) {
+                    $(this).text('No Chapter Running Time').parent().css('background-color', '#f5f590')
+                } else {
+                    $(this).text('Absent')
+                }
+            })
+
+            function calculateAttendance() {
+                present = 0;
+                absent = 0;
+                $('.attendance').each(function () {
+                    if ($(this).attr('data-attendance').includes('True')) {
+                        present++;
+                    } else if ($(this).attr('data-attendance').includes('None')) {
+                        absent++;
+                    } else {
+                        absent++;
+                    }
+                })
+                var attendancenew_series = [{
+                    colorByPoint: true,
+                    "data": [
+                        present, absent
+                    ],
+                }]
+                for (var i = chart1.series.length - 1; i >= 0; i--) {
+                    chart1.series[i].remove();
+                }
+                for (var y = attendancenew_series.length - 1; y >= 0; y--) {
+                    chart1.addSeries(attendancenew_series[y]);
                 }
             }
         });

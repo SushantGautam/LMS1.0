@@ -710,6 +710,7 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Use_Flag = False
         else:
             Obj.Use_Flag = True
+        Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
         Obj.save()
@@ -773,6 +774,12 @@ def CourseForum(request, course):
 class ChapterInfoUpdateView(UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
+
+    def form_valid(self, form):
+        form.save(commit=False)
+        form.cleaned_data['mustreadtime'] = int(self.form.cleaned_data['mustreadtime']) * 60
+        form.save()
+        return super().form_valid()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1758,7 +1765,7 @@ class ContentsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['chapterList'] = context['course'].chapterinfos.all()
+        context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True)
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
@@ -2047,6 +2054,10 @@ def CourseProgressView(request, coursepk, inningpk=None):
     chapters_list = courseObj.chapterinfos.all().order_by('Chapter_No')
     list_of_students = []
     student_data = []
+    if '/teachers' in request.path:
+        basefile = "teacher_module/base.html"
+    elif '/teachers' or '/students' not in request.path:
+        basefile = "base.html"
     if coursepk:
         if '/teachers' in request.path:
             inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
@@ -2092,6 +2103,16 @@ def CourseProgressView(request, coursepk, inningpk=None):
                         else:
                             temp.append(z.quiz.pk)
                             total_quiz_percent_score += float(z.get_percent_correct)
+
+                    # Attendance here means chapter completion.
+                    ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
+                        field and the chapter progress is 100% '''
+                    if chapter.mustreadtime:
+                        attendance = int(
+                            jsondata['contents'][
+                                'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                    else:
+                        attendance = None
                     student_data.append(
                         {
                             'student': x,
@@ -2107,6 +2128,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
                                 'totalPage': int(
                                     jsondata['contents']['totalPage']) if jsondata is not None else None,
                                 'progresspercent': progresspercent,
+                                'attendance': attendance,
                             },
                             'quiz': {
                                 'quiz_count': student_quiz.count(),
@@ -2120,11 +2142,16 @@ def CourseProgressView(request, coursepk, inningpk=None):
                             }
                         },
                     )
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'The course is not assosiated with any innings. Please contact administrator')
+            context = {
+                'course': courseObj,
+                'chapter_list': chapters_list,
+                'basefile': basefile,
+            }
+            return render(request, 'teacher_module/chapterProgress.html', context=context)
 
-    if '/teachers' in request.path:
-        basefile = "teacher_module/base.html"
-    elif '/teachers' or '/students' not in request.path:
-        basefile = "base.html"
     context = {
         'session_list': session_list,
         'student_progress_data': student_data,
@@ -2166,12 +2193,6 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
                 jsondata['contents']['totalPage'] = totalPage
-        # elif fromquiz:
-        #     jsondata['quiz']['totalquizcount'] = totalquizcount
-        #     jsondata['quiz']['attemptedquiz'] = attemptedquiz
-        #     jsondata['quiz']['correctquizanswers'] = correctquizanswers
-        # else:
-        #     return None
         with open(student_data_file, "w") as outfile:
             json.dump(jsondata, outfile, indent=4)
     else:
