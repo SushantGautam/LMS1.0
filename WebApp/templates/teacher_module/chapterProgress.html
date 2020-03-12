@@ -552,7 +552,7 @@
                 $.fn.dataTable.ext.search.push(
                     function (settings, data, dataIndex) {
                         if (chapterpk == 'all') {
-                            $('#chapter-details').css('display', 'none')
+                            $('#chapter-details').css('visibility', 'false')
                             return $(table2_main.row(dataIndex).node());
                         }
                         return $(table2_main.row(dataIndex).node()).attr('data-chapterpk') == chapterpk;
@@ -571,10 +571,12 @@
             function calculateProgressPercent() {
                 sum = 0
                 count = 0
-                $('.circle').each(function () {
-                    sum = sum + parseFloat($(this).attr('data-percent'));
+
+                table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var node = this.node();
+                    sum = sum + parseFloat($(node).find('.circle').attr('data-percent'));
                     count++;
-                })
+                });
                 avg = sum / count;
                 $('.circle2').circleProgress({
                     value: avg / 100,
@@ -586,11 +588,14 @@
                 total = 0
                 pending = 0
                 count = 0
-                $('.quiztd').each(function () {
-                    completed = completed + parseFloat($(this).attr('data-quiz_completed'));
-                    total = total + parseFloat($(this).attr('data-quiz_total'));
+
+                table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var node = this.node();
+                    completed = completed + parseFloat($(node).find('.quiztd').attr('data-quiz_completed'));
+                    total = total + parseFloat($(node).find('.quiztd').attr('data-quiz_total'));
                     count++;
                 });
+
                 pending = pending + (total - completed);
                 var chart = $('#container').highcharts();
 
@@ -620,28 +625,31 @@
                 }
             }
 
-            $('.attendance').each(function () {
-                if ($(this).attr('data-attendance').includes('True')) {
-                    $(this).text('Present').parent().css('background-color', '#9fe890')
-                } else if ($(this).attr('data-attendance').includes('None')) {
-                    $(this).text('No Chapter Running Time').parent().css('background-color', '#f5f590')
+            table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                var node = this.node();
+                if ($(node).find('.attendance').attr('data-attendance').includes('True')) {
+                    $(node).find('.attendance').text('Present').parent().css('background-color', '#9fe890')
+                } else if ($(node).find('.attendance').attr('data-attendance').includes('None')) {
+                    $(node).find('.attendance').text('No Chapter Running Time').parent().css('background-color', '#f5f590')
                 } else {
-                    $(this).text('Absent')
+                    $(node).find('.attendance').text('Absent')
                 }
-            })
+            });
 
             function calculateAttendance() {
                 present = 0;
                 absent = 0;
-                $('.attendance').each(function () {
-                    if ($(this).attr('data-attendance').includes('True')) {
+                table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var node = this.node();
+                    if ($(node).find('.attendance').attr('data-attendance').includes('True')) {
                         present++;
-                    } else if ($(this).attr('data-attendance').includes('None')) {
+                    } else if ($(node).find('.attendance').attr('data-attendance').includes('None')) {
                         absent++;
                     } else {
                         absent++;
                     }
-                })
+                });
+
                 var attendancenew_series = [{
                     colorByPoint: true,
                     "data": [

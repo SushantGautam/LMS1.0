@@ -777,9 +777,9 @@ class ChapterInfoUpdateView(UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        form.cleaned_data['mustreadtime'] = int(self.form.cleaned_data['mustreadtime']) * 60
+        form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         form.save()
-        return super().form_valid()
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
