@@ -2263,7 +2263,9 @@ label .asteriskField {
     background-color: #ededed;
     padding:20px;
     margin-bottom: 20px;
-   
+    margin-top: 30px;
+    padding: 20px;
+  
 }
 
 .btn-circle {
@@ -2355,7 +2357,7 @@ label .asteriskField {
 }
 
 .position-progress{
-    height: 200px ;position: absolute; top:60%; left:20%;
+    height: 200px ;position: absolute; top:30%; left:20%;
 }
 @media all and (max-width:767px){
     .position-progress{
@@ -2368,6 +2370,14 @@ label .asteriskField {
         margin-top:0px
     }
 
+    .chapterinfo-detail-only{
+        background-color: #ededed;
+        padding:20px;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        padding: 30px;
+      
+    }
 }
 @media all and (max-width:400px){
     .position-progress{
