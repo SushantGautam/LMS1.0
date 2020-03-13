@@ -1618,7 +1618,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                         $('#loadingDiv').show();
                     },
                     error: function (errorThrown) {
-                        alert("Failed to upload Video" + errorThrown)
+                        alert("Failed to upload Video. File size too large.")
                         div.find('#loadingDiv').remove();
                         div.find('#percentcomplete').remove();
                     },

@@ -1548,10 +1548,10 @@ def save_video(request):
         v.put(url)
         print(response['status'])
 
-        while status == 'transcode_starting' or status == 'transcoding':
-            time.sleep(2)
-            r = v.get(uri + '?fields=status').json()
-            status = r['status']
+        # while status == 'transcode_starting' or status == 'transcoding':
+        #     time.sleep(2)
+        #     r = v.get(uri + '?fields=status').json()
+        #     status = r['status']
         return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
     '''
     print(type(request.POST['file-0']))
