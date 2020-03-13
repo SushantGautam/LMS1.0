@@ -489,6 +489,7 @@ def ImportCsvFile(request, *args, **kwargs):
         print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
         saved_id = []
         for i in range(len(df)):
             try:
