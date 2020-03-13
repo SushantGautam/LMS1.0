@@ -1623,6 +1623,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                         div.find('#percentcomplete').remove();
                     },
                     success: function (data) {
+                        console.log(data)
                         div.find('#loadingDiv').remove();
                         div.find('#percentcomplete').remove();
                         div.find('p').remove();
