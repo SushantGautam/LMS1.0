@@ -999,6 +999,50 @@ class GroupMappingListView(ListView):
     def get_queryset(self):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
+def GroupMappingCSVImport(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+        file_name = uuid.uuid4()
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + str(extension)
+        path = 'media/import_csv/student_group' + str(center_id)
+
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name + '.' + extension, media)
+        path = os.path.join(path, filename)
+        df = pd.read_csv(path,  encoding='utf-8')  #  delimiter=';|,', engine='python',
+        df = df.dropna(how='all')
+        
+        reg_agent = request.user.username
+        center = request.user.Center_Code
+        err_msg = []
+        groups = df['Group'].unique()
+        for i in range(len(groups)):
+            try:
+                flag = 0
+                obj = GroupMapping()
+                obj.GroupMapping_Name = groups[i]
+                obj.Register_Agent = reg_agent
+                obj.Center_Code = center
+                students = df[df['Group'] == groups[i]].reset_index(drop=True)
+                for j in range(len(students)):
+                    if MemberInfo.objects.filter(username=students['Username'][j]).exists():
+                        obj_student = MemberInfo.objects.get(username=students['Username'][j])
+                        obj.Students.add(obj_student)
+                    else:
+                        err_msg.append(f"Student Group: {groups[i]} can't be created Student- <b>{students['Username'][j]}</b> not found<br>")
+                        flag = 1
+                        break
+                if flag == 0:
+                    obj.save()
+            except:
+                err_msg.append(f"Student Group: {groups[i]} can't be created<br>")
+    if err_msg:
+        return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
+    return JsonResponse(data={"message": "All data has been Uploaded Sucessfully", "class": "text-success",
+                                  "rmclass": "text-danger"})
+    
 
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
