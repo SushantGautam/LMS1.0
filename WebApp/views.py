@@ -484,8 +484,9 @@ def ImportCsvFile(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name + '.' + extension, media)
         path = os.path.join(path, filename)
-
-        df = pd.read_csv(path, delimiter=';|,', engine='python')
+        df = pd.read_csv(path,  encoding='utf-8')  #  delimiter=';|,', engine='python',
+        df.column = ['Username','Member ID','First Name','Last Name','Email','Phone','Gender','Student','Teacher','Temporary Address','Permanent Address','Birthdate']
+        print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         saved_id = []
