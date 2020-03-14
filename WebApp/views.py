@@ -7,7 +7,7 @@ import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 
 import pandas as pd
-import vimeo  # from PyVimeo for uploading videos to vimeo.com
+import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -1512,77 +1512,56 @@ def save_video(request):
         name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
             re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
-        # name = "".join(re.findall("[a-zA-Z]+", name))
 
-        fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-        filename = fs.save(name, media)
+        # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+        # filename = fs.save(name, media)
         # return JsonResponse({'media_name': name})
 
         # #video uploading to vimeo.com
 
-        # standard Account
-        # v = vimeo.VimeoClient(
-        #     token='7a954bb83b66a50a95efc2d1cfdd484a',
-        #     key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
-        #     secret='1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
-        # )
         # Premium Account
-        v = vimeo.VimeoClient(
-            token='3b42ecf73e2a1d0088dd677089d23e32',
-            key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
-            secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
-        )
+        # v = vimeo.VimeoClient(
+        #     token='3b42ecf73e2a1d0088dd677089d23e32',
+        #     key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
+        #     secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
+        # )
 
-        # media = '{path to a video on the file system}'
-
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + name, data={
-            'name': name,
-        })
-
-        response = v.get(uri).json()
-        status = response['status']
-        videoid = response['uri'].split('/')[-1]
-
-        url = 'https://api.vimeo.com/me/projects/772975/videos/' + videoid  # Premium account Folder
-        # url = 'https://api.vimeo.com/me/projects/936814/videos/'+videoid    #Standard Account Folder
-        v.put(url)
-        print(response['status'])
-
-        # while status == 'transcode_starting' or status == 'transcoding':
-        #     time.sleep(2)
-        #     r = v.get(uri + '?fields=status').json()
-        #     status = r['status']
-        return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
-    '''
-    print(type(request.POST['file-0']))
-    data = {
-        "upload": {
-            "approach": "tus",
-            "size": media.size
+        data = {
+            "upload": {
+                "approach": "tus",
+                "size": media.size
+            },
+            'name': name
         }
-    }
-    r = requests.post(url="https://api.vimeo.com/me/videos",
-                      headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
-                               'Content-Type': 'application/json',
-                               'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
-                      data=json.dumps(data))
-    print(r)
-    if r.status_code == 200:
-        r_responseText = json.loads(r.text)
-        res = requests.patch(r_responseText['upload']['upload_link'], headers={'Tus-Resumable': '1.0.0',
-                                                                               'Content-Type': 'application/offset+octet-stream',
-                                                                               'Accept': 'application/vnd.vimeo.*+json;version=3.4',
-                                                                               'Connection': 'keep-alive',
-                                                                               'Upload-Offset': '0'},
-                             data=media
-                             )
-        print(res)
+        rs = requests.session()
+        r = rs.post(url="https://api.vimeo.com/me/videos",
+                    headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                             'Content-Type': 'application/json',
+                             'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                    data=json.dumps(data))
+        if r.status_code == 200:
+            r_responseText = json.loads(r.text)
+            res = rs.patch(r_responseText['upload']['upload_link'], headers={'Tus-Resumable': '1.0.0',
+                                                                             'Content-Type': 'application/offset+octet-stream',
+                                                                             'Accept': 'application/vnd.vimeo.*+json;version=3.4',
+                                                                             'Connection': 'keep-alive',
+                                                                             'Upload-Offset': '0'},
+                           data=media.file
+                           )
 
-        if res.status_code == 200:
-            response = requests.head(res.upload.upload_link)
-            print(response)
-        return res
-'''
+            if res.status_code == 204 or res.status_code == 200:
+                response = rs.head(r_responseText['upload']['upload_link'])
+
+                a = rs.put(
+                    url='https://api.vimeo.com/me/projects/772975/videos/' + r_responseText['uri'].split('/')[-1],
+                    headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                             'Content-Type': 'application/json',
+                             'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                return JsonResponse(
+                    {'link': r_responseText['upload']['upload_link'], 'media_name': name,
+                     'html': r_responseText['embed']['html']})
+            return JsonResponse({}, status=500)
+
 
 def save_json(request):
     if request.method == "POST":
