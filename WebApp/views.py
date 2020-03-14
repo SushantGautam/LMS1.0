@@ -1038,7 +1038,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                         # obj_create.Center_Code = center
                         # obj_create.save()
                         # obj.Students.add(obj_student)
-                        err_msg.append(f"Student Group: <b>{groups[i]}</b> can't be created: Student- <b>{students['Username'][j]}</b> not found<br>")
+                        err_msg.append("Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>".format(groups[i],students['Username'][j]))
                         flag = 1
                         break
                         
@@ -1048,12 +1048,12 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                         err_msg = err_msg + msg
                         msg.clear()
                 else:
-                    msg.append(f"<div class='text-success'>Student Group: <b>{groups[i]}</b> created</div>")
+                    msg.append("<div class='text-success'>Student Group: <b>{}</b> created</div>".format(groups[i]))
                     if err_msg:
                         err_msg = err_msg + msg
                         msg.clear()
             except Exception as e:
-                err_msg.append(f"Student Group: <b>{groups[i]}</b> can't be created<br> {e}")
+                err_msg.append("Student Group: <b>{}</b> can't be created<br> {}".format(groups[i],e))
     if err_msg:
         return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
     return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
