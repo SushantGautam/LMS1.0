@@ -1017,6 +1017,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
         reg_agent = request.user.username
         center = request.user.Center_Code
         err_msg = []
+        msg = []
         groups = df['Group'].unique()
         for i in range(len(groups)):
             try:
@@ -1026,22 +1027,36 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                 obj.Register_Agent = reg_agent
                 obj.Center_Code = center
                 students = df[df['Group'] == groups[i]].reset_index(drop=True)
+                obj.save()
                 for j in range(len(students)):
                     if MemberInfo.objects.filter(username=students['Username'][j]).exists():
                         obj_student = MemberInfo.objects.get(username=students['Username'][j])
                         obj.Students.add(obj_student)
                     else:
-                        err_msg.append(f"Student Group: {groups[i]} can't be created Student- <b>{students['Username'][j]}</b> not found<br>")
+                        # obj_create = MemberInfo()
+                        # obj_create.username = students['Username'][j]
+                        # obj_create.Center_Code = center
+                        # obj_create.save()
+                        # obj.Students.add(obj_student)
+                        err_msg.append(f"Student Group: <b>{groups[i]}</b> can't be created: Student- <b>{students['Username'][j]}</b> not found<br>")
                         flag = 1
                         break
-                if flag == 0:
-                    obj.save()
-            except:
-                err_msg.append(f"Student Group: {groups[i]} can't be created<br>")
+                        
+                if flag == 1:
+                    obj.delete()
+                    if msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+                else:
+                    msg.append(f"<div class='text-success'>Student Group: <b>{groups[i]}</b> created</div>")
+                    if err_msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+            except Exception as e:
+                err_msg.append(f"Student Group: <b>{groups[i]}</b> can't be created<br> {e}")
     if err_msg:
         return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
-    return JsonResponse(data={"message": "All data has been Uploaded Sucessfully", "class": "text-success",
-                                  "rmclass": "text-danger"})
+    return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
     
 
 class GroupMappingCreateView(CreateView):

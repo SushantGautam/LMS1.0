@@ -28,7 +28,7 @@
                         {% csrf_token %} <br><br>
                         <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
                         <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
-                        <a target="_blank" class="text-center" href="{% static 'importStudentcsv_sample.csv' %}"
+                        <a target="_blank" class="text-center" href="{% static 'importStudentGroup_sample.csv' %}"
                            style="padding-top: 2em;">
                             <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
                         </a><br>
@@ -36,13 +36,10 @@
                         <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
                             Info...</b></span>
                         <ul class="info-text" style="display:none;background:azure;">
-                            <li>- Username must be unique for every member (required)</li>
-                            <li>- Gender value must be Male or Female (required)</li>
-                            <li>- Teacher column value should be 1 for teacher</li>
-                            <li>- Student column value should be 1 for student</li>
-                            <li>- If any problem occur in a row then no any member data will be created</li>
-                            <li>- Error message will show the number of row in which the problem occur</li>
-                            <li>- Default password will be 00000 for everyuser</li>
+                            <li>- Username is Student username to be added to group (required)</li>
+                            <li>- Group is name of group where student will be added (required)</li>
+                            <li>- All Students account should have already been registered as Member</li>
+                            <li>- If error occur in one group only that group will not be created </li>
                         </ul>
 
                         <div class="import-message"></div>
@@ -137,6 +134,7 @@
                 csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
                 formData.append("csrfmiddlewaretoken", csrf);
                 if ($('#id_import_csv').val()) {
+                    $('.import-message').append('<div class="se-pre-con-ajax"></div>');
                     $.ajax({
                         type: "POST",
                         url: "{% url 'csv_import_student_group' %}",  // URL to your view that serves new info
@@ -144,6 +142,8 @@
                         cache: false,
                         processData: false,
                         contentType: false,
+                        tryCount : 0,
+                        retryLimit : 3,
                         success: function (response) {
                             $('.import-message').addClass(response.class);
                             $('.import-message').removeClass(response.rmclass);
@@ -154,10 +154,28 @@
                                 }, 2000);
                             }
                         },
-                        error: function () {
-                            $('.import-message').addClass('text-danger');
-                            $('.import-message').removeClass('text-sucess');
-                            $('.import-message').html("Error while processing data please try again and verify the format.");
+                        error: function (request, status, error) {
+                            if (textStatus == 'timeout') {
+                                this.tryCount++;
+                                if (this.tryCount <= this.retryLimit) {
+                                    //try again
+                                    $.ajax(this);
+                                    return;
+                                }            
+                                return;
+                            }
+                            if (request.status == 503) {
+                                $('.import-message').addClass('text-danger');
+                                $('.import-message').removeClass('text-sucess');
+                                $('.import-message').html("Service Unavialable at the moment but your data may be added in background");
+                            } else {
+                                $('.import-message').addClass('text-danger');
+                                $('.import-message').removeClass('text-sucess');
+                                $('.import-message').html("Error while processing data please try again and verify the format.");
+                            }
+                        },
+                        complete: function () {
+                            $(".se-pre-con-ajax").fadeOut("fast");
                         },
                     });
                 } else {
