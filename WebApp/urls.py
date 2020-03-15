@@ -43,6 +43,8 @@ urlpatterns += (
 urlpatterns += (
     # urls for MemberInfo
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
+    path('memberinfoajax/', views.MemberInfoListViewAjax.as_view(), name='memberinfo_listajax'),
+    # path('memberinfoajax/', views.MemberInfoListViewAjax.as_view(), name='memberinfo_listajax'),
     path('memberinfo/inactive', views.MemberInfoListViewInactive.as_view(),
          name='memberinfo_list_inactive'),
     path('memberinfo/activate/<int:pk>/',
