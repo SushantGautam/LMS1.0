@@ -186,6 +186,12 @@ class MemberInfo(AbstractUser):
         # else:
         #     return "-- (" + self.username + ")"
 
+    def getFullName(self):
+        if self.first_name or self.last_name:
+            return self.first_name + " " + self.last_name
+        else:
+            return "-- (" + self.username + ")"
+
     # def create_user(self, username, email=None, password=None, **extra_fields):
     #     extra_fields.setdefault('is_staff', True)
     #     extra_fields.setdefault('is_superuser', True)
