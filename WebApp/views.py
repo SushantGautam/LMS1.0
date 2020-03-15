@@ -7,7 +7,6 @@ import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 
 import pandas as pd
-import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -1619,10 +1618,11 @@ def save_video(request):
             re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
 
-        # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-        # filename = fs.save(name, media)
-        # return JsonResponse({'media_name': name})
+        fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+        filename = fs.save(name, media)
+        return JsonResponse({'media_name': name})
 
+    '''
         # #video uploading to vimeo.com
 
         # Premium Account
@@ -1667,8 +1667,7 @@ def save_video(request):
                     {'link': r_responseText['upload']['upload_link'], 'media_name': name,
                      'html': r_responseText['embed']['html']})
             return JsonResponse({}, status=500)
-
-
+    '''
 def save_json(request):
     if request.method == "POST":
         jsondata = json.loads(request.POST['json'])
