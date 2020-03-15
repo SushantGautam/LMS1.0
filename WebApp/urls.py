@@ -231,6 +231,7 @@ urlpatterns += (
          views.GroupMappingUpdateView.as_view(), name='groupmapping_update'),
     path('groupmapping/delete/<int:pk>/',
          views.GroupMappingDeleteView, name='groupmapping_delete'),
+    path('groupmapping/csv_import', views.GroupMappingCSVImport , name='csv_import_student_group')
 
     # path('admin/jsi18n', i18n.javascript_catalog),
 )

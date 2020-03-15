@@ -489,6 +489,7 @@ def ImportCsvFile(request, *args, **kwargs):
         print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
         saved_id = []
         for i in range(len(df)):
             try:
@@ -998,6 +999,65 @@ class GroupMappingListView(ListView):
     def get_queryset(self):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
+def GroupMappingCSVImport(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+        file_name = uuid.uuid4()
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + str(extension)
+        path = 'media/import_csv/student_group' + str(center_id)
+
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name + '.' + extension, media)
+        path = os.path.join(path, filename)
+        df = pd.read_csv(path,  encoding='utf-8')  #  delimiter=';|,', engine='python',
+        df = df.dropna(how='all')
+        
+        reg_agent = request.user.username
+        center = request.user.Center_Code
+        err_msg = []
+        msg = []
+        groups = df['Group'].unique()
+        for i in range(len(groups)):
+            try:
+                flag = 0
+                obj = GroupMapping()
+                obj.GroupMapping_Name = groups[i]
+                obj.Register_Agent = reg_agent
+                obj.Center_Code = center
+                students = df[df['Group'] == groups[i]].reset_index(drop=True)
+                obj.save()
+                for j in range(len(students)):
+                    if MemberInfo.objects.filter(username=students['Username'][j]).exists():
+                        obj_student = MemberInfo.objects.get(username=students['Username'][j])
+                        obj.Students.add(obj_student)
+                    else:
+                        # obj_create = MemberInfo()
+                        # obj_create.username = students['Username'][j]
+                        # obj_create.Center_Code = center
+                        # obj_create.save()
+                        # obj.Students.add(obj_student)
+                        err_msg.append("Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>".format(groups[i],students['Username'][j]))
+                        flag = 1
+                        break
+                        
+                if flag == 1:
+                    obj.delete()
+                    if msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+                else:
+                    msg.append("<div class='text-success'>Student Group: <b>{}</b> created</div>".format(groups[i]))
+                    if err_msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+            except Exception as e:
+                err_msg.append("Student Group: <b>{}</b> can't be created<br> {}".format(groups[i],e))
+    if err_msg:
+        return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
+    return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
+    
 
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
