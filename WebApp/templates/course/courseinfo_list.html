@@ -98,7 +98,7 @@
              <p style="height: 50px; overflow:auto"> 
               Teacher(s): &nbsp;
               {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp;
-                    -{{ eachTeacher }}
+              {{ eachTeacher.getFullName }}
                            {% endfor%}
 
              </p>

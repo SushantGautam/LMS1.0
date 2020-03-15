@@ -149,7 +149,7 @@
                     <td>
                         {% if object.get_teachers_of_this_course %}
                             {% for eachTeacher in object.get_teachers_of_this_course %}
-                                - {{ eachTeacher }}   &nbsp
+                                {{ eachTeacher.getFullName }}
                             {% endfor %}
                         {% else %}
                             No Teachers Assigned Yet
