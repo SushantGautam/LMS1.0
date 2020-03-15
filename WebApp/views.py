@@ -409,7 +409,7 @@ class MemberInfoListViewAjax(BaseDatatableView):
     order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Phone',
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
-    def get_queryset(self):
+    def get_initial_queryset(self):
         return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
     def render_column(self, row, column):
@@ -423,7 +423,6 @@ class MemberInfoListViewAjax(BaseDatatableView):
         elif column == 'type':
             return row.get_user_type
         elif column == 'action':
-            print(row.get_update_url, row.id)
             return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
                     <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
         else:
