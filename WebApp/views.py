@@ -24,6 +24,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.html import escape
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -31,6 +32,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
+from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth
 from LMS.settings import BASE_DIR
@@ -389,11 +391,54 @@ def CenterInfoDeleteView(request, pk):
     return redirect("centerinfo_list")
 
 
-class MemberInfoListView(ListView):
+class MemberInfoListView(TemplateView):
+    template_name = "WebApp/memberinfo_list.html"
+    # model = MemberInfo
+    #
+    # def get_queryset(self):
+    #     return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+
+
+class MemberInfoListViewAjax(BaseDatatableView):
     model = MemberInfo
+    counter = 0
+    template_name = "WebApp/memberinfo_list.html"
+    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Phone',
+               'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
+               'Member_BirthDate', 'type', 'action']
+    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Phone',
+                     'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_queryset(self):
         return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+
+    def render_column(self, row, column):
+        # We want to render user as a custom column
+        if column == "counter":
+            self.counter += 1
+            return self.counter
+        elif column == 'full_name':
+            # escape HTML for security reasons
+            return escape('{0} {1}'.format(row.first_name, row.last_name))
+        elif column == 'type':
+            return row.get_user_type
+        elif column == 'action':
+            print(row.get_update_url, row.id)
+            return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
+                    <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
+        else:
+            return super(MemberInfoListViewAjax, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        # use parameters passed in GET request to filter queryset
+
+        # simple example:
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(username__istartswith=search) | qs.filter(first_name__istartswith=search) | qs.filter(
+                last_name__istartswith=search) | qs.filter(email__istartswith=search) | qs.filter(
+                Member_Phone__istartswith=search)
+        return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
 class MemberInfoListViewInactive(ListView):
@@ -484,8 +529,9 @@ def ImportCsvFile(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name + '.' + extension, media)
         path = os.path.join(path, filename)
-        df = pd.read_csv(path,  encoding='utf-8')  #  delimiter=';|,', engine='python',
-        df.column = ['Username','Member ID','First Name','Last Name','Email','Phone','Gender','Student','Teacher','Temporary Address','Permanent Address','Birthdate']
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df.column = ['Username', 'Member ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Gender', 'Student',
+                     'Teacher', 'Temporary Address', 'Permanent Address', 'Birthdate']
         print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
