@@ -308,7 +308,7 @@ class video {
             //             <source src="https://www.youtube.com/embed/${myYoutubeId}"  type="video/mp4">
             //         </video>
             // `
-            if (link.includes('www') && link.includes('.com')) {
+            if (link.includes('http') && link.includes('.com')) {
                 videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
             } else {
                 videoobj = `
@@ -1618,11 +1618,12 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                         $('#loadingDiv').show();
                     },
                     error: function (errorThrown) {
-                        alert("Failed to upload Video" + errorThrown)
+                        alert("Failed to upload Video. File size too large.")
                         div.find('#loadingDiv').remove();
                         div.find('#percentcomplete').remove();
                     },
                     success: function (data) {
+                        console.log(data)
                         div.find('#loadingDiv').remove();
                         div.find('#percentcomplete').remove();
                         div.find('p').remove();
@@ -1632,11 +1633,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                             $(html).css('height', '100%')
                             $(html).css('width', '100%')
 
-                            div.append(`
-                                <video width="100%" height="100%">
-                                    <source src="${data.link}">
-                                </video>
-                            `);
+                            div.append(html);
                         } else {
                             div.append(`
                                 <video width="100%" height="100%" controls>

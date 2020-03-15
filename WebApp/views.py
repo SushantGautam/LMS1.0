@@ -7,7 +7,6 @@ import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 
 import pandas as pd
-# import vimeo  # from PyVimeo for uploading videos to vimeo.com
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -24,6 +23,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.html import escape
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -31,6 +31,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
+from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth
 from LMS.settings import BASE_DIR
@@ -389,11 +390,54 @@ def CenterInfoDeleteView(request, pk):
     return redirect("centerinfo_list")
 
 
-class MemberInfoListView(ListView):
+class MemberInfoListView(TemplateView):
+    template_name = "WebApp/memberinfo_list.html"
+    # model = MemberInfo
+    #
+    # def get_queryset(self):
+    #     return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+
+
+class MemberInfoListViewAjax(BaseDatatableView):
     model = MemberInfo
+    counter = 0
+    template_name = "WebApp/memberinfo_list.html"
+    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Phone',
+               'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
+               'Member_BirthDate', 'type', 'action']
+    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Phone',
+                     'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_queryset(self):
         return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+
+    def render_column(self, row, column):
+        # We want to render user as a custom column
+        if column == "counter":
+            self.counter += 1
+            return self.counter
+        elif column == 'full_name':
+            # escape HTML for security reasons
+            return escape('{0} {1}'.format(row.first_name, row.last_name))
+        elif column == 'type':
+            return row.get_user_type
+        elif column == 'action':
+            print(row.get_update_url, row.id)
+            return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
+                    <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
+        else:
+            return super(MemberInfoListViewAjax, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        # use parameters passed in GET request to filter queryset
+
+        # simple example:
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(username__istartswith=search) | qs.filter(first_name__istartswith=search) | qs.filter(
+                last_name__istartswith=search) | qs.filter(email__istartswith=search) | qs.filter(
+                Member_Phone__istartswith=search)
+        return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
 class MemberInfoListViewInactive(ListView):
@@ -484,10 +528,13 @@ def ImportCsvFile(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name + '.' + extension, media)
         path = os.path.join(path, filename)
-
-        df = pd.read_csv(path, delimiter=';|,', engine='python')
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df.column = ['Username', 'Member ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Gender', 'Student',
+                     'Teacher', 'Temporary Address', 'Permanent Address', 'Birthdate']
+        print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
         saved_id = []
         for i in range(len(df)):
             try:
@@ -997,6 +1044,65 @@ class GroupMappingListView(ListView):
     def get_queryset(self):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
+def GroupMappingCSVImport(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+        file_name = uuid.uuid4()
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + str(extension)
+        path = 'media/import_csv/student_group' + str(center_id)
+
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name + '.' + extension, media)
+        path = os.path.join(path, filename)
+        df = pd.read_csv(path,  encoding='utf-8')  #  delimiter=';|,', engine='python',
+        df = df.dropna(how='all')
+        
+        reg_agent = request.user.username
+        center = request.user.Center_Code
+        err_msg = []
+        msg = []
+        groups = df['Group'].unique()
+        for i in range(len(groups)):
+            try:
+                flag = 0
+                obj = GroupMapping()
+                obj.GroupMapping_Name = groups[i]
+                obj.Register_Agent = reg_agent
+                obj.Center_Code = center
+                students = df[df['Group'] == groups[i]].reset_index(drop=True)
+                obj.save()
+                for j in range(len(students)):
+                    if MemberInfo.objects.filter(username=students['Username'][j]).exists():
+                        obj_student = MemberInfo.objects.get(username=students['Username'][j])
+                        obj.Students.add(obj_student)
+                    else:
+                        # obj_create = MemberInfo()
+                        # obj_create.username = students['Username'][j]
+                        # obj_create.Center_Code = center
+                        # obj_create.save()
+                        # obj.Students.add(obj_student)
+                        err_msg.append("Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>".format(groups[i],students['Username'][j]))
+                        flag = 1
+                        break
+                        
+                if flag == 1:
+                    obj.delete()
+                    if msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+                else:
+                    msg.append("<div class='text-success'>Student Group: <b>{}</b> created</div>".format(groups[i]))
+                    if err_msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+            except Exception as e:
+                err_msg.append("Student Group: <b>{}</b> can't be created<br> {}".format(groups[i],e))
+    if err_msg:
+        return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
+    return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
+    
 
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
@@ -1511,49 +1617,57 @@ def save_video(request):
         name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
             re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
-        # name = "".join(re.findall("[a-zA-Z]+", name))
 
         fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         filename = fs.save(name, media)
         return JsonResponse({'media_name': name})
+
     '''
         # #video uploading to vimeo.com
 
-        # standard Account
-        # v = vimeo.VimeoClient(
-        #     token='7a954bb83b66a50a95efc2d1cfdd484a',
-        #     key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
-        #     secret='1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
-        # )
         # Premium Account
-        v = vimeo.VimeoClient(
-            token='3b42ecf73e2a1d0088dd677089d23e32',
-            key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
-            secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
-        )
+        # v = vimeo.VimeoClient(
+        #     token='3b42ecf73e2a1d0088dd677089d23e32',
+        #     key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
+        #     secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
+        # )
 
-        # media = '{path to a video on the file system}'
+        data = {
+            "upload": {
+                "approach": "tus",
+                "size": media.size
+            },
+            'name': name
+        }
+        rs = requests.session()
+        r = rs.post(url="https://api.vimeo.com/me/videos",
+                    headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                             'Content-Type': 'application/json',
+                             'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                    data=json.dumps(data))
+        if r.status_code == 200:
+            r_responseText = json.loads(r.text)
+            res = rs.patch(r_responseText['upload']['upload_link'], headers={'Tus-Resumable': '1.0.0',
+                                                                             'Content-Type': 'application/offset+octet-stream',
+                                                                             'Accept': 'application/vnd.vimeo.*+json;version=3.4',
+                                                                             'Connection': 'keep-alive',
+                                                                             'Upload-Offset': '0'},
+                           data=media.file
+                           )
 
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + name, data={
-            'name': name,
-        })
+            if res.status_code == 204 or res.status_code == 200:
+                response = rs.head(r_responseText['upload']['upload_link'])
 
-        response = v.get(uri).json()
-        status = response['status']
-        videoid = response['uri'].split('/')[-1]
-
-        url = 'https://api.vimeo.com/me/projects/772975/videos/' + videoid  # Premium account Folder
-        # url = 'https://api.vimeo.com/me/projects/936814/videos/'+videoid    #Standard Account Folder
-        v.put(url)
-        print(response['status'])
-
-        while status == 'transcode_starting' or status == 'transcoding':
-            r = v.get(uri + '?fields=status').json()
-            status = r['status']
-        return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
+                a = rs.put(
+                    url='https://api.vimeo.com/me/projects/772975/videos/' + r_responseText['uri'].split('/')[-1],
+                    headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                             'Content-Type': 'application/json',
+                             'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                return JsonResponse(
+                    {'link': r_responseText['upload']['upload_link'], 'media_name': name,
+                     'html': r_responseText['embed']['html']})
+            return JsonResponse({}, status=500)
     '''
-
-
 def save_json(request):
     if request.method == "POST":
         jsondata = json.loads(request.POST['json'])
