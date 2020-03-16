@@ -1699,16 +1699,19 @@
                                 'last_study_time': timewhensendingprogress,
                             },
                             success: function (data) {
+                                console.log(data)
                                 window.currentPageUpdateOnServer = parseInt(data.contents.currentpagenumber)
                             },
                         })
-                    }, 1000);
+                    }, 5000);
                     //}
                 }
 
                 function chapterProgressStopFunction() {
                     clearInterval(chapterProgress);
                 }
+
+                chapterProgressFunction()
             </script>
         {% endif %}
 
