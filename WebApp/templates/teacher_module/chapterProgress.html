@@ -124,18 +124,16 @@
         </div>
 
 
-       
-
-
         <div class="col-md-12 col-sm-12 col-xs-12">
- 
-            
-            <div id="attendancecontainer" class="col-md-4 col-sm-4 col-xs-12" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+            <div id="attendancecontainer" class="col-md-4 col-sm-4 col-xs-12"
+                 style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 
             <div class="col-md-8 col-sm-12 col-xs-12">
                 <div class="col-md-5 col-sm-4 col-xs-12" style="position: relative; height:300px">
-                  
+
                     <div class="progressbar position-progress" data-animate="false">
                         <div class="circle2" data-percent="10">
                             <div></div>
@@ -166,12 +164,12 @@
                     <div class="center-name" style="padding: 5px 0;">
                         <span style="font-size:18px"><b> Chapter Title: </b></span>
                         <span id="chapter-title" style="font-size: 16px;"></span>
-    
+
                     </div>
                     <div class="time-period" style="padding: 5px 0;">
                         <span style="font-size:18px"><b> Visited Students: </b></span>
                         <span id="visited-students" style="font-size: 14px;"></span>
-    
+
                     </div>
 
                 </div>
@@ -190,10 +188,10 @@
                     </div>
 
                 </div>
-               
-             
+
+
             </div>
-            
+
             <!--
             <input type="radio" name="mychart" class="mychart" id="attendancecolumn" value="column"
                    onclick="chartfunc()" checked>Column &nbsp;
@@ -559,23 +557,28 @@
                     }
                 );
                 table2_main.draw();
-                calculateProgressPercent();
-                quizProgressPercent()
-                calculateAttendance()
+                calculateProgressPercent(chapterpk);
+                quizProgressPercent(chapterpk)
+                calculateAttendance(chapterpk)
             });
 
-            calculateProgressPercent()
-            quizProgressPercent()
-            calculateAttendance()
+            calculateProgressPercent('all')
+            quizProgressPercent('all')
+            calculateAttendance('all')
 
-            function calculateProgressPercent() {
+            function calculateProgressPercent(chapterpk = null) {
                 sum = 0
                 count = 0
 
                 table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var node = this.node();
-                    sum = sum + parseFloat($(node).find('.circle').attr('data-percent'));
-                    count++;
+                    if (chapterpk == 'all') {
+                        sum = sum + parseFloat($(node).find('.circle').attr('data-percent'));
+                        count++;
+                    } else if (chapterpk == $(node).attr('data-chapterpk')) {
+                        sum = sum + parseFloat($(node).find('.circle').attr('data-percent'));
+                        count++;
+                    }
                 });
                 avg = sum / count;
                 $('.circle2').circleProgress({
@@ -583,7 +586,7 @@
                 });
             }
 
-            function quizProgressPercent() {
+            function quizProgressPercent(chapterpk = null) {
                 completed = 0
                 total = 0
                 pending = 0
@@ -591,9 +594,15 @@
 
                 table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var node = this.node();
-                    completed = completed + parseFloat($(node).find('.quiztd').attr('data-quiz_completed'));
-                    total = total + parseFloat($(node).find('.quiztd').attr('data-quiz_total'));
-                    count++;
+                    if (chapterpk == 'all') {
+                        completed = completed + parseFloat($(node).find('.quiztd').attr('data-quiz_completed'));
+                        total = total + parseFloat($(node).find('.quiztd').attr('data-quiz_total'));
+                        count++;
+                    } else if (chapterpk == $(node).attr('data-chapterpk')) {
+                        completed = completed + parseFloat($(node).find('.quiztd').attr('data-quiz_completed'));
+                        total = total + parseFloat($(node).find('.quiztd').attr('data-quiz_total'));
+                        count++;
+                    }
                 });
 
                 pending = pending + (total - completed);
@@ -636,17 +645,27 @@
                 }
             });
 
-            function calculateAttendance() {
+            function calculateAttendance(chapterpk = null) {
                 present = 0;
                 absent = 0;
                 table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var node = this.node();
-                    if ($(node).find('.attendance').attr('data-attendance').includes('True')) {
-                        present++;
-                    } else if ($(node).find('.attendance').attr('data-attendance').includes('None')) {
-                        absent++;
-                    } else {
-                        absent++;
+                    if (chapterpk == 'all') {
+                        if ($(node).find('.attendance').attr('data-attendance').includes('True')) {
+                            present++;
+                        } else if ($(node).find('.attendance').attr('data-attendance').includes('None')) {
+                            absent++;
+                        } else {
+                            absent++;
+                        }
+                    } else if (chapterpk == $(node).attr('data-chapterpk')) {
+                        if ($(node).find('.attendance').attr('data-attendance').includes('True')) {
+                            present++;
+                        } else if ($(node).find('.attendance').attr('data-attendance').includes('None')) {
+                            absent++;
+                        } else {
+                            absent++;
+                        }
                     }
                 });
 
