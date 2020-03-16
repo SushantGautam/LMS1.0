@@ -579,9 +579,7 @@
                     chatSocket = null;
                     console.log("Websocket restarting. . . ")
                     try {
-                        {#setTimeout(startWebsocket, 5000)#}
-                        console.log('Websocket Disabled ')
-
+                        setTimeout(startWebsocket, 5000)
                     } catch (error) {
                     }
 
@@ -590,7 +588,6 @@
 
             try {
                 startWebsocket();
-                console.log('Websocket Disabled ')
             } catch (error) {
             }
 
@@ -1702,19 +1699,16 @@
                                 'last_study_time': timewhensendingprogress,
                             },
                             success: function (data) {
-                                console.log(data)
                                 window.currentPageUpdateOnServer = parseInt(data.contents.currentpagenumber)
                             },
                         })
-                    }, 5000);
+                    }, 1000);
                     //}
                 }
 
                 function chapterProgressStopFunction() {
                     clearInterval(chapterProgress);
                 }
-
-                chapterProgressFunction()
             </script>
         {% endif %}
 
