@@ -4,7 +4,7 @@ const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
     /* Add an array of files to precache for your app */
     '/offline.html', '/static/images/logo_orange.png',
-    '/',
+    // '/',
     // '/profile',
     // '/quiz',
     // '/survey/surveyinfo',
@@ -14,7 +14,7 @@ const precacheFiles = [
     // '/inninginfo',
     // '/groupmapping',
     // '/inninggroup',
-    '/students/',
+    // '/students/',
     // '/students/calendar',
     // '/students/courseinfo/mycourses',
     // '/students/myassignments',
@@ -22,7 +22,7 @@ const precacheFiles = [
     // '/students/forum',
     // '/students/questions_student/',
     // '/students/profile',
-    '/teachers/',
+    // '/teachers/',
     // '/teachers/courseinfo/mycourses',
     // '/teachers/myassignments/',
     // '/teachers/quiz/',
@@ -36,21 +36,21 @@ const precacheFiles = [
 // TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
 const offlineFallbackPage = "offline.html";
 
-const networkFirstPaths = [
-    /* Add an array of regex of paths that should go network first */
-    // Example: /\/api\/.*/
-    /\/students*/,
-    /\/teachers*/,
-    /\/quiz*/,
-    /\/survey*/,
-    /\/forum*/,
-    /\/memberinfo*/,
-    /\/inninginfo*/,
-    /\/groupmapping*/,
-    /\/inninggroup*/,
-    /\/Achievement*/,
-    /\//,
-];
+// const networkFirstPaths = [
+//     /* Add an array of regex of paths that should go network first */
+//     // Example: /\/api\/.*/
+//     /\/students*/,
+//     /\/teachers*/,
+//     /\/quiz*/,
+//     /\/survey*/,
+//     /\/forum*/,
+//     /\/memberinfo*/,
+//     /\/inninginfo*/,
+//     /\/groupmapping*/,
+//     /\/inninggroup*/,
+//     /\/Achievement*/,
+//     /\//,
+// ];
 
 const avoidCachingPaths = [
     /* Add an array of regex of paths that shouldn't be cached */
@@ -235,3 +235,5 @@ function updateCache(request, response) {
 
     return Promise.resolve();
 }
+
+
