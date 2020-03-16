@@ -47,7 +47,7 @@ Course
                         {% if courses.get_teachers_of_this_course %}
                             <p style="max-height: 40px;">
                                 Teacher(s):
-                                {% for eachTeacher in object.get_teachers_of_this_course %}
+                                {% for eachTeacher in courses.get_teachers_of_this_course %}
                                 {{ eachTeacher.getFullName }}&nbsp;
                                 {% endfor%}
                             </p>
