@@ -46,9 +46,9 @@ Course
 
           {% if courses.Course_Code.get_teachers_of_this_course%} 
           <p style="height:50px ; padding: 10px; " > 
-            Teacher(s): &nbsp
-            {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
-                  -{{ eachTeacher }}
+            Teacher(s): &nbsp;
+            {% for eachTeacher in object.get_teachers_of_this_course %}
+            {{ eachTeacher.getFullName }}&nbsp;
             {% endfor%}
 
           </p>
