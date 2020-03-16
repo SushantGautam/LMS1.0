@@ -433,10 +433,16 @@ class MemberInfoListViewAjax(BaseDatatableView):
 
         # simple example:
         search = self.request.GET.get('search[value]', None)
+        onlystudents = self.request.GET.get('onlystudents', None)
+        onlyteachers = self.request.GET.get('onlyteachers', None)
         if search:
             qs = qs.filter(username__istartswith=search) | qs.filter(first_name__istartswith=search) | qs.filter(
                 last_name__istartswith=search) | qs.filter(email__istartswith=search) | qs.filter(
                 Member_Phone__istartswith=search)
+        if onlystudents:
+            qs = qs.filter(Is_Student=True)
+        if onlyteachers:
+            qs = qs.filter(Is_Teacher=True)
         return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 

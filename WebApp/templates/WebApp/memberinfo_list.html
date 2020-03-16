@@ -228,10 +228,12 @@
                 $("#student_button").css("color", "white");
                 $("#teacher_button").css("color", "black");
                 $("#all_button").css("color", "black");
-                table_main.columns().search('').draw();
-                table_main.column(9).search("1").draw();
-                table_main.column(0).visible(false);
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(9).search("1").draw();#}
+                {#table_main.column(0).visible(false);#}
+                {#$(#table).DataTable({#}
 
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlystudents=true").load();
 
             });
             $("#teacher_button").bind("click", function () {
@@ -239,9 +241,10 @@
                 $("#teacher_button").css("color", "white");
                 $("#all_button").css("color", "black");
 
-                table_main.columns().search('').draw();
-                table_main.column(10).search("1").draw();
-                table_main.column(0).visible(false);
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(10).search("1").draw();#}
+                {#table_main.column(0).visible(false);#}
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlyteachers=true").load();
 
 
             });
@@ -250,8 +253,9 @@
                 $("#all_button").css("color", "white");
                 $("#student_button").css("color", "black");
                 $("#teacher_button").css("color", "black");
-                table_main.columns().search('').draw();
-                table_main.column(0).visible(true);
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(0).visible(true);#}
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}").load();
 
             });
 
