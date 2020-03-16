@@ -60,7 +60,7 @@
     position: relative;
     cursor: help;
   }
-  
+
   [data-title]:hover::before {
     content: attr(data-title);
     position: absolute;
@@ -74,22 +74,23 @@
     font-size: 12px;
     font-family: sans-serif;
     white-space: nowrap;
-    z-index: 9999;
-   
-  }
-  [data-title]:hover::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: -12px;
-    display: inline-block;
-    color: #fff;
-    border: 8px solid transparent;	
-    border-bottom: 8px solid #000;
-    z-index: 9999;
+      z-index: 9999;
+
   }
 
-/* end  */
+    [data-title]:hover::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: -12px;
+        display: inline-block;
+        color: #fff;
+        border: 8px solid transparent;
+        border-bottom: 8px solid #000;
+        z-index: 9999;
+    }
+
+    /* end  */
     .inner-sidebar {
         height: 100vh;
         overflow: auto;
@@ -454,7 +455,7 @@
                     <a href="{% url 'previewcontentviewer' course chapter %}" id="previewBtn"><i
                             class="fas fa-eye"></i><br>Preview</a>
 
-                    <a href="javascript:void(0)" id="SaveBtn"> <i class="fas fa-save"></i><br/>Save</a> 
+                    <a href="javascript:void(0)" id="SaveBtn"> <i class="fas fa-save"></i><br/>Save</a>
 
                     <input id="importzipfile" name="importfile" type="file"
                            accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
