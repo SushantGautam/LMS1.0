@@ -1658,7 +1658,7 @@ def save_video(request):
                 response = rs.head(r_responseText['upload']['upload_link'])
 
                 a = rs.put(
-                    url='https://api.vimeo.com/me/projects/772975/videos/' + r_responseText['uri'].split('/')[-1],
+                    url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[-1],
                     headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                              'Content-Type': 'application/json',
                              'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
