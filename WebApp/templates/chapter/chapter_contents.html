@@ -579,7 +579,9 @@
                     chatSocket = null;
                     console.log("Websocket restarting. . . ")
                     try {
-                        setTimeout(startWebsocket, 5000)
+                        {#setTimeout(startWebsocket, 5000)#}
+                        console.log('Websocket Disabled ')
+
                     } catch (error) {
                     }
 
@@ -587,7 +589,7 @@
             }
 
             try {
-                {#startWebsocket();#}
+                startWebsocket();
                 console.log('Websocket Disabled ')
             } catch (error) {
             }
