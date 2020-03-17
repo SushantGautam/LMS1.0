@@ -2196,6 +2196,7 @@ label .asteriskField {
 .student_card_container {
   height: 300px;
   width: 450px;
+  margin: auto;
 }
 .student_card_container img {
     height: 100%;
