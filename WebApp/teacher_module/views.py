@@ -1879,6 +1879,7 @@ def CourseAttendance(request, inningpk, course, attend_date):
             if not isinstance(i['id'], int) and len(i) and i['id'] if len(i) else 0:
                 a = Attendance.objects.get(pk=i['id'].pk)
                 a.present = i['present']
+                a.updated = datetime.utcnow()
                 a.save()
             else:
                 k = modelformset.forms[cn]
