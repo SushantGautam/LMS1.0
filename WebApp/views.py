@@ -2321,7 +2321,7 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
 
             jsondata['contents']['totalstudytime'] = int(jsondata['contents']['totalstudytime']) + int(
                 studytimeinseconds)
-            jsondata['contents']['laststudydate'] = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+            jsondata['contents']['laststudydate'] = datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S")
 
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
@@ -2333,22 +2333,12 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
             if fromcontents:
                 jsondata = {
                     "contents": {
-                        "laststudydate": datetime.now().strftime("%m/%d/%Y %H:%M:%S"),
+                        "laststudydate": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
                         "totalstudytime": studytimeinseconds,
                         "currentpagenumber": currentPageNumber,
                         "totalPage": totalPage,
                     },
-                    # "quiz": {},
                 }
-            # elif fromquiz:
-            #     jsondata = {
-            #         "contents":{},
-            #         "quiz":{
-            #             "totalquizcount": totalquizcount,
-            #             "attemptedquiz": attemptedquiz,
-            #             "correctquizanswers": correctquizanswers,
-            #         },
-            #     }
             else:
                 return None
             # student_file = open(student_data_file, "w+")

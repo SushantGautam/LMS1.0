@@ -243,7 +243,8 @@
                                 <td>  {{ a.chapter.chapterObj.Chapter_No }}. {{ a.chapter.chapterObj.Chapter_Name }} </td>
                                 <td>  {{ a.chapter.chapterObj.getmustreadtimeinformat }} </td>
                                 <td>  {{ a.chapter.totalstudytime }} </td>
-                                <td>  {{ a.chapter.laststudydate }} </td>
+                                <td class="laststudydate" data-laststudydate="{{ a.chapter.laststudydate }}"
+                                    data-laststudydatewithutc="{{ a.chapter.laststudydate }} UTC">  {{ a.chapter.laststudydate }} </td>
                                 <td class="quiztd" data-quiz_completed="{{ a.quiz.completed_quiz }}"
                                     data-quiz_total="{{ a.quiz.quiz_count }}"
                                     data-score_obtained="{{ a.quiz.avg_percent_score }}"><span
@@ -386,6 +387,12 @@
                 {% endif %}
             });
         });
+
+        $('.laststudydate').each(function () {
+            if ($(this).attr('data-laststudydate') != 'None') {
+                $(this).text(new Date($(this).attr('data-laststudydatewithutc')).toLocaleString())
+            }
+        })
     </script>
 
     <!-- Highchart for Student Attendance -->
