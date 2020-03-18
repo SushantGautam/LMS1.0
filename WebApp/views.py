@@ -1648,7 +1648,8 @@ def save_video(request):
         }
         rs = requests.session()
 
-        if getServerIP() != '103.41.247.44':  # 103.41.247.44 is ip of ublcloud.me (indonesian). If request if for ublcloud, then it will save to server else to vimeo
+        # if getServerIP() != '103.41.247.44':  # 103.41.247.44 is ip of ublcloud.me (indonesian). If request if for ublcloud, then it will save to server else to vimeo
+        if settings.SERVER_NAME != 'Indonesian_Server':
             r = rs.post(url="https://api.vimeo.com/me/videos",
                         headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                                  'Content-Type': 'application/json',
