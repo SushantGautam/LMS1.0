@@ -664,7 +664,7 @@ class MemberInfoDeleteView(DeleteView):
 
 class CourseInfoListView(ListView):
     model = CourseInfo
-    paginate_by = 8
+    paginate_by = 6
 
     def get_queryset(self):
         qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
