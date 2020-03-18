@@ -1,7 +1,7 @@
 import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-# import socket
-# import subprocess
+import socket
+import subprocess
 
 # import django_heroku
 # import sentry_sdk
@@ -109,9 +109,9 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'LMS',
-#         'USER': 'postgres',
-#         'PASSWORD': 'root',
+#         'NAME': 'ulmsdb',
+#         'USER': 'lms',
+#         'PASSWORD': 'Ulms@2019',
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
@@ -147,24 +147,24 @@ STATIC_URL = '/static/'
 
 # Channels
 # https://channels.readthedocs.io/en/stable/getting-started.html
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "ROUTING": "LMS.routing.channel_routing",
+CHANNEL_LAYERS = {
+    "default": {
+        "ROUTING": "LMS.routing.channel_routing",
 
-#         # Dev Config
-#         "BACKEND": "asgiref.inmemory.ChannelLayer",
+        # Dev Config
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
 
-#         # Production Config using REDIS
-#         # "BACKEND": "asgi_redis.RedisChannelLayer",
-#         # "CONFIG": {
-#         #    "hosts": [("redis", 6379)],
-#         # },
-#     },
-# }
+        # Production Config using REDIS
+        # "BACKEND": "asgi_redis.RedisChannelLayer",
+        # "CONFIG": {
+        #    "hosts": [("redis", 6379)],
+        # },
+    },
+}
 
-# INSTALLED_APPS += [
-#     'channels'
-# ]
+INSTALLED_APPS += [
+    'channels'
+]
 
 INSTALLED_APPS += ("django_createsuperuserwithpassword",)
 
@@ -215,6 +215,8 @@ REST_FRAMEWORK = {
 #         'LOCATION': '.cache',
 #     }
 # }
+
+SERVER_NAME = 'Indonesian_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
