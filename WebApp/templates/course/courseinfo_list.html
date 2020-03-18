@@ -171,3 +171,25 @@
     {% endif %}
   </div>
 </div>
+
+  <!-- jQuery -->
+  <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+
+<script>
+  $(document).ready(function () {
+    $('.lectureDescription').each(function(){
+      let trunc = truncateString($(this).find('p').text());
+      $(this).find('p').text(trunc);
+      // Animate loader off screen
+      $(".se-pre-con").fadeOut("slow");
+      
+    })
+    ;
+});
+
+const truncateString = (string, maxLength = 120) => {
+    if (!string) return null;
+    const showDots = string.length > maxLength;
+    return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+};
+</script>
