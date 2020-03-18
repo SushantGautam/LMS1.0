@@ -178,7 +178,10 @@
                                 <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
                                 <td>  {{ a.initial.member_code }} </td>
                                 <td style="background-color:{% if  a.initial.present %}     #29a329 {% else %} #cc2900 {% endif %}; color:white;  font-weight:700">  {{ a.initial.present }} </td>
-                                <td>  {{ a.initial.updated }} </td>
+                                <td class="attend_date" data-attend_date="{{ a.initial.updated|date:'m/d/Y h:m:s' }}"
+                                    data-attend_datewithutc="{{ a.initial.updated|date:'m/d/Y h:m:s' }} UTC">
+                                    {{ a.initial.updated|date:"m/d/Y h:m:s" }}
+                                </td>
 
                             </tr>
 
@@ -186,16 +189,6 @@
                         </tbody>
 
                     </table>
-
-
-
-
-
-
-
-
-
-
 
                 {% else %}
                     <p>{% trans "There are no available attendance" %}.</p>
@@ -350,6 +343,11 @@
                 selectSessionOnChange();
             });
 
+            $('.attend_date').each(function () {
+                if ($(this).attr('data-attend_date') != 'None') {
+                    $(this).text(new Date($(this).attr('data-attend_datewithutc')).toLocaleString())
+                }
+            })
         });
 
 

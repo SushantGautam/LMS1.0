@@ -308,7 +308,7 @@ class video {
             //             <source src="https://www.youtube.com/embed/${myYoutubeId}"  type="video/mp4">
             //         </video>
             // `
-            if (link.includes('http') && link.includes('.com')) {
+            if (link.includes('.com')) {
                 videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
             } else {
                 videoobj = `

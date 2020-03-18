@@ -1627,6 +1627,9 @@ def save_video(request):
             re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
 
+        # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+        # filename = fs.save(name, media)
+        # return JsonResponse({'media_name': name})
         # video uploading to vimeo.com
 
         # Premium Account
@@ -1644,14 +1647,8 @@ def save_video(request):
             'name': name
         }
         rs = requests.session()
-        checkConn = rs.get(url="https://api.vimeo.com/me/videos",
-                           headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
-                                    'Content-Type': 'application/json',
-                                    'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
-                           timeout=5
-                           )
-        print(checkConn)
-        if checkConn.status_code == 200:
+
+        if getServerIP() != '103.41.247.44':  # 103.41.247.44 is ip of ublcloud.me (indonesian). If request if for ublcloud, then it will save to server else to vimeo
             r = rs.post(url="https://api.vimeo.com/me/videos",
                         headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                                  'Content-Type': 'application/json',
@@ -1683,6 +1680,15 @@ def save_video(request):
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
             return JsonResponse({'media_name': name})
+
+
+import socket
+
+
+def getServerIP():
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    return IPAddr
 
 
 def save_json(request):
@@ -2319,7 +2325,7 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
 
             jsondata['contents']['totalstudytime'] = int(jsondata['contents']['totalstudytime']) + int(
                 studytimeinseconds)
-            jsondata['contents']['laststudydate'] = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+            jsondata['contents']['laststudydate'] = datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S")
 
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
@@ -2331,22 +2337,12 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
             if fromcontents:
                 jsondata = {
                     "contents": {
-                        "laststudydate": datetime.now().strftime("%m/%d/%Y %H:%M:%S"),
+                        "laststudydate": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
                         "totalstudytime": studytimeinseconds,
                         "currentpagenumber": currentPageNumber,
                         "totalPage": totalPage,
                     },
-                    # "quiz": {},
                 }
-            # elif fromquiz:
-            #     jsondata = {
-            #         "contents":{},
-            #         "quiz":{
-            #             "totalquizcount": totalquizcount,
-            #             "attemptedquiz": attemptedquiz,
-            #             "correctquizanswers": correctquizanswers,
-            #         },
-            #     }
             else:
                 return None
             # student_file = open(student_data_file, "w+")
