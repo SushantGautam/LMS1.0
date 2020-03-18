@@ -95,13 +95,16 @@
           </h2>
 
           {% if object.get_teachers_of_this_course %}
-             <p style="height: 50px; overflow:auto"> 
+             <p style="height: 30px; overflow:auto"> 
               Teacher(s): &nbsp;
               {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
               {{ eachTeacher.getFullName }}
               {% endfor%}
 
              </p>
+             {% else %}
+             <p style="height: 30px; overflow:auto"> No Teacher </p>
+
 
       
           {% endif %}
@@ -171,3 +174,25 @@
     {% endif %}
   </div>
 </div>
+
+  <!-- jQuery -->
+  <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+
+<script>
+  $(document).ready(function () {
+    $('.lectureDescription').each(function(){
+      let trunc = truncateString($(this).find('p').text());
+      $(this).find('p').text(trunc);
+      // Animate loader off screen
+      $(".se-pre-con").fadeOut("slow");
+      
+    })
+    ;
+});
+
+const truncateString = (string, maxLength = 120) => {
+    if (!string) return null;
+    const showDots = string.length > maxLength;
+    return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+};
+</script>

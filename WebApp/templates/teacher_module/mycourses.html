@@ -45,12 +45,18 @@ Course
 
 
                         {% if courses.get_teachers_of_this_course %}
-                            <p style="max-height: 40px;">
+                            <p style="height: 30px;">
                                 Teacher(s):
                                 {% for eachTeacher in courses.get_teachers_of_this_course %}
                                 {{ eachTeacher.getFullName }}&nbsp;
                                 {% endfor%}
                             </p>
+                            {% else %}
+                                    <p style="height:30px ; padding: 10px; " >
+                                        No Teacher Assigned
+                                        
+                                    
+                                    </p>
                         {% endif %}
 
 
