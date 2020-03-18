@@ -1,13 +1,13 @@
 import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import socket
-import subprocess
+# import socket
+# import subprocess
 
-import django_heroku
-import sentry_sdk
+# import django_heroku
+# import sentry_sdk
 from django.contrib.messages import constants as messages
-from sentry_sdk.integrations.celery import CeleryIntegration
-from sentry_sdk.integrations.django import DjangoIntegration
+# from sentry_sdk.integrations.celery import CeleryIntegration
+# from sentry_sdk.integrations.django import DjangoIntegration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -147,24 +147,24 @@ STATIC_URL = '/static/'
 
 # Channels
 # https://channels.readthedocs.io/en/stable/getting-started.html
-CHANNEL_LAYERS = {
-    "default": {
-        "ROUTING": "LMS.routing.channel_routing",
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "ROUTING": "LMS.routing.channel_routing",
 
-        # Dev Config
-        "BACKEND": "asgiref.inmemory.ChannelLayer",
+#         # Dev Config
+#         "BACKEND": "asgiref.inmemory.ChannelLayer",
 
-        # Production Config using REDIS
-        # "BACKEND": "asgi_redis.RedisChannelLayer",
-        # "CONFIG": {
-        #    "hosts": [("redis", 6379)],
-        # },
-    },
-}
+#         # Production Config using REDIS
+#         # "BACKEND": "asgi_redis.RedisChannelLayer",
+#         # "CONFIG": {
+#         #    "hosts": [("redis", 6379)],
+#         # },
+#     },
+# }
 
-INSTALLED_APPS += [
-    'channels'
-]
+# INSTALLED_APPS += [
+#     'channels'
+# ]
 
 INSTALLED_APPS += ("django_createsuperuserwithpassword",)
 
@@ -177,7 +177,7 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = '/'

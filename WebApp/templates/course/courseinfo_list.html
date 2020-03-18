@@ -84,12 +84,12 @@
           </a>
         </div>
         <div class="card-body" id="cardInfo">
-          <h2 class="card-title">
+          <h2 class="card-title"  style="height: 3.5em;">
             <strong><a href="{% if '/students' in request.path %}
                                         {{ object.student_get_absolute_url }}
                                       {% else %}
                                         {{ object.get_absolute_url }}
-                                      {% endif %}">{{ object.Course_Name }} </a></strong>
+                                      {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong>
             {% if object.Use_Flag == False %}<i
               style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
           </h2>
