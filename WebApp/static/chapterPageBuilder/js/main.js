@@ -1611,6 +1611,9 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                 $.ajax({
                     url: save_video_url,
                     data: data,
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Connection", 'keep-alive');
+                    },
                     contentType: false,
                     processData: false,
                     method: 'POST',
