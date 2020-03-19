@@ -36,7 +36,7 @@ from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
-from ..views import chapterProgressRecord
+from ..views import chapterProgressRecord, getCourseProgress
 
 datetime_now = datetime.now()
 
@@ -296,6 +296,8 @@ class CourseInfoDetailView(DetailView):
             draft=False)
         context['topic'] = Topic.objects.filter(
             course_associated_with=self.kwargs.get('pk'))
+
+        context['student_data'] = getCourseProgress(self.object, [self.request.user], context['chapters'])
         return context
 
 

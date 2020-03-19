@@ -2191,7 +2191,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
     courseObj = get_object_or_404(CourseInfo, pk=coursepk)
     chapters_list = courseObj.chapterinfos.all().order_by('Chapter_No')
     list_of_students = []
-    student_data = []
+    # student_data = []
     if '/teachers' in request.path:
         basefile = "teacher_module/base.html"
     elif '/teachers' or '/students' not in request.path:
@@ -2214,72 +2214,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
 
             if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
                 list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
-
-            for chapter in chapters_list:
-                for x in list_of_students:
-                    jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
-                                                     createFile=False)
-                    if jsondata is not None:
-                        if int(jsondata['contents']['totalPage']) > 0 and int(
-                                jsondata['contents']['currentpagenumber']) > 0:
-                            progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
-                                jsondata['contents']['totalPage'])
-                        else:
-                            progresspercent = 0
-                    else:
-                        progresspercent = 0
-
-                    student_quiz = Quiz.objects.filter(chapter_code=chapter)
-                    # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
-
-                    student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
-                    total_quiz_percent_score = 0
-                    temp = []
-                    for z in student_result:
-                        if z.quiz.pk in temp:
-                            student_result.get(pk=z.pk).delete()
-                        else:
-                            temp.append(z.quiz.pk)
-                            total_quiz_percent_score += float(z.get_percent_correct)
-
-                    # Attendance here means chapter completion.
-                    ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
-                        field and the chapter progress is 100% '''
-                    if chapter.mustreadtime:
-                        attendance = int(
-                            jsondata['contents'][
-                                'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
-                    else:
-                        attendance = None
-                    student_data.append(
-                        {
-                            'student': x,
-                            'chapter': {
-                                'chapterObj': chapter,
-                                'laststudydate': datetime.strptime(jsondata['contents'][
-                                                                       'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
-                                    "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
-                                'totalstudytime': timedelta(seconds=int(jsondata['contents'][
-                                                                            'totalstudytime'])) if jsondata is not None else "00:00:00",
-                                'currentpagenumber': int(
-                                    jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
-                                'totalPage': int(
-                                    jsondata['contents']['totalPage']) if jsondata is not None else None,
-                                'progresspercent': progresspercent,
-                                'attendance': attendance,
-                            },
-                            'quiz': {
-                                'quiz_count': student_quiz.count(),
-                                'completed_quiz': student_result.filter(complete=True).count(),
-                                'progress': student_result.filter(
-                                    complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
-                                # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
-                                # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                                'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
-                                    complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                            }
-                        },
-                    )
+            student_data = getCourseProgress(courseObj, list_of_students, chapters_list)
         else:
             messages.add_message(request, messages.ERROR,
                                  'The course is not assosiated with any innings. Please contact administrator')
@@ -2352,3 +2287,73 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
         else:
             return None
     return jsondata
+
+
+def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=None):
+    student_data = []
+    for chapter in chapters_list:
+        for x in list_of_students:
+            jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
+                                             createFile=False)
+            if jsondata is not None:
+                if int(jsondata['contents']['totalPage']) > 0 and int(
+                        jsondata['contents']['currentpagenumber']) > 0:
+                    progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                        jsondata['contents']['totalPage'])
+                else:
+                    progresspercent = 0
+            else:
+                progresspercent = 0
+
+            student_quiz = Quiz.objects.filter(chapter_code=chapter)
+            # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
+
+            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+            total_quiz_percent_score = 0
+            temp = []
+            for z in student_result:
+                if z.quiz.pk in temp:
+                    student_result.get(pk=z.pk).delete()
+                else:
+                    temp.append(z.quiz.pk)
+                    total_quiz_percent_score += float(z.get_percent_correct)
+
+            # Attendance here means chapter completion.
+            ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
+                field and the chapter progress is 100% '''
+            if chapter.mustreadtime:
+                attendance = int(
+                    jsondata['contents'][
+                        'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+            else:
+                attendance = None
+            student_data.append(
+                {
+                    'student': x,
+                    'chapter': {
+                        'chapterObj': chapter,
+                        'laststudydate': datetime.strptime(jsondata['contents'][
+                                                               'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
+                            "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
+                        'totalstudytime': timedelta(seconds=int(jsondata['contents'][
+                                                                    'totalstudytime'])) if jsondata is not None else "00:00:00",
+                        'currentpagenumber': int(
+                            jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
+                        'totalPage': int(
+                            jsondata['contents']['totalPage']) if jsondata is not None else None,
+                        'progresspercent': progresspercent,
+                        'attendance': attendance,
+                    },
+                    'quiz': {
+                        'quiz_count': student_quiz.count(),
+                        'completed_quiz': student_result.filter(complete=True).count(),
+                        'progress': student_result.filter(
+                            complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                        # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
+                        # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
+                        'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
+                            complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
+                    }
+                },
+            )
+    return student_data
