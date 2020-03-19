@@ -1,6 +1,7 @@
 {% load static %}
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true" id="create_chapter_modal">
+     aria-hidden="true" id="create_chapter_modal" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
@@ -475,6 +476,18 @@
                                                     Studied Time: <b>{{ x.chapter.totalstudytime }}</b>
                                                 </span>
                                             </h4>
+
+                                            <div>
+                                                Status:
+                                                {% if x.chapter.attendance %}
+                                                    <strong>Complete</strong>
+                                                {% else %}
+                                                    <strong>In Progress</strong>
+                                                {% endif %}
+                                            </div>
+
+
+                                            {{ x.chapter.laststudydate }}
                                             <div class="progress">
                                                 <div class="progress-bar" role="progressbar" aria-valuenow="70"
                                                      aria-valuemin="0" aria-valuemax="100"
@@ -486,8 +499,6 @@
                                                     <span class="sr-only">{{ x.chapter.progresspercent }}% Complete</span>
                                                 </div>
                                             </div>
-
-                                            {{ x.chapter.laststudydate }}
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
@@ -527,7 +538,6 @@
         </div>
     </div>
 </div>
-{{ student_data }}
 <div id="quiz_create_popup" class="modal fade">
     <div class="modal-dialog" style="    width: 80%;">
         <div class="modal-content" style="    height: 90vh;    overflow: auto;">
