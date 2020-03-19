@@ -365,7 +365,7 @@
                                         {% if answer.Assignment_Answer != '' %}
                                             <p style="margin: 0;color:#000000;">{{ answer.Assignment_Answer }}</p>
                                             {% now "Y-m-d" as todays_date %}
-                                            {# {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date %} #}
+                                             {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date %}
                                             <button class="btn btn-info editanswer"
                                                     data-Student_Code="{{ request.user.id }}"
                                                     data-Question_Code="{{ questions.id }}"
@@ -378,7 +378,7 @@
                                                     style="float: right" title="Delete Answer"><i class="fa fa-trash"
                                                                                                   aria-hidden="true"></i>
                                             </button>
-                                            {# {% endif %} #}
+                                             {% endif %}
                                         {% else %}
                                             <p style="margin: 0;color:#000000;">File has been Submitted</p>
 
@@ -415,7 +415,7 @@
 
                                             <div class="form-group text-center">
                                                 {% now "Y-m-d" as todays_date %}
-                                                {% if object.Assignment_Deadline|date:"Y-m-d" < todays_date %}
+                                                {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date %}
                                                     <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
@@ -786,6 +786,7 @@
             $('.editanswer').click(function () {
                 $(this).parent().children().css('display', 'none')
                 $(this).parent().append(`
+                <div class="editdiv">
                     <textarea class="form-control rounded-0" rows="5" cols="100"
                               name="Assignment_Answer"
                               placeholder="Enter your Answer"
@@ -796,10 +797,10 @@
                     id=id_Question_Code${$(this).attr('data-Question_Code')}>
                     <div class="form-group text-center">
 
-                             <button class="btn btn-sm btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+                             <button class="btn btn-sm btn-primary cancelBtn" type="button" id="cancelButton{{ questions.pk }}">
                                 Cancel
                             </button>
-                            <button class="btn btn-sm btn-primary" type="reset">Reset</button>
+                            <button class="btn btn-sm btn-primary resetBtn" type="reset">Reset</button>
 
                             <button type="submit" class="btn btn-sm btn-success submitAnswer"
                                     id="answer${$(this).attr('data-Question_Code')}"
@@ -807,7 +808,16 @@
                                     data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer=${this.value}">Submit
                             </button>
                     </div>
+                </div>
                 `)
+            })
+
+            $('.qacontainer').on('click', '.cancelBtn', function () {
+                $(this).closest('.editdiv').parent().children().css('display', 'block')
+                $(this).closest('.editdiv').remove()
+            })
+            $('.qacontainer').on('click', '.resetBtn', function () {
+                $(this).closest('.editdiv').find('textarea').text('')
             })
         })
     </script>
