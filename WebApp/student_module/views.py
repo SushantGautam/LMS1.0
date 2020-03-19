@@ -355,7 +355,10 @@ class submitAnswer(View):
     model = AssignAnswerInfo()
 
     def post(self, request, *args, **kwargs):
-        Obj = AssignAnswerInfo()
+        if request.GET.get('editanswer'):
+            Obj = AssignAnswerInfo.objects.get(pk=int(request.GET.get('editanswer')))
+        else:
+            Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
         Obj.Student_Code = MemberInfo.objects.get(
             pk=request.POST["Student_Code"])
