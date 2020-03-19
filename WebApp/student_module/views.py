@@ -261,7 +261,7 @@ class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'student_module/courseinfo_list.html'
 
-    paginate_by = 8
+    paginate_by = 6
 
     def get_queryset(self):
         qs = self.model.objects.all()
