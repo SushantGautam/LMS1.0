@@ -706,7 +706,7 @@
             }
             submitted = true;
             var answerdata = new FormData();
-            if ($(`#id_Assignment_File${this.id}`).val()) {
+            if ($(`#id_Assignment_File${$(this).attr('data-id')}`).val()) {
                 var answer_file = $(`#id_Assignment_File${$(this).attr('data-id')}`)[0].files[0];
             } else {
                 var answer_file = 0;
@@ -817,7 +817,7 @@
                 $(this).closest('.editdiv').remove()
             })
             $('.qacontainer').on('click', '.resetBtn', function () {
-                $(this).closest('.editdiv').find('textarea').text('')
+                $(this).closest('.editdiv').find('textarea').val('')
             })
         })
     </script>
