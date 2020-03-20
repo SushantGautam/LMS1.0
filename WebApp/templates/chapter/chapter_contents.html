@@ -1694,7 +1694,7 @@
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                                 'currentpage': window.currentpage,
                                 'totalpages': data.numberofpages,
-                                'studytimeinseconds': studystarttime - timewhensendingprogress,
+                                'studytimeinseconds': 5,    // because in every 5 seconds the function will be called, therefore studytime is 5 seconds.
                                 'last_study_time': timewhensendingprogress,
                             },
                             success: function (data) {

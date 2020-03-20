@@ -36,7 +36,7 @@ from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
-from ..views import chapterProgressRecord
+from ..views import chapterProgressRecord, getCourseProgress
 
 datetime_now = datetime.now()
 
@@ -261,7 +261,7 @@ class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'student_module/courseinfo_list.html'
 
-    paginate_by = 8
+    paginate_by = 6
 
     def get_queryset(self):
         qs = self.model.objects.all()
@@ -296,6 +296,8 @@ class CourseInfoDetailView(DetailView):
             draft=False)
         context['topic'] = Topic.objects.filter(
             course_associated_with=self.kwargs.get('pk'))
+
+        context['student_data'] = getCourseProgress(self.object, [self.request.user], context['chapters'])
         return context
 
 
@@ -355,7 +357,10 @@ class submitAnswer(View):
     model = AssignAnswerInfo()
 
     def post(self, request, *args, **kwargs):
-        Obj = AssignAnswerInfo()
+        if request.GET.get('editanswer'):
+            Obj = AssignAnswerInfo.objects.get(pk=int(request.GET.get('editanswer')))
+        else:
+            Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
         Obj.Student_Code = MemberInfo.objects.get(
             pk=request.POST["Student_Code"])
@@ -1061,7 +1066,7 @@ def PageUpdateAjax(request, course, chapter):
         jsondata = chapterProgressRecord(str(course), str(chapter), str(request.user.id),
                                          currentPageNumber=request.POST['currentpage'],
                                          totalPage=request.POST['totalpages'],
-                                         fromcontents=True, studytimeinseconds=request.POST['totalpages'],
+                                         fromcontents=True, studytimeinseconds=request.POST['studytimeinseconds'],
                                          )
     else:
         # currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
