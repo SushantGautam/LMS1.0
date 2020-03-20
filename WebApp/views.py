@@ -1691,7 +1691,7 @@ def save_video(request):
                                             chunk_size=6000000,    # chunk size default is 6 MB
                                             public_id=media.name,
                                              )
-            embedd_code = '<video controls loop><source src="'+ response['secure_url'] +'" type="video/mp4"></video>'
+            embedd_code = '<video controls preload="none"><source src="'+ response['secure_url'] +'" type="video/mp4"></video>'
             print(embedd_code)
             return JsonResponse(
                 {'link': response['secure_url'], 'media_name': response['public_id'],
