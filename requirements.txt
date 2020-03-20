@@ -36,3 +36,4 @@ python-resize-image
 django-createsuperuserwithpassword
 django-cors-headers
 django-datatables-view==1.19.1
+asgi_redis

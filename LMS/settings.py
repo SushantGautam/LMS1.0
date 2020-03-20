@@ -6,6 +6,7 @@ import subprocess
 # import django_heroku
 # import sentry_sdk
 from django.contrib.messages import constants as messages
+
 # from sentry_sdk.integrations.celery import CeleryIntegration
 # from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -152,13 +153,13 @@ CHANNEL_LAYERS = {
         "ROUTING": "LMS.routing.channel_routing",
 
         # Dev Config
-        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        # "BACKEND": "asgiref.inmemory.ChannelLayer",
 
         # Production Config using REDIS
         # "BACKEND": "asgi_redis.RedisChannelLayer",
-        # "CONFIG": {
-        #    "hosts": [("redis", 6379)],
-        # },
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "hosts": [("127.0.0.1", 6379)],
+
     },
 }
 
