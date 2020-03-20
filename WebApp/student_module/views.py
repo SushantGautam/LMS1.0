@@ -1066,7 +1066,7 @@ def PageUpdateAjax(request, course, chapter):
         jsondata = chapterProgressRecord(str(course), str(chapter), str(request.user.id),
                                          currentPageNumber=request.POST['currentpage'],
                                          totalPage=request.POST['totalpages'],
-                                         fromcontents=True, studytimeinseconds=request.POST['totalpages'],
+                                         fromcontents=True, studytimeinseconds=request.POST['studytimeinseconds'],
                                          )
     else:
         # currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
