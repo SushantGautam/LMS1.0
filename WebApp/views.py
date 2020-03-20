@@ -5,6 +5,9 @@ import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 import pandas as pd
 import requests
@@ -1676,20 +1679,27 @@ def save_video(request):
                     return JsonResponse(
                         {'link': r_responseText['upload']['upload_link'], 'media_name': name,
                          'html': r_responseText['embed']['html']})
-                return JsonResponse({}, status=500)
         else:
-            fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-            filename = fs.save(name, media)
-            return JsonResponse({'media_name': name})
-
-
-import socket
-
-
-def getServerIP():
-    hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
-    return IPAddr
+            cloudinary.config(
+                cloud_name="nsdevil-com",
+                api_key="355159163645263",
+                api_secret="riH4CD94zuSXffS_wfSgIFgxmJ0"
+            )
+            response = cloudinary.uploader.upload_large(media.file,
+                                            folder = "/id.ublcloud.me",
+                                            resource_type="video",
+                                            chunk_size=6000000,    # chunk size default is 6 MB
+                                            public_id=media.name,
+                                             )
+            embedd_code = '<video controls loop><source src="'+ response['secure_url'] +'" type="video/mp4"></video>'
+            print(embedd_code)
+            return JsonResponse(
+                {'link': response['secure_url'], 'media_name': response['public_id'],
+                 'html': embedd_code
+                })
+            # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            # filename = fs.save(name, media)
+        return JsonResponse({}, status=500)
 
 
 def save_json(request):
