@@ -1614,6 +1614,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                     beforeSend: function (request) {
                         request.setRequestHeader("Connection", 'keep-alive');
                     },
+                    maxChunkSize: 10000000,
                     contentType: false,
                     processData: false,
                     method: 'POST',
