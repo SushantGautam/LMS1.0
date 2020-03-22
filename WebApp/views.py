@@ -5,10 +5,10 @@ import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 import pandas as pd
 import requests
 from django.conf import settings
@@ -1680,23 +1680,28 @@ def save_video(request):
                         {'link': r_responseText['upload']['upload_link'], 'media_name': name,
                          'html': r_responseText['embed']['html']})
         else:
+            name = (str(uuid.uuid4())).replace('-', '') + '' + "".join(
+                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '' + str(
+                request.user.pk)
             cloudinary.config(
                 cloud_name="nsdevil-com",
                 api_key="355159163645263",
                 api_secret="riH4CD94zuSXffS_wfSgIFgxmJ0"
             )
             response = cloudinary.uploader.upload_large(media.file,
-                                            folder = "/id.ublcloud.me",
-                                            resource_type="video",
-                                            chunk_size=6000000,    # chunk size default is 6 MB
-                                            public_id=media.name,
-                                             )
-            embedd_code = '<iframe src="'+ response['secure_url'] +'"><video controls preload="none"><source src="'+ response['secure_url'] +'" type="video/mp4" autostart="false"></video></iframe>'
-            print(embedd_code)
+                                                        folder="/id.ublcloud.me",
+                                                        resource_type="video",
+                                                        chunk_size=6000000,  # chunk size default is 6 MB
+                                                        public_id=name,
+                                                        )
+            embedd_code = '<iframe src="' + response['secure_url'] + '"><video controls preload="none"><source src="' + \
+                          response['secure_url'] + '" type="video/mp4" autostart="false"></video></iframe>'
+            print(response)
+
             return JsonResponse(
                 {'link': response['secure_url'], 'media_name': response['public_id'],
-                 'html': embedd_code
-                })
+                 # 'html': embedd_code
+                 })
             # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             # filename = fs.save(name, media)
         return JsonResponse({}, status=500)
