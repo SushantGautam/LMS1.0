@@ -1105,7 +1105,7 @@ from django.db.models import F
 @permission_classes((IsAuthenticated,))
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
-        courses = request.user.get_student_courses()
+        courses = request.user.get_student_courses().distinct()
         assignments = AssignmentInfo.objects.filter(
             Course_Code__in=courses,
             Chapter_Code__Use_Flag=True)[:7]
