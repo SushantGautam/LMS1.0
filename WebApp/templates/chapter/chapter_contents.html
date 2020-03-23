@@ -962,7 +962,17 @@
 
                                         </div>`
                                 } else {
-                                    var embed = `
+                                    if (css_value.local_link.includes('/media/chapterBuilder/')) {
+                                        var embed = `
+                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                        <video controls muted"
+                                            class="videodim">
+                                            <source src="${css_value.local_link}"  type="video/mp4">
+                                        </video>
+                                    </div>
+                                    `
+                                    } else {
+                                        var embed = `
                                     <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                         <video controls muted id="video${now}"
                                             class="videodim cld-video-player cld-video-player-skin-dark example-player"
@@ -971,9 +981,10 @@
                                         </video>
                                     </div>
                                     `
+                                    }
                                 }
                                 $('#page' + key).append(embed)
-                                if (!css_value.hasOwnProperty('online_link')) {
+                                if (!css_value.hasOwnProperty('online_link') && !css_value.local_link.includes('/media/chapterBuilder')) {
                                     play("#video" + now)
                                 }
                             });

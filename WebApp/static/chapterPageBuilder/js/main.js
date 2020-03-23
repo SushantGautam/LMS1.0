@@ -304,6 +304,12 @@ class video {
         if (link != null) {
             if (link.includes('.com')) {
                 videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
+            } else if (link.includes('/media/chapterBuilder/')) {
+                videoobj = `
+                <video controls muted id="video${id}" class="videodim" data-cld-public-id="${link}">
+                        <source src="${link}"  type="video/mp4">
+                    </video>
+                `
             } else {
                 videoobj = `
                     <video controls muted id="video${id}"
@@ -1458,7 +1464,7 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
 function VideoFunction(top = null, left = null, link = null, height = null, width = null) {
     const Videos = new video(top, left, link, height, width);
     Videos.renderDiagram();
-    if (Videos.link && !Videos.link.includes('.com')) {
+    if (Videos.link && !Videos.link.includes('.com') && !Videos.link.includes('/media/chapterBuilder/')) {
         play('#video' + Videos.id)
     }
 
