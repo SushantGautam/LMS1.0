@@ -677,6 +677,9 @@
         });
 
         $('#add-newquestion-btn').on('click', function () {
+            if (submitted) {
+                return false
+            }
             $('#add_question_modal_body').empty();
             $('#add_question_modal_body').append(
                 `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
@@ -689,6 +692,7 @@
                     $('#add_question_modal_body').append(response);
                 },
                 error: function () {
+                    submitted = false;
                     console.log('Error in generating add question form')
                 },
                 complete: function () {
