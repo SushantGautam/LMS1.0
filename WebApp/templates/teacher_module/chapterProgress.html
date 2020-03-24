@@ -536,11 +536,11 @@
 
             $('.chapterBtn').on('click', function () {
                 chapterpk = this.value
-                var vs = 0;
+                var vs = 0; // visited students
                 $('#chapter-details').css('display', 'block')
                 {% for x in student_progress_data %}
                     if (chapterpk == '{{ x.chapter.chapterObj.pk|safe }}') {
-                        $('#chapter-title').text('{{ x.chapter.chapterObj|safe}}')
+                        $('#chapter-title').text(`{{ x.chapter.chapterObj|safe}}`)
                         if ('{{ x.chapter.chapterObj.Use_Flag|safe}}') {
                             $('#chapter-status').text('Active')
                         } else {
@@ -551,7 +551,7 @@
                             vs++
                         }
                         $('#visited-students').text(vs + ' of {{ number_of_students }}')
-                        $('#chapter-runningtime').text('{{ x.chapter.chapterObj.getmustreadtimeinformat|safe}}')
+                        $('#chapter-runningtime').text(`{{ x.chapter.chapterObj.getmustreadtimeinformat|safe}}`)
                     }
                 {% endfor %}
                 $.fn.dataTable.ext.search.push(
