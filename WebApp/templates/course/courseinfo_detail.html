@@ -455,16 +455,71 @@
                     <script> var lastchapter = 0;</script>
                     {% for o in chapters %}
                         <div class=" course-info col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
-                            <div class="col-md-8 col-sm-8 col-xs-12">
-                                <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}
 
-                                    {% if o.Use_Flag == False %}
-                                        <span class="text-danger"><b>[Inactive]</b></span>
-                                    {% endif %}
-                                </h5>
+
+                            <div>
+                            <span style="padding: 2px 0; font-weight:600;font-size:14px;margin-left:10px; color: #000000"> Chapter No: {{ o.Chapter_No }}
+
+                                {% if o.Use_Flag == False %}
+                                    <span class="text-danger"><b>[Inactive]</b></span>
+                                {% endif %}
+                            </span>
+                          
+
+
+
+
+
+
+                            {% if '/students' in request.path %}
+                            {% for x in student_data %}
+                                {% if  o.pk == x.chapter.chapterObj.pk %}
+                                   
+
+                                   
+                                  
+                                        {% if x.chapter.attendance %}
+                                            <strong style="color: #00A000;font-weight: 700;"></strong>
+                                        {% else %}
+                                            <strong style="color: red;font-weight: 700;">[Studied time must meet the Running time to complete chapter]</strong>
+                                        {% endif %}
+                                 
+
+
+                                   
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                           
                                 <h4>
-                                    <b style="color: #000000">{{ o.Chapter_Name }}</b>
-                                    <span style="float: right; font-size: x-small; font-style: italic;">
+                                    <span style="color: #000000 ; font-size:16px; font-weight:700;" >{{ o.Chapter_Name }}</span>
+                                    <span style="float: right;  font-size: 12px;font-weight:600;  font-style: italic;">
                                         Running Time: <b>{{ o.getmustreadtimeinformat }}</b>
                                     </span>
                                 </h4>
@@ -472,22 +527,22 @@
                                     {% for x in student_data %}
                                         {% if  o.pk == x.chapter.chapterObj.pk %}
                                             <h4>
-                                                <span style="float: right; font-size: x-small; font-style: italic;">
+                                                <span style="float: right; font-size: 12px; font-weight:600; font-style: italic;">
                                                     Studied Time: <b>{{ x.chapter.totalstudytime }}</b>
                                                 </span>
                                             </h4>
 
                                             <div>
-                                                Status:
+                                               <span style="font-weight: 600; font-style:italic">Status:</span>  
                                                 {% if x.chapter.attendance %}
-                                                    <strong>Complete</strong>
+                                                    <strong style="color: #00A000;font-weight: 700;">Complete</strong>
                                                 {% else %}
-                                                    <strong>In Progress</strong>
+                                                    <strong style="color: red;font-weight: 700;">In Progress</strong>
                                                 {% endif %}
                                             </div>
 
 
-                                            <div class="laststudydate" style="font-size: x-small; font-style: italic;"
+                                            <div class="laststudydate" style="font-size: 12px; font-weight:600;font-style: italic; margin:5px 0;"
                                                  data-laststudydate="{{ x.chapter.laststudydate }}"
                                                  data-laststudydatewithutc="{{ x.chapter.laststudydate }} UTC">
                                                 Last Studied: <b>{{ x.chapter.laststudydate }}</b>
@@ -516,7 +571,7 @@
                                {{ o.get_absolute_url }}
                             {% endif %}">
                                     <button type="button" style="float: right;width:150px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                margin-top: 20px;margin-bottom: 10px;">View Chapter &nbsp;<i
+                                margin-top: 10px;margin-bottom: 10px;">View Chapter &nbsp;<i
                                             class="fa fa-arrow-right"></i>
                                     </button>
                                 </a>
