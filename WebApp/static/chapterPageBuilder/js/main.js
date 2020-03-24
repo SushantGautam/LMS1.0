@@ -306,7 +306,7 @@ class video {
                 videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
             } else if (link.includes('/media/chapterBuilder/')) {
                 videoobj = `
-                <video controls muted id="video${id}" class="videodim" data-cld-public-id="${link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
+                <video controls muted id="video${id}" class="videodim" data-cld-public-id="${link}">
                         <source src="${link}"  type="video/mp4">
                     </video>
                 `
@@ -314,7 +314,7 @@ class video {
                 videoobj = `
                     <video controls muted id="video${id}"
                         class="videodim cld-video-player cld-video-player-skin-dark example-player"
-                        data-cld-public-id="${link}" data-public_id="${link}">
+                        data-cld-public-id="${link}" data-public_id="${link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
                         <source src="${link}"  type="video/mp4">
                     </video>
             `
