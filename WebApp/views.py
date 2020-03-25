@@ -2372,3 +2372,6 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                 },
             )
     return student_data
+
+def loaderverifylink(request):
+    return render(request,'loaderio.html')
