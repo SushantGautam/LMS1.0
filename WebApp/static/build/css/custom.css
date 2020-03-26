@@ -2392,4 +2392,12 @@ label .asteriskField {
     }
 
 }
-        
+.assignment-status{
+    text-align: right;
+}
+@media all and (max-width:767px){
+  
+    .assignment-status{
+        text-align: left;
+    }
+}  

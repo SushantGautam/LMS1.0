@@ -140,16 +140,28 @@
                     {% for object in activeAssignments %}
                         <li class="list-group-item ">
 
-                            <h5>
-                                <b> {{ object.Assignment_Topic }}</b>
-                                <h5 style="margin-bottom: 0;">
-                                    <a href="{{ object.student_get_absolute_url }}">
-                                        <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                        ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                        </button>
-                                    </a>
-                                </h5>
-                            </h5>
+                            <div> 
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <b> {{ object.Assignment_Topic }}</b>
+                                    <h5 style="margin-bottom: 0;">
+                                        <a href="{{ object.student_get_absolute_url }}">
+                                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                            ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                            </button>
+                                           
+                                        </a>
+                                    </h5>
+
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
+                                    <div style=" margin-bottom:15px"> <span style="font-size:14px; font-style: italic;  font-weight:600">Status:  
+                                        Incomplete</span> </div>
+                                    <div> <span style="font-size:14px; font-style: italic;  font-weight:600; color:red"> Deadline </span> <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ object.Assignment_Deadline|date:'Y-m-d h:i a' }}</span> </div>
+
+                                </div>
+                                
+                             
+                            </div>
 
                         </li>
                     {% endfor %}
