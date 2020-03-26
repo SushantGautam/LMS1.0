@@ -56,8 +56,13 @@
                             <td>{{ object.Assignment_Topic }}</td>
                         </tr>
                         <tr>
+                            <td>Assignment Start Date</td>
+                            {#                            Use Datecon class in td if conversion of date to local time is required#}
+                            <td>{{ object.Assignment_Start|date:'Y-m-d h:i a' }}</td>
+                        </tr>
+                        <tr>
                             <td>Assignment Deadline</td>
-                            <td>{{ object.Assignment_Deadline }}</td>
+                            <td>{{ object.Assignment_Deadline|date:'Y-m-d h:i a' }}</td>
                         </tr>
                         <tr>
                             <td>Course Code</td>
@@ -365,20 +370,21 @@
                                         {% if answer.Assignment_Answer != '' %}
                                             <p style="margin: 0;color:#000000;">{{ answer.Assignment_Answer }}</p>
                                             {% now "Y-m-d" as todays_date %}
-                                             {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date %}
-                                            <button class="btn btn-info editanswer"
-                                                    data-Student_Code="{{ request.user.id }}"
-                                                    data-Question_Code="{{ questions.id }}"
-                                                    data-Answer_Code="{{ answer.pk }}"
-                                                    value="{{ answer.pk }}"
-                                                    style="float: right" title="Edit Answer"><i class="fa fa-edit"
-                                                                                                aria-hidden="true"></i>
-                                            </button>
-                                            <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
-                                                    style="float: right" title="Delete Answer"><i class="fa fa-trash"
-                                                                                                  aria-hidden="true"></i>
-                                            </button>
-                                             {% endif %}
+                                            {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date %}
+                                                <button class="btn btn-info editanswer"
+                                                        data-Student_Code="{{ request.user.id }}"
+                                                        data-Question_Code="{{ questions.id }}"
+                                                        data-Answer_Code="{{ answer.pk }}"
+                                                        value="{{ answer.pk }}"
+                                                        style="float: right" title="Edit Answer"><i class="fa fa-edit"
+                                                                                                    aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
+                                                        style="float: right" title="Delete Answer"><i
+                                                        class="fa fa-trash"
+                                                        aria-hidden="true"></i>
+                                                </button>
+                                            {% endif %}
                                         {% else %}
                                             <p style="margin: 0;color:#000000;">File has been Submitted</p>
 
@@ -525,12 +531,27 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                        <div id="div_id_Assignment_Start_edit" class="form-group">
+                            <label for="id_Assignment_Start_edit" class="control-label ">
+                                Assignment Start *
+                            </label>
+                            <div class="controls ">
+                                <input type="date" name="Assignment_Start_edit"
+                                       class="datetimeinput form-control"
+                                       id="id_Assignment_Start_edit"
+                                       value="{{ object.Assignment_Start|date:'Y-m-d' }}"
+                                       min="" max="9999-12-31">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <div id="div_id_Assignment_Deadline_edit" class="form-group">
                             <label for="id_Assignment_Deadline_edit" class="control-label ">
                                 Assignment Deadline *
                             </label>
                             <div class="controls ">
-                                <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control"
+                                <input type="date" name="Assignment_Deadline_edit"
+                                       class="datetimeinput form-control"
                                        id="id_Assignment_Deadline_edit"
                                        value="{{ object.Assignment_Deadline|date:'Y-m-d' }}"
                                        min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31">
@@ -633,6 +654,9 @@
                 data: {
                     "csrfmiddlewaretoken": '{{ csrf_token }}',
                     "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
+                    //"Assignment_Start": convertDateToUTC($('#id_Assignment_Start_edit').val()),
+                    //"Assignment_Deadline": convertDateToUTC($('#id_Assignment_Deadline_edit').val()),
+                    "Assignment_Start": $('#id_Assignment_Start_edit').val(),
                     "Assignment_Deadline": $('#id_Assignment_Deadline_edit').val(),
                     "Use_Flag": $('#id_Use_Flag').is(":checked"),
                     "Course_Code": $('#id_Course_Code').val(),
@@ -824,5 +848,20 @@
                 $(this).closest('.editdiv').find('textarea').val('')
             })
         })
+
+
+        {#$('input[type=datetime-local]').each(function () {#}
+        {#    $(this).val(`${newdate.getFullYear()}-${('0' + newdate.getMonth()).substr(-2)}-${('0' + newdate.getDate()).substr(-2)}T${('0' + newdate.getHours()).substr(-2)}:${('0' + newdate.getMinutes()).substr(-2)}`)#}
+        {#})
+        #}
+
+
+        function DateConvert(date) {
+            date = new Date(date);
+            var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+            let newdate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()))
+            return newdate
+        }
+
     </script>
 {% endblock %}

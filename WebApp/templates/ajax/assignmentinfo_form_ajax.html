@@ -11,7 +11,19 @@
             </label>
             <div class="controls ">
                 <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic"
-                    class="textinput textInput form-control" required="required" value="{{Object.Assignment_Topic}}">
+                       class="textinput textInput form-control" required="required"
+                       value="{{ Object.Assignment_Topic }}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+        <div id="div_id_Assignment_Start" class="form-group">
+            <label for="id_Assignment_Start" class="control-label ">
+                Assignment Starting *
+            </label>
+            <div class="controls ">
+                <input type="date" name="Assignment_Start" class="datetimeinput form-control"
+                       id="id_Assignment_Start" value="{{ Object.Assignment_Start }}" max="9999-12-31">
             </div>
         </div>
     </div>
@@ -22,7 +34,7 @@
             </label>
             <div class="controls ">
                 <input type="date" name="Assignment_Deadline" class="datetimeinput form-control"
-                    id="id_Assignment_Deadline" value="{{Object.Assignment_Deadline}}" max="9999-12-31">
+                       id="id_Assignment_Deadline" value="{{ Object.Assignment_Deadline }}" max="9999-12-31">
             </div>
         </div>
     </div>
@@ -72,6 +84,7 @@
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic').val(),
+                "Assignment_Start": $('#id_Assignment_Start').val(),
                 "Assignment_Deadline": $('#id_Assignment_Deadline').val(),
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Course_Code": $('#id_Course_Code').val(),

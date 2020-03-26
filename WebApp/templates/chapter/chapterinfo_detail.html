@@ -260,11 +260,9 @@
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
                 <div class="col-md-8 col-sm-8 col-xs-8">
                     <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
-
+                        {% now "Y-m-d" as todays_date %}
                         {% if o.Use_Flag == False %}
                             <span class="text-danger"><b>[Inactive]</b></span>
-
-
                         {% endif %}
                     </h5>
                     <h5>
@@ -287,6 +285,7 @@
 
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
+                    <p>Start Date - {{ o.Assignment_Start }}</p>
                     <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
                 </div>
             </div>
