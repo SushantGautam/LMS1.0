@@ -39,10 +39,12 @@
                                 </div>
                             </li>
                             <li class="surveyViewDates">
-                                <i class="fa fa-calendar"></i><label>Start date: <span class = "datecon">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
+                                <i class="fa fa-calendar"></i><label>Start date: <span
+                                    class="">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
                             </li>
                             <li class="surveyViewDates">
-                                <i class="fa fa-calendar"></i><label>End date: <span class = "datecon">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
+                                <i class="fa fa-calendar"></i><label>End date: <span
+                                    class="">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
                             </li>
                             <li class="surveyViewDates">
                                 <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
@@ -320,9 +322,8 @@ margin: 0 auto"></div>
 
                                                         </div>
                                                         <strong>{{ answer.Submit_Code.Student_Code }}</strong> : on
-                                                        August 8
-                                                        at
-                                                        12:30 PM<br/>
+                                                        <span class="datecon"> {{ answer.Submit_Code.Created_Date|date:'Y-m-d H:i' }} </span>
+                                                        <br/>
                                                         <hr>
                                                     {% endfor %}
 
@@ -331,7 +332,7 @@ margin: 0 auto"></div>
 
                                             </div>
 
-                                        
+
                                             <script>
                                                 document.addEventListener("DOMContentLoaded", function (event) {
 
