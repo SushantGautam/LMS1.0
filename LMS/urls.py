@@ -104,5 +104,6 @@ urlpatterns += (
 
 # Login URL get
 urlpatterns += (
+    path('loaderio-954a872bfd2583affa027425d4a0dd5a/',views.loaderverifylink),
     path('loginforappredirect/<slug:username>/<slug:password>/', views.loginforappredirect, name='loginforappredirect'),
 )

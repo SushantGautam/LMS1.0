@@ -314,7 +314,7 @@ class video {
                 videoobj = `
                     <video controls muted id="video${id}"
                         class="videodim cld-video-player cld-video-player-skin-dark example-player"
-                        data-cld-public-id="${link}" data-public_id="${link}">
+                        data-cld-public-id="${link}" data-public_id="${link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
                         <source src="${link}"  type="video/mp4">
                     </video>
             `

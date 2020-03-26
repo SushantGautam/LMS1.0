@@ -52,6 +52,7 @@ class MemberInfoResource(ModelResource):
                   'Member_Memo', 'Member_ID', 'Is_Teacher', 'Is_Student', ]
 
 
+
 class MemberInfoAdmin(ImportExportModelAdmin):
     resource_class = MemberInfoResource
     form = MemberInfoAdminForm
@@ -60,6 +61,7 @@ class MemberInfoAdmin(ImportExportModelAdmin):
                     'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                     'Member_Memo']
     list_display_links = ['id', 'username']
+    search_fields = ('username',)
 
 
 admin.site.register(MemberInfo, MemberInfoAdmin)
@@ -89,7 +91,7 @@ class ChapterInfoAdminForm(forms.ModelForm):
 
 class ChapterInfoAdmin(admin.ModelAdmin):
     form = ChapterInfoAdminForm
-    list_display = ['Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag',
+    list_display = ['Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag','mustreadtime',
                     'Register_DateTime', 'Updated_DateTime', 'Register_Agent', 'Course_Code']
 
 
