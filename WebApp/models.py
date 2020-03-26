@@ -330,6 +330,7 @@ class AssignmentInfo(models.Model):
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+    Assignment_Start = DateTimeField(default=Register_DateTime)
     Assignment_Deadline = DateTimeField(default=in_three_days)
     Course_Code = ForeignKey(
         'CourseInfo',

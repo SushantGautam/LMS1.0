@@ -1188,6 +1188,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def post(self, request, *args, **kwargs):
         Obj = AssignmentInfo()
         Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+        Obj.Assignment_Start = request.POST["Assignment_Start"]
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
         Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
@@ -1207,6 +1208,7 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+            Obj.Assignment_Start = request.POST["Assignment_Start"]
             Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
             Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
@@ -1680,6 +1682,12 @@ def save_video(request):
                         {'link': r_responseText['upload']['upload_link'], 'media_name': name,
                          'html': r_responseText['embed']['html']})
         else:
+            if (media.size / 1024) > (500 * 1024):  # checking if file size is greater than 500 MB in Indonesian Server
+                return JsonResponse(data={"message": "File size exceeds 500 MB"}, status=500)
+            if media.name.split('.')[-1] != 'mp4' and (media.size / 1024) > (
+                    100 * 1024):  # if media size is 100 MB and media is not mp4
+                return JsonResponse(data={"message": "File size above 100 MB must be MP4"}, status=500)
+
             name = (str(uuid.uuid4())).replace('-', '') + '' + "".join(
                 re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '' + str(
                 request.user.pk)
@@ -2372,3 +2380,6 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                 },
             )
     return student_data
+
+def loaderverifylink(request):
+    return render(request,'loaderio.html')
