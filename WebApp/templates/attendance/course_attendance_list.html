@@ -427,6 +427,16 @@
 
                 buttons: [
                     {
+                        title: 'Attendance List',
+                        extend: 'pdf',
+                        text: '<span class="exportcsv"><i class="fas fa-file-pdf"></i> Export to PDF </span>',
+                        exportOptions: {
+                            modifier: {
+                                page: 'visible'
+                            }
+                        }
+                    },
+                    {
                         extend: 'csv',
                         text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                     },
