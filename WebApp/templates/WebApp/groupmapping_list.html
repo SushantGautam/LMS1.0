@@ -158,15 +158,6 @@
                             }
                         },
                         error: function (request, status, error) {
-                            if (textStatus == 'timeout') {
-                                this.tryCount++;
-                                if (this.tryCount <= this.retryLimit) {
-                                    //try again
-                                    $.ajax(this);
-                                    return;
-                                }            
-                                return;
-                            }
                             if (request.status == 503) {
                                 $('.import-message').addClass('text-danger');
                                 $('.import-message').removeClass('text-sucess');
