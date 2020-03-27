@@ -41,15 +41,6 @@
         {% for object in object_list %}
 
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 active_survey survey_card">
-                {% if not '/students' in request.path and not '/teachers' in request.path %}
-                    <form method="POST" action="{% url 'surveyinfo_delete' %}"
-                          onsubmit="return confirm('Are you sure you want to delete?');">
-                        {% csrf_token %}
-                        <input type="hidden" value="{{ object.pk }}" name="objectpk">
-                        <button type="submit" class="text-danger survey-delete-btn"><i class="fa fa-trash"
-                                                                                       aria-hidden="true"></i></button>
-                    </form>
-                {% endif %}
                 <a href="{% if '/teachers' in request.path %}
             {% url 'surveyinfodetail' object.pk %}
          {% else %}
