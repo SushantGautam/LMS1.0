@@ -1,5 +1,7 @@
 {% extends "student_module/base.html" %}
 {% load static %}
+{% load getStatusOfAssignmentStudents %}
+
 {% block title %}
     Dashboard
 {% endblock %}
@@ -156,7 +158,8 @@
                                 <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
                                     <div style=" margin-bottom:15px"> <span
                                             style="font-size:14px; font-style: italic;  font-weight:600">Status:
-                                        Incomplete</span></div>
+                                        {% getStatusoOfAssignment object user %}
+                                    </span></div>
                                     <div><span style="font-size:14px; font-style: italic;  font-weight:600; color:red"> Deadline </span>
                                         <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ object.Assignment_Deadline|date:'Y-m-d h:i a' }}</span>
                                     </div>
