@@ -2403,3 +2403,14 @@ label .asteriskField {
     padding: 5px;
     margin: 25px;
 }
+
+.assignment-status {
+    text-align: right;
+}
+
+@media all and (max-width: 767px) {
+
+    .assignment-status {
+        text-align: left;
+    }
+}
