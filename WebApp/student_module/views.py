@@ -63,7 +63,8 @@ def start(request):
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
-                    Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id,
+                    Assignment_Deadline__gte=datetime_now, Assignment_Start__lte=datetime_now,
+                    Course_Code=course.Course_Code.id,
                     Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
@@ -246,7 +247,8 @@ class MyAssignmentsListView(ListView):
             Assignment.append(AssignmentInfo.objects.filter(
                 Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True))
             activeAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True,
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Assignment_Start__lte=datetime_now,
+                Use_Flag=True,
                 Chapter_Code__Use_Flag=True))
             expiredAssignment.append(AssignmentInfo.objects.filter(
                 Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True,
