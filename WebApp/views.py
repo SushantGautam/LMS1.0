@@ -1073,7 +1073,10 @@ def GroupMappingCSVImport(request, *args, **kwargs):
         center = request.user.Center_Code
         err_msg = []
         msg = []
-        groups = df['Group'].unique()
+        try:
+            groups = df['Group'].unique()
+        except Exception as e:
+            return JsonResponse(data={"message": "There is no Column <b>Group</b> in the input file", "class": "text-danger", "rmclass": "text-success"})
         for i in range(len(groups)):
             try:
                 flag = 0
