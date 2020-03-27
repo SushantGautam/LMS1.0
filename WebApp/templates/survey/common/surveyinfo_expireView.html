@@ -34,29 +34,38 @@
 <div class="hR"></div>
 {{ page_obj.per_page }}
 <div class="row">
-  <div class="col-md-12">
+    <div class="col-md-12">
 
-    <div class="se-pre-con-ajax"></div>
+        <div class="se-pre-con-ajax"></div>
 
-    {% for object in object_list %}
+        {% for object in object_list %}
 
-      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 active_survey survey_card">
-        <a href="{% if '/teachers' in request.path %}
-                                {% url 'surveyinfodetail' object.pk %}
-                             {% else %}
-                                 {% url 'surveyinfo_detail' object.pk %}
-                             {% endif %}
-                                ">
-          <div class="box-part text-center">
-            {% if object.id in submittedSurvey %}
-              <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
-            {% else %}
-              <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x" id="participatedSurvey"
-                 aria-hidden="true"></i>
-            {% endif %}
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 active_survey survey_card">
+                {% if not '/students' in request.path and not '/teachers' in request.path %}
+                    <form method="POST" action="{% url 'surveyinfo_delete' %}"
+                          onsubmit="return confirm('Are you sure you want to delete?');">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ object.pk }}" name="objectpk">
+                        <button type="submit" class="text-danger survey-delete-btn"><i class="fa fa-trash"
+                                                                                       aria-hidden="true"></i></button>
+                    </form>
+                {% endif %}
+                <a href="{% if '/teachers' in request.path %}
+            {% url 'surveyinfodetail' object.pk %}
+         {% else %}
+             {% url 'surveyinfo_detail' object.pk %}
+         {% endif %}
+            ">
+                    <div class="box-part text-center">
+                        {% if object.id in submittedSurvey %}
+                            <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
+                        {% else %}
+                            <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x" id="participatedSurvey"
+                               aria-hidden="true"></i>
+                        {% endif %}
 
-            <div class="title">
-              <h3>{{ object.Survey_Title|truncatechars:12 }}</h3>
+                        <div class="title">
+                            <h3>{{ object.Survey_Title|truncatechars:12 }}</h3>
             </div>
 
             <ul class="card_labels">

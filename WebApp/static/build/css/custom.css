@@ -2383,13 +2383,23 @@ label .asteriskField {
         margin-bottom: 20px;
         margin-top: 20px;
         padding: 30px;
-      
+
     }
 }
-@media all and (max-width:400px){
-    .position-progress{
-        height: 200px ;position: absolute; top:20%; left:20%;
+
+@media all and (max-width: 400px) {
+    .position-progress {
+        height: 200px;
+        position: absolute;
+        top: 20%;
+        left: 20%;
     }
 
 }
-        
+
+/* Survey delete button */
+.survey-delete-btn {
+    position: absolute;
+    padding: 5px;
+    margin: 25px;
+}

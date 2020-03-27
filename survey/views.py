@@ -584,3 +584,9 @@ def SurveyclearViewForAdmin(request, pk):
             'iframe'))
     else:
         return redirect('surveyinfo_detail', pk=pk)
+
+def deleteSurvey(request):
+    if request.method == 'POST':
+        if SurveyInfo.objects.filter(pk=request.POST['objectpk']).exists():
+            obj = SurveyInfo.objects.get(pk=request.POST['objectpk']).delete()
+    return redirect('surveyinfo_list')
