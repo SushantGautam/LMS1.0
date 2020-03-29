@@ -150,9 +150,9 @@
                     <td>Teachers</td>
                     <td>
                         {% if object.get_teachers_of_this_course %}
-                            <ul>
+                            <ul class="row">
                                 {% for eachTeacher in object.get_teachers_of_this_course %}
-                                    <li><img class="img-circle" src="{{ eachTeacher.Avatar }}" alt="Profile_picture" width="20"> 
+                                    <li class="col-md-4"><img class="img-circle" src="{{ eachTeacher.Avatar }}" alt="Profile_picture" width="20" height="22"> 
                                         {{ eachTeacher.getFullName }}</li>
                                 {% endfor %}
                             </ul>
