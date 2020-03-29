@@ -36,7 +36,7 @@ from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
-from ..views import chapterProgressRecord, getCourseProgress
+from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog
 
 datetime_now = datetime.now()
 
@@ -1078,6 +1078,14 @@ def PageUpdateAjax(request, course, chapter):
                                          studytimeinseconds=None,
                                          )
     return JsonResponse(jsondata)
+
+
+def StudentChapterLogUpdateAjax(request, chapter):
+    if request.method == 'POST':
+        jsondata = studentChapterLog(str(chapter), str(request.user.id), type=request.POST['type'])
+    else:
+        jsondata = studentChapterLog(str(chapter), str(request.user.id), type=None)
+    return JsonResponse(jsondata, safe=False)
 
 
 from django.contrib.auth import authenticate, login as auth_login
