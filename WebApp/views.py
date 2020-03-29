@@ -2399,7 +2399,7 @@ def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False)
         isjson = True
     except:
         isjson = False
-    if os.path.isfile(student_data_file):
+    if os.path.isfile(student_data_file) and isjson:
         if not type:
             return jsondata
         newdata = {
