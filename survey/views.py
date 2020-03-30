@@ -401,6 +401,120 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
                              )
 
 
+class SurveyInfoUpdate_ajax(AjaxableResponseMixin, UpdateView):
+    model = SurveyInfo
+    form_class = SurveyInfoForm
+    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(SurveyInfoUpdate_ajax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        kwargs.update({'object': SurveyInfo.objects.get(id=self.kwargs["pk"])})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
+
+        if obj_instance.Start_Date > timezone.now():
+            my_mcq_initial = [my_dict for my_dict in
+                              obj_instance.questioninfo.all().filter(Question_Type='MCQ').values()]
+            my_saq_initial = [my_dict for my_dict in
+                              obj_instance.questioninfo.all().filter(Question_Type='SAQ').values()]
+
+            SaqFormSet = inlineformset_factory(
+                SurveyInfo,
+                QuestionInfo,
+                extra=len(my_saq_initial),
+                fields=('Question_Name', 'Question_Type'),
+            )
+            McqFormSet = inlineformset_factory(
+                SurveyInfo,
+                QuestionInfo,
+                formset=create_questioninfo_formset(obj_instance),
+                extra=len(my_mcq_initial),
+                fields=('Question_Name', 'Question_Type'),
+
+            )
+
+            if self.request.POST:
+                context['questioninfo_formset'] = McqFormSet(
+                    self.request.POST,
+                    prefix='questioninfo'
+                )  # MCQ
+                context['questionansinfo_formset'] = SaqFormSet(
+                    self.request.POST,
+                    prefix='questionansinfo'
+                )  # SAQ
+            else:
+                context['questioninfo_formset'] = McqFormSet(
+                    instance=obj_instance,
+                    # queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
+                    # initial=my_mcq_initial,
+                    # prefix='questioninfo'
+                )  # MCQ
+                context['questionansinfo_formset'] = SaqFormSet(
+                    # instance=obj_instance,
+                    # queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
+                    initial=my_saq_initial,
+                    prefix='questionansinfo'
+                )  # SAQ
+                context['category_name'] = self.request.GET['category_name']
+                context['parent_pk'] = obj_instance.pk
+        return context
+
+    def form_valid(self, form):
+        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            # self.object.Center_Code = obj_instance.Center_Code
+            # self.object.Added_By = self.request.user
+            # self.object.save()
+        context = self.get_context_data()
+        qn = context['questioninfo_formset']
+        qna = context['questionansinfo_formset']
+        with transaction.atomic():
+            if qn.is_valid():
+                qn.instance = self.object
+                qn.save()
+            # else:
+            #     print(qn.errors)
+            #     print('qn is invalid')
+            if qna.is_valid():
+                qna.instance = self.object
+                qna.save()
+            # else:
+            #     print('qna is invalid')
+            #     print(qna.errors)
+        if obj_instance.Retaken_From:
+            self.object.Retaken_From = obj_instance.Retaken_From
+        else:
+            self.object.Retaken_From = self.kwargs["pk"]
+        self.object.Version_No = obj_instance.Version_No + 1
+        self.object.save()
+        # check the request path and redirect as the value of path
+        # if 'teachers' in self.request.path:
+        #     return redirect('surveyinfodetail', self.object.id)
+        # else:
+        #     return redirect('surveyinfo_detail', self.object.id)
+        response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
+                    'teacher_url': self.request.build_absolute_uri(
+                        reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
+                    'student_url': self.request.build_absolute_uri(
+                        reverse('questions_student_detail', kwargs={'pk': self.object.id}))}
+        return JsonResponse(response)
+
+    def get_initial(self):
+        obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
+        return model_to_dict(obj_instance,
+                             fields=['Survey_Title', 'Start_Date',
+                                     'End_Date', 'Center_Code',
+                                     'Category_Code', 'Session_code',
+                                     'Added_By']
+                             )
+
+
 class SurveyInfoDetailView(DetailView):
     model = SurveyInfo
 

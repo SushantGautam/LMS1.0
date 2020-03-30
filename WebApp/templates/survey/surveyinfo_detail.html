@@ -86,16 +86,28 @@
                 data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
                 url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
                 success: function (data) {
-                
                     $("#surveyForm").html(data);
-                    
-
                 },
                 complete: function () {
                     $(".modal-backdrop ").removeClass("modal-backdrop");
                     $(".se-pre-con-ajax").fadeOut("fast");
                 },
+            });
+        });
+        $('#editSurveyBtn').on('click', function () {
+            current_progress = -10000;
 
+            $.ajax({
+                type: "GET",
+                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+                url: "{% url 'surveyinfo_update_ajax' pk=object.id %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#surveyForm").html(data);
+                },
+                complete: function () {
+                    $(".modal-backdrop ").removeClass("modal-backdrop");
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                },
             });
         });
 
@@ -148,5 +160,18 @@
         }
 
     </script>
+    <script>
+        function printData() {
+            var divToPrint = document.getElementById("surveyView");
+            newWin = window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.document.querySelectorAll('button').forEach(e => e.parentNode.removeChild(e))
+            newWin.print();
+            newWin.close();
+        }
 
+        $('#print-btn').on('click', function () {
+            printData()
+        })
+    </script>
 {% endblock %}

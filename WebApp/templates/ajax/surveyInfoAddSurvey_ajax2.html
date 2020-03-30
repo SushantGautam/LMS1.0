@@ -10,6 +10,8 @@
               {% if "teachers" in request.path %}
                 {% if "retake" in request.path %}
                   {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
+                {% elif '/edit' in request.path %}
+                    {% url 'surveyinfo_update_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
                   {% if category_name == 'live' %}
                     {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}&course_code={{ course_code }}
@@ -20,6 +22,8 @@
               {% else %}
                 {% if "retake" in request.path %}
                   {% url 'surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
+                {% elif '/edit' in request.path %}
+                    {% url 'surveyinfo_update_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
                   {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
                 {% endif %}
