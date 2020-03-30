@@ -177,7 +177,7 @@ class MyCourseListView(ListView):
         #     queryset=courses
         # ).qs
         # filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
-        courses = self.request.user.get_teacher_courses()['courses']
+        courses = self.object_list
         paginator = Paginator(courses, 8)
         page = self.request.GET.get('page')
         try:
@@ -191,16 +191,21 @@ class MyCourseListView(ListView):
         return context
 
     def get_queryset(self):
-        qsearch = self.model.objects.all()
-
+        qsearch = self.request.user.get_teacher_courses()['courses']
+        courses = []
         query = self.request.GET.get('teacher_mycoursequery')
         if query:
             query = query.strip()
-            qsearch = qsearch.filter(Course_Name__icontains=query)
-            if not len(qsearch):
+            # qsearch = qsearch.filter(Course_Name__icontains=query)
+            for course in qsearch:
+                if query in course.Course_Name.lower():
+                    courses.append(course)
+            if not len(courses):
                 messages.error(self.request, 'Sorry no course found! Try with a different keyword')
-        qsearch = qsearch.order_by("-id")  # you don't need this if you set up your ordering on the model
-        return qsearch
+        else:
+            courses = qsearch
+        # qsearch = qsearch.order_by("-id")  # you don't need this if you set up your ordering on the model
+        return courses
 
 
 class CourseInfoListView(ListView):
