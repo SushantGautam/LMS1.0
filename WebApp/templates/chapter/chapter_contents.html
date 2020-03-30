@@ -1737,24 +1737,26 @@
                     })
                 }
 
-                $(window).on("blur focus", async function (e) {
-                    var prevType = $(this).data("prevType");
+                /*                $(window).on("blur focus", async function (e) {
+                                    var prevType = $(this).data("prevType");
 
-                    if (prevType != e.type) {   //  reduce double fire issues
-                        switch (e.type) {
-                            case "blur":
-                                StudentChapterLogUpdateAjax(0);
-                                chapterProgressStopFunction();
-                                break;
-                            case "focus":
-                                StudentChapterLogUpdateAjax(1);
-                                chapterProgressFunction();
-                                break;
-                        }
-                    }
+                                    if (prevType != e.type) {   //  reduce double fire issues
+                                        switch (e.type) {
+                                            case "blur":
+                                                StudentChapterLogUpdateAjax(0);
+                                                chapterProgressStopFunction();
+                                                break;
+                                            case "focus":
+                                                StudentChapterLogUpdateAjax(1);
+                                                chapterProgressFunction();
+                                                break;
+                                        }
+                                    }
 
-                    $(this).data("prevType", e.type);
-                })
+                                    $(this).data("prevType", e.type);
+                                })
+
+                 */
 
                 window.addEventListener('beforeunload', function (event) {
                     StudentChapterLogUpdateAjax(0)
