@@ -1,0 +1,168 @@
+html, body {
+    height: 100%;
+    font-family: 'Sen', sans-serif;
+    font-size: 16px;
+}
+
+/* header-part */
+.container-fluid{
+    padding: 0!important;
+
+}
+
+.builder-top{
+   
+    padding-left: 10px;
+    background-color:#353c46;
+ 
+}
+.component-container{
+   
+    padding: 10px;
+    border-bottom: 2px solid #79a6fb;
+}
+.chapter-title-only{
+    line-height: 27px;
+    color: white;
+    font-weight: 600;
+}
+
+.buttons-chapter-only{
+    text-align: right;
+
+}
+.exit-button-only{
+    text-align: right;
+    margin-left: 25px;
+    text-align: none;
+    color: white;
+
+}
+
+.btn-type1{
+    padding: 4px 15px;
+    margin-right: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #79a6fb;
+    text-transform: uppercase;
+
+    border-radius: 50px;
+    border:1.5px solid #79a6fb;
+    
+    background-color: #353c46;
+   
+}
+.btn-type1:focus{
+    background:#79a6fb;
+    color: #353c46;
+    outline: none!important;
+}
+
+
+
+/* Header-ends */
+
+
+/* MAIN-BODY STARTS */
+
+
+.container-body-part{
+   
+}
+.body-holder{
+    padding: 0px!important;
+}
+
+.ols-part{
+    padding: 0px!important;
+    height: 92vh;
+    background-color: red;
+
+}
+.icon1{
+    font-size: 75px;
+    color: white;
+}
+.icon1:hover{
+    color: #79a6fb;
+}
+
+.main-canvas-part {
+    padding: 0px!important;
+    height: 92vh;
+    background-color: blue;
+
+}
+
+.preview-canvas-part{
+    padding: 0px!important;
+    margin: 0px!important;
+    height: 92vh;
+    background-color: green;
+
+}
+.row-ols{
+    padding: 10px;
+    background-color: #353c46;
+   
+  
+}
+.obj-img{
+   
+    width: 33.33%;
+    float:left;
+    padding: 1px;
+    
+}
+.layout-img{
+    width: 33.33%;
+    float:left;
+    padding: 1px;
+
+
+
+}
+.source-img{
+    width: 33.33%;
+    float:left;
+    padding: 1px;
+
+}
+
+.obj-img-holder{
+    height: 75px
+    
+}
+.obj-img-holder img{
+    height: 100%;
+    width: 100%;
+    color: white;
+}
+.layout-img-holder{
+    height: 75px
+   
+}
+.layout-img-holder img{
+    height: 100%;
+    width: 100%;
+    color: white;
+}
+.source-img-holder{
+    height: 75px
+
+}
+.source-img-holder img{
+    height: 100%;
+    width: 100%;
+    color: white;
+}
+
+/* rightpart */
+
+.note-holder{
+padding: 10px!important;
+    
+}
+
+/* mAIN-BODY ENDS */

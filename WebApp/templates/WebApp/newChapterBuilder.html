@@ -1,0 +1,162 @@
+{% load static %}
+
+<head>
+
+    <link rel="icon" type="image/png" href="/static/images/logo.png"/>
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}"/>
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap.min.css' %}">
+   
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/newChapterBuilder.css' %}">
+
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap3.4.1.min.css' %}">
+</head>
+<body>
+<section class=" container-fluid full-page-builder ">
+
+    <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row component-container">
+            <div class="chapter-title-only col-md-2 col-sm-3">
+                <span>Chapter Title <i class="fas fa-pencil-alt"></i></span>
+
+            </div>
+            <div class=" buttons-chapter-only col-md-10 col-sm-9">
+                <button class="btn-type1"><i style="color:white" class="fas fa-save"></i>&nbsp; Save</button>
+                <button  class="btn-type1"><i style="color:white" class="fas fa-file-import"></i>&nbsp; Import</button>
+                <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button class="btn-type1">
+                <button class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button class="btn-type1">
+
+                 <a class="exit-button-only" href="">  <span>  QUIT <i style="border:1px solid white; padding:1px 2px   " class="fas fa-times"></i> </span></a>   
+
+            </div>
+          
+        </div>
+
+    </header>
+
+
+    <main class=" container-body-part col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+        <div class="row body-holder">
+
+            <div class=" ols-part col-md-2 col-sm-2 col-xs-2">
+                <div class="ols-objects col-md-12 col-xs-12 col-sm-12">
+                    <div class="row row-ols" >
+                        <div class="obj-img"   >
+                            <div class="obj-img-holder">
+                                <a href="#1a" data-toggle="tab"><span style="height: 50px;"><i  class="fas fa-address-book icon1"></i></span></a>
+                                
+                                
+
+                            </div>
+                            
+                        </div>
+                        <div class="layout-img"  >
+                            <div class="layout-img-holder">
+                                <a href="#2a" data-toggle="tab"><i  class="fas fa-address-book icon1"></i></a>
+
+                                
+                                
+                            </div>
+
+                        </div>
+                        <div class="source-img" >
+                            <div class="source-img-holder"> 
+
+                                <a href="#3a" data-toggle="tab"><i  class="fas fa-address-book icon1"></i></a>
+
+                                
+                                
+                            </div>
+
+                        </div>
+                        
+
+                         <!-- example -->
+
+                        
+                         <div id="exTab1" class="container">
+                            
+                        
+                            <div class="tab-content ">
+                                <div class="tab-pane active" id="1a">
+                                    <h3 style="color: white;">Content's background color is the same for the tab</h3>
+                                </div>
+                                <div style="color: white;" class="tab-pane" id="2a">
+                                    <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the tab</h3>
+                                </div>
+                                <div style="color: white;" class="tab-pane" id="3a">
+                                    <h3>We applied clearfix to the tab-content to rid of the gap between the tab and the content</h3>
+                                </div>
+                                <div style="color: white;" class="tab-pane" id="4a">
+                                    <h3>We use css to change the background color of the content to be equal to the tab</h3>
+                                </div>
+                            </div>
+                        </div>
+
+
+<hr>
+
+
+
+
+
+
+
+
+
+
+                         <!-- ends -->
+
+
+
+
+
+
+                    </div>
+
+                  
+                    
+
+                   
+                   
+                </div>
+
+            </div>
+            <div class="main-canvas-part col-md-8 col-sm-8 col-xs-8">
+
+            </div>
+            <div class="preview-canvas-part col-md-2 col-xs-2">
+                <div class="note-holder">
+                    <span>Note <i class="fas fa-pencil-alt"></i></span>
+                    <div class="note-chapter">
+                        <p>you can enter the details of chapter here jhdhjsahjahjsab jsbkasj </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        
+
+    </main>
+    
+
+
+
+</section>
+</body>
+<script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/bootstrap.min.js' %}"></script>
+
