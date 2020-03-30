@@ -6,6 +6,9 @@ import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 import pandas as pd
 import requests
 from django.conf import settings
@@ -1070,7 +1073,12 @@ def GroupMappingCSVImport(request, *args, **kwargs):
         center = request.user.Center_Code
         err_msg = []
         msg = []
-        groups = df['Group'].unique()
+        try:
+            groups = df['Group'].unique()
+        except Exception as e:
+            return JsonResponse(
+                data={"message": "There is no Column <b>Group</b> in the input file", "class": "text-danger",
+                      "rmclass": "text-success"})
         for i in range(len(groups)):
             try:
                 flag = 0
@@ -1185,6 +1193,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def post(self, request, *args, **kwargs):
         Obj = AssignmentInfo()
         Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+        Obj.Assignment_Start = request.POST["Assignment_Start"]
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
         Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
@@ -1204,6 +1213,7 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+            Obj.Assignment_Start = request.POST["Assignment_Start"]
             Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
             Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
@@ -1676,20 +1686,38 @@ def save_video(request):
                     return JsonResponse(
                         {'link': r_responseText['upload']['upload_link'], 'media_name': name,
                          'html': r_responseText['embed']['html']})
-                return JsonResponse({}, status=500)
         else:
-            fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-            filename = fs.save(name, media)
-            return JsonResponse({'media_name': name})
+            if (media.size / 1024) > (500 * 1024):  # checking if file size is greater than 500 MB in Indonesian Server
+                return JsonResponse(data={"message": "File size exceeds 500 MB"}, status=500)
+            if media.name.split('.')[-1] != 'mp4' and (media.size / 1024) > (
+                    100 * 1024):  # if media size is 100 MB and media is not mp4
+                return JsonResponse(data={"message": "File size above 100 MB must be MP4"}, status=500)
 
+            name = (str(uuid.uuid4())).replace('-', '') + '' + "".join(
+                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '' + str(
+                request.user.pk)
+            cloudinary.config(
+                cloud_name="nsdevil-com",
+                api_key="355159163645263",
+                api_secret="riH4CD94zuSXffS_wfSgIFgxmJ0"
+            )
+            response = cloudinary.uploader.upload_large(media.file,
+                                                        folder="/id.ublcloud.me",
+                                                        resource_type="video",
+                                                        chunk_size=6000000,  # chunk size default is 6 MB
+                                                        public_id=name,
+                                                        )
+            embedd_code = '<iframe src="' + response['secure_url'] + '"><video controls preload="none"><source src="' + \
+                          response['secure_url'] + '" type="video/mp4" autostart="false"></video></iframe>'
+            print(response)
 
-import socket
-
-
-def getServerIP():
-    hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
-    return IPAddr
+            return JsonResponse(
+                {'link': response['secure_url'], 'media_name': response['public_id'],
+                 # 'html': embedd_code
+                 })
+            # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            # filename = fs.save(name, media)
+        return JsonResponse({}, status=500)
 
 
 def save_json(request):
@@ -2237,10 +2265,8 @@ def CourseProgressView(request, coursepk, inningpk=None):
     return render(request, 'teacher_module/chapterProgress.html', context=context)
 
 
-def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fromquiz=False, totalquizcount=None,
-                          attemptedquiz=None, correctquizanswers=None, currentPageNumber=None, totalPage=None,
-                          studytimeinseconds=None, createFile=True,
-                          isjson=False
+def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, currentPageNumber=None, totalPage=None,
+                          studytimeinseconds=None, createFile=True, isjson=False
                           ):
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
     try:
@@ -2357,3 +2383,49 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                 },
             )
     return student_data
+
+
+def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
+    date = datetime.now().strftime('%Y%m%d')
+    path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog", date)
+    try:
+        os.makedirs(path)  # Creates the directories and subdirectories structure
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    try:
+        with open(student_data_file) as outfile:
+            jsondata = json.load(outfile)
+        isjson = True
+    except:
+        isjson = False
+    if os.path.isfile(student_data_file) and isjson:
+        if not type:
+            return jsondata
+        newdata = {
+            "chapterid": chapterid,
+            "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+            "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+        }
+        jsondata.append(newdata)
+        with open(student_data_file, "w+") as outfile:
+            json.dump(jsondata, outfile, indent=4)
+    else:
+        if createFile:
+            jsondata = [
+                {
+                    "chapterid": chapterid,
+                    "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                    "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+                },
+            ]
+
+            with open(student_data_file, "w+") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+        else:
+            return None
+    return jsondata
+
+
+def loaderverifylink(request):
+    return render(request, 'loaderio.html')

@@ -159,4 +159,7 @@ urlpatterns += (
 urlpatterns += (
     path('pageupdateajax/<int:course>/<int:chapter>/',
          views.PageUpdateAjax, name='pageupdateajax'),
+    path('studentChapterLogUpdateAjax/<int:chapter>/',
+         views.StudentChapterLogUpdateAjax, name='studentChapterLogUpdateAjax'),
 )
+

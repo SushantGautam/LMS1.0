@@ -224,7 +224,7 @@ class CourseInfoForm(forms.ModelForm):
 
 
 class ChapterInfoForm(forms.ModelForm):
-    mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput())
+    mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput(attrs={'min': '0'}))
 
     class Meta:
         model = ChapterInfo

@@ -330,6 +330,7 @@ class AssignmentInfo(models.Model):
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+    Assignment_Start = DateTimeField(default=timezone.now)
     Assignment_Deadline = DateTimeField(default=in_three_days)
     Course_Code = ForeignKey(
         'CourseInfo',
@@ -360,6 +361,27 @@ class AssignmentInfo(models.Model):
 
     def get_update_url(self):
         return reverse('assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
+
+    def get_student_assignment_status(self, user):
+        status = False
+        questions = AssignmentQuestionInfo.objects.filter(
+            Assignment_Code=self.pk)
+        answers = []
+        AnsweredQuestion = set()
+        Question = set()
+        for question in questions:
+            Answer = AssignAnswerInfo.objects.filter(
+                Student_Code=user.pk, Question_Code=question.id)
+            answers += Answer
+            Question.add(question.id)
+        for ans in answers:
+            # print (answers.Question_Code.id)
+            AnsweredQuestion.add(ans.Question_Code.id)
+        unanswered = Question - AnsweredQuestion
+        if not unanswered:
+            status = True
+        print(status)
+        return status
 
 
 def upload_to(instance, filename):

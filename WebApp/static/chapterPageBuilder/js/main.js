@@ -281,38 +281,40 @@ class picture {
 }
 
 // ====================================For Video==============================
+function play(id) {
+    var cld = cloudinary.Cloudinary.new({cloud_name: 'nsdevil-com'});
+    var vidElem = $(id)[0]
+    var player = cld.videoPlayer(vidElem, {
+        showJumpControls: true,
+        showLogo: false,
+        playbackRates: ['0.25', '0.5', '1', '1.25', '1.5', '2'],
+    });
+}
 
 class video {
     constructor(top, left, link = null, height = null, width = null) {
         let id = (new Date).getTime();
+        this.id = id
+        this.link = link
         var now = Math.floor(Math.random() * 900000) + 100000;
         let position = {top, left, height, width};
         let videoobj;
         let message = "";
-        // if(link!=null){
-        //     videoobj = `<div id='${now}'><div>
-        //  <script>
-        //     var options = {
-        //         url: '${link}',
-        //         width: "${width}",
-        //         height: "${height}"
-        //     };
 
-        //     var videoPlayer = new Vimeo.Player('${now}', options);
-        //   </script>`
-        //  ================================   end for vimeo    ===========================================
         if (link != null) {
-
-            // videoobj = `
-            //         <video width="100%" height="75%" controls>
-            //             <source src="https://www.youtube.com/embed/${myYoutubeId}"  type="video/mp4">
-            //         </video>
-            // `
             if (link.includes('.com')) {
                 videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
+            } else if (link.includes('/media/chapterBuilder/')) {
+                videoobj = `
+                <video controls muted id="video${id}" class="videodim" data-cld-public-id="${link}">
+                        <source src="${link}"  type="video/mp4">
+                    </video>
+                `
             } else {
                 videoobj = `
-                    <video width="100%" height="94%" controls>
+                    <video controls muted id="video${id}"
+                        class="videodim cld-video-player cld-video-player-skin-dark example-player"
+                        data-cld-public-id="${link}" data-public_id="${link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
                         <source src="${link}"  type="video/mp4">
                     </video>
             `
@@ -1462,6 +1464,10 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
 function VideoFunction(top = null, left = null, link = null, height = null, width = null) {
     const Videos = new video(top, left, link, height, width);
     Videos.renderDiagram();
+    if (Videos.link && !Videos.link.includes('.com') && !Videos.link.includes('/media/chapterBuilder/')) {
+        play('#video' + Videos.id)
+    }
+
     $('.fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
@@ -1614,6 +1620,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                     beforeSend: function (request) {
                         request.setRequestHeader("Connection", 'keep-alive');
                     },
+                    maxChunkSize: 10000000,
                     contentType: false,
                     processData: false,
                     method: 'POST',
@@ -1625,7 +1632,10 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                         $('#loadingDiv').show();
                     },
                     error: function (errorThrown) {
-                        alert("Failed to upload Video. File size too large.")
+                        if (errorThrown.responseText.message)
+                            alert("Failed to upload Video." + errorThrown.responseText.message)
+                        else
+                            alert('Failed to Upload. ' + errorThrown.status)
                         div.find('#loadingDiv').remove();
                         div.find('#percentcomplete').remove();
                     },
@@ -1642,11 +1652,14 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
 
                             div.append(html);
                         } else {
-                            div.append(`
-                                <video width="100%" height="100%" controls>
-                                    <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
-                                </video>
-                            `)
+                            VideoFunction(
+                                $(div)[0].style.top,
+                                $(div)[0].style.left,
+                                data.media_name,
+                                $(div)[0].style.height,
+                                $(div)[0].style.width,
+                            );
+                            div.remove();
                         }
                     },
                     xhr: function () {
@@ -2634,7 +2647,7 @@ function updateData(prev_page, prev_data) {
         }
         if (value.classList.contains('video-div')) {
             online_link = $(this).find('iframe').attr('src');
-            local_link = $(this).find('video > source').attr('src');
+            local_link = $(this).find('video').attr('data-cld-public-id');
 
             video.push(
                 {

@@ -2383,13 +2383,58 @@ label .asteriskField {
         margin-bottom: 20px;
         margin-top: 20px;
         padding: 30px;
-      
+
     }
 }
-@media all and (max-width:400px){
-    .position-progress{
-        height: 200px ;position: absolute; top:20%; left:20%;
+
+@media all and (max-width: 400px) {
+    .position-progress {
+        height: 200px;
+        position: absolute;
+        top: 20%;
+        left: 20%;
     }
 
 }
-        
+
+/* Survey delete button */
+.survey-delete-btn {
+    position: absolute;
+    padding: 5px;
+    margin: 25px;
+}
+
+.list-group-item1 {
+    min-height: 75px;
+
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-width: 1px 0;
+    border-radius: 0;
+}
+
+.assignment-status-margin {
+    margin-bottom: 6px;
+}
+
+.assignment-status {
+    text-align: right;
+}
+
+@media all and (max-width: 500px) {
+    .list-group-item1 {
+        min-height: 102px;
+    }
+
+    .assignment-status-margin {
+        margin-bottom: 1px;
+    }
+
+
+    .assignment-status {
+        text-align: left;
+    }
+}

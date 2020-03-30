@@ -888,12 +888,16 @@ body {
     }
 
 
-    .custom-carousel {
-        position: relative;
-    }
+.custom-carousel {
+    position: relative;
+}
 
 
-    .owl-nav {
-        font-size: 30px;
-    }
+.owl-nav {
+    font-size: 30px;
+}
 
+.videodim {
+    height: 100%;
+    width: 100%;
+}
