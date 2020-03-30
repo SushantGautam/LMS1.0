@@ -78,7 +78,6 @@
     border-radius: 50%;
     padding: 0.5px 2px;
 " class="fa fa-times-circle"></i></div>
-
         </a>
 
         {% if '/teachers' in request.path %}
@@ -1722,6 +1721,44 @@
                 }
 
                 chapterProgressFunction()
+                StudentChapterLogUpdateAjax(1)
+
+                function StudentChapterLogUpdateAjax(type = 1) {
+                    $.ajax({
+                        url: "{% url 'studentChapterLogUpdateAjax' chapter.pk %}",
+                        type: "post",
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                            'type': type,
+                        },
+                        success: function (data) {
+                            console.log(data)
+                        },
+                    })
+                }
+
+                $(window).on("blur focus", async function (e) {
+                    var prevType = $(this).data("prevType");
+
+                    if (prevType != e.type) {   //  reduce double fire issues
+                        switch (e.type) {
+                            case "blur":
+                                StudentChapterLogUpdateAjax(0);
+                                chapterProgressStopFunction();
+                                break;
+                            case "focus":
+                                StudentChapterLogUpdateAjax(1);
+                                chapterProgressFunction();
+                                break;
+                        }
+                    }
+
+                    $(this).data("prevType", e.type);
+                })
+
+                window.addEventListener('beforeunload', function (event) {
+                    StudentChapterLogUpdateAjax(0)
+                }, false);
             </script>
         {% endif %}
 
@@ -1767,12 +1804,3 @@
         }
     </script>
 {% endif %}
-
-
-
-
-
-
-
-
-

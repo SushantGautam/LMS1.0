@@ -2271,10 +2271,8 @@ def CourseProgressView(request, coursepk, inningpk=None):
     return render(request, 'teacher_module/chapterProgress.html', context=context)
 
 
-def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fromquiz=False, totalquizcount=None,
-                          attemptedquiz=None, correctquizanswers=None, currentPageNumber=None, totalPage=None,
-                          studytimeinseconds=None, createFile=True,
-                          isjson=False
+def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, currentPageNumber=None, totalPage=None,
+                          studytimeinseconds=None, createFile=True, isjson=False
                           ):
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
     try:
@@ -2392,5 +2390,48 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             )
     return student_data
 
+
+def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
+    date = datetime.now().strftime('%Y%m%d')
+    path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog", date)
+    try:
+        os.makedirs(path)  # Creates the directories and subdirectories structure
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    try:
+        with open(student_data_file) as outfile:
+            jsondata = json.load(outfile)
+        isjson = True
+    except:
+        isjson = False
+    if os.path.isfile(student_data_file) and isjson:
+        if not type:
+            return jsondata
+        newdata = {
+            "chapterid": chapterid,
+            "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+            "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+        }
+        jsondata.append(newdata)
+        with open(student_data_file, "w+") as outfile:
+            json.dump(jsondata, outfile, indent=4)
+    else:
+        if createFile:
+            jsondata = [
+                {
+                    "chapterid": chapterid,
+                    "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                    "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+                },
+            ]
+
+            with open(student_data_file, "w+") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+        else:
+            return None
+    return jsondata
+
+
 def loaderverifylink(request):
-    return render(request,'loaderio.html')
+    return render(request, 'loaderio.html')
