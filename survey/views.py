@@ -416,52 +416,52 @@ class SurveyInfoUpdate_ajax(AjaxableResponseMixin, UpdateView):
         context = super().get_context_data(**kwargs)
 
         obj_instance = SurveyInfo.objects.get(id=self.kwargs["pk"])
+        context['category_name'] = self.request.GET['category_name']
+        context['parent_pk'] = obj_instance.pk
+        # if obj_instance.Start_Date > timezone.now():
+        my_mcq_initial = [my_dict for my_dict in
+                          obj_instance.questioninfo.all().filter(Question_Type='MCQ').values()]
+        my_saq_initial = [my_dict for my_dict in
+                          obj_instance.questioninfo.all().filter(Question_Type='SAQ').values()]
 
-        if obj_instance.Start_Date > timezone.now():
-            my_mcq_initial = [my_dict for my_dict in
-                              obj_instance.questioninfo.all().filter(Question_Type='MCQ').values()]
-            my_saq_initial = [my_dict for my_dict in
-                              obj_instance.questioninfo.all().filter(Question_Type='SAQ').values()]
+        SaqFormSet = inlineformset_factory(
+            SurveyInfo,
+            QuestionInfo,
+            extra=len(my_saq_initial),
+            fields=('Question_Name', 'Question_Type'),
+        )
+        McqFormSet = inlineformset_factory(
+            SurveyInfo,
+            QuestionInfo,
+            formset=create_questioninfo_formset(obj_instance),
+            extra=len(my_mcq_initial),
+            fields=('Question_Name', 'Question_Type'),
 
-            SaqFormSet = inlineformset_factory(
-                SurveyInfo,
-                QuestionInfo,
-                extra=len(my_saq_initial),
-                fields=('Question_Name', 'Question_Type'),
-            )
-            McqFormSet = inlineformset_factory(
-                SurveyInfo,
-                QuestionInfo,
-                formset=create_questioninfo_formset(obj_instance),
-                extra=len(my_mcq_initial),
-                fields=('Question_Name', 'Question_Type'),
+        )
 
-            )
+        if self.request.POST:
+            context['questioninfo_formset'] = McqFormSet(
+                self.request.POST,
+                prefix='questioninfo'
+            )  # MCQ
+            context['questionansinfo_formset'] = SaqFormSet(
+                self.request.POST,
+                prefix='questionansinfo'
+            )  # SAQ
+        else:
+            context['questioninfo_formset'] = McqFormSet(
+                instance=obj_instance,
+                # queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
+                # initial=my_mcq_initial,
+                # prefix='questioninfo'
+            )  # MCQ
+            context['questionansinfo_formset'] = SaqFormSet(
+                # instance=obj_instance,
+                # queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
+                initial=my_saq_initial,
+                prefix='questionansinfo'
+            )  # SAQ
 
-            if self.request.POST:
-                context['questioninfo_formset'] = McqFormSet(
-                    self.request.POST,
-                    prefix='questioninfo'
-                )  # MCQ
-                context['questionansinfo_formset'] = SaqFormSet(
-                    self.request.POST,
-                    prefix='questionansinfo'
-                )  # SAQ
-            else:
-                context['questioninfo_formset'] = McqFormSet(
-                    instance=obj_instance,
-                    # queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
-                    # initial=my_mcq_initial,
-                    # prefix='questioninfo'
-                )  # MCQ
-                context['questionansinfo_formset'] = SaqFormSet(
-                    # instance=obj_instance,
-                    # queryset=QuestionInfo.objects.filter(Question_Type='MCQ'),
-                    initial=my_saq_initial,
-                    prefix='questionansinfo'
-                )  # SAQ
-                context['category_name'] = self.request.GET['category_name']
-                context['parent_pk'] = obj_instance.pk
         return context
 
     def form_valid(self, form):
