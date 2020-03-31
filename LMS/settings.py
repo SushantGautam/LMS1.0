@@ -3,11 +3,11 @@ import os
 import socket
 import subprocess
 
-import django_heroku
-import sentry_sdk
+# import django_heroku
+# import sentry_sdk
 from django.contrib.messages import constants as messages
-from sentry_sdk.integrations.celery import CeleryIntegration
-from sentry_sdk.integrations.django import DjangoIntegration
+# from sentry_sdk.integrations.celery import CeleryIntegration
+# from sentry_sdk.integrations.django import DjangoIntegration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -109,9 +109,9 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'LMS',
-#         'USER': 'postgres',
-#         'PASSWORD': 'root',
+#         'NAME': 'ulmsdb',
+#         'USER': 'lms',
+#         'PASSWORD': 'Ulms@2019',
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
@@ -177,7 +177,7 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = '/'
@@ -215,6 +215,8 @@ REST_FRAMEWORK = {
 #         'LOCATION': '.cache',
 #     }
 # }
+
+SERVER_NAME = 'Indonesian_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

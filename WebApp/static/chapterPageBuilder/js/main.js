@@ -160,7 +160,7 @@ class Textbox {
 
             $('#' + a.id).append(dom);
             let placeholder = ''
-            if(!message){
+            if (!message) {
                 placeholder = 'Type Something here...'
             }
             $('#editor' + id).summernote({
@@ -281,38 +281,40 @@ class picture {
 }
 
 // ====================================For Video==============================
+function play(id) {
+    var cld = cloudinary.Cloudinary.new({cloud_name: 'nsdevil-com'});
+    var vidElem = $(id)[0]
+    var player = cld.videoPlayer(vidElem, {
+        showJumpControls: true,
+        showLogo: false,
+        playbackRates: ['0.25', '0.5', '1', '1.25', '1.5', '2'],
+    });
+}
 
 class video {
     constructor(top, left, link = null, height = null, width = null) {
         let id = (new Date).getTime();
+        this.id = id
+        this.link = link
         var now = Math.floor(Math.random() * 900000) + 100000;
         let position = {top, left, height, width};
         let videoobj;
         let message = "";
-        // if(link!=null){
-        //     videoobj = `<div id='${now}'><div>
-        //  <script>
-        //     var options = {
-        //         url: '${link}',
-        //         width: "${width}",
-        //         height: "${height}"
-        //     };
 
-        //     var videoPlayer = new Vimeo.Player('${now}', options);
-        //   </script>`
-        //  ================================   end for vimeo    ===========================================
         if (link != null) {
-
-            // videoobj = `
-            //         <video width="100%" height="75%" controls>
-            //             <source src="https://www.youtube.com/embed/${myYoutubeId}"  type="video/mp4">
-            //         </video>
-            // `
-            if (link.includes('www') && link.includes('.com')) {
+            if (link.includes('.com')) {
                 videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
+            } else if (link.includes('/media/chapterBuilder/')) {
+                videoobj = `
+                <video controls muted id="video${id}" class="videodim" data-cld-public-id="${link}">
+                        <source src="${link}"  type="video/mp4">
+                    </video>
+                `
             } else {
                 videoobj = `
-                    <video width="100%" height="94%" controls>
+                    <video controls muted id="video${id}"
+                        class="videodim cld-video-player cld-video-player-skin-dark example-player"
+                        data-cld-public-id="${link}" data-public_id="${link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
                         <source src="${link}"  type="video/mp4">
                     </video>
             `
@@ -886,7 +888,7 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
     })
 
     $('.pic').on('drop', function (e) {
-        
+
         e.stopPropagation();
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
@@ -902,7 +904,7 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
         data.append('courseID', courseID);
         data.append('type', 'pic');
         data.append('csrfmiddlewaretoken', csrf_token);
-       
+
         $.ajax({
             url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
             data: data,
@@ -1462,6 +1464,10 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
 function VideoFunction(top = null, left = null, link = null, height = null, width = null) {
     const Videos = new video(top, left, link, height, width);
     Videos.renderDiagram();
+    if (Videos.link && !Videos.link.includes('.com') && !Videos.link.includes('/media/chapterBuilder/')) {
+        play('#video' + Videos.id)
+    }
+
     $('.fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
@@ -1592,6 +1598,10 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
 
     function readURL(input) {
         if (input.files && input.files[0]) {
+            if (!input.files[0].type.match('video.*')) {
+                alert('Not a valid video.')
+                return
+            }
             var reader = new FileReader();
             reader.onload = function (e) {
                 let div = $(input).parent().parent().parent();
@@ -1607,6 +1617,10 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                 $.ajax({
                     url: save_video_url,
                     data: data,
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Connection", 'keep-alive');
+                    },
+                    maxChunkSize: 10000000,
                     contentType: false,
                     processData: false,
                     method: 'POST',
@@ -1618,7 +1632,10 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                         $('#loadingDiv').show();
                     },
                     error: function (errorThrown) {
-                        alert("Failed to upload Video" + errorThrown)
+                        if (errorThrown.responseText.message)
+                            alert("Failed to upload Video." + errorThrown.responseText.message)
+                        else
+                            alert('Failed to Upload. ' + errorThrown.status)
                         div.find('#loadingDiv').remove();
                         div.find('#percentcomplete').remove();
                     },
@@ -1633,17 +1650,16 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                             $(html).css('height', '100%')
                             $(html).css('width', '100%')
 
-                            div.append(`
-                                <video width="100%" height="100%">
-                                    <source src="${data.link}">
-                                </video>
-                            `);
+                            div.append(html);
                         } else {
-                            div.append(`
-                                <video width="100%" height="100%" controls>
-                                    <source src="${'/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.media_name}"  type="video/mp4">
-                                </video>
-                            `)
+                            VideoFunction(
+                                $(div)[0].style.top,
+                                $(div)[0].style.left,
+                                data.media_name,
+                                $(div)[0].style.height,
+                                $(div)[0].style.width,
+                            );
+                            div.remove();
                         }
                     },
                     xhr: function () {
@@ -1934,12 +1950,12 @@ $(document).ready(function () {
         var quiz_span_name = $('#quiz-name').val();
         var quiz_link = $('#quiz-link').val();
         var quiz_id = $('#quiz_id').val();
-        if($('#quiz-btn-name').val() == 'Select Quiz' && quiz_link != ""){
+        if ($('#quiz-btn-name').val() == 'Select Quiz' && quiz_link != "") {
             quiz_name = "Play Quiz"
         } else {
-           quiz_name = $('#quiz-btn-name').val()
+            quiz_name = $('#quiz-btn-name').val()
         }
-        
+
         if (quiz_link != "") {
             $('#' + quiz_id).attr({
                 "href": `${quiz_link}`
@@ -1950,7 +1966,7 @@ $(document).ready(function () {
         $('#' + quiz_id).parent().parent().find('.resizable-text-only').text(quiz_name);
         $('#' + quiz_id).parent().parent().find('.quiz-name').text(quiz_span_name)
         $('#quiz-modal').modal('hide');
-        if(tempVarStorage){
+        if (tempVarStorage) {
             tempVarStorage = undefined
         }
     })
@@ -1971,12 +1987,12 @@ $(document).ready(function () {
         var survey_id = $('#survey_id').val();
         var survey_span_name = $('#survey-name').val();
 
-        if($('#survey-btn-name').val() == 'Select Survey' && survey_link != ""){
+        if ($('#survey-btn-name').val() == 'Select Survey' && survey_link != "") {
             survey_name = "Take Survey"
         } else {
             survey_name = $('#survey-btn-name').val()
-        }        
-        
+        }
+
         if (survey_link != "") {
             $('#' + survey_id).attr({
                 "href": `${survey_link}`
@@ -1987,7 +2003,7 @@ $(document).ready(function () {
         $('#' + survey_id).parent().parent().find('.resizable-text-only').text(survey_name);
         $('#' + survey_id).parent().parent().find('.survey-name').text(survey_span_name)
         $('#survey-modal').modal('hide');
-        if(tempVarStorage){
+        if (tempVarStorage) {
             tempVarStorage = undefined
         }
     })
@@ -2058,33 +2074,33 @@ $(document).ready(function () {
             }
         });
     });
-    
-    
-    
+
+
 });
-$('#quiz_create_link').click(function(e){
-    $('#iframeholder iframe').on('load', function(){
+$('#quiz_create_link').click(function (e) {
+    $('#iframeholder iframe').on('load', function () {
         var iframe = $('#iframeholder iframe').contents();
-        $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button',function(){
+        $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button', function () {
             setTimeout(() => {
                 modalcloseFunction()
             }, 1500)
         });
     });
-   
+
 })
-$('#survey_create_link').click(function(e){
-    $('#iframeholder iframe').on('load', function(){
+$('#survey_create_link').click(function (e) {
+    $('#iframeholder iframe').on('load', function () {
         var iframe = $('#iframeholder iframe').contents();
-        $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button',function(){
+        $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button', function () {
             setTimeout(() => {
                 modalcloseFunction()
             }, 1500)
         });
     });
-   
+
 })
-function modalcloseFunction(){
+
+function modalcloseFunction() {
     $('#closeiframebtn').click();
     tempVarStorage.click()
 }
@@ -2093,9 +2109,9 @@ let sidebarWidth = $(".sidebar").width(); // get width of sidebar
 let toolbarheight = $('.editor-toolbar').height();
 
 
-function clearPage(page_number){
+function clearPage(page_number) {
     $('#tab').empty();
-    if(page_number in data.pages){
+    if (page_number in data.pages) {
         data.pages[page_number] = ''
     }
 }
@@ -2103,7 +2119,7 @@ function clearPage(page_number){
 function dropfunction(event, ui) {
     let top = ui.helper.position().top;
     let left = ui.helper.position().left;
-    
+
     $(this).removeClass("over");
     if (ui.helper.offset().top < $('#tab').offset().top) {
         top = $('#tab').position().top
@@ -2115,8 +2131,7 @@ function dropfunction(event, ui) {
 
     if (ui.helper.offset().left + (0.20 * $('#tab').width()) > $('#tab').width() && !ui.helper.hasClass('button')) {   // 0.25 is multiplied to sum the height of element to the current pointer position
         left = $('#tab').width() - (0.40 * $('#tab').width()) + sidebarWidth
-    }
-    else if (ui.helper.offset().left > $('#tab').width() && ui.helper.hasClass('button')) {
+    } else if (ui.helper.offset().left > $('#tab').width() && ui.helper.hasClass('button')) {
         left = $('#tab').width() - (0.15 * $('#tab').width()) + sidebarWidth
     }
     if (ui.helper.hasClass('textbox')) {
@@ -2207,13 +2222,11 @@ function dropfunction(event, ui) {
             top = "0%",
             left = 0 + '%',
             height = "10%", width = "100%",
-            
         );
         TextboxFunction(
             top = "13%",
             left = 0 + '%',
             height = "84%", width = "100%",
-            
         );
     } else if (ui.helper.hasClass('pdf-text')) {
         clearPage(window.currentPage)
@@ -2634,7 +2647,7 @@ function updateData(prev_page, prev_data) {
         }
         if (value.classList.contains('video-div')) {
             online_link = $(this).find('iframe').attr('src');
-            local_link = $(this).find('video > source').attr('src');
+            local_link = $(this).find('video').attr('data-cld-public-id');
 
             video.push(
                 {
@@ -2773,7 +2786,7 @@ function changePage(page_number) {
     // localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
 }
 
-$('#tab').on('click', '.file-upload-icon', function(){
+$('#tab').on('click', '.file-upload-icon', function () {
     $(this).closest('.ui-draggable').find('.fa-upload').click();
 })
 
@@ -2908,7 +2921,6 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
         }, 2000)
     })
 });
-
 
 
 // $('#tabs-for-download').on('click', '.textdiv', function () {

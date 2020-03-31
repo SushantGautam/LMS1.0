@@ -124,61 +124,7 @@
                     <td class="text-center">Action</td>
                 </tr>
                 </thead>
-                {% for object in object_list %}
-                    {% if object.id != request.user.id %}
-                        <tr>
-                            <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
-                            <td style="vertical-align: middle;"><b><a
-                                    href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
-                            <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
-                            <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
-                            <td>{{ object.first_name }}</td>
-                            <td>{{ object.last_name }}</td>
-                            <td style="vertical-align: middle;">{{ object.email }}</td>
-                            <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
-                            <td style="vertical-align: middle;">
-                                {{ object.get_Member_Gender_display }}
-                            </td>
-                            <td>
-                                {% if object.Is_Student == True %}
-                                    1
-                                {% else %}
-                                    0
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if object.Is_Teacher == True %}
-                                    1
-                                {% else %}
-                                    0
-                                {% endif %}
-                            </td>
-                            <td>{{ object.Member_Temporary_Address }}</td>
-                            <td>{{ object.Member_Permanent_Address }}</td>
-                            <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
-                            <td style="vertical-align: middle;">
-                                {% if object.Is_Teacher == True and object.Is_Student == True %}
-                                    Teacher, Student
-                                {% elif object.Is_Teacher == True %}
-                                    Teacher
-                                {% elif object.Is_Student == True %}
-                                    Student
-                                {% else %}
-                                    Not Assigned
-                                {% endif %}
-                            </td>
-                            <td class="text-center">
-                                <a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
-                                <a class="btn btn-sm btn-danger confirm-delete" id="{{ object.id }}">Delete</a>
-                                <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
-                                      id="delete_form{{ object.id }}">
-                                    {% csrf_token %}
-                                    <input type="hidden">
-                                </form>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
+                <tbody></tbody>
             </table>
         </div>
     </div>
@@ -212,6 +158,16 @@
         $(document).on('click', '.confirm-delete', function () {
             ans = confirm('Are you sure you want to delete this Member? (You can deactivate the member instead of deleting)');
             if (ans == true) {
+                $.ajax({
+                    url: '{% url 'memberinfo_delete' pk='000123' %}'.replace('000123', this.id),
+                    method: 'post',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function () {
+                        location.reload();
+                    }
+                })
                 $(`#delete_form${this.id}`).submit();
             } else {
                 return false;
@@ -227,8 +183,15 @@
 
             var table_main = $('.table').DataTable({
                 dom: 'lBfrtip',
-                stateSave: true, 
+                stateSave: true,
                 responsive: true,
+                processing: true,
+                serverSide: true,
+                ajax: "{% url 'memberinfo_listajax' %}",
+                language: {
+                    "infoFiltered": "",
+                },
+                order: [],
                 buttons: [
                     {
                         extend: 'csv',
@@ -249,7 +212,11 @@
                     {
                         "targets": [4, 5, 9, 10, 11, 12, 13],
                         "visible": false,
-                        "searchable": true
+                        "searchable": true,
+                    },
+                    {
+                        "orderable": false,
+                        "targets": [0, 3, 11, 12, 13, 14, 15]
                     }
 
                 ]
@@ -261,10 +228,12 @@
                 $("#student_button").css("color", "white");
                 $("#teacher_button").css("color", "black");
                 $("#all_button").css("color", "black");
-                table_main.columns().search('').draw();
-                table_main.column(9).search("1").draw();
-                table_main.column(0).visible(false);
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(9).search("1").draw();#}
+                {#table_main.column(0).visible(false);#}
+                {#$(#table).DataTable({#}
 
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlystudents=true").load();
 
             });
             $("#teacher_button").bind("click", function () {
@@ -272,9 +241,10 @@
                 $("#teacher_button").css("color", "white");
                 $("#all_button").css("color", "black");
 
-                table_main.columns().search('').draw();
-                table_main.column(10).search("1").draw();
-                table_main.column(0).visible(false);
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(10).search("1").draw();#}
+                {#table_main.column(0).visible(false);#}
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlyteachers=true").load();
 
 
             });
@@ -283,8 +253,9 @@
                 $("#all_button").css("color", "white");
                 $("#student_button").css("color", "black");
                 $("#teacher_button").css("color", "black");
-                table_main.columns().search('').draw();
-                table_main.column(0).visible(true);
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(0).visible(true);#}
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}").load();
 
             });
 

@@ -224,7 +224,30 @@ class CourseInfoForm(forms.ModelForm):
 
 
 class ChapterInfoForm(forms.ModelForm):
-    mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput())
+    mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput(attrs={'min': '0'}))
+    Start_Date = forms.DateTimeField(
+        input_formats=['%Y-%m-%d'],
+        required=False,
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'class': 'form-control',
+                'max': '9999-12-30',
+            },
+            format='%Y-%m-%d')
+    )
+    End_Date = forms.DateTimeField(
+        input_formats=['%Y-%m-%d'],
+        required=False,
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'class': 'form-control datetimepicker',
+                'min': datetime.date.today(),
+                'max': '9999-12-30'
+            },
+            format='%Y-%m-%d')
+    )
 
     class Meta:
         model = ChapterInfo

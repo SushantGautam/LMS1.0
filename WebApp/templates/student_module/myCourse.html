@@ -45,13 +45,20 @@ Course
 
 
           {% if courses.Course_Code.get_teachers_of_this_course%} 
-          <p style="height:50px ; padding: 10px; " > 
-            Teacher(s): &nbsp
-            {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course%} &nbsp
-                  -{{ eachTeacher }}
+          <p style="height:30px ; padding: 10px; " > 
+            Teacher(s): &nbsp;
+            {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course %}
+            {{ eachTeacher.getFullName }}&nbsp;
             {% endfor%}
 
           </p>
+          {% else %}
+          <p style="height:30px ; padding: 10px; " >
+              No Teacher Assigned
+              
+        
+        </p>
+
 
          
         {% endif %}
@@ -96,29 +103,35 @@ Course
 </div>
 
 
-{% if response.has_other_pages %}
-<div class=" text-center">
-    <ul class="pagination">
-        {% if response.has_previous %}
-        <li><a href="?page={{ response.previous_page_number }}">&laquo;</a></li>
-        {% else %}
-        <li class="disabled"><span>&laquo;</span></li>
-        {% endif %}
-        {% for i in response.paginator.page_range %}
-        {% if response.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-        {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-        {% endif %}
-        {% endfor %}
-        {% if response.has_next %}
-        <li><a href="?page={{ response.next_page_number }}">&raquo;</a></li>
-        {% else %}
-        <li class="disabled"><span>&raquo;</span></li>
-        {% endif %}
-    </ul>
-</div>
-{% endif %}
+    {% if response.has_other_pages %}
+        <div class=" text-center">
+            <ul class="pagination">
+                {% if response.has_previous %}
+                    <li>
+<a href="?page={{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
+                    </li>
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in response.paginator.page_range %}
+                    {% if response.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li>
+<a href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if response.has_next %}
+                    <li>
+<a href="?page={{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
+                    </li>
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        </div>
+    {% endif %}
 
 
 

@@ -107,3 +107,8 @@ urlpatterns += (
     path('answerinfo/update/<int:pk>/',
          views.AnswerInfoUpdateView.as_view(), name='answerinfo_update'),
 )
+
+urlpatterns += (
+    # delete survey
+    path('surveyinfo/delete/', views.deleteSurvey, name='surveyinfo_delete'),
+)

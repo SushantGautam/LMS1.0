@@ -43,6 +43,8 @@ urlpatterns += (
 urlpatterns += (
     # urls for MemberInfo
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
+    path('memberinfoajax/', views.MemberInfoListViewAjax.as_view(), name='memberinfo_listajax'),
+    # path('memberinfoajax/', views.MemberInfoListViewAjax.as_view(), name='memberinfo_listajax'),
     path('memberinfo/inactive', views.MemberInfoListViewInactive.as_view(),
          name='memberinfo_list_inactive'),
     path('memberinfo/activate/<int:pk>/',
@@ -231,6 +233,7 @@ urlpatterns += (
          views.GroupMappingUpdateView.as_view(), name='groupmapping_update'),
     path('groupmapping/delete/<int:pk>/',
          views.GroupMappingDeleteView, name='groupmapping_delete'),
+    path('groupmapping/csv_import', views.GroupMappingCSVImport , name='csv_import_student_group')
 
     # path('admin/jsi18n', i18n.javascript_catalog),
 )
@@ -273,6 +276,10 @@ urlpatterns += (
     # urls for chapterpagebuilder
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
          views.chapterpagebuilder, name='chapterpagebuilder'),
+
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newChapterBuilder',
+       views.newChapterBuilder, name='newChapterBuilder'),
+
     path('viewchapter',
          views.chapterviewer, name='chapterviewer'),
     path('saveFile', views.save_file, name='saveFile'),
@@ -323,4 +330,6 @@ urlpatterns += (
          views.CourseProgressView, name='admin_course_progress'),
     path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
          views.CourseProgressView, name='admin_course_progress_withinning'),
+    path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
+         views.StudentChapterProgressView, name='student_chapter_progress'),
 )

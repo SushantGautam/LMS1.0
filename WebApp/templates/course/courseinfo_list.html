@@ -84,27 +84,36 @@
           </a>
         </div>
         <div class="card-body" id="cardInfo">
-          <h2 class="card-title">
+          <h2 class="card-title"  style="height: 3.5em;">
             <strong><a href="{% if '/students' in request.path %}
                                         {{ object.student_get_absolute_url }}
                                       {% else %}
                                         {{ object.get_absolute_url }}
-                                      {% endif %}">{{ object.Course_Name }} </a></strong>
+                                      {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong>
             {% if object.Use_Flag == False %}<i
               style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
           </h2>
 
-          {% if object.get_teachers_of_this_course%}
-             <p style="height: 50px; overflow:auto"> 
+          {% if object.get_teachers_of_this_course %}
+             <p style="height: 30px; overflow:auto"> 
               Teacher(s): &nbsp;
-              {% for eachTeacher in object.get_teachers_of_this_course%} &nbsp;
-                    -{{ eachTeacher }}
-                           {% endfor%}
+              {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
+              {{ eachTeacher.getFullName }}
+              {% endfor%}
 
              </p>
+             {% else %}
+             <p style="height: 30px; overflow:auto"> No Teacher </p>
+
 
       
           {% endif %}
+
+
+         
+          
+              
+       
 
           <hr />
           <h5 class="lectureDescription" style="padding-bottom: 5px;">
@@ -137,31 +146,57 @@
     </div>
     {% endfor %}
   </div>
-  <div class=" text-center">
-    {% if is_paginated %}
-    <ul class="pagination">
-      {% if page_obj.has_previous %}
-      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-      {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-      {% endif %}
-      {% for i in paginator.page_range %}
-      {% if page_obj.number == i %}
-      <li class="active">
-        <span>{{ i }} <span class="sr-only">(current)</span></span>
-      </li>
-      {% else %}
-      <li>
-        <a href="?page={{ i }}">{{ i }}</a>
-      </li>
-      {% endif %}
-      {% endfor %}
-      {% if page_obj.has_next %}
-      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-      {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-      {% endif %}
-    </ul>
-    {% endif %}
-  </div>
+    <div class=" text-center">
+        {% if is_paginated %}
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li>
+<a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
+                    </li>
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="active">
+                            <span>{{ i }} <span class="sr-only">(current)</span></span>
+                        </li>
+                    {% else %}
+                        <li>
+<a href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li>
+<a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
+                    </li>
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
 </div>
+
+<!-- jQuery -->
+<script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+
+<script>
+  $(document).ready(function () {
+    $('.lectureDescription').each(function(){
+      let trunc = truncateString($(this).find('p').text());
+      $(this).find('p').text(trunc);
+      // Animate loader off screen
+      $(".se-pre-con").fadeOut("slow");
+      
+    })
+    ;
+});
+
+const truncateString = (string, maxLength = 120) => {
+    if (!string) return null;
+    const showDots = string.length > maxLength;
+    return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+};
+</script>

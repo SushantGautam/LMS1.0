@@ -36,7 +36,7 @@ from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
-from ..views import chapterProgressRecord
+from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog
 
 datetime_now = datetime.now()
 
@@ -63,7 +63,8 @@ def start(request):
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
-                    Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id,
+                    Assignment_Deadline__gte=datetime_now, Assignment_Start__lte=datetime_now,
+                    Course_Code=course.Course_Code.id,
                     Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
@@ -246,7 +247,8 @@ class MyAssignmentsListView(ListView):
             Assignment.append(AssignmentInfo.objects.filter(
                 Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True))
             activeAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True,
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Assignment_Start__lte=datetime_now,
+                Use_Flag=True,
                 Chapter_Code__Use_Flag=True))
             expiredAssignment.append(AssignmentInfo.objects.filter(
                 Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True,
@@ -261,7 +263,7 @@ class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'student_module/courseinfo_list.html'
 
-    paginate_by = 8
+    paginate_by = 6
 
     def get_queryset(self):
         qs = self.model.objects.all()
@@ -285,7 +287,10 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(
-            Course_Code=self.kwargs.get('pk'), Use_Flag=True).order_by('Chapter_No')
+            Course_Code=self.kwargs.get('pk'), Use_Flag=True) \
+            .filter(Q(Start_Date__lte=datetime.now().date()) | Q(Start_Date=None)) \
+            .filter(Q(End_Date__gte=datetime.now().date()) | Q(End_Date=None)) \
+            .order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Quiz.objects.filter(
@@ -296,6 +301,8 @@ class CourseInfoDetailView(DetailView):
             draft=False)
         context['topic'] = Topic.objects.filter(
             course_associated_with=self.kwargs.get('pk'))
+
+        context['student_data'] = getCourseProgress(self.object, [self.request.user], context['chapters'])
         return context
 
 
@@ -355,7 +362,10 @@ class submitAnswer(View):
     model = AssignAnswerInfo()
 
     def post(self, request, *args, **kwargs):
-        Obj = AssignAnswerInfo()
+        if request.GET.get('editanswer'):
+            Obj = AssignAnswerInfo.objects.get(pk=int(request.GET.get('editanswer')))
+        else:
+            Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
         Obj.Student_Code = MemberInfo.objects.get(
             pk=request.POST["Student_Code"])
@@ -1061,7 +1071,7 @@ def PageUpdateAjax(request, course, chapter):
         jsondata = chapterProgressRecord(str(course), str(chapter), str(request.user.id),
                                          currentPageNumber=request.POST['currentpage'],
                                          totalPage=request.POST['totalpages'],
-                                         fromcontents=True, studytimeinseconds=request.POST['totalpages'],
+                                         fromcontents=True, studytimeinseconds=request.POST['studytimeinseconds'],
                                          )
     else:
         # currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
@@ -1071,6 +1081,14 @@ def PageUpdateAjax(request, course, chapter):
                                          studytimeinseconds=None,
                                          )
     return JsonResponse(jsondata)
+
+
+def StudentChapterLogUpdateAjax(request, chapter):
+    if request.method == 'POST':
+        jsondata = studentChapterLog(str(chapter), str(request.user.id), type=request.POST['type'])
+    else:
+        jsondata = studentChapterLog(str(chapter), str(request.user.id), type=None)
+    return JsonResponse(jsondata, safe=False)
 
 
 from django.contrib.auth import authenticate, login as auth_login
@@ -1100,7 +1118,7 @@ from django.db.models import F
 @permission_classes((IsAuthenticated,))
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
-        courses = request.user.get_student_courses()
+        courses = request.user.get_student_courses().distinct()
         assignments = AssignmentInfo.objects.filter(
             Course_Code__in=courses,
             Chapter_Code__Use_Flag=True)[:7]

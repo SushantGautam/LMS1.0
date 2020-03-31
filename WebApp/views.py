@@ -6,8 +6,11 @@ import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 import pandas as pd
-import vimeo  # from PyVimeo for uploading videos to vimeo.com
+import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -24,6 +27,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.html import escape
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -31,6 +35,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
+from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth
 from LMS.settings import BASE_DIR
@@ -389,11 +394,59 @@ def CenterInfoDeleteView(request, pk):
     return redirect("centerinfo_list")
 
 
-class MemberInfoListView(ListView):
-    model = MemberInfo
+class MemberInfoListView(TemplateView):
+    template_name = "WebApp/memberinfo_list.html"
+    # model = MemberInfo
+    #
+    # def get_queryset(self):
+    #     return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
-    def get_queryset(self):
+
+class MemberInfoListViewAjax(BaseDatatableView):
+    model = MemberInfo
+    counter = 0
+    template_name = "WebApp/memberinfo_list.html"
+    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Phone',
+               'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
+               'Member_BirthDate', 'type', 'action']
+    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Phone',
+                     'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
+
+    def get_initial_queryset(self):
         return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+
+    def render_column(self, row, column):
+        # We want to render user as a custom column
+        if column == "counter":
+            self.counter += 1
+            return self.counter
+        elif column == 'full_name':
+            # escape HTML for security reasons
+            return escape('{0} {1}'.format(row.first_name, row.last_name))
+        elif column == 'type':
+            return row.get_user_type
+        elif column == 'action':
+            return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
+                    <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
+        else:
+            return super(MemberInfoListViewAjax, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        # use parameters passed in GET request to filter queryset
+
+        # simple example:
+        search = self.request.GET.get('search[value]', None)
+        onlystudents = self.request.GET.get('onlystudents', None)
+        onlyteachers = self.request.GET.get('onlyteachers', None)
+        if search:
+            qs = qs.filter(username__istartswith=search) | qs.filter(first_name__istartswith=search) | qs.filter(
+                last_name__istartswith=search) | qs.filter(email__istartswith=search) | qs.filter(
+                Member_Phone__istartswith=search)
+        if onlystudents:
+            qs = qs.filter(Is_Student=True)
+        if onlyteachers:
+            qs = qs.filter(Is_Teacher=True)
+        return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
 class MemberInfoListViewInactive(ListView):
@@ -484,11 +537,13 @@ def ImportCsvFile(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name + '.' + extension, media)
         path = os.path.join(path, filename)
-        df = pd.read_csv(path,  encoding='utf-8')  #  delimiter=';|,', engine='python',
-        df.column = ['Username','Member ID','First Name','Last Name','Email','Phone','Gender','Student','Teacher','Temporary Address','Permanent Address','Birthdate']
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df.column = ['Username', 'Member ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Gender', 'Student',
+                     'Teacher', 'Temporary Address', 'Permanent Address', 'Birthdate']
         print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
         saved_id = []
         for i in range(len(df)):
             try:
@@ -612,7 +667,7 @@ class MemberInfoDeleteView(DeleteView):
 
 class CourseInfoListView(ListView):
     model = CourseInfo
-    paginate_by = 8
+    paginate_by = 6
 
     def get_queryset(self):
         qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
@@ -999,6 +1054,73 @@ class GroupMappingListView(ListView):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
+def GroupMappingCSVImport(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+        file_name = uuid.uuid4()
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + str(extension)
+        path = 'media/import_csv/student_group' + str(center_id)
+
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name + '.' + extension, media)
+        path = os.path.join(path, filename)
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df = df.dropna(how='all')
+
+        reg_agent = request.user.username
+        center = request.user.Center_Code
+        err_msg = []
+        msg = []
+        try:
+            groups = df['Group'].unique()
+        except Exception as e:
+            return JsonResponse(
+                data={"message": "There is no Column <b>Group</b> in the input file", "class": "text-danger",
+                      "rmclass": "text-success"})
+        for i in range(len(groups)):
+            try:
+                flag = 0
+                obj = GroupMapping()
+                obj.GroupMapping_Name = groups[i]
+                obj.Register_Agent = reg_agent
+                obj.Center_Code = center
+                students = df[df['Group'] == groups[i]].reset_index(drop=True)
+                obj.save()
+                for j in range(len(students)):
+                    if MemberInfo.objects.filter(username=students['Username'][j]).exists():
+                        obj_student = MemberInfo.objects.get(username=students['Username'][j])
+                        obj.Students.add(obj_student)
+                    else:
+                        # obj_create = MemberInfo()
+                        # obj_create.username = students['Username'][j]
+                        # obj_create.Center_Code = center
+                        # obj_create.save()
+                        # obj.Students.add(obj_student)
+                        err_msg.append(
+                            "Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>".format(
+                                groups[i], students['Username'][j]))
+                        flag = 1
+                        break
+
+                if flag == 1:
+                    obj.delete()
+                    if msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+                else:
+                    msg.append("<div class='text-success'>Student Group: <b>{}</b> created</div>".format(groups[i]))
+                    if err_msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+            except Exception as e:
+                err_msg.append("Student Group: <b>{}</b> can't be created<br> {}".format(groups[i], e))
+    if err_msg:
+        return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
+    return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
+
+
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
@@ -1071,6 +1193,7 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def post(self, request, *args, **kwargs):
         Obj = AssignmentInfo()
         Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+        Obj.Assignment_Start = request.POST["Assignment_Start"]
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
         Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
@@ -1090,6 +1213,7 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+            Obj.Assignment_Start = request.POST["Assignment_Start"]
             Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
             Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
@@ -1447,6 +1571,12 @@ def save_file(request):
         return JsonResponse(data={"message": "success", "media_name": name})
 
 
+
+def newChapterBuilder(request, course, chapter): 
+   context = {}
+   return render(request,"WebApp/newChapterBuilder.html", context)
+
+
 def deletechapterfile(request):
     if request.method == 'POST' and request.user.is_authenticated:
         old_file = json.loads(request.POST['old'])
@@ -1512,77 +1642,89 @@ def save_video(request):
         name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
             re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
-        # name = "".join(re.findall("[a-zA-Z]+", name))
 
-        fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-        filename = fs.save(name, media)
+        # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+        # filename = fs.save(name, media)
         # return JsonResponse({'media_name': name})
+        # video uploading to vimeo.com
 
-        # #video uploading to vimeo.com
-
-        # standard Account
-        # v = vimeo.VimeoClient(
-        #     token='7a954bb83b66a50a95efc2d1cfdd484a',
-        #     key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
-        #     secret='1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
-        # )
         # Premium Account
-        v = vimeo.VimeoClient(
-            token='3b42ecf73e2a1d0088dd677089d23e32',
-            key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
-            secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
-        )
+        # v = vimeo.VimeoClient(
+        #     token='3b42ecf73e2a1d0088dd677089d23e32',
+        #     key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
+        #     secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
+        # )
 
-        # media = '{path to a video on the file system}'
-
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + name, data={
-            'name': name,
-        })
-
-        response = v.get(uri).json()
-        status = response['status']
-        videoid = response['uri'].split('/')[-1]
-
-        url = 'https://api.vimeo.com/me/projects/772975/videos/' + videoid  # Premium account Folder
-        # url = 'https://api.vimeo.com/me/projects/936814/videos/'+videoid    #Standard Account Folder
-        v.put(url)
-        print(response['status'])
-
-        while status == 'transcode_starting' or status == 'transcoding':
-            time.sleep(2)
-            r = v.get(uri + '?fields=status').json()
-            status = r['status']
-        return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
-    '''
-    print(type(request.POST['file-0']))
-    data = {
-        "upload": {
-            "approach": "tus",
-            "size": media.size
+        data = {
+            "upload": {
+                "approach": "tus",
+                "size": media.size
+            },
+            'name': name
         }
-    }
-    r = requests.post(url="https://api.vimeo.com/me/videos",
-                      headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
-                               'Content-Type': 'application/json',
-                               'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
-                      data=json.dumps(data))
-    print(r)
-    if r.status_code == 200:
-        r_responseText = json.loads(r.text)
-        res = requests.patch(r_responseText['upload']['upload_link'], headers={'Tus-Resumable': '1.0.0',
-                                                                               'Content-Type': 'application/offset+octet-stream',
-                                                                               'Accept': 'application/vnd.vimeo.*+json;version=3.4',
-                                                                               'Connection': 'keep-alive',
-                                                                               'Upload-Offset': '0'},
-                             data=media
-                             )
-        print(res)
+        rs = requests.session()
 
-        if res.status_code == 200:
-            response = requests.head(res.upload.upload_link)
+        # if getServerIP() != '103.41.247.44':  # 103.41.247.44 is ip of ublcloud.me (indonesian). If request if for ublcloud, then it will save to server else to vimeo
+        if settings.SERVER_NAME != 'Indonesian_Server':
+            r = rs.post(url="https://api.vimeo.com/me/videos",
+                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                 'Content-Type': 'application/json',
+                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                        data=json.dumps(data))
+            if r.status_code == 200:
+                r_responseText = json.loads(r.text)
+                res = rs.patch(r_responseText['upload']['upload_link'], headers={'Tus-Resumable': '1.0.0',
+                                                                                 'Content-Type': 'application/offset+octet-stream',
+                                                                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4',
+                                                                                 'Connection': 'keep-alive',
+                                                                                 'Upload-Offset': '0'},
+                               data=media.file
+                               )
+
+                if res.status_code == 204 or res.status_code == 200:
+                    response = rs.head(r_responseText['upload']['upload_link'])
+
+                    a = rs.put(
+                        url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[-1],
+                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                 'Content-Type': 'application/json',
+                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                    return JsonResponse(
+                        {'link': r_responseText['upload']['upload_link'], 'media_name': name,
+                         'html': r_responseText['embed']['html']})
+        else:
+            if (media.size / 1024) > (500 * 1024):  # checking if file size is greater than 500 MB in Indonesian Server
+                return JsonResponse(data={"message": "File size exceeds 500 MB"}, status=500)
+            if media.name.split('.')[-1] != 'mp4' and (media.size / 1024) > (
+                    100 * 1024):  # if media size is 100 MB and media is not mp4
+                return JsonResponse(data={"message": "File size above 100 MB must be MP4"}, status=500)
+
+            name = (str(uuid.uuid4())).replace('-', '') + '' + "".join(
+                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '' + str(
+                request.user.pk)
+            cloudinary.config(
+                cloud_name="nsdevil-com",
+                api_key="355159163645263",
+                api_secret="riH4CD94zuSXffS_wfSgIFgxmJ0"
+            )
+            response = cloudinary.uploader.upload_large(media.file,
+                                                        folder="/id.ublcloud.me",
+                                                        resource_type="video",
+                                                        chunk_size=6000000,  # chunk size default is 6 MB
+                                                        public_id=name,
+                                                        )
+            embedd_code = '<iframe src="' + response['secure_url'] + '"><video controls preload="none"><source src="' + \
+                          response['secure_url'] + '" type="video/mp4" autostart="false"></video></iframe>'
             print(response)
-        return res
-'''
+
+            return JsonResponse(
+                {'link': response['secure_url'], 'media_name': response['public_id'],
+                 # 'html': embedd_code
+                 })
+            # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            # filename = fs.save(name, media)
+        return JsonResponse({}, status=500)
+
 
 def save_json(request):
     if request.method == "POST":
@@ -2083,7 +2225,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
     courseObj = get_object_or_404(CourseInfo, pk=coursepk)
     chapters_list = courseObj.chapterinfos.all().order_by('Chapter_No')
     list_of_students = []
-    student_data = []
+    # student_data = []
     if '/teachers' in request.path:
         basefile = "teacher_module/base.html"
     elif '/teachers' or '/students' not in request.path:
@@ -2106,72 +2248,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
 
             if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
                 list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
-
-            for chapter in chapters_list:
-                for x in list_of_students:
-                    jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
-                                                     createFile=False)
-                    if jsondata is not None:
-                        if int(jsondata['contents']['totalPage']) > 0 and int(
-                                jsondata['contents']['currentpagenumber']) > 0:
-                            progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
-                                jsondata['contents']['totalPage'])
-                        else:
-                            progresspercent = 0
-                    else:
-                        progresspercent = 0
-
-                    student_quiz = Quiz.objects.filter(chapter_code=chapter)
-                    # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
-
-                    student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
-                    total_quiz_percent_score = 0
-                    temp = []
-                    for z in student_result:
-                        if z.quiz.pk in temp:
-                            student_result.get(pk=z.pk).delete()
-                        else:
-                            temp.append(z.quiz.pk)
-                            total_quiz_percent_score += float(z.get_percent_correct)
-
-                    # Attendance here means chapter completion.
-                    ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
-                        field and the chapter progress is 100% '''
-                    if chapter.mustreadtime:
-                        attendance = int(
-                            jsondata['contents'][
-                                'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
-                    else:
-                        attendance = None
-                    student_data.append(
-                        {
-                            'student': x,
-                            'chapter': {
-                                'chapterObj': chapter,
-                                'laststudydate': datetime.strptime(jsondata['contents'][
-                                                                       'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
-                                    "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
-                                'totalstudytime': timedelta(seconds=int(jsondata['contents'][
-                                                                            'totalstudytime'])) if jsondata is not None else "00:00:00",
-                                'currentpagenumber': int(
-                                    jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
-                                'totalPage': int(
-                                    jsondata['contents']['totalPage']) if jsondata is not None else None,
-                                'progresspercent': progresspercent,
-                                'attendance': attendance,
-                            },
-                            'quiz': {
-                                'quiz_count': student_quiz.count(),
-                                'completed_quiz': student_result.filter(complete=True).count(),
-                                'progress': student_result.filter(
-                                    complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
-                                # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
-                                # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                                'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
-                                    complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                            }
-                        },
-                    )
+            student_data = getCourseProgress(courseObj, list_of_students, chapters_list)
         else:
             messages.add_message(request, messages.ERROR,
                                  'The course is not assosiated with any innings. Please contact administrator')
@@ -2194,10 +2271,8 @@ def CourseProgressView(request, coursepk, inningpk=None):
     return render(request, 'teacher_module/chapterProgress.html', context=context)
 
 
-def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fromquiz=False, totalquizcount=None,
-                          attemptedquiz=None, correctquizanswers=None, currentPageNumber=None, totalPage=None,
-                          studytimeinseconds=None, createFile=True,
-                          isjson=False
+def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, currentPageNumber=None, totalPage=None,
+                          studytimeinseconds=None, createFile=True, isjson=False
                           ):
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
     try:
@@ -2218,7 +2293,7 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
 
             jsondata['contents']['totalstudytime'] = int(jsondata['contents']['totalstudytime']) + int(
                 studytimeinseconds)
-            jsondata['contents']['laststudydate'] = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+            jsondata['contents']['laststudydate'] = datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S")
 
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
@@ -2230,22 +2305,12 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
             if fromcontents:
                 jsondata = {
                     "contents": {
-                        "laststudydate": datetime.now().strftime("%m/%d/%Y %H:%M:%S"),
+                        "laststudydate": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
                         "totalstudytime": studytimeinseconds,
                         "currentpagenumber": currentPageNumber,
                         "totalPage": totalPage,
                     },
-                    # "quiz": {},
                 }
-            # elif fromquiz:
-            #     jsondata = {
-            #         "contents":{},
-            #         "quiz":{
-            #             "totalquizcount": totalquizcount,
-            #             "attemptedquiz": attemptedquiz,
-            #             "correctquizanswers": correctquizanswers,
-            #         },
-            #     }
             else:
                 return None
             # student_file = open(student_data_file, "w+")
@@ -2254,3 +2319,162 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, fr
         else:
             return None
     return jsondata
+
+
+def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=None):
+    student_data = []
+    for chapter in chapters_list:
+        for x in list_of_students:
+            jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
+                                             createFile=False)
+            if jsondata is not None:
+                if int(jsondata['contents']['totalPage']) > 0 and int(
+                        jsondata['contents']['currentpagenumber']) > 0:
+                    progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                        jsondata['contents']['totalPage'])
+                else:
+                    progresspercent = 0
+            else:
+                progresspercent = 0
+
+            student_quiz = Quiz.objects.filter(chapter_code=chapter)
+            # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
+
+            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+            total_quiz_percent_score = 0
+            temp = []
+            for z in student_result:
+                if z.quiz.pk in temp:
+                    student_result.get(pk=z.pk).delete()
+                else:
+                    temp.append(z.quiz.pk)
+                    total_quiz_percent_score += float(z.get_percent_correct)
+
+            # Attendance here means chapter completion.
+            ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
+                field and the chapter progress is 100% '''
+            if chapter.mustreadtime:
+                attendance = int(
+                    jsondata['contents'][
+                        'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+            else:
+                attendance = None
+            student_data.append(
+                {
+                    'student': x,
+                    'chapter': {
+                        'chapterObj': chapter,
+                        'laststudydate': datetime.strptime(jsondata['contents'][
+                                                               'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
+                            "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
+                        'totalstudytime': timedelta(seconds=int(jsondata['contents'][
+                                                                    'totalstudytime'])) if jsondata is not None else "00:00:00",
+                        'currentpagenumber': int(
+                            jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
+                        'totalPage': int(
+                            jsondata['contents']['totalPage']) if jsondata is not None else None,
+                        'progresspercent': progresspercent,
+                        'attendance': attendance,
+                    },
+                    'quiz': {
+                        'quiz_count': student_quiz.count(),
+                        'completed_quiz': student_result.filter(complete=True).count(),
+                        'progress': student_result.filter(
+                            complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                        # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
+                        # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
+                        'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
+                            complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
+                    }
+                },
+            )
+    return student_data
+
+
+def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
+    date = datetime.now().strftime('%Y%m%d')
+    path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog", date)
+    try:
+        os.makedirs(path)  # Creates the directories and subdirectories structure
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    try:
+        with open(student_data_file) as outfile:
+            jsondata = json.load(outfile)
+        isjson = True
+    except:
+        isjson = False
+    if os.path.isfile(student_data_file) and isjson:
+        if not type:
+            return jsondata
+        newdata = {
+            "chapterid": chapterid,
+            "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+            "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+        }
+        jsondata.append(newdata)
+        with open(student_data_file, "w+") as outfile:
+            json.dump(jsondata, outfile, indent=4)
+    else:
+        if createFile:
+            jsondata = [
+                {
+                    "chapterid": chapterid,
+                    "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                    "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+                },
+            ]
+
+            with open(student_data_file, "w+") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+        else:
+            return None
+    return jsondata
+
+def getListOfFiles(dirName, studentid):
+    # create a list of file and sub directories 
+    # names in the given directory 
+    listOfFile = os.listdir(dirName)
+    allFiles = list()
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory 
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + getListOfFiles(fullPath, studentid)
+        elif entry == str(studentid) + '.txt':
+            allFiles.append(fullPath)
+                
+    return allFiles
+
+def StudentChapterProgressView(request, courseid, chapterid, studentid):
+    context = dict()
+
+    if '/teachers' in request.path:
+        basefile = "teacher_module/base.html"
+    elif '/teachers' or '/students' not in request.path:
+        basefile = "base.html"
+    context['basefile'] = basefile
+
+    path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog")
+    date_dir = getListOfFiles(path, studentid)
+    temp = []
+    for filepath in date_dir:
+        dirname = os.path.split(os.path.split(filepath)[0])[1]
+        date = datetime.strptime(dirname, '%Y%m%d').date()
+        try:
+            with open(filepath) as outfile:
+                jsondata = json.load(outfile)
+        except:
+            jsondata = ''
+        if jsondata:
+            temp.append({'date': date,'data':jsondata})
+    context['object'] = temp
+    context['courseid'] = str(courseid)
+    context['chapterid'] = str(chapterid)
+    return render(request, 'teacher_module/progressdetail.html', context=context)
+
+def loaderverifylink(request):
+    return render(request, 'loaderio.html')
