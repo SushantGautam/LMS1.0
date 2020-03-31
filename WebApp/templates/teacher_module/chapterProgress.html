@@ -226,6 +226,7 @@
                             <th>{% trans "Last Visit" %}</th>
                             <th>{% trans "Quiz Achievement" %}</th>
                             <th>{% trans "Attendance" %}</th>
+                            <th>{% trans "History" %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -259,6 +260,7 @@
                                 <td class="attendance" data-attendance="{{ a.chapter.attendance }}">
                                     {{ a.chapter.attendance }}
                                 </td>
+                            <td>View</td>
                             </tr>
                         {% endfor %}
                         </tbody>

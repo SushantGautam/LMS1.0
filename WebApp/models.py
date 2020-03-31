@@ -256,6 +256,8 @@ class ChapterInfo(models.Model):
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+    Start_Date = DateTimeField(null=True, blank=True)
+    End_Date = DateTimeField(null=True, blank=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
     # Relationship Fields

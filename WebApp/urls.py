@@ -276,6 +276,10 @@ urlpatterns += (
     # urls for chapterpagebuilder
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
          views.chapterpagebuilder, name='chapterpagebuilder'),
+
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newChapterBuilder',
+       views.newChapterBuilder, name='newChapterBuilder'),
+
     path('viewchapter',
          views.chapterviewer, name='chapterviewer'),
     path('saveFile', views.save_file, name='saveFile'),

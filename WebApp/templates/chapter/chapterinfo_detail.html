@@ -98,6 +98,14 @@
                         </span>{% elif object.Use_Flag is False %}
                         <span class="text-danger"><b>Inactive</b></span>{% endif %}</td>
                 </tr>
+                <tr>
+                    <td>Start Date</td>
+                    <td>{{ object.Start_Date|date:"d M, Y" }}</td>
+                </tr>
+                <tr>
+                    <td>End Date</td>
+                    <td>{{ object.End_Date|date:"d M, Y" }}</td>
+                </tr>
 
                 <tr>
                     <td>Register Agent</td>
