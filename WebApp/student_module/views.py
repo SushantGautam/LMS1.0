@@ -287,7 +287,10 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(
-            Course_Code=self.kwargs.get('pk'), Use_Flag=True).order_by('Chapter_No')
+            Course_Code=self.kwargs.get('pk'), Use_Flag=True) \
+            .filter(Q(Start_Date__lte=datetime.now().date()) | Q(Start_Date=None)) \
+            .filter(Q(End_Date__gte=datetime.now().date()) | Q(End_Date=None)) \
+            .order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Quiz.objects.filter(
