@@ -2432,6 +2432,50 @@ def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False)
             return None
     return jsondata
 
+def getListOfFiles(dirName, studentid):
+    # create a list of file and sub directories 
+    # names in the given directory 
+    listOfFile = os.listdir(dirName)
+    allFiles = list()
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory 
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + getListOfFiles(fullPath, studentid)
+        elif entry == str(studentid) + '.txt':
+            allFiles.append(fullPath)
+                
+    return allFiles
+
+def StudentChapterProgressView(request, courseid, chapterid, studentid):
+    context = dict()
+
+    if '/teachers' in request.path:
+        basefile = "teacher_module/base.html"
+    elif '/teachers' or '/students' not in request.path:
+        basefile = "base.html"
+    context['basefile'] = basefile
+
+    path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog")
+    date_dir = getListOfFiles(path, studentid)
+    temp = []
+    for filepath in date_dir:
+        filename = os.path.basename(filepath)
+        dirname = filepath.split('\\')[-2]
+        date = datetime.strptime(dirname, '%Y%m%d').date()
+        try:
+            with open(filepath) as outfile:
+                jsondata = json.load(outfile)
+        except:
+            jsondata = ''
+        if jsondata:
+            temp.append({'date': date,'data':jsondata})
+    context['object'] = temp
+    context['courseid'] = str(courseid)
+    context['chapterid'] = str(chapterid)
+    return render(request, 'teacher_module/progressdetail.html', context=context)
 
 def loaderverifylink(request):
     return render(request, 'loaderio.html')
