@@ -370,7 +370,7 @@
                                         {% if answer.Assignment_Answer != '' %}
                                             <p style="margin: 0;color:#000000;">{{ answer.Assignment_Answer }}</p>
                                             {% now "Y-m-d" as todays_date %}
-                                            {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date and object.Assignment_Start|date:"Y-m-d" < todays_date %}
+                                            {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
                                                 <button class="btn btn-info editanswer"
                                                         data-Student_Code="{{ request.user.id }}"
                                                         data-Question_Code="{{ questions.id }}"
@@ -422,7 +422,7 @@
 
                                             <div class="form-group text-center">
                                                 {% now "Y-m-d" as todays_date %}
-                                                {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date and object.Assignment_Start|date:"Y-m-d" < todays_date %}
+                                                {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
                                                     <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
@@ -456,7 +456,7 @@
                                             </div>
                                             <div class="form-group text-center">
                                                 {% now "Y-m-d" as todays_date %}
-                                                {% if object.Assignment_Deadline|date:"Y-m-d" > todays_date and object.Assignment_Start|date:"Y-m-d" < todays_date %}
+                                                {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
                                                     <button class="btn btn-sm btn-primary" type="reset"
                                                             id="cancelButton{{ questions.pk }}">
                                                         Cancel
