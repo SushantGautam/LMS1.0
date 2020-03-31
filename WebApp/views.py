@@ -2462,8 +2462,7 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
     date_dir = getListOfFiles(path, studentid)
     temp = []
     for filepath in date_dir:
-        filename = os.path.basename(filepath)
-        dirname = filepath.split('\\')[-2]
+        dirname = os.path.split(os.path.split(filepath)[0])[1]
         date = datetime.strptime(dirname, '%Y%m%d').date()
         try:
             with open(filepath) as outfile:
