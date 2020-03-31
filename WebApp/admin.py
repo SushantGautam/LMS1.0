@@ -91,8 +91,9 @@ class ChapterInfoAdminForm(forms.ModelForm):
 
 class ChapterInfoAdmin(admin.ModelAdmin):
     form = ChapterInfoAdminForm
-    list_display = ['Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag','mustreadtime',
+    list_display = ['id','Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag','mustreadtime',
                     'Register_DateTime', 'Updated_DateTime', 'Register_Agent', 'Course_Code']
+    search_fields = ('Chapter_Name',)
 
 
 admin.site.register(ChapterInfo, ChapterInfoAdmin)
