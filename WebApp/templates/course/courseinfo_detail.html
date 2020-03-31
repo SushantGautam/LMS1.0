@@ -518,38 +518,89 @@
 
 
 
-                            <div class="col-md-8 col-sm-8 col-xs-12">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                 <div class="row">
+                                     <div class="col-md-6">
+                                        <h4>
+                                
+                                            <span style="color: #000000 ; font-size:16px; font-weight:700;" >{{ o.Chapter_Name }}</span>
+                                        </h4>
+
+                                     </div>
+                                     <div class="col-md-6 hidden-xs">
+                                        <a href="{% if '/students' in request.path %}
+                                        {{ o.student_get_absolute_url }}
+                                    {% elif '/teachers' in request.path %}
+                                        {{ o.teacher_get_absolute_url }}
+                                    {% else %}
+                                       {{ o.get_absolute_url }}
+                                    {% endif %}">
+                                            <button type="button" style="float: right;width:115px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                        margin-top: 10px;margin-bottom: 10px;">View Chapter &nbsp;<i
+                                                    class="fa fa-arrow-right"></i>
+                                            </button>
+                                        </a>
+
+                                     </div>
+                                 </div>
                            
-                                <h4>
-                                    <span style="color: #000000 ; font-size:16px; font-weight:700;" >{{ o.Chapter_Name }}</span>
-                                    <span style="float: right;  font-size: 12px;font-weight:600;  font-style: italic;">
-                                        Running Time: <b>{{ o.getmustreadtimeinformat }}</b>
-                                    </span>
-                                </h4>
+                              
+                              
+                                   
+                               
                                 {% if '/students' in request.path %}
                                     {% for x in student_data %}
                                         {% if  o.pk == x.chapter.chapterObj.pk %}
+                                        <div class="col-md-6 col-sm-6 col-xs-12" style="padding: 0px !important;">
                                             <h4>
-                                                <span style="float: right; font-size: 12px; font-weight:600; font-style: italic;">
-                                                    Studied Time: <b>{{ x.chapter.totalstudytime }}</b>
+                                                <span class="running-time" style="font-weight:600;  font-style: italic;">
+                                                    Running Time: <b>{{ o.getmustreadtimeinformat }}</b>
                                                 </span>
                                             </h4>
-
-                                            <div>
-                                               <span style="font-weight: 600; font-style:italic">Status:</span>  
-                                                {% if x.chapter.attendance %}
-                                                    <strong style="color: #00A000;font-weight: 700;">Complete</strong>
-                                                {% else %}
-                                                    <strong style="color: red;font-weight: 700;">In Progress</strong>
-                                                {% endif %}
-                                            </div>
-
-
+        
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12" style="padding: 0px !important;">
+                                            
                                             <div class="laststudydate" style="font-size: 12px; font-weight:600;font-style: italic; margin:5px 0;"
                                                  data-laststudydate="{{ x.chapter.laststudydate }}"
                                                  data-laststudydatewithutc="{{ x.chapter.laststudydate }} UTC">
                                                 Last Studied: <b>{{ x.chapter.laststudydate }}</b>
                                             </div>
+        
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px !important;"> 
+                                           <div class="col-md-6 col-sm-6 col-xs-12"  style="padding: 0px !important;">
+                                            <span style="font-weight: 600; font-style:italic">Status:</span>  
+                                            {% if x.chapter.attendance %}
+                                              <span> <strong style="color: #00A000;font-weight: 700;">Complete</strong></span> 
+                                            {% else %}
+                                            <span>   <strong style="color: red;font-weight: 700;">In Progress</strong></span> 
+                                            {% endif %}
+                                           </div>
+                                           <div class="col-md-6 col-sm-6 col-xs-12"  style="padding: 0px !important;">
+                                            <span class="studied-time" style=" font-weight:600; font-style: italic;">
+                                                Studied Time: <b>{{ x.chapter.totalstudytime }}</b>
+                                            </span>
+                                           </div>
+                                           
+                                        
+                                              
+
+
+                                          
+                                            
+                                               
+                                            
+
+                                           
+                                             
+
+                                         
+
+                                       <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                       
                                             <div class="progress">
                                                 <div class="progress-bar" role="progressbar" aria-valuenow="70"
                                                      aria-valuemin="0" aria-valuemax="100"
@@ -561,24 +612,29 @@
                                                     <span class="sr-only">{{ x.chapter.progresspercent }}% Complete</span>
                                                 </div>
                                             </div>
+                                        </div>  
+                                 </div>  
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
+                                <div class="col-md-6 hidden-sm hidden-md hidden-lg">
+                                    <a href="{% if '/students' in request.path %}
+                                    {{ o.student_get_absolute_url }}
+                                {% elif '/teachers' in request.path %}
+                                    {{ o.teacher_get_absolute_url }}
+                                {% else %}
+                                   {{ o.get_absolute_url }}
+                                {% endif %}">
+                                        <button type="button" style="float: right;width:115px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    margin-top: 10px;margin-bottom: 10px;">View Chapter &nbsp;<i
+                                                class="fa fa-arrow-right"></i>
+                                        </button>
+                                    </a>
+
+                                 </div>
+
                             </div>
-                            <div class="col-md-4 col-sm-4 col-xs-12">
-                                <a href="{% if '/students' in request.path %}
-                                {{ o.student_get_absolute_url }}
-                            {% elif '/teachers' in request.path %}
-                                {{ o.teacher_get_absolute_url }}
-                            {% else %}
-                               {{ o.get_absolute_url }}
-                            {% endif %}">
-                                    <button type="button" style="float: right;width:150px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                margin-top: 10px;margin-bottom: 10px;">View Chapter &nbsp;<i
-                                            class="fa fa-arrow-right"></i>
-                                    </button>
-                                </a>
-                            </div>
+                            
 
                             <div class="col-md-12 col-sm-12 col-xs-12">
                                 <hr style="margin-top: 5px; margin-bottom: 5px;">

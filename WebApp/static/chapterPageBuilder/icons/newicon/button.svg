@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <defs>
+    <style>
+      .cls-1, .cls-3 {
+        fill: #eef2f5;
+      }
+
+      .cls-1 {
+        stroke: #e1e7f0;
+        opacity: 0;
+      }
+
+      .cls-1, .cls-3, .cls-4 {
+        stroke-linejoin: round;
+        stroke-width: 1px;
+      }
+
+      .cls-2, .cls-4 {
+        fill: #363c45;
+      }
+
+      .cls-3, .cls-4 {
+        stroke: #363c45;
+      }
+
+      .cls-4 {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <rect id="모서리가_둥근_직사각형_7_복사_10" data-name="모서리가 둥근 직사각형 7 복사 10" class="cls-1" x="-1" width="28" height="28" rx="2" ry="2"/>
+  <rect id="모서리가_둥근_직사각형_6_복사" data-name="모서리가 둥근 직사각형 6 복사" class="cls-2" x="4" y="9" width="19" height="16" rx="2" ry="2"/>
+  <rect id="모서리가_둥근_직사각형_6" data-name="모서리가 둥근 직사각형 6" class="cls-3" x="4" y="4" width="19" height="18" rx="2" ry="2"/>
+  <path id="사각형_7_복사_14" data-name="사각형 7 복사 14" class="cls-4" d="M10,12h7v1H10V12Zm3-3h1v7H13V9Z"/>
+</svg>
