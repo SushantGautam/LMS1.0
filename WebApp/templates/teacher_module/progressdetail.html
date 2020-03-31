@@ -4,26 +4,40 @@
 {% load i18n %}
 {% load getMemberFromPk %}
 
-
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'admin_course_progress' courseid %}">Progress</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'admin_course_progress' course.id %}">Progress</a></li>
     <li class="breadcrumb-item active" aria-current="page">Detail</li>
 {% endblock %}
 
+{% block stylesheets %}
+    <style>
+        .pl-4{
+            padding-left: 4em;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+        <h3 class="panel-title">Student Chapter Progress Data</h3>
+        </div>
+        <div class="panel-body">
+            <span class="h4 pl-4">Student Name: {{ student.getFullName }}</span>
+            <span class="h4 pl-4">Course: {{ course.Course_Name }}</span>
+            <span class="h4 pl-4">Chapter: {{ chapter.Chapter_Name }}</span>
+        </div>
+    </div>
 
     {% for obj in object %}
         <h4><b>Date:</b> {{ obj.date }}</h4>
         <br><br>
         {% for data in obj.data %}
-            {% if data.chapterid == chapterid %}
-                {% if data.type == '1' %}
-                    <b class="text-success">Entry:</b>{{ data.visittime }} <br>
-                {% endif %}
-                {% if data.type == '1' %}
-                    <b class="text-danger">Exit:</b>{{ data.visittime }} <br>
-                {% endif %}
+            {% if data.type == '1' %}
+                <b class="text-success">Entry:</b>{{ data.visittime }} <br>
+            {% endif %}
+            {% if data.type == '0' %}
+                <b class="text-danger">Exit:</b>{{ data.visittime }} <br>
             {% endif %}
         {% endfor %}
         <br>

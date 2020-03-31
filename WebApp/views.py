@@ -2451,6 +2451,9 @@ def getListOfFiles(dirName, studentid):
 
 def StudentChapterProgressView(request, courseid, chapterid, studentid):
     context = dict()
+    courseObj = get_object_or_404(CourseInfo, pk=courseid)
+    chapterObj = get_object_or_404(ChapterInfo, pk=chapterid)
+    studentObj = get_object_or_404(MemberInfo, pk=studentid)
 
     if '/teachers' in request.path:
         basefile = "teacher_module/base.html"
@@ -2462,6 +2465,7 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
     date_dir = getListOfFiles(path, studentid)
     temp = []
     for filepath in date_dir:
+        flag = 0
         dirname = os.path.split(os.path.split(filepath)[0])[1]
         date = datetime.strptime(dirname, '%Y%m%d').date()
         try:
@@ -2470,10 +2474,16 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
         except:
             jsondata = ''
         if jsondata:
-            temp.append({'date': date,'data':jsondata})
+            for data in jsondata:
+                if data['chapterid'] == str(chapterid):
+                    flag = 1
+                    break
+            if flag == 1:
+                temp.append({'date': date,'data':jsondata})
     context['object'] = temp
-    context['courseid'] = str(courseid)
-    context['chapterid'] = str(chapterid)
+    context['course'] = courseObj
+    context['chapter'] = chapterObj
+    context['student'] = studentObj
     return render(request, 'teacher_module/progressdetail.html', context=context)
 
 def loaderverifylink(request):
