@@ -4,6 +4,25 @@ html, body {
     font-size: 16px;
 }
 
+::-webkit-scrollbar {
+    width: 7px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
 /* header-part */
 .container-fluid{
     padding: 0!important;
@@ -31,14 +50,20 @@ html, body {
     text-align: right;
 
 }
-.exit-button-only{
-    text-align: right;
-    margin-left: 25px;
-    text-align: none;
+.exit-button-only {
+    text-align: center;
+   
+    line-height: 26px;
     color: white;
 
 }
-
+.exit-button-only a{
+    color: white;
+}
+.exit-button-only a:hover{
+    color: white;
+    text-decoration: none;
+}
 .btn-type1{
     padding: 4px 15px;
     margin-right: 5px;
@@ -74,24 +99,128 @@ html, body {
     padding: 0px!important;
 }
 
+.ols-objects{
+    text-align: center;
+}
 .ols-part{
-    padding: 0px!important;
+    background-color: #cbd4e1;
+    padding: 0 10px 0px 15px!important;
     height: 92vh;
-    background-color: red;
+    
+   
 
 }
+
+.ols-each-content{
+    background-color: #eef2f5;
+   
+}
+.layouts-only{
+    background-color: #eef2f5;
+    height: 80vh ;
+}
+
+.layout-type-holder{
+    margin: 15px 10px 0 10px;
+    height: 100px;
+}
+.layout-type-holder img{
+    height: 100%;
+    width: 100%;
+}
+.list-objects{
+    padding-left: 0px!important;
+    margin-bottom: 0px!important;
+    text-align: left;
+    list-style: none;
+    
+}
+.individual-objects{
+    padding: 15px 15px 15px 15%;
+    font-size: 17px;
+}
+.individual-objects:hover{
+    background-color: #e1e7f0;
+   
+}
+.media-items-only{
+    background-color: #eef2f5;
+    height: 80vh;
+}
+.list-objects a{
+    color: black;
+}
+.list-objects a:hover{
+    color: black;
+    text-decoration: none;
+
+}
+.custom-dropdown{
+    text-align: center;
+    width: 100%;
+    margin-top:20px
+    
+}
+
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    width: 100%!important;
+}
+.all-item-word:hover{
+    color:black;
+    text-decoration: none;
+}
+.own-padding{
+    padding: 0px!important;
+}
+.object-image-size{
+    height: 23px;
+    width: 30px;
+    margin-right: 15px;
+}
+.object-name-size{
+    font-size: 15px;
+    font-weight: 600;
+}
+.icon-boxes{
+    height: 80vh ;
+    overflow: auto;
+}
 .icon1{
-    font-size: 75px;
+    font-size: 60px;
     color: white;
 }
 .icon1:hover{
     color: #79a6fb;
 }
+.icon1:focus{
+    background-color: #79a6fb;
+
+}
 
 .main-canvas-part {
-    padding: 0px!important;
+  
     height: 92vh;
-    background-color: blue;
+    background-color:#cbd4e1;
 
 }
 
@@ -99,26 +228,29 @@ html, body {
     padding: 0px!important;
     margin: 0px!important;
     height: 92vh;
-    background-color: green;
+    background-color:#eef2f5;
 
 }
 .row-ols{
-    padding: 10px;
+    padding: 15px;
     background-color: #353c46;
+    height: 100px;
    
   
 }
 .obj-img{
    
     width: 33.33%;
-    float:left;
+    float: left;
     padding: 1px;
+    
     
 }
 .layout-img{
     width: 33.33%;
     float:left;
     padding: 1px;
+    
 
 
 
@@ -127,11 +259,12 @@ html, body {
     width: 33.33%;
     float:left;
     padding: 1px;
+    
 
 }
 
 .obj-img-holder{
-    height: 75px
+    
     
 }
 .obj-img-holder img{
@@ -140,7 +273,7 @@ html, body {
     color: white;
 }
 .layout-img-holder{
-    height: 75px
+   
    
 }
 .layout-img-holder img{
@@ -149,7 +282,7 @@ html, body {
     color: white;
 }
 .source-img-holder{
-    height: 75px
+  
 
 }
 .source-img-holder img{
@@ -157,12 +290,73 @@ html, body {
     width: 100%;
     color: white;
 }
+.view-mode{
+    padding: 10px;
+    text-align: right;
+}
+.view-mode a {
+    color: black;
+}
+.view-mode a:hover {
+    color: black;
+    text-decoration: none;
+}
 
+.main-central-canvas{
+    height: 83vh;
+    background-color: white;
+}
 /* rightpart */
 
 .note-holder{
 padding: 10px!important;
+color: white;
+background-color: #353c46;
+height: 100px;
     
+}
+.hr_header{
+    width: 100%;
+    height: 2px;
+    background-color:#353c46;
+}
+.additional-canvas{
+  
+    height: 70vh;
+    overflow: auto;
+}
+.small-canvases-list{
+    /* padding-left: 15%; */
+    list-style: none;
+    display: flex;
+    align-items: unset;
+    padding: 15px 15px 15px 35px
+}
+.span-number{
+    margin-right: 20px;
+}
+.small-canvases{
+    
+height: 110px;
+    
+width: 170px;
+    
+background-color: white;
+    
+/* margin: 20px; */
+}
+.add-page{
+    text-align: center;
+    padding-top: 5px;
+    font-size: 16px;
+}
+.add-page a{
+    color: black;
+
+}
+.add-page a:hover{
+    text-decoration: none;
+
 }
 
 /* mAIN-BODY ENDS */

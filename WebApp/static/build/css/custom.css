@@ -2423,11 +2423,15 @@ label .asteriskField {
 .assignment-status {
     text-align: right;
 }
+.laststudydate{
+    float: left;  font-size: 12px;
+
+}
 .running-time {
-    float: right;  font-size: 12px;
+    float: left;  font-size: 12px;
 }
  .studied-time{
-    float: right;  font-size: 12px;
+    float: left;  font-size: 12px;
 }
 @media all and (max-width: 500px) {
     .list-group-item1 {
@@ -2448,7 +2452,11 @@ label .asteriskField {
         float: left;  font-size: 12px;
     }
      .studied-time{
-        float: left;  font-size: 12px;
+        float: right;  font-size: 12px;
+    }
+    .laststudydate{
+        float: right;  font-size: 12px;
+    
     }
 
 

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/newChapterBuilder.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/new-responsive.css' %}">
 
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap3.4.1.min.css' %}">
 </head>
@@ -25,19 +26,24 @@
 
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
-            <div class="chapter-title-only col-md-2 col-sm-3">
+            <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12" >
                 <span>Chapter Title <i class="fas fa-pencil-alt"></i></span>
 
             </div>
-            <div class=" buttons-chapter-only col-md-10 col-sm-9">
+            <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
                 <button class="btn-type1"><i style="color:white" class="fas fa-save"></i>&nbsp; Save</button>
                 <button  class="btn-type1"><i style="color:white" class="fas fa-file-import"></i>&nbsp; Import</button>
                 <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button class="btn-type1">
                 <button class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button class="btn-type1">
 
-                 <a class="exit-button-only" href="">  <span>  QUIT <i style="border:1px solid white; padding:1px 2px   " class="fas fa-times"></i> </span></a>   
+                
 
             </div>
+            <div class="exit-button-only col-md-2 col-sm-3 col-xs-12 ">
+                <a class="" href="">  <span>  QUIT <i style="border:1px solid white; padding:1px 2px   " class="fas fa-times"></i> </span></a>  
+
+            </div>
+
           
         </div>
 
@@ -47,108 +53,301 @@
     <main class=" container-body-part col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
         <div class="row body-holder">
-
-            <div class=" ols-part col-md-2 col-sm-2 col-xs-2">
-                <div class="ols-objects col-md-12 col-xs-12 col-sm-12">
-                    <div class="row row-ols" >
-                        <div class="obj-img"   >
+    
+            <div class=" ols-part col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                <div class="ols-objects">
+                    <div class=" row-ols">
+                        <div class="obj-img">
                             <div class="obj-img-holder">
-                                <a href="#1a" data-toggle="tab"><span style="height: 50px;"><i  class="fas fa-address-book icon1"></i></span></a>
-                                
-                                
-
+                                <a class="" href="#1a" data-toggle="tab"><i  class="  fas fa-address-book icon1"></i></a>
+                                <span class="ols-names" style="color: white; text-align:center">Object</span>
+    
                             </div>
-                            
+    
                         </div>
-                        <div class="layout-img"  >
+                        <div class="layout-img">
                             <div class="layout-img-holder">
-                                <a href="#2a" data-toggle="tab"><i  class="fas fa-address-book icon1"></i></a>
-
-                                
-                                
+                                <a class=" " href="#2a" data-toggle="tab"><i  class="  fas fa-address-book icon1"></i></a>
+    
+                                <span class="ols-names" style="color: white; text-align:center">Layout</span>
+    
                             </div>
-
+    
                         </div>
-                        <div class="source-img" >
-                            <div class="source-img-holder"> 
-
+                        <div class="source-img">
+                            <div class="source-img-holder">
+    
                                 <a href="#3a" data-toggle="tab"><i  class="fas fa-address-book icon1"></i></a>
-
-                                
-                                
+    
+                                <span class="ols-names" style="color: white;">Source</span>
+    
                             </div>
-
+    
                         </div>
-                        
-
-                         <!-- example -->
-
-                        
-                         <div id="exTab1" class="container">
-                            
-                        
-                            <div class="tab-content ">
-                                <div class="tab-pane active" id="1a">
-                                    <h3 style="color: white;">Content's background color is the same for the tab</h3>
-                                </div>
-                                <div style="color: white;" class="tab-pane" id="2a">
-                                    <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the tab</h3>
-                                </div>
-                                <div style="color: white;" class="tab-pane" id="3a">
-                                    <h3>We applied clearfix to the tab-content to rid of the gap between the tab and the content</h3>
-                                </div>
-                                <div style="color: white;" class="tab-pane" id="4a">
-                                    <h3>We use css to change the background color of the content to be equal to the tab</h3>
-                                </div>
-                            </div>
-                        </div>
-
-
-<hr>
-
-
-
-
-
-
-
-
-
-
-                         <!-- ends -->
-
-
-
-
-
-
+    
                     </div>
-
-                  
-                    
-
-                   
-                   
                 </div>
+    
+                <div class="ols-each-content">
+                    <div id="exTab1" class="">
+    
+                        <div class="tab-content ">
+                           
+                            <div  class="tab-pane active" id="1a">
+                                <div class="icon-boxes">
+                                    <ul class="list-objects">
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                     src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
+                                                   </span> <span class="object-name-size">TEXT BOX</span>
+                                            </li>
+                                        </a>
+    
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/link.svg' %}">
+                                                </span> <span class="object-name-size">TEXT LINK</span>
+                                            </li>
+                                        </a>
+    
+                                        <a href="">
+    
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/layer-link.svg' %}">
+                                                </span> <span class="object-name-size">LAYER LINK</span>
+                                            </li>
+                                        </a>
+    
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/button.svg' %}">
+                                                </span> <span class="object-name-size">BUTTON</span>
+                                            </li>
+                                        </a>
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/download.svg' %}">
+                                                </span> <span class="object-name-size">DOWNLOAD</span>
+                                            </li>
+                                        </a>
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
+                                                </span> <span class="object-name-size">PICTURE</span>
+                                            </li>
+                                        </a>
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/video.svg' %}">
+                                                </span> <span class="object-name-size">VIDEO</span>
+                                            </li>
+                                        </a>
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/3d-cube.svg' %}">
+                                                </span> <span class="object-name-size">3D OBJECT</span>
+                                            </li>
+                                        </a>
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/pdf.svg' %}">
+                                                </span> <span class="object-name-size">PDF</span>
+                                            </li>
+                                        </a>
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/action.svg' %}">
+                                                </span> <span class="object-name-size">ACTION</span>
+                                            </li>
+                                        </a>
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/quiz.svg' %}">
+                                                </span> <span class="object-name-size">QUIZ</span>
+                                            </li>
+                                        </a>
+                                        <a href="">
+                                            <li class="individual-objects">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                  src="{% static 'chapterPageBuilder/icons/newicon/survey.svg' %}">
+                                                </span> <span class="object-name-size">SURVEY</span>
+                                            </li>
+                                        </a>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tab-pane " id="2a">
 
+                              <div class=" layouts-only col-md-12" >
+                                  <div class="row">
+                                      <div class=" own-padding col-md-6">
+                                          <div class="layout-type-holder">
+                                            <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
+                                            alt="like this">
+                                          </div>
+
+                                      </div>
+                                      <div class="own-padding col-md-6">  <div class="layout-type-holder">
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
+                                        alt="like this">
+                                      </div></div>
+                                      <div class=" own-padding col-md-6">  <div class="layout-type-holder">
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
+                                        alt="like this">
+                                      </div></div>
+                                      <div class="own-padding col-md-6">  <div class="layout-type-holder">
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
+                                        alt="like this">
+                                      </div></div>
+                                      <div class="own-padding col-md-6">  <div class="layout-type-holder">
+                                        <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
+                                        alt="like this">
+                                        
+                                      </div></div>
+                                  </div>
+                              </div>
+
+
+    
+                            </div>
+                            <div style="color: black;" class="tab-pane" id="3a">
+                                <div class="media-items-only col-md-12">
+                              
+                                   
+
+                                   <div class="dropdown ">
+                                    <button class="btn  dropdown-toggle custom-dropdown" type="button" data-toggle="dropdown"><span > All Items
+                
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><a href="#">IMAGES</a></li>
+                                      <li><a href="#">VIDEOS</a></li>
+                                      <li><a href="#">PDF</a></li>
+                                      <li><a href="#">3D</a></li>
+                                      <li class="divider"></li>
+                                      <li><a href="#">DISPLAY ALL</a></li>
+      
+                                    </ul>
+                                  </div>
+                             
+                                  
+                                  
+
+
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+    
             </div>
+
+
+
             <div class="main-canvas-part col-md-8 col-sm-8 col-xs-8">
 
+                <div class="view-mode col-md-12">
+                  <a href="">
+                    <span ><img  style="height: 15px; width:15px ; margin-top:-5px" src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
+                       <b style="font-size: 17px;">Standard</b> </a> </span>&nbsp;&nbsp;
+                      <a href=""> <b style="font-size: 17px;">BG</b>
+                    <span class="caret"></span></a>
+                   
+                  
+                    
+                </div>
+
+                <div id="" class="main-central-canvas col-md-12">
+
+                </div>
+    
             </div>
+
+
+
             <div class="preview-canvas-part col-md-2 col-xs-2">
                 <div class="note-holder">
-                    <span>Note <i class="fas fa-pencil-alt"></i></span>
+                    <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
                     <div class="note-chapter">
-                        <p>you can enter the details of chapter here jhdhjsahjahjsab jsbkasj </p>
+                     
+                            <p>you can enter the details of chapter here jhdhjsahjahjsab jsbkasj </p>
+
+                        
+                        
                     </div>
                 </div>
 
+                <div class="additional-canvas">
+
+                    <ul class="small-canvases-list">
+                        <span class="span-number">1</span>
+                        <li class="small-canvases">
+                    
+                        </li>
+                    
+                    </ul>
+                    <ul class="small-canvases-list">
+                        <span class="span-number">1</span>
+                        <li class="small-canvases">
+                    
+                        </li>
+                    
+                    </ul>
+                    <ul class="small-canvases-list">
+                        <span class="span-number">1</span>
+                        <li class="small-canvases">
+                    
+                        </li>
+                    
+                    </ul>
+                    <ul class="small-canvases-list">
+                        <span class="span-number">1</span>
+                        <li class="small-canvases">
+                    
+                        </li>
+                    
+                    </ul>
+                  
+                   
+
+                </div>
+                <hr class="hr_header">
+                <div class="add-page">
+                    <span>
+                     <a href="">   <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
+                    </span>
+                </div>
+              
+               
+    
             </div>
-
+    
         </div>
-
-        
-
+    
     </main>
     
 
