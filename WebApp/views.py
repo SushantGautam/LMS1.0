@@ -1571,6 +1571,12 @@ def save_file(request):
         return JsonResponse(data={"message": "success", "media_name": name})
 
 
+
+def newChapterBuilder(request, course, chapter): 
+   context = {}
+   return render(request,"WebApp/newChapterBuilder.html", context)
+
+
 def deletechapterfile(request):
     if request.method == 'POST' and request.user.is_authenticated:
         old_file = json.loads(request.POST['old'])
