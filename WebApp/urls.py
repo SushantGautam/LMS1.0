@@ -326,4 +326,6 @@ urlpatterns += (
          views.CourseProgressView, name='admin_course_progress'),
     path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
          views.CourseProgressView, name='admin_course_progress_withinning'),
+    path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
+         views.StudentChapterProgressView, name='student_chapter_progress'),
 )

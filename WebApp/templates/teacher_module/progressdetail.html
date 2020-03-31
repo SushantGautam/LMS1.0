@@ -1,0 +1,31 @@
+{% extends basefile %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load getMemberFromPk %}
+
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'admin_course_progress' courseid %}">Progress</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Detail</li>
+{% endblock %}
+
+
+{% block content %}
+
+    {% for obj in object %}
+        <h4><b>Date:</b> {{ obj.date }}</h4>
+        <br><br>
+        {% for data in obj.data %}
+            {% if data.chapterid == chapterid %}
+                {% if data.type == '1' %}
+                    <b class="text-success">Entry:</b>{{ data.visittime }} <br>
+                {% endif %}
+                {% if data.type == '1' %}
+                    <b class="text-danger">Exit:</b>{{ data.visittime }} <br>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        <br>
+    {% endfor %}
+{% endblock %}
