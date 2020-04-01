@@ -3,6 +3,9 @@ html, body {
     font-family: 'Sen', sans-serif;
     font-size: 16px;
 }
+a:hover{
+    text-decoration: none;
+}
 
 ::-webkit-scrollbar {
     width: 7px;
@@ -104,8 +107,8 @@ html, body {
 }
 .ols-part{
     background-color: #cbd4e1;
-    padding: 0 10px 0px 15px!important;
-    height: 92vh;
+    padding: 0 0px 0px 15px!important;
+    height: 93vh;
     
    
 
@@ -135,20 +138,27 @@ html, body {
     list-style: none;
     
 }
+
 .individual-objects{
-    padding: 15px 15px 15px 15%;
+    padding: 15px 15px 8px 15%;
     font-size: 17px;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */     
 }
 .individual-objects:hover{
     background-color: #e1e7f0;
+    cursor: pointer;
    
 }
 .media-items-only{
     background-color: #eef2f5;
     height: 80vh;
 }
-.list-objects a{
+.list-objects a {
     color: black;
+    text-decoration: none;
 }
 .list-objects a:hover{
     color: black;
@@ -198,8 +208,13 @@ html, body {
     margin-right: 15px;
 }
 .object-name-size{
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
+    text-decoration: none;
+}
+.object-name-size:hover{
+    color: black;
+    text-decoration: none;
 }
 .icon-boxes{
     height: 80vh ;
@@ -219,7 +234,7 @@ html, body {
 
 .main-canvas-part {
   
-    height: 92vh;
+    height: 93vh;
     background-color:#cbd4e1;
 
 }
@@ -227,12 +242,12 @@ html, body {
 .preview-canvas-part{
     padding: 0px!important;
     margin: 0px!important;
-    height: 92vh;
+    height: 93vh;
     background-color:#eef2f5;
 
 }
 .row-ols{
-    padding: 15px;
+    padding: 8px;
     background-color: #353c46;
     height: 100px;
    
@@ -264,6 +279,8 @@ html, body {
 }
 
 .obj-img-holder{
+    height: 63px;
+
     
     
 }
@@ -272,7 +289,18 @@ html, body {
     width: 100%;
     color: white;
 }
+.obj-img-holder:hover .obj1{
+    display: none;
+}
+.obj2{
+    display:none
+}
+.obj-img-holder:hover .obj2{
+    display: block;
+}
+
 .layout-img-holder{
+    height: 63px;
    
    
 }
@@ -281,7 +309,17 @@ html, body {
     width: 100%;
     color: white;
 }
+.layout-img-holder:hover .obj3{
+    display: none;
+}
+.obj4{
+    display:none
+}
+.layout-img-holder:hover .obj4{
+    display: block;
+}
 .source-img-holder{
+    height: 63px;
   
 
 }
@@ -289,6 +327,15 @@ html, body {
     height: 100%;
     width: 100%;
     color: white;
+}
+.source-img-holder:hover .obj5{
+    display: none;
+}
+.obj6{
+    display:none
+}
+.source-img-holder:hover .obj6{
+    display: block;
 }
 .view-mode{
     padding: 10px;
@@ -309,13 +356,17 @@ html, body {
 /* rightpart */
 
 .note-holder{
-padding: 10px!important;
+padding: 10px 16px!important;
 color: white;
 background-color: #353c46;
 height: 100px;
     
 }
+.note-chapter{
+  
+}
 .hr_header{
+    margin: 5px 0px 8px 0px!important;
     width: 100%;
     height: 2px;
     background-color:#353c46;
@@ -326,11 +377,12 @@ height: 100px;
     overflow: auto;
 }
 .small-canvases-list{
-    /* padding-left: 15%; */
+    margin-top: 10px;
+
     list-style: none;
     display: flex;
     align-items: unset;
-    padding: 15px 15px 15px 35px
+    padding: 15px 15px 15px 20px;
 }
 .span-number{
     margin-right: 20px;

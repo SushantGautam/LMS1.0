@@ -78,6 +78,7 @@ class CourseInfoAdmin(admin.ModelAdmin):
     list_display = ['Course_Name', 'Course_Cover_File', 'Course_Level',
                     'Course_Info', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                     'Course_Provider', 'Center_Code']
+    search_fields = ('Course_Name',)
 
 
 admin.site.register(CourseInfo, CourseInfoAdmin)
