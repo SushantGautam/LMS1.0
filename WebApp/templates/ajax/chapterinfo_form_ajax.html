@@ -3,6 +3,9 @@
 
 <form method="post" id="ajaxchapterinfoform">
     {% csrf_token %}
+
+    <div class="alert alert-danger form-errors" style="display: none">
+    </div>
     <div class="col-md-3 col-sm-12 col-xs-12 text-center">
         {{ form.Chapter_No|as_crispy_field }}<br>
     </div>
@@ -62,7 +65,9 @@
                 "mustreadtime": $('#id_mustreadtime').val(),
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Register_Agent": $('#id_Register_Agent').val(),
-                "Course_Code": $('#id_Course_Code').val()
+                "Course_Code": $('#id_Course_Code').val(),
+                "Start_Date": $('#id_Start_Date').val(),
+                "End_Date": $('#id_End_Date').val(),
 
             },
             // get the form data
@@ -71,8 +76,9 @@
                 console.log('Success')
                 location.reload()
             },
-            error: function () {
-                console.log('Error in posting chapter create form')
+            error: function (err) {
+                console.log('Error in posting chapter create form', err.responseJSON.errors.__all__[0])
+                $('.form-errors').append(err.responseJSON.errors.__all__[0]).css('display', 'block')
             }
         });
     });

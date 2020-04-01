@@ -1,6 +1,6 @@
 {% load static %}
 {# <script src="https://player.vimeo.com/api/player.js"></script> #}
-
+{% now "Y-m-d" as todays_date %}
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true" id="create_assignment_modal">
     <div class="modal-dialog" role="document">
@@ -93,10 +93,24 @@
                 </tr>
 
                 <tr>
-                    <td>Status</td>
-                    <td>{% if object.Use_Flag is True %}<span style="color:green"> <b>Active</b>
+                    <td>Published</td>
+                    <td>
+                        {% if object.Use_Flag is True %}<span style="color:green"> <b>Published</b>
                         </span>{% elif object.Use_Flag is False %}
-                        <span class="text-danger"><b>Inactive</b></span>{% endif %}</td>
+                            <span class="text-danger"><b>Not Published</b></span>{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>
+                        {% if object.Start_Date and todays_date < object.Start_Date|date:"Y-m-d" %}
+                            <span class="text-danger"><b>Inactive</b></span>
+                        {% elif object.End_Date and todays_date > object.End_Date|date:"Y-m-d" %}
+                            <span class="text-danger"><b>Expired</b></span>
+                        {% else %}
+                            <span class="text-info"><b>Active</b></span>
+                        {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <td>Start Date</td>
@@ -268,7 +282,6 @@
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
                 <div class="col-md-8 col-sm-8 col-xs-8">
                     <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
-                        {% now "Y-m-d" as todays_date %}
                         {% if o.Use_Flag == False %}
                             <span class="text-danger"><b>[Inactive]</b></span>
                         {% endif %}

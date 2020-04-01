@@ -757,24 +757,32 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     form_class = ChapterInfoForm
     template_name = 'ajax/chapterinfo_form_ajax.html'
 
-    def post(self, request, *args, **kwargs):
-        Obj = ChapterInfo()
-        Obj.Chapter_No = request.POST["Chapter_No"]
-        Obj.Chapter_Name = request.POST["Chapter_Name"]
-        Obj.Summary = request.POST["Summary"]
-        if request.POST["Use_Flag"] == 'false':
-            Obj.Use_Flag = False
-        else:
-            Obj.Use_Flag = True
-        Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
-        Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-        Obj.save()
+    # def post(self, request, *args, **kwargs):
+    #     Obj = ChapterInfo()
+    #     Obj.Chapter_No = request.POST["Chapter_No"]
+    #     Obj.Chapter_Name = request.POST["Chapter_Name"]
+    #     Obj.Summary = request.POST["Summary"]
+    #     if request.POST["Use_Flag"] == 'false':
+    #         Obj.Use_Flag = False
+    #     else:
+    #         Obj.Use_Flag = True
+    #     Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
+    #     Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
+    #     Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+    #     Obj.save()
+    #
+    #     return JsonResponse(
+    #         data={'Message': 'Success'}
+    #     )
 
+    def form_valid(self, form):
+        super(ChapterInfoCreateViewAjax, self).form_valid(form)
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
 class ChapterInfoDetailView(DetailView):
     model = ChapterInfo
