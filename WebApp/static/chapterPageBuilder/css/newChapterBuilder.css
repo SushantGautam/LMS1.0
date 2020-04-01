@@ -1,11 +1,21 @@
+
+@font-face {
+    font-family: 'Spoqa Han Sans', 'Sans-serif'; 
+    src: url(../webfonts/SpoqaHanSans_subset/Spoqa\ Han\ Sans\ Regular.ttf);
+  }
+
+
 html, body {
     height: 100%;
     font-family: 'Sen', sans-serif;
     font-size: 16px;
 }
+ 
+
 a:hover{
     text-decoration: none;
 }
+
 
 
 ::-webkit-scrollbar {
@@ -121,12 +131,12 @@ a:hover{
 }
 .layouts-only{
     background-color: #eef2f5;
-    height: 80vh ;
+    height: auto ;
 }
 
 .layout-type-holder{
     margin: 15px 10px 0 10px;
-    height: 100px;
+    height: 13px;
 }
 .layout-type-holder img{
     height: 100%;
@@ -141,7 +151,7 @@ a:hover{
 }
 
 .individual-objects{
-    padding: 15px 15px 8px 15%;
+    padding: 15px 15px 9px 15%;
     font-size: 17px;
     -webkit-user-select: none;  /* Chrome all / Safari all */
     -moz-user-select: none;     /* Firefox all */
