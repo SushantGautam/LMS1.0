@@ -237,7 +237,7 @@ class MyAssignmentsListView(ListView):
         context['currentDate'] = datetime.now()
         GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
         for group in GroupName:
-            Sessions += InningInfo.objects.filter(Groups__id=group.id)
+            Sessions += InningInfo.objects.filter(Groups__id=group.id, End_Date__gt=datetime_now)
 
         for session in Sessions:
             for coursegroup in session.Course_Group.filter(Course_Code__Use_Flag=True):
