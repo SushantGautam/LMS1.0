@@ -5,6 +5,7 @@ from time import timezone
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
@@ -291,6 +292,10 @@ class ChapterInfo(models.Model):
     def __str__(self):
         return self.Chapter_Name
 
+    def clean(self):
+        super().clean()
+        if (self.Start_Date > self.End_Date):
+            raise ValidationError('End Date must be greater than start date')
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
