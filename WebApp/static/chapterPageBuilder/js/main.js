@@ -116,12 +116,13 @@ class Textbox {
             top, left, height, width
         };
         let html = `<div class='textdiv' >
-                <div id="editor${id}" class="messageText"></div>
-                </div>
-                 <div id="text-actions" class = "text-actions">
-                     <i class="fas fa-trash" id=${id}></i>
-                     <i class="fas fa-arrows-alt" id="draghere" ></i>
-                 </div>
+                        <div id="editor${id}" class="messageText"></div>
+                        
+                         <div id="text-actions" class = "text-actions">
+                             <i class="fas fa-trash" id=${id}></i>
+                             <i class="fas fa-arrows-alt" id="draghere" ></i>
+                         </div>
+                     </div>
               `;
         this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
