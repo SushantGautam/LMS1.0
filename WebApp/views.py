@@ -202,11 +202,16 @@ def start(request):
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
+            surveys = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                     Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
                                                     Q(End_Date__gte=datetime.now()))[:5]
-            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
+            surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
+                                                    Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
+                                                    Q(End_Date__gte=datetime.now())).count
+            sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now())[:5]
+            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
+                                                     End_Date__gte=datetime.now()).count
 
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
@@ -214,7 +219,9 @@ def start(request):
                            'teachercount': teachercount,
                            'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,
                            'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
+                           'surveys': surveys,
                            'surveycount': surveycount,
+                           'sessions':sessions,
                            'sessioncount': sessioncount})
         elif request.user.Is_Student:
             return redirect('student_home')
