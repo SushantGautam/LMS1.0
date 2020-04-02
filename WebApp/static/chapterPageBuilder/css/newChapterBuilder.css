@@ -97,6 +97,9 @@ a:hover{
     color: #353c46;
     outline: none!important;
 }
+#togglefull:hover{
+    cursor: pointer;
+}
 
 
 
@@ -290,7 +293,7 @@ a:hover{
 }
 
 .obj-img-holder{
-    height: 63px;
+    height: 55px;
 
     
     
@@ -312,7 +315,7 @@ a:hover{
 }
 
 .layout-img-holder{
-    height: 63px;
+    height: 55px;
    
    
 }
@@ -331,7 +334,7 @@ a:hover{
     display: block;
 }
 .source-img-holder{
-    height: 63px;
+    height: 55px;
   
 
 }

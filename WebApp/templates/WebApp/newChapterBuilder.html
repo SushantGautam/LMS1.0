@@ -274,7 +274,9 @@
             <div class="main-canvas-part col-md-8 col-sm-8 col-xs-12">
 
                 <div class="view-mode col-md-12">
-                  <a href="">
+                   
+                  <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
+                  data-original-title="FullScreen">
                     <span ><img  style="height: 15px; width:15px ; margin-top:-5px" src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
                        <span style="font-size: 15px;">Full Screen</span> </a> </span>&nbsp;&nbsp;
                       <a href=""> <span style="font-size: 15px;">BG</span>
@@ -404,4 +406,25 @@
           })
         });
         </script>
-
+    <script>
+        function toggleFullScreen() {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+                if (document.documentElement.requestFullScreen) {
+                    document.documentElement.requestFullScreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullScreen) {
+                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
+            }
+        }
+    </script>
