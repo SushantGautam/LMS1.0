@@ -116,13 +116,12 @@ class Textbox {
             top, left, height, width
         };
         let html = `<div class='textdiv' >
-                 
-                 <div id="editor${id}" class="messageText"></div>
+                <div id="editor${id}" class="messageText"></div>
+                </div>
                  <div id="text-actions" class = "text-actions">
                      <i class="fas fa-trash" id=${id}></i>
                      <i class="fas fa-arrows-alt" id="draghere" ></i>
-                 </div> 
-              </div>
+                 </div>
               `;
         this.renderDiagram = function () {
             // dom includes the html,css code with draggable property
@@ -322,9 +321,23 @@ class video {
         } else {
             message = `
             Add video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>`;
-            videoobj = `<div class="progress video-text-div">
+            if(server_name == 'Indonesian_Server'){
+                videoobj = `<div class="progressc mx-auto" data-value='0' id="loadingDiv" style="display:none">
+                <span class="progress-left">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <span class="progress-right">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                <div class="h2 font-weight-bold" id="percentcomplete">0<span class="small">%</span></div>
+                </div>
+                </div>`;
+            }else{
+                videoobj = `<div class="progress video-text-div">
                 <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
             </div>`;
+            }
         }
         let html =
             `<div class='video-div'>
@@ -1618,24 +1631,22 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                 // If indonesian server then upload video to cincopa
                 if(server_name == 'Indonesian_Server'){
                     var file = input.files[0];
-                    console.log(file);
+                    $('#loadingDiv').show();
                     var options = {
                         url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                         chunk_size: 10, // MB
                         onUploadComplete: function (e,options) {
-                            console.log(options.rid);
                             var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A4HAcLOLOO68!${options.rid}"
                              frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
                             div.find('#loadingDiv').remove();
-                            div.find('#percentcomplete').remove();
                             div.find('p').remove();
-                            div.find('.progress').remove();
-                            console.log(html);
+                            // div.find('.progress').remove();
                             div.append(html);
                         },
                         onUploadProgress: function (e) {
-                            console.log(e);
-                            $(".status-bar").html(parseInt(e.percentComplete) + '%');
+                            $("#loadingDiv").attr('data-value',parseInt(e.percentComplete));
+                            $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                            addprogress();
                         },
                         onUploadError: function (e) {
                             console.log(e);
@@ -1700,6 +1711,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
 
                         xhr.upload.addEventListener("progress", function (evt) {
                             $('#progress-bar').css("display", "block");
+                            $('#loadingDiv').show();
 
                             if (evt.lengthComputable) {
                                 var percentComplete = evt.loaded / evt.total;
