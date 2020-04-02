@@ -63,8 +63,8 @@ def start(request):
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
-                    Assignment_Deadline__gte=datetime_now, Assignment_Start__lte=datetime_now,
-                    Course_Code=course.Course_Code.id,
+                    Assignment_Deadline__gte=datetime.now().date(), Assignment_Start__lte=datetime.now().date(),
+                    Course_Code__id=course.Course_Code.id,
                     Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
@@ -237,7 +237,7 @@ class MyAssignmentsListView(ListView):
         context['currentDate'] = datetime.now()
         GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
         for group in GroupName:
-            Sessions += InningInfo.objects.filter(Groups__id=group.id)
+            Sessions += InningInfo.objects.filter(Groups__id=group.id, End_Date__gt=datetime_now)
 
         for session in Sessions:
             for coursegroup in session.Course_Group.filter(Course_Code__Use_Flag=True):
@@ -245,13 +245,15 @@ class MyAssignmentsListView(ListView):
 
         for course in Courses:
             Assignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True))
+                Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True,
+                Assignment_Start__lte=datetime_now.date()))
             activeAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Assignment_Start__lte=datetime_now,
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now.date(),
+                Assignment_Start__lte=datetime_now.date(),
                 Use_Flag=True,
                 Chapter_Code__Use_Flag=True))
             expiredAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True,
+                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now.date(), Use_Flag=True,
                 Chapter_Code__Use_Flag=True))
         context['Assignment'].append(Assignment)
         context['activeAssignment'].append(activeAssignment)
@@ -435,37 +437,40 @@ class questions_student_detail(DetailView):
         context['saq_answers'] = AnswerInfo.objects.filter(
             Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.object.id, Question_Type='SAQ')
         )
-        try:
-            context['submit_survey'] = SubmitSurvey.objects.get(
-                Survey_Code__id=self.object.id,
-                Student_Code__id=self.request.user.id
-            )
-        except SubmitSurvey.DoesNotExist:
-            context['submit_survey'] = None
+        # try:
+        #     context['submit_survey'] = SubmitSurvey.objects.get(
+        #         Survey_Code__id=self.object.id,
+        #         Student_Code__id=self.request.user.id
+        #     )
+        # except SubmitSurvey.DoesNotExist:
+        #     context['submit_survey'] = None
+        #
+        # if context['submit_survey']:
+        #     for x in context['options']:
+        #         if len(context['submit_survey'].answerinfo.filter(Answer_Value=x.id)) > 0:
+        #             x.was_chosen = True
+        #         else:
+        #             x.was_chosen = False
+        #
+        #     for x in context['questions']:
+        #         try:
+        #             x.answer = AnswerInfo.objects.get(
+        #                 Submit_Code=context['submit_survey'].id, Question_Code=x.id)
+        #         except AnswerInfo.DoesNotExist:
+        #             x.answer = None
+        #
+        #     context['can_submit'] = False
+        #
+        #
+        # else:
+        #     if self.object.End_Date > datetime.now(timezone.utc):
+        #         context['can_submit'] = True
+        #     else:
+        #         context['can_submit'] = False
+        #         context['datetimeexpired'] = 1
 
-        if context['submit_survey']:
-            for x in context['options']:
-                if len(context['submit_survey'].answerinfo.filter(Answer_Value=x.id)) > 0:
-                    x.was_chosen = True
-                else:
-                    x.was_chosen = False
-
-            for x in context['questions']:
-                try:
-                    x.answer = AnswerInfo.objects.get(
-                        Submit_Code=context['submit_survey'].id, Question_Code=x.id)
-                except AnswerInfo.DoesNotExist:
-                    x.answer = None
-
-            context['can_submit'] = False
-
-
-        else:
-            if self.object.End_Date > datetime.now(timezone.utc):
-                context['can_submit'] = True
-            else:
-                context['can_submit'] = False
-                context['datetimeexpired'] = 1
+        context['can_submit'], context['datetimeexpired'], context['options'], context[
+            'questions'] = self.object.can_submit(self.request.user)
         return context
 
 

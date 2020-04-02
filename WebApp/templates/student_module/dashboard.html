@@ -160,7 +160,7 @@
                                     <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
                                         <div class="assignment-status-margin"
                                              style="font-size:14px; font-style: italic;  font-weight:600 ; ">Status:
-                                            Incomplete
+                                            {% getStatusoOfAssignment object user %}
                                         </div>
                                         <span style="font-size:14px; font-style: italic;  font-weight:600; color:red"> Deadline </span>
                                         <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ object.Assignment_Deadline|date:'Y-m-d h:i a' }}</span>

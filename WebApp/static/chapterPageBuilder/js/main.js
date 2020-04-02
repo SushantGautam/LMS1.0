@@ -1614,6 +1614,39 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                 data.append('chapterID', chapterID);
                 data.append('courseID', courseID);
                 data.append('type', 'video');
+
+                // If indonesian server then upload video to cincopa
+                if(server_name == 'Indonesian_Server'){
+                    var file = input.files[0];
+                    console.log(file);
+                    var options = {
+                        url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+                        chunk_size: 10, // MB
+                        onUploadComplete: function (e,options) {
+                            console.log(options.rid);
+                            var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A4HAcLOLOO68!${options.rid}"
+                             frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
+                            div.find('#loadingDiv').remove();
+                            div.find('#percentcomplete').remove();
+                            div.find('p').remove();
+                            div.find('.progress').remove();
+                            console.log(html);
+                            div.append(html);
+                        },
+                        onUploadProgress: function (e) {
+                            console.log(e);
+                            $(".status-bar").html(parseInt(e.percentComplete) + '%');
+                        },
+                        onUploadError: function (e) {
+                            console.log(e);
+                            $(".status-bar").html("Error accured while uploading");
+                        }
+                    };
+                    uploader = new cpUploadAPI(file, options);
+                    uploader.start();
+                
+                // else upload to vimeo
+                }else{
                 $.ajax({
                     url: save_video_url,
                     data: data,
@@ -1710,6 +1743,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                     }
 
                 });
+            }
 
                 $('#video-drag').css({
                     'display': 'none'
