@@ -154,6 +154,17 @@
 
 
 }
+@media (min-width:300px) and (max-width:575px){
+    
+   .component-container{
+       height: 20vh;
+   }
+   .row-ols{
+       height:13vh
+   }
+
+
+}
 
 
 
