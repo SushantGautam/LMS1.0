@@ -10,3 +10,8 @@ register = template.Library()
 def getSurveyStatus(obj, user):
     can_submit, datetimeexpired, options, questions = obj.can_submit(user)
     return can_submit, datetimeexpired, options, questions
+
+# @register.simple_tag
+# def canTakeQuiz(obj, user):
+#     sitting = obj.can_take(user)
+#     return sitting

@@ -141,12 +141,27 @@
                                     <span> {{ pre_quiz.title }} </span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                                        <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
-                                                class=" qts-button " data-toggle="modal" data-target="#quizmodal">
-                                            Play Quiz
-                                        </button>
-                                    </a>
+                                    {% if pre_quiz.sitting_set.all.count > 0 %}
+                                        {% if pre_quiz.single_attempt %}
+                                            <span style="color: limegreen; font-weight: bold">Completed</span>
+                                        {% else %}
+                                            <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                                                <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
+                                                        class=" qts-button " data-toggle="modal"
+                                                        data-target="#quizmodal">
+                                                    Play Again
+                                                </button>
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                                            <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
+                                                    class=" qts-button " data-toggle="modal" data-target="#quizmodal">
+                                                Play Quiz
+                                            </button>
+                                        </a>
+                                    {% endif %}
+
                                 </div>
                             {% empty %}
                                 <p>No pre quiz</p>
@@ -204,12 +219,28 @@
                                     <span> {{ post_quiz.title }} </span>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
-                                                class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play
-                                            Quiz
-                                        </button>
-                                    </a>
+                                    {% if post_quiz.sitting_set.all.count > 0 %}
+                                        {% if post_quiz.single_attempt %}
+                                            <span style="color: limegreen; font-weight: bold">Completed</span>
+                                        {% else %}
+                                            <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                                                <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
+                                                        class=" qts-button " data-toggle="modal"
+                                                        data-target="#quizmodal">Play
+                                                    Again
+                                                </button>
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                                            <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
+                                                    class=" qts-button " data-toggle="modal" data-target="#quizmodal">
+                                                Play
+                                                Quiz
+                                            </button>
+                                        </a>
+                                    {% endif %}
+
                                 </div>
                             {% empty %}
                                 <p>No post quiz</p>
