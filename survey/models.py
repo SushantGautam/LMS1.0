@@ -28,6 +28,9 @@ class CategoryInfo(models.Model):
         return reverse('categoryinfo_update', args=(self.pk,))
 
 
+from datetime import datetime, timezone
+
+
 class SurveyInfo(models.Model):
     Survey_Title = CharField(max_length=500)
     Start_Date = DateTimeField(auto_now=False, auto_now_add=False, null=True)
@@ -85,6 +88,48 @@ class SurveyInfo(models.Model):
 
     def get_create_url(self):
         return reverse('surveyinfo_ajax', args=(self.pk,))
+
+    def can_submit(self, student_code):
+        datetimeexpired = 0
+        questions = QuestionInfo.objects.filter(
+            Survey_Code=self.pk).order_by('pk')
+        options = OptionInfo.objects.filter(
+            Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.id)
+        )
+        try:
+            surveys = SubmitSurvey.objects.get(
+                Survey_Code__id=self.id,
+                Student_Code__id=student_code.id
+            )
+        except SubmitSurvey.DoesNotExist:
+            surveys = None
+
+        if surveys:
+            for x in options:
+                if len(surveys.answerinfo.filter(Answer_Value=x.id)) > 0:
+                    x.was_chosen = True
+                else:
+                    x.was_chosen = False
+
+            for x in questions:
+                try:
+                    x.answer = AnswerInfo.objects.get(
+                        Submit_Code=surveys.id, Question_Code=x.id)
+                except AnswerInfo.DoesNotExist:
+                    x.answer = None
+
+            can_submit = False
+        else:
+            if self.End_Date > datetime.now(timezone.utc):
+                can_submit = True
+            else:
+                can_submit = False
+                datetimeexpired = 1
+        # Options - get chosen options
+        # questions - answers of questions
+        # can_submit - if a user can submit the survey or not.
+        # datetimeexpired - if user has not submitted but survey end date has reached.
+        return can_submit, datetimeexpired, options, questions
 
 
 class QuestionInfo(models.Model):
