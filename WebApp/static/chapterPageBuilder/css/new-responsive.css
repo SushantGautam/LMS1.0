@@ -1,6 +1,6 @@
 @media (min-width:1052px) and (max-width:1139px){
    .obj-img-holder {
-        height: 63px;
+        height: 42px;
     }
     .individual-objects {
         padding: 20px 7px 15px 7%;
@@ -25,17 +25,6 @@
 
 @media (min-width:1000px) and (max-width:1050px){
    
-    .obj-img-holder {
-        height: 60px;
-    }
-    .layout-img-holder{
-        height: 60px;
-
-    }
-    .source-img-holder{
-        height: 60px;
-
-    }
     
     .ols-names{
         font-size: 12px;
@@ -168,29 +157,222 @@
 
 
 
-@media (min-height:1024px) and (max-height:1550px){
+
+@media (min-height:800px) and (max-height:900px){
+    .component-container {
+        height: 6vh;
+        
+    }
     .ols-part{
-        height: 95.5vh;
+        height: 94vh;
     }
     .preview-canvas-part{
-        height: 95.5vh;
+        height: 94vh;
 
     }
     .main-canvas-part {
-        height: 95.5vh;
+        height: 94vh;
+
+    }
+    .main-central-canvas {
+        height: 87.5vh;
+        background-color: white;
+    }
+    .row-ols {
+        padding: 8px;
+     
+        height: 9vh;
+    }
+    .icon-boxes {
+        height: 85vh;
+    }
+}
+@media (min-height:901px) and (max-height:1000px){
+    .component-container {
+        height: 5.5vh;
+        
+    }
+    .ols-part{
+        height: 94.5vh;
+    }
+    .preview-canvas-part{
+        height: 94.5vh;
+
+    }
+    .main-canvas-part {
+        height: 94.5vh;
+
+    }
+    .main-central-canvas {
+        height: 88.5vh;
+        background-color: white;
+    }
+    .row-ols {
+        padding: 7px;
+     
+        height: 8vh;
+    }
+    .icon-boxes {
+        height: 86.5vh;
+    }
+}
+@media (min-height:1001px) and (max-height:1100px){
+    .component-container {
+        height: 5vh;
+        
+    }
+    .ols-part{
+        height: 95vh;
+    }
+    .preview-canvas-part{
+        height: 95vh;
+
+    }
+    .main-canvas-part {
+        height: 95vh;
 
     }
     .main-central-canvas {
         height: 90vh;
         background-color: white;
     }
-    .icon-boxes{
-        height:86vh
+    .row-ols {
+        padding: 7px;
+     
+        height: 7vh;
     }
+    .icon-boxes {
+        height: 88vh;
+    }
+}
+@media (min-height:1101px) and (max-height:1200px){
+    .component-container {
+        height: 4.6vh;
+        
+    }
+    .ols-part{
+        height: 95.4vh;
+    }
+    .preview-canvas-part{
+        height: 95.4vh;
+
+    }
+    .main-canvas-part {
+        height: 95.4vh;
+
+    }
+    .main-central-canvas {
+        height: 91vh;
+        background-color: white;
+    }
+    .row-ols {
+        padding: 7px;
+     
+        height: 6.5vh;
+    }
+    .icon-boxes {
+        height: 88.9vh;
+    }
+}
+@media (min-height:1201px) and (max-height:1300px){
+    .component-container {
+        height: 4vh;
+        
+    }
+    .ols-part{
+        height: 96vh;
+    }
+    .preview-canvas-part{
+        height: 96vh;
+
+    }
+    .main-central-canvas {
+        height: 92vh;
+        background-color: white;
+    }
+    .main-canvas-part {
+        height: 96vh;
+    }
+    .row-ols {
+        padding: 7px;
+     
+        height: 6vh;
+    }
+    .icon-boxes {
+        height: 90vh;
+    }
+
+    
+}
+@media (min-height:1301px) and (max-height:1500px){
+    .component-container {
+        height: 3.5vh;
+        
+    }
+    .ols-part{
+        height: 96.5vh;
+    }
+    .preview-canvas-part{
+        height: 96.5vh;
+
+    }
+    .main-canvas-part {
+        height: 96.5vh;
+
+    }
+    .main-central-canvas {
+        height: 92.5vh;
+        background-color: white;
+    }
+    .row-ols {
+        padding: 10px;
+     
+        height: 6vh;
+    }
+    .icon-boxes {
+        height: 90.5vh;
+    }
+}
+@media (min-height:1501px) and (max-height:1600px){
+    .component-container {
+        height: 3.2vh;
+        
+    }
+    .ols-part{
+        height: 96.8vh;
+    }
+    .preview-canvas-part{
+        height: 96.8vh;
+
+    }
+    .main-canvas-part {
+        height: 96.8vh;
+
+    }
+    .main-central-canvas {
+        height: 93vh;
+        background-color: white;
+    }
+    .row-ols {
+        padding: 10px;
+     
+        height: 5.5vh;
+    }
+    .icon-boxes {
+        height: 91.3vh;
+    }
+}
+
+
+@media (min-height:1025px) and (max-height:1550px){
+  
+    
+    
     .individual-objects {
         padding: 20px 7px 40px 7%;
         font-size: 12px;
     }
 
 }
+
 

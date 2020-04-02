@@ -45,23 +45,26 @@ a:hover{
 }
 .component-container{
    
-    padding: 10px;
+    height: 7vh;
     border-bottom: 2px solid #79a6fb;
 }
 .chapter-title-only{
-    line-height: 27px;
+    line-height: 50px;
     color: white;
     font-weight: 600;
 }
 
 .buttons-chapter-only{
     text-align: right;
+    padding-top: 10px;
+   
 
 }
+
 .exit-button-only {
     text-align: center;
    
-    line-height: 26px;
+    line-height: 50px;
     color: white;
 
 }
@@ -225,7 +228,7 @@ a:hover{
     text-decoration: none;
 }
 .icon-boxes{
-    height: 80vh ;
+    height: 83vh ;
     overflow: auto;
 }
 .icon1{
@@ -257,7 +260,7 @@ a:hover{
 .row-ols{
     padding: 8px;
     background-color: #353c46;
-    height: 85px;
+    height: 10vh;
    
   
 }
