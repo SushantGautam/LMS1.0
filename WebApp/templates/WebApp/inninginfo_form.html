@@ -120,7 +120,7 @@
                 + Add New
               </button>
             </h1>
-          
+
           </div>
 
           <div class="col-md-12 col-sm-12 col-xs-12 text-center">
@@ -142,7 +142,7 @@
             </p>
           </div>
         </div>
-      {%  endblock %} 
+      {% endblock %}
       </div>
       <div id="step-2">
       <h2 class="StepTitle text-center">Select the duration of the Session</h2>
@@ -268,19 +268,36 @@
 
   <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 
-  <script type="text/javascript">
+    <script type="text/javascript">
 
-    // Script to validate each step in wizard
-    $(document).ready(function () {
-      $("#smartwizard").smartWizard();
-      $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
-        if (stepNumber == 0) {
-          if ($("#id_Inning_Name").val() == "") {
-            e.preventDefault()
-            $("#step0Validate").html("Select an Inning Name")
-          }
-          else {
-            $("#step0Validate").html("")
+        // Script to validate each step in wizard
+        $(document).ready(function () {
+            var session_names = []
+            var x = $('#step-1 select')[0];
+
+            var i;
+            for (i = 0; i < x.length; i++) {
+                session_names.push(x.options[i].text);
+            }
+
+            $('#create_session_modal_body').on('keyup', '#id_Session_Name', function () {
+                if (session_names.includes($(this).val())) {
+                    $('#error-msg-span').text("Inning Name already exist.")
+                    $('#ajaxsessionsubmit-btn').prop('disabled', true)
+                } else {
+                    $('#error-msg-span').text("")
+                    $('#ajaxsessionsubmit-btn').prop('disabled', false)
+                }
+            })
+
+            $("#smartwizard").smartWizard();
+            $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
+                if (stepNumber == 0) {
+                    if ($("#id_Inning_Name").val() == "") {
+                        e.preventDefault()
+                        $("#step0Validate").html("Select an Inning Name")
+                    } else {
+                        $("#step0Validate").html("")
           }
         };
         if (stepNumber == 1) {
