@@ -1536,6 +1536,7 @@ def chapterpagebuilder(request, course, chapter):
     chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
+    server_name = settings.SERVER_NAME
     data = {"": ""}
     try:
         with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
@@ -1549,6 +1550,7 @@ def chapterpagebuilder(request, course, chapter):
         'chapterdetails': chapterdetails,
         'chapterlist': chapterlist,
         'file_path': path,
+        'server_name': server_name,
         'data': data
     }
     return render(request, 'WebApp/chapterbuilder.html', context)
