@@ -422,8 +422,7 @@
             yWordPadding: 3,
             font: "sans-serif"
         }
-        var values = '';
-        // var values = {{ get_top_thread_keywords | safe  }};
+        var values = {{ get_top_thread_keywords | safe  }};
         var words = values.map(function (word) {
             return {
                 word: word,

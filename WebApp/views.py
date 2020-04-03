@@ -40,8 +40,7 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
-from forum.views import NodeGroup
-# from forum.views import get_top_thread_keywords, NodeGroup
+from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
@@ -194,8 +193,8 @@ def start(request):
         if request.user.Is_CenterAdmin:
             thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[
                      :5]
-            # wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
-            # thread_keywords = get_top_thread_keywords(request, 10)
+            wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
+            thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
                 '-Register_DateTime')[:5]
             coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
@@ -219,7 +218,7 @@ def start(request):
                           {'course': course, 'coursecount': coursecount, 'studentcount': studentcount,
                            'teachercount': teachercount,
                            'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,
-                        #    'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
+                           'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
                            'surveys': surveys,
                            'surveycount': surveycount,
                            'sessions':sessions,

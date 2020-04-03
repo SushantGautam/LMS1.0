@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView
-# from textblob import TextBlob
+from textblob import TextBlob
 
 # These views are only for admin. So  AdminAuthMxnCls is used.     AuthCheck(request, admn=1) is used for func based views.
 from LMS.auth_views import AdminAuthMxnCls, AuthCheck
@@ -97,7 +97,7 @@ class Index(AdminAuthMxnCls, LoginRequiredMixin, ListView):
         context['title'] = _('Index')
         context['topics'] = Topic.objects.all().filter(id__in=Topic_related_to_user(self.request))
         context['show_order'] = True
-        # context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
+        context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
         return context
 
 
@@ -595,17 +595,17 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("forum:index"))
 
 
-# def get_top_thread_keywords(request, number_of_keyword):
-#     obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
-#     word_counter = {}
-#     for eachx in obj:
-#         words = TextBlob(eachx.title).noun_phrases
-#         for eachword in words:
-#             for singleword in eachword.split(" "):
-#                 if singleword in word_counter:
-#                     word_counter[singleword] += 1
-#                 else:
-#                     word_counter[singleword] = 1
+def get_top_thread_keywords(request, number_of_keyword):
+    obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
+    word_counter = {}
+    for eachx in obj:
+        words = TextBlob(eachx.title).noun_phrases
+        for eachword in words:
+            for singleword in eachword.split(" "):
+                if singleword in word_counter:
+                    word_counter[singleword] += 1
+                else:
+                    word_counter[singleword] = 1
 
-#     popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
-#     return popular_words[:number_of_keyword]
+    popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
+    return popular_words[:number_of_keyword]
