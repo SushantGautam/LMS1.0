@@ -37,7 +37,7 @@
                 <span class="chapter-name">Chapter Title <i class="fas fa-pencil-alt"></i></span>
 
             </div>
-            <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
+            <div class=" buttons-chapter-only col-md-9 col-sm-6 col-xs-12">
                 <button class="btn-type1"><i style="color:white" class="fas fa-save"></i>&nbsp; Save</button>
                 <button  class="btn-type1"><i style="color:white" class="fas fa-file-import"></i>&nbsp; Import</button>
                 <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button class="btn-type1">
@@ -46,7 +46,7 @@
                 
 
             </div>
-            <div class="exit-button-only col-md-2 col-sm-3 col-xs-12 ">
+            <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
                 <a class="" href="">  <span>  QUIT <i style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></a>  
 
             </div>
@@ -343,11 +343,7 @@
               
 
                 <div class="additional-canvas" style="position: relative;">
-                    <div class="col-md-12" style="text-align:center; padding:10px; position:fixed; top:0; left:0; right:0">
-                        <span>
-                            <i class="fas fa-sort-up"></i>
-                        </span>
-                    </div>
+                    
 
                     <ul class="small-canvases-list">
                         <span class="span-number">1</span>
@@ -494,8 +490,9 @@
 
 </section>
 </body>
-<script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
+
 <script src="{% static 'chapterPageBuilder/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/color-picker/pickr.min.js' %}"></script>
 
@@ -531,17 +528,29 @@
     
             // Input / output Options
             interaction: {
-                hex: true,
-                rgba: true,
-                hsla: true,
-                hsva: true,
-                cmyk: true,
+                hex: false,
+                rgba: false,
+                hsla: false,
+                hsva: false,
+                cmyk: false,
                 input: true,
-                clear: true,
+                clear: false,
                 save: true
             }
-        }
+        },
+        strings: {
+            save: 'Apply',  
+           
+         }
     });
+    pickr.on('save', (color, instance) => {
+     
+        const rgbaColor = color.toRGBA().toString();
+      
+        document.querySelector('.main-central-canvas').style.backgroundColor = rgbaColor;
+
+    })
+    
 </script>
 
     <script>

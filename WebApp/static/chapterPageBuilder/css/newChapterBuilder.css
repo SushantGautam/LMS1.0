@@ -63,6 +63,7 @@ a:hover{
 .buttons-chapter-only{
     text-align: right;
     padding-top: 10px;
+    padding-right: 0px!important;
    
 
 }
@@ -135,7 +136,7 @@ a:hover{
 }
 .layouts-only{
     background-color: #eef2f5;
-    height: 80vh ;
+    height: 72vh;
 }
 
 .layout-type-holder{
@@ -169,7 +170,7 @@ a:hover{
 }
 .media-items-only{
     background-color: #eef2f5;
-    height: 80vh;
+    height: 72vh;
 }
 .list-objects a {
     color: black;
