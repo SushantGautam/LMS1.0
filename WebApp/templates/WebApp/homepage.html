@@ -69,11 +69,11 @@
             <div class="panel panel-default">
                 <div class="title">
                     <h2 style="font-size: 2em"><a href="{% url 'inninginfo_list' %}">&nbsp;<b>Sessions</b><span
-                            class="thread">{{ sessioncount.count }}</span></a></h2>
+                            class="thread">{{ sessioncount }}</span></a></h2>
                 </div>
                 <ul class="list-group" data-hover-z="0.5" data-animated="">
 
-                    {% for session in sessioncount %}
+                    {% for session in sessions %}
                         <li class="list-group-item ">
                             <div class="media-body">
                                 <b><span class="forum"><a
@@ -128,11 +128,11 @@
             <div class="panel panel-default">
                 <div class="title">
                     <h2 style="font-size: 2em"><a href="{% url 'surveyinfo_list' %}">&nbsp;<b>SURVEY</b><span
-                            class="thread">{{ surveycount.count }}</span></a></h2>
+                            class="thread">{{ surveycount }}</span></a></h2>
                 </div>
                 <ul class="list-group" data-hover-z="0.5" data-animated="">
 
-                    {% for survey in surveycount %}
+                    {% for survey in surveys %}
                         {% if survey.Category_Code|stringformat:"s" == "General" or survey.Category_Code|stringformat:"s" == "System" %}
                             <li class="list-group-item ">
                                 <div class="media-body">
