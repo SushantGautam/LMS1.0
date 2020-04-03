@@ -7,7 +7,82 @@ body {
 
 }
 
+/*
+*
+* ==========================================
+* Progress circle for video upload
+* ==========================================
+*
+*/
 
+.progressc {
+    width: 150px;
+    height: 150px;
+    background: none;
+    position: relative;
+  }
+  
+  .progressc::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 6px solid #eee;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .progressc>span {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+  }
+  
+  .progressc .progress-left {
+    left: 0;
+  }
+  
+  .progressc .progress-barc {
+    width: 100%;
+    height: 100%;
+    background: none;
+    border-width: 6px;
+    border-style: solid;
+    position: absolute;
+    top: 0;
+  }
+  
+  .progressc .progress-left .progress-barc {
+    left: 100%;
+    border-top-right-radius: 80px;
+    border-bottom-right-radius: 80px;
+    border-left: 0;
+    -webkit-transform-origin: center left;
+    transform-origin: center left;
+  }
+  
+  .progressc .progress-right {
+    right: 0;
+  }
+  
+  .progressc .progress-right .progress-barc {
+    left: -100%;
+    border-top-left-radius: 80px;
+    border-bottom-left-radius: 80px;
+    border-right: 0;
+    -webkit-transform-origin: center right;
+    transform-origin: center right;
+  }
+  
+  .progressc .progress-value {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 
 .pdfdiv {
     width: 400px;
