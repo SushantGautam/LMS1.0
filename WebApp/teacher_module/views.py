@@ -36,7 +36,7 @@ from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestio
 from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
-from forum.views import get_top_thread_keywords
+# from forum.views import get_top_thread_keywords
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm, \
     QuizBasicInfoForm
 from quiz.models import Question, Quiz, SA_Question, MCQuestion, TF_Question
@@ -67,8 +67,8 @@ def start(request):
     # return render(request,"start.html")
 
     if request.user.Is_Teacher:
-        wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
-        thread_keywords = get_top_thread_keywords(request, 10)
+        # wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
+        # thread_keywords = get_top_thread_keywords(request, 10)
         sessions = []
 
         x = request.user.get_teacher_courses()
@@ -87,7 +87,8 @@ def start(request):
 
         return render(request, "teacher_module/homepage.html",
                       {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments,
-                       'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
+                    #    'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords
+                    })
 
 
 def teacher_editprofile(request):
@@ -1695,23 +1696,23 @@ def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
 
 
-from textblob import TextBlob
+# from textblob import TextBlob
 
 
-def get_top_thread_keywords(request, number_of_keyword):
-    obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
-    word_counter = {}
-    for eachx in obj:
-        words = TextBlob(eachx.title).noun_phrases
-        for eachword in words:
-            for singleword in eachword.split(" "):
-                if singleword in word_counter:
-                    word_counter[singleword] += 1
-                else:
-                    word_counter[singleword] = 1
+# def get_top_thread_keywords(request, number_of_keyword):
+#     obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
+#     word_counter = {}
+#     for eachx in obj:
+#         words = TextBlob(eachx.title).noun_phrases
+#         for eachword in words:
+#             for singleword in eachword.split(" "):
+#                 if singleword in word_counter:
+#                     word_counter[singleword] += 1
+#                 else:
+#                     word_counter[singleword] = 1
 
-    popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
-    return popular_words[:number_of_keyword]
+#     popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
+#     return popular_words[:number_of_keyword]
 
 
 import operator

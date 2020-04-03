@@ -24,7 +24,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from textblob import TextBlob
+# from textblob import TextBlob
 
 from LMS import settings
 from WebApp.filters import MyCourseFilter
@@ -67,13 +67,15 @@ def start(request):
                     Course_Code__id=course.Course_Code.id,
                     Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
-    wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
-    thread_keywords = get_top_thread_keywords(request, 10)
+    # wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
+    # thread_keywords = get_top_thread_keywords(request, 10)
 
     return render(request, 'student_module/dashboard.html',
                   {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                   'activeAssignments': activeassignments, 'sittings': sittings, 'wordCloud': wordCloud,
-                   'get_top_thread_keywords': thread_keywords})
+                   'activeAssignments': activeassignments, 'sittings': sittings
+                #    , 'wordCloud': wordCloud,
+                #    'get_top_thread_keywords': thread_keywords
+                })
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -639,7 +641,7 @@ class Index(ListView):
         context['title'] = _('Index')
         context['topics'] = Topic.objects.all().filter(id__in=Topic_related_to_user(self.request))
         context['show_order'] = True
-        context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
+        # context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
         return context
 
 
@@ -1026,20 +1028,20 @@ def Thread_related_to_user(request):
     return Thread.objects.filter(topic__in=Topic_related_to_user(request))
 
 
-def get_top_thread_keywords(request, number_of_keyword):
-    obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
-    word_counter = {}
-    for eachx in obj:
-        words = TextBlob(eachx.title).noun_phrases
-        for eachword in words:
-            for singleword in eachword.split(" "):
-                if singleword in word_counter:
-                    word_counter[singleword] += 1
-                else:
-                    word_counter[singleword] = 1
+# def get_top_thread_keywords(request, number_of_keyword):
+#     obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
+#     word_counter = {}
+#     for eachx in obj:
+#         words = TextBlob(eachx.title).noun_phrases
+#         for eachword in words:
+#             for singleword in eachword.split(" "):
+#                 if singleword in word_counter:
+#                     word_counter[singleword] += 1
+#                 else:
+#                     word_counter[singleword] = 1
 
-    popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
-    return popular_words[:number_of_keyword]
+#     popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
+#     return popular_words[:number_of_keyword]
 
 
 class QuizUserProgressView(TemplateView):
