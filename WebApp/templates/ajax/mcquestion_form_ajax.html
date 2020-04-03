@@ -4,7 +4,7 @@
  <!-- Bootstrap -->
  <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
-<link href="{% static '/build/css/custom.css' %}" rel="stylesheet">
+<link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
 {{ form.media }}
 <form method="post" action="{% url 'teacher_mcquestion_create' %}" id="mcq_form_post">
 	{% csrf_token %}
