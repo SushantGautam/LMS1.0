@@ -36,6 +36,10 @@ a:hover{
     padding: 0!important;
 
 }
+.main-canvas-holder {
+    margin: 78px 0 110px 0;
+    padding-right: 40px!important;
+}
 
 .builder-top{
    
@@ -45,28 +49,33 @@ a:hover{
 }
 .component-container{
    
-    padding: 10px;
+    height: 7vh;
     border-bottom: 2px solid #79a6fb;
 }
 .chapter-title-only{
-    line-height: 27px;
+    line-height: 50px;
     color: white;
     font-weight: 600;
 }
-
+.chapter-name i{
+    color: #8592a4;
+}
 .buttons-chapter-only{
     text-align: right;
+    padding-top: 10px;
+   
 
 }
+
 .exit-button-only {
     text-align: center;
    
-    line-height: 26px;
-    color: white;
+    line-height: 50px;
+    color: #8592a4;
 
 }
 .exit-button-only a{
-    color: white;
+    color: #8592a4;
 }
 .exit-button-only a:hover{
     color: white;
@@ -87,9 +96,12 @@ a:hover{
    
 }
 .btn-type1:focus{
-    background:#79a6fb;
+    background:#bcd2fd;
     color: #353c46;
     outline: none!important;
+}
+#togglefull:hover{
+    cursor: pointer;
 }
 
 
@@ -109,19 +121,17 @@ a:hover{
 
 .ols-objects{
     text-align: center;
+    margin-top: 40px;
 }
 .ols-part{
     background-color: #cbd4e1;
-    padding: 0 0px 0px 15px!important;
+    padding: 0 20px 0px 20px!important;
     height: 93vh;
-    
-   
-
 }
 
 .ols-each-content{
     background-color: #eef2f5;
-   
+    margin-bottom: 40px;
 }
 .layouts-only{
     background-color: #eef2f5;
@@ -145,12 +155,12 @@ a:hover{
 }
 
 .individual-objects{
-    padding: 15px 15px 9px 15%;
+    padding: 15px 15px 4px 15%;
     font-size: 17px;
     -webkit-user-select: none;  /* Chrome all / Safari all */
     -moz-user-select: none;     /* Firefox all */
     -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Likely future */     
+    user-select: none;          /* Likely future */
 }
 .individual-objects:hover{
     background-color: #e1e7f0;
@@ -210,10 +220,10 @@ a:hover{
 .object-image-size{
     height: 23px;
     width: 30px;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 .object-name-size{
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
     text-decoration: none;
 }
@@ -222,7 +232,7 @@ a:hover{
     text-decoration: none;
 }
 .icon-boxes{
-    height: 80vh ;
+    height: 72vh;
     overflow: auto;
 }
 .icon1{
@@ -241,6 +251,7 @@ a:hover{
   
     height: 93vh;
     background-color:#cbd4e1;
+    
 
 }
 
@@ -252,11 +263,9 @@ a:hover{
 
 }
 .row-ols{
-    padding: 8px;
+    padding: 5px 8px;
     background-color: #353c46;
-    height: 85px;
-   
-  
+    height: 10vh;
 }
 .obj-img{
    
@@ -356,19 +365,17 @@ a:hover{
 }
 
 .main-central-canvas{
-    height: 83vh;
+    height: 62vh;
     background-color: white;
 }
 /* rightpart */
 
-.note-holder{
-padding: 10px 16px!important;
-color: white;
-background-color: #353c46;
-height: 100px;
-    
+.note-holder{padding: 20px 16px!important;color: white;background-color: #353c46;height: 120px;}
+.note-holder i {
+    color: #8592a4;
 }
-.note-chapter{
+.note-chapter p {
+    margin-bottom: 0px!important;
   
 }
 .hr_header{
@@ -384,29 +391,67 @@ height: 100px;
 }
 .small-canvases-list{
     margin-top: 10px;
-
     list-style: none;
     display: flex;
     align-items: unset;
-    padding: 15px 15px 15px 20px;
+    padding: 15px 9px 15px 13px;
 }
 .span-number{
-    margin-right: 20px;
+    margin-right: 10px;
 }
 .small-canvases{
     
 height: 110px;
     
-width: 170px;
+width: 176px;
     
 background-color: white;
-    
-/* margin: 20px; */
+
+
+}
+.mini-canvas-btns{
+    display: none;
+}
+.small-canvases:hover{
+    border: 2px solid #bcd2fd;
+-webkit-box-shadow: 0 0 10px #bcd2fd;
+box-shadow: 0 0 10px #bcd2fd;
+
+}
+.small-canvases:hover .mini-canvas-btns{
+ display: block;
+}
+.clone-button{
+    background-color: #79a6fb;
+    padding: 3px;
+    border:none
+}
+.clone-button i{
+    color: white;
+}
+.delete-button{
+    background-color: #79a6fb;
+    padding: 3px;
+    border:none;
+    margin-right: 2px;
+}
+.delete-button i{
+  color: white;
+}
+
+
+hr {
+    margin-top: 7px !important;
+    margin-bottom: 7px !important;
+    border: 0 ;
+    border-top: 2px solid #8592a4 !important;
 }
 .add-page{
     text-align: center;
-    padding-top: 5px;
-    font-size: 16px;
+  
+    font-size: 12px;
+    font-weight: 500;
+    padding-top: 33px;
 }
 .add-page a{
     color: black;
@@ -414,7 +459,10 @@ background-color: white;
 }
 .add-page a:hover{
     text-decoration: none;
+    color: black;
 
 }
-
+.full-screen-color li{
+    display: inline-block;
+}
 /* mAIN-BODY ENDS */

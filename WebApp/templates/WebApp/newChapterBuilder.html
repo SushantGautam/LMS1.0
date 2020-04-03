@@ -17,6 +17,8 @@
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
 
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/color-picker/nano.min.css' %}">
+   
    
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
@@ -24,6 +26,7 @@
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/new-responsive.css' %}">
 
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap3.4.1.min.css' %}">
+    
 </head>
 <body>
 <section class=" container-fluid full-page-builder ">
@@ -31,7 +34,7 @@
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
             <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12" >
-                <span>Chapter Title <i class="fas fa-pencil-alt"></i></span>
+                <span class="chapter-name">Chapter Title <i class="fas fa-pencil-alt"></i></span>
 
             </div>
             <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
@@ -44,7 +47,7 @@
 
             </div>
             <div class="exit-button-only col-md-2 col-sm-3 col-xs-12 ">
-                <a class="" href="">  <span>  QUIT <i style="border:1px solid white; padding:1px 2px   " class="fas fa-times"></i> </span></a>  
+                <a class="" href="">  <span>  QUIT <i style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></a>  
 
             </div>
 
@@ -64,8 +67,10 @@
                         <div class="obj-img">
                             <div class="obj-img-holder">
                                 <a  class="" href="#1a" data-toggle="tab"> <img id="id1" class="obj1" src="{% static 'chapterPageBuilder/icons/newicon/object-w.svg' %}">
-                                    <img id="id2" class="obj2" src="{% static 'chapterPageBuilder/icons/newicon/object-b.svg' %}"></a>
-                                <span  class="ols-name1" style="color: white; text-align:center">Object</span>
+                                    <img id="id2" class="obj2" src="{% static 'chapterPageBuilder/icons/newicon/object-b.svg' %}">
+                                    <span  class="ols-name1" style="color: white; text-align:center">Object</span>
+                                </a>
+                                
     
                             </div>
     
@@ -73,9 +78,12 @@
                         <div class="layout-img">
                             <div class="layout-img-holder">
                                 <a class=" " href="#2a" data-toggle="tab"><img id="id3" class="obj3" src="{% static 'chapterPageBuilder/icons/newicon/layout-w.svg' %}">
-                                    <img id="id4" class="obj4" src="{% static 'chapterPageBuilder/icons/newicon/layout-b.svg' %}"></a>
+                                    <img id="id4" class="obj4" src="{% static 'chapterPageBuilder/icons/newicon/layout-b.svg' %}">
+                                
+                                    <span class="ols-name2" style="color: white; text-align:center">Layout</span>
+                                
+                                </a>
     
-                                <span class="ols-name2" style="color: white; text-align:center">Layout</span>
     
                             </div>
     
@@ -84,9 +92,11 @@
                             <div class="source-img-holder">
     
                                 <a href="#3a" data-toggle="tab"><img id="id5" class="obj5" src="{% static 'chapterPageBuilder/icons/newicon/source.svg' %}">
-                                    <img id="id6" class="obj6" src="{% static 'chapterPageBuilder/icons/newicon/source-b.svg' %}"></a>
+                                    <img id="id6" class="obj6" src="{% static 'chapterPageBuilder/icons/newicon/source-b.svg' %}">
+                                    <span class="ols-name3" style="color: white;">Source</span>
+                                
+                                </a>
     
-                                <span class="ols-name3" style="color: white;">Source</span>
     
                             </div>
     
@@ -277,18 +287,41 @@
 
             <div class="main-canvas-part col-md-8 col-sm-8 col-xs-12">
 
-                <div class="view-mode col-md-12">
-                  <a href="">
-                    <span ><img  style="height: 15px; width:15px ; margin-top:-5px" src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
-                       <span style="font-size: 15px;">Full Screen</span> </a> </span>&nbsp;&nbsp;
-                      <a href=""> <span style="font-size: 15px;">BG</span>
-                    <span class="caret"></span></a>
-                   
-                  
-                    
-                </div>
+               
 
-                <div id="" class="main-central-canvas col-md-12">
+                <div id="" class=" main-canvas-holder col-md-12">
+                    <div class="view-mode ">
+                      <ul class="full-screen-color">
+                          <li>  
+                              <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
+                               data-original-title="FullScreen">
+                              <span ><img  style="height: 15px; width:15px ; margin-top:-5px" src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
+                                 <span style="font-size: 15px;">Full Screen</span> </a> </span>&nbsp;&nbsp;
+                                
+                         </li>
+                         <li> <span class="color-picker" style="font-size: 15px;"></li>
+                         <li> <span  style="font-size: 15px;">
+                                 
+                                
+                                    BG Color</span> 
+                        </li>
+                    
+                         
+                          
+                            <li> <span class="caret"></span></li>
+                               
+                         
+                      </ul>
+                   
+                      
+                            
+                         
+                        
+                          
+                      </div>
+                      <div class="main-central-canvas">
+
+                      </div>
 
                 </div>
     
@@ -307,33 +340,124 @@
                         
                     </div>
                 </div>
+              
 
-                <div class="additional-canvas">
+                <div class="additional-canvas" style="position: relative;">
+                    <div class="col-md-12" style="text-align:center; padding:10px; position:fixed; top:0; left:0; right:0">
+                        <span>
+                            <i class="fas fa-sort-up"></i>
+                        </span>
+                    </div>
 
                     <ul class="small-canvases-list">
                         <span class="span-number">1</span>
-                        <li class="small-canvases">
+                        <li class="small-canvases" style="position: relative;">
+                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
+                                
+                                <span style="float:right">
+                                    <button class="clone-button" value="1">
+                                    <span data-title="Clone Page">
+                                    <i class="fa fa-clone " aria-hidden="true"></i>
+                                    </span>
+                                    
+                                    </button>
+                                </span>
+
+                                <span style="float:right">
+                                    <button class="delete-button" value="1">
+                                    <span data-title="Delete Page">
+                                    <i class="fa fa-times " aria-hidden="true"></i>
+                                    </span>
+
+                                   
+                                    </button>
+                                </span>
+                            </div>
                     
                         </li>
                     
                     </ul>
                     <ul class="small-canvases-list">
                         <span class="span-number">1</span>
-                        <li class="small-canvases">
+                        <li class="small-canvases" style="position: relative;">
+                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
+                                
+                                <span style="float:right">
+                                    <button class="clone-button" value="1">
+                                    <span data-title="Clone Page">
+                                    <i class="fa fa-clone " aria-hidden="true"></i>
+                                    </span>
+                                    
+                                    </button>
+                                </span>
+
+                                <span style="float:right">
+                                    <button class="delete-button" value="1">
+                                    <span data-title="Delete Page">
+                                    <i class="fa fa-times " aria-hidden="true"></i>
+                                    </span>
+
+                                   
+                                    </button>
+                                </span>
+                            </div>
+                    
+                        </li>
+                        <span></span>
+                    
+                    </ul>
+                    <ul class="small-canvases-list">
+                        <span class="span-number">1</span>
+                        <li class="small-canvases" style="position: relative;">
+                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
+                                
+                                <span style="float:right">
+                                    <button class="clone-button" value="1">
+                                    <span data-title="Clone Page">
+                                    <i class="fa fa-clone " aria-hidden="true"></i>
+                                    </span>
+                                    
+                                    </button>
+                                </span>
+
+                                <span style="float:right">
+                                    <button class="delete-button" value="1">
+                                    <span data-title="Delete Page">
+                                    <i class="fa fa-times " aria-hidden="true"></i>
+                                    </span>
+
+                                   
+                                    </button>
+                                </span>
+                            </div>
                     
                         </li>
                     
                     </ul>
                     <ul class="small-canvases-list">
                         <span class="span-number">1</span>
-                        <li class="small-canvases">
-                    
-                        </li>
-                    
-                    </ul>
-                    <ul class="small-canvases-list">
-                        <span class="span-number">1</span>
-                        <li class="small-canvases">
+                        <li class="small-canvases"style="position: relative;">
+                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
+                                
+                                <span style="float:right">
+                                    <button class="clone-button" value="1">
+                                    <span data-title="Clone Page">
+                                    <i class="fa fa-clone " aria-hidden="true"></i>
+                                    </span>
+                                    
+                                    </button>
+                                </span>
+
+                                <span style="float:right">
+                                    <button class="delete-button" value="1">
+                                    <span data-title="Delete Page">
+                                    <i class="fa fa-times " aria-hidden="true"></i>
+                                    </span>
+
+                                   
+                                    </button>
+                                </span>
+                            </div>
                     
                         </li>
                     
@@ -342,15 +466,19 @@
                    
 
                 </div>
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <hr class="hr_header">
+                <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
+                    <hr>
 
                 </div>
                
                 <div class="add-page">
-                    <span>
-                     <a href="">   <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
-                    </span>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+
+                        
+                            <a href="">   <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
+                           
+                    </div>
+                    
                 </div>
               
                
@@ -369,6 +497,52 @@
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/color-picker/pickr.min.js' %}"></script>
+
+
+<script>
+    const pickr = Pickr.create({
+        el: '.color-picker',
+        theme: 'nano', // or 'monolith', or 'nano'
+    
+        swatches: [
+            'rgba(244, 67, 54, 1)',
+            'rgba(233, 30, 99, 0.95)',
+            'rgba(156, 39, 176, 0.9)',
+            'rgba(103, 58, 183, 0.85)',
+            'rgba(63, 81, 181, 0.8)',
+            'rgba(33, 150, 243, 0.75)',
+            'rgba(3, 169, 244, 0.7)',
+            'rgba(0, 188, 212, 0.7)',
+            'rgba(0, 150, 136, 0.75)',
+            'rgba(76, 175, 80, 0.8)',
+            'rgba(139, 195, 74, 0.85)',
+            'rgba(205, 220, 57, 0.9)',
+            'rgba(255, 235, 59, 0.95)',
+            'rgba(255, 193, 7, 1)'
+        ],
+    
+        components: {
+    
+            // Main components
+            preview: true,
+            opacity: true,
+            hue: true,
+    
+            // Input / output Options
+            interaction: {
+                hex: true,
+                rgba: true,
+                hsla: true,
+                hsva: true,
+                cmyk: true,
+                input: true,
+                clear: true,
+                save: true
+            }
+        }
+    });
+</script>
 
     <script>
         $(document).ready(function(){
@@ -408,4 +582,25 @@
           })
         });
         </script>
-
+    <script>
+        function toggleFullScreen() {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+                if (document.documentElement.requestFullScreen) {
+                    document.documentElement.requestFullScreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullScreen) {
+                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
+            }
+        }
+    </script>
