@@ -1383,9 +1383,12 @@ article {
 }
 
 @media  (min-width: 310px) and (max-width: 672px) {
+    .user-profile img {
+       display: none!important;
+    }
     .top_nav .navbar-right {
         margin: 0;
-        width: 55% !important;
+        width: 65% !important;
         float: right;
     }
     .navClass{
@@ -1399,7 +1402,7 @@ article {
 
         line-height: 60px;
 
-        font-size: 18px;
+        font-size: 12px;
     }
 
     .toggle {
