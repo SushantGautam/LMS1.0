@@ -34,10 +34,10 @@
         <br><br>
         {% for data in obj.data %}
             {% if data.type == '1' %}
-                <b class="text-success">Entry:</b>{{ data.visittime }} <br>
+                <b class="text-success">Entry:</b> <span class="timecon">{{ data.visittime|date:"Y-m-d h:i:s A" }} </span><br>
             {% endif %}
             {% if data.type == '0' %}
-                <b class="text-danger">Exit:</b>{{ data.visittime }} <br>
+                <b class="text-danger">Exit:</b> <span class="timecon"> {{ data.visittime|date:"Y-m-d h:i:s A" }} </span><br>
             {% endif %}
         {% endfor %}
         <br>

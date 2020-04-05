@@ -2460,7 +2460,11 @@ def getListOfFiles(dirName, studentid):
         fullPath = os.path.join(dirName, entry)
         # If entry is a directory then get the list of files in this directory 
         if os.path.isdir(fullPath):
-            allFiles = allFiles + getListOfFiles(fullPath, studentid)
+            # conv and compare is added to get only the files of 7days
+            conv = datetime.strptime(entry,'%Y%m%d').date()
+            compare = (datetime.today() - timedelta(days=7)).date()
+            if (compare<conv):
+                allFiles = allFiles + getListOfFiles(fullPath, studentid)
         elif entry == str(studentid) + '.txt':
             allFiles.append(fullPath)
                 
@@ -2491,12 +2495,15 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
         except:
             jsondata = ''
         if jsondata:
+            temp_json_data = []
             for data in jsondata:
                 if data['chapterid'] == str(chapterid):
+                    converted_datetime = datetime.strptime(data['visittime'], '%m/%d/%Y %H:%M:%S')
+                    data['visittime'] = converted_datetime
+                    temp_json_data.append(data)
                     flag = 1
-                    break
             if flag == 1:
-                temp.append({'date': date,'data':jsondata})
+                temp.append({'date': date,'data':temp_json_data})
     context['object'] = temp
     context['course'] = courseObj
     context['chapter'] = chapterObj
