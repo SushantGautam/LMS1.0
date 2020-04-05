@@ -168,7 +168,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
-        kwargs = super(SurveyInfo_ajax, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
 
@@ -216,6 +216,78 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             # else:
             #     print('qna is invalid')
             #     print(qna.errors)
+        response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
+                    'teacher_url': self.request.build_absolute_uri(
+                        reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
+                    'student_url': self.request.build_absolute_uri(
+                        reverse('questions_student_detail', kwargs={'pk': self.object.id}))}
+        return JsonResponse(response)
+
+
+class SurveyInfoAjaxUpdate(AjaxableResponseMixin, UpdateView):
+    model = SurveyInfo
+    form_class = SurveyInfoForm
+    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['update_form'] = True
+        if self.request.POST:
+            context['questioninfo_formset'] = QuestionInfoFormset(self.request.POST,
+                                                                  instance=self.object,
+                                                                  queryset=QuestionInfo.objects.filter(
+                                                                      Question_Type='MCQ'),
+                                                                  prefix='questioninfo')  # MCQ
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(self.request.POST,
+                                                                        instance=self.object,
+                                                                        queryset=QuestionInfo.objects.filter(
+                                                                            Question_Type='SAQ'),
+                                                                        prefix='questionansinfo')  # SAQ
+        else:
+            context['questioninfo_formset'] = QuestionInfoFormset(prefix='questioninfo',
+                                                                  queryset=QuestionInfo.objects.filter(
+                                                                      Question_Type='MCQ'),
+                                                                  instance=self.object)
+            context['questionansinfo_formset'] = QuestionAnsInfoFormset(prefix='questionansinfo',
+                                                                        queryset=QuestionInfo.objects.filter(
+                                                                            Question_Type='SAQ'),
+                                                                        instance=self.object)
+            context['category_name'] = self.request.GET['category_name']
+            if self.request.GET['category_name'] == "Session":
+                context['form']['Session_Code'].initial = self.request.GET['Session_Code']
+        return context
+
+    def form_valid(self, form):
+        # vform = super().form_valid(form)
+        if form.is_valid():
+            self.object = form.save(commit=True)
+        context = self.get_context_data()
+        qn = context['questioninfo_formset']
+        qna = context['questionansinfo_formset']
+        # for q in qn:
+        #     print(type(q))
+        #     print(q)
+        op_list = []
+        with transaction.atomic():
+            if qn.is_valid():
+                qn.instance = self.object
+                qn.save()
+            else:
+                print(qn.errors)
+                print('qn is invalid')
+            if qna.is_valid():
+                qna.instance = self.object
+                qna.save()
+            else:
+                print('qna is invalid')
+                print(qna.errors)
+
+
         response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
                     'teacher_url': self.request.build_absolute_uri(
                         reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
