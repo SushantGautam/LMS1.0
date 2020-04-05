@@ -67,7 +67,18 @@ a:hover{
    
 
 }
-
+.buttons-chapter-only a{
+    color: #79a6fb;
+    text-decoration: none;
+}
+.exit-button-only a:hover , .exit-button-only a:active, .exit-button-only a:focus   {
+    
+    text-decoration: none;
+   
+}
+.exit-button-only a:active, .exit-button-only a:focus {
+    color: white ;
+}
 .exit-button-only {
     text-align: center;
    
@@ -467,3 +478,21 @@ hr {
     display: inline-block;
 }
 /* mAIN-BODY ENDS */
+
+/* OLD BUILDER CSS ONLY */
+
+
+.draggable-style {
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    z-index: 9;
+
+}
+.draggable-style:active {
+    cursor: move;
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+}
+
+/* ENDS */
