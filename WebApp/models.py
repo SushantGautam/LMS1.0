@@ -291,6 +291,12 @@ class ChapterInfo(models.Model):
     def __str__(self):
         return self.Chapter_Name
 
+    def clean(self):
+        super().clean()
+        if(self.Start_Date and self.End_Date):
+            if(self.Start_Date > self.End_Date):
+                raise ValidationError("End date must be greater than start date")
+
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
