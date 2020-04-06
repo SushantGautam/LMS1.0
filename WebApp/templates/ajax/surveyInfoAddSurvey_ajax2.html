@@ -12,16 +12,28 @@
                   {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
                   {% if category_name == 'live' %}
-                    {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}&course_code={{ course_code }}
+                    {% if update_form %}
+                      {% url 'TeacherSurveyInfo_ajax_update' pk=object.id %}?category_name={{ category_name }}&course_code={{ course_code }}
+                    {% else %}
+                      {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}&course_code={{ course_code }}
+                    {% endif %}
                   {% else %}
-                    {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
+                    {% if update_form %}
+                      {% url 'TeacherSurveyInfo_ajax_update' pk=object.id %}?category_name={{ category_name }}
+                    {% else %}
+                      {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
+                    {% endif %}
                   {% endif %}
                 {% endif %}
               {% else %}
                 {% if "retake" in request.path %}
                   {% url 'surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
-                  {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
+                  {% if update_form %}
+                    {% url 'surveyinfo_ajax_update' pk=object.id %}?category_name={{ category_name }}
+                  {% else %}
+                    {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
+                   {% endif %}
                 {% endif %}
               {% endif %}"
       method="post">
