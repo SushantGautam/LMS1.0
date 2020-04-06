@@ -21,6 +21,7 @@
 {% block content %}
 
 
+    {% include 'popUp.html' %}
     {% include 'WebApp/theme/alerts.html' %}
 
     <div class="container_main" id="adminHome">
@@ -399,9 +400,15 @@
     </div>
 
 
+
 {% endblock %}
 {% block customjss %}
     <script>
+    //pop load hune code
+       $(window).on('load',function(){
+        $('#myModal').modal('show');
+       });
+
         var config = {
             trace: true,
             spiralResolution: 1, //Lower = better resolution
