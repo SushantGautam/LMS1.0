@@ -33,25 +33,26 @@
 
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
-            <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12" >
+            <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12">
                 <span class="chapter-name">Chapter Title <i class="fas fa-pencil-alt"></i></span>
 
             </div>
             <div class=" buttons-chapter-only col-md-9 col-sm-6 col-xs-12">
-                <button class="btn-type1"><i style="color:white" class="fas fa-save"></i>&nbsp; Save</button>
-                <button  class="btn-type1"><i style="color:white" class="fas fa-file-import"></i>&nbsp; Import</button>
-                <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button class="btn-type1">
-                <button  class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button class="btn-type1">
+                <button class="btn-type1" id="SaveBtn"><i style="color:white" class="fas fa-save"></i>&nbsp; Save
+                </button>
+                <button class="btn-type1"><i style="color:white" class="fas fa-file-import"></i>&nbsp; Import</button>
+                <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button>
+                <button class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button>
 
-                
 
             </div>
             <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
-                <a href="javascript:void(0)" id="save-and-exit-btn">  <span>  QUIT <i style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></a>  
+                <a href="javascript:void(0)" id="save-and-exit-btn"> <span>  QUIT <i
+                        style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></a>
 
             </div>
 
-          
+
         </div>
 
     </header>
@@ -104,35 +105,30 @@
     
                     </div>
                 </div>
-    
+
                 <div class="ols-each-content">
                     <div id="exTab1" class="">
-    
+
                         <div class="tab-content ">
-                           
-                            <div  class="tab-pane active" id="1a">
+
+                            <div class="tab-pane active" id="1a">
                                 <div class="icon-boxes">
                                     <ul class="list-objects">
-                                       
-                                            <li class="individual-objects draggable draggable-style">
-                                             
-                                                    <img class="object-image-size"
-                                                     src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
+
+                                        <li class="individual-objects draggable draggable-style textbox">
+
+                                            <img class="object-image-size"
+                                                 src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
                                                     <span class="object-name-size">TEXT BOX</span>
                                             </li>
-                                      
-    
-                                       
+
                                             <li class="individual-objects  draggable draggable-style ">
                                                 <span>
                                                  <img class="object-image-size"
                                                   src="{% static 'chapterPageBuilder/icons/newicon/link.svg' %}">
                                                 </span> <span class="object-name-size">TEXT LINK</span>
                                             </li>
-                                        
-    
-                                       
-    
+
                                             <li class="individual-objects draggable draggable-style">
                                                 <span>
                                                  <img class="object-image-size"
@@ -309,24 +305,24 @@
                          
                           
                             <li> <span class="caret"></span></li>
-                               
-                         
-                      </ul>
-                   
-                      
-                            
-                         
-                        
-                          
-                      </div>
-                      <div class="main-central-canvas">
 
-                      </div>
+
+                      </ul>
+
+
+                    </div>
+                    <div class="main-central-canvas tabs" id="tabs-for-download">
+                        <p id="tab" value="0" class="tab-content-no   droppable editor-canvas current">
+
+                        </p>
+                        <p id="copy_tab" value="0" style="display: none;">
+
+                        </p>
+                    </div>
 
                 </div>
-    
-            </div>
 
+            </div>
 
 
             <div class="preview-canvas-part col-md-2 col-xs-12">
@@ -336,18 +332,18 @@
                      
                             <p>You can enter the details of chapter here  </p>
 
-                        
-                        
+
                     </div>
                 </div>
-              
+
 
                 <div class="additional-canvas" style="position: relative;">
-                    
+
 
                     <ul class="small-canvases-list">
                         <span class="span-number">1</span>
-                        <li class="small-canvases" style="position: relative;">
+                        <li class="small-canvases pagenumber current" style="position: relative;"
+                            onclick="changePage('tab1')" value="1">
                             <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
                                 
                                 <span style="float:right">
@@ -371,95 +367,7 @@
                             </div>
                     
                         </li>
-                    
                     </ul>
-                    <ul class="small-canvases-list">
-                        <span class="span-number">1</span>
-                        <li class="small-canvases" style="position: relative;">
-                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
-                                
-                                <span style="float:right">
-                                    <button class="clone-button" value="1">
-                                    <span data-title="Clone Page">
-                                    <i class="fa fa-clone " aria-hidden="true"></i>
-                                    </span>
-                                    
-                                    </button>
-                                </span>
-
-                                <span style="float:right">
-                                    <button class="delete-button" value="1">
-                                    <span data-title="Delete Page">
-                                    <i class="fa fa-times " aria-hidden="true"></i>
-                                    </span>
-
-                                   
-                                    </button>
-                                </span>
-                            </div>
-                    
-                        </li>
-                        <span></span>
-                    
-                    </ul>
-                    <ul class="small-canvases-list">
-                        <span class="span-number">1</span>
-                        <li class="small-canvases" style="position: relative;">
-                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
-                                
-                                <span style="float:right">
-                                    <button class="clone-button" value="1">
-                                    <span data-title="Clone Page">
-                                    <i class="fa fa-clone " aria-hidden="true"></i>
-                                    </span>
-                                    
-                                    </button>
-                                </span>
-
-                                <span style="float:right">
-                                    <button class="delete-button" value="1">
-                                    <span data-title="Delete Page">
-                                    <i class="fa fa-times " aria-hidden="true"></i>
-                                    </span>
-
-                                   
-                                    </button>
-                                </span>
-                            </div>
-                    
-                        </li>
-                    
-                    </ul>
-                    <ul class="small-canvases-list">
-                        <span class="span-number">1</span>
-                        <li class="small-canvases"style="position: relative;">
-                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
-                                
-                                <span style="float:right">
-                                    <button class="clone-button" value="1">
-                                    <span data-title="Clone Page">
-                                    <i class="fa fa-clone " aria-hidden="true"></i>
-                                    </span>
-                                    
-                                    </button>
-                                </span>
-
-                                <span style="float:right">
-                                    <button class="delete-button" value="1">
-                                    <span data-title="Delete Page">
-                                    <i class="fa fa-times " aria-hidden="true"></i>
-                                    </span>
-
-                                   
-                                    </button>
-                                </span>
-                            </div>
-                    
-                        </li>
-                    
-                    </ul>
-                  
-                   
 
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
@@ -484,8 +392,6 @@
         </div>
     
     </main>
-    
-
 
 
 </section>
@@ -495,6 +401,7 @@
 
 <script src="{% static 'chapterPageBuilder/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/color-picker/pickr.min.js' %}"></script>
 
 
@@ -502,7 +409,7 @@
     const pickr = Pickr.create({
         el: '.color-picker',
         theme: 'nano', // or 'monolith', or 'nano'
-    
+
         swatches: [
             'rgba(244, 67, 54, 1)',
             'rgba(233, 30, 99, 0.95)',
@@ -614,3 +521,144 @@
             }
         }
     </script>
+
+{# Scripts from old builder #}
+<script>
+    var setThumbnailok = false;
+    var currentPage = '1';
+    var data = {{ data | safe}};
+    var courseID = '{{course}}';
+    var chapterID = '{{chapter}}';
+    var chaptertitle = '{{chapterdetails.Chapter_Name}}';
+    var save_file_url = "{% url 'saveFile' %}";
+    var save_video_url = "{% url 'saveVideo' %}";
+    var delete_file_url = "{% url 'delete-chapter-files' %}";
+    var save_3d_url = "{% url 'save3d' %}";
+    var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
+    var save_json_url = "{% url 'saveJson' %}";
+    var import_zip_url = '{% url "importzip" %}';
+    var csrf_token = '{{csrf_token}}';
+    var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}';
+    var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
+    var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
+    var server_name = '{{ server_name }}';
+
+
+    $('#chapterlist').val(chapterID);
+
+    var previous;
+    (function () {
+
+        $("select").on('focus', function () {
+            // Store the current value on focus and on change
+            previous = this.value;
+        }).change(function () {
+            // Do something with the previous value after the change
+            var confirmation = confirm("Are you sure you want to leave?")
+            if (confirmation == false) {
+                $('#chapterlist').val(previous)
+                return false
+            } else {
+                let chapter = $('#chapterlist').val()
+                {% if 'teachers' in request.path %}
+                    location.assign('/teachers/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                {% else %}
+                    location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                {% endif %}
+            }
+        });
+    })();
+
+    $(document).ready(function () {
+        let trunc = truncateString(`{{chapterdetails.Summary}}`);
+        $('#chapter-description').find('p').text(trunc);
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("slow");
+        ;
+    });
+
+    const truncateString = (string, maxLength = 30) => {
+        if (!string) return null;
+        const showDots = string.length > maxLength;
+        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+    };
+
+    $('#quiz_create_link').click(function (e) {
+        e.preventDefault();
+        $('#quiz-modal').modal('toggle');
+        let link = $("#quiz_create_link").attr('href');
+        loadPreview(link, 1)
+    })
+
+    $('#survey_create_link').click(function (e) {
+        e.preventDefault();
+        $('#survey-modal').modal('toggle');
+        let link = $("#survey_create_link").attr('href');
+        loadPreview(link, 1)
+    })
+    setTimeout(function () {
+        $.ajax({
+            url: "{% url 'retrieve-chapter-files' %}",
+            data: {
+                'courseID': courseID,
+                'chapterID': chapterID,
+                'userpk': '{{ request.user.pk }}'
+            },
+            success: function (data) {
+                if (data.images.length > 0) {
+                    $('#image-gallery').find('p').empty()
+                    data.images.forEach(x => {
+                        $('#image-gallery .individual-file').append(
+                            `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
+                        )
+                    });
+                }
+                if (data.videos.length > 0) {
+                    $('#video-gallery').find('p').empty()
+                    data.videos.forEach(x => {
+                        $('#video-gallery').append(
+                            x.split('&&&')[1]
+                        )
+                    });
+                }
+                if (data.pdf.length > 0) {
+                    $('#pdf-gallery').find('p').empty()
+                    data.pdf.forEach(x => {
+                        $('#pdf-gallery').append(
+                            x.split('&&&')[1]
+                        )
+                    });
+                }
+            },
+            // dataType: dataType
+        });
+    }, 5000)
+
+    // Add circular progress bar
+    function addprogress() {
+
+        $(".progressc").each(function () {
+
+            var value = $(this).attr('data-value');
+            var left = $(this).find('.progress-left .progress-barc');
+            var right = $(this).find('.progress-right .progress-barc');
+
+            if (value > 0) {
+                if (value <= 50) {
+                    right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+                } else {
+                    right.css('transform', 'rotate(180deg)')
+                    left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
+                }
+            }
+
+        });
+    }
+
+    function percentageToDegrees(percentage) {
+        return percentage / 100 * 360
+    }
+
+</script>
+
+{# End of Scripts from old builder #}
