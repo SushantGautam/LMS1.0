@@ -433,6 +433,7 @@ a:hover {
 .main-central-canvas {
     height: 62vh;
     background-color: white;
+    position: relative;
 }
 
 /* rightpart */
@@ -543,14 +544,16 @@ hr {
     font-size: 12px;
     font-weight: 500;
     padding-top: 33px;
+    cursor: pointer;
 }
 
 .add-page a {
     color: black;
+    cursor: pointer; text-decoration: none;
 
 }
 
-.add-page a:hover {
+.add-page a:hover , .add-page a:active , .add-page a:focus  {
     text-decoration: none;
     color: black;
 
