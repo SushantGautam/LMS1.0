@@ -2324,12 +2324,12 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
         print(FileNotFoundError)
     except JSONDecodeError:
         print(JSONDecodeError)
-        with open(student_data_file) as outfile:
-            if '{' in outfile.read():
-                return
-            else:
-                isjson = False
-    if os.path.isfile(student_data_file) and isjson:
+        # with open(student_data_file) as outfile:
+        #     if outfile.read()[0] == '{' and 'contents' in outfile.read():
+        #         return
+        #     else:
+        #         isjson = False
+    if os.path.isfile(student_data_file):
         if fromcontents:
             if currentPageNumber is None:
                 return jsondata
