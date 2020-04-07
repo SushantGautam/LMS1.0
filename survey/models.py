@@ -131,6 +131,12 @@ class SurveyInfo(models.Model):
         # datetimeexpired - if user has not submitted but survey end date has reached.
         return can_submit, datetimeexpired, options, questions
 
+    def check_expired(self):
+        return self.End_Date <= datetime.now(timezone.utc)
+
+    def check_started(self):
+        return self.Start_Date <= datetime.now(timezone.utc)
+
 
 class QuestionInfo(models.Model):
     QUESTION_TYPE_CHOICES = [

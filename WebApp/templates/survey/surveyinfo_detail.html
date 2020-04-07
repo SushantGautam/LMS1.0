@@ -119,6 +119,31 @@
 
             });
         });
+        $('#update_survey_button_limited').on('click', function () {
+            current_progress = -10000;
+            let url_get = "";
+            {% if 'teachers' in request.path %}
+                url_get = "{% url 'TeacherSurveyInfo_ajax_update_limited' pk=object.id %}";
+            {% else %}
+                url_get = "{% url 'surveyinfo_ajax_update_limited' pk=object.id %}";
+            {% endif %}
+            $.ajax({
+                type: "GET",
+                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+                url: url_get,  // URL to your view that serves new info
+                success: function (data) {
+
+                    $("#surveyForm").html(data);
+
+
+                },
+                complete: function () {
+                    $(".modal-backdrop ").removeClass("modal-backdrop");
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                },
+
+            });
+        });
 
         $('#update_progress').on('click', function () {
 

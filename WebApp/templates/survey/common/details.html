@@ -56,36 +56,104 @@
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-3" style="text-align:right">
-                    {% if not '/students' in request.path and not '/teachers' in request.path %}
-                        <form method="POST" action="{% url 'surveyinfo_delete' %}"
-                              onsubmit="return confirm('Are you sure you want to delete?');">
-                            {% csrf_token %}
-                            <input type="hidden" value="{{ object.pk }}" name="objectpk">
-                            <button type="submit" class="btn btn-danger btn-lg">
-                                <i class="fa fa-trash" aria-hidden="true"></i> Delete Survey
-                            </button>
-                        </form>
-                        <button type="button" class="btn btn-info btn-lg" id="update_survey_button" data-toggle="modal"
-                                data-target="#survey_form_modal">
-                            Update survey
-                        </button>
-                    {% endif %}
-                    <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-toggle="modal"
-                            data-target="#survey_form_modal">
-                        Retake survey
-                    </button>
-                </div>
-            </div>
+                    {#          {% if not '/students' in request.path and not '/teachers' in request.path %}#}
+                      {#            <form method="POST" action="{% url 'surveyinfo_delete' %}"#}
+                      {#                  onsubmit="return confirm('Are you sure you want to delete?');">#}
+          {#              {% csrf_token %}#}
+                        {#              <input type="hidden" value="{{ object.pk }}" name="objectpk">#}
+                        {#              <button type="submit" class="btn btn-danger btn-lg">#}
+                          {#                <i class="fa fa-trash" aria-hidden="true"></i> Delete Survey#}
+                        {#              </button>#}
+                      {#            </form>#}
+                      {##}
+          {#          {% endif %}#}
+          {#          <button type="button" class="btn btn-info btn-lg" id="update_survey_button" data-toggle="modal"#}
+                      {#                  data-target="#survey_form_modal">#}
+                        {#            Update survey#}
+                      {#          </button>#}
+                    {#          <button type="button" class="btn btn-info btn-lg" id="update_survey_button_limited" data-toggle="modal"#}
+          {#                  data-target="#survey_form_modal">#}
+          {#            Update survey info#}
+          {#          </button>#}
+          {#          <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-toggle="modal"#}
+          {#                  data-target="#survey_form_modal">#}
+          {#            Retake survey#}
+          {#          </button>#}
+          {#          <br>#}
+          {#          {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk %}#}
+          {#            teacher and own: TRUE#}
+          {#          {% else %}#}
+          {#            teacher and own: FALSE#}
+          {#          {% endif %}#}
+          {#          <br>#}
+          {#          {% if not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" %}#}
+          {#            admin and not system: TRUE#}
+          {#          {% else %}#}
+          {#            admin and not system: FALSE#}
+          {#          {% endif %}#}
+          {#          <br>#}
+          {#          {% if not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}#}
+          {#            admin and own: TRUE#}
+          {#          {% else %}#}
+          {#            admin and own: FALSE#}
+          {#          {% endif %}#}
+                    {##}
+          {#          <br>#}
+
+
+          <!-- ##################### check if user has access to change  ##############################  -->
+          <button type="button" class="btn btn-info btn-md" id="retakeSurveyBtn" data-toggle="modal"
+                  data-target="#survey_form_modal">
+            Retake survey
+          </button>
+          {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
+            <!-- ##################### user has access  ##############################  -->
+            <!-- ##################### user can delete  ##############################  -->
+
+            <form method="POST" action="{% url 'surveyinfo_delete' %}"
+                  onsubmit="return confirm('Are you sure you want to delete?');">
+              {% csrf_token %}
+              <input type="hidden" value="{{ object.pk }}" name="objectpk">
+              <button type="submit" class="btn btn-danger btn-md">
+                <i class="fa fa-trash" aria-hidden="true"></i> Delete Survey
+              </button>
+            </form>
+            {% if object.check_expired %}
+              <!-- ##################### survey expired so cannot edit  ##############################  -->
+              <button type="button" class="btn btn-warning btn-md" disabled>
+                Survey Expired
+              </button>
+            {% elif object.check_started %}
+              <!-- ##################### survey started already so only update basic info  ######################  -->
+              <button type="button" class="btn btn-info btn-md" id="update_survey_button_limited" data-toggle="modal"
+                      data-target="#survey_form_modal">
+                Edit Basic Info
+              </button>
+            {% else %}
+              <!-- ##################### else full update access  ##############################  -->
+              <button type="button" class="btn btn-info btn-md" id="update_survey_button" data-toggle="modal"
+                      data-target="#survey_form_modal">
+                Edit
+              </button>
+            {% endif %}
+          {% else %}
+            <!-- ##################### No Access  ##############################  -->
+            <button type="button" class="btn btn-warning btn-md" disabled>
+              No Edit Permission
+            </button>
+          {% endif %}
+
         </div>
-        <div class=" horizontalBar
-          ">
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-9">
-                    <div class="col-md-12">
-                        {% for question in questions %}
-                            {% if question.Question_Type == "MCQ" %}
+      </div>
+    </div>
+    <div class=" horizontalBar">
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-9">
+          <div class="col-md-12">
+            {% for question in questions %}
+              {% if question.Question_Type == "MCQ" %}
 
                                 <div class="x_panel" id="pollsQuestions"
                                      style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
