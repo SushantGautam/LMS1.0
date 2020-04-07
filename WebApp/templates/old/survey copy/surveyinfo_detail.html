@@ -1,0 +1,152 @@
+{% extends "base.html" %} {% load static %} {% block stylesheets %}
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+{% endblock stylesheets %} {% block breadcrumb %}
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'surveyinfo_list' %}">Survey</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
+{% endblock %}
+<style>
+
+</style>
+{% block content %}
+            {% include 'WebApp/theme/alerts.html' %}
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/highchart_data.js' %}"></script>
+
+    {% include 'survey/common/details.html' %}
+
+
+    <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers btn btn-danger btn-2x" style="
+    float: left;
+">
+        <span class="glyphicon glyphicon-remove"></span> Delete All Submitted Answers
+
+    </a>
+{% endblock %}
+
+{% block customjss %}
+    {#  {% if object.Survey_Live %}#}
+
+    <script>
+        var current_progress = 0;
+        $(document).ready(function () {
+
+
+            $('#survey_form_modal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+
+            var interval = setInterval(function () {
+                if ($('#chk').prop('checked')) {
+
+                    current_progress += 10;
+                    $("#dynamic")
+                        .css("width", current_progress + "%")
+                        .attr("aria-valuenow", current_progress)
+                        .text("Refreshing In :" + (10 - (current_progress / 10)));
+                } else {
+                    $("#dynamic").text("Paused");
+                }
+
+                if (current_progress >= 100) {
+                    clearInterval(interval);
+                    location.reload();
+                    //   $.ajax({
+                    //       type: "GET",
+                    //       url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
+                    //       success: function (data) {
+                    //           obj = JSON.parse(data);
+                    //           for (var i = 0; i < obj.length; i++) {
+                    //               $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
+                    //               console.log($("#progress" + obj[i].pk).css('width'));
+                    //               $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
+                    //               console.log($("#progress_span" + obj[i].pk).html());
+                    //               console.log(obj[i].pk)
+                    //           }
+                    //       },
+                    //       complete: function () {
+                    //           current_progress = 0;
+                    //           $(".se-pre-con-ajax").fadeOut("fast");
+                    //       }
+                    //   });
+                }
+
+            }, 1000);
+        });
+
+    </script>
+    {#  {% endif %}#}
+    <script>
+        $('#retakeSurveyBtn').on('click', function () {
+            current_progress = -10000;
+            
+            $.ajax({
+                type: "GET",
+                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+                url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
+                success: function (data) {
+                
+                    $("#surveyForm").html(data);
+                    
+
+                },
+                complete: function () {
+                    $(".modal-backdrop ").removeClass("modal-backdrop");
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                },
+
+            });
+        });
+
+        $('#update_progress').on('click', function () {
+
+            $.ajax({
+                type: "GET",
+                url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
+                success: function (data) {
+                    console.log(data);
+                    obj = JSON.parse(data);
+                    console.log(obj);
+                    console.log(obj[0]["fields"]);
+                    console.log(obj[0].pk);
+                    for (var i = 0; i < obj.length; i++) {
+                        $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
+                        console.log($("#progress" + obj[i].pk).css('width'));
+                        $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
+                        console.log($("#progress_span" + obj[i].pk).html());
+                        console.log(obj[i].pk)
+                    }
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function survey_create_content(response) {
+            //location.reload();
+            console.log(response['url']);
+            window.location.href = String(response['url']);
+        }
+
+        function askIfRemoveAll() {
+            $('#chk').prop('checked', false);
+
+            var answer = window.confirm("This will remove all student's submitted answers and cannot be undone. Continue?")
+            if (answer) {
+                {% if 'iframe' in request.GET %}
+                    window.location.href = "/survey/clearsurveys/{{ object.pk }}/?iframe=1";
+                {% else %}
+                    window.location.href = "/survey/clearsurveys/{{ object.pk }}/";
+                {% endif %}
+            } else {
+                //some code
+            }
+        }
+
+    </script>
+
+{% endblock %}

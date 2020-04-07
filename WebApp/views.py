@@ -214,7 +214,7 @@ def start(request):
                                                      End_Date__gte=datetime.now()).count
 
             # return HttpResponse("default home")
-            return render(request, "WebApp/homepage.html",
+            return render(request, "center_admin/dashboard.html",
                           {'course': course, 'coursecount': coursecount, 'studentcount': studentcount,
                            'teachercount': teachercount,
                            'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,

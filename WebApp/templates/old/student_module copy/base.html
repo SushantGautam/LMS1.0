@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    {% block head %}
+        {% block meta %}
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <!-- Meta, title, CSS, favicons, etc. -->
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% endblock meta %}
+
+        <title>Student {% block title %}{% endblock %}</title>
+
+        <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
+        {#        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>#}
+        <!-- Bootstrap -->
+        <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %} " rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+        <!-- NProgress -->
+        <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
+        <!-- bootstrap-daterangepicker -->
+        <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+        <!-- iCheck -->
+        <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+        <!-- bootstrap-progressbar -->
+        <link href="{% static 'vendorsx/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}"
+              rel="stylesheet">
+        <!-- JQVMap -->
+        <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/>
+        <!-- Custom Theme Style -->
+        <link href="{% static '/build/css/theme.min.css' %}" rel="stylesheet">
+        <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
+
+        {#        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">#}
+
+
+        {#    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">#}
+
+        {% block stylesheets %}
+        {% endblock stylesheets %}
+
+
+    {% endblock head %}
+</head>
+
+<body class="{% block body_class %}nav-md {% endblock body_class %}">
+{% block body %}
+    <div class="se-pre-con"></div>
+
+    <div class="container body" style="position: absolute;">
+        <div class="main_container">
+
+            {% block sidebar %}
+                <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
+                    {% include "student_module/theme/sidebar.html" %}
+                </div>
+            {% endblock sidebar %}
+
+            {% block top_navigation %}
+                <div class="top_nav">
+                    {% include "student_module/theme/top_navigation.html" %}
+                </div>
+            {% endblock top_navigation %}
+
+            <div class="right_col">
+                <ol aria-label="breadcrumb" class="breadcrumb navClass">
+                    <li class="breadcrumb-item"><a href="{% url 'student_home' %}">Home</a></li>
+                    {% block breadcrumb %}
+                    {% endblock %}
+                </ol>
+                {% block content %}
+
+                {% endblock content %}
+            </div>
+        </div>
+        {% block footer %}
+            {% include "student_module/theme/footer.html" %}
+        {% endblock footer %}
+    </div>
+
+    <!-- jQuery -->
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <!-- FastClick -->
+    <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
+    <!-- NProgress -->
+    <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="{% static 'vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script>
+    <!-- iCheck -->
+    <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
+    <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
+    <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script>
+    <!-- jQuery Tags Input -->
+    <script src="{% static 'vendorsx/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script>
+    <!-- Switchery -->
+    <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
+    <!-- Select2 -->
+    <script src="{% static 'vendorsx/select2/dist/js/select2.full.min.js' %}"></script>
+    <!-- Parsley -->
+    <script src="{% static 'vendorsx/parsleyjs/dist/parsley.min.js' %}"></script>
+    <!-- Autosize -->
+    <script src="{% static 'vendorsx/autosize/dist/autosize.min.js' %}"></script>
+    <!-- jQuery autocomplete -->
+    <script src="{% static 'vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script>
+    <!-- starrr -->
+    <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script>
+    <!-- Custom JS -->
+    <script src=" {% static 'js/common.js' %}"></script>
+    <script>
+        $(window).load(function () {
+            // Animate loader off screen
+            $(".se-pre-con").fadeOut("fast");
+        });
+        setTimeout(function () {
+            $('#alert-message').fadeOut('slow');
+        }, 3000);
+    </script>
+
+    {% block javascripts %}
+
+    {% endblock %}
+    {% block customjss %}
+
+    {% endblock %}
+    <!-- Custom Theme Scripts -->
+    <script src=" {% static '/build/js/custom.js' %}"></script>
+    <script>
+        window.addEventListener('beforeunload', function (e) {
+            // the absence of a returnValue property on the event will guarantee the browser unload happens
+            $(".se-pre-con").fadeIn("fast");
+        });
+    </script>
+    <script>
+        let params_base = new URLSearchParams(location.search);
+        $(document).ready(function () {
+            if (params_base.get('iframe')) {
+                $('.left_col, .top_nav , .breadcrumb, footer').remove();
+                $('.nav-md .container.body .right_col').css({
+                    'margin-left': '10px'
+                })
+            }
+        });
+    </script>
+{% endblock body %}
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!-- sidebar menu -->
+        {% if user.is_authenticated %}
+            <ul class="sidebar-menu">
+                <li class="active"><a href="{% url 'start' %}"><i class="fa fa-bar-chart-o"></i><span>Dashboard</span></a></li>
+                <li><a href="{% url 'memberinfo_list' %}"><i class="fa fa-user"></i><span>Members</span></a></li>
+    
+                <li class="hasSubmenu">
+                    <a href="#course-menu"><i class="fa fa-mortar-board"></i><span>Courses</span></a>
+                    <ul id="course-menu">
+                    <li><a href="{% url 'courseinfo_list' %}"><span>Course List</span></a></li>
+                    <li><a href="{% url 'courseinfo_create' %}"><span>Create New Course</span></a></li>
+                    </ul>
+                </li>
+
+                <li class="hasSubmenu">
+                    <a href="#quiz-menu"><i class="fa fa-question-circle"></i><span>Quiz</span></a>
+                    <ul id="quiz-menu">
+                        <li><a href="{% url 'quiz_list' %}"><span>Quiz List</span></a></li>
+                        <li><a href="{% url 'quiz_marking' %}"><span>Marking Page</span></a></li>
+                        <li><a href="{% url 'quiz_exam_list' %}"><span>Quiz Exam</span></a></li>
+                    </ul>
+                </li>
+
+                <li class="hasSubmenu">
+                    <a href="#account-menu"><i class="fa fa-list"></i><span>Session</span></a>
+                    <ul id="account-menu">
+                            <li><a href="{% url 'inninginfo_list' %}"><span>Session List</span></a></li>
+                            <li><a href="{% url 'groupmapping_list' %}"><span>Student Group</span></a></li>
+                            <li><a href="{% url 'inninggroup_list' %}"><span>Teacher-Course Allocation</span></a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="{% url 'AchievementPage_All' %}"><i class="fa fa-trophy"></i><span>Achievement</span></a></li>
+                
+                <li class="hasSubmenu">
+                    <a href="#forum-menu"><i class="fa fa-file-text-o"></i><span>Forum</span></a>
+                    <ul id="forum-menu">
+                        <li><a href="{% url 'forum:index' %}">Home</a></li>
+                        {% if request.user.is_authenticated %}
+                            <li><a href="{% url 'forum:user_info' request.user.pk %}">profile</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+
+                <li>
+                    <a href=" {% url 'surveylist' %}"><i class="fa fa-bar-chart"></i>Survey</a>
+                </li>
+                </ul>
+        {% endif %}
+<!-- /sidebar menu -->
