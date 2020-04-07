@@ -347,61 +347,35 @@
                 </div>
 
 
-                <div class="additional-canvas" style="position: relative;">
-
-
+                <div class="additional-canvas tabs-to-click" style="position: relative;">
                     <ul class="small-canvases-list">
-                        
-                        <li class="small-canvases pagenumber current" style="position: relative;"
+
+                        <li class="small-canvases pagenumber current" data-before="1" style="position: relative;"
                             onclick="changePage('tab1')" value="1">
                             <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
-                                
+
                                 <span style="float:right">
                                     <button class="clone-button" value="1">
                                     <span data-title="Clone Page">
                                     <i class="fa fa-clone " aria-hidden="true"></i>
                                     </span>
-                                    
+
                                     </button>
                                 </span>
 
                                 <span style="float:right">
-                                    <button class="delete-button" value="1">
+                                    <button class="delete-page-btn" value="1">
                                     <span data-title="Delete Page">
                                     <i class="fa fa-times " aria-hidden="true"></i>
                                     </span>
 
-                                   
+
                                     </button>
                                 </span>
                             </div>
 
                         </li>
-                        <li class="small-canvases pagenumber current" style="position: relative;"
-                        onclick="changePage('tab1')" value="1">
-                        <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
-                            
-                            <span style="float:right">
-                                <button class="clone-button" value="1">
-                                <span data-title="Clone Page">
-                                <i class="fa fa-clone " aria-hidden="true"></i>
-                                </span>
-                                
-                                </button>
-                            </span>
 
-                            <span style="float:right">
-                                <button class="delete-button" value="1">
-                                <span data-title="Delete Page">
-                                <i class="fa fa-times " aria-hidden="true"></i>
-                                </span>
-
-                               
-                                </button>
-                            </span>
-                        </div>
-
-                    </li>
                     </ul>
 
                 </div>
@@ -414,7 +388,7 @@
                     <div class="col-md-12 col-xs-12 col-sm-12">
 
 
-                        <a href=""> <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
+                        <a id="add-page-btn"> <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
 
                     </div>
 
@@ -803,7 +777,7 @@
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
 
 <script src="{% static 'chapterPageBuilder/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/newmain.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/color-picker/pickr.min.js' %}"></script>
 

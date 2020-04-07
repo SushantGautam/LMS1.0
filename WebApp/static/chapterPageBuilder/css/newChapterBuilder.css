@@ -489,7 +489,7 @@ a:hover {
     }
 
 .small-canvases::before{
-    content: '1';
+    content: attr(data-before);
     margin-left: -20px;
 }
 
@@ -1104,6 +1104,11 @@ html {
     -webkit-box-align: start;
     -ms-flex-align: start;
     align-items: flex-start;
+
+}
+
+.tabs-to-click ul li.current {
+    border: 2px solid #17a2b8;
 
 }
 
