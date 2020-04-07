@@ -5,6 +5,7 @@ import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
+from json import JSONDecodeError
 
 import cloudinary
 import cloudinary.api
@@ -2319,8 +2320,15 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
         with open(student_data_file) as outfile:
             jsondata = json.load(outfile)
         isjson = True
-    except:
-        isjson = False
+    except FileNotFoundError:
+        print(FileNotFoundError)
+    except JSONDecodeError:
+        print(JSONDecodeError)
+        with open(student_data_file) as outfile:
+            if '{' in outfile.read():
+                return
+            else:
+                isjson = False
     if os.path.isfile(student_data_file) and isjson:
         if fromcontents:
             if currentPageNumber is None:

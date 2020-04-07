@@ -1087,7 +1087,7 @@ def PageUpdateAjax(request, course, chapter):
                                          currentPageNumber=None, totalPage=None,
                                          studytimeinseconds=None,
                                          )
-    return JsonResponse(jsondata)
+    return JsonResponse(jsondata) if jsondata else None
 
 
 def StudentChapterLogUpdateAjax(request, chapter):
