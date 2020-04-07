@@ -84,6 +84,11 @@ a:hover {
     text-decoration: none;
 
 }
+#SaveBtn:active , #SaveBtn:focus{
+    text-decoration: none;
+    color: white;
+    background-color: #353c46;
+}
 
 .exit-button-only a:active, .exit-button-only a:focus {
     color: white;

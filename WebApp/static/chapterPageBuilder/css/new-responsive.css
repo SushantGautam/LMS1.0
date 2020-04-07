@@ -36,6 +36,9 @@
      .object-image-size{
          margin-right: 5px;
      }
+     .ols-name1 , .ols-name2 , .ols-name3{
+         font-size: 11px;
+     }
      
  }
  
@@ -118,7 +121,7 @@
          background-color: #353c46;
         
      }
- 
+  
  }
  
  @media (min-width:300px) and (max-width:531px){
@@ -131,15 +134,7 @@
      margin-right: 4px;
      font-size: 9px;
      }
-     .exit-button-only{
-         text-align: left;
- 
-     }
-     .buttons-chapter-only{
-         text-align: left;
-         margin-bottom: 5px;
- 
-     }
+     
  
  
  }
@@ -150,6 +145,8 @@
      margin-right: 3px;
      font-size: 9px;
      }
+    
+   
   
  
  
@@ -165,9 +162,94 @@
  
  
  }
+
+ @media (min-height:500px) and (max-height:600px){
+     .component-container{
+         height: 9vh;
+     }
+     .ols-part{
+        height: 91vh;
+    }
+    .preview-canvas-part{
+        height: 91vh;
+
+    }
+    .main-canvas-part {
+        height: 91vh;
+
+    }
+    .note-holder {
+        padding: 14px 16px !important;
+        color: white;
+        background-color: #353c46;
+        height: 85px;
+    }
+
+    .additional-canvas{
+        height: 63vh;
+    }
+    .add-page{
+        padding-top: 8px;
+    }
+    .ols-objects{
+        margin-top: 20px;
+    }
+    .ols-each-content{
+        margin-bottom: 20px;
+    }
+    .small-canvases{
+        height: 83px;
+    }
+
+
+ }
+ @media (min-height:601px) and (max-height:649px){
+        .row-ols{
+            height: 12vh;
+        }
+        .ols-each-content {
+            background-color: #eef2f5;
+            margin-bottom: 15px;
+        }
+        .small-canvases {
+            height: 90px;
+            width: 174px;
+            background-color: white;
+        }
+        .add-page{
+            padding-top: 10px;
+        }
+
+        .additional-canvas{
+            height: 68vh;
+        }
+        .note-holder{
+            height: 100px;
+        }
+ }
+
  
  
- 
+ @media (min-height:650px) and (max-height:750px){
+    .additional-canvas {
+        height: 68vh;
+        overflow: auto;
+    }
+    .add-page {
+        text-align: center;
+        font-size: 12px;
+        font-weight: 500;
+        padding-top: 10px;
+    }
+    .ols-each-content {
+        background-color: #eef2f5;
+        margin-bottom: 28px;
+    }
+    .note-holder{
+        height: 100px;
+    }
+
+ }
  
  @media (min-height:800px) and (max-height:900px){
      .component-container {
