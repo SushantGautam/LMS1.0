@@ -5,6 +5,7 @@ import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
+from json import JSONDecodeError
 
 import cloudinary
 import cloudinary.api
@@ -203,13 +204,13 @@ def start(request):
             threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveys = SurveyInfo.objects.filter(Q(Use_Flag=True),
-                                                    Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                    Q(End_Date__gte=datetime.now()))[:5]
+                                                Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
+                                                Q(End_Date__gte=datetime.now()))[:5]
             surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                     Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
                                                     Q(End_Date__gte=datetime.now())).count
             sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                     End_Date__gte=datetime.now())[:5]
+                                                 End_Date__gte=datetime.now())[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now()).count
 
@@ -221,7 +222,7 @@ def start(request):
                            'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
                            'surveys': surveys,
                            'surveycount': surveycount,
-                           'sessions':sessions,
+                           'sessions': sessions,
                            'sessioncount': sessioncount})
         elif request.user.Is_Student:
             return redirect('student_home')
@@ -777,19 +778,19 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     #     Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
     #     Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
     #     Obj.save()
-    #
+
     #     return JsonResponse(
     #         data={'Message': 'Success'}
     #     )
 
     def form_valid(self, form):
-        super(ChapterInfoCreateViewAjax, self).form_valid(form)
-        return JsonResponse(
-            data={'Message': 'Success'}
-        )
+       super(ChapterInfoCreateViewAjax, self).form_valid(form)
+       return JsonResponse(
+           data={'Message': 'Success'}
+       )
 
     def form_invalid(self, form):
-        return JsonResponse({'errors': form.errors}, status=500)
+       return JsonResponse({'errors': form.errors}, status=500)
 
 class ChapterInfoDetailView(DetailView):
     model = ChapterInfo
@@ -1588,10 +1589,28 @@ def save_file(request):
         return JsonResponse(data={"message": "success", "media_name": name})
 
 
-
-def newChapterBuilder(request, course, chapter): 
-   context = {}
-   return render(request,"WebApp/newChapterBuilder.html", context)
+def newChapterBuilder(request, course, chapter):
+    chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
+    chapterdetails = chapterlist.get(id=chapter)
+    path = settings.MEDIA_ROOT
+    server_name = settings.SERVER_NAME
+    data = {"": ""}
+    try:
+        with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
+                chapter) + '.txt') as json_file:
+            data = json.load(json_file)
+    except Exception as e:
+        print(e)
+    context = {
+        'course': course,
+        'chapter': chapter,
+        'chapterdetails': chapterdetails,
+        'chapterlist': chapterlist,
+        'file_path': path,
+        'server_name': server_name,
+        'data': data
+    }
+    return render(request, "WebApp/newChapterBuilder.html", context)
 
 
 def deletechapterfile(request):
@@ -2301,9 +2320,16 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
         with open(student_data_file) as outfile:
             jsondata = json.load(outfile)
         isjson = True
-    except:
-        isjson = False
-    if os.path.isfile(student_data_file) and isjson:
+    except FileNotFoundError:
+        print(FileNotFoundError)
+    except JSONDecodeError:
+        print(JSONDecodeError)
+        # with open(student_data_file) as outfile:
+        #     if outfile.read()[0] == '{' and 'contents' in outfile.read():
+        #         return
+        #     else:
+        #         isjson = False
+    if os.path.isfile(student_data_file):
         if fromcontents:
             if currentPageNumber is None:
                 return jsondata
@@ -2449,22 +2475,28 @@ def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False)
             return None
     return jsondata
 
+
 def getListOfFiles(dirName, studentid):
-    # create a list of file and sub directories 
-    # names in the given directory 
+    # create a list of file and sub directories
+    # names in the given directory
     listOfFile = os.listdir(dirName)
     allFiles = list()
     # Iterate over all the entries
     for entry in listOfFile:
         # Create full path
         fullPath = os.path.join(dirName, entry)
-        # If entry is a directory then get the list of files in this directory 
+        # If entry is a directory then get the list of files in this directory
         if os.path.isdir(fullPath):
-            allFiles = allFiles + getListOfFiles(fullPath, studentid)
+            # conv and compare is added to get only the files of 7days
+            conv = datetime.strptime(entry, '%Y%m%d').date()
+            compare = (datetime.today() - timedelta(days=7)).date()
+            if (compare < conv):
+                allFiles = allFiles + getListOfFiles(fullPath, studentid)
         elif entry == str(studentid) + '.txt':
             allFiles.append(fullPath)
-                
+
     return allFiles
+
 
 def StudentChapterProgressView(request, courseid, chapterid, studentid):
     context = dict()
@@ -2491,17 +2523,21 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
         except:
             jsondata = ''
         if jsondata:
+            temp_json_data = []
             for data in jsondata:
                 if data['chapterid'] == str(chapterid):
+                    converted_datetime = datetime.strptime(data['visittime'], '%m/%d/%Y %H:%M:%S')
+                    data['visittime'] = converted_datetime
+                    temp_json_data.append(data)
                     flag = 1
-                    break
             if flag == 1:
-                temp.append({'date': date,'data':jsondata})
+                temp.append({'date': date, 'data': temp_json_data})
     context['object'] = temp
     context['course'] = courseObj
     context['chapter'] = chapterObj
     context['student'] = studentObj
     return render(request, 'teacher_module/progressdetail.html', context=context)
+
 
 def loaderverifylink(request):
     return render(request, 'loaderio.html')

@@ -260,7 +260,14 @@
                                 <td class="attendance" data-attendance="{{ a.chapter.attendance }}">
                                     {{ a.chapter.attendance }}
                                 </td>
-                                <td><a href="{% url 'student_chapter_progress' courseid=course.id chapterid=a.chapter.chapterObj.id studentid=a.student.id %}">View</a></td>
+                                <td>
+                                    {% if 'teachers' in request.path %}
+                                        <a href="{% url 'student_chapter_progress_teacher' courseid=course.id chapterid=a.chapter.chapterObj.id studentid=a.student.id %}">View</a>
+                                        </td>
+                                    {% else %}
+                                        <a href="{% url 'student_chapter_progress' courseid=course.id chapterid=a.chapter.chapterObj.id studentid=a.student.id %}">View</a>
+                                        </td>
+                                    {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>

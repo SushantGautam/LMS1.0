@@ -86,9 +86,9 @@
                 data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
                 url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
                 success: function (data) {
-                
+
                     $("#surveyForm").html(data);
-                    
+
 
                 },
                 complete: function () {

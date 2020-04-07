@@ -1,7 +1,6 @@
 {% load static %}
 
 <head>
-
     <link rel="icon" type="image/png" href="/static/images/logo.png"/>
     <meta name="viewport" content="width=device-width, intial-scale=1.0">
 
@@ -18,40 +17,43 @@
 
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/color-picker/nano.min.css' %}">
-   
-   
+
+
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/newChapterBuilder.css' %}">
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/new-responsive.css' %}">
 
     <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap3.4.1.min.css' %}">
-    
+    <link rel="stylesheet"
+          href="{% static 'chapterPageBuilder/SummerNote/summernote-0.8.16-dist/summernote.min.css' %}">
+
 </head>
 <body>
 <section class=" container-fluid full-page-builder ">
 
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
-            <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12" >
+            <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12">
                 <span class="chapter-name">Chapter Title <i class="fas fa-pencil-alt"></i></span>
 
             </div>
             <div class=" buttons-chapter-only col-md-9 col-sm-6 col-xs-12">
-                <button class="btn-type1"><i style="color:white" class="fas fa-save"></i>&nbsp; Save</button>
-                <button  class="btn-type1"><i style="color:white" class="fas fa-file-import"></i>&nbsp; Import</button>
-                <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button class="btn-type1">
-                <button  class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button class="btn-type1">
+                <button class="btn-type1" id="SaveBtn"><i style="color:white" class="fas fa-save"></i>&nbsp; Save
+                </button>
+                <button class="btn-type1"><i style="color:white" class="fas fa-file-import"></i>&nbsp; Import</button>
+                <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button>
+                <button class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button>
 
-                
 
             </div>
             <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
-                <a href="javascript:void(0)" id="save-and-exit-btn">  <span>  QUIT <i style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></a>  
+                <a href="javascript:void(0)" id="save-and-exit-btn"> <span>  QUIT <i
+                        style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></a>
 
             </div>
 
-          
+
         </div>
 
     </header>
@@ -60,294 +62,298 @@
     <main class=" container-body-part col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
         <div class="row body-holder">
-    
+
             <div class=" ols-part col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="ols-objects">
                     <div class=" row-ols">
                         <div class="obj-img">
                             <div class="obj-img-holder">
-                                <a  class="" href="#1a" data-toggle="tab"> <img id="id1" class="obj1" src="{% static 'chapterPageBuilder/icons/newicon/object-w.svg' %}">
-                                    <img id="id2" class="obj2" src="{% static 'chapterPageBuilder/icons/newicon/object-b.svg' %}">
-                                    <span  class="ols-name1" style="color: white; text-align:center">Object</span>
+                                <a class="" href="#1a" data-toggle="tab"> <img id="id1" class="obj1"
+                                                                               src="{% static 'chapterPageBuilder/icons/newicon/object-w.svg' %}">
+                                    <img id="id2" class="obj2"
+                                         src="{% static 'chapterPageBuilder/icons/newicon/object-b.svg' %}">
+                                    <span class="ols-name1" style="color: white; text-align:center">Object</span>
                                 </a>
-                                
-    
+
+
                             </div>
-    
+
                         </div>
                         <div class="layout-img">
                             <div class="layout-img-holder">
-                                <a class=" " href="#2a" data-toggle="tab"><img id="id3" class="obj3" src="{% static 'chapterPageBuilder/icons/newicon/layout-w.svg' %}">
-                                    <img id="id4" class="obj4" src="{% static 'chapterPageBuilder/icons/newicon/layout-b.svg' %}">
-                                
+                                <a class=" " href="#2a" data-toggle="tab"><img id="id3" class="obj3"
+                                                                               src="{% static 'chapterPageBuilder/icons/newicon/layout-w.svg' %}">
+                                    <img id="id4" class="obj4"
+                                         src="{% static 'chapterPageBuilder/icons/newicon/layout-b.svg' %}">
+
                                     <span class="ols-name2" style="color: white; text-align:center">Layout</span>
-                                
+
                                 </a>
-    
-    
+
+
                             </div>
-    
+
                         </div>
                         <div class="source-img">
                             <div class="source-img-holder">
-    
-                                <a href="#3a" data-toggle="tab"><img id="id5" class="obj5" src="{% static 'chapterPageBuilder/icons/newicon/source.svg' %}">
-                                    <img id="id6" class="obj6" src="{% static 'chapterPageBuilder/icons/newicon/source-b.svg' %}">
+
+                                <a href="#3a" data-toggle="tab"><img id="id5" class="obj5"
+                                                                     src="{% static 'chapterPageBuilder/icons/newicon/source.svg' %}">
+                                    <img id="id6" class="obj6"
+                                         src="{% static 'chapterPageBuilder/icons/newicon/source-b.svg' %}">
                                     <span class="ols-name3" style="color: white;">Source</span>
-                                
+
                                 </a>
-    
-    
+
+
                             </div>
-    
+
                         </div>
-    
+
                     </div>
                 </div>
-    
+
                 <div class="ols-each-content">
                     <div id="exTab1" class="">
-    
+
                         <div class="tab-content ">
-                           
-                            <div  class="tab-pane active" id="1a">
+
+                            <div class="tab-pane active" id="1a">
                                 <div class="icon-boxes">
                                     <ul class="list-objects">
-                                       
-                                            <li class="individual-objects draggable draggable-style">
-                                             
-                                                    <img class="object-image-size"
-                                                     src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
-                                                    <span class="object-name-size">TEXT BOX</span>
-                                            </li>
-                                      
-    
-                                       
-                                            <li class="individual-objects  draggable draggable-style ">
+
+                                        <li class="individual-objects draggable draggable-style textbox">
+
+                                            <img class="object-image-size"
+                                                 src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
+                                            <span class="object-name-size">TEXT BOX</span>
+                                        </li>
+
+                                        <li class="individual-objects draggable draggable-style ">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/link.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/link.svg' %}">
                                                 </span> <span class="object-name-size">TEXT LINK</span>
-                                            </li>
-                                        
-    
-                                       
-    
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+                                        <li class="individual-objects draggable draggable-style">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/layer-link.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/layer-link.svg' %}">
                                                 </span> <span class="object-name-size">LAYER LINK</span>
-                                            </li>
-                                    
-    
-                                       
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style button buttons">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/button.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/button.svg' %}">
                                                 </span> <span class="object-name-size">BUTTON</span>
-                                            </li>
-                                      
-                                       
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/download.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/download.svg' %}">
                                                 </span> <span class="object-name-size">DOWNLOAD</span>
-                                            </li>
-                                      
-                                        
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style picture">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
                                                 </span> <span class="object-name-size">PICTURE</span>
-                                            </li>
-                                        
-                                        
-                                            <li class="individual-objects">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style video">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/video.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/video.svg' %}">
                                                 </span> <span class="object-name-size">VIDEO</span>
-                                            </li>
-                                       
-                                       
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style 3dobject">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/3d-cube.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/3d-cube.svg' %}">
                                                 </span> <span class="object-name-size">3D OBJECT</span>
-                                            </li>
-                                     
-                                        
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style Pdf">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/pdf.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/pdf.svg' %}">
                                                 </span> <span class="object-name-size">PDF</span>
-                                            </li>
-                                        
-                                       
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/action.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/action.svg' %}">
                                                 </span> <span class="object-name-size">ACTION</span>
-                                            </li>
-                                      
-                                       
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style button quiz">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/quiz.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/quiz.svg' %}">
                                                 </span> <span class="object-name-size">QUIZ</span>
-                                            </li>
-                                        
-                                  
-                                            <li class="individual-objects draggable draggable-style">
+                                        </li>
+
+
+                                        <li class="individual-objects draggable draggable-style button survey">
                                                 <span>
                                                  <img class="object-image-size"
-                                                  src="{% static 'chapterPageBuilder/icons/newicon/survey.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/survey.svg' %}">
                                                 </span> <span class="object-name-size">SURVEY</span>
-                                            </li>
-                                       
+                                        </li>
+
                                     </ul>
                                 </div>
                             </div>
                             <div class="tab-pane " id="2a">
 
-                              <div class=" layouts-only col-md-12" >
-                                  <div class="row">
-                                      <div class=" own-padding col-md-6">
-                                          <div class="layout-type-holder">
-                                            <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
-                                            alt="like this">
-                                          </div>
+                                <div class=" layouts-only col-md-12">
+                                    <div class="row">
+                                        <div class=" own-padding col-md-6">
+                                            <div class="layout-type-holder">
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
+                                                     alt="like this">
+                                            </div>
 
-                                      </div>
-                                      <div class="own-padding col-md-6">  <div class="layout-type-holder">
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
-                                        alt="like this">
-                                      </div></div>
-                                      <div class=" own-padding col-md-6">  <div class="layout-type-holder">
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
-                                        alt="like this">
-                                      </div></div>
-                                      <div class="own-padding col-md-6">  <div class="layout-type-holder">
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
-                                        alt="like this">
-                                      </div></div>
-                                      <div class="own-padding col-md-6">  <div class="layout-type-holder">
-                                        <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
-                                        alt="like this">
-                                        
-                                      </div></div>
-                                  </div>
-                              </div>
+                                        </div>
+                                        <div class="own-padding col-md-6">
+                                            <div class="layout-type-holder">
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
+                                                     alt="like this">
+                                            </div>
+                                        </div>
+                                        <div class=" own-padding col-md-6">
+                                            <div class="layout-type-holder">
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
+                                                     alt="like this">
+                                            </div>
+                                        </div>
+                                        <div class="own-padding col-md-6">
+                                            <div class="layout-type-holder">
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
+                                                     alt="like this">
+                                            </div>
+                                        </div>
+                                        <div class="own-padding col-md-6">
+                                            <div class="layout-type-holder">
+                                                <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
+                                                     alt="like this">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
 
-    
                             </div>
                             <div style="color: black;" class="tab-pane" id="3a">
                                 <div class="media-items-only col-md-12">
-                              
-                                   
 
-                                   <div class="dropdown ">
-                                    <button class="btn  dropdown-toggle custom-dropdown" type="button" data-toggle="dropdown"><span > All Items
-                
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                      <li><a href="#">IMAGES</a></li>
-                                      <li><a href="#">VIDEOS</a></li>
-                                      <li><a href="#">PDF</a></li>
-                                      <li><a href="#">3D</a></li>
-                                      <li class="divider"></li>
-                                      <li><a href="#">DISPLAY ALL</a></li>
-      
-                                    </ul>
-                                  </div>
-                             
-                                  
-                                  
+
+                                    <div class="dropdown ">
+                                        <button class="btn  dropdown-toggle custom-dropdown" type="button"
+                                                data-toggle="dropdown"><span> All Items
+
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">IMAGES</a></li>
+                                            <li><a href="#">VIDEOS</a></li>
+                                            <li><a href="#">PDF</a></li>
+                                            <li><a href="#">3D</a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">DISPLAY ALL</a></li>
+
+                                        </ul>
+                                    </div>
 
 
                                 </div>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>
-    
-            </div>
 
+            </div>
 
 
             <div class="main-canvas-part col-md-8 col-sm-8 col-xs-12">
 
-               
 
                 <div id="" class=" main-canvas-holder col-md-12">
                     <div class="view-mode ">
-                      <ul class="full-screen-color">
-                          <li>  
-                              <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
-                               data-original-title="FullScreen">
-                              <span ><img  style="height: 15px; width:15px ; margin-top:-5px" src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
+                        <ul class="full-screen-color">
+                            <li>
+                                <a id="togglefull" data-toggle="tooltip" data-placement="top" title=""
+                                   onclick="toggleFullScreen()"
+                                   data-original-title="FullScreen">
+                              <span><img style="height: 15px; width:15px ; margin-top:-5px"
+                                         src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
                                  <span style="font-size: 15px;">Full Screen</span> </a> </span>&nbsp;&nbsp;
-                                
-                         </li>
-                         <li> <span class="color-picker" style="font-size: 15px;"></li>
-                         <li> <span  style="font-size: 15px;">
+
+                            </li>
+                            <li><span class="color-picker" style="font-size: 15px;"></li>
+                            <li> <span style="font-size: 15px;">
                                  
                                 
-                                    BG Color</span> 
-                        </li>
-                    
-                         
-                          
-                            <li> <span class="caret"></span></li>
-                               
-                         
-                      </ul>
-                   
-                      
-                            
-                         
-                        
-                          
-                      </div>
-                      <div class="main-central-canvas">
+                                    BG Color</span>
+                            </li>
 
-                      </div>
+
+                            <li><span class="caret"></span></li>
+
+
+                        </ul>
+
+
+                    </div>
+                    <div class="main-central-canvas tabs" id="tabs-for-download">
+                        <p id="tab" value="0" class="tab-content-no   droppable editor-canvas current"
+                           style="height: 100%">
+
+                        </p>
+                        <p id="copy_tab" value="0" style="display: none;">
+
+                        </p>
+                    </div>
 
                 </div>
-    
-            </div>
 
+            </div>
 
 
             <div class="preview-canvas-part col-md-2 col-xs-12">
                 <div class="note-holder">
                     <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
                     <div class="note-chapter">
-                     
-                            <p>You can enter the details of chapter here  </p>
 
-                        
-                        
+                        <p>You can enter the details of chapter here </p>
+
+
                     </div>
                 </div>
-              
+
 
                 <div class="additional-canvas" style="position: relative;">
-                    
+
 
                     <ul class="small-canvases-list">
-                        <span class="span-number">1</span>
-                        <li class="small-canvases" style="position: relative;">
+                        
+                        <li class="small-canvases pagenumber current" style="position: relative;"
+                            onclick="changePage('tab1')" value="1">
                             <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
                                 
                                 <span style="float:right">
@@ -369,132 +375,436 @@
                                     </button>
                                 </span>
                             </div>
-                    
+
                         </li>
-                    
-                    </ul>
-                    <ul class="small-canvases-list">
-                        <span class="span-number">1</span>
-                        <li class="small-canvases" style="position: relative;">
-                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
+                        <li class="small-canvases pagenumber current" style="position: relative;"
+                        onclick="changePage('tab1')" value="1">
+                        <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
+                            
+                            <span style="float:right">
+                                <button class="clone-button" value="1">
+                                <span data-title="Clone Page">
+                                <i class="fa fa-clone " aria-hidden="true"></i>
+                                </span>
                                 
-                                <span style="float:right">
-                                    <button class="clone-button" value="1">
-                                    <span data-title="Clone Page">
-                                    <i class="fa fa-clone " aria-hidden="true"></i>
-                                    </span>
-                                    
-                                    </button>
+                                </button>
+                            </span>
+
+                            <span style="float:right">
+                                <button class="delete-button" value="1">
+                                <span data-title="Delete Page">
+                                <i class="fa fa-times " aria-hidden="true"></i>
                                 </span>
 
-                                <span style="float:right">
-                                    <button class="delete-button" value="1">
-                                    <span data-title="Delete Page">
-                                    <i class="fa fa-times " aria-hidden="true"></i>
-                                    </span>
+                               
+                                </button>
+                            </span>
+                        </div>
 
-                                   
-                                    </button>
-                                </span>
-                            </div>
-                    
-                        </li>
-                        <span></span>
-                    
+                    </li>
                     </ul>
-                    <ul class="small-canvases-list">
-                        <span class="span-number">1</span>
-                        <li class="small-canvases" style="position: relative;">
-                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
-                                
-                                <span style="float:right">
-                                    <button class="clone-button" value="1">
-                                    <span data-title="Clone Page">
-                                    <i class="fa fa-clone " aria-hidden="true"></i>
-                                    </span>
-                                    
-                                    </button>
-                                </span>
-
-                                <span style="float:right">
-                                    <button class="delete-button" value="1">
-                                    <span data-title="Delete Page">
-                                    <i class="fa fa-times " aria-hidden="true"></i>
-                                    </span>
-
-                                   
-                                    </button>
-                                </span>
-                            </div>
-                    
-                        </li>
-                    
-                    </ul>
-                    <ul class="small-canvases-list">
-                        <span class="span-number">1</span>
-                        <li class="small-canvases"style="position: relative;">
-                            <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
-                                
-                                <span style="float:right">
-                                    <button class="clone-button" value="1">
-                                    <span data-title="Clone Page">
-                                    <i class="fa fa-clone " aria-hidden="true"></i>
-                                    </span>
-                                    
-                                    </button>
-                                </span>
-
-                                <span style="float:right">
-                                    <button class="delete-button" value="1">
-                                    <span data-title="Delete Page">
-                                    <i class="fa fa-times " aria-hidden="true"></i>
-                                    </span>
-
-                                   
-                                    </button>
-                                </span>
-                            </div>
-                    
-                        </li>
-                    
-                    </ul>
-                  
-                   
 
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
                     <hr>
 
                 </div>
-               
+
                 <div class="add-page">
                     <div class="col-md-12 col-xs-12 col-sm-12">
 
-                        
-                            <a href="">   <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
-                           
-                    </div>
-                    
-                </div>
-              
-               
-    
-            </div>
-    
-        </div>
-    
-    </main>
-    
 
+                        <a href=""> <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </main>
 
 
 </section>
+<div id="examiframeholder">
+    <div id="closeiframebtn" class="closeiframebtn">
+        <button>
+            <i class="fa fa-times">
+            </i>
+
+        </button>
+    </div>
+    <div id="iframeholder"></div>
+</div>
+<!-- Button Modal -->
+<div id="btn-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div id="button-link-chapter" class="modal-content">
+            <form id="btn-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Button</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+                    <div class="col-md-12">
+                        <label>Display Name</label>
+                        <input type="text" name="btn-name" id="btn-name">
+                        <br>
+                        <label>Link</label>
+                        <span class="btnlink">
+                                http://
+                                <input type="text" name="btn-link" id="btn-link">
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="button_id" value="">
+                    <button type="button" id="btn-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quiz-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div id="quiz-link-chapter" class="modal-content">
+            <form id="quiz-form">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-11">
+                            <h4 class="modal-title">Quiz</h4>
+
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                            </button>
+
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-body" style="width: 100%;">
+                    <!-- Modal Contents Here -->
+
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <label class="control-label">Display Name</label>
+
+                        </div>
+
+                        <input type="text" name="quiz-btn-name" id="quiz-btn-name" class="form-control"
+                               placeholder="Default Input" style="width: 100%;">
+
+                    </div>
+
+
+                    <hr>
+
+                    <input type="hidden" name="quiz-link" id="quiz-link">
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="new-quiz">
+                                <a href="{% url 'chapterinfo_detail' course chapter %}?ifquiz=1" target="_blank"
+                                   id="quiz_create_link">
+                                    <h5> <span
+                                            style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
+                                                New Quiz </span></h5>
+                                </a>
+
+
+                            </div>
+                            <hr>
+
+                            <div class="select-quiz text-left">
+                                <h5> Select Existing Quiz
+                                </h5>
+                                <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                            </div>
+                            <div class="modal-table-container" style="height:200px;overflow:auto">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Quiz Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="myTable">
+                                    <!-- Table contents goes here from ajax -->
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <hr>
+
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <label>Chosen Quiz</label>
+
+                                </div>
+                                <div class="col-md-8">
+                                    <!-- <input type="text" name="quiz-name" id="quiz-name" style="width:100%"> -->
+                                    <input type="text" placeholder="none" name="quiz-name" id="quiz-name"
+                                           class="form-control" style="width: 100%;">
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:none!important;">
+                    <input type="hidden" id="quiz_id" value="">
+                    <button type="button" id="quiz-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Survey Modal -->
+<div id="survey-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div id="survey-link-chapter" class="modal-content">
+            <form id="survey-form">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-11">
+                            <h4 class="modal-title">Survey</h4>
+
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                            </button>
+
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-body" style="width: 100%;">
+                    <!-- Modal Contents Here -->
+
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <label class="control-label">Display Name</label>
+
+                        </div>
+
+                        <input type="text" name="survey-btn-name" id="survey-btn-name" class="form-control"
+                               placeholder="Default Input" style="width: 100%;">
+
+                    </div>
+
+
+                    <hr>
+
+                    <input type="hidden" name="survey-link" id="survey-link">
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="new-survey">
+                                <a id="survey_create_link" href="    {% if 'teachers' in request.path %}
+                    {% url  'teacher_courseinfo_detail' course %}?ifsurvey=1
+                    {% else %}
+                    {% url  'courseinfo_detail' course %}?ifsurvey=1
+                    {% endif %}"
+                                   target="_blank">
+                                    <h5> <span
+                                            style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
+                                                New Survey </span></h5>
+                                </a>
+
+
+                            </div>
+                            <hr>
+
+                            <div class="select-survey text-left">
+                                <h5> Select Existing Survey
+                                </h5>
+                                <input class="form-control" id="mySurveyInput" type="text" placeholder="Search..">
+                            </div>
+                            <div class="modal-table-container" style="height:200px;overflow:auto">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Survey Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="mySurveyTable">
+                                    <!-- Table contents goes here from ajax -->
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <hr>
+
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <label>Chosen Survey</label>
+
+                                </div>
+                                <div class="col-md-8">
+                                    <!-- <input type="text" name="survey-name" id="survey-name" style="width:100%"> -->
+                                    <input type="text" placeholder="none" name="survey-name" id="survey-name"
+                                           class="form-control" style="width: 100%;">
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:none!important;">
+                    <input type="hidden" id="survey_id" value="">
+                    <button type="button" id="survey-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Link Modal -->
+<div id="link-video-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Link</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Modal Contents Here -->
+
+                <label>Link to video</label>
+                <span class="btnlink">
+                        http://
+                        <input type="text" name="link" id="video-link" accept="video/*">
+                    </span>
+            </div>
+            <div class=" modal-footer">
+                <button type="button" id="link-video-submit" class="#">Submit</button>
+                <button type="button" class="#" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- End of link modal -->
+
+<!-- Link Image Modal -->
+<div id="link-image-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Link</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Modal Contents Here -->
+
+                <label>Image Link</label>
+                <span class="btnlink">
+                        http://
+                        <input type="text" name="link" id="image-link">
+                    </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="link-image-submit" class="#">Submit</button>
+                <button type="button" class="#" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- End of link modal -->
+
+<!-- Link Modal -->
+<div id="link-3d-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Link</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Modal Contents Here -->
+                <div>
+                    <label>Upload 3D file(.glb or .gltf)</label>
+                    <input type="file" name="_3dfile" id="_3dfile-link" accept=".glb,.gltf"/>
+                </div>
+                <div>For converting 3D files online,
+                    <a href="https://blackthread.io/gltf-converter/" target="_blank">
+                        Click Here.
+                    </a>
+                </div>
+                <!-- <div>
+                <label>Upload 3D file (MTL)</label>
+                <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
+            </div> -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="link-3d-submit" class="#">Submit</button>
+                <button type="button" class="#" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 </body>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
 
 <script src="{% static 'chapterPageBuilder/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/main.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/color-picker/pickr.min.js' %}"></script>
 
 
@@ -502,7 +812,7 @@
     const pickr = Pickr.create({
         el: '.color-picker',
         theme: 'nano', // or 'monolith', or 'nano'
-    
+
         swatches: [
             'rgba(244, 67, 54, 1)',
             'rgba(233, 30, 99, 0.95)',
@@ -519,14 +829,14 @@
             'rgba(255, 235, 59, 0.95)',
             'rgba(255, 193, 7, 1)'
         ],
-    
+
         components: {
-    
+
             // Main components
             preview: true,
             opacity: true,
             hue: true,
-    
+
             // Input / output Options
             interaction: {
                 hex: false,
@@ -540,23 +850,23 @@
             }
         },
         strings: {
-            save: 'Apply',  
-           
-         }
+            save: 'Apply',
+
+        }
     });
     pickr.on('save', (color, instance) => {
-     
+
         const rgbaColor = color.toRGBA().toString();
-      
+
         document.querySelector('.main-central-canvas').style.backgroundColor = rgbaColor;
 
     })
-    
+
 </script>
 
-    <script>
-        $(document).ready(function(){
-          $(".obj-img-holder").click(function(){
+<script>
+    $(document).ready(function () {
+        $(".obj-img-holder").click(function () {
             $("#id1").css("display", "none");
             $("#id2").css("display", "block");
 
@@ -565,8 +875,8 @@
 
             $("#id5").css("display", "block");
             $("#id6").css("display", "none");
-          })
-          $(".layout-img-holder").click(function(){
+        })
+        $(".layout-img-holder").click(function () {
             $("#id3").css("display", "none");
             $("#id4 ").css("display", "block");
 
@@ -577,8 +887,8 @@
             $("#id6").css("display", "none");
 
 
-          })
-          $(".source-img-holder").click(function(){
+        })
+        $(".source-img-holder").click(function () {
             $("#id5").css("display", "none");
             $("#id6 ").css("display", "block");
 
@@ -589,28 +899,174 @@
             $("#id4").css("display", "none");
 
 
-          })
-        });
-        </script>
-    <script>
-        function toggleFullScreen() {
-            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-                (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-                if (document.documentElement.requestFullScreen) {
-                    document.documentElement.requestFullScreen();
-                } else if (document.documentElement.mozRequestFullScreen) {
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullScreen) {
-                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-                }
-            } else {
-                if (document.cancelFullScreen) {
-                    document.cancelFullScreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitCancelFullScreen) {
-                    document.webkitCancelFullScreen();
-                }
+        })
+    });
+</script>
+<script>
+    function toggleFullScreen() {
+        if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+            (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+            if (document.documentElement.requestFullScreen) {
+                document.documentElement.requestFullScreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullScreen) {
+                document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        } else {
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
             }
         }
-    </script>
+    }
+</script>
+
+{# Scripts from old builder #}
+<script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
+
+<script src="{% static 'chapterPageBuilder/js/offline.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/SummerNote/summernote-0.8.16-dist/summernote.min.js' %}"></script>
+<script>
+    var setThumbnailok = false;
+    var currentPage = '1';
+    var data = {{ data | safe}};
+    var courseID = '{{course}}';
+    var chapterID = '{{chapter}}';
+    var chaptertitle = '{{chapterdetails.Chapter_Name}}';
+    var save_file_url = "{% url 'saveFile' %}";
+    var save_video_url = "{% url 'saveVideo' %}";
+    var delete_file_url = "{% url 'delete-chapter-files' %}";
+    var save_3d_url = "{% url 'save3d' %}";
+    var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
+    var save_json_url = "{% url 'saveJson' %}";
+    var import_zip_url = '{% url "importzip" %}';
+    var csrf_token = '{{csrf_token}}';
+    var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}';
+    var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
+    var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
+    var server_name = '{{ server_name }}';
+
+
+    $('#chapterlist').val(chapterID);
+
+    var previous;
+    (function () {
+
+        $("select").on('focus', function () {
+            // Store the current value on focus and on change
+            previous = this.value;
+        }).change(function () {
+            // Do something with the previous value after the change
+            var confirmation = confirm("Are you sure you want to leave?")
+            if (confirmation == false) {
+                $('#chapterlist').val(previous)
+                return false
+            } else {
+                let chapter = $('#chapterlist').val()
+                {% if 'teachers' in request.path %}
+                    location.assign('/teachers/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                {% else %}
+                    location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                {% endif %}
+            }
+        });
+    })();
+
+    $(document).ready(function () {
+        let trunc = truncateString(`{{chapterdetails.Summary}}`);
+        $('#chapter-description').find('p').text(trunc);
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("slow");
+        ;
+    });
+
+    const truncateString = (string, maxLength = 30) => {
+        if (!string) return null;
+        const showDots = string.length > maxLength;
+        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+    };
+
+    $('#quiz_create_link').click(function (e) {
+        e.preventDefault();
+        $('#quiz-modal').modal('toggle');
+        let link = $("#quiz_create_link").attr('href');
+        loadPreview(link, 1)
+    })
+
+    $('#survey_create_link').click(function (e) {
+        e.preventDefault();
+        $('#survey-modal').modal('toggle');
+        let link = $("#survey_create_link").attr('href');
+        loadPreview(link, 1)
+    })
+    setTimeout(function () {
+        $.ajax({
+            url: "{% url 'retrieve-chapter-files' %}",
+            data: {
+                'courseID': courseID,
+                'chapterID': chapterID,
+                'userpk': '{{ request.user.pk }}'
+            },
+            success: function (data) {
+                if (data.images.length > 0) {
+                    $('#image-gallery').find('p').empty()
+                    data.images.forEach(x => {
+                        $('#image-gallery .individual-file').append(
+                            `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
+                        )
+                    });
+                }
+                if (data.videos.length > 0) {
+                    $('#video-gallery').find('p').empty()
+                    data.videos.forEach(x => {
+                        $('#video-gallery').append(
+                            x.split('&&&')[1]
+                        )
+                    });
+                }
+                if (data.pdf.length > 0) {
+                    $('#pdf-gallery').find('p').empty()
+                    data.pdf.forEach(x => {
+                        $('#pdf-gallery').append(
+                            x.split('&&&')[1]
+                        )
+                    });
+                }
+            },
+            // dataType: dataType
+        });
+    }, 5000)
+
+    // Add circular progress bar
+    function addprogress() {
+
+        $(".progressc").each(function () {
+
+            var value = $(this).attr('data-value');
+            var left = $(this).find('.progress-left .progress-barc');
+            var right = $(this).find('.progress-right .progress-barc');
+
+            if (value > 0) {
+                if (value <= 50) {
+                    right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+                } else {
+                    right.css('transform', 'rotate(180deg)')
+                    left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
+                }
+            }
+
+        });
+    }
+
+    function percentageToDegrees(percentage) {
+        return percentage / 100 * 360
+    }
+
+</script>
+
+{# End of Scripts from old builder #}

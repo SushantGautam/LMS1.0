@@ -72,8 +72,10 @@ def start(request):
 
     return render(request, 'student_module/dashboard.html',
                   {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                   'activeAssignments': activeassignments, 'sittings': sittings, 'wordCloud': wordCloud,
-                   'get_top_thread_keywords': thread_keywords})
+                   'activeAssignments': activeassignments, 'sittings': sittings,
+                   'wordCloud': wordCloud,
+                   'get_top_thread_keywords': thread_keywords
+                })
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -642,7 +644,7 @@ class Index(ListView):
         context['title'] = _('Index')
         context['topics'] = Topic.objects.all().filter(id__in=Topic_related_to_user(self.request))
         context['show_order'] = True
-        context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
+        # context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
         return context
 
 
@@ -1085,7 +1087,7 @@ def PageUpdateAjax(request, course, chapter):
                                          currentPageNumber=None, totalPage=None,
                                          studytimeinseconds=None,
                                          )
-    return JsonResponse(jsondata)
+    return JsonResponse(jsondata) if jsondata else None
 
 
 def StudentChapterLogUpdateAjax(request, chapter):

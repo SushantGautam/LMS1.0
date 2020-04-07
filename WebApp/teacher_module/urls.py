@@ -277,6 +277,8 @@ urlpatterns += (
          admin_views.CourseProgressView, name='course_progress'),
     path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
          admin_views.CourseProgressView, name='course_progress_withinning'),
+    path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
+         admin_views.StudentChapterProgressView, name='student_chapter_progress_teacher'),
 )
 
 # Teacher's Attendance
