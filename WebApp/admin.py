@@ -5,7 +5,7 @@ from import_export.resources import ModelResource
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
-    InningManager, Attendance
+    InningManager, Attendance, Notice
 
 
 class CenterInfoAdminForm(forms.ModelForm):
@@ -262,3 +262,10 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Attendance, AttendanceAdmin)
+
+
+class NoticeAdmin(admin.ModelAdmin):
+    list_display = ['title', 'status', 'show', 'Start_Date', 'End_Date']
+
+
+admin.site.register(Notice, NoticeAdmin)

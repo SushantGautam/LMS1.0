@@ -21,7 +21,9 @@
 {% block content %}
 
 
-    {% include 'popUp.html' %}
+    {% if notice %}
+        {% include 'popUp.html' %}
+    {% endif %}
     {% include 'WebApp/theme/alerts.html' %}
 
     <div class="container_main" id="adminHome">
