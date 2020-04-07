@@ -236,7 +236,7 @@ def start(request):
             return redirect('login')
 
     else:
-        return render(request, "WebApp/splash_page.html")
+        return render(request, "splash_page.html")
 
 
 # Profile page functions
