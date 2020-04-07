@@ -2181,6 +2181,7 @@ function dropfunction(event, ui) {
     } else if (ui.helper.offset().left > $('#tab').width() && ui.helper.hasClass('button')) {
         left = $('#tab').width() - (0.15 * $('#tab').width()) + sidebarWidth
     }
+
     if (ui.helper.hasClass('textbox')) {
         TextboxFunction(
             (positionConvert(top, $('#tabs-for-download').height())) + '%',
@@ -2325,7 +2326,7 @@ function setslider() {
                         <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
                             
                             <span style="float:right">
-                                <button class="clone-button" value="${key}">
+                                <button class="clone-button clone-page-btn" value="${key}">
                                 <span data-title="Clone Page">
                                 <i class="fa fa-clone " aria-hidden="true"></i>
                                 </span>
@@ -2354,7 +2355,7 @@ function setslider() {
                         <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
                             
                             <span style="float:right">
-                                <button class="clone-button" value="${key}">
+                                <button class="clone-button clone-page-btn" value="${key}">
                                 <span data-title="Clone Page">
                                 <i class="fa fa-clone " aria-hidden="true"></i>
                                 </span>
@@ -2396,7 +2397,7 @@ function newpagefunction(new_page_num) {
                 <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
                     
                     <span style="float:right">
-                        <button class="clone-button" value="${num_tabs}">
+                        <button class="clone-button clone-page-btn" value="${num_tabs}">
                         <span data-title="Clone Page">
                         <i class="fa fa-clone " aria-hidden="true"></i>
                         </span>
@@ -2930,15 +2931,16 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
             data.pages[destination] = data.pages[source]
             // $('.current.pagenumber').removeClass('current')
             var num_tabs = parseInt(this.value) + 1;
-            let copy = $(this).parent().parent().parent().clone();
+            let copy = $(this).closest('li').clone();
             // for cloning page navigation tabs
-            copy.find('.pagenumber').removeClass('current')
+            copy.removeClass('current')
             copy.find('.clone-page-btn').val(num_tabs);
             copy.find('.clone-page-btn').attr('disabled', false)
             copy.find('.delete-page-btn').val(num_tabs);
-            copy.find('.pagenumber').val(num_tabs);
-            copy.find('.pagenumber').attr('onclick', 'changePage("tab' + num_tabs + '")');
-            $(this).parent().parent().parent().after(copy);
+            console.log(copy)
+            copy.val(num_tabs);
+            copy.attr('onclick', 'changePage("tab' + num_tabs + '")');
+            $(this).closest('li').after(copy);
             if (source < window.currentPage) {
                 window.currentPage = 'tab' + (parseInt(window.currentPage) + 1)
             }
