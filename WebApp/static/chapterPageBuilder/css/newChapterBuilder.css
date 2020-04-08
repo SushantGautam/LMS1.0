@@ -74,6 +74,7 @@ a:hover {
 
 }
 
+
 .buttons-chapter-only a {
     color: #79a6fb;
     text-decoration: none;
@@ -226,6 +227,18 @@ a:hover {
     width: 100%;
     margin-top: 20px
 
+}
+.custom-dropdown-2{
+    text-align: center;
+    width: 100%;
+    
+
+}
+.chapter-listings{
+    padding: 10px;
+}
+.form-group{
+    margin-bottom: 0px!important;
 }
 
 
@@ -437,12 +450,47 @@ a:hover {
 }
 
 /* rightpart */
+[data-title] {
+    position: relative;
+    cursor: help;
+}
 
+[data-title]:hover::before {
+    content: attr(data-title);
+    position: absolute;
+    bottom: -29px;
+    right: 6px;
+    display: inline-block;
+    padding: 3px 6px;
+    border-radius: 2px;
+    background: #000;
+    color: #fff;
+    font-size: 12px;
+    font-family: sans-serif;
+    white-space: nowrap;
+    z-index: 9999;
+
+}
+
+[data-title]:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: -12px;
+    display: inline-block;
+    color: #fff;
+    border: 8px solid transparent;
+    border-bottom: 8px solid #000;
+    z-index: 9999;
+}
 .note-holder {
-    padding: 20px 16px !important;
+    padding: 9px 14px !important;
     color: white;
     background-color: #353c46;
-    height: 120px;
+    height: 76px;
+}
+.chapter-list-holder{
+    background-color: #eef2f5;
 }
 
 .note-holder i {
@@ -463,8 +511,9 @@ a:hover {
 
 .additional-canvas {
 
-    height: 70vh;
-    overflow: auto;
+height: 64vh;
+
+overflow: auto;
 }
 
 .small-canvases-list {

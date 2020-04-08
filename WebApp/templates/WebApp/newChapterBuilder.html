@@ -129,7 +129,7 @@
                                             <span class="object-name-size">TEXT BOX</span>
                                         </li>
 
-                                        <li class="individual-objects draggable draggable-style ">
+                                        <!-- <li class="individual-objects draggable draggable-style ">
                                                 <span>
                                                  <img class="object-image-size"
                                                       src="{% static 'chapterPageBuilder/icons/newicon/link.svg' %}">
@@ -141,7 +141,7 @@
                                                  <img class="object-image-size"
                                                       src="{% static 'chapterPageBuilder/icons/newicon/layer-link.svg' %}">
                                                 </span> <span class="object-name-size">LAYER LINK</span>
-                                        </li>
+                                        </li> -->
 
 
                                         <li class="individual-objects draggable draggable-style button buttons">
@@ -152,12 +152,12 @@
                                         </li>
 
 
-                                        <li class="individual-objects draggable draggable-style">
+                                        <!-- <li class="individual-objects draggable draggable-style">
                                                 <span>
                                                  <img class="object-image-size"
                                                       src="{% static 'chapterPageBuilder/icons/newicon/download.svg' %}">
                                                 </span> <span class="object-name-size">DOWNLOAD</span>
-                                        </li>
+                                        </li> -->
 
 
                                         <li class="individual-objects draggable draggable-style picture">
@@ -196,7 +196,7 @@
                                                 <span>
                                                  <img class="object-image-size"
                                                       src="{% static 'chapterPageBuilder/icons/newicon/action.svg' %}">
-                                                </span> <span class="object-name-size">ACTION</span>
+                                                </span> <span class="object-name-size">AUDIO</span>
                                         </li>
 
 
@@ -336,6 +336,22 @@
 
 
             <div class="preview-canvas-part col-md-2 col-xs-12">
+                
+                <div class="chapter-listings">
+                    <form style="margin-bottom: 0px!important;">
+                        <div class="form-group">
+                          <label for="sel1">Current Chapter&nbsp;:-</label>
+                          <select class="form-control" id="sel1">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                          </select>
+                      
+                       
+                        </div>
+                      </form>
+                </div>
                 <div class="note-holder">
                     <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
                     <div class="note-chapter">
@@ -356,7 +372,7 @@
 
                                 <span style="float:right">
                                     <button class="clone-button" value="1">
-                                    <span data-title="Clone Page">
+                                    <span  data-title="Clone Page">
                                     <i class="fa fa-clone " aria-hidden="true"></i>
                                     </span>
 
