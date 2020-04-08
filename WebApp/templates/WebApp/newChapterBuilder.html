@@ -35,14 +35,23 @@
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
             <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12">
-                <span class="chapter-name">Chapter Title <i class="fas fa-pencil-alt"></i></span>
+                <span class="chapter-name">{{ chapterdetails.Chapter_Name }} <i class="fas fa-pencil-alt"></i></span>
 
             </div>
             <div class=" buttons-chapter-only col-md-9 col-sm-6 col-xs-12">
                 <button class="btn-type1" id="SaveBtn"><i style="color:white" class="fas fa-save"></i>&nbsp; Save
                 </button>
-                <button class="btn-type1"><i style="color:white" class="fas fa-file-import"></i>&nbsp; Import</button>
-                <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button>
+
+                <input id="importzipfile" name="importfile" type="file" style="display: none"
+                       accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
+                <button class="btn-type1" id="import_zip_link">
+                    <i style="color:white" class="fas fa-file-import"></i>&nbsp; Import
+                </button>
+                <a href="{% url 'exportzip' course chapter %}" target="_blank"
+                   onclick="return confirm('Have you saved the latest change?')">
+                    <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export
+                    </button>
+                </a>
                 <button class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button>
 
 
@@ -336,27 +345,28 @@
 
 
             <div class="preview-canvas-part col-md-2 col-xs-12">
-                
+
                 <div class="chapter-listings">
                     <form style="margin-bottom: 0px!important;">
                         <div class="form-group">
-                          <label for="sel1">Current Chapter&nbsp;:-</label>
-                          <select class="form-control" id="sel1">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                          </select>
-                      
-                       
+                            <label for="sel1">Current Chapter&nbsp;:-</label>
+                            <select class="form-control" name="chapter-lists" id="chapterlist">
+                                {% for chapter in chapterlist %}
+                                    <option value="{{ chapter.id }}">
+                                        {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+
                         </div>
-                      </form>
+                    </form>
                 </div>
                 <div class="note-holder">
                     <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
                     <div class="note-chapter">
 
-                        <p class="note-description">You can enter the details of chapter here </p>
+                        <p style="text-align:justify">{{ chapterdetails.Summary|truncatechars:90 }} </p>
 
 
                     </div>
@@ -848,7 +858,7 @@
 
         const rgbaColor = color.toRGBA().toString();
 
-        document.querySelector('.main-central-canvas').style.backgroundColor = rgbaColor;
+        document.querySelector('.current').style.backgroundColor = rgbaColor;
 
     })
 
@@ -921,6 +931,15 @@
 <script src="{% static 'chapterPageBuilder/js/offline.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/SummerNote/summernote-0.8.16-dist/summernote.min.js' %}"></script>
+<link href="https://unpkg.com/cloudinary-video-player@1.3.4/dist/cld-video-player.min.css"
+      rel="stylesheet">
+<script src="https://unpkg.com/cloudinary-core@2.6.3/cloudinary-core-shrinkwrap.min.js"
+        type="text/javascript"></script>
+<script src="https://unpkg.com/cloudinary-video-player@1.3.4/dist/cld-video-player.min.js"
+        type="text/javascript"></script>
+
+<!-- Cincopa -->
+<script type="text/javascript" src="https://wwwcdn.cincopa.com/_cms/ugc/uploader.js?cmsver=15"></script>
 <script>
     var setThumbnailok = false;
     var currentPage = '1';
@@ -959,14 +978,15 @@
             } else {
                 let chapter = $('#chapterlist').val()
                 {% if 'teachers' in request.path %}
-                    location.assign('/teachers/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                    location.assign('/teachers/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/newChapterBuilder')
                 {% else %}
-                    location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                    location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/newChapterBuilder')
                 {% endif %}
             }
         });
     })();
 
+    /*
     $(document).ready(function () {
         let trunc = truncateString(`{{chapterdetails.Summary}}`);
         $('#chapter-description').find('p').text(trunc);
@@ -980,6 +1000,7 @@
         const showDots = string.length > maxLength;
         return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
     };
+    */
 
     $('#quiz_create_link').click(function (e) {
         e.preventDefault();

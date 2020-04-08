@@ -78,7 +78,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="exampleModal3" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true" id="create_inninggroup_modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content box3">
@@ -296,7 +296,10 @@
             }
 
 
-            $('select').select2({
+            $('#id_Inning_Name').select2({
+                width: '100%',
+            });
+            $('#id_Groups').select2({
                 width: '100%',
             });
 
