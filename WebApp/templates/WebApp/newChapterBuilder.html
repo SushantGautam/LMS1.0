@@ -362,16 +362,23 @@
                         </div>
                     </form>
                 </div>
-                <div class="note-holder">
-                    <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
-                    <div class="note-chapter">
 
-                        <p style="text-align:justify">{{ chapterdetails.Summary|truncatechars:90 }} </p>
+                <a  title=" Write A Note"href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
+                    <div class="note-holder">
+                        <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
+                        <div id="chapter-description" class="note-chapter">
+
+                            
+                                <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:90 }} </p>
+                                
+                       
+
+                            
 
 
+                        </div>
                     </div>
-                </div>
-
+                </a>
 
                 <div class="additional-canvas tabs-to-click" style="position: relative;">
                     <ul class="small-canvases-list">
