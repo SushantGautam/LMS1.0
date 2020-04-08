@@ -137,6 +137,14 @@ class SurveyInfo(models.Model):
     def check_started(self):
         return self.Start_Date <= datetime.now(timezone.utc)
 
+    def get_status(self):
+        if self.check_expired():
+            return "Expired"
+        elif self.check_started():
+            return "Active"
+        else:
+            return "Upcoming"
+
 
 class QuestionInfo(models.Model):
     QUESTION_TYPE_CHOICES = [

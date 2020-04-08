@@ -10,6 +10,23 @@
  
  
  }
+ @media (min-width:1052px) and (max-width:1200px){}
+ .small-canvases {
+    height: 100px;
+    width: 160px;
+    background-color: white;
+    /* margin: auto; */
+    /* margin: 15px auto; */
+    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    }
+    .small-canvases::before{
+        content: '1';
+        margin-left: -15px;
+    }
+       
  @media (min-width:768px) and (max-width:1050px) {
     
     .small-canvases {
@@ -192,7 +209,7 @@
     }
 
     .additional-canvas{
-        height: 63vh;
+        height: 51vh;
     }
     .add-page{
         padding-top: 8px;
@@ -205,6 +222,7 @@
     }
     .small-canvases{
         height: 83px;
+        width: 152px;
     }
 
 
@@ -227,7 +245,7 @@
         }
 
         .additional-canvas{
-            height: 68vh;
+            height: 55vh;
         }
         .note-holder{
             height: 100px;
@@ -238,7 +256,7 @@
  
  @media (min-height:650px) and (max-height:750px){
     .additional-canvas {
-        height: 68vh;
+        height: 58vh;
         overflow: auto;
     }
     .add-page {
