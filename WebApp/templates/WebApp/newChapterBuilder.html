@@ -345,21 +345,22 @@
 
 
             <div class="preview-canvas-part col-md-2 col-xs-12">
-                
+
                 <div class="chapter-listings">
                     <form style="margin-bottom: 0px!important;">
                         <div class="form-group">
-                          <label for="sel1">Current Chapter&nbsp;:-</label>
-                          <select class="form-control" id="sel1">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                          </select>
-                      
-                       
+                            <label for="sel1">Current Chapter&nbsp;:-</label>
+                            <select class="form-control" name="chapter-lists" id="chapterlist">
+                                {% for chapter in chapterlist %}
+                                    <option value="{{ chapter.id }}">
+                                        {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+
                         </div>
-                      </form>
+                    </form>
                 </div>
                 <div class="note-holder">
                     <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
@@ -977,9 +978,9 @@
             } else {
                 let chapter = $('#chapterlist').val()
                 {% if 'teachers' in request.path %}
-                    location.assign('/teachers/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                    location.assign('/teachers/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/newChapterBuilder')
                 {% else %}
-                    location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/chapterpagebuilder')
+                    location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/newChapterBuilder')
                 {% endif %}
             }
         });
