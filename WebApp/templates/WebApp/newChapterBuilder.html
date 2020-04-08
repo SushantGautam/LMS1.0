@@ -47,7 +47,11 @@
                 <button class="btn-type1" id="import_zip_link">
                     <i style="color:white" class="fas fa-file-import"></i>&nbsp; Import
                 </button>
-                <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export</button>
+                <a href="{% url 'exportzip' course chapter %}" target="_blank"
+                   onclick="return confirm('Have you saved the latest change?')">
+                    <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export
+                    </button>
+                </a>
                 <button class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button>
 
 
