@@ -34,11 +34,11 @@
 
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
-            <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12">
-                <span class="chapter-name">{{ chapterdetails.Chapter_Name }} <i class="fas fa-pencil-alt"></i></span>
+            <div class="chapter-title-only col-md-3 col-sm-3 col-xs-12">
+                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:20 }} <i class="fas fa-pencil-alt"></i></span>
 
             </div>
-            <div class=" buttons-chapter-only col-md-9 col-sm-6 col-xs-12">
+            <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
                 <button class="btn-type1" id="SaveBtn"><i style="color:white" class="fas fa-save"></i>&nbsp; Save
                 </button>
 
