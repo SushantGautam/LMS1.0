@@ -402,7 +402,7 @@ def CenterInfoDeleteView(request, pk):
 
 
 class MemberInfoListView(TemplateView):
-    template_name = "WebApp/memberinfo_list.html"
+    template_name = "center_admin/memberinfo_list.html"
     # model = MemberInfo
     #
     # def get_queryset(self):
@@ -675,6 +675,7 @@ class MemberInfoDeleteView(DeleteView):
 class CourseInfoListView(ListView):
     model = CourseInfo
     paginate_by = 6
+    template_name = "center_admin/courseinfo_list.html"
 
     def get_queryset(self):
         qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
