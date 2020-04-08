@@ -5,6 +5,7 @@ import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
+from json import JSONDecodeError
 
 import cloudinary
 import cloudinary.api
@@ -49,7 +50,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     InningManagerForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager
+    InningManager, Notice
 
 
 class Changestate(View):
@@ -213,6 +214,10 @@ def start(request):
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now()).count
 
+            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
+                notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+            else:
+                notice = None
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
                           {'course': course, 'coursecount': coursecount, 'studentcount': studentcount,
@@ -222,7 +227,8 @@ def start(request):
                            'surveys': surveys,
                            'surveycount': surveycount,
                            'sessions': sessions,
-                           'sessioncount': sessioncount})
+                           'sessioncount': sessioncount,
+                           'notice': notice})
         elif request.user.Is_Student:
             return redirect('student_home')
         elif request.user.Is_Teacher:
@@ -2319,9 +2325,16 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
         with open(student_data_file) as outfile:
             jsondata = json.load(outfile)
         isjson = True
-    except:
-        isjson = False
-    if os.path.isfile(student_data_file) and isjson:
+    except FileNotFoundError:
+        print(FileNotFoundError)
+    except JSONDecodeError:
+        print(JSONDecodeError)
+        # with open(student_data_file) as outfile:
+        #     if outfile.read()[0] == '{' and 'contents' in outfile.read():
+        #         return
+        #     else:
+        #         isjson = False
+    if os.path.isfile(student_data_file):
         if fromcontents:
             if currentPageNumber is None:
                 return jsondata

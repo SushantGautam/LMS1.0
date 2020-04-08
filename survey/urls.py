@@ -54,6 +54,8 @@ urlpatterns += (
          name='surveyinfo_ajax'),
     path('surveyinfo_ajax_update/<int:pk>/', views.SurveyInfoAjaxUpdate.as_view(),
          name='surveyinfo_ajax_update'),
+    path('surveyinfo_ajax_update_limited/<int:pk>/', views.SurveyInfoAjaxUpdateLimited.as_view(),
+         name='surveyinfo_ajax_update_limited'),
     path('liveProgressResult/<int:pk>/', views.liveProgressResult.as_view(),
          name='liveProgressResult'),
 

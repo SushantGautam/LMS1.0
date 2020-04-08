@@ -8,14 +8,15 @@ from django.db.models import Q
 from django.forms import model_to_dict
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 from django.views.generic.base import View
 
+from WebApp.models import CourseInfo
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
-    QuestionInfoFormset, QuestionAnsInfoFormset
+    QuestionInfoFormset, QuestionAnsInfoFormset, SurveyInfoFormUpdateLimited
 from .models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey, AnswerInfo
 
 
@@ -198,7 +199,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
             self.object.save()
             if self.request.GET['category_name'].lower() == "live":
                 self.object.Survey_Live = True
-                self.object.End_Date = timezone.now() + timedelta(seconds=int(self.request.POST["End_Time"]))
+                self.object.End_Date = self.object.Start_Date + timedelta(seconds=int(self.request.POST["End_Time"]))
                 self.object.save()
         context = self.get_context_data()
         qn = context['questioninfo_formset']
@@ -266,6 +267,12 @@ class SurveyInfoAjaxUpdate(AjaxableResponseMixin, UpdateView):
         # vform = super().form_valid(form)
         if form.is_valid():
             self.object = form.save(commit=True)
+            if self.request.GET['category_name'].lower() == "live":
+                self.object.Course_Code = get_object_or_404(CourseInfo, id=self.request.GET['course_code'])
+                self.object.Survey_Live = True
+                self.object.End_Date = self.object.Start_Date + timedelta(seconds=int(self.request.POST["End_Time"]))
+                self.object.save()
+            super().form_valid(form)
         context = self.get_context_data()
         qn = context['questioninfo_formset']
         qna = context['questionansinfo_formset']
@@ -286,6 +293,52 @@ class SurveyInfoAjaxUpdate(AjaxableResponseMixin, UpdateView):
             else:
                 print('qna is invalid')
                 print(qna.errors)
+
+        response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
+                    'teacher_url': self.request.build_absolute_uri(
+                        reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
+                    'student_url': self.request.build_absolute_uri(
+                        reverse('questions_student_detail', kwargs={'pk': self.object.id}))}
+        return JsonResponse(response)
+
+
+class SurveyInfoAjaxUpdateLimited(AjaxableResponseMixin, UpdateView):
+    model = SurveyInfo
+    form_class = SurveyInfoFormUpdateLimited
+    template_name = 'ajax/survey_update_limited_ajax.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        kwargs.update({'object': SurveyInfo.objects.get(id=self.kwargs["pk"])})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'teachers' in self.request.path:
+            context['update_url'] = reverse('TeacherSurveyInfo_ajax_update_limited', kwargs={'pk': self.object.pk})
+        else:
+            context['update_url'] = reverse('surveyinfo_ajax_update_limited', kwargs={'pk': self.object.pk})
+
+        context['update_url'] = context['update_url'] + "?category_name=" + self.request.GET['category_name'].lower()
+
+        if self.request.GET:
+            context['category_name'] = self.request.GET['category_name'].lower()
+        #     if self.request.GET['category_name'] == "Session":
+        #         context['form']['Session_Code'].initial = self.request.GET['Session_Code']
+        return context
+
+    def form_valid(self, form):
+        # vform = super().form_valid(form)
+        if form.is_valid():
+            self.object = form.save(commit=True)
+            category_name = self.request.GET['category_name'].lower()
+            if category_name == "live" or category_name == "course":
+                # self.object.Course_Code = get_object_or_404(CourseInfo, id=self.request.GET['course_code'])
+                # self.object.Survey_Live = True
+                self.object.End_Date = self.object.Start_Date + timedelta(seconds=int(self.request.POST["End_Time"]))
+                self.object.save()
+            super().form_valid(form)
 
         response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
                     'teacher_url': self.request.build_absolute_uri(
@@ -655,6 +708,7 @@ def SurveyclearViewForAdmin(request, pk):
             'iframe'))
     else:
         return redirect('surveyinfo_detail', pk=pk)
+
 
 def deleteSurvey(request):
     if request.method == 'POST':

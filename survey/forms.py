@@ -22,7 +22,7 @@ class SurveyInfoForm(forms.ModelForm):
 
     class Meta:
         model = SurveyInfo
-        fields = ['Survey_Title', 'Category_Code', 'Start_Date', 'End_Date',
+        fields = ['Survey_Title', 'Category_Code', 'Start_Date', 'End_Date', 'Use_Flag',
                   'Session_Code', 'Course_Code']
 
     # To filter out only active session and course of the center
@@ -41,6 +41,7 @@ class SurveyInfoForm(forms.ModelForm):
         self.fields['Start_Date'].initial = timezone.now()
         self.fields['End_Date'].initial = timezone.now() + timedelta(days=30)
         self.fields['Category_Code'].widget = forms.HiddenInput()
+        # self.fields['Use_Flag'].widget = forms.HiddenInput()
         self.fields['End_Time'].initial = int(timedelta(hours=6, minutes=30).total_seconds())
         self.fields['Survey_Title'].initial = "Survey " + datetime.now().strftime('%D %H:%M')
 
@@ -109,6 +110,30 @@ class SurveyInfoForm(forms.ModelForm):
     #     else:
     #         self.fields['Start_Date'].widget = widgets.AdminDateWidget()
     #         self.fields['End_Date'].widget = widgets.AdminDateWidget()
+
+
+class SurveyInfoFormUpdateLimited(forms.ModelForm):
+    # Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date', 'max': '9999-12-31'}))
+    End_Date = forms.DateTimeField(widget=forms.DateInput(
+        attrs={'type': 'date', 'max': '9999-12-31', 'min': datetime.now().date()}))
+    End_Time = forms.DurationField()
+
+    class Meta:
+        model = SurveyInfo
+        fields = ['Survey_Title', 'End_Date', 'Use_Flag']
+
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop("request", None)
+        survey_object = kwargs.pop("object", None)
+        super().__init__(*args, **kwargs)
+
+        category_name = request.GET["category_name"].lower()
+        if category_name == "live" or category_name == "course":
+            self.fields['End_Time'].initial = int((survey_object.End_Date - survey_object.Start_Date).total_seconds())
+            self.fields['End_Date'].widget = forms.HiddenInput()
+        else:
+            self.fields['End_Time'].widget = forms.HiddenInput()
+            self.fields['End_Time'].required = False
 
 
 class LiveSurveyInfoForm(forms.ModelForm):

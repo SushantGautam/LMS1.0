@@ -742,3 +742,16 @@ class Attendance(models.Model):
 
     def get_update_url(self):
         return reverse('teacher_attendance_update', args=(self.pk,))
+
+
+class Notice(models.Model):
+    SHOW_CHOICES = (("1","One time"),("2","Provide Don't show option"),("3","Always"))
+
+    title = models.CharField(max_length=124)
+    message = models.TextField(blank=True, null=True)
+    status = models.BooleanField(default=True)
+    show = models.CharField(max_length=1, choices=SHOW_CHOICES)
+    Start_Date = models.DateTimeField(null=True, blank=True)
+    End_Date = models.DateTimeField(null=True, blank=True)
+    Register_DateTime = DateTimeField(auto_now_add=True)
+    Updated_DateTime = DateTimeField(auto_now=True)

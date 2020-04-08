@@ -31,13 +31,15 @@
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
-            class="select form-control">
+               class="select form-control">
     </div>
     <div class="submitButton col-md-12 text-center">
         <button class="btn btn-success" type="submit">Submit</button>
         <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
     </div>
 </form>
+
+<link rel="stylesheet" href="{% static 'vendorsx/select2/dist/css/select2.min.css' %}">
 <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
 <script>
     var selectedOption;
@@ -58,11 +60,17 @@
                 $('#id_Course_Group_to').append(`
                     <option value="` + response.pk + `" title="` + selectedOption + `" selected>` + selectedOption + `</option>
                 `);
-                SelectBox.add_to_cache("id_Course_Group_to", {value: String(response.pk), text: selectedOption, displayed: 1});
+                SelectBox.add_to_cache("id_Course_Group_to", {
+                    value: String(response.pk),
+                    text: selectedOption,
+                    displayed: 1
+                });
             },
             error: function () {
                 console.log('Error in posting group create form')
             }
         });
     });
+
+    $('#id_Course_Code').select2();
 </script>
