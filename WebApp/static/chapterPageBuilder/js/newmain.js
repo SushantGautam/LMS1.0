@@ -1949,7 +1949,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                     url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                     chunk_size: 10, // MB
                     onUploadComplete: function (e, options) {
-                        var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A4HAcLOLOO68!${options.rid}"
+                        var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=AgLA8o--2Nr0!${options.rid}"
                          frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
                         div.find('#loadingDiv').remove();
                         div.find('p').remove();
@@ -2769,7 +2769,24 @@ function display(data = "", currentPage = '1') {
                                 );
                             });
                         }
-
+                        if (div == 'audio') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                let link;
+                                if (css_value.hasOwnProperty('online_link') && css_value.online_link) {
+                                    link = css_value.online_link
+                                } else {
+                                    link = css_value.local_link
+                                }
+                                AudioFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    link,
+                                    css_value.height,
+                                    css_value.width,
+                                );
+                            });
+                        }
                         if (div == '_3d') {
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
@@ -2823,6 +2840,7 @@ function updateData(prev_page, prev_data) {
     var buttondiv = [];
     var pdf = [];
     var video = [];
+    var audio = [];
     var _3d = [];
     var quizdiv = [];
     var surveydiv = [];
@@ -2910,7 +2928,7 @@ function updateData(prev_page, prev_data) {
             online_link = $(this).find('iframe').attr('src');
             local_link = $(this).find('audio').attr('data-cld-public-id');
 
-            video.push(
+            audio.push(
                 {
                     'tops': $(this)[0].style.top,
                     'left': $(this)[0].style.left,
@@ -2972,6 +2990,7 @@ function updateData(prev_page, prev_data) {
             'btn-div': buttondiv,
             'pdf': pdf,
             'video': video,
+            'audio': audio,
             '_3d': _3d,
             'quizdiv': quizdiv,
             'surveydiv': surveydiv,
@@ -2993,6 +3012,7 @@ function updateData(prev_page, prev_data) {
             'btn-div': buttondiv,
             'pdf': pdf,
             'video': video,
+            'audio': audio,
             '_3d': _3d,
             'quizdiv': quizdiv,
             'surveydiv': surveydiv,
