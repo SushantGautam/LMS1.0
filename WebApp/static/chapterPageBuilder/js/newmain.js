@@ -395,6 +395,106 @@ class video {
     }
 }
 
+
+// =====================For Audio===========================================
+class Audio {
+    constructor(top, left, link = null, height = null, width = null) {
+        let id = (new Date).getTime();
+        this.id = id
+        this.link = link
+        var now = Math.floor(Math.random() * 900000) + 100000;
+        let position = {top, left, height, width};
+        let audioobj;
+        let message = "";
+
+        if (link != null) {
+            if (link.includes('.com')) {
+                audioobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
+            } else if (link.includes('/media/chapterBuilder/')) {
+                audioobj = `
+                <audio controls muted id="audio${id}" class="audiodim" data-cld-public-id="${link}">
+                        <source src="${link}"  type="audio/mpeg">
+                    </audio>
+                `
+            } else {
+                audioobj = `
+                    <audio controls muted id="audio${id}"
+                        class="audiodim cld-video-player cld-video-player-skin-dark example-player"
+                        data-cld-public-id="${link}" data-public_id="${link}" data-cld-source-types='["mp3", "ogg", "mpeg"]'>
+                        <source src="${link}"  type="audio/mp3">
+                    </audio>
+            `
+            }
+        } else {
+            message = `
+            Add Audio here...<br> `;
+            audioobj = `<div class="progressc mx-auto" data-value='0' id="loadingDiv" style="display:none">
+                <span class="progress-left">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <span class="progress-right">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                <div class="h2 font-weight-bold" id="percentcomplete">0<span class="small">%</span></div>
+                </div>
+                </div>`;
+
+        }
+        let html =
+            `<div class='audio-div'>
+                <div id="audio-actions">
+                    <i class="fas fa-trash" id=${id}></i>
+                    <i class="fas fa-upload" id=${id}></i>
+                </div>
+                <div>
+                    <p id="audio-drag">${message}</p>
+                    
+                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                    <input type='file' name="userImage" accept="audio/*" style="display:none" id=${id + 1} class="audio-form" />
+                    </form>
+                    ${audioobj}
+                </div>
+            </div>`
+
+
+        this.RemoveElement = function () {
+            return idss;
+        }
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width
+            }).draggable({
+                //Constraint   the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom)
+        };
+    }
+}
+
 // =====================For Button==============================
 
 class Button {
@@ -1772,6 +1872,117 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
     });
 }
 
+function AudioFunction(top = null, left = null, link = null, height = null, width = null) {
+    const Audios = new Audio(top, left, link, height, width);
+    Audios.renderDiagram();
+    if (Audios.link && !Audios.link.includes('.com') && !Audios.link.includes('/media/chapterBuilder/')) {
+        play('#audio' + Audios.id)
+    }
+
+    $('.fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+    $('.fa-upload').off().unbind().click(function (e) {
+        trigger = parseInt(e.target.id) + 1;
+        $('#' + trigger).trigger('click');
+    });
+    // $('.videolink').off().bind("click", function (e) {
+    //     var link_id = parseInt(e.currentTarget.id) + 1
+    //     var div = $(this).parent().parent();
+    //     var prevlink = $(this).parent().parent().find('iframe').attr('src');
+    //     if (prevlink == undefined) {
+    //         prevlink = "http://";
+    //     }
+    //     var link = prompt("Url (Youtube, DailyMotion)", prevlink);
+    //     if (link == null) {
+    //         return false
+    //     } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
+    //         link = 'http://' + link
+    //     }
+    //     video_link = getEmbedVideo(link)
+    //     div.find('p, iframe, video').remove();
+    //     div.append(video_link);
+    // });
+
+    $('.audio').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    })
+
+    $('.audio-div').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 150,
+        minHeight: 150,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        },
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            if (!input.files[0].type.match('audio.*')) {
+                alert('Not a valid audio.')
+                return
+            }
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                let div = $(input).parent().parent().parent();
+                div.find('auido').remove();
+                var data = new FormData();
+                $.each(input.files, function (i, file) {
+                    data.append('file-' + i, file);
+                });
+                data.append('csrfmiddlewaretoken', csrf_token);
+                data.append('chapterID', chapterID);
+                data.append('courseID', courseID);
+                data.append('type', 'audio');
+
+                var file = input.files[0];
+                $('#loadingDiv').show();
+                var options = {
+                    url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+                    chunk_size: 10, // MB
+                    onUploadComplete: function (e, options) {
+                        var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A4HAcLOLOO68!${options.rid}"
+                         frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
+                        div.find('#loadingDiv').remove();
+                        div.find('p').remove();
+                        // div.find('.progress').remove();
+                        div.append(html);
+                    },
+                    onUploadProgress: function (e) {
+                        $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
+                        $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                        addprogress();
+                    },
+                    onUploadError: function (e) {
+                        console.log(e);
+                        $(".status-bar").html("Error accured while uploading");
+                    }
+                };
+                uploader = new cpUploadAPI(file, options);
+                uploader.start();
+
+                $('#audio-drag').css({
+                    'display': 'none'
+                });
+
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(".audio-form").off().change(function (e) {
+        readURL(this);
+    });
+}
+
 function _3dFunction(top = null, left = null, file = null, height = null, width = null) {
     const _3d = new _3Dobject(
         top,
@@ -1943,9 +2154,6 @@ $(document).ready(function () {
             $(this).removeClass("over");
         },
     });
-    // $("body").on('DOMSubtreeModified', "#tab", function() {
-    //     console.log('changed');
-    // });
 
     // background color for pages
     $('#tabs-for-download').click(function () {
@@ -2192,6 +2400,12 @@ function dropfunction(event, ui) {
             (positionConvert(top, $('#tabs-for-download').height())) + '%',
             (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
             null, '30%', '40%'
+        );
+    } else if (ui.helper.hasClass('audio')) {
+        AudioFunction(
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
+            null, '10%', '40%'
         );
     } else if (ui.helper.hasClass('buttons')) {
         ButtonFunction(
@@ -2680,6 +2894,21 @@ function updateData(prev_page, prev_data) {
         if (value.classList.contains('video-div')) {
             online_link = $(this).find('iframe').attr('src');
             local_link = $(this).find('video').attr('data-cld-public-id');
+
+            video.push(
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'online_link': online_link,
+                    'local_link': local_link
+                }
+            );
+        }
+        if (value.classList.contains('audio-div')) {
+            online_link = $(this).find('iframe').attr('src');
+            local_link = $(this).find('audio').attr('data-cld-public-id');
 
             video.push(
                 {
