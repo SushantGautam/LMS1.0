@@ -1948,15 +1948,9 @@ $(document).ready(function () {
     // });
 
     // background color for pages
-    // $('#tabs-for-download').click(function () {
-    //     setThumbnailok = true
-    //     var theInput = $('#tabs-for-download').find('.page-background')[0];
-    //     var theColor = theInput.value;
-    //     theInput.addEventListener("input", function () {
-    //         $('.current').css('background-color', theInput.value)
-    //         data.pages[window.currentPage][0].backgroundcolor = theInput.value
-    //     }, false);
-    // })
+    $('#tabs-for-download').click(function () {
+        setThumbnailok = true
+    })
 
     $("#add-page-btn").on("click", function () {
         newpagefunction();

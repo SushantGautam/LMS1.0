@@ -57,13 +57,21 @@
                         &nbsp;Preview
                     </button>
                 </a>
-
+                <button class="btn-type1" id="save-and-exit-btn">
+                    <i style="color:white" class="fas fa-door-open"></i>&nbsp; Save and Exit
+                </button>
 
             </div>
             <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
-                <a href="javascript:void(0)" id="save-and-exit-btn"> <span>  QUIT <i
-                        style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></a>
-
+                <a href="
+                    {% if 'teachers' in request.path %}
+                    {% url 'teacher_chapterinfo_detail' course chapter %}
+                    {% else %}
+                    {% url 'chapterinfo_detail' course chapter %}
+                    {% endif %}
+                " id="goBackBtn"><span>  QUIT <i
+                        style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></i>
+                </a>
             </div>
 
 
