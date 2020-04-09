@@ -34,11 +34,11 @@
 
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
-            <div class="chapter-title-only col-md-2 col-sm-3 col-xs-12">
-                <span class="chapter-name">{{ chapterdetails.Chapter_Name }} <i class="fas fa-pencil-alt"></i></span>
+            <div class="chapter-title-only col-md-3 col-sm-3 col-xs-12">
+                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:20 }} <i class="fas fa-pencil-alt"></i></span>
 
             </div>
-            <div class=" buttons-chapter-only col-md-9 col-sm-6 col-xs-12">
+            <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
                 <button class="btn-type1" id="SaveBtn"><i style="color:white" class="fas fa-save"></i>&nbsp; Save
                 </button>
 
@@ -374,16 +374,23 @@
                         </div>
                     </form>
                 </div>
-                <div class="note-holder">
-                    <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
-                    <div class="note-chapter">
 
-                        <p style="text-align:justify">{{ chapterdetails.Summary|truncatechars:90 }} </p>
+                <a  title=" Write A Note"href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
+                    <div class="note-holder">
+                        <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
+                        <div id="chapter-description" class="note-chapter">
+
+                            
+                                <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:90 }} </p>
+                                
+                       
+
+                            
 
 
+                        </div>
                     </div>
-                </div>
-
+                </a>
 
                 <div class="additional-canvas tabs-to-click" style="position: relative;">
                     <ul class="small-canvases-list">

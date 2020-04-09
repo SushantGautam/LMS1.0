@@ -192,7 +192,7 @@ a:hover {
 }
 
 .individual-objects {
-    padding: 15px 15px 4px 15%;
+    padding: 19px 15px 9px 15%;
     font-size: 17px;
     -webkit-user-select: none; /* Chrome all / Safari all */
     -moz-user-select: none; /* Firefox all */
@@ -567,7 +567,9 @@ overflow: auto;
 .clone-button i {
     color: white;
 }
-
+.note-description{
+    font-size: 12px;
+}
 .delete-button {
     background-color: #79a6fb;
     padding: 3px;
