@@ -18,3 +18,9 @@
   margin-top: 10px;
   font-size: 1.4em; */
 }
+
+.course-description-div {
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+}

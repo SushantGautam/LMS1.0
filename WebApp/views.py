@@ -701,6 +701,8 @@ class CourseInfoCreateView(AdminAuthMxnCls, CreateView):
 
 class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
     model = CourseInfo
+    template_name = "center_admin/courseinfo_detail.html"
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
