@@ -52,7 +52,11 @@
                     <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export
                     </button>
                 </a>
-                <button class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button>
+                <a href="{% url 'previewcontentviewer' course chapter %}" id="previewBtn">
+                    <button class="btn-type1" id="previewBtn"><i style="color:white" class="fas fa-play-circle"></i>
+                        &nbsp;Preview
+                    </button>
+                </a>
 
 
             </div>
