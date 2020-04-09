@@ -209,22 +209,26 @@ class Textbox {
 // ===========================FOR PICTURE=====================================
 
 class picture {
-    constructor(top, left, pic = null, width = null, height = null) {
+    constructor(top, left, pic = null, link = null, width = null, height = null) {
 
         let id = (new Date).getTime();
         let position = {top, left, width, height};
         let message = "";
-        if (pic == null) {
+        if (pic == null && link == null) {
             message = `
                 <div class = "file-upload-icon">
                     <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
                 </div>
-                Drag and drop images here...
+                <p>Drag and drop images here...</p>
                 `
         }
         let img = '';
         if (pic != null) {
             img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
+        }
+        if (link != null) {
+            img = `<iframe style="width:100%;height:100%;" src="${link}"
+                         frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`
         }
         let html =
             `<div class='pic'>
@@ -933,11 +937,12 @@ function TextboxFunction(top = null, left = null, height = "20%", width = "30%",
     });
 }
 
-function PictureFunction(top = null, left = null, pic = null, width = null, height = null) {
+function PictureFunction(top = null, left = null, pic = null, link = null, width = null, height = null) {
     const Pic = new picture(
         top,
         left,
         pic,
+        link,
         width, height);
     Pic.renderDiagram();
 
@@ -1018,39 +1023,41 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
         data.append('courseID', courseID);
         data.append('type', 'pic');
         data.append('csrfmiddlewaretoken', csrf_token);
+        // file = input.files[0]
+        var options = {
+            url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+            chunk_size: 10, // MB
+            onUploadComplete: function (e, options) {
+                // var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!${options.rid}"
+                //  frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
+                // div.find('#loadingDiv').remove();
+                // div.find('p').remove();
+                // div.find('.file-upload-icon').remove();
+                // // div.find('.progress').remove();
+                // div.append(html);
 
-        $.ajax({
-            url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-            data: data,
-            contentType: false,
-            processData: false,
-            method: 'POST',
-            type: 'POST',
-            beforeSend: function () {
-                div.append(`<div class="loader" id="loadingDiv"></div>`)
-                $('#loadingDiv').show();
-            },
-            error: function (errorThrown) {
-                alert("Failed to upload PDF")
-                div.find('#loadingDiv').remove();
-            },
-            success: function (data) {
-                div.find('#loadingDiv').remove();
-                div.find('p').text("");
-
+                div.remove()
                 PictureFunction(
                     $(div)[0].style.top,
                     $(div)[0].style.left,
-                    load_file_url + '/' + data.media_name,
+                    null,
+                    "//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!" + options.rid,
                     $(div)[0].style.width,
                     $(div)[0].style.height,
                 );
-                div.remove()
             },
-            error: function (data, status, errorThrown) {
-                alert(data.responseJSON.message);
+            onUploadProgress: function (e) {
+                $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
+                $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                addprogress();
+            },
+            onUploadError: function (e) {
+                console.log(e);
+                $(".status-bar").html("Error accured while uploading");
             }
-        });
+        };
+        uploader = new cpUploadAPI(file, options);
+        uploader.start();
 
         $('#picture-drag').css({
             'display': 'none'
@@ -1082,36 +1089,41 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
                 data.append('type', 'pic');
                 data.append('chapterID', chapterID);
                 data.append('courseID', courseID);
-                $.ajax({
-                    url: save_file_url,
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    enctype: 'multipart/form-data',
-                    method: 'POST',
-                    type: 'POST',
-                    beforeSend: function () {
-                        div.append(`<div class="loader" id="loadingDiv"></div>`)
-                        $('#loadingDiv').show();
-                    },
-                    success: function (data) {
-                        div.find('#loadingDiv').remove();
-                        div.find('p').text("");
+                file = input.files[0]
+                var options = {
+                    url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+                    chunk_size: 10, // MB
+                    onUploadComplete: function (e, options) {
+                        // var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!${options.rid}"
+                        //  frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
+                        // div.find('#loadingDiv').remove();
+                        // div.find('p').remove();
+                        // div.find('.file-upload-icon').remove();
+                        // // div.find('.progress').remove();
+                        // div.append(html);
 
+                        div.remove()
                         PictureFunction(
                             $(div)[0].style.top,
                             $(div)[0].style.left,
-                            load_file_url + '/' + data.media_name,
+                            null,
+                            "//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!" + options.rid,
                             $(div)[0].style.width,
                             $(div)[0].style.height,
                         );
-                        div.remove()
                     },
-                    error: function (data, status, errorThrown) {
-                        alert(data.responseJSON.message);
-                        div.find('#loadingDiv').remove();
+                    onUploadProgress: function (e) {
+                        $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
+                        $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                        addprogress();
+                    },
+                    onUploadError: function (e) {
+                        console.log(e);
+                        $(".status-bar").html("Error accured while uploading");
                     }
-                });
+                };
+                uploader = new cpUploadAPI(file, options);
+                uploader.start();
 
                 $('#picture-drag').css({
                     'display': 'none'
@@ -2393,7 +2405,7 @@ function dropfunction(event, ui) {
         PictureFunction(
             (positionConvert(top, $('#tabs-for-download').height())) + '%',
             (positionConvert(left - sidebarWidth, $('#tabs-for-download').width())) + '%',
-            null, '40%', '30%'
+            null, null, '40%', '30%'
         );
     } else if (ui.helper.hasClass('video')) {
         VideoFunction(
@@ -2430,7 +2442,7 @@ function dropfunction(event, ui) {
         PictureFunction(
             top = 0 + '%',
             left = 0 + '%',
-            null,
+            null, null,
             width = "100%", height = "50%");
 
 
@@ -2460,12 +2472,12 @@ function dropfunction(event, ui) {
         PictureFunction(
             top = 0 + '%',
             left = 0 + '%',
-            null,
+            null, null,
             width = "49%", height = "60%");
         PictureFunction(
             top = 0 + '%',
             left = "51%",
-            null,
+            null, null,
             width = "49%", height = "60%");
         TextboxFunction(
             top = "62%",
@@ -2684,6 +2696,7 @@ function display(data = "", currentPage = '1') {
                                     css_value.tops,
                                     css_value.left,
                                     css_value['background-image'],
+                                    css_value.link,
                                     css_value.width,
                                     css_value.height,
                                 );
@@ -2881,7 +2894,8 @@ function updateData(prev_page, prev_data) {
                     'left': $(this)[0].style.left,
                     'width': $(this)[0].style.width,
                     'height': $(this)[0].style.height,
-                    'background-image': $(this).find("img").attr('src')
+                    'background-image': $(this).find("img").attr('src'),
+                    'link': $(this).find("iframe").attr('src')
                 }
             );
         }
