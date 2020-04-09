@@ -405,7 +405,7 @@
  
      }
      .main-central-canvas {
-         height: 92vh;
+         height: 57vh;
          background-color: white;
      }
      .main-canvas-part {
@@ -419,6 +419,7 @@
      .icon-boxes {
          height: 90vh;
      }
+     
  
      
  }
@@ -450,6 +451,7 @@
      .icon-boxes {
          height: 82.5vh;
      }
+    
  }
  @media (min-height:1501px) and (max-height:1600px){
      .component-container {
@@ -479,7 +481,9 @@
      .icon-boxes {
          height: 91.3vh;
      }
+   
  }
+
  
  
  @media (min-height:1025px) and (max-height:1550px){

@@ -127,7 +127,7 @@ a:hover {
 
 }
 
-.btn-type1:focus {
+.btn-type1:focus , .btn-type1:hover{
     background: #bcd2fd;
     color: #353c46;
     outline: none !important;
@@ -176,11 +176,13 @@ a:hover {
 .layout-type-holder {
     margin: 15px 10px 0 10px;
     height: 75px;
+    text-align: center;
+    
 }
 
 .layout-type-holder img {
     height: 100%;
-    width: 100%;
+    
 }
 
 .list-objects {
@@ -236,6 +238,9 @@ a:hover {
 }
 .chapter-listings{
     padding: 10px;
+}
+.second-toggle{
+    display: none;
 }
 .form-group{
     margin-bottom: 0px!important;

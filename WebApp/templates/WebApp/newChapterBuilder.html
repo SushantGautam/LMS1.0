@@ -35,7 +35,7 @@
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
             <div class="chapter-title-only col-md-3 col-sm-3 col-xs-12">
-                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:20 }} <i class="fas fa-pencil-alt"></i></span>
+                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:20 }} </span>
 
             </div>
             <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
@@ -57,10 +57,7 @@
                         &nbsp;Preview
                     </button>
                 </a>
-                <button class="btn-type1" id="save-and-exit-btn">
-                    <i style="color:white" class="fas fa-door-open"></i>&nbsp; Save and Exit
-                </button>
-
+             
             </div>
             <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
                 <a href="
@@ -216,7 +213,7 @@
                                         <li class="individual-objects draggable draggable-style audio">
                                                 <span>
                                                  <img class="object-image-size"
-                                                      src="{% static 'chapterPageBuilder/icons/newicon/action.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/audio.png' %}">
                                                 </span> <span class="object-name-size">AUDIO</span>
                                         </li>
 
@@ -250,25 +247,25 @@
                                             </div>
 
                                         </div>
-                                        <div class="own-padding col-md-6">
+                                        <div class="draggable-style own-padding col-md-6">
                                             <div class="layout-type-holder draggable layout grid-1 ui-draggable ui-draggable-handle">
                                                 <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
                                                      alt="like this">
                                             </div>
                                         </div>
-                                        <div class=" own-padding col-md-6">
+                                        <div class="draggable-style  own-padding col-md-6">
                                             <div class="layout-type-holder draggable layout title-slide ui-draggable ui-draggable-handle">
                                                 <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
                                                      alt="like this">
                                             </div>
                                         </div>
-                                        <div class="own-padding col-md-6">
+                                        <div class="draggable-style own-padding col-md-6">
                                             <div class="layout-type-holder draggable layout title-content-details ui-draggable ui-draggable-handle">
                                                 <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
                                                      alt="like this">
                                             </div>
                                         </div>
-                                        <div class="own-padding col-md-6">
+                                        <div class="draggable-style own-padding col-md-6">
                                             <div class="layout-type-holder draggable layout pdf-text ui-draggable ui-draggable-handle">
                                                 <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
                                                      alt="like this">
@@ -318,12 +315,20 @@
                     <div class="view-mode ">
                         <ul class="full-screen-color">
                             <li>
-                                <a id="togglefull" data-toggle="tooltip" data-placement="top" title=""
+                                <a class="first-toggle" id="togglefull" data-toggle="tooltip" data-placement="top" title=""
                                    onclick="toggleFullScreen()"
                                    data-original-title="FullScreen">
                               <span><img style="height: 15px; width:15px ; margin-top:-5px"
                                          src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
                                  <span style="font-size: 15px;">Full Screen</span> </a> </span>&nbsp;&nbsp;
+
+
+                                 <a class="second-toggle" id="togglefull" data-toggle="tooltip" data-placement="top" title=""
+                                 onclick="toggleFullScreen()"
+                                 data-original-title="FullScreen">
+                            <span><img style="height: 15px; width:15px ; margin-top:-5px"
+                                       src="{% static 'chapterPageBuilder/icons/newicon/compress.svg' %}">&nbsp;&nbsp;
+                               <span style="font-size: 15px;">Standard Screen</span> </a> 
 
                             </li>
                             <li><span class="color-picker" style="font-size: 15px;"></li>
@@ -334,7 +339,7 @@
                             </li>
 
 
-                            <li><span class="caret"></span></li>
+                         
 
 
                         </ul>
@@ -365,7 +370,7 @@
                             <select class="form-control" name="chapter-lists" id="chapterlist">
                                 {% for chapter in chapterlist %}
                                     <option value="{{ chapter.id }}">
-                                        {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}
+                                        {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name|truncatechars:20 }}
                                     </option>
                                 {% endfor %}
                             </select>
@@ -377,7 +382,7 @@
 
                 <a  title=" Write A Note"href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
                     <div class="note-holder">
-                        <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
+                        <span style="color: white;">Description <i class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
 
                             
@@ -433,7 +438,7 @@
                     <div class="col-md-12 col-xs-12 col-sm-12">
 
 
-                        <a id="add-page-btn"> <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
+                        <a id="add-page-btn" title="Add new Page"> <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
 
                     </div>
 
@@ -919,6 +924,7 @@
 
 
         })
+       
     });
 </script>
 <script>
