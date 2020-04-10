@@ -1243,6 +1243,23 @@ html {
     border: 1px solid #ddd;
 }
 
+
+.quiz-div:hover .options {
+    display: block;
+}
+
+.quiz-div:hover {
+    border: 1px solid #ddd;
+}
+
+.survey-div:hover .options {
+    display: block;
+}
+
+.survey-div:hover {
+    border: 1px solid #ddd;
+}
+
 /* ======================== End of Old CSS  ==================================================*/
 
 /* Layout CSS */
