@@ -945,11 +945,11 @@ function LayoutFunction(top = null, left = null, height = "100%", width = "100%"
         stop: function (e, ui) {
             //   var parent = ui.element.parent();
             h = positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-            w = positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                ui.element.css({
-                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-                });
+            w = positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%"
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
         }
     });
 
@@ -2033,7 +2033,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
         grid: [20, 20],
         autoHide: true,
         minWidth: 150,
-        minHeight: 150,
+        minHeight: 50,
         stop: function (e, ui) {
             // var parent = ui.element.parent();
             ui.element.css({
@@ -2524,7 +2524,7 @@ function dropfunction(event, ui) {
         AudioFunction(
             (positionConvert(top, $('#tabs-for-download').height())) + '%',
             (positionConvert((left - sidebarWidth), $('#tabs-for-download').width())) + '%',
-            null, '10%', '40%'
+            null, '15%', '40%'
         );
     } else if (ui.helper.hasClass('buttons')) {
         ButtonFunction(
