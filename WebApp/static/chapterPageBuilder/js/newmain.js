@@ -877,15 +877,36 @@ class BaseLayout {
                     <div class="layout-actions">
                         <i class="fas fa-trash"></i>
                     </div>
-                <span class="layout-icons layout-text">textbox</span>
-                <span class="layout-icons layout-image">image</span>
-                <span class="layout-icons layout-video">video</span>
-                <span class="layout-icons layout-audio">audio</span>
-                <span class="layout-icons layout-pdf">pdf</span>
-                <span class="layout-icons layout-3d">3dobject</span>
-                <span class="layout-icons layout-quiz">Quiz</span>
-                <span class="layout-icons layout-survey">Survey</span>
-                <span class="layout-icons layout-button">Button</span>
+                    <div class="layout-icon-placement">
+                        <div>
+                                <span class="layout-icons layout-text">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/text.svg "></img>
+                                </span>
+                                <span class="layout-icons layout-image">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/picture.svg "></img>
+                                </span>
+                                <span class="layout-icons layout-video">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/video.svg "></img>
+                                
+                                </span>
+
+                        </div>
+                        <div>
+
+                                <span class="layout-icons layout-audio">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/audio.png "></img>
+                                </span>
+                                <span class="layout-icons layout-pdf">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/pdf.svg "></img>
+                                </span>
+                                <span class="layout-icons layout-3d">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/3d-cube.svg "></img>
+                                </span>
+
+                        </div>
+                      
+                    </div>
+               
             </div>`
 
 

@@ -368,7 +368,7 @@
                 <div class="chapter-listings">
                     <form style="margin-bottom: 0px!important;">
                         <div class="form-group">
-                            <label for="sel1">Current Chapter&nbsp;:-</label>
+                            <label style="color:white" for="sel1">Current Chapter&nbsp;:-</label>
                             <select class="form-control" name="chapter-lists" id="chapterlist">
                                 {% for chapter in chapterlist %}
                                     <option value="{{ chapter.id }}">
@@ -381,12 +381,16 @@
                         </div>
                     </form>
                 </div>
+                <div class="col-md-12 col-sm-12 col-xs-12" style="">
+                    <hr style="color:red;">
 
-                <a title=" Write A Note" href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
+                </div>
+
+                <a class="note-chapter-part" title=" Write A Note" href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
                     <div class="note-holder">
-                        <span style="color: white;">Description <i class="fas fa-pencil-alt"></i></span>
+                        <span style="color: white; font-weight:600">Description <i class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
-                            <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:90 }} </p>
+                            <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:70 }} </p>
                         </div>
                     </div>
                 </a>
@@ -423,12 +427,13 @@
                     </ul>
 
                 </div>
-                <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
-                    <hr>
-
-                </div>
+                
 
                 <div class="add-page">
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
+                        <hr>
+    
+                    </div>
                     <div class="col-md-12 col-xs-12 col-sm-12">
 
 
