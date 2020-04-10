@@ -10,7 +10,75 @@
  
  
  }
- @media (min-width:1052px) and (max-width:1200px){}
+ @media (min-width:1501px) and (max-width:1700px){
+    .layout-icon-placement{
+        position: absolute;
+        top: 20%;
+        left: 40%;
+        background-color: rgba(255,255,255,0.6);
+       
+       
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+
+}
+ @media (min-width:1401px) and (max-width:1500px){
+    .layout-icon-placement{
+        position: absolute;
+        top: 20%;
+        left: 40%;
+        background-color: rgba(255,255,255,0.6);
+       
+       
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+
+}
+ @media (min-width:1301px) and (max-width:1400px){
+    .layout-icon-placement{
+        position: absolute;
+        top: 23%;
+        left: 40%;
+        background-color: rgba(255,255,255,0.6);
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+
+}
+ @media (min-width:1201px) and (max-width:1300px){
+    .layout-icon-placement{
+        position: absolute;
+        top: 25%;
+        left: 40%;
+        background-color: rgba(255,255,255,0.6);
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+
+ }
+ @media (min-width:1052px) and (max-width:1200px){
  .small-canvases {
     height: 100px;
     width: 160px;
@@ -26,7 +94,20 @@
         content: attr(data-before);
         margin-left: -22px;
     }
-       
+    .layout-icon-placement{
+        position: absolute;
+        top: 25%;
+        left: 36%;
+        background-color: rgba(255,255,255,0.6);
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+}      
  @media (min-width:768px) and (max-width:800px) {
     
     .small-canvases {
@@ -67,6 +148,21 @@
             margin-bottom: 0px !important;
             font-size: 12px;
         }
+        .layout-icon-placement{
+            position: absolute;
+            top: 20%;
+            left: 40%;
+            background-color: rgba(255,255,255,0.6);
+           
+           
+        }
+      
+        .opacity-layout-icons{
+            height: 45px;
+            width: 45px;
+            opacity: 0.3;
+            margin: 7px 5px;
+        }
  }
  @media (min-width:901px) and (max-width:999px) {
     
@@ -88,6 +184,21 @@
         .note-chapter p {
             margin-bottom: 0px !important;
             font-size: 13px;
+        }
+        .layout-icon-placement{
+            position: absolute;
+            top: 20%;
+            left: 40%;
+            background-color: rgba(255,255,255,0.6);
+           
+           
+        }
+      
+        .opacity-layout-icons{
+            height: 45px;
+            width: 45px;
+            opacity: 0.3;
+            margin: 7px 5px;
         }
  }
  
