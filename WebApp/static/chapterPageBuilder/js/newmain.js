@@ -928,33 +928,9 @@ class BaseLayout {
 // Element Functions
 function LayoutFunction(top = null, left = null, height = "100%", width = "100%") {
     const layout = new BaseLayout(top, left, height, width);
-
+    h = height
+    w = width
     layout.renderDiagram();
-
-    $('.layout-icons').on('click', function (event) {
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        $(this).closest('.baselayout').remove()
-        if ($(this).hasClass('layout-text')) {
-            TextboxFunction(top, left, height, width)
-        } else if ($(this).hasClass('layout-image')) {
-            PictureFunction(top, left, null, null, width, height)
-        } else if ($(this).hasClass('layout-video')) {
-            VideoFunction(top, left, null, height, width)
-        } else if ($(this).hasClass('layout-audio')) {
-            AudioFunction(top, left, null, height, width)
-        } else if ($(this).hasClass('layout-pdf')) {
-            PDFFunction(top, left, null, height, width)
-        } else if ($(this).hasClass('layout-3d')) {
-            _3dFunction(top, left, null, height, width)
-        } else if ($(this).hasClass('layout-quiz')) {
-            QuizFunction(top, left, null, height, width, "Select Quiz", "", font_size = "75px")
-        } else if ($(this).hasClass('layout-survey')) {
-            SurveyFunction(top, left, null, height, width, "Select Survey", "", font_size = "75px")
-        } else if ($(this).hasClass('layout-button')) {
-            ButtonFunction(top, left, null, height, width, "Button", "", font_size = "75px")
-        }
-    })
 
     $('.fa-trash').click(function (e) {
         $(this).closest('.baselayout').remove();
@@ -968,12 +944,39 @@ function LayoutFunction(top = null, left = null, height = "100%", width = "100%"
         autoHide: true,
         stop: function (e, ui) {
             //   var parent = ui.element.parent();
-            ui.element.css({
-                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
-                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
-            });
+            h = positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            w = positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                ui.element.css({
+                    width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                    height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+                });
         }
     });
+
+    $('.layout-icons').on('click', function (event) {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        $(this).closest('.baselayout').remove()
+        if ($(this).hasClass('layout-text')) {
+            TextboxFunction(top, left, h, w)
+        } else if ($(this).hasClass('layout-image')) {
+            PictureFunction(top, left, null, null, w, h)
+        } else if ($(this).hasClass('layout-video')) {
+            VideoFunction(top, left, null, h, w)
+        } else if ($(this).hasClass('layout-audio')) {
+            AudioFunction(top, left, null, h, w)
+        } else if ($(this).hasClass('layout-pdf')) {
+            PDFFunction(top, left, null, h, w)
+        } else if ($(this).hasClass('layout-3d')) {
+            _3dFunction(top, left, null, h, w)
+        } else if ($(this).hasClass('layout-quiz')) {
+            QuizFunction(top, left, null, h, w, "Select Quiz", "", font_size = "75px")
+        } else if ($(this).hasClass('layout-survey')) {
+            SurveyFunction(top, left, null, h, w, "Select Survey", "", font_size = "75px")
+        } else if ($(this).hasClass('layout-button')) {
+            ButtonFunction(top, left, null, h, w, "Button", "", font_size = "75px")
+        }
+    })
 }
 
 function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "") {
