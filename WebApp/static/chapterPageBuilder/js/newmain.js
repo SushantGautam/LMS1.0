@@ -949,8 +949,6 @@ class BaseLayout {
 // Element Functions
 function LayoutFunction(top = null, left = null, height = "100%", width = "100%") {
     const layout = new BaseLayout(top, left, height, width);
-    h = height
-    w = width
     layout.renderDiagram();
 
     $('.fa-trash').click(function (e) {
@@ -979,23 +977,35 @@ function LayoutFunction(top = null, left = null, height = "100%", width = "100%"
         event.stopImmediatePropagation();
         $(this).closest('.baselayout').remove()
         if ($(this).hasClass('layout-text')) {
-            TextboxFunction(top, left, h, w)
+            TextboxFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-image')) {
-            PictureFunction(top, left, null, null, w, h)
+            PictureFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, null, $(this).closest('.baselayout').css('width'), $(this).closest('.baselayout').css('height'))
         } else if ($(this).hasClass('layout-video')) {
-            VideoFunction(top, left, null, h, w)
+            VideoFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-audio')) {
-            AudioFunction(top, left, null, h, w)
+            AudioFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-pdf')) {
-            PDFFunction(top, left, null, h, w)
+            PDFFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-3d')) {
-            _3dFunction(top, left, null, h, w)
+            _3dFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-quiz')) {
-            QuizFunction(top, left, null, h, w, "Select Quiz", "", font_size = "75px")
+            QuizFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
+                "Select Quiz", "", font_size = "75px")
         } else if ($(this).hasClass('layout-survey')) {
-            SurveyFunction(top, left, null, h, w, "Select Survey", "", font_size = "75px")
+            SurveyFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
+                "Select Survey", "", font_size = "75px")
         } else if ($(this).hasClass('layout-button')) {
-            ButtonFunction(top, left, null, h, w, "Button", "", font_size = "75px")
+            ButtonFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
+                "Button", "", font_size = "75px")
         }
     })
 }
