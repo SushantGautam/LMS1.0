@@ -14,7 +14,7 @@
             </div>
             <input type="hidden" name="today_date" id="id_today_date" value="{{ datetime|date:"Y-m-d" }}"
                    class="select form-control">
-            <div class="modal-body modal-auto" id="create_assignment_modal_body">
+            <div class="modal-body modal-90" id="create_assignment_modal_body">
             </div>
         </div>
     </div>
@@ -383,12 +383,12 @@
 
 <div id="quiz_create_popup" class="modal fade">
     <div class="modal-dialog" style="width: 80%;">
-        <div class="modal-content" style="    height: 90vh;    overflow: auto;">
+        <div class="modal-content" style="height: 80vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Create Quiz</h4>
             </div>
-            <div class="modal-body modal-auto" id="quiz_form_ajax" style="    padding: 10%;">
+            <div class="modal-body modal-auto" id="quiz_form_ajax" style="padding: 10%;">
                 <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
 
             </div>
@@ -400,7 +400,7 @@
 
 <div id="question_form_popup" class="modal fade">
     <div class="modal-dialog">
-        <div class="modal-content" style="overflow-y: scroll;">
+        <div class="modal-content" style="height: 80vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title" id="question_model_title">Add Question</h4>

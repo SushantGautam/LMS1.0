@@ -511,7 +511,7 @@
 <div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="height: 80vh;">
             <div class="modal-header text-center">
                 <h4 class="modal-title" id="exampleModalLabel"><b>Edit Assignment </b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -519,7 +519,7 @@
                     </button>
                 </h4>
             </div>
-            <div class="modal-body modal-auto" id="editAssignment_modal_body">
+            <div class="modal-body modal-90" id="editAssignment_modal_body">
                 <form method="post" id="ajaxassignmentinfoform">
                     {% csrf_token %}
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
