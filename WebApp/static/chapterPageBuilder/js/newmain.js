@@ -869,9 +869,113 @@ class _3Dobject {
     }
 }
 
+class BaseLayout {
+    constructor(top, left, height = null, width = null) {
+        let position = {top, left, height, width};
+
+        let html = `<div class="baselayout">
+                    <div class="layout-actions">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                <span class="layout-icons layout-text">textbox</span>
+                <span class="layout-icons layout-image">image</span>
+                <span class="layout-icons layout-video">video</span>
+                <span class="layout-icons layout-audio">audio</span>
+                <span class="layout-icons layout-pdf">pdf</span>
+                <span class="layout-icons layout-3d">3dobject</span>
+                <span class="layout-icons layout-quiz">Quiz</span>
+                <span class="layout-icons layout-survey">Survey</span>
+                <span class="layout-icons layout-button">Button</span>
+            </div>`
+
+
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width
+            }).draggable({
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+        };
+    }
+}
+
 // ====================== End of initializing elements ========================
 
 // Element Functions
+function LayoutFunction(top = null, left = null, height = "100%", width = "100%") {
+    const layout = new BaseLayout(top, left, height, width);
+
+    layout.renderDiagram();
+
+    $('.layout-icons').on('click', function (event) {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        $(this).closest('.baselayout').remove()
+        if ($(this).hasClass('layout-text')) {
+            TextboxFunction(top, left, height, width)
+        } else if ($(this).hasClass('layout-image')) {
+            PictureFunction(top, left, null, null, width, height)
+        } else if ($(this).hasClass('layout-video')) {
+            VideoFunction(top, left, null, height, width)
+        } else if ($(this).hasClass('layout-audio')) {
+            AudioFunction(top, left, null, height, width)
+        } else if ($(this).hasClass('layout-pdf')) {
+            PDFFunction(top, left, null, height, width)
+        } else if ($(this).hasClass('layout-3d')) {
+            _3dFunction(top, left, null, height, width)
+        } else if ($(this).hasClass('layout-quiz')) {
+            QuizFunction(top, left, null, height, width, "Select Quiz", "", font_size = "75px")
+        } else if ($(this).hasClass('layout-survey')) {
+            SurveyFunction(top, left, null, height, width, "Select Survey", "", font_size = "75px")
+        } else if ($(this).hasClass('layout-button')) {
+            ButtonFunction(top, left, null, height, width, "Button", "", font_size = "75px")
+        }
+    })
+
+    $('.fa-trash').click(function (e) {
+        $(this).closest('.baselayout').remove();
+    });
+    $('.baselayout').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 75,
+        minHeight: 25,
+        autoHide: true,
+        stop: function (e, ui) {
+            //   var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        }
+    });
+}
+
 function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "") {
     const textBox = new Textbox(top, left, height, width, message);
 
@@ -2439,74 +2543,65 @@ function dropfunction(event, ui) {
         );
     } else if (ui.helper.hasClass('grid-1')) {
         clearPage(window.currentPage)
-        PictureFunction(
+        LayoutFunction(
             top = 0 + '%',
             left = 0 + '%',
-            null, null,
-            width = "100%", height = "50%");
-
-
-        // ===============for textbox inside grid-1============
-        TextboxFunction(
-            top = "50%",
+            height = "50%", width = "100%");
+        LayoutFunction(
+            top = 50 + '%',
             left = 0 + '%',
-            height = "45%", width = '100% '
-        );
+            height = "50%", width = "100%");
     } else if (ui.helper.hasClass('grid')) {
         clearPage(window.currentPage)
-        VideoFunction(
+        LayoutFunction(
             top = 0 + '%',
             left = 0 + '%',
-            null,
             height = "50%", width = "100%");
 
 
         // ===============for textbox inside grid-1============
-        TextboxFunction(
+        LayoutFunction(
             top = "52%",
             left = 0 + '%',
             height = "45%", width = "100%"
         );
     } else if (ui.helper.hasClass('title-slide')) {
         clearPage(window.currentPage)
-        PictureFunction(
+        LayoutFunction(
             top = 0 + '%',
             left = 0 + '%',
-            null, null,
-            width = "49%", height = "60%");
-        PictureFunction(
+            height = "60%", width = "49%");
+        LayoutFunction(
             top = 0 + '%',
             left = "51%",
-            null, null,
-            width = "49%", height = "60%");
-        TextboxFunction(
+            height = "60%", width = "49%");
+        LayoutFunction(
             top = "62%",
             left = 0 + '%',
             height = "35%", width = "100%",
         );
     } else if (ui.helper.hasClass('title-content-details')) {
         clearPage(window.currentPage)
-        TextboxFunction(
+        LayoutFunction(
             top = "0%",
             left = 0 + '%',
             height = "10%", width = "100%",
         );
-        TextboxFunction(
+        LayoutFunction(
             top = "13%",
             left = 0 + '%',
             height = "84%", width = "100%",
         );
     } else if (ui.helper.hasClass('pdf-text')) {
         clearPage(window.currentPage)
-        PDFFunction(
+        LayoutFunction(
             top = "0%",
             left = 0 + '%',
-            link = null,
             height = "60%", width = "100%");
 
 
         // ===============for textbox inside grid-1============
-        TextboxFunction(
+        LayoutFunction(
             top = "62%",
             left = 0 + '%',
             height = "35%", width = "100%"
