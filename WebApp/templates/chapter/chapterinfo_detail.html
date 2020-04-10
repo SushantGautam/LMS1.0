@@ -114,11 +114,11 @@
                 </tr>
                 <tr>
                     <td>Start Date</td>
-                    <td>{{ object.Start_Date|date:"d M, Y" }}</td>
+                    <td class="datecon">{{ object.Start_Date|date:"d M, Y H:i" }}</td>
                 </tr>
                 <tr>
                     <td>End Date</td>
-                    <td>{{ object.End_Date|date:"d M, Y" }}</td>
+                    <td class="datecon">{{ object.End_Date|date:"d M, Y H:i" }}</td>
                 </tr>
 
                 <tr>
@@ -338,7 +338,8 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
                     <p>Start Date - {{ o.Assignment_Start }}</p>
-                    <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
+                    <span>Submission Deadline - <span
+                            class="datecon">{{ o.Assignment_Deadline|date:'M d, Y H:i' }}</span></p>
                 </div>
             </div>
         {% endfor %}

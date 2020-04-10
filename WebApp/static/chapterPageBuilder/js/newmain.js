@@ -877,15 +877,36 @@ class BaseLayout {
                     <div class="layout-actions">
                         <i class="fas fa-trash"></i>
                     </div>
-                <span class="layout-icons layout-text">textbox</span>
-                <span class="layout-icons layout-image">image</span>
-                <span class="layout-icons layout-video">video</span>
-                <span class="layout-icons layout-audio">audio</span>
-                <span class="layout-icons layout-pdf">pdf</span>
-                <span class="layout-icons layout-3d">3dobject</span>
-                <span class="layout-icons layout-quiz">Quiz</span>
-                <span class="layout-icons layout-survey">Survey</span>
-                <span class="layout-icons layout-button">Button</span>
+                    <div class="layout-icon-placement">
+                        <div>
+                                <span class="layout-icons layout-text">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/text.svg "></img>
+                                </span>
+                                <span class="layout-icons layout-image">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/picture.svg "></img>
+                                </span>
+                                <span class="layout-icons layout-video">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/video.svg "></img>
+                                
+                                </span>
+
+                        </div>
+                        <div>
+
+                                <span class="layout-icons layout-audio">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/audio.png "></img>
+                                </span>
+                                <span class="layout-icons layout-pdf">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/pdf.svg "></img>
+                                </span>
+                                <span class="layout-icons layout-3d">
+                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/3d-cube.svg "></img>
+                                </span>
+
+                        </div>
+                      
+                    </div>
+               
             </div>`
 
 
@@ -928,8 +949,6 @@ class BaseLayout {
 // Element Functions
 function LayoutFunction(top = null, left = null, height = "100%", width = "100%") {
     const layout = new BaseLayout(top, left, height, width);
-    h = height
-    w = width
     layout.renderDiagram();
 
     $('.fa-trash').click(function (e) {
@@ -958,23 +977,35 @@ function LayoutFunction(top = null, left = null, height = "100%", width = "100%"
         event.stopImmediatePropagation();
         $(this).closest('.baselayout').remove()
         if ($(this).hasClass('layout-text')) {
-            TextboxFunction(top, left, h, w)
+            TextboxFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-image')) {
-            PictureFunction(top, left, null, null, w, h)
+            PictureFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, null, $(this).closest('.baselayout').css('width'), $(this).closest('.baselayout').css('height'))
         } else if ($(this).hasClass('layout-video')) {
-            VideoFunction(top, left, null, h, w)
+            VideoFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-audio')) {
-            AudioFunction(top, left, null, h, w)
+            AudioFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-pdf')) {
-            PDFFunction(top, left, null, h, w)
+            PDFFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-3d')) {
-            _3dFunction(top, left, null, h, w)
+            _3dFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'))
         } else if ($(this).hasClass('layout-quiz')) {
-            QuizFunction(top, left, null, h, w, "Select Quiz", "", font_size = "75px")
+            QuizFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
+                "Select Quiz", "", font_size = "75px")
         } else if ($(this).hasClass('layout-survey')) {
-            SurveyFunction(top, left, null, h, w, "Select Survey", "", font_size = "75px")
+            SurveyFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
+                "Select Survey", "", font_size = "75px")
         } else if ($(this).hasClass('layout-button')) {
-            ButtonFunction(top, left, null, h, w, "Button", "", font_size = "75px")
+            ButtonFunction($(this).closest('.baselayout').css('top'), $(this).closest('.baselayout').css('left'),
+                null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
+                "Button", "", font_size = "75px")
         }
     })
 }
