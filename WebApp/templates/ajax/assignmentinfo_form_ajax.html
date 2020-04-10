@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+
 <div class="se-pre-con-ajax"></div>
 
 <form method="post" id="ajaxassignmentinfoform">
@@ -22,7 +23,7 @@
                 Assignment Starting *
             </label>
             <div class="controls ">
-                <input type="date" name="Assignment_Start" class="datetimeinput form-control"
+                <input type="text" name="Assignment_Start" class="form-control"
                        id="id_Assignment_Start" value="{{ Object.Assignment_Start }}" max="9999-12-31">
             </div>
         </div>
@@ -33,7 +34,7 @@
                 Assignment Deadline *
             </label>
             <div class="controls ">
-                <input type="date" name="Assignment_Deadline" class="datetimeinput form-control"
+                <input type="text" name="Assignment_Deadline" class="form-control"
                        id="id_Assignment_Deadline" value="{{ Object.Assignment_Deadline }}" max="9999-12-31">
             </div>
         </div>
@@ -66,16 +67,17 @@
         if (remaining < 0) {
             result.textContent = `Days Remaining : Invalid`;
 
-        }
-        else {
+        } else {
             result.textContent = `Days Remaining : ${remaining} days`;
 
-        };
+        }
+        ;
     });
 </script>
 <script>
     $(".se-pre-con-ajax").fadeOut("fast");
-
+    $('#id_Assignment_Deadline').datetimepicker();
+    $('#id_Assignment_Start').datetimepicker();
     $("#ajaxassignmentinfoform").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -84,8 +86,8 @@
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic').val(),
-                "Assignment_Start": $('#id_Assignment_Start').val(),
-                "Assignment_Deadline": $('#id_Assignment_Deadline').val(),
+                "Assignment_Start": new Date($('#id_Assignment_Start').val()).toISOString(),
+                "Assignment_Deadline": new Date($('#id_Assignment_Deadline').val()).toISOString(),
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Course_Code": $('#id_Course_Code').val(),
                 "Chapter_Code": $('#id_Chapter_Code').val(),

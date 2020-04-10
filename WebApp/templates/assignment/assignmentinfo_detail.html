@@ -1,4 +1,5 @@
 {% load static %}
+<link href="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
 
 <div class="outerdiv">
     {% include 'WebApp/theme/alerts.html' %}
@@ -58,11 +59,11 @@
                         <tr>
                             <td>Assignment Start Date</td>
                             {#                            Use Datecon class in td if conversion of date to local time is required#}
-                            <td>{{ object.Assignment_Start|date:'Y-m-d h:i a' }}</td>
+                            <td class="datecon">{{ object.Assignment_Start|date:'M d, Y H:i' }}</td>
                         </tr>
                         <tr>
                             <td>Assignment Deadline</td>
-                            <td>{{ object.Assignment_Deadline|date:'Y-m-d h:i a' }}</td>
+                            <td class="datecon">{{ object.Assignment_Deadline|date:'M d, Y H:i' }}</td>
                         </tr>
                         <tr>
                             <td>Course Code</td>
@@ -539,8 +540,8 @@
                                 Assignment Start *
                             </label>
                             <div class="controls ">
-                                <input type="date" name="Assignment_Start_edit"
-                                       class="datetimeinput form-control"
+                                <input type="text" name="Assignment_Start_edit"
+                                       class="form-control"
                                        id="id_Assignment_Start_edit"
                                        value="{{ object.Assignment_Start|date:'Y-m-d' }}"
                                        min="" max="9999-12-31">
@@ -553,8 +554,8 @@
                                 Assignment Deadline *
                             </label>
                             <div class="controls ">
-                                <input type="date" name="Assignment_Deadline_edit"
-                                       class="datetimeinput form-control"
+                                <input type="text" name="Assignment_Deadline_edit"
+                                       class="form-control"
                                        id="id_Assignment_Deadline_edit"
                                        value="{{ object.Assignment_Deadline|date:'Y-m-d' }}"
                                        min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31">
@@ -592,8 +593,9 @@
 {% block customjss %}
 
     <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+    <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
     <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
     <script>
         const selectElement = document.querySelector('#id_Assignment_Deadline_edit');
@@ -650,6 +652,8 @@
         });
     </script>
     <script>
+        $('#id_Assignment_Deadline_edit').datetimepicker();
+        $('#id_Assignment_Start_edit').datetimepicker();
         $("#ajaxassignmentinfoform").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
@@ -657,10 +661,8 @@
                 data: {
                     "csrfmiddlewaretoken": '{{ csrf_token }}',
                     "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
-                    //"Assignment_Start": convertDateToUTC($('#id_Assignment_Start_edit').val()),
-                    //"Assignment_Deadline": convertDateToUTC($('#id_Assignment_Deadline_edit').val()),
-                    "Assignment_Start": $('#id_Assignment_Start_edit').val(),
-                    "Assignment_Deadline": $('#id_Assignment_Deadline_edit').val(),
+                    "Assignment_Start": new Date($('#id_Assignment_Start_edit').val()).toISOString(),
+                    "Assignment_Deadline": new Date($('#id_Assignment_Deadline_edit').val()).toISOString(),
                     "Use_Flag": $('#id_Use_Flag').is(":checked"),
                     "Course_Code": $('#id_Course_Code').val(),
                     "Chapter_Code": $('#id_Chapter_Code').val(),
