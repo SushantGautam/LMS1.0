@@ -5,7 +5,7 @@ from import_export.resources import ModelResource
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
-    InningManager, Attendance, Notice
+    InningManager, Attendance, Notice, NoticeView
 
 
 class CenterInfoAdminForm(forms.ModelForm):
@@ -52,7 +52,6 @@ class MemberInfoResource(ModelResource):
                   'Member_Memo', 'Member_ID', 'Is_Teacher', 'Is_Student', ]
 
 
-
 class MemberInfoAdmin(ImportExportModelAdmin):
     resource_class = MemberInfoResource
     form = MemberInfoAdminForm
@@ -75,7 +74,7 @@ class CourseInfoAdminForm(forms.ModelForm):
 
 class CourseInfoAdmin(admin.ModelAdmin):
     form = CourseInfoAdminForm
-    list_display = ['id','Course_Name', 'Course_Cover_File', 'Course_Level',
+    list_display = ['id', 'Course_Name', 'Course_Cover_File', 'Course_Level',
                     'Course_Info', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                     'Course_Provider', 'Center_Code']
     search_fields = ('Course_Name',)
@@ -92,7 +91,7 @@ class ChapterInfoAdminForm(forms.ModelForm):
 
 class ChapterInfoAdmin(admin.ModelAdmin):
     form = ChapterInfoAdminForm
-    list_display = ['id','Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag','mustreadtime',
+    list_display = ['id', 'Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag', 'mustreadtime',
                     'Register_DateTime', 'Updated_DateTime', 'Register_Agent', 'Course_Code']
     search_fields = ('Chapter_Name',)
 
@@ -269,3 +268,10 @@ class NoticeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Notice, NoticeAdmin)
+
+
+class NoticeViewAdmin(admin.ModelAdmin):
+    list_display = ['user_code', 'notice_code', 'dont_show']
+
+
+admin.site.register(NoticeView, NoticeViewAdmin)

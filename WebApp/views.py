@@ -50,7 +50,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     InningManagerForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager, Notice
+    InningManager, Notice, NoticeView
 
 
 class Changestate(View):
@@ -216,6 +216,10 @@ def start(request):
 
             if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
                 notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+                if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
+                    notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
+                    if notice_view_flag:
+                        notice = None
             else:
                 notice = None
             # return HttpResponse("default home")

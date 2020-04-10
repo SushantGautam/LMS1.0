@@ -2225,7 +2225,7 @@ label .asteriskField {
 }
 
 .modal-auto {
-    height: auto !important;
+    height: 90%;
     overflow: hidden !important;
 }
 
