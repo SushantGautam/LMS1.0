@@ -27,11 +27,11 @@
         margin-left: -15px;
     }
        
- @media (min-width:768px) and (max-width:1050px) {
+ @media (min-width:768px) and (max-width:800px) {
     
     .small-canvases {
-        height: 100px;
-        width: 130px;
+        height: 90px;
+        width: 115px;
         background-color: white;
         /* margin: auto; */
         /* margin: 15px auto; */
@@ -43,6 +43,51 @@
         .small-canvases::before {
             content: attr(data-before);
             margin-left: -15px;
+        }
+ }
+ 
+ @media (min-width:801px) and (max-width:900px) {
+    
+    .small-canvases {
+        height: 95px;
+        width: 124px;
+        background-color: white;
+        /* margin: auto; */
+        /* margin: 15px auto; */
+        margin-top: 20px;
+        margin-bottom: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        }
+        .small-canvases::before {
+            content: attr(data-before);
+            margin-left: -15px;
+        }
+        .note-chapter p {
+            margin-bottom: 0px !important;
+            font-size: 12px;
+        }
+ }
+ @media (min-width:901px) and (max-width:999px) {
+    
+    .small-canvases {
+        height: 98px;
+        width: 128px;
+        background-color: white;
+        /* margin: auto; */
+        /* margin: 15px auto; */
+        margin-top: 20px;
+        margin-bottom: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        }
+        .small-canvases::before {
+            content: attr(data-before);
+            margin-left: -15px;
+        }
+        .note-chapter p {
+            margin-bottom: 0px !important;
+            font-size: 13px;
         }
  }
  
