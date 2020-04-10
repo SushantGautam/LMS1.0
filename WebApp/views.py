@@ -764,7 +764,6 @@ class ChapterInfoCreateView(CreateView):
         context['datetime'] = datetime.now()
         return context
 
-
 class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
@@ -789,10 +788,15 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     #     )
 
     def form_valid(self, form):
-       super(ChapterInfoCreateViewAjax, self).form_valid(form)
-       return JsonResponse(
-           data={'Message': 'Success'}
-       )
+        form.save(commit=False)
+        if form.cleaned_data['Start_Date'] == "":
+            form.instance.Start_Date = None
+        if form.cleaned_data['End_Date'] == "":
+            form.instance.End_Date = None
+        form.save()
+        return JsonResponse(
+            data={'Message': 'Success'}
+        )
 
     def form_invalid(self, form):
        return JsonResponse({'errors': form.errors}, status=500)
@@ -854,6 +858,11 @@ class ChapterInfoUpdateView(UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
+        if form.cleaned_data['Start_Date'] == "":
+            form.instance.Start_Date = None
+        if form.cleaned_data['End_Date'] == "":
+            form.instance.End_Date = None
+
         form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         form.save()
         return super().form_valid(form)
@@ -862,7 +871,6 @@ class ChapterInfoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         return context
-
 
 class SessionInfoCreateViewPopup(CreateView):
     model = SessionInfo
