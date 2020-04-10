@@ -237,7 +237,8 @@ a:hover {
 
 }
 .chapter-listings{
-    padding: 10px;
+    padding: 5px 10px;
+    background-color: #586474;
 }
 .second-toggle{
     display: none;
@@ -328,6 +329,7 @@ a:hover {
     margin: 0px !important;
     height: 93vh;
     background-color: #eef2f5;
+    position: relative;
 
 }
 
@@ -489,11 +491,12 @@ a:hover {
     z-index: 9999;
 }
 .note-holder {
-    padding: 9px 14px !important;
+    padding: 6px 11px !important;
     color: white;
-    background-color: #353c46;
-    height: 76px;
+    background-color: #586474;
+    max-height: 76px;
 }
+.chp
 .chapter-list-holder{
     background-color: #eef2f5;
 }
@@ -501,9 +504,13 @@ a:hover {
 .note-holder i {
     color: #8592a4;
 }
+.note-chapter-part:hover , .note-chapter-part:active , .note-chapter-part:focus{
+    text-decoration: none;
+}
 
 .note-chapter p {
     margin-bottom: 0px !important;
+    font-size: 12px;
 
 }
 
@@ -599,17 +606,22 @@ hr {
 
     font-size: 12px;
     font-weight: 500;
-    padding-top: 33px;
-    cursor: pointer;
+    padding-top: 15px;
+   
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
 }
 
-.add-page a {
+#add-page-btn  {
     color: black;
-    cursor: pointer; text-decoration: none;
+    text-decoration: none;
+    cursor: pointer;
 
 }
 
-.add-page a:hover , .add-page a:active , .add-page a:focus  {
+#add-page-btn:hover , #add-page-btn:active , #add-page-btn:focus  {
     text-decoration: none;
     color: black;
 
@@ -620,6 +632,59 @@ hr {
 }
 
 /* mAIN-BODY ENDS */
+.form-control {
+    display: block;
+    width: 100%;
+    height: 27px!important;
+    padding: 1px 12px !important;
+    font-size: 13px !important;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  
+}
+
+/* fixed layouts css */
+
+.layout-text{
+    font-size: 20px;
+}
+.layout-icon-placement{
+    position: absolute;
+    top: 20%;
+    left: 40%;
+    border: 1px solid grey;
+    opacity: 0.3;
+}
+.layout-icon-placement:hover{
+   
+    opacity: 0.6;
+    cursor: pointer;
+    -webkit-box-shadow: 0 0 10px black;
+        box-shadow: 0 0 10px black;
+}
+.opacity-layout-icons{
+    height: 45px;
+    width: 45px;
+    opacity: 0.3;
+    margin: 7px 5px;
+}
+.opacity-layout-icons:hover{
+  
+    opacity: 1;
+    cursor: pointer;
+}
+
+/* ends */
+
+
+
+
+
+
 
 /* OLD BUILDER CSS ONLY */
 
@@ -787,14 +852,19 @@ hr {
  */
 
 #pic-actions {
-    width: 95%;
+    width: 100%;
     position: absolute;
-    left: 0;
+    right: 0;
     top: 0;
-    background: #CCC;
-    margin: 5px;
+    background: rgba(204,204,204 , 0.3);
+    margin: 0px;
     display: none;
     z-index: 90;
+}
+#pic-actions i{
+    margin-right: 5px;
+    cursor: pointer;
+
 }
 
 .pic:hover #pic-actions {
@@ -1040,14 +1110,22 @@ html {
 }
 
 #video-actions {
-    width: 95%;
+    width: 100%;
     position: absolute;
     left: 0;
     top: 0;
-    background: #CCC;
-    margin: 5px;
+    background: rgba(204,204,204 , 0.3);
+    /* margin: 5px; */
     display: none;
     z-index: 90;
+}
+.layout-actions {
+    position: absolute;
+    width: 100%;
+    background: rgba(204,204,204 , 0.3);
+    
+    display: none;
+    bottom: 0;
 }
 
 .video-div:hover #video-actions {
@@ -1255,14 +1333,7 @@ html {
     width: 20%;
 }
 
-.layout-actions {
-    position: absolute;
-    width: 95%;
-    background: #CCC;
-    margin: 5px;
-    display: none;
-    bottom: 0;
-}
+
 
 .baselayout:hover .layout-actions {
     display: block;
