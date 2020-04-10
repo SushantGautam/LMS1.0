@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="jumbothon text-center bg-thansparent">
+    <h1>User Profile</h1>
+</div>
+<br>
+<div class="tab-content" style="margin-bottom: 20px;">
+    <div id="account" class="tab-pane active">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-2 control-label">Avatar</label>
+                <div class="col-md-6">
+                    <div class="media v-middle">
+                        <div class="media-left">
+                            <div class="icon-block width-100 bg-grey-100">
+                                <i class="fa fa-photo text-light"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="member_id" class="col-md-2 control-label">
+                    <i class="fa fa-n"></i> &nbsp; &nbsp; Member ID
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_ID }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="full_name" class="col-md-2 control-label">Full Name</label>
+                <div class="col-md-8">
+                    <h4>
+                        {{ user.first_name }} {{ user.last_name }}
+                    </h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="col-md-2 control-label">
+                    <i class="fa fa-envelope"></i> &nbsp; &nbsp;Email
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.email }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date_of_birth" class="col-md-2 control-label">
+                    <i class="fa fa-calendar"></i> &nbsp; &nbsp; Date of Birth
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_BirthDate|date }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gender" class="col-md-2 control-label">
+                    <i class="fa fa-gender"></i> &nbsp; &nbsp; Gender
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.get_Member_Gender_display }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phone_number" class="col-md-2 control-label">
+                    <i class="fa fa-phone"></i> &nbsp; &nbsp; Phone Number
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_Phone }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="temporary_address" class="col-md-2 control-label">
+                    <i class="fa fa-map-marker"></i> &nbsp; &nbsp; Temporary Address
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_Temporary_Address }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="permanent_address" class="col-md-2 control-label">
+                    <i class="fa fa-home"></i> &nbsp; &nbsp; Permanent Address
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_Permanent_Address }}</h4>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="center_code" class="col-md-2 control-label">
+                    <i class="fa fa-institution"></i> &nbsp; &nbsp; Center Code
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Center_Code.Center_Name }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="user_type" class="col-md-2 control-label">
+                    <i class="fa fa-user"></i> &nbsp; &nbsp; User Type
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.get_user_type }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="last_login" class="col-md-2 control-label">
+                    <i class="fa fa-clock-o"></i> &nbsp; &nbsp; Last Login
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.last_login|timesince }} ago</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

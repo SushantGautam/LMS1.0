@@ -97,7 +97,7 @@ class AjaxableResponseMixin:
 def ProfileView(request):
     if AuthCheck(request, admn=1) == 2:
         return redirect('login')
-    return render(request, 'WebApp/profile.html')
+    return render(request, 'center_admin/profile.html')
 
 
 def login(request, template_name='registration/login.html',
