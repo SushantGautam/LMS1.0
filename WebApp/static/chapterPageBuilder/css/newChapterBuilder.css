@@ -1227,4 +1227,49 @@ html {
 
 }
 
+.options {
+    position: absolute;
+    width: 95%;
+    background: #CCC;
+    margin: 5px;
+    display: none;
+}
+
+.btn-div:hover .options {
+    display: block;
+}
+
+.btn-div:hover {
+    border: 1px solid #ddd;
+}
+
 /* ======================== End of Old CSS  ==================================================*/
+
+/* Layout CSS */
+.baselayout {
+    border: 2px dashed #ddd;
+}
+
+.layouticons {
+    height: 20%;
+    width: 20%;
+}
+
+.layout-actions {
+    position: absolute;
+    width: 95%;
+    background: #CCC;
+    margin: 5px;
+    display: none;
+    bottom: 0;
+}
+
+.baselayout:hover .layout-actions {
+    display: block;
+}
+
+.baselayout:hover {
+    border: 1px solid #ddd;
+}
+
+/*======================== End of Layout CSS ====================================================*/

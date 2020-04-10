@@ -209,22 +209,26 @@ class Textbox {
 // ===========================FOR PICTURE=====================================
 
 class picture {
-    constructor(top, left, pic = null, width = null, height = null) {
+    constructor(top, left, pic = null, link = null, width = null, height = null) {
 
         let id = (new Date).getTime();
         let position = {top, left, width, height};
         let message = "";
-        if (pic == null) {
+        if (pic == null && link == null) {
             message = `
                 <div class = "file-upload-icon">
                     <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
                 </div>
-                Drag and drop images here...
+                <p>Drag and drop images here...</p>
                 `
         }
         let img = '';
         if (pic != null) {
             img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
+        }
+        if (link != null) {
+            img = `<iframe style="width:100%;height:100%;" src="${link}"
+                         frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`
         }
         let html =
             `<div class='pic'>
@@ -865,9 +869,113 @@ class _3Dobject {
     }
 }
 
+class BaseLayout {
+    constructor(top, left, height = null, width = null) {
+        let position = {top, left, height, width};
+
+        let html = `<div class="baselayout">
+                    <div class="layout-actions">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                <span class="layout-icons layout-text">textbox</span>
+                <span class="layout-icons layout-image">image</span>
+                <span class="layout-icons layout-video">video</span>
+                <span class="layout-icons layout-audio">audio</span>
+                <span class="layout-icons layout-pdf">pdf</span>
+                <span class="layout-icons layout-3d">3dobject</span>
+                <span class="layout-icons layout-quiz">Quiz</span>
+                <span class="layout-icons layout-survey">Survey</span>
+                <span class="layout-icons layout-button">Button</span>
+            </div>`
+
+
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "height": position.height,
+                "width": position.width
+            }).draggable({
+                //Constrain the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+        };
+    }
+}
+
 // ====================== End of initializing elements ========================
 
 // Element Functions
+function LayoutFunction(top = null, left = null, height = "100%", width = "100%") {
+    const layout = new BaseLayout(top, left, height, width);
+
+    layout.renderDiagram();
+
+    $('.layout-icons').on('click', function (event) {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        $(this).closest('.baselayout').remove()
+        if ($(this).hasClass('layout-text')) {
+            TextboxFunction(top, left, height, width)
+        } else if ($(this).hasClass('layout-image')) {
+            PictureFunction(top, left, null, null, width, height)
+        } else if ($(this).hasClass('layout-video')) {
+            VideoFunction(top, left, null, height, width)
+        } else if ($(this).hasClass('layout-audio')) {
+            AudioFunction(top, left, null, height, width)
+        } else if ($(this).hasClass('layout-pdf')) {
+            PDFFunction(top, left, null, height, width)
+        } else if ($(this).hasClass('layout-3d')) {
+            _3dFunction(top, left, null, height, width)
+        } else if ($(this).hasClass('layout-quiz')) {
+            QuizFunction(top, left, null, height, width, "Select Quiz", "", font_size = "75px")
+        } else if ($(this).hasClass('layout-survey')) {
+            SurveyFunction(top, left, null, height, width, "Select Survey", "", font_size = "75px")
+        } else if ($(this).hasClass('layout-button')) {
+            ButtonFunction(top, left, null, height, width, "Button", "", font_size = "75px")
+        }
+    })
+
+    $('.fa-trash').click(function (e) {
+        $(this).closest('.baselayout').remove();
+    });
+    $('.baselayout').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 75,
+        minHeight: 25,
+        autoHide: true,
+        stop: function (e, ui) {
+            //   var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        }
+    });
+}
+
 function TextboxFunction(top = null, left = null, height = "20%", width = "30%", message = "") {
     const textBox = new Textbox(top, left, height, width, message);
 
@@ -933,11 +1041,12 @@ function TextboxFunction(top = null, left = null, height = "20%", width = "30%",
     });
 }
 
-function PictureFunction(top = null, left = null, pic = null, width = null, height = null) {
+function PictureFunction(top = null, left = null, pic = null, link = null, width = null, height = null) {
     const Pic = new picture(
         top,
         left,
         pic,
+        link,
         width, height);
     Pic.renderDiagram();
 
@@ -1018,39 +1127,41 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
         data.append('courseID', courseID);
         data.append('type', 'pic');
         data.append('csrfmiddlewaretoken', csrf_token);
+        // file = input.files[0]
+        var options = {
+            url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+            chunk_size: 10, // MB
+            onUploadComplete: function (e, options) {
+                // var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!${options.rid}"
+                //  frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
+                // div.find('#loadingDiv').remove();
+                // div.find('p').remove();
+                // div.find('.file-upload-icon').remove();
+                // // div.find('.progress').remove();
+                // div.append(html);
 
-        $.ajax({
-            url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-            data: data,
-            contentType: false,
-            processData: false,
-            method: 'POST',
-            type: 'POST',
-            beforeSend: function () {
-                div.append(`<div class="loader" id="loadingDiv"></div>`)
-                $('#loadingDiv').show();
-            },
-            error: function (errorThrown) {
-                alert("Failed to upload PDF")
-                div.find('#loadingDiv').remove();
-            },
-            success: function (data) {
-                div.find('#loadingDiv').remove();
-                div.find('p').text("");
-
+                div.remove()
                 PictureFunction(
                     $(div)[0].style.top,
                     $(div)[0].style.left,
-                    load_file_url + '/' + data.media_name,
+                    null,
+                    "//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!" + options.rid,
                     $(div)[0].style.width,
                     $(div)[0].style.height,
                 );
-                div.remove()
             },
-            error: function (data, status, errorThrown) {
-                alert(data.responseJSON.message);
+            onUploadProgress: function (e) {
+                $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
+                $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                addprogress();
+            },
+            onUploadError: function (e) {
+                console.log(e);
+                $(".status-bar").html("Error accured while uploading");
             }
-        });
+        };
+        uploader = new cpUploadAPI(file, options);
+        uploader.start();
 
         $('#picture-drag').css({
             'display': 'none'
@@ -1082,36 +1193,41 @@ function PictureFunction(top = null, left = null, pic = null, width = null, heig
                 data.append('type', 'pic');
                 data.append('chapterID', chapterID);
                 data.append('courseID', courseID);
-                $.ajax({
-                    url: save_file_url,
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    enctype: 'multipart/form-data',
-                    method: 'POST',
-                    type: 'POST',
-                    beforeSend: function () {
-                        div.append(`<div class="loader" id="loadingDiv"></div>`)
-                        $('#loadingDiv').show();
-                    },
-                    success: function (data) {
-                        div.find('#loadingDiv').remove();
-                        div.find('p').text("");
+                file = input.files[0]
+                var options = {
+                    url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+                    chunk_size: 10, // MB
+                    onUploadComplete: function (e, options) {
+                        // var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!${options.rid}"
+                        //  frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
+                        // div.find('#loadingDiv').remove();
+                        // div.find('p').remove();
+                        // div.find('.file-upload-icon').remove();
+                        // // div.find('.progress').remove();
+                        // div.append(html);
 
+                        div.remove()
                         PictureFunction(
                             $(div)[0].style.top,
                             $(div)[0].style.left,
-                            load_file_url + '/' + data.media_name,
+                            null,
+                            "//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!" + options.rid,
                             $(div)[0].style.width,
                             $(div)[0].style.height,
                         );
-                        div.remove()
                     },
-                    error: function (data, status, errorThrown) {
-                        alert(data.responseJSON.message);
-                        div.find('#loadingDiv').remove();
+                    onUploadProgress: function (e) {
+                        $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
+                        $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                        addprogress();
+                    },
+                    onUploadError: function (e) {
+                        console.log(e);
+                        $(".status-bar").html("Error accured while uploading");
                     }
-                });
+                };
+                uploader = new cpUploadAPI(file, options);
+                uploader.start();
 
                 $('#picture-drag').css({
                     'display': 'none'
@@ -1949,7 +2065,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                     url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                     chunk_size: 10, // MB
                     onUploadComplete: function (e, options) {
-                        var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A4HAcLOLOO68!${options.rid}"
+                        var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=AgLA8o--2Nr0!${options.rid}"
                          frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
                         div.find('#loadingDiv').remove();
                         div.find('p').remove();
@@ -2393,7 +2509,7 @@ function dropfunction(event, ui) {
         PictureFunction(
             (positionConvert(top, $('#tabs-for-download').height())) + '%',
             (positionConvert(left - sidebarWidth, $('#tabs-for-download').width())) + '%',
-            null, '40%', '30%'
+            null, null, '40%', '30%'
         );
     } else if (ui.helper.hasClass('video')) {
         VideoFunction(
@@ -2427,74 +2543,65 @@ function dropfunction(event, ui) {
         );
     } else if (ui.helper.hasClass('grid-1')) {
         clearPage(window.currentPage)
-        PictureFunction(
+        LayoutFunction(
             top = 0 + '%',
             left = 0 + '%',
-            null,
-            width = "100%", height = "50%");
-
-
-        // ===============for textbox inside grid-1============
-        TextboxFunction(
-            top = "50%",
+            height = "50%", width = "100%");
+        LayoutFunction(
+            top = 50 + '%',
             left = 0 + '%',
-            height = "45%", width = '100% '
-        );
+            height = "50%", width = "100%");
     } else if (ui.helper.hasClass('grid')) {
         clearPage(window.currentPage)
-        VideoFunction(
+        LayoutFunction(
             top = 0 + '%',
             left = 0 + '%',
-            null,
             height = "50%", width = "100%");
 
 
         // ===============for textbox inside grid-1============
-        TextboxFunction(
+        LayoutFunction(
             top = "52%",
             left = 0 + '%',
             height = "45%", width = "100%"
         );
     } else if (ui.helper.hasClass('title-slide')) {
         clearPage(window.currentPage)
-        PictureFunction(
+        LayoutFunction(
             top = 0 + '%',
             left = 0 + '%',
-            null,
-            width = "49%", height = "60%");
-        PictureFunction(
+            height = "60%", width = "49%");
+        LayoutFunction(
             top = 0 + '%',
             left = "51%",
-            null,
-            width = "49%", height = "60%");
-        TextboxFunction(
+            height = "60%", width = "49%");
+        LayoutFunction(
             top = "62%",
             left = 0 + '%',
             height = "35%", width = "100%",
         );
     } else if (ui.helper.hasClass('title-content-details')) {
         clearPage(window.currentPage)
-        TextboxFunction(
+        LayoutFunction(
             top = "0%",
             left = 0 + '%',
             height = "10%", width = "100%",
         );
-        TextboxFunction(
+        LayoutFunction(
             top = "13%",
             left = 0 + '%',
             height = "84%", width = "100%",
         );
     } else if (ui.helper.hasClass('pdf-text')) {
         clearPage(window.currentPage)
-        PDFFunction(
+        LayoutFunction(
             top = "0%",
             left = 0 + '%',
-            link = null,
             height = "60%", width = "100%");
 
 
         // ===============for textbox inside grid-1============
-        TextboxFunction(
+        LayoutFunction(
             top = "62%",
             left = 0 + '%',
             height = "35%", width = "100%"
@@ -2684,6 +2791,7 @@ function display(data = "", currentPage = '1') {
                                     css_value.tops,
                                     css_value.left,
                                     css_value['background-image'],
+                                    css_value.link,
                                     css_value.width,
                                     css_value.height,
                                 );
@@ -2769,7 +2877,24 @@ function display(data = "", currentPage = '1') {
                                 );
                             });
                         }
-
+                        if (div == 'audio') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                let link;
+                                if (css_value.hasOwnProperty('online_link') && css_value.online_link) {
+                                    link = css_value.online_link
+                                } else {
+                                    link = css_value.local_link
+                                }
+                                AudioFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    link,
+                                    css_value.height,
+                                    css_value.width,
+                                );
+                            });
+                        }
                         if (div == '_3d') {
                             $.each(div_value, function (css, css_value) {
                                 css_string = JSON.stringify(css_value)
@@ -2823,6 +2948,7 @@ function updateData(prev_page, prev_data) {
     var buttondiv = [];
     var pdf = [];
     var video = [];
+    var audio = [];
     var _3d = [];
     var quizdiv = [];
     var surveydiv = [];
@@ -2863,7 +2989,8 @@ function updateData(prev_page, prev_data) {
                     'left': $(this)[0].style.left,
                     'width': $(this)[0].style.width,
                     'height': $(this)[0].style.height,
-                    'background-image': $(this).find("img").attr('src')
+                    'background-image': $(this).find("img").attr('src'),
+                    'link': $(this).find("iframe").attr('src')
                 }
             );
         }
@@ -2910,7 +3037,7 @@ function updateData(prev_page, prev_data) {
             online_link = $(this).find('iframe').attr('src');
             local_link = $(this).find('audio').attr('data-cld-public-id');
 
-            video.push(
+            audio.push(
                 {
                     'tops': $(this)[0].style.top,
                     'left': $(this)[0].style.left,
@@ -2972,6 +3099,7 @@ function updateData(prev_page, prev_data) {
             'btn-div': buttondiv,
             'pdf': pdf,
             'video': video,
+            'audio': audio,
             '_3d': _3d,
             'quizdiv': quizdiv,
             'surveydiv': surveydiv,
@@ -2993,6 +3121,7 @@ function updateData(prev_page, prev_data) {
             'btn-div': buttondiv,
             'pdf': pdf,
             'video': video,
+            'audio': audio,
             '_3d': _3d,
             'quizdiv': quizdiv,
             'surveydiv': surveydiv,

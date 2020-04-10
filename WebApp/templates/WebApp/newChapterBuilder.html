@@ -315,20 +315,22 @@
                     <div class="view-mode ">
                         <ul class="full-screen-color">
                             <li>
-                                <a class="first-toggle" id="togglefull" data-toggle="tooltip" data-placement="top" title=""
+                                <a class="first-toggle" id="togglefull" data-toggle="tooltip" data-placement="top"
+                                   title=""
                                    onclick="toggleFullScreen()"
                                    data-original-title="FullScreen">
                               <span><img style="height: 15px; width:15px ; margin-top:-5px"
-                                         src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
-                                 <span style="font-size: 15px;">Full Screen</span> </a> </span>&nbsp;&nbsp;
+                                         src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">
+                              </span>&nbsp;&nbsp;
+                                    <span style="font-size: 15px;">Full Screen</span> &nbsp;&nbsp;</a>
 
-
-                                 <a class="second-toggle" id="togglefull" data-toggle="tooltip" data-placement="top" title=""
-                                 onclick="toggleFullScreen()"
-                                 data-original-title="FullScreen">
+                                <a class="second-toggle" id="togglefull" data-toggle="tooltip" data-placement="top"
+                                   title=""
+                                   onclick="toggleFullScreen()"
+                                   data-original-title="FullScreen">
                             <span><img style="height: 15px; width:15px ; margin-top:-5px"
                                        src="{% static 'chapterPageBuilder/icons/newicon/compress.svg' %}">&nbsp;&nbsp;
-                               <span style="font-size: 15px;">Standard Screen</span> </a> 
+                               <span style="font-size: 15px;">Standard Screen</span> </a>
 
                             </li>
                             <li><span class="color-picker" style="font-size: 15px;"></li>
@@ -380,19 +382,11 @@
                     </form>
                 </div>
 
-                <a  title=" Write A Note"href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
+                <a title=" Write A Note" href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
                     <div class="note-holder">
                         <span style="color: white;">Description <i class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
-
-                            
-                                <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:90 }} </p>
-                                
-                       
-
-                            
-
-
+                            <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:90 }} </p>
                         </div>
                     </div>
                 </a>
@@ -938,6 +932,8 @@
             } else if (document.documentElement.webkitRequestFullScreen) {
                 document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
             }
+            $('.first-toggle').css('display', 'none')
+            $('.second-toggle').css('display', 'block')
         } else {
             if (document.cancelFullScreen) {
                 document.cancelFullScreen();
@@ -946,6 +942,8 @@
             } else if (document.webkitCancelFullScreen) {
                 document.webkitCancelFullScreen();
             }
+            $('.first-toggle').css('display', 'block')
+            $('.second-toggle').css('display', 'none')
         }
     }
 </script>
