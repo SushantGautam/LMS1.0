@@ -337,8 +337,9 @@
 
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
-                    <p>Start Date - {{ o.Assignment_Start }}</p>
-                    <span>Submission Deadline - <span
+                    <p>Start Date - <span
+                            class="datecon">{{ o.Assignment_Start|date:'M d, Y H:i' }}</span></p>
+                    <p>Submission Deadline - <span
                             class="datecon">{{ o.Assignment_Deadline|date:'M d, Y H:i' }}</span></p>
                 </div>
             </div>

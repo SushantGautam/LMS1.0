@@ -370,8 +370,8 @@
                                     {% if questions.id == answer.Question_Code.id %}
                                         {% if answer.Assignment_Answer != '' %}
                                             <p style="margin: 0;color:#000000;">{{ answer.Assignment_Answer }}</p>
-                                            {% now "Y-m-d" as todays_date %}
-                                            {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
+                                            {% now "Y-m-d H:i" as todays_date %}
+                                            {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
                                                 <button class="btn btn-info editanswer"
                                                         data-Student_Code="{{ request.user.id }}"
                                                         data-Question_Code="{{ questions.id }}"
@@ -421,19 +421,19 @@
 
                                             </div>
 
-                                            <div class="form-group text-center">
-                                                {% now "Y-m-d" as todays_date %}
-                                                {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
-                                                    <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+                                                <div class="form-group text-center">
+                                                    {% now "Y-m-d H:i" as todays_date %}
+                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
+                                                        <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
-                                                    <button class="btn btn-sm btn-primary" type="reset">Reset
-                                                    </button>
+                                                        <button class="btn btn-sm btn-primary" type="reset">Reset
+                                                        </button>
 
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-success submitAnswer"
-                                                            id="answer{{ questions.id }}"
-                                                            data-id="{{ questions.id }}"
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
                                                             data-url="{% url 'assignanswerinfo_create_ajax' %}">
                                                         Submit
                                                     </button>
@@ -455,19 +455,19 @@
                                                 <input type="hidden" value="{{ questions.id }}" name="Question_Code"
                                                        id="id_Question_Code{{ questions.id }}">
                                             </div>
-                                            <div class="form-group text-center">
-                                                {% now "Y-m-d" as todays_date %}
-                                                {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
-                                                    <button class="btn btn-sm btn-primary" type="reset"
-                                                            id="cancelButton{{ questions.pk }}">
-                                                        Cancel
-                                                    </button>
+                                                <div class="form-group text-center">
+                                                    {% now "Y-m-d H:i" as todays_date %}
+                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
+                                                        <button class="btn btn-sm btn-primary" type="reset"
+                                                                id="cancelButton{{ questions.pk }}">
+                                                            Cancel
+                                                        </button>
 
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-success submitAnswer"
-                                                            id="answer{{ questions.id }}"
-                                                            data-id="{{ questions.id }}"
-                                                            data-url="{% url 'assignanswerinfo_create_ajax' %}">
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}">
                                                         Submit
                                                     </button>
                                                 {% else %}
@@ -543,7 +543,7 @@
                                 <input type="text" name="Assignment_Start_edit"
                                        class="form-control"
                                        id="id_Assignment_Start_edit"
-                                       value="{{ object.Assignment_Start|date:'Y-m-d' }}"
+                                       value="{{ object.Assignment_Start|date:'c' }}"
                                        min="" max="9999-12-31">
                             </div>
                         </div>
@@ -557,7 +557,7 @@
                                 <input type="text" name="Assignment_Deadline_edit"
                                        class="form-control"
                                        id="id_Assignment_Deadline_edit"
-                                       value="{{ object.Assignment_Deadline|date:'Y-m-d' }}"
+                                       value="{{ object.Assignment_Deadline|date:'c' }}"
                                        min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31">
                             </div>
                         </div>
@@ -652,6 +652,8 @@
         });
     </script>
     <script>
+        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString()
+        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString()
         $('#id_Assignment_Deadline_edit').datetimepicker();
         $('#id_Assignment_Start_edit').datetimepicker();
         $("#ajaxassignmentinfoform").submit(function (e) {
