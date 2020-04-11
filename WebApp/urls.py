@@ -333,3 +333,9 @@ urlpatterns += (
     path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
          views.StudentChapterProgressView, name='student_chapter_progress'),
 )
+
+# Notice URL
+
+urlpatterns += (
+    path('notice_view_create', views.notice_view_create, name='notice_view_create'),
+)
