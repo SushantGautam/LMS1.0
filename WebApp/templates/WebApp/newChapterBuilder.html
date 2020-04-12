@@ -35,7 +35,7 @@
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
             <div class="chapter-title-only col-md-3 col-sm-3 col-xs-12">
-                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:20 }} </span>
+                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:40 }} </span>
 
             </div>
             <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
@@ -57,7 +57,7 @@
                         &nbsp;Preview
                     </button>
                 </a>
-             
+
             </div>
             <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
                 <a href="
@@ -341,9 +341,6 @@
                             </li>
 
 
-                         
-
-
                         </ul>
 
 
@@ -427,12 +424,12 @@
                     </ul>
 
                 </div>
-                
+
 
                 <div class="add-page">
                     <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
                         <hr>
-    
+
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12">
 
@@ -469,20 +466,40 @@
         <!-- Modal content-->
         <div id="button-link-chapter" class="modal-content">
             <form id="btn-form">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Button</h4>
+                <div class="modal-header button-header-color">
+                    <h4 class="modal-title button-position">Button</h4>
+                    <button type="" class="close" data-dismiss="modal">
+                        <i style="color:white !important "class="fa fa-times"></i>
+
+                    </button>
+                    
                 </div>
                 <div class="modal-body">
                     <!-- Modal Contents Here -->
-                    <div class="col-md-12">
-                        <label>Display Name</label>
-                        <input type="text" name="btn-name" id="btn-name">
+                    <div class="col-md-12" style="padding: 10px;">
+
+                        
+                          
+                         
+                        <label class="col-sm-4">Display Name</label>
+                        <div style="margin-bottom:10px"class="col-sm-8">
+                            <input class="form-control" type="text" name="btn-name" id="btn-name">
+
+                        </div>
+                        
                         <br>
-                        <label>Link</label>
-                        <span class="btnlink">
-                                http://
-                                <input type="text" name="btn-link" id="btn-link">
+                        <label class="col-sm-4">Link &nbsp; (http://)</label>
+                        <div class="col-sm-8">
+                            <span class="btnlink">
+                                
+                                <input class="form-control" type="text" name="btn-link" id="btn-link" placeholder="ublcloud.me">
+                            </span>
+
+                        </div>
+                        
+                                
+
+                                 
 
                     </div>
 
@@ -619,11 +636,11 @@
             <form id="survey-form">
                 <div class="modal-header">
                     <div class="row">
-                        <div class="col-md-11">
+                        <div class="col-sm-8 col-xs-6">
                             <h4 class="modal-title">Survey</h4>
 
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-sm-4 col-xs-6">
                             <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
                             </button>
 
@@ -923,7 +940,7 @@
 
 
         })
-       
+
     });
 </script>
 <script>
@@ -987,7 +1004,19 @@
     var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
-
+    var centerName = '{{ request.user.Center_Code }}'
+    var imagegalleryid, videogalleryid, audiogalleryid;
+    if (server_name == "Indonesian_Server") {
+        imagegalleryid = 'A8AAAoODp5Za';
+        videogalleryid: 'AYMAfq-EnZOX';
+        audiogalleryid: 'AgLA8o--2Nr0'
+    } else if (server_name == 'Korean_Server') {
+        imagegalleryid = 'AsNAMruu8BjR';
+        audiogalleryid: 'AcFAJqeO8V_R';
+    } else if (server_name == 'Vietnam_Server') {
+        imagegalleryid = 'AUOAUr-S8FbV';
+        audiogalleryid: 'AMOA5rOA85RW';
+    }
 
     $('#chapterlist').val(chapterID);
 
