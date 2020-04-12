@@ -879,11 +879,11 @@ class BaseLayout {
                     </div>
                     <div class="layout-icon-placement">
                         <div>
-                                <span class="layout-icons layout-text">
+                                <span title="Text-box" class="layout-icons layout-text">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/text.svg "></img>
                                 </span>
-                                <span class="layout-icons layout-image">
-                                <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/picture.svg "></img>
+                                <span title="Upload Image" class="layout-icons layout-image">
+                                <img  class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/picture.svg "></img>
                                 </span>
                                 <span class="layout-icons layout-video">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/video.svg "></img>

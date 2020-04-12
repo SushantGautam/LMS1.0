@@ -174,15 +174,15 @@ a:hover {
 }
 
 .layout-type-holder {
-    margin: 15px 10px 0 10px;
+    margin: 12px auto;
     height: 75px;
     text-align: center;
-    
+    width: 75px;
 }
 
 .layout-type-holder img {
     height: 100%;
-    
+    width: 100%;
 }
 
 .list-objects {
@@ -537,7 +537,19 @@ overflow: auto;
 .span-number {
     margin-right: 10px;
 }
-
+.button-header-color{
+    background-color: #353c46;
+}
+.button-position{
+    text-align: center;
+    color: white;
+}
+.close i{
+    color: white!important;
+}
+.modal-header .close {
+    margin-top: -6px!important;
+}
 .small-canvases {
     height: 110px;
     width: 176px;
@@ -665,20 +677,25 @@ hr {
    
    
     cursor: pointer;
-    -webkit-box-shadow: 0 0 10px black;
-        box-shadow: 0 0 10px black;
+   
 }
 .opacity-layout-icons{
-    height: 45px;
-    width: 45px;
+    height: 35px;
+    width: 35px;
     opacity: 0.3;
     margin: 7px 5px;
+    transition: transform .3s;
 }
-.opacity-layout-icons:hover{
+ .opacity-layout-icons:hover{
   
     opacity: 1;
     cursor: pointer;
-}
+    margin: 7px 5px;
+    -ms-transform: scale(1.5); /* IE 9 */
+    -webkit-transform: scale(1.5); /* Safari 3-8 */
+    transform: scale(1.5); 
+  }
+
 
 /* ends */
 

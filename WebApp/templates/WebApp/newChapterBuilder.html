@@ -35,7 +35,7 @@
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
             <div class="chapter-title-only col-md-3 col-sm-3 col-xs-12">
-                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:20 }} </span>
+                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:40 }} </span>
 
             </div>
             <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
@@ -469,20 +469,40 @@
         <!-- Modal content-->
         <div id="button-link-chapter" class="modal-content">
             <form id="btn-form">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Button</h4>
+                <div class="modal-header button-header-color">
+                    <h4 class="modal-title button-position">Button</h4>
+                    <button type="" class="close" data-dismiss="modal">
+                        <i style="color:white !important "class="fa fa-times"></i>
+
+                    </button>
+                    
                 </div>
                 <div class="modal-body">
                     <!-- Modal Contents Here -->
-                    <div class="col-md-12">
-                        <label>Display Name</label>
-                        <input type="text" name="btn-name" id="btn-name">
+                    <div class="col-md-12" style="padding: 10px;">
+
+                        
+                          
+                         
+                        <label class="col-sm-4">Display Name</label>
+                        <div style="margin-bottom:10px"class="col-sm-8">
+                            <input class="form-control" type="text" name="btn-name" id="btn-name">
+
+                        </div>
+                        
                         <br>
-                        <label>Link</label>
-                        <span class="btnlink">
-                                http://
-                                <input type="text" name="btn-link" id="btn-link">
+                        <label class="col-sm-4">Link &nbsp; (http://)</label>
+                        <div class="col-sm-8">
+                            <span class="btnlink">
+                                
+                                <input class="form-control" type="text" name="btn-link" id="btn-link" placeholder="ublcloud.me">
+                            </span>
+
+                        </div>
+                        
+                                
+
+                                 
 
                     </div>
 
