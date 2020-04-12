@@ -1232,6 +1232,11 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+
+        if Obj.Assignment_Start and Obj.Assignment_Deadline:
+            if (Obj.Assignment_Start > Obj.Assignment_Deadline):
+                print('here')
+                raise ValidationError("End date must be greater than start date")
         Obj.save()
 
         return JsonResponse(
@@ -1252,6 +1257,12 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
             Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+            if Obj.Assignment_Start and Obj.Assignment_Deadline:
+                if (Obj.Assignment_Start > Obj.Assignment_Deadline):
+                    return JsonResponse(
+                        data={'Message': 'Deadline date must be greater than start date'},
+                        status=500
+                    )
             Obj.save()
 
             return JsonResponse(
@@ -1596,8 +1607,8 @@ def save_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '___' + str(
                 request.user.pk) + '.' + media.name.split('.')[-1]
             # name = "".join(re.findall("[a-zA-Z0-9]+", name))
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
@@ -1663,8 +1674,8 @@ def save_3d_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-                re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+                re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '___' + str(
                 request.user.pk)
             # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
@@ -1692,8 +1703,8 @@ def save_video(request):
 
         # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
         # Eg: 561561561&&&test.jpg&&&17
-        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-            re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
+        name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+            re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '___' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
 
         # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
@@ -2400,12 +2411,14 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             student_quiz = Quiz.objects.filter(chapter_code=chapter)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
-            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
+            # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
                 if z.quiz.pk in temp:
-                    student_result.get(pk=z.pk).delete()
+                    # student_result.get(pk=z.pk).delete()
+                    student_result = student_result.exclude(pk=z.pk)
                 else:
                     temp.append(z.quiz.pk)
                     total_quiz_percent_score += float(z.get_percent_correct)

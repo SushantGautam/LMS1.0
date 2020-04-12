@@ -103,9 +103,10 @@
                 <tr>
                     <td>Status</td>
                     <td>
-                        {% if object.Start_Date and todays_date < object.Start_Date|date:"Y-m-d" %}
+                        {% now "Y-m-d H:i" as todays_datewithtime %}
+                        {% if object.Start_Date and todays_datewithtime < object.Start_Date|date:"Y-m-d H:i" %}
                             <span class="text-danger"><b>Inactive</b></span>
-                        {% elif object.End_Date and todays_date > object.End_Date|date:"Y-m-d" %}
+                        {% elif object.End_Date and todays_datewithtime > object.End_Date|date:"Y-m-d H:i" %}
                             <span class="text-danger"><b>Expired</b></span>
                         {% else %}
                             <span class="text-info"><b>Active</b></span>
@@ -337,8 +338,9 @@
 
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
-                    <p>Start Date - {{ o.Assignment_Start }}</p>
-                    <span>Submission Deadline - <span
+                    <p>Start Date - <span
+                            class="datecon">{{ o.Assignment_Start|date:'M d, Y H:i' }}</span></p>
+                    <p>Submission Deadline - <span
                             class="datecon">{{ o.Assignment_Deadline|date:'M d, Y H:i' }}</span></p>
                 </div>
             </div>
