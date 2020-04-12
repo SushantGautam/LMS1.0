@@ -2411,12 +2411,14 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             student_quiz = Quiz.objects.filter(chapter_code=chapter)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
-            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
+            # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
                 if z.quiz.pk in temp:
-                    student_result.get(pk=z.pk).delete()
+                    # student_result.get(pk=z.pk).delete()
+                    student_result = student_result.exclude(pk=z.pk)
                 else:
                     temp.append(z.quiz.pk)
                     total_quiz_percent_score += float(z.get_percent_correct)
