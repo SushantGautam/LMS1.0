@@ -2228,6 +2228,10 @@ label .asteriskField {
     height: auto !important;
     overflow: hidden !important;
 }
+.modal-90 {
+    height: 90%;
+    overflow: hidden !important;
+}
 
 .menu_section {
     background-color: #2A3F54 !important

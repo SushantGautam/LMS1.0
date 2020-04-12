@@ -10,11 +10,109 @@
  
  
  }
- @media (min-width:768px) and (max-width:1050px) {
+ @media (min-width:1501px) and (max-width:1700px){
+    .layout-icon-placement{
+        position: absolute;
+        top: 20%;
+        left: 40%;
+        background-color: rgba(255,255,255,0.6);
+       
+       
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+
+}
+ @media (min-width:1401px) and (max-width:1500px){
+    .layout-icon-placement{
+        position: absolute;
+        top: 20%;
+        left: 40%;
+        background-color: rgba(255,255,255,0.6);
+       
+       
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+
+}
+ @media (min-width:1301px) and (max-width:1400px){
+    .layout-icon-placement{
+        position: absolute;
+        top: 23%;
+        left: 40%;
+        background-color: rgba(255,255,255,0.6);
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+
+}
+ @media (min-width:1201px) and (max-width:1300px){
+    .layout-icon-placement{
+        position: absolute;
+        top: 25%;
+        left: 40%;
+        background-color: rgba(255,255,255,0.6);
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+
+ }
+ @media (min-width:1052px) and (max-width:1200px){
+ .small-canvases {
+    height: 100px;
+    width: 160px;
+    background-color: white;
+    /* margin: auto; */
+    /* margin: 15px auto; */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    }
+    .small-canvases::before{
+        content: attr(data-before);
+        margin-left: -22px;
+    }
+    .layout-icon-placement{
+        position: absolute;
+        top: 25%;
+        left: 36%;
+        background-color: rgba(255,255,255,0.6);
+    }
+  
+    .opacity-layout-icons{
+        height: 45px;
+        width: 45px;
+        opacity: 0.3;
+        margin: 7px 5px;
+    }
+}      
+ @media (min-width:768px) and (max-width:800px) {
     
     .small-canvases {
-        height: 100px;
-        width: 130px;
+        height: 90px;
+        width: 115px;
         background-color: white;
         /* margin: auto; */
         /* margin: 15px auto; */
@@ -23,9 +121,84 @@
         margin-left: auto;
         margin-right: auto;
         }
-        .small-canvases::before{
-            content: '1';
+        .small-canvases::before {
+            content: attr(data-before);
             margin-left: -15px;
+        }
+ }
+ 
+ @media (min-width:801px) and (max-width:900px) {
+    
+    .small-canvases {
+        height: 95px;
+        width: 124px;
+        background-color: white;
+        /* margin: auto; */
+        /* margin: 15px auto; */
+        margin-top: 20px;
+        margin-bottom: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        }
+        .small-canvases::before {
+            content: attr(data-before);
+            margin-left: -15px;
+        }
+        .note-chapter p {
+            margin-bottom: 0px !important;
+            font-size: 12px;
+        }
+        .layout-icon-placement{
+            position: absolute;
+            top: 20%;
+            left: 40%;
+            background-color: rgba(255,255,255,0.6);
+           
+           
+        }
+      
+        .opacity-layout-icons{
+            height: 45px;
+            width: 45px;
+            opacity: 0.3;
+            margin: 7px 5px;
+        }
+ }
+ @media (min-width:901px) and (max-width:999px) {
+    
+    .small-canvases {
+        height: 98px;
+        width: 128px;
+        background-color: white;
+        /* margin: auto; */
+        /* margin: 15px auto; */
+        margin-top: 20px;
+        margin-bottom: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        }
+        .small-canvases::before {
+            content: attr(data-before);
+            margin-left: -15px;
+        }
+        .note-chapter p {
+            margin-bottom: 0px !important;
+            font-size: 13px;
+        }
+        .layout-icon-placement{
+            position: absolute;
+            top: 20%;
+            left: 40%;
+            background-color: rgba(255,255,255,0.6);
+           
+           
+        }
+      
+        .opacity-layout-icons{
+            height: 45px;
+            width: 45px;
+            opacity: 0.3;
+            margin: 7px 5px;
         }
  }
  
@@ -36,7 +209,7 @@
          font-size: 12px;
      }
      .individual-objects {
-         padding: 25px 7px 30px 7%;
+         padding: 25px 7px 14px 7%;
          font-size: 12px;
      }
      .object-image-size{
@@ -192,7 +365,7 @@
     }
 
     .additional-canvas{
-        height: 63vh;
+        height: 51vh;
     }
     .add-page{
         padding-top: 8px;
@@ -205,6 +378,8 @@
     }
     .small-canvases{
         height: 83px;
+        width: 143px;
+        margin-bottom: 15px;
     }
 
 
@@ -219,7 +394,7 @@
         }
         .small-canvases {
             height: 90px;
-            width: 174px;
+            width: 142px;
             background-color: white;
         }
         .add-page{
@@ -227,7 +402,7 @@
         }
 
         .additional-canvas{
-            height: 68vh;
+            height: 55vh;
         }
         .note-holder{
             height: 100px;
@@ -238,7 +413,7 @@
  
  @media (min-height:650px) and (max-height:750px){
     .additional-canvas {
-        height: 68vh;
+        height: 58vh;
         overflow: auto;
     }
     .add-page {
@@ -386,7 +561,7 @@
  
      }
      .main-central-canvas {
-         height: 92vh;
+         height: 57vh;
          background-color: white;
      }
      .main-canvas-part {
@@ -400,6 +575,7 @@
      .icon-boxes {
          height: 90vh;
      }
+     
  
      
  }
@@ -431,6 +607,7 @@
      .icon-boxes {
          height: 82.5vh;
      }
+    
  }
  @media (min-height:1501px) and (max-height:1600px){
      .component-container {
@@ -460,7 +637,9 @@
      .icon-boxes {
          height: 91.3vh;
      }
+   
  }
+
  
  
  @media (min-height:1025px) and (max-height:1550px){

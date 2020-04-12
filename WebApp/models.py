@@ -392,6 +392,12 @@ class AssignmentInfo(models.Model):
         print(status)
         return status
 
+    def clean(self):
+        super().clean()
+        if self.Assignment_Start and self.Assignment_Deadline:
+            if self.Assignment_Start > self.Assignment_Deadline:
+                raise ValidationError("End date must be greater than start date")
+
 
 def upload_to(instance, filename):
     return 'questions/{0}/{1}'.format(instance.id, filename)
@@ -745,13 +751,24 @@ class Attendance(models.Model):
 
 
 class Notice(models.Model):
-    SHOW_CHOICES = (("1","One time"),("2","Provide Don't show option"),("3","Always"))
+    SHOW_CHOICES = (("1", "One time"), ("2", "Provide Don't show option"), ("3", "Always"))
 
-    title = models.CharField(max_length=124)
-    message = models.TextField(blank=True, null=True)
-    status = models.BooleanField(default=True)
-    show = models.CharField(max_length=1, choices=SHOW_CHOICES)
-    Start_Date = models.DateTimeField(null=True, blank=True)
-    End_Date = models.DateTimeField(null=True, blank=True)
+    title = CharField(max_length=124)
+    message = TextField(blank=True, null=True)
+    status = BooleanField(default=True)
+    show = CharField(max_length=1, choices=SHOW_CHOICES)
+    Start_Date = DateTimeField(null=True, blank=True)
+    End_Date = DateTimeField(null=True, blank=True)
+    Register_DateTime = DateTimeField(auto_now_add=True)
+    Updated_DateTime = DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+
+class NoticeView(models.Model):
+    notice_code = ForeignKey('Notice', on_delete=models.CASCADE)
+    user_code = ForeignKey('MemberInfo', on_delete=models.CASCADE)
+    dont_show = BooleanField(default=False)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)

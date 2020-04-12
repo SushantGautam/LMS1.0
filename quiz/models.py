@@ -415,7 +415,7 @@ class Quiz(models.Model):
     # start_time=
     title = models.CharField(
         verbose_name=_("Title"),
-        max_length=60, blank=False)
+        max_length=255, blank=False)
 
     description = models.TextField(
         verbose_name=_("Description"),

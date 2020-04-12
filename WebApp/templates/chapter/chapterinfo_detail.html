@@ -4,7 +4,7 @@
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true" id="create_assignment_modal">
     <div class="modal-dialog" role="document">
-        <div class="modal-content" style="height: 90vh;   overflow-y: scroll;">
+        <div class="modal-content" style="height: 80vh;   overflow-y: scroll;">
             <div class="modal-header text-center">
                 <h4 class="modal-title" id="exampleModalLabel"><b>Create New Assignment</b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -14,7 +14,7 @@
             </div>
             <input type="hidden" name="today_date" id="id_today_date" value="{{ datetime|date:"Y-m-d" }}"
                    class="select form-control">
-            <div class="modal-body modal-auto" id="create_assignment_modal_body">
+            <div class="modal-body modal-90" id="create_assignment_modal_body">
             </div>
         </div>
     </div>
@@ -103,9 +103,10 @@
                 <tr>
                     <td>Status</td>
                     <td>
-                        {% if object.Start_Date and todays_date < object.Start_Date|date:"Y-m-d" %}
+                        {% now "Y-m-d H:i" as todays_datewithtime %}
+                        {% if object.Start_Date and todays_datewithtime < object.Start_Date|date:"Y-m-d H:i" %}
                             <span class="text-danger"><b>Inactive</b></span>
-                        {% elif object.End_Date and todays_date > object.End_Date|date:"Y-m-d" %}
+                        {% elif object.End_Date and todays_datewithtime > object.End_Date|date:"Y-m-d H:i" %}
                             <span class="text-danger"><b>Expired</b></span>
                         {% else %}
                             <span class="text-info"><b>Active</b></span>
@@ -114,11 +115,11 @@
                 </tr>
                 <tr>
                     <td>Start Date</td>
-                    <td>{{ object.Start_Date|date:"d M, Y" }}</td>
+                    <td class="datecon">{{ object.Start_Date|date:"d M, Y H:i" }}</td>
                 </tr>
                 <tr>
                     <td>End Date</td>
-                    <td>{{ object.End_Date|date:"d M, Y" }}</td>
+                    <td class="datecon">{{ object.End_Date|date:"d M, Y H:i" }}</td>
                 </tr>
 
                 <tr>
@@ -337,8 +338,10 @@
 
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
-                    <p>Start Date - {{ o.Assignment_Start }}</p>
-                    <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
+                    <p>Start Date - <span
+                            class="datecon">{{ o.Assignment_Start|date:'M d, Y H:i' }}</span></p>
+                    <p>Submission Deadline - <span
+                            class="datecon">{{ o.Assignment_Deadline|date:'M d, Y H:i' }}</span></p>
                 </div>
             </div>
         {% endfor %}
@@ -382,12 +385,12 @@
 
 <div id="quiz_create_popup" class="modal fade">
     <div class="modal-dialog" style="width: 80%;">
-        <div class="modal-content" style="    height: 90vh;    overflow: auto;">
+        <div class="modal-content" style="height: 80vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Create Quiz</h4>
             </div>
-            <div class="modal-body modal-auto" id="quiz_form_ajax" style="    padding: 10%;">
+            <div class="modal-body modal-auto" id="quiz_form_ajax" style="padding: 10%;">
                 <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
 
             </div>
@@ -399,7 +402,7 @@
 
 <div id="question_form_popup" class="modal fade">
     <div class="modal-dialog">
-        <div class="modal-content" style="overflow-y: scroll;">
+        <div class="modal-content" style="height: 80vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title" id="question_model_title">Add Question</h4>
