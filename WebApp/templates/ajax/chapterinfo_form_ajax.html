@@ -51,10 +51,11 @@
 
 <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
 <script>
+    $('#id_Start_Date').datetimepicker();
+    $('#id_End_Date').datetimepicker();
     $("#ajaxchapterinfoform").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        console.log($('#id_Use_Flag').val())
         $.ajax({
             url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
@@ -66,8 +67,8 @@
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Register_Agent": $('#id_Register_Agent').val(),
                 "Course_Code": $('#id_Course_Code').val(),
-                "Start_Date": $('#id_Start_Date').val(),
-                "End_Date": $('#id_End_Date').val(),
+                "Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
+                "End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
 
             },
             // get the form data

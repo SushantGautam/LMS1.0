@@ -1,198 +1,328 @@
 {% extends "base.html" %} {% load static %} {% block stylesheets %}
-    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+  <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %} {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'surveyinfo_list' %}">Survey</a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
+  <li class="breadcrumb-item" aria-current="page">
+    <a href="{% url 'surveyinfo_list' %}">Survey</a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
 <style>
 
 </style>
 {% block content %}
-            {% include 'WebApp/theme/alerts.html' %}
-    <script src="{% static 'js/highcharts.js' %}"></script>
-    <script src="{% static 'js/highchart_data.js' %}"></script>
+  {% include 'WebApp/theme/alerts.html' %}
+  <script src="{% static 'js/highchart_data.js' %}"></script>
+  <script src="{% static 'js/highcharts.js' %}"></script>
+  <script src="{% static 'js/jspdf.debug.js' %}"></script>
 
-    {% include 'survey/common/details.html' %}
+
+  {% include 'survey/common/details.html' %}
 
 
-    <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers btn btn-danger btn-2x" style="
+  <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers btn btn-danger btn-2x" style="
     float: left;
 ">
-        <span class="glyphicon glyphicon-remove"></span> Delete All Submitted Answers
+    <span class="glyphicon glyphicon-remove"></span> Delete All Submitted Answers
 
-    </a>
+  </a>
+  <img id="test_image"/>
+  <canvas id="test_canvas"></canvas>
 {% endblock %}
 
 {% block customjss %}
-    {#  {% if object.Survey_Live %}#}
+  {#  {% if object.Survey_Live %}#}
 
-    <script>
-        var current_progress = 0;
-        $(document).ready(function () {
-
-
-            $('#survey_form_modal').on('hidden.bs.modal', function () {
-                location.reload();
-            });
-
-            var interval = setInterval(function () {
-                if ($('#chk').prop('checked')) {
-
-                    current_progress += 10;
-                    $("#dynamic")
-                        .css("width", current_progress + "%")
-                        .attr("aria-valuenow", current_progress)
-                        .text("Refreshing In :" + (10 - (current_progress / 10)));
-                } else {
-                    $("#dynamic").text("Paused");
-                }
-
-                if (current_progress >= 100) {
-                    clearInterval(interval);
-                    location.reload();
-                    //   $.ajax({
-                    //       type: "GET",
-                    //       url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
-                    //       success: function (data) {
-                    //           obj = JSON.parse(data);
-                    //           for (var i = 0; i < obj.length; i++) {
-                    //               $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
-                    //               console.log($("#progress" + obj[i].pk).css('width'));
-                    //               $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
-                    //               console.log($("#progress_span" + obj[i].pk).html());
-                    //               console.log(obj[i].pk)
-                    //           }
-                    //       },
-                    //       complete: function () {
-                    //           current_progress = 0;
-                    //           $(".se-pre-con-ajax").fadeOut("fast");
-                    //       }
-                    //   });
-                }
-
-            }, 1000);
-        });
-
-    </script>
-    {#  {% endif %}#}
-    <script>
-        $('#retakeSurveyBtn').on('click', function () {
-            current_progress = -10000;
-            
-            $.ajax({
-                type: "GET",
-                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
-                success: function (data) {
-
-                    $("#surveyForm").html(data);
+  <script>
+      var current_progress = 0;
+      $(document).ready(function () {
 
 
-                },
-                complete: function () {
-                    $(".modal-backdrop ").removeClass("modal-backdrop");
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                },
+          $('#survey_form_modal').on('hidden.bs.modal', function () {
+              location.reload();
+          });
 
-            });
-        });
+          var interval = setInterval(function () {
+              if ($('#chk').prop('checked')) {
 
-        $('#update_survey_button').on('click', function () {
-            current_progress = -10000;
+                  current_progress += 10;
+                  $("#dynamic")
+                      .css("width", current_progress + "%")
+                      .attr("aria-valuenow", current_progress)
+                      .text("Refreshing In :" + (10 - (current_progress / 10)));
+              } else {
+                  $("#dynamic").text("Paused");
+              }
 
-            $.ajax({
-                type: "GET",
-                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: "{% url 'surveyinfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
-                success: function (data) {
+              if (current_progress >= 100) {
+                  clearInterval(interval);
+                  location.reload();
+                  //   $.ajax({
+                  //       type: "GET",
+                  //       url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
+                  //       success: function (data) {
+                  //           obj = JSON.parse(data);
+                  //           for (var i = 0; i < obj.length; i++) {
+                  //               $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
+                  //               console.log($("#progress" + obj[i].pk).css('width'));
+                  //               $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
+                  //               console.log($("#progress_span" + obj[i].pk).html());
+                  //               console.log(obj[i].pk)
+                  //           }
+                  //       },
+                  //       complete: function () {
+                  //           current_progress = 0;
+                  //           $(".se-pre-con-ajax").fadeOut("fast");
+                  //       }
+                  //   });
+              }
 
-                    $("#surveyForm").html(data);
+          }, 1000);
+      });
+
+  </script>
+  {#  {% endif %}#}
+  <script>
+      $('#retakeSurveyBtn').on('click', function () {
+          current_progress = -10000;
+
+          $.ajax({
+              type: "GET",
+              data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+              url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
+              success: function (data) {
+
+                  $("#surveyForm").html(data);
 
 
-                },
-                complete: function () {
-                    $(".modal-backdrop ").removeClass("modal-backdrop");
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                },
+              },
+              complete: function () {
+                  $(".modal-backdrop ").removeClass("modal-backdrop");
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              },
 
-            });
-        });
-        $('#update_survey_button_limited').on('click', function () {
-            current_progress = -10000;
-            let url_get = "";
-            {% if 'teachers' in request.path %}
-                url_get = "{% url 'TeacherSurveyInfo_ajax_update_limited' pk=object.id %}";
-            {% else %}
-                url_get = "{% url 'surveyinfo_ajax_update_limited' pk=object.id %}";
-            {% endif %}
-            $.ajax({
-                type: "GET",
-                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: url_get,  // URL to your view that serves new info
-                success: function (data) {
+          });
+      });
 
-                    $("#surveyForm").html(data);
+      $('#update_survey_button').on('click', function () {
+          current_progress = -10000;
+
+          $.ajax({
+              type: "GET",
+              data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+              url: "{% url 'surveyinfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
+              success: function (data) {
+
+                  $("#surveyForm").html(data);
 
 
-                },
-                complete: function () {
-                    $(".modal-backdrop ").removeClass("modal-backdrop");
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                },
+              },
+              complete: function () {
+                  $(".modal-backdrop ").removeClass("modal-backdrop");
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              },
 
-            });
-        });
+          });
+      });
+      $('#update_survey_button_limited').on('click', function () {
+          current_progress = -10000;
+          let url_get = "";
+          {% if 'teachers' in request.path %}
+              url_get = "{% url 'TeacherSurveyInfo_ajax_update_limited' pk=object.id %}";
+          {% else %}
+              url_get = "{% url 'surveyinfo_ajax_update_limited' pk=object.id %}";
+          {% endif %}
+          $.ajax({
+              type: "GET",
+              data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+              url: url_get,  // URL to your view that serves new info
+              success: function (data) {
 
-        $('#update_progress').on('click', function () {
+                  $("#surveyForm").html(data);
 
-            $.ajax({
-                type: "GET",
-                url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
-                success: function (data) {
-                    console.log(data);
-                    obj = JSON.parse(data);
-                    console.log(obj);
-                    console.log(obj[0]["fields"]);
-                    console.log(obj[0].pk);
-                    for (var i = 0; i < obj.length; i++) {
-                        $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
-                        console.log($("#progress" + obj[i].pk).css('width'));
-                        $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
-                        console.log($("#progress_span" + obj[i].pk).html());
-                        console.log(obj[i].pk)
-                    }
-                },
-                complete: function () {
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                }
-            });
-        });
-    </script>
 
-    <script>
-        function survey_create_content(response) {
-            //location.reload();
-            console.log(response['url']);
-            window.location.href = String(response['url']);
-        }
+              },
+              complete: function () {
+                  $(".modal-backdrop ").removeClass("modal-backdrop");
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              },
 
-        function askIfRemoveAll() {
-            $('#chk').prop('checked', false);
+          });
+      });
 
-            var answer = window.confirm("This will remove all student's submitted answers and cannot be undone. Continue?")
-            if (answer) {
-                {% if 'iframe' in request.GET %}
-                    window.location.href = "/survey/clearsurveys/{{ object.pk }}/?iframe=1";
-                {% else %}
-                    window.location.href = "/survey/clearsurveys/{{ object.pk }}/";
-                {% endif %}
-            } else {
-                //some code
-            }
-        }
+      $('#update_progress').on('click', function () {
 
-    </script>
+          $.ajax({
+              type: "GET",
+              url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
+              success: function (data) {
+                  console.log(data);
+                  obj = JSON.parse(data);
+                  console.log(obj);
+                  console.log(obj[0]["fields"]);
+                  console.log(obj[0].pk);
+                  for (var i = 0; i < obj.length; i++) {
+                      $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
+                      console.log($("#progress" + obj[i].pk).css('width'));
+                      $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
+                      console.log($("#progress_span" + obj[i].pk).html());
+                      console.log(obj[i].pk)
+                  }
+              },
+              complete: function () {
+                  $(".se-pre-con-ajax").fadeOut("fast");
+              }
+          });
+      });
+  </script>
+
+  <script>
+      function survey_create_content(response) {
+          //location.reload();
+          console.log(response['url']);
+          window.location.href = String(response['url']);
+      }
+
+      function askIfRemoveAll() {
+          $('#chk').prop('checked', false);
+
+          var answer = window.confirm("This will remove all student's submitted answers and cannot be undone. Continue?")
+          if (answer) {
+              {% if 'iframe' in request.GET %}
+                  window.location.href = "/survey/clearsurveys/{{ object.pk }}/?iframe=1";
+              {% else %}
+                  window.location.href = "/survey/clearsurveys/{{ object.pk }}/";
+              {% endif %}
+          } else {
+              //some code
+          }
+      }
+
+  </script>
+  {#  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"#}
+  {#          integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"#}
+  {#          crossorigin="anonymous"></script>#}
+  <script>
+
+      let lMargin = 15; //left margin in mm
+      let rMargin = 15; //right margin in mm
+      let pdfInMM = 210;
+
+      let add_text = function (doc, text, size, x_pos, y_pos, center = false) {
+          doc.setFontSize(size);
+
+          //if (center){
+          //    x_pos = (doc.internal.pageSize.width / 2) - (doc.getStringUnitWidth(text) * doc.internal.getFontSize() / 2)
+          //}
+
+          let lines = doc.splitTextToSize(text, (pdfInMM - lMargin - rMargin));
+          let lineHeight = doc.getLineHeight(text) / doc.internal.scaleFactor;
+          let lines_len = lines.length;  // splitted text is a string array
+          let blockHeight = lines_len * lineHeight;
+
+          if (center) {
+              doc.text(lines, doc.internal.pageSize.getWidth() * 0.5, y_pos, 'center');
+          } else {
+              doc.text(lines, x_pos, y_pos);
+          }
+
+
+          return y_pos + blockHeight;
+      };
+      //$(window).on('load', function () {
+      $("#btnDownload").on('click', function () {
+
+              var doc = new jsPDF();
+              doc.page = 1;
+
+              // width of A4 in mm
+
+              var yPos = 20;
+              var xPos = lMargin;
+
+              yPos = add_text(doc,
+                  "{{ object.Survey_Title }}",
+                  20, xPos, yPos, true);
+
+              yPos = add_text(doc,
+                  "SURVEY REPORT",
+                  14, xPos, yPos, true);
+
+              yPos = add_text(doc,
+                  "Start Date: {{ object.Start_Date|date:'M d, Y H:i' }}",
+                  12, xPos, yPos);
+
+              yPos = add_text(doc,
+                  "End Date: {{ object.End_Date|date:'M d, Y H:i' }}",
+                  12, xPos, yPos);
+
+              yPos = add_text(doc,
+                  "Number of Participants: {{ submit }}",
+                  12, xPos, yPos);
+
+              $("svg").each(function (index) {
+                  let svgel = this;
+                  let xml = new XMLSerializer().serializeToString(svgel);
+
+                  //let svg = new Blob([xml], {type: "image/svg+xml;charset=utf-8"}),
+                  //    domURL = self.URL || self.webkitURL || self,
+                  //    url = domURL.createObjectURL(svg);
+
+                  // make it base64
+                  var svg64 = btoa(xml);
+                  var b64Start = 'data:image/svg+xml;base64,';
+
+                  // prepend a "header"
+                  var image64 = b64Start + svg64;
+
+                  //let canvas = document.querySelector("#test_canvas");
+                  let canvas = document.createElement("CANVAS");
+                  canvas.height = svgel.height.baseVal.value;
+                  canvas.width = svgel.width.baseVal.value;
+                  var ctx = canvas.getContext("2d");
+                  var img = new Image();
+                  img.onload = function () {
+                      ctx.drawImage(img, 0, 0); // destination rectangle
+                      console.log(canvas.toDataURL());
+                      //let link = document.createElement('a');
+                      //link.href = canvas.toDataURL();
+                      //link.download = "test.png";
+                      //document.body.appendChild(link);
+                      //link.click();
+
+                      //var imgWidth = doc.internal.pageSize.getWidth()*0.7;
+                      let a_r = canvas.width / canvas.height;
+                      var imgHeight = doc.internal.pageSize.getHeight() * 0.3;
+                      var imgWidth = imgHeight * a_r;
+
+                      let qn_title = $(svgel).parent().parent().attr('data-qn-title')
+                      yPos += 5;
+                      yPos = add_text(doc,
+                          qn_title,
+                          12, xPos, yPos);
+                      yPos += 5;
+                      doc.addImage(canvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
+                      yPos += imgHeight;
+                      yPos += 5;
+                      if (index === $("svg").length - 1) {
+                          doc.text(150, 285, 'page ' + doc.page);
+                          //doc.output('dataurlnewwindow'); //opens pdf in new tab
+                          doc.save('Test.pdf');
+                      } else if ((index + 1) % 2 === 0) {
+                          doc.text(150, 285, 'page ' + doc.page);
+                          doc.addPage();
+                          yPos = 20;
+                          doc.page++;
+                      }
+
+                  };
+                  //img.src = url;
+                  img.src = image64;
+
+              });
+          }
+      );
+
+
+  </script>
 
 {% endblock %}

@@ -50,7 +50,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     InningManagerForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager, Notice
+    InningManager, Notice, NoticeView
 
 
 class Changestate(View):
@@ -216,6 +216,10 @@ def start(request):
 
             if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
                 notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+                if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
+                    notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
+                    if notice_view_flag:
+                        notice = None
             else:
                 notice = None
             # return HttpResponse("default home")
@@ -764,7 +768,6 @@ class ChapterInfoCreateView(CreateView):
         context['datetime'] = datetime.now()
         return context
 
-
 class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
@@ -789,10 +792,15 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     #     )
 
     def form_valid(self, form):
-       super(ChapterInfoCreateViewAjax, self).form_valid(form)
-       return JsonResponse(
-           data={'Message': 'Success'}
-       )
+        form.save(commit=False)
+        if form.cleaned_data['Start_Date'] == "":
+            form.instance.Start_Date = None
+        if form.cleaned_data['End_Date'] == "":
+            form.instance.End_Date = None
+        form.save()
+        return JsonResponse(
+            data={'Message': 'Success'}
+        )
 
     def form_invalid(self, form):
        return JsonResponse({'errors': form.errors}, status=500)
@@ -854,6 +862,11 @@ class ChapterInfoUpdateView(UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
+        if form.cleaned_data['Start_Date'] == "":
+            form.instance.Start_Date = None
+        if form.cleaned_data['End_Date'] == "":
+            form.instance.End_Date = None
+
         form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         form.save()
         return super().form_valid(form)
@@ -862,7 +875,6 @@ class ChapterInfoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         return context
-
 
 class SessionInfoCreateViewPopup(CreateView):
     model = SessionInfo
@@ -1220,6 +1232,11 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+
+        if Obj.Assignment_Start and Obj.Assignment_Deadline:
+            if (Obj.Assignment_Start > Obj.Assignment_Deadline):
+                print('here')
+                raise ValidationError("End date must be greater than start date")
         Obj.save()
 
         return JsonResponse(
@@ -1240,6 +1257,12 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
             Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+            if Obj.Assignment_Start and Obj.Assignment_Deadline:
+                if (Obj.Assignment_Start > Obj.Assignment_Deadline):
+                    return JsonResponse(
+                        data={'Message': 'Deadline date must be greater than start date'},
+                        status=500
+                    )
             Obj.save()
 
             return JsonResponse(
@@ -1584,8 +1607,8 @@ def save_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '___' + str(
                 request.user.pk) + '.' + media.name.split('.')[-1]
             # name = "".join(re.findall("[a-zA-Z0-9]+", name))
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
@@ -1651,8 +1674,8 @@ def save_3d_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-                re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+                re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '___' + str(
                 request.user.pk)
             # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
@@ -1680,8 +1703,8 @@ def save_video(request):
 
         # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
         # Eg: 561561561&&&test.jpg&&&17
-        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-            re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
+        name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+            re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '___' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
 
         # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
@@ -2388,12 +2411,14 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             student_quiz = Quiz.objects.filter(chapter_code=chapter)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
-            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
+            # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
                 if z.quiz.pk in temp:
-                    student_result.get(pk=z.pk).delete()
+                    # student_result.get(pk=z.pk).delete()
+                    student_result = student_result.exclude(pk=z.pk)
                 else:
                     temp.append(z.quiz.pk)
                     total_quiz_percent_score += float(z.get_percent_correct)
