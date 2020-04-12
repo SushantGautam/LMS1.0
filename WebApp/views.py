@@ -1232,6 +1232,11 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+
+        if Obj.Assignment_Start and Obj.Assignment_Deadline:
+            if (Obj.Assignment_Start > Obj.Assignment_Deadline):
+                print('here')
+                raise ValidationError("End date must be greater than start date")
         Obj.save()
 
         return JsonResponse(
@@ -1252,6 +1257,12 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
             Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+            if Obj.Assignment_Start and Obj.Assignment_Deadline:
+                if (Obj.Assignment_Start > Obj.Assignment_Deadline):
+                    return JsonResponse(
+                        data={'Message': 'Deadline date must be greater than start date'},
+                        status=500
+                    )
             Obj.save()
 
             return JsonResponse(

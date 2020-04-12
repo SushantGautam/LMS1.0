@@ -409,17 +409,17 @@
                                         {#                                            {% csrf_token %}#}
                                         <form>
                                             {% if questions.Answer_Type == 'S' %}
-                                            <div class="form-group">
+                                                <div class="form-group">
                                     <textarea class="form-control rounded-0" rows="5" cols="100"
                                               name="Assignment_Answer" id="id_Assignment_Answer{{ questions.id }}"
                                               placeholder="Enter your Answer" required></textarea>
-                                                <input type="hidden" value="{{ request.user.id }}"
-                                                       name="Student_Code"
-                                                       id="id_Student_Code{{ questions.id }}">
-                                                <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                                       id="id_Question_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ request.user.id }}"
+                                                           name="Student_Code"
+                                                           id="id_Student_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ questions.id }}">
 
-                                            </div>
+                                                </div>
 
                                                 <div class="form-group text-center">
                                                     {% now "Y-m-d H:i" as todays_date %}
@@ -434,27 +434,27 @@
                                                                 class="btn btn-sm btn-success submitAnswer"
                                                                 id="answer{{ questions.id }}"
                                                                 data-id="{{ questions.id }}"
-                                                            data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                                        Submit
-                                                    </button>
-                                                {% else %}
-                                                    <p class="text-danger">Submission is prohibited. Please check
-                                                        assignment start and end date</p>
-                                                {% endif %}
-                                            </div>
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}">
+                                                            Submit
+                                                        </button>
+                                                    {% else %}
+                                                        <p class="text-danger">Submission is prohibited. Please check
+                                                            assignment start and end date</p>
+                                                    {% endif %}
+                                                </div>
 
-                                        {% elif questions.Answer_Type == 'F' %}
+                                            {% elif questions.Answer_Type == 'F' %}
 
-                                            <div class="form-group">
-                                                <input type="file" name="Assignment_File"
-                                                       id="id_Assignment_File{{ questions.id }}"
-                                                       required/>
-                                                <input type="hidden" value="{{ request.user.id }}"
-                                                       name="Student_Code"
-                                                       id="id_Student_Code{{ questions.id }}">
-                                                <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                                       id="id_Question_Code{{ questions.id }}">
-                                            </div>
+                                                <div class="form-group">
+                                                    <input type="file" name="Assignment_File"
+                                                           id="id_Assignment_File{{ questions.id }}"
+                                                           required/>
+                                                    <input type="hidden" value="{{ request.user.id }}"
+                                                           name="Student_Code"
+                                                           id="id_Student_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ questions.id }}">
+                                                </div>
                                                 <div class="form-group text-center">
                                                     {% now "Y-m-d H:i" as todays_date %}
                                                     {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
@@ -468,14 +468,14 @@
                                                                 id="answer{{ questions.id }}"
                                                                 data-id="{{ questions.id }}"
                                                                 data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                                        Submit
-                                                    </button>
-                                                {% else %}
-                                                    <p class="text-danger">Submission is prohibited. Please check
-                                                        assignment start and end date</p>
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
+                                                            Submit
+                                                        </button>
+                                                    {% else %}
+                                                        <p class="text-danger">Submission is prohibited. Please check
+                                                            assignment start and end date</p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
                                         </form>
                                     {% endif %}
                                 {% endfor %}
@@ -522,6 +522,8 @@
             <div class="modal-body modal-90" id="editAssignment_modal_body">
                 <form method="post" id="ajaxassignmentinfoform">
                     {% csrf_token %}
+                    <div class="alert alert-danger form-errors" style="display: none">
+                    </div>
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <div id="div_id_Assignment_Topic_edit" class="form-group">
                             <label for="id_Assignment_Topic_edit" class="control-label ">
@@ -677,8 +679,9 @@
                     console.log('Success')
                     location.reload()
                 },
-                error: function () {
-                    console.log('Error in posting assignment edit form')
+                error: function (err) {
+                    console.log('Error in posting assignment create form')
+                    $('.form-errors').empty().append(err.responseJSON.Message).css('display', 'block')
                 }
 
             });

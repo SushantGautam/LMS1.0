@@ -392,6 +392,12 @@ class AssignmentInfo(models.Model):
         print(status)
         return status
 
+    def clean(self):
+        super().clean()
+        if self.Assignment_Start and self.Assignment_Deadline:
+            if self.Assignment_Start > self.Assignment_Deadline:
+                raise ValidationError("End date must be greater than start date")
+
 
 def upload_to(instance, filename):
     return 'questions/{0}/{1}'.format(instance.id, filename)
