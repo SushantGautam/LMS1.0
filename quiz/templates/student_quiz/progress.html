@@ -23,57 +23,81 @@
     <tr>
       <th class="quiz-capital">{% trans "Quiz Title" %}</th>
       <th class="quiz-capital">{% trans "Quiz Type" %}</th>
+      <th class="quiz-capital">{% trans "Times Played" %}</th>
       <th class="quiz-capital">{% trans "Full Marks" %}</th>
       <th class="quiz-capital">{% trans "Marks Obtained" %}</th>
       <th class="quiz-capital">{% trans "Progress" %}</th>
       <th class="quiz-capital">{% trans "Complete" %}</th>
+      <th class="quiz-capital">{% trans "Action" %}</th>
     </tr>
     </thead>
 
     <tbody>
 
-    {% for sitting in sittings %}
+    {#    {% for sitting in sittings %}#}
+    {% for quiz in quiz_list %}
+      {% for sitting in quiz.sittings %}
 
-      <tr>
-        <td><a href="{% url 'student_progress_detail' pk=sitting.pk %}">{{ sitting.quiz.title }}</a></td>
-        <td>
-          {% if sitting.quiz.exam_paper %}
-            Exam Paper
-          {% endif %}
+        <tr {% if not forloop.first %}class="quiz_row{{ forloop.parentloop.counter }}" style="display: none;" {% endif %}>
+          <td><a href="{% url 'student_progress_detail' pk=sitting.pk %}">{{ sitting.quiz.title }}</a></td>
+          <td>
+            {% if sitting.quiz.exam_paper %}
+              Exam Paper
+            {% endif %}
 
-          {% if sitting.quiz.pre_test and sitting.quiz.post_test %}
-            Pre-Test / Post-Test
-          {% elif sitting.quiz.pre_test %}
-            Pre-Test
-          {% elif sitting.quiz.post_test %}
-            Post-Test
-          {% endif %}
+            {% if sitting.quiz.pre_test and sitting.quiz.post_test %}
+              Pre-Test / Post-Test
+            {% elif sitting.quiz.pre_test %}
+              Pre-Test
+            {% elif sitting.quiz.post_test %}
+              Post-Test
+            {% endif %}
 
 
-        </td>
-        <td>{{ sitting.get_max_score }}</td>
-        <td>{{ sitting.current_score }}&nbsp;&nbsp;({{ sitting.get_percent_correct }}%)</td>
-        <td>
-          <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ sitting.get_progress }}"
-                 aria-valuemin="0" aria-valuemax="100" style="width:{{ sitting.get_progress }}%">
-              {{ sitting.get_progress }}% Complete
+          </td>
+          <td>
+            {% if forloop.first %}
+              {{ quiz.sittings|length }}
+            {% endif %}
+          </td>
+          <td>{{ sitting.get_max_score }}</td>
+          <td>{{ sitting.current_score }}&nbsp;&nbsp;({{ sitting.get_percent_correct }}%)</td>
+          <td>
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped active" role="progressbar"
+                   aria-valuenow="{{ sitting.get_progress }}"
+                   aria-valuemin="0" aria-valuemax="100" style="width:{{ sitting.get_progress }}%">
+                {{ sitting.get_progress }}% Complete
+              </div>
             </div>
-          </div>
-        </td>
-        <td>
-          {% if sitting.complete %}
-            <i class="fa fa-check fa-2x text-success"></i>
-          {% else %}
-            <i class="fa fa-times fa-2x text-danger"></i>
-          {% endif %}
-        </td>
-      </tr>
-
+          </td>
+          <td>
+            {% if sitting.complete %}
+              <i class="fa fa-check fa-2x text-success"></i>
+            {% else %}
+              <i class="fa fa-times fa-2x text-danger"></i>
+            {% endif %}
+          </td>
+          <td>
+            {% if forloop.first %}
+              <a href="#" class="quiz_history" data-quiz_id="{{ forloop.parentloop.counter }}">History</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
     {% endfor %}
 
     </tbody>
 
   </table>
 
+{% endblock %}
+{% block customjss %}
+  <script>
+    $(".quiz_history").click(function () {
+        $(".quiz_row" + $(this).attr("data-quiz_id")).toggle();
+    })
+
+
+  </script>
 {% endblock %}

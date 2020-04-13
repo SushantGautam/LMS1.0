@@ -1060,7 +1060,21 @@ class QuizUserProgressView(TemplateView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         # context['cat_scores'] = progress.list_all_cat_scores
         # context['exams'] = progress.show_exams()
-        context['sittings'] = Sitting.objects.filter(user=self.request.user)
+
+
+
+
+        context['sittings'] = Sitting.objects.filter(user=self.request.user).order_by('-start')
+        pk_list = context['sittings'].values_list('quiz', flat=True)
+
+        context["quiz_list"] = []
+        for pk in pk_list:
+            quiz_obj = Quiz.objects.get(pk=pk)
+            if quiz_obj not in context["quiz_list"]:
+                context["quiz_list"].append(quiz_obj)
+        for q in context["quiz_list"]:
+            q.sittings = Sitting.objects.filter(user=self.request.user, quiz=q).order_by('-start')
+        print(context["quiz_list"])
         return context
 
 
