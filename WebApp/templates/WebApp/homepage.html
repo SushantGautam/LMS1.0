@@ -406,6 +406,38 @@
 {% endblock %}
 {% block customjss %}
     <script>
+        $("#noticeForm").submit(function (e) {
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            console.log($('#id_dont_show').is(":checked"));
+
+            if($('#id_dont_show').is(":checked")) {
+                $.ajax({
+                    url: "{% url 'notice_view_create' %}",  // URL to your view that serves new info
+                    data: {
+                        "csrfmiddlewaretoken": $('#noticeForm').find('input[name="csrfmiddlewaretoken"]').val(),
+                        "dont_show": $('#id_dont_show').is(":checked"),
+                        "user_code": $('#id_user_code').val(),
+                        "notice_code": $('#id_notice_code').val(),
+                    },
+
+                    // get the form data
+                    type: $(this).attr('method'), // GET or POST
+                    success: function (response) {
+                        console.log('Success');
+                        $('.close').click();
+                    },
+                    error: function () {
+                        console.log('Error in submitting response');
+                    }
+                });
+            }else{
+                $('.close').click();
+            }
+        });
+    </script>
+
+    <script>
         
        $(window).on('load',function(){
         $('#myModal').modal('show');
