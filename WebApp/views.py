@@ -2450,7 +2450,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'chapterObj': chapter,
                             'laststudydate': datetime.strptime(jsondata['contents'][
                                                                    'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
-                                "%Y/%m/%d %H:%M:%S") if ['contents']['laststudydate'] is not None else None,
+                                "%Y/%m/%d %H:%M:%S") if jsondata['contents']['laststudydate'] is not None else None,
                             'totalstudytime': timedelta(seconds=int(jsondata['contents']['totalstudytime'])) if
                             jsondata['contents']['totalstudytime'] is not None else "00:00:00",
                             'currentpagenumber': int(
