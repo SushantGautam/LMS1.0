@@ -2523,7 +2523,7 @@ def getListOfFiles(dirName, studentid):
         if os.path.isdir(fullPath):
             # conv and compare is added to get only the files of 7days
             conv = datetime.strptime(entry, '%Y%m%d').date()
-            compare = (datetime.today() - timedelta(days=7)).date()
+            compare = (datetime.today() - timedelta(days=30)).date()
             if (compare < conv):
                 allFiles = allFiles + getListOfFiles(fullPath, studentid)
         elif entry == str(studentid) + '.txt':
