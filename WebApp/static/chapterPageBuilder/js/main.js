@@ -1978,9 +1978,13 @@ $(document).ready(function () {
         var btn_name = $('#btn-name').val();
         var btn_link = $('#btn-link').val();
         var btn_id = $('#button_id').val();
-        if (btn_link != "") {
+        if (btn_link != "" && !btn_link.includes("http")) {
             $('#' + btn_id).attr({
                 "href": `http://${btn_link}`
+            });
+        } else if (btn_link.includes("http")) {
+            $('#' + btn_id).attr({
+                "href": `${btn_link}`
             });
         } else {
             $('#' + btn_id).removeAttr('href');

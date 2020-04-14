@@ -35,7 +35,7 @@
     <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row component-container">
             <div class="chapter-title-only col-md-3 col-sm-3 col-xs-12">
-                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:20 }} <i class="fas fa-pencil-alt"></i></span>
+                <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:40 }} </span>
 
             </div>
             <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
@@ -52,14 +52,23 @@
                     <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export
                     </button>
                 </a>
-                <button class="btn-type1"><i style="color:white" class="fas fa-play-circle"></i> &nbsp;Preview</button>
-
+                <a href="{% url 'previewcontentviewer' course chapter %}" id="previewBtn">
+                    <button class="btn-type1" id="previewBtn"><i style="color:white" class="fas fa-play-circle"></i>
+                        &nbsp;Preview
+                    </button>
+                </a>
 
             </div>
             <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
-                <a href="javascript:void(0)" id="save-and-exit-btn"> <span>  QUIT <i
-                        style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></a>
-
+                <a href="
+                    {% if 'teachers' in request.path %}
+                    {% url 'teacher_chapterinfo_detail' course chapter %}
+                    {% else %}
+                    {% url 'chapterinfo_detail' course chapter %}
+                    {% endif %}
+                " id="goBackBtn"><span>  QUIT <i
+                        style="border:1px solid #8592a4; padding:1px 2px   " class="fas fa-times"></i> </span></i>
+                </a>
             </div>
 
 
@@ -201,10 +210,10 @@
                                         </li>
 
 
-                                        <li class="individual-objects draggable draggable-style">
+                                        <li class="individual-objects draggable draggable-style audio">
                                                 <span>
                                                  <img class="object-image-size"
-                                                      src="{% static 'chapterPageBuilder/icons/newicon/action.svg' %}">
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/audio.png' %}">
                                                 </span> <span class="object-name-size">AUDIO</span>
                                         </li>
 
@@ -238,25 +247,25 @@
                                             </div>
 
                                         </div>
-                                        <div class="own-padding col-md-6">
+                                        <div class="draggable-style own-padding col-md-6">
                                             <div class="layout-type-holder draggable layout grid-1 ui-draggable ui-draggable-handle">
                                                 <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
                                                      alt="like this">
                                             </div>
                                         </div>
-                                        <div class=" own-padding col-md-6">
+                                        <div class="draggable-style  own-padding col-md-6">
                                             <div class="layout-type-holder draggable layout title-slide ui-draggable ui-draggable-handle">
                                                 <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
                                                      alt="like this">
                                             </div>
                                         </div>
-                                        <div class="own-padding col-md-6">
+                                        <div class="draggable-style own-padding col-md-6">
                                             <div class="layout-type-holder draggable layout title-content-details ui-draggable ui-draggable-handle">
                                                 <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
                                                      alt="like this">
                                             </div>
                                         </div>
-                                        <div class="own-padding col-md-6">
+                                        <div class="draggable-style own-padding col-md-6">
                                             <div class="layout-type-holder draggable layout pdf-text ui-draggable ui-draggable-handle">
                                                 <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
                                                      alt="like this">
@@ -306,12 +315,22 @@
                     <div class="view-mode ">
                         <ul class="full-screen-color">
                             <li>
-                                <a id="togglefull" data-toggle="tooltip" data-placement="top" title=""
+                                <a class="first-toggle" id="togglefull" data-toggle="tooltip" data-placement="top"
+                                   title=""
                                    onclick="toggleFullScreen()"
                                    data-original-title="FullScreen">
                               <span><img style="height: 15px; width:15px ; margin-top:-5px"
-                                         src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">&nbsp;&nbsp;
-                                 <span style="font-size: 15px;">Full Screen</span> </a> </span>&nbsp;&nbsp;
+                                         src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">
+                              </span>&nbsp;&nbsp;
+                                    <span style="font-size: 15px;">Full Screen</span> &nbsp;&nbsp;</a>
+
+                                <a class="second-toggle" id="togglefull" data-toggle="tooltip" data-placement="top"
+                                   title=""
+                                   onclick="toggleFullScreen()"
+                                   data-original-title="FullScreen">
+                            <span><img style="height: 15px; width:15px ; margin-top:-5px"
+                                       src="{% static 'chapterPageBuilder/icons/newicon/compress.svg' %}">&nbsp;&nbsp;
+                               <span style="font-size: 15px;">Standard Screen</span> </a>
 
                             </li>
                             <li><span class="color-picker" style="font-size: 15px;"></li>
@@ -320,9 +339,6 @@
                                 
                                     BG Color</span>
                             </li>
-
-
-                            <li><span class="caret"></span></li>
 
 
                         </ul>
@@ -349,11 +365,11 @@
                 <div class="chapter-listings">
                     <form style="margin-bottom: 0px!important;">
                         <div class="form-group">
-                            <label for="sel1">Current Chapter&nbsp;:-</label>
+                            <label style="color:white" for="sel1">Current Chapter&nbsp;:-</label>
                             <select class="form-control" name="chapter-lists" id="chapterlist">
                                 {% for chapter in chapterlist %}
                                     <option value="{{ chapter.id }}">
-                                        {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name }}
+                                        {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name|truncatechars:20 }}
                                     </option>
                                 {% endfor %}
                             </select>
@@ -362,20 +378,16 @@
                         </div>
                     </form>
                 </div>
+                <div class="col-md-12 col-sm-12 col-xs-12" style="">
+                    <hr style="color:red;">
 
-                <a  title=" Write A Note"href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
+                </div>
+
+                <a class="note-chapter-part" title=" Write A Note" href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
                     <div class="note-holder">
-                        <span style="color: white;">Note <i class="fas fa-pencil-alt"></i></span>
+                        <span style="color: white; font-weight:600">Description <i class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
-
-                            
-                                <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:90 }} </p>
-                                
-                       
-
-                            
-
-
+                            <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:70 }} </p>
                         </div>
                     </div>
                 </a>
@@ -412,16 +424,17 @@
                     </ul>
 
                 </div>
-                <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
-                    <hr>
 
-                </div>
 
                 <div class="add-page">
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
+                        <hr>
+
+                    </div>
                     <div class="col-md-12 col-xs-12 col-sm-12">
 
 
-                        <a id="add-page-btn"> <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
+                        <a id="add-page-btn" title="Add new Page"> <i class="fas fa-plus-circle"></i>&nbsp;Add page</a>
 
                     </div>
 
@@ -453,20 +466,40 @@
         <!-- Modal content-->
         <div id="button-link-chapter" class="modal-content">
             <form id="btn-form">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Button</h4>
+                <div class="modal-header button-header-color">
+                    <h4 class="modal-title button-position">Button</h4>
+                    <button type="" class="close" data-dismiss="modal">
+                        <i style="color:white !important "class="fa fa-times"></i>
+
+                    </button>
+                    
                 </div>
                 <div class="modal-body">
                     <!-- Modal Contents Here -->
-                    <div class="col-md-12">
-                        <label>Display Name</label>
-                        <input type="text" name="btn-name" id="btn-name">
+                    <div class="col-md-12" style="padding: 10px;">
+
+                        
+                          
+                         
+                        <label class="col-sm-4">Display Name</label>
+                        <div style="margin-bottom:10px"class="col-sm-8">
+                            <input class="form-control" type="text" name="btn-name" id="btn-name">
+
+                        </div>
+                        
                         <br>
-                        <label>Link</label>
-                        <span class="btnlink">
-                                http://
-                                <input type="text" name="btn-link" id="btn-link">
+                        <label class="col-sm-4">Link &nbsp; (http://)</label>
+                        <div class="col-sm-8">
+                            <span class="btnlink">
+                                
+                                <input class="form-control" type="text" name="btn-link" id="btn-link" placeholder="ublcloud.me">
+                            </span>
+
+                        </div>
+                        
+                                
+
+                                 
 
                     </div>
 
@@ -603,11 +636,11 @@
             <form id="survey-form">
                 <div class="modal-header">
                     <div class="row">
-                        <div class="col-md-11">
+                        <div class="col-sm-8 col-xs-6">
                             <h4 class="modal-title">Survey</h4>
 
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-sm-4 col-xs-6">
                             <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
                             </button>
 
@@ -907,6 +940,7 @@
 
 
         })
+
     });
 </script>
 <script>
@@ -920,6 +954,8 @@
             } else if (document.documentElement.webkitRequestFullScreen) {
                 document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
             }
+            $('.first-toggle').css('display', 'none')
+            $('.second-toggle').css('display', 'block')
         } else {
             if (document.cancelFullScreen) {
                 document.cancelFullScreen();
@@ -928,6 +964,8 @@
             } else if (document.webkitCancelFullScreen) {
                 document.webkitCancelFullScreen();
             }
+            $('.first-toggle').css('display', 'block')
+            $('.second-toggle').css('display', 'none')
         }
     }
 </script>
@@ -966,7 +1004,19 @@
     var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
-
+    var centerName = '{{ request.user.Center_Code }}'
+    var imagegalleryid, videogalleryid, audiogalleryid;
+    if (server_name == "Indonesian_Server") {
+        imagegalleryid = 'A8AAAoODp5Za';
+        videogalleryid: 'AYMAfq-EnZOX';
+        audiogalleryid: 'AgLA8o--2Nr0'
+    } else if (server_name == 'Korean_Server') {
+        imagegalleryid = 'AsNAMruu8BjR';
+        audiogalleryid: 'AcFAJqeO8V_R';
+    } else if (server_name == 'Vietnam_Server') {
+        imagegalleryid = 'AUOAUr-S8FbV';
+        audiogalleryid: 'AMOA5rOA85RW';
+    }
 
     $('#chapterlist').val(chapterID);
 
