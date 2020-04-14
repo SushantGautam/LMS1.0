@@ -2401,9 +2401,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                                              createFile=False)
             if jsondata is not None:
                 if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
-                    if int(
-                            jsondata['contents']['totalPage']) > 0 and int(
-                        jsondata['contents']['currentpagenumber']) > 0:
+                    if int(jsondata['contents']['totalPage']) > 0 and int(
+                            jsondata['contents']['currentpagenumber']) > 0:
                         progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
                             jsondata['contents']['totalPage'])
                 else:
@@ -2430,9 +2429,11 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
                 field and the chapter progress is 100% '''
             if chapter.mustreadtime:
-                attendance = int(
-                    jsondata['contents'][
-                        'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                if int(jsondata['contents']['totalstudytime']):
+                    attendance = int(jsondata['contents'][
+                                         'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                else:
+                    attendance = False
             else:
                 attendance = None
             student_data.append(
