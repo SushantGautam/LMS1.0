@@ -415,7 +415,7 @@ class Quiz(models.Model):
     # start_time=
     title = models.CharField(
         verbose_name=_("Title"),
-        max_length=60, blank=False)
+        max_length=255, blank=False)
 
     description = models.TextField(
         verbose_name=_("Description"),
@@ -611,8 +611,22 @@ class Quiz(models.Model):
     def anon_q_data(self):
         return str(self.id) + "_data"
 
-
-
+    # User Quiz submission can be checked by quiz.sitting_set.all.count > 0.
+    # Each completed quiz will have the user sitting
+    # def can_take(self, user):
+    #     if self.draft and not user.has_perm('quiz.change_quiz'):
+    #         raise PermissionDenied
+    #
+    #     try:
+    #         self.logged_in_user = user.is_authenticated()
+    #     except TypeError:
+    #         self.logged_in_user = user.is_authenticated
+    #
+    #     if self.logged_in_user:
+    #         self.sitting = Sitting.objects.user_sitting(
+    #             user, self)
+    #
+    #     return self.sitting
 
 
 @python_2_unicode_compatible

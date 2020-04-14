@@ -439,37 +439,40 @@ class questions_student_detail(DetailView):
         context['saq_answers'] = AnswerInfo.objects.filter(
             Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.object.id, Question_Type='SAQ')
         )
-        try:
-            context['submit_survey'] = SubmitSurvey.objects.get(
-                Survey_Code__id=self.object.id,
-                Student_Code__id=self.request.user.id
-            )
-        except SubmitSurvey.DoesNotExist:
-            context['submit_survey'] = None
+        # try:
+        #     context['submit_survey'] = SubmitSurvey.objects.get(
+        #         Survey_Code__id=self.object.id,
+        #         Student_Code__id=self.request.user.id
+        #     )
+        # except SubmitSurvey.DoesNotExist:
+        #     context['submit_survey'] = None
+        #
+        # if context['submit_survey']:
+        #     for x in context['options']:
+        #         if len(context['submit_survey'].answerinfo.filter(Answer_Value=x.id)) > 0:
+        #             x.was_chosen = True
+        #         else:
+        #             x.was_chosen = False
+        #
+        #     for x in context['questions']:
+        #         try:
+        #             x.answer = AnswerInfo.objects.get(
+        #                 Submit_Code=context['submit_survey'].id, Question_Code=x.id)
+        #         except AnswerInfo.DoesNotExist:
+        #             x.answer = None
+        #
+        #     context['can_submit'] = False
+        #
+        #
+        # else:
+        #     if self.object.End_Date > datetime.now(timezone.utc):
+        #         context['can_submit'] = True
+        #     else:
+        #         context['can_submit'] = False
+        #         context['datetimeexpired'] = 1
 
-        if context['submit_survey']:
-            for x in context['options']:
-                if len(context['submit_survey'].answerinfo.filter(Answer_Value=x.id)) > 0:
-                    x.was_chosen = True
-                else:
-                    x.was_chosen = False
-
-            for x in context['questions']:
-                try:
-                    x.answer = AnswerInfo.objects.get(
-                        Submit_Code=context['submit_survey'].id, Question_Code=x.id)
-                except AnswerInfo.DoesNotExist:
-                    x.answer = None
-
-            context['can_submit'] = False
-
-
-        else:
-            if self.object.End_Date > datetime.now(timezone.utc):
-                context['can_submit'] = True
-            else:
-                context['can_submit'] = False
-                context['datetimeexpired'] = 1
+        context['can_submit'], context['datetimeexpired'], context['options'], context[
+            'questions'] = self.object.can_submit(self.request.user)
         return context
 
 
@@ -1084,7 +1087,7 @@ def PageUpdateAjax(request, course, chapter):
                                          currentPageNumber=None, totalPage=None,
                                          studytimeinseconds=None,
                                          )
-    return JsonResponse(jsondata)
+    return JsonResponse(jsondata) if jsondata else None
 
 
 def StudentChapterLogUpdateAjax(request, chapter):

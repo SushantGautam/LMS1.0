@@ -13,8 +13,8 @@
 {% endblock %}
 {% block customjss %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-  <script src=" {% static '/vendorsx/nprogress/nprogress.js' %}"></script>
-  <script src=" {% static '/vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+  <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+  <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
   <script>
       $('#mcq_create_button').on('click', function () {
           $.ajax({

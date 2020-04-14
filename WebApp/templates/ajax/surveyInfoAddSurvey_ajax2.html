@@ -12,16 +12,28 @@
                   {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
                   {% if category_name == 'live' %}
-                    {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}&course_code={{ course_code }}
+                    {% if update_form %}
+                      {% url 'TeacherSurveyInfo_ajax_update' pk=object.id %}?category_name={{ category_name }}&course_code={{ course_code }}
+                    {% else %}
+                      {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}&course_code={{ course_code }}
+                    {% endif %}
                   {% else %}
-                    {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
+                    {% if update_form %}
+                      {% url 'TeacherSurveyInfo_ajax_update' pk=object.id %}?category_name={{ category_name }}
+                    {% else %}
+                      {% url 'TeacherSurveyInfo_ajax' %}?category_name={{ category_name }}
+                    {% endif %}
                   {% endif %}
                 {% endif %}
               {% else %}
                 {% if "retake" in request.path %}
                   {% url 'surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
-                  {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
+                  {% if update_form %}
+                    {% url 'surveyinfo_ajax_update' pk=object.id %}?category_name={{ category_name }}
+                  {% else %}
+                    {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
+                   {% endif %}
                 {% endif %}
               {% endif %}"
       method="post">
@@ -179,7 +191,7 @@
 </div>
 
 <script src=" {% static 'build/js/survey.js' %}"></script>
-<script src=" {% static '/duration_picker/bootstrap-duration-picker.js' %}"></script>
+<script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
 {% block customjss %}
     <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
     <script>
@@ -360,7 +372,7 @@
         $('#first_sa_que_div').prepend(`<p>1</p>`);
         $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
-        if ("{{ category_name }}" === "live") {
+        if ("{{ category_name }}" === "live" || "{{ category_name }}" === "course") {
             $('#id_End_Time').durationPicker({
                 showSeconds: true,
                 showDays: false,

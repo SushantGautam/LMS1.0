@@ -97,6 +97,12 @@ urlpatterns += (
          name='teacherSurveyFilterCategory'),
     path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
          name='TeacherSurveyInfo_ajax'),
+    # path('TeacherSurveyInfo_ajax/', survey_views.SurveyInfo_ajax.as_view(),
+    #      name='TeacherSurveyInfo_ajax'),
+    path('TeacherSurveyInfo_ajax_update/<int:pk>/', survey_views.SurveyInfoAjaxUpdate.as_view(),
+         name='TeacherSurveyInfo_ajax_update'),
+    path('TeacherSurveyInfo_ajax_update_limited/<int:pk>/', survey_views.SurveyInfoAjaxUpdateLimited.as_view(),
+         name='TeacherSurveyInfo_ajax_update_limited'),
     path('surveyinforetake_ajax/<int:pk>/', survey_views.SurveyInfoRetake_ajax.as_view(),
          name='teacher_surveyinfo_retake_ajax'),
 
@@ -271,6 +277,8 @@ urlpatterns += (
          admin_views.CourseProgressView, name='course_progress'),
     path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
          admin_views.CourseProgressView, name='course_progress_withinning'),
+    path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
+         admin_views.StudentChapterProgressView, name='student_chapter_progress_teacher'),
 )
 
 # Teacher's Attendance

@@ -25,6 +25,7 @@
         <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet">
         <!-- bootstrap-daterangepicker -->
         <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+        {% comment %}
         <!-- iCheck -->
         <!-- <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet"> -->
         <!-- bootstrap-progressbar -->
@@ -33,10 +34,11 @@
         <!-- custom tables-->
 
         <!-- <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet" /> -->
+        {% endcomment %}
         <!-- Custom Theme Style -->
-       
-        <link href="{% static '/build/css/theme.min.css' %}" rel="stylesheet">
-        
+
+        <link href="{% static 'build/css/theme.min.css' %}" rel="stylesheet">
+
 
         <link rel="icon" hreextrastylef="{% static 'images/icon.jpg' %}" type="image/x-icon"/>
 
@@ -107,9 +109,11 @@
     <!-- Bootstrap -->
     <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <!-- FastClick -->
+{#    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>#}
     <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
     <!-- NProgress -->
-    <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+    <script src="{% static 'vendorsx/nprogress/nprogress.min.js' %}"></script>
+    {% comment %}
     <!-- bootstrap-progressbar -->
     <!-- <script src="{% static "vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js" %}"></script> -->
     <!-- iCheck -->
@@ -120,7 +124,7 @@
     <!-- bootstrap-wysiwyg -->
     <!-- <script src="{% static "vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js" %}"></script>
     <script src="{% static "vendorsx/jquery.hotkeys/jquery.hotkeys.js" %}"></script>
-    <script src="{% static "vendorsx/google-code-prettify/src/prettify.js" %}"></script> -->
+    <script src="{% static "vendorsx/google-code-prettify/bin/prettify.min.js" %}"></script> -->
     <!-- jQuery Tags Input -->
     <!-- <script src="{% static "vendorsx/jquery.tagsinput/src/jquery.tagsinput.js" %}"></script> -->
     <!-- Switchery -->
@@ -135,6 +139,7 @@
     <!-- <script src="{% static "vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js" %}"></script> -->
     <!-- starrr -->
     <!-- <script src="{% static "vendorsx/starrr/dist/starrr.js" %}"></script> -->
+    {% endcomment %}
     <script src="{% static 'js/circle-progress.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendorsx/pdfmake/build/pdfmake.min.js' %}"></script>
@@ -148,7 +153,7 @@
     <script src="{% static 'vendorsx/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-    <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive-bootstrap.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
     <!-- Custom JS -->
     <script src=" {% static 'js/common.js' %}"></script>
@@ -160,7 +165,7 @@
             $('#alert-message').fadeOut('slow');
         }, 3000);
     </script>
-    <script src=" {% static '/build/js/custom.js' %}"></script>
+    <script src=" {% static 'build/js/custom.js' %}"></script>
 
     <script>
         window.addEventListener('beforeunload', function (e) {

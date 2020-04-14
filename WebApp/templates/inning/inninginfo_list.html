@@ -52,14 +52,9 @@
                 {% for object in object_list %}
                     <tr>
                         <td style="vertical-align: middle;">{{ forloop.counter }}</td>
-                        <td style="vertical-align: middle;"><B><a
-                                href="
-                                    {% if '/mysessions' not in request.path %}
-                                        {{ object.get_absolute_url }}
-                                    {% elif 'mysessions' in request.path %}
-                                        {% url 'teachers_mysession_detail' object.pk %}
-                                    {% endif %}
-                                ">{{ object.Inning_Name }}</a></B></td>
+                        <td style="vertical-align: middle;"><b>
+                            <a href="{% if '/mysessions' not in request.path %}{{ object.get_absolute_url }}{% elif 'mysessions' in request.path %}{% url 'teachers_mysession_detail' object.pk %}{% endif %}">{{ object.Inning_Name }}</a>
+                        </b></td>
                         <td style="vertical-align: middle;">{{ object.Groups }}</td>
                         <td style="vertical-align: middle;">{{ object.Course_Group.count }}</td>
                         <td style="vertical-align: middle;">{{ object.Start_Date }}</td>
