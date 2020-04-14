@@ -2326,8 +2326,10 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
             jsondata = json.load(outfile)
         isjson = True
     except FileNotFoundError:
+        jsondata = ''
         print(FileNotFoundError)
     except JSONDecodeError:
+        jsondata = ''
         print(JSONDecodeError)
         # with open(student_data_file) as outfile:
         #     if outfile.read()[0] == '{' and 'contents' in outfile.read():
