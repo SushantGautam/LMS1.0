@@ -2428,8 +2428,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             # Attendance here means chapter completion.
             ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
                 field and the chapter progress is 100% '''
-            if chapter.mustreadtime:
-                if int(jsondata['contents']['totalstudytime']):
+            if chapter.mustreadtime and jsondata:
+                if jsondata['contents']['totalstudytime']:
                     attendance = int(jsondata['contents'][
                                          'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
                 else:
