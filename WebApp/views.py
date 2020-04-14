@@ -2571,3 +2571,21 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
 
 def loaderverifylink(request):
     return render(request, 'loaderio.html')
+
+def notice_view_create(request):
+    if request.method == 'POST':
+        print(request.POST['user_code'], request.POST['notice_code'], request.POST['dont_show'])
+        user_code = request.user
+        notice_code = Notice.objects.get(id=request.POST['notice_code'])
+        if NoticeView.objects.filter(user_code=user_code, notice_code=notice_code).exists():
+            obj = NoticeView.objects.get(user_code=user_code, notice_code=notice_code)
+        else:
+            obj = NoticeView()
+            obj.user_code = user_code
+            obj.notice_code = notice_code
+        if request.POST['dont_show'] == 'true':
+            obj.dont_show = True
+        else:
+            obj.dont_show = False
+        obj.save()
+        return JsonResponse({'status': 'Success', 'msg': 'Added status'})
