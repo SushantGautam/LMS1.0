@@ -2338,6 +2338,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
 def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, currentPageNumber=None, totalPage=None,
                           studytimeinseconds=None, createFile=True, isjson=False
                           ):
+    jsondata = None
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
     try:
         os.makedirs(path)  # Creates the directories and subdirectories structure
@@ -2369,8 +2370,8 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
                 jsondata['contents']['totalPage'] = totalPage
-        with open(student_data_file, "w") as outfile:
-            json.dump(jsondata, outfile, indent=4)
+            with open(student_data_file, "w") as outfile:
+                json.dump(jsondata, outfile, indent=4)
     else:
         if createFile:
             if fromcontents:
@@ -2399,10 +2400,11 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
                                              createFile=False)
             if jsondata is not None:
-                if int(jsondata['contents']['totalPage']) > 0 and int(
-                        jsondata['contents']['currentpagenumber']) > 0:
-                    progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
-                        jsondata['contents']['totalPage'])
+                if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
+                    if int(jsondata['contents']['totalPage']) > 0 and int(
+                            jsondata['contents']['currentpagenumber']) > 0:
+                        progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                            jsondata['contents']['totalPage'])
                 else:
                     progresspercent = 0
             else:
@@ -2427,9 +2429,11 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
                 field and the chapter progress is 100% '''
             if chapter.mustreadtime:
-                attendance = int(
-                    jsondata['contents'][
-                        'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                if int(jsondata['contents']['totalstudytime']):
+                    attendance = int(jsondata['contents'][
+                                         'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                else:
+                    attendance = False
             else:
                 attendance = None
             student_data.append(
