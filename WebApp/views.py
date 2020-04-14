@@ -2452,6 +2452,7 @@ def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False)
             jsondata = json.load(outfile)
         isjson = True
     except:
+        jsondata = ''
         isjson = False
     if os.path.isfile(student_data_file) and isjson:
         if not type:
