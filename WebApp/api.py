@@ -83,6 +83,13 @@ class QuestionInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.QuestionInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = self.queryset
+        if self.request.GET.get('Assignment_Code', None):
+            query_set = queryset.filter(Assignment_Code=self.request.GET.get('Assignment_Code', None))
+        return query_set
+
+
 
 class AssignAnswerInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the AssignAnswerInfo class"""

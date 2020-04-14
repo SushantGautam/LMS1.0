@@ -101,7 +101,7 @@ class QuestionInfoSerializer(serializers.ModelSerializer):
             'pk',
             'Question_Title', 'Question_Score', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime',
             'Register_Agent', 'Question_Media_File', 'Question_Description',
-            'Answer_Choices', 'Answer_Type'
+            'Answer_Choices', 'Answer_Type', 'Assignment_Code'
         )
 
 
