@@ -214,8 +214,10 @@ def start(request):
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now()).count
 
-            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
-                notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
+                                     status=True).exists():
+                notice = \
+                    Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
             else:
                 notice = None
             # return HttpResponse("default home")
@@ -789,13 +791,14 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     #     )
 
     def form_valid(self, form):
-       super(ChapterInfoCreateViewAjax, self).form_valid(form)
-       return JsonResponse(
-           data={'Message': 'Success'}
-       )
+        super(ChapterInfoCreateViewAjax, self).form_valid(form)
+        return JsonResponse(
+            data={'Message': 'Success'}
+        )
 
     def form_invalid(self, form):
-       return JsonResponse({'errors': form.errors}, status=500)
+        return JsonResponse({'errors': form.errors}, status=500)
+
 
 class ChapterInfoDetailView(DetailView):
     model = ChapterInfo
@@ -2315,6 +2318,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
 def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, currentPageNumber=None, totalPage=None,
                           studytimeinseconds=None, createFile=True, isjson=False
                           ):
+    jsondata = None
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
     try:
         os.makedirs(path)  # Creates the directories and subdirectories structure
@@ -2346,8 +2350,8 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
                 jsondata['contents']['totalPage'] = totalPage
-        with open(student_data_file, "w") as outfile:
-            json.dump(jsondata, outfile, indent=4)
+            with open(student_data_file, "w") as outfile:
+                json.dump(jsondata, outfile, indent=4)
     else:
         if createFile:
             if fromcontents:
@@ -2376,10 +2380,12 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
                                              createFile=False)
             if jsondata is not None:
-                if int(jsondata['contents']['totalPage']) > 0 and int(
+                if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
+                    if int(
+                            jsondata['contents']['totalPage']) > 0 and int(
                         jsondata['contents']['currentpagenumber']) > 0:
-                    progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
-                        jsondata['contents']['totalPage'])
+                        progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                            jsondata['contents']['totalPage'])
                 else:
                     progresspercent = 0
             else:
