@@ -1235,8 +1235,9 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
         if Obj.Assignment_Start and Obj.Assignment_Deadline:
             if (Obj.Assignment_Start > Obj.Assignment_Deadline):
-                print('here')
-                raise ValidationError("End date must be greater than start date")
+                return JsonResponse(
+                    data={'Message': 'Assignment Deadline must be greater than start date.'}, status=500
+                )
         Obj.save()
 
         return JsonResponse(
