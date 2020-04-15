@@ -268,9 +268,9 @@ class GroupMappingForm(forms.ModelForm):
         groupmapping = GroupMapping.objects.filter(GroupMapping_Name=name, Center_Code=self.request.user.Center_Code)
         if groupmapping.exists():
             if self.instance.id:
-                if groupmapping.get(pk=self.instance.id,
-                                    Center_Code=self.request.user.Center_Code).GroupMapping_Name == name:
-                    return cleaned_data
+                if groupmapping.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if groupmapping.get(pk=self.instance.id).GroupMapping_Name == name:
+                        return cleaned_data
             raise forms.ValidationError('Group Name already Exists')
 
 class InningGroupForm(forms.ModelForm):
