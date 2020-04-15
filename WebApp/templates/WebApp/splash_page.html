@@ -108,18 +108,23 @@
 <body>
     <header class="v-header container">
         <div class="fullscreen-video-wrap">
-            <video src="media/1.mp4" autoplay loop></video>
+            <video id='vid' src="{% static 'video/video.mp4' %}" autoplay loop></video>
         </div>
 
         <div class="header-overlay"></div>
         <div class="header-content text-md-center">
-            <img src="/static/images/logo_orange_trans.png" alt="LMS LOGO" class="logo"/>
+            <img src="{% static 'images/logo_orange_trans.png' %}" alt="LMS LOGO" class="logo"/>
             <h1>Welcome to U-LMS 2020</h1>
             <p>Enter into the online Education System</p>
-            <a class="btn" href="/login">Login</a><br><br>
-            Don't have an Account, <a class="btn-reg" href="/register">Register Now</a>
+            <a class="btn" href="{% url 'login' %}">Login</a><br><br>
+            Don't have an Account, <a class="btn-reg" href="{% url 'register' %}">Register Now</a>
         </div>
     </header>
+
+    <script>
+        document.getElementById('vid').play();
+    </script>
+
 </body>
 
 </html>
