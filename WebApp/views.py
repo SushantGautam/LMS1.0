@@ -214,10 +214,13 @@ def start(request):
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime.now()).count
 
-            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
-                notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
+                                     status=True).exists():
+                notice = \
+                    Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
                 if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
-                    notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
+                    notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[
+                        0].dont_show
                     if notice_view_flag:
                         notice = None
             else:
@@ -768,6 +771,7 @@ class ChapterInfoCreateView(CreateView):
         context['datetime'] = datetime.now()
         return context
 
+
 class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
@@ -803,7 +807,8 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         )
 
     def form_invalid(self, form):
-       return JsonResponse({'errors': form.errors}, status=500)
+        return JsonResponse({'errors': form.errors}, status=500)
+
 
 class ChapterInfoDetailView(DetailView):
     model = ChapterInfo
@@ -875,6 +880,7 @@ class ChapterInfoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         return context
+
 
 class SessionInfoCreateViewPopup(CreateView):
     model = SessionInfo
@@ -2338,6 +2344,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
 def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, currentPageNumber=None, totalPage=None,
                           studytimeinseconds=None, createFile=True, isjson=False
                           ):
+    jsondata = None
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
     try:
         os.makedirs(path)  # Creates the directories and subdirectories structure
@@ -2369,8 +2376,8 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
                 jsondata['contents']['totalPage'] = totalPage
-        with open(student_data_file, "w") as outfile:
-            json.dump(jsondata, outfile, indent=4)
+            with open(student_data_file, "w") as outfile:
+                json.dump(jsondata, outfile, indent=4)
     else:
         if createFile:
             if fromcontents:
@@ -2399,10 +2406,11 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
                                              createFile=False)
             if jsondata is not None:
-                if int(jsondata['contents']['totalPage']) > 0 and int(
-                        jsondata['contents']['currentpagenumber']) > 0:
-                    progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
-                        jsondata['contents']['totalPage'])
+                if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
+                    if int(jsondata['contents']['totalPage']) > 0 and int(
+                            jsondata['contents']['currentpagenumber']) > 0:
+                        progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                            jsondata['contents']['totalPage'])
                 else:
                     progresspercent = 0
             else:
@@ -2426,41 +2434,71 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             # Attendance here means chapter completion.
             ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
                 field and the chapter progress is 100% '''
-            if chapter.mustreadtime:
-                attendance = int(
-                    jsondata['contents'][
-                        'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+            if chapter.mustreadtime and jsondata:
+                if jsondata['contents']['totalstudytime']:
+                    attendance = int(jsondata['contents'][
+                                         'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                else:
+                    attendance = False
             else:
                 attendance = None
-            student_data.append(
-                {
-                    'student': x,
-                    'chapter': {
-                        'chapterObj': chapter,
-                        'laststudydate': datetime.strptime(jsondata['contents'][
-                                                               'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
-                            "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
-                        'totalstudytime': timedelta(seconds=int(jsondata['contents'][
-                                                                    'totalstudytime'])) if jsondata is not None else "00:00:00",
-                        'currentpagenumber': int(
-                            jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
-                        'totalPage': int(
-                            jsondata['contents']['totalPage']) if jsondata is not None else None,
-                        'progresspercent': progresspercent,
-                        'attendance': attendance,
+            if jsondata:
+                student_data.append(
+                    {
+                        'student': x,
+                        'chapter': {
+                            'chapterObj': chapter,
+                            'laststudydate': datetime.strptime(jsondata['contents'][
+                                                                   'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
+                                "%Y/%m/%d %H:%M:%S") if jsondata['contents']['laststudydate'] is not None else None,
+                            'totalstudytime': timedelta(seconds=int(jsondata['contents']['totalstudytime'])) if
+                            jsondata['contents']['totalstudytime'] is not None else "00:00:00",
+                            'currentpagenumber': int(
+                                jsondata['contents']['currentpagenumber']) if jsondata['contents'][
+                                                                                  'currentpagenumber'] is not None else None,
+                            'totalPage': int(
+                                jsondata['contents']['totalPage']) if jsondata['contents'][
+                                                                          'totalPage'] is not None else None,
+                            'progresspercent': progresspercent,
+                            'attendance': attendance,
+                        },
+                        'quiz': {
+                            'quiz_count': student_quiz.count(),
+                            'completed_quiz': student_result.filter(complete=True).count(),
+                            'progress': student_result.filter(
+                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
+                            # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
+                            'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
+                                complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
+                        }
                     },
-                    'quiz': {
-                        'quiz_count': student_quiz.count(),
-                        'completed_quiz': student_result.filter(complete=True).count(),
-                        'progress': student_result.filter(
-                            complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
-                        # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
-                        # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                        'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
-                            complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                    }
-                },
-            )
+                )
+            else:
+                student_data.append(
+                    {
+                        'student': x,
+                        'chapter': {
+                            'chapterObj': chapter,
+                            'laststudydate': None,
+                            'totalstudytime': "00:00:00",
+                            'currentpagenumber': None,
+                            'totalPage': None,
+                            'progresspercent': progresspercent,
+                            'attendance': attendance,
+                        },
+                        'quiz': {
+                            'quiz_count': student_quiz.count(),
+                            'completed_quiz': student_result.filter(complete=True).count(),
+                            'progress': student_result.filter(
+                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
+                            # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
+                            'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
+                                complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
+                        }
+                    },
+                )
     return student_data
 
 
@@ -2519,7 +2557,7 @@ def getListOfFiles(dirName, studentid):
         if os.path.isdir(fullPath):
             # conv and compare is added to get only the files of 7days
             conv = datetime.strptime(entry, '%Y%m%d').date()
-            compare = (datetime.today() - timedelta(days=7)).date()
+            compare = (datetime.today() - timedelta(days=30)).date()
             if (compare < conv):
                 allFiles = allFiles + getListOfFiles(fullPath, studentid)
         elif entry == str(studentid) + '.txt':
@@ -2571,6 +2609,7 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
 
 def loaderverifylink(request):
     return render(request, 'loaderio.html')
+
 
 def notice_view_create(request):
     if request.method == 'POST':
