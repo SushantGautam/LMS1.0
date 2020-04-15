@@ -38,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label for="email" class="col-md-2 control-label">
-                    <i class="fa fa-envelope"></i> &nbsp; &nbsp;Email
+                    Email &nbsp; &nbsp; <i class="fa fa-envelope"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.email }}</h4>
@@ -46,7 +46,7 @@
             </div>
             <div class="form-group">
                 <label for="date_of_birth" class="col-md-2 control-label">
-                    <i class="fa fa-calendar"></i> &nbsp; &nbsp; Date of Birth
+                    Date of Birth &nbsp; &nbsp; <i class="fa fa-calendar"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.Member_BirthDate|date }}</h4>
@@ -54,7 +54,7 @@
             </div>
             <div class="form-group">
                 <label for="gender" class="col-md-2 control-label">
-                    <i class="fa fa-gender"></i> &nbsp; &nbsp; Gender
+                    Gender &nbsp; &nbsp; <i class="fa fa-gender"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.get_Member_Gender_display }}</h4>
@@ -62,7 +62,7 @@
             </div>
             <div class="form-group">
                 <label for="phone_number" class="col-md-2 control-label">
-                    <i class="fa fa-phone"></i> &nbsp; &nbsp; Phone Number
+                    Phone Number &nbsp; &nbsp; <i class="fa fa-phone"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.Member_Phone }}</h4>
@@ -70,7 +70,7 @@
             </div>
             <div class="form-group">
                 <label for="temporary_address" class="col-md-2 control-label">
-                    <i class="fa fa-map-marker"></i> &nbsp; &nbsp; Temporary Address
+                    Temporary Address &nbsp; &nbsp; <i class="fa fa-map-marker"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.Member_Temporary_Address }}</h4>
@@ -78,7 +78,7 @@
             </div>
             <div class="form-group">
                 <label for="permanent_address" class="col-md-2 control-label">
-                    <i class="fa fa-home"></i> &nbsp; &nbsp; Permanent Address
+                    Permanent Address &nbsp; &nbsp; <i class="fa fa-home"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.Member_Permanent_Address }}</h4>
@@ -87,7 +87,7 @@
 
             <div class="form-group">
                 <label for="center_code" class="col-md-2 control-label">
-                    <i class="fa fa-institution"></i> &nbsp; &nbsp; Center Code
+                    Center Code &nbsp; &nbsp; <i class="fa fa-institution"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.Center_Code.Center_Name }}</h4>
@@ -95,7 +95,7 @@
             </div>
             <div class="form-group">
                 <label for="user_type" class="col-md-2 control-label">
-                    <i class="fa fa-user"></i> &nbsp; &nbsp; User Type
+                    User Type &nbsp; &nbsp; <i class="fa fa-user"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.get_user_type }}</h4>
@@ -103,7 +103,7 @@
             </div>
             <div class="form-group">
                 <label for="last_login" class="col-md-2 control-label">
-                    <i class="fa fa-clock-o"></i> &nbsp; &nbsp; Last Login
+                    Last Login &nbsp; &nbsp; <i class="fa fa-clock-o"></i>
                 </label>
                 <div class="col-md-6">
                     <h4>{{ user.last_login|timesince }} ago</h4>

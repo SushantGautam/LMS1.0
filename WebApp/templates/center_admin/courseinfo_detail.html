@@ -189,7 +189,18 @@
                                 <i class="fa fa-clock-o fa-fw"></i> 4 hrs &nbsp;
                                 <i class="fa fa-calendar fa-fw"></i> 21/10/14
                                 <br />
-                                <i class="fa fa-user fa-fw"></i> Instructor: Adrian Demian
+                                <i class="fa fa-user fa-fw"></i> Instructor:
+                                {% if object.get_teachers_of_this_course %}
+                                <ul class="row">
+                                    {% for eachTeacher in object.get_teachers_of_this_course %}
+                                    <li>
+                                        {{ eachTeacher.getFullName }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                &nbsp; No Teachers Assigned Yet
+                                {% endif %}
                                 <br />
                                 <i class="fa fa-mortar-board fa-fw"></i> Max. students: 50
                                 <br />

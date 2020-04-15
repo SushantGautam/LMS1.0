@@ -72,7 +72,6 @@ class AjaxableResponseMixin:
     Mixin to add AJAX support to a form.
     Must be used with an object-based FormView (e.g. CreateView)
     """
-
     def form_invalid(self, form):
         response = super().form_invalid(form)
         if self.request.is_ajax():
@@ -100,10 +99,12 @@ def ProfileView(request):
     return render(request, 'center_admin/profile.html')
 
 
-def login(request, template_name='registration/login.html',
+def login(request,
+          template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm,
-          extra_context=None, redirect_authenticated_user=True):
+          extra_context=None,
+          redirect_authenticated_user=True):
     return LoginView.as_view(
         template_name=template_name,
         redirect_field_name=redirect_field_name,
@@ -113,7 +114,8 @@ def login(request, template_name='registration/login.html',
     )(request)
 
 
-def logout(request, next_page=None,
+def logout(request,
+           next_page=None,
            template_name='logged_out.html',
            redirect_field_name=REDIRECT_FIELD_NAME,
            extra_context=None):
@@ -158,20 +160,26 @@ def calendar(request):
         if request.GET.get('event_type') == "all":
             all_events = Events.objects.all()
         else:
-            all_events = Events.objects.filter(event_type__icontains=request.GET.get('event_type'))
+            all_events = Events.objects.filter(
+                event_type__icontains=request.GET.get('event_type'))
 
         for i in all_events:
             event_sub_arr = {}
             event_sub_arr['title'] = i.event_name
-            start_date = datetime.strptime(str(i.start_date.date()), "%Y-%m-%d").strftime("%Y-%m-%d")
-            end_date = datetime.strptime(str(i.end_date.date()), "%Y-%m-%d").strftime("%Y-%m-%d")
+            start_date = datetime.strptime(str(i.start_date.date()),
+                                           "%Y-%m-%d").strftime("%Y-%m-%d")
+            end_date = datetime.strptime(str(i.end_date.date()),
+                                         "%Y-%m-%d").strftime("%Y-%m-%d")
             event_sub_arr['start'] = start_date
             event_sub_arr['end'] = end_date
             event_arr.append(event_sub_arr)
         return HttpResponse(json.dumps(event_arr))
 
     # print(context['events'])
-    return render(request, 'WebApp/calendar.html', {'events': all_events, "get_event_types": get_event_types})
+    return render(request, 'WebApp/calendar.html', {
+        'events': all_events,
+        "get_event_types": get_event_types
+    })
 
 
 def start(request):
@@ -182,47 +190,71 @@ def start(request):
     if request.user.is_authenticated:
         if not request.user.Use_Flag:
             logout(request)
-            messages.add_message(request, messages.ERROR, 'Your account is deactivated. Please contact admin.')
+            messages.add_message(
+                request, messages.ERROR,
+                'Your account is deactivated. Please contact admin.')
             return redirect('login')
 
         if not request.user.Center_Code:
             logout(request)
-            messages.add_message(request, messages.ERROR, 'No center assigned. Please contact admin.')
+            messages.add_message(request, messages.ERROR,
+                                 'No center assigned. Please contact admin.')
             return redirect('login')
 
         if request.user.Is_CenterAdmin:
-            thread = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).order_by('-pub_date')[
-                     :5]
-            wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
+            thread = Thread.objects.visible().filter(
+                user__Center_Code=request.user.Center_Code).order_by(
+                    '-pub_date')[:5]
+            wordCloud = Thread.objects.filter(
+                user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
-            course = CourseInfo.objects.filter(Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
-                '-Register_DateTime')[:5]
-            coursecount = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True).count
-            studentcount = MemberInfo.objects.filter(Is_Student=True, Center_Code=request.user.Center_Code).count
-            teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
-            threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count
-            totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
-            surveys = SurveyInfo.objects.filter(Q(Use_Flag=True),
-                                                Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                Q(End_Date__gte=datetime.now()))[:5]
-            surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
-                                                    Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                    Q(End_Date__gte=datetime.now())).count
-            sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                 End_Date__gte=datetime.now())[:5]
-            sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                     End_Date__gte=datetime.now()).count
+            course = CourseInfo.objects.filter(
+                Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
+                    '-Register_DateTime')[:5]
+            coursecount = CourseInfo.objects.filter(
+                Center_Code=request.user.Center_Code, Use_Flag=True).count
+            studentcount = MemberInfo.objects.filter(
+                Is_Student=True, Center_Code=request.user.Center_Code).count
+            teachercount = MemberInfo.objects.filter(
+                Is_Teacher=True, Center_Code=request.user.Center_Code).count
+            threadcount = Thread.objects.visible().filter(
+                user__Center_Code=request.user.Center_Code).count
+            totalcount = MemberInfo.objects.filter(
+                Center_Code=request.user.Center_Code).count
+            surveys = SurveyInfo.objects.filter(
+                Q(Use_Flag=True),
+                Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
+                Q(End_Date__gte=datetime.now()))[:5]
+            surveycount = SurveyInfo.objects.filter(
+                Q(Use_Flag=True),
+                Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
+                Q(End_Date__gte=datetime.now())).count
+            sessions = InningInfo.objects.filter(
+                Center_Code=request.user.Center_Code,
+                Use_Flag=True,
+                End_Date__gte=datetime.now())[:5]
+            sessioncount = InningInfo.objects.filter(
+                Center_Code=request.user.Center_Code,
+                Use_Flag=True,
+                End_Date__gte=datetime.now()).count
 
             # return HttpResponse("default home")
-            return render(request, "center_admin/dashboard.html",
-                          {'course': course, 'coursecount': coursecount, 'studentcount': studentcount,
-                           'teachercount': teachercount,
-                           'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,
-                           'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
-                           'surveys': surveys,
-                           'surveycount': surveycount,
-                           'sessions': sessions,
-                           'sessioncount': sessioncount})
+            return render(
+                request, "center_admin/dashboard.html", {
+                    'course': course,
+                    'coursecount': coursecount,
+                    'studentcount': studentcount,
+                    'teachercount': teachercount,
+                    'threadcount': threadcount,
+                    'totalcount': totalcount,
+                    'thread': thread,
+                    'wordCloud': wordCloud,
+                    'get_top_thread_keywords': thread_keywords,
+                    'surveys': surveys,
+                    'surveycount': surveycount,
+                    'sessions': sessions,
+                    'sessioncount': sessioncount
+                })
         elif request.user.Is_Student:
             return redirect('student_home')
         elif request.user.Is_Teacher:
@@ -231,8 +263,10 @@ def start(request):
             return redirect('parent_home')
         else:
             logout(request)
-            messages.add_message(request, messages.ERROR,
-                                 'You are not assigned to any member type. Please contact admin.')
+            messages.add_message(
+                request, messages.ERROR,
+                'You are not assigned to any member type. Please contact admin.'
+            )
             return redirect('login')
 
     else:
@@ -252,10 +286,16 @@ def edit_basic_info_ajax(request):
             obj.Member_Gender = request.POST['Member_Gender']
             obj.save()
             messages.success(request, 'Profile basic info updated.')
-            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+            return JsonResponse({
+                'status': 'Success',
+                'msg': 'save successfully'
+            })
         except MemberInfo.DoesNotExist:
             messages.error(request, "Object doesn't exist")
-            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+            return JsonResponse({
+                'status': 'Fail',
+                'msg': 'Object does not exist'
+            })
     else:
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
@@ -267,14 +307,22 @@ def edit_contact_info_ajax(request):
             obj = MemberInfo.objects.get(pk=request.user.id)
             obj.email = request.POST['email']
             obj.Member_Phone = request.POST['Member_Phone']
-            obj.Member_Temporary_Address = request.POST['Member_Temporary_Address']
-            obj.Member_Permanent_Address = request.POST['Member_Permanent_Address']
+            obj.Member_Temporary_Address = request.POST[
+                'Member_Temporary_Address']
+            obj.Member_Permanent_Address = request.POST[
+                'Member_Permanent_Address']
             obj.save()
             messages.success(request, 'Profile Contact details updated.')
-            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+            return JsonResponse({
+                'status': 'Success',
+                'msg': 'save successfully'
+            })
         except MemberInfo.DoesNotExist:
             messages.error(request, "Object doesn't exist")
-            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+            return JsonResponse({
+                'status': 'Fail',
+                'msg': 'Object does not exist'
+            })
     else:
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
@@ -287,10 +335,16 @@ def edit_description_info_ajax(request):
             obj.Member_Memo = request.POST['Member_Memo']
             obj.save()
             messages.success(request, 'Profile Description updated.')
-            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
+            return JsonResponse({
+                'status': 'Success',
+                'msg': 'save successfully'
+            })
         except MemberInfo.DoesNotExist:
             messages.error(request, "Object doesn't exist")
-            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+            return JsonResponse({
+                'status': 'Fail',
+                'msg': 'Object does not exist'
+            })
     else:
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
@@ -303,21 +357,35 @@ def edit_profile_image_ajax(request):
             media = request.FILES['Member_Avatar']
             if media.size / 1024 > 2048:
                 messages.error(request, "Can't upload File size exceeds 2MB")
-                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+                return JsonResponse(data={
+                    'status': 'Fail',
+                    "msg": "File size exceeds 2MB"
+                },
+                                    status=500)
             path = settings.MEDIA_ROOT
-            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            name = (str(uuid.uuid4())).replace(
+                '-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/Member_images/')
             filename = fs.save(name, media)
             obj.Member_Avatar = 'Member_images/' + name
             obj.save()
             messages.success(request, 'Profile picture updated.')
-            return JsonResponse({'status': 'Success', 'msg': 'Profile Picture Uploaded successfully'})
+            return JsonResponse({
+                'status': 'Success',
+                'msg': 'Profile Picture Uploaded successfully'
+            })
         except MemberInfo.DoesNotExist:
             messages.error(request, "Object doesn't exist")
-            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
+            return JsonResponse({
+                'status': 'Fail',
+                'msg': 'Object does not exist'
+            })
         except:
             messages.error(request, "Error Occured try agian")
-            return JsonResponse({'status': "Fail", 'msg': "Some error occured try again"})
+            return JsonResponse({
+                'status': "Fail",
+                'msg': "Some error occured try again"
+            })
     else:
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
@@ -357,7 +425,8 @@ def change_password_others(request, pk):
         if form.is_valid():
             # user = form.save()
             user = MemberInfo.objects.get(pk=pk)
-            print(form.cleaned_data.get("password"), "  of user", user.username)
+            print(form.cleaned_data.get("password"), "  of user",
+                  user.username)
             user.set_password(form.cleaned_data.get("password"))
             user.save()
 
@@ -370,7 +439,8 @@ def change_password_others(request, pk):
     else:
         form = ChangeOthersPasswordForm()
     return render(request, 'registration/change_password.html', {
-        'form': form, 'usr': MemberInfo.objects.get(pk=pk)
+        'form': form,
+        'usr': MemberInfo.objects.get(pk=pk)
     })
 
 
@@ -413,14 +483,21 @@ class MemberInfoListViewAjax(BaseDatatableView):
     model = MemberInfo
     counter = 0
     template_name = "WebApp/memberinfo_list.html"
-    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Phone',
-               'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
-               'Member_BirthDate', 'type', 'action']
-    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Phone',
-                     'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
+    columns = [
+        'counter', 'username', 'Member_ID', 'full_name', 'first_name',
+        'last_name', 'email', 'Member_Phone', 'Member_Gender', 'Is_Student',
+        'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
+        'Member_BirthDate', 'type', 'action'
+    ]
+    order_columns = [
+        '', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email',
+        'Member_Phone', 'Member_Gender', 'Is_Student', 'Is_Teacher', '', '',
+        '', '', ''
+    ]
 
     def get_initial_queryset(self):
-        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+        return MemberInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
     def render_column(self, row, column):
         # We want to render user as a custom column
@@ -434,9 +511,11 @@ class MemberInfoListViewAjax(BaseDatatableView):
             return row.get_user_type
         elif column == 'action':
             return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
-                    <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
+                    <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (
+                row.get_update_url(), row.id)
         else:
-            return super(MemberInfoListViewAjax, self).render_column(row, column)
+            return super(MemberInfoListViewAjax,
+                         self).render_column(row, column)
 
     def filter_queryset(self, qs):
         # use parameters passed in GET request to filter queryset
@@ -446,14 +525,17 @@ class MemberInfoListViewAjax(BaseDatatableView):
         onlystudents = self.request.GET.get('onlystudents', None)
         onlyteachers = self.request.GET.get('onlyteachers', None)
         if search:
-            qs = qs.filter(username__istartswith=search) | qs.filter(first_name__istartswith=search) | qs.filter(
-                last_name__istartswith=search) | qs.filter(email__istartswith=search) | qs.filter(
-                Member_Phone__istartswith=search)
+            qs = qs.filter(username__istartswith=search) | qs.filter(
+                first_name__istartswith=search) | qs.filter(
+                    last_name__istartswith=search) | qs.filter(
+                        email__istartswith=search) | qs.filter(
+                            Member_Phone__istartswith=search)
         if onlystudents:
             qs = qs.filter(Is_Student=True)
         if onlyteachers:
             qs = qs.filter(Is_Teacher=True)
-        return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+        return qs.filter(Center_Code=self.request.user.Center_Code,
+                         Use_Flag=True)
 
 
 class MemberInfoListViewInactive(ListView):
@@ -461,7 +543,8 @@ class MemberInfoListViewInactive(ListView):
     template_name = 'WebApp/memberinfo_list_inactive.html'
 
     def get_queryset(self):
-        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=False)
+        return MemberInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code, Use_Flag=False)
 
 
 class MemberInfoCreateView(CreateView):
@@ -486,7 +569,8 @@ class MemberInfoCreateView(CreateView):
 def validate_username(request):
     username = request.GET.get('username', None)
     data = {
-        'is_taken': MemberInfo.objects.filter(username__iexact=username).exists()
+        'is_taken':
+        MemberInfo.objects.filter(username__iexact=username).exists()
     }
     if data['is_taken']:
         data['error_message'] = 'A user with this username already exists.'
@@ -511,7 +595,8 @@ def MemberInfoActivate(request, pk):
         obj.save()
         messages.success(request, 'Member is activated sucessfully')
     except:
-        messages.error(request, 'Cannot perform the action. Please try again later')
+        messages.error(request,
+                       'Cannot perform the action. Please try again later')
 
     if (request.POST['url']):
         return redirect(request.POST['url'])
@@ -526,7 +611,8 @@ def MemberInfoDeactivate(request, pk):
         obj.save()
         messages.success(request, 'Member is deactivated sucessfully')
     except:
-        messages.error(request, 'Cannot perform the action. Please try again later')
+        messages.error(request,
+                       'Cannot perform the action. Please try again later')
 
     return redirect('memberinfo_detail', pk=pk)
 
@@ -544,9 +630,13 @@ def ImportCsvFile(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name + '.' + extension, media)
         path = os.path.join(path, filename)
-        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
-        df.column = ['Username', 'Member ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Gender', 'Student',
-                     'Teacher', 'Temporary Address', 'Permanent Address', 'Birthdate']
+        df = pd.read_csv(path,
+                         encoding='utf-8')  # delimiter=';|,', engine='python',
+        df.column = [
+            'Username', 'Member ID', 'First Name', 'Last Name', 'Email',
+            'Phone', 'Gender', 'Student', 'Teacher', 'Temporary Address',
+            'Permanent Address', 'Birthdate'
+        ]
         print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
@@ -563,14 +653,18 @@ def ImportCsvFile(request, *args, **kwargs):
                 obj.Member_Permanent_Address = df.iloc[i]['Permanent Address']
                 obj.Member_Temporary_Address = df.iloc[i]['Temporary Address']
                 try:
-                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'], "%m/%d/%Y").strftime('%Y-%m-%d')
+                    obj.Member_BirthDate = datetime.strptime(
+                        df.iloc[i]['Birthdate'],
+                        "%m/%d/%Y").strftime('%Y-%m-%d')
                 except:
                     obj.Member_BirthDate = None
                 obj.Member_Phone = df.iloc[i]['Phone']
 
-                if df.iloc[i]['Gender'] == 'Male' or df.iloc[i]['Gender'] == 'M':
+                if df.iloc[i]['Gender'] == 'Male' or df.iloc[i][
+                        'Gender'] == 'M':
                     obj.Member_Gender = 'M'
-                elif df.iloc[i]['Gender'] == 'Female' or df.iloc[i]['Gender'] == 'F':
+                elif df.iloc[i]['Gender'] == 'Female' or df.iloc[i][
+                        'Gender'] == 'F':
                     obj.Member_Gender = 'F'
                 else:
                     obj.Member_Gender = ''
@@ -591,7 +685,8 @@ def ImportCsvFile(request, *args, **kwargs):
                     else:
                         obj.Is_Student = False
 
-                obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
+                obj.Center_Code = CenterInfo.objects.get(
+                    id=request.user.Center_Code.id)
                 obj.set_password('00000')
                 obj.save()
 
@@ -599,23 +694,38 @@ def ImportCsvFile(request, *args, **kwargs):
                 # groupmappingpk contains the primary key of the group that is used to call the function.
                 if request.GET.get('groupmappingpk'):
                     # If no group exist then raise the exception to terminate the process
-                    if GroupMapping.objects.filter(pk=request.GET.get('groupmappingpk')).exists():
-                        g = GroupMapping.objects.get(pk=request.GET.get('groupmappingpk'))
+                    if GroupMapping.objects.filter(
+                            pk=request.GET.get('groupmappingpk')).exists():
+                        g = GroupMapping.objects.get(
+                            pk=request.GET.get('groupmappingpk'))
                     else:
-                        raise Exception('Group %s does not exist' % request.GET.get('groupmappingpk'))
+                        raise Exception('Group %s does not exist' %
+                                        request.GET.get('groupmappingpk'))
                     obj.groupmapping_set.add(g)
                 saved_id.append(obj.id)
-
 
             except Exception as e:
                 for j in saved_id:
                     MemberInfo.objects.filter(id=j).delete()
                 msg = "Can't Upload all data. Problem in " + str(
-                    i + 1) + "th row of data while uploading. <br><br> " + "<br> ".join(
-                    ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>" + str(e)
-                return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
-        return JsonResponse(data={"message": "All data has been Uploaded Sucessfully", "class": "text-success",
-                                  "rmclass": "text-danger"})
+                    i + 1
+                ) + "th row of data while uploading. <br><br> " + "<br> ".join(
+                    [
+                        "{} -> {}".format(k, v)
+                        for k, v in df.iloc[i].to_dict().items()
+                    ]) + "<br><br>" + str(e)
+                return JsonResponse(
+                    data={
+                        "message": msg,
+                        "class": "text-danger",
+                        "rmclass": "text-success"
+                    })
+        return JsonResponse(
+            data={
+                "message": "All data has been Uploaded Sucessfully",
+                "class": "text-success",
+                "rmclass": "text-danger"
+            })
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -641,8 +751,10 @@ class PasswordChangeView(PasswordContextMixin, FormView):
         # except the current one.
         update_session_auth_hash(self.request, form.user)
 
-        messages.success(self.request,
-                         'Your password was successfully updated! You can login with your new credentials')
+        messages.success(
+            self.request,
+            'Your password was successfully updated! You can login with your new credentials'
+        )
 
         return super().form_valid(form)
 
@@ -667,8 +779,10 @@ class MemberInfoDeleteView(DeleteView):
             messages.success(request, "The user is deleted Successfully")
             return redirect(redirect_link)
         except:
-            messages.error(request,
-                           "You can't delete this user instead you can turn off the status value which will disable the user.")
+            messages.error(
+                request,
+                "You can't delete this user instead you can turn off the status value which will disable the user."
+            )
             return redirect(redirect_link)
 
 
@@ -678,20 +792,26 @@ class CourseInfoListView(ListView):
     template_name = "center_admin/courseinfo_list.html"
 
     def get_queryset(self):
-        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        qs = self.model.objects.filter(
+            Center_Code=self.request.user.Center_Code)
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
             qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
-                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
-        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
+                messages.error(
+                    self.request,
+                    'Sorry no course found! Try with a different keyword')
+        qs = qs.order_by(
+            "-id"
+        )  # you don't need this if you set up your ordering on the model
         return qs
 
 
 class CourseInfoCreateView(AdminAuthMxnCls, CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
+    template_name = "center_admin/courseinfo_form.html"
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -703,18 +823,24 @@ class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
     model = CourseInfo
     template_name = "center_admin/courseinfo_detail.html"
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
-        context['surveycount'] = SurveyInfo.objects.filter(Course_Code=self.kwargs.get('pk'))
-        context['quizcount'] = Quiz.objects.filter(course_code=self.kwargs.get('pk'), exam_paper=True,
-                                                   chapter_code=None)  # exam type
+        context['chapters'] = ChapterInfo.objects.filter(
+            Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
+        context['surveycount'] = SurveyInfo.objects.filter(
+            Course_Code=self.kwargs.get('pk'))
+        context['quizcount'] = Quiz.objects.filter(
+            course_code=self.kwargs.get('pk'),
+            exam_paper=True,
+            chapter_code=None)  # exam type
         context['numberOfQuizExclExams'] = Quiz.objects.filter(
             chapter_code__in=context['chapters'].values_list('pk'),
-            exam_paper=False, course_code=self.kwargs.get('pk'))
-        context['topic'] = Topic.objects.filter(course_associated_with=self.kwargs.get('pk'))
-        context['exam_quiz'] = Quiz.objects.filter(exam_paper=True, course_code=self.object)
+            exam_paper=False,
+            course_code=self.kwargs.get('pk'))
+        context['topic'] = Topic.objects.filter(
+            course_associated_with=self.kwargs.get('pk'))
+        context['exam_quiz'] = Quiz.objects.filter(exam_paper=True,
+                                                   course_code=self.object)
         return context
 
 
@@ -742,8 +868,10 @@ def CourseInfoDeleteView(request, pk):
             return redirect('courseinfo_list')
 
         except:
-            messages.error(request,
-                           "Cannot delete courses if have any chapters, association with inning groups, survey, quiz or forum. Please make sure all associations with this chapters are deleted. ")
+            messages.error(
+                request,
+                "Cannot delete courses if have any chapters, association with inning groups, survey, quiz or forum. Please make sure all associations with this chapters are deleted. "
+            )
             return redirect('courseinfo_detail', pk=pk)
 
 
@@ -757,7 +885,8 @@ class ChapterInfoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
         context['datetime'] = datetime.now()
         return context
 
@@ -786,24 +915,28 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     #     )
 
     def form_valid(self, form):
-       super(ChapterInfoCreateViewAjax, self).form_valid(form)
-       return JsonResponse(
-           data={'Message': 'Success'}
-       )
+        super(ChapterInfoCreateViewAjax, self).form_valid(form)
+        return JsonResponse(data={'Message': 'Success'})
 
     def form_invalid(self, form):
-       return JsonResponse({'errors': form.errors}, status=500)
+        return JsonResponse({'errors': form.errors}, status=500)
+
 
 class ChapterInfoDetailView(DetailView):
     model = ChapterInfo
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'),
-                                              pk=self.kwargs.get('pk'))
-        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
-        context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
-        context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
+        context['course'] = get_object_or_404(
+            ChapterInfo,
+            Course_Code=self.kwargs.get('course'),
+            pk=self.kwargs.get('pk'))
+        context['assignments'] = AssignmentInfo.objects.filter(
+            Chapter_Code=self.kwargs.get('pk'))
+        context['post_quizes'] = Quiz.objects.filter(
+            chapter_code=self.kwargs.get('pk'), post_test=True)
+        context['pre_quizes'] = Quiz.objects.filter(
+            chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = datetime.now()
         return context
 
@@ -819,9 +952,9 @@ class ChapterInfoDeleteView(DeleteView):
             return redirect('courseinfo_detail', pk=request.POST['course_id'])
 
         except:
-            messages.error(request,
-                           "Cannot delete chapter with assignments")
-            return redirect('chapterinfo_detail', course=self.request.POST['course_id'],
+            messages.error(request, "Cannot delete chapter with assignments")
+            return redirect('chapterinfo_detail',
+                            course=self.request.POST['course_id'],
                             pk=self.request.POST['chapter_id'])
 
 
@@ -832,14 +965,18 @@ def CourseForum(request, course):
     try:
         course_node_forum = NodeGroup.objects.get(title='Course')
     except ObjectDoesNotExist:
-        NodeGroup.objects.create(title='Course', description='Root node for course Forum').save()
+        NodeGroup.objects.create(
+            title='Course', description='Root node for course Forum').save()
         course_node_forum = NodeGroup.objects.get(title='Course')
 
     try:
         course_forum = Topic.objects.get(course_associated_with=course)
     except ObjectDoesNotExist:
-        Topic.objects.create(title=course.Course_Name, node_group=course_node_forum, course_associated_with=course,
-                             center_associated_with=request.user.Center_Code, topic_icon="book").save()
+        Topic.objects.create(title=course.Course_Name,
+                             node_group=course_node_forum,
+                             course_associated_with=course,
+                             center_associated_with=request.user.Center_Code,
+                             topic_icon="book").save()
         course_forum = Topic.objects.get(course_associated_with=course)
 
     return redirect('forum:topic', pk=course_forum.pk)
@@ -851,13 +988,15 @@ class ChapterInfoUpdateView(UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
+        form.instance.mustreadtime = int(
+            form.cleaned_data['mustreadtime']) * 60
         form.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
         return context
 
 
@@ -884,7 +1023,8 @@ class SessionInfoListView(ListView):
 
     # Send data only related to the center
     def get_queryset(self):
-        return SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+        return SessionInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code)
 
 
 class SessionInfoCreateView(CreateView):
@@ -906,7 +1046,9 @@ class InningInfoListView(ListView):
     template_name = 'WebApp/inninginfo_list.html'
 
     def get_queryset(self):
-        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now())
+        return InningInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code,
+            End_Date__gte=datetime.now())
 
 
 class InningInfoListViewInactive(ListView):
@@ -914,7 +1056,9 @@ class InningInfoListViewInactive(ListView):
     template_name = 'WebApp/inninginfo_list_inactive.html'
 
     def get_queryset(self):
-        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__lte=datetime.now())
+        return InningInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code,
+            End_Date__lte=datetime.now())
 
 
 class InningInfoCreateView(CreateView):
@@ -938,9 +1082,12 @@ class InningInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
-        if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs['pk']).exists():
-            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk=self.kwargs['pk'])
+        context['SessionSurvey'] = SurveyInfo.objects.filter(
+            Session_Code=self.kwargs['pk'])
+        if InningManager.objects.filter(
+                sessioninfoobj__pk=self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(
+                InningManager, sessioninfoobj__pk=self.kwargs['pk'])
         return context
 
 
@@ -969,8 +1116,7 @@ def InningInfoDeleteView(request, pk):
             return redirect('inninginfo_list')
 
         except:
-            messages.error(request,
-                           "Cannot delete inning")
+            messages.error(request, "Cannot delete inning")
             return redirect('inninginfo_detail', pk=pk)
 
 
@@ -979,7 +1125,8 @@ class InningGroupListView(ListView):
 
     # Send data only related to the center
     def get_queryset(self):
-        return InningGroup.objects.filter(Center_Code=self.request.user.Center_Code)
+        return InningGroup.objects.filter(
+            Center_Code=self.request.user.Center_Code)
 
 
 class InningGroupCreateView(CreateView):
@@ -1024,7 +1171,8 @@ class InningGroupUpdateView(UpdateView):
 
     def form_valid(self, form):
         """If the form is valid, redirect to the supplied URL."""
-        messages.add_message(self.request, messages.SUCCESS, 'Course Teacher Allocation Updated.')
+        messages.add_message(self.request, messages.SUCCESS,
+                             'Course Teacher Allocation Updated.')
         self.object = form.save()
         return super().form_valid(form)
 
@@ -1048,8 +1196,7 @@ def InningGroupDeleteView(request, pk):
             return redirect('inninggroup_list')
 
         except:
-            messages.error(request,
-                           "Cannot delete Teacher Allocation")
+            messages.error(request, "Cannot delete Teacher Allocation")
             return redirect('inninggroup_detail', pk=pk)
 
 
@@ -1069,7 +1216,8 @@ class GroupMappingListView(ListView):
 
     # Send data only related to the center
     def get_queryset(self):
-        return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
+        return GroupMapping.objects.filter(
+            Center_Code=self.request.user.Center_Code)
 
 
 def GroupMappingCSVImport(request, *args, **kwargs):
@@ -1084,7 +1232,8 @@ def GroupMappingCSVImport(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name + '.' + extension, media)
         path = os.path.join(path, filename)
-        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df = pd.read_csv(path,
+                         encoding='utf-8')  # delimiter=';|,', engine='python',
         df = df.dropna(how='all')
 
         reg_agent = request.user.username
@@ -1095,8 +1244,12 @@ def GroupMappingCSVImport(request, *args, **kwargs):
             groups = df['Group'].unique()
         except Exception as e:
             return JsonResponse(
-                data={"message": "There is no Column <b>Group</b> in the input file", "class": "text-danger",
-                      "rmclass": "text-success"})
+                data={
+                    "message":
+                    "There is no Column <b>Group</b> in the input file",
+                    "class": "text-danger",
+                    "rmclass": "text-success"
+                })
         for i in range(len(groups)):
             try:
                 flag = 0
@@ -1107,8 +1260,10 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                 students = df[df['Group'] == groups[i]].reset_index(drop=True)
                 obj.save()
                 for j in range(len(students)):
-                    if MemberInfo.objects.filter(username=students['Username'][j]).exists():
-                        obj_student = MemberInfo.objects.get(username=students['Username'][j])
+                    if MemberInfo.objects.filter(
+                            username=students['Username'][j]).exists():
+                        obj_student = MemberInfo.objects.get(
+                            username=students['Username'][j])
                         obj.Students.add(obj_student)
                     else:
                         # obj_create = MemberInfo()
@@ -1117,8 +1272,8 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                         # obj_create.save()
                         # obj.Students.add(obj_student)
                         err_msg.append(
-                            "Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>".format(
-                                groups[i], students['Username'][j]))
+                            "Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>"
+                            .format(groups[i], students['Username'][j]))
                         flag = 1
                         break
 
@@ -1128,15 +1283,27 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                         err_msg = err_msg + msg
                         msg.clear()
                 else:
-                    msg.append("<div class='text-success'>Student Group: <b>{}</b> created</div>".format(groups[i]))
+                    msg.append(
+                        "<div class='text-success'>Student Group: <b>{}</b> created</div>"
+                        .format(groups[i]))
                     if err_msg:
                         err_msg = err_msg + msg
                         msg.clear()
             except Exception as e:
-                err_msg.append("Student Group: <b>{}</b> can't be created<br> {}".format(groups[i], e))
+                err_msg.append(
+                    "Student Group: <b>{}</b> can't be created<br> {}".format(
+                        groups[i], e))
     if err_msg:
-        return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
-    return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
+        return JsonResponse(data={
+            "message": err_msg,
+            "class": "text-danger",
+            "rmclass": "text-success"
+        })
+    return JsonResponse(data={
+        "message": msg,
+        "class": "text-success",
+        "rmclass": "text-danger"
+    })
 
 
 class GroupMappingCreateView(CreateView):
@@ -1182,8 +1349,7 @@ def GroupMappingDeleteView(request, pk):
             return redirect('groupmapping_list')
 
         except:
-            messages.error(request,
-                           "Cannot delete Group Mapping")
+            messages.error(request, "Cannot delete Group Mapping")
             return redirect('groupmapping_detail', pk=pk)
 
 
@@ -1198,8 +1364,10 @@ class AssignmentInfoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
         return context
 
 
@@ -1214,14 +1382,15 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Assignment_Start = request.POST["Assignment_Start"]
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
         Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
-        Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-        Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
-        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+        Obj.Course_Code = CourseInfo.objects.get(
+            pk=request.POST["Course_Code"])
+        Obj.Chapter_Code = ChapterInfo.objects.get(
+            id=request.POST["Chapter_Code"])
+        Obj.Register_Agent = MemberInfo.objects.get(
+            pk=request.POST["Register_Agent"])
         Obj.save()
 
-        return JsonResponse(
-            data={'Message': 'Success'}
-        )
+        return JsonResponse(data={'Message': 'Success'})
 
 
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
@@ -1234,19 +1403,18 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Assignment_Start = request.POST["Assignment_Start"]
             Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
             Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
-            Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-            Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
-            Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+            Obj.Course_Code = CourseInfo.objects.get(
+                pk=request.POST["Course_Code"])
+            Obj.Chapter_Code = ChapterInfo.objects.get(
+                id=request.POST["Chapter_Code"])
+            Obj.Register_Agent = MemberInfo.objects.get(
+                pk=request.POST["Register_Agent"])
             Obj.save()
 
-            return JsonResponse(
-                data={'Message': 'Success'}
-            )
+            return JsonResponse(data={'Message': 'Success'})
 
         except:
-            return JsonResponse(
-                data={'Message': 'Fail'}
-            )
+            return JsonResponse(data={'Message': 'Fail'})
 
 
 class AssignmentInfoDetailView(DetailView):
@@ -1254,9 +1422,12 @@ class AssignmentInfoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(
+            Assignment_Code=self.kwargs.get('pk'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
         context['datetime'] = datetime.now()
         return context
 
@@ -1267,8 +1438,10 @@ class AssignmentInfoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
         return context
 
 
@@ -1279,15 +1452,19 @@ class AssignmentInfoDeleteView(DeleteView):
 
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = AssignmentInfo.objects.get(pk=self.request.POST['assignment_id'])
+            Obj = AssignmentInfo.objects.get(
+                pk=self.request.POST['assignment_id'])
             Obj.delete()
-            return redirect('chapterinfo_detail', course=request.POST['course_id'], pk=request.POST['chapter_id'])
+            return redirect('chapterinfo_detail',
+                            course=request.POST['course_id'],
+                            pk=request.POST['chapter_id'])
 
         except:
-            messages.error(request,
-                           "Cannot delete assignment")
-            return redirect('assignmentinfo_detail', course=self.request.POST['course_id'],
-                            chapter=self.request.POST['chapter_id'], pk=self.request.POST['assignment_id'])
+            messages.error(request, "Cannot delete assignment")
+            return redirect('assignmentinfo_detail',
+                            course=self.request.POST['course_id'],
+                            chapter=self.request.POST['chapter_id'],
+                            pk=self.request.POST['assignment_id'])
 
 
 class QuestionInfoListView(ListView):
@@ -1300,9 +1477,12 @@ class QuestionInfoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
-        context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Assignment_Code'] = get_object_or_404(
+            AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
 
@@ -1321,22 +1501,27 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Use_Flag = True
         else:
             Obj.Use_Flag = False
-        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-        Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
+        Obj.Register_Agent = MemberInfo.objects.get(
+            pk=request.POST["Register_Agent"])
+        Obj.Assignment_Code = AssignmentInfo.objects.get(
+            pk=request.POST["Assignment_Code"])
         if bool(request.FILES.get('Question_Media_File', False)) == True:
             media = request.FILES['Question_Media_File']
             if media.size / 1024 > 2048:
-                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+                return JsonResponse(data={
+                    'status': 'Fail',
+                    "msg": "File size exceeds 2MB"
+                },
+                                    status=500)
             path = settings.MEDIA_ROOT
-            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            name = (str(uuid.uuid4())).replace(
+                '-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/Question_Media_Files/')
             filename = fs.save(name, media)
             Obj.Question_Media_File = 'Question_Media_Files/' + name
         Obj.save()
 
-        return JsonResponse(
-            data={'Message': 'Success'}
-        )
+        return JsonResponse(data={'Message': 'Success'})
 
 
 class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
@@ -1354,29 +1539,34 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             else:
                 Obj.Use_Flag = False
 
-            Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-            Obj.Assignment_Code = AssignmentInfo.objects.get(pk=request.POST["Assignment_Code"])
+            Obj.Register_Agent = MemberInfo.objects.get(
+                pk=request.POST["Register_Agent"])
+            Obj.Assignment_Code = AssignmentInfo.objects.get(
+                pk=request.POST["Assignment_Code"])
             if request.POST["clear"] == 'true':
                 Obj.Question_Media_File = ''
             else:
-                if bool(request.FILES.get('Question_Media_File', False)) == True:
+                if bool(request.FILES.get('Question_Media_File',
+                                          False)) == True:
                     media = request.FILES['Question_Media_File']
                     if media.size / 1024 > 2048:
-                        return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+                        return JsonResponse(data={
+                            'status': 'Fail',
+                            "msg": "File size exceeds 2MB"
+                        },
+                                            status=500)
                     path = settings.MEDIA_ROOT
-                    name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
-                    fs = FileSystemStorage(location=path + '/Question_Media_Files/')
+                    name = (str(uuid.uuid4())).replace(
+                        '-', '') + '.' + media.name.split('.')[-1]
+                    fs = FileSystemStorage(location=path +
+                                           '/Question_Media_Files/')
                     filename = fs.save(name, media)
                     Obj.Question_Media_File = 'Question_Media_Files/' + name
             Obj.save()
 
         except:
-            return JsonResponse(
-                data={'Message': 'Cannot edit form'}
-            )
-        return JsonResponse(
-            data={'Message': 'Success'}
-        )
+            return JsonResponse(data={'Message': 'Cannot edit form'})
+        return JsonResponse(data={'Message': 'Success'})
 
 
 class QuestionInfoDetailView(DetailView):
@@ -1389,9 +1579,12 @@ class QuestionInfoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
-        context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Assignment_Code'] = get_object_or_404(
+            AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
 
@@ -1402,16 +1595,20 @@ class QuestionInfoDeleteView(DeleteView):
 
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = AssignmentQuestionInfo.objects.get(pk=self.request.POST['question_id'])
+            Obj = AssignmentQuestionInfo.objects.get(
+                pk=self.request.POST['question_id'])
             Obj.delete()
-            return redirect('assignmentinfo_detail', course=request.POST['course_id'],
-                            chapter=request.POST['chapter_id'], pk=request.POST['assignment_id'])
+            return redirect('assignmentinfo_detail',
+                            course=request.POST['course_id'],
+                            chapter=request.POST['chapter_id'],
+                            pk=request.POST['assignment_id'])
 
         except:
-            messages.error(request,
-                           "Cannot delete question")
-            return redirect('assignmentinfo_detail', course=request.POST['course_id'],
-                            chapter=request.POST['chapter_id'], pk=request.POST['assignment_id'])
+            messages.error(request, "Cannot delete question")
+            return redirect('assignmentinfo_detail',
+                            course=request.POST['course_id'],
+                            chapter=request.POST['chapter_id'],
+                            pk=request.POST['assignment_id'])
 
 
 class AssignAssignmentInfoListView(ListView):
@@ -1424,8 +1621,10 @@ class AssignAssignmentInfoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Inning_Code'] = get_object_or_404(InningInfo, pk=self.kwargs.get('session'))
-        context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+        context['Inning_Code'] = get_object_or_404(
+            InningInfo, pk=self.kwargs.get('session'))
+        context['Assignment_Code'] = get_object_or_404(
+            AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
 
@@ -1439,8 +1638,10 @@ class AssignAssignmentInfoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Inning_Code'] = get_object_or_404(InningInfo, pk=self.kwargs.get('session'))
-        context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+        context['Inning_Code'] = get_object_or_404(
+            InningInfo, pk=self.kwargs.get('session'))
+        context['Assignment_Code'] = get_object_or_404(
+            AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
 
 
@@ -1454,7 +1655,8 @@ class AssignAnswerInfoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Question_Code'] = get_object_or_404(AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
+        context['Question_Code'] = get_object_or_404(
+            AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
         return context
 
 
@@ -1467,10 +1669,12 @@ def AssignAnswerInfoDelete(request):
         answerpk = request.POST.get('answerpk')
         if AssignAnswerInfo.objects.filter(pk=answerpk).exists():
             AssignAnswerInfo.objects.get(pk=answerpk).delete()
-            messages.add_message(request, messages.SUCCESS, 'Deleted successfully')
+            messages.add_message(request, messages.SUCCESS,
+                                 'Deleted successfully')
             return HttpResponse('success', status=200)
         else:
-            messages.add_message(request, messages.ERROR, 'Answer doesn\'t exist')
+            messages.add_message(request, messages.ERROR,
+                                 'Answer doesn\'t exist')
             return HttpResponse('Answer doesn\'t exist', status=404)
     else:
         messages.add_message(request, messages.ERROR, 'Invalid')
@@ -1483,7 +1687,8 @@ class AssignAnswerInfoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Question_Code'] = get_object_or_404(AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
+        context['Question_Code'] = get_object_or_404(
+            AssignmentQuestionInfo, pk=self.kwargs.get('questioncode'))
         return context
 
 
@@ -1515,6 +1720,7 @@ class MessageInfoUpdateView(UpdateView):
 
 # chapter builder code starts from here
 
+
 def make_directory_if_not_exists(courseID, chapterID):
     path = settings.MEDIA_ROOT
     # following is commented because filesystemstorage auto create directories if not exist
@@ -1523,8 +1729,10 @@ def make_directory_if_not_exists(courseID, chapterID):
     if not os.path.exists(path + '/chapterBuilder/' + courseID):
         print(path + '/chapterBuilder/' + courseID)
         os.makedirs(os.path.join(path, 'chapterBuilder/' + courseID))
-    if not os.path.exists(path + '/chapterBuilder/' + courseID + '/' + chapterID):
-        os.makedirs(os.path.join(path, 'chapterBuilder/' + courseID + '/' + chapterID))
+    if not os.path.exists(path + '/chapterBuilder/' + courseID + '/' +
+                          chapterID):
+        os.makedirs(
+            os.path.join(path, 'chapterBuilder/' + courseID + '/' + chapterID))
 
 
 def chapterviewer(request):
@@ -1533,7 +1741,8 @@ def chapterviewer(request):
         chapterID = request.GET['chapterID']
         chapterobj = ChapterInfo.objects.get(id=chapterID)
         courseID = chapterobj.Course_Code.id
-        file_path = path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(chapterID) + '.txt'
+        file_path = path + '/chapterBuilder/' + str(courseID) + '/' + str(
+            chapterID) + '/' + str(chapterID) + '.txt'
 
         if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
             data = 1
@@ -1543,14 +1752,15 @@ def chapterviewer(request):
 
 
 def chapterpagebuilder(request, course, chapter):
-    chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
+    chapterlist = ChapterInfo.objects.filter(
+        Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
     server_name = settings.SERVER_NAME
     data = {"": ""}
     try:
-        with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
-                chapter) + '.txt') as json_file:
+        with open(path + '/chapterBuilder/' + str(course) + '/' +
+                  str(chapter) + '/' + str(chapter) + '.txt') as json_file:
             data = json.load(json_file)
     except Exception as e:
         print(e)
@@ -1576,30 +1786,35 @@ def save_file(request):
             media = request.FILES['file-0']
             if media_type == 'pic':
                 if (media.size / 1024) > 2048:
-                    return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
+                    return JsonResponse(
+                        data={"message": "File size exceeds 2MB"}, status=500)
             path = settings.MEDIA_ROOT
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
             name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
-                request.user.pk) + '.' + media.name.split('.')[-1]
+                re.findall(
+                    "[a-zA-Z0-9]+",
+                    media.name.split('.')[0])) + '&&&' + str(
+                        request.user.pk) + '.' + media.name.split('.')[-1]
             # name = "".join(re.findall("[a-zA-Z0-9]+", name))
-            fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            fs = FileSystemStorage(location=path + '/chapterBuilder/' +
+                                   courseID + '/' + chapterID)
             filename = fs.save(name, media)
 
         return JsonResponse(data={"message": "success", "media_name": name})
 
 
 def newChapterBuilder(request, course, chapter):
-    chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
+    chapterlist = ChapterInfo.objects.filter(
+        Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
     server_name = settings.SERVER_NAME
     data = {"": ""}
     try:
-        with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
-                chapter) + '.txt') as json_file:
+        with open(path + '/chapterBuilder/' + str(course) + '/' +
+                  str(chapter) + '/' + str(chapter) + '.txt') as json_file:
             data = json.load(json_file)
     except Exception as e:
         print(e)
@@ -1624,8 +1839,12 @@ def deletechapterfile(request):
                     if os.path.exists(os.path.join(BASE_DIR, x[10:])):
                         extensions = ['mtl', 'obj']
                         for ext in extensions:
-                            if os.path.exists(os.path.join(BASE_DIR, x[10:-4] + '.' + ext)):
-                                os.remove(os.path.join(BASE_DIR, x[10:-4] + '.' + ext))
+                            if os.path.exists(
+                                    os.path.join(BASE_DIR,
+                                                 x[10:-4] + '.' + ext)):
+                                os.remove(
+                                    os.path.join(BASE_DIR,
+                                                 x[10:-4] + '.' + ext))
                         return JsonResponse({'message': 'deletion success'})
                 if os.path.exists(os.path.join(BASE_DIR, x[1:])):
                     os.remove(os.path.join(BASE_DIR, x[1:]))
@@ -1649,11 +1868,13 @@ def save_3d_file(request):
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
             name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-                re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '&&&' + str(
-                request.user.pk)
+                re.findall("[a-zA-Z0-9]+",
+                           obj.name.split('.')[0])) + '&&&' + str(
+                               request.user.pk)
             # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
-            fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            fs = FileSystemStorage(location=path + '/chapterBuilder/' +
+                                   courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
             # if mtl is not None:
             #     mtlname = name + '.' + mtl.name.split('.')[-1]
@@ -1670,16 +1891,19 @@ def save_video(request):
         path = ''
         if request.FILES['file-0']:
             media = request.FILES['file-0']
-            if (media.size / 1024) > (2048 * 1024):  # checking if file size is greater than 2 GB
-                return JsonResponse(data={"message": "File size exceeds 2GB"}, status=500)
+            if (media.size / 1024) > (
+                    2048 * 1024):  # checking if file size is greater than 2 GB
+                return JsonResponse(data={"message": "File size exceeds 2GB"},
+                                    status=500)
 
         path = settings.MEDIA_ROOT
 
         # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
         # Eg: 561561561&&&test.jpg&&&17
         name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-            re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '&&&' + str(
-            request.user.pk) + '.' + media.name.split('.')[-1]
+            re.findall("[a-zA-Z0-9]+",
+                       media.name.split('.')[0])) + '&&&' + str(
+                           request.user.pk) + '.' + media.name.split('.')[-1]
 
         # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         # filename = fs.save(name, media)
@@ -1705,60 +1929,86 @@ def save_video(request):
         # if getServerIP() != '103.41.247.44':  # 103.41.247.44 is ip of ublcloud.me (indonesian). If request if for ublcloud, then it will save to server else to vimeo
         if settings.SERVER_NAME != 'Indonesian_Server':
             r = rs.post(url="https://api.vimeo.com/me/videos",
-                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
-                                 'Content-Type': 'application/json',
-                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                        headers={
+                            'Authorization':
+                            'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                            'Content-Type': 'application/json',
+                            'Accept':
+                            'application/vnd.vimeo.*+json;version=3.4'
+                        },
                         data=json.dumps(data))
             if r.status_code == 200:
                 r_responseText = json.loads(r.text)
-                res = rs.patch(r_responseText['upload']['upload_link'], headers={'Tus-Resumable': '1.0.0',
-                                                                                 'Content-Type': 'application/offset+octet-stream',
-                                                                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4',
-                                                                                 'Connection': 'keep-alive',
-                                                                                 'Upload-Offset': '0'},
-                               data=media.file
-                               )
+                res = rs.patch(r_responseText['upload']['upload_link'],
+                               headers={
+                                   'Tus-Resumable': '1.0.0',
+                                   'Content-Type':
+                                   'application/offset+octet-stream',
+                                   'Accept':
+                                   'application/vnd.vimeo.*+json;version=3.4',
+                                   'Connection': 'keep-alive',
+                                   'Upload-Offset': '0'
+                               },
+                               data=media.file)
 
                 if res.status_code == 204 or res.status_code == 200:
                     response = rs.head(r_responseText['upload']['upload_link'])
 
                     a = rs.put(
-                        url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[-1],
-                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
-                                 'Content-Type': 'application/json',
-                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
-                    return JsonResponse(
-                        {'link': r_responseText['upload']['upload_link'], 'media_name': name,
-                         'html': r_responseText['embed']['html']})
+                        url='https://api.vimeo.com/me/projects/1508982/videos/'
+                        + r_responseText['uri'].split('/')[-1],
+                        headers={
+                            'Authorization':
+                            'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                            'Content-Type': 'application/json',
+                            'Accept':
+                            'application/vnd.vimeo.*+json;version=3.4'
+                        },
+                    ),
+                    return JsonResponse({
+                        'link':
+                        r_responseText['upload']['upload_link'],
+                        'media_name':
+                        name,
+                        'html':
+                        r_responseText['embed']['html']
+                    })
         else:
-            if (media.size / 1024) > (500 * 1024):  # checking if file size is greater than 500 MB in Indonesian Server
-                return JsonResponse(data={"message": "File size exceeds 500 MB"}, status=500)
+            if (media.size / 1024) > (
+                    500 * 1024
+            ):  # checking if file size is greater than 500 MB in Indonesian Server
+                return JsonResponse(
+                    data={"message": "File size exceeds 500 MB"}, status=500)
             if media.name.split('.')[-1] != 'mp4' and (media.size / 1024) > (
-                    100 * 1024):  # if media size is 100 MB and media is not mp4
-                return JsonResponse(data={"message": "File size above 100 MB must be MP4"}, status=500)
+                    100 *
+                    1024):  # if media size is 100 MB and media is not mp4
+                return JsonResponse(
+                    data={"message": "File size above 100 MB must be MP4"},
+                    status=500)
 
             name = (str(uuid.uuid4())).replace('-', '') + '' + "".join(
-                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '' + str(
-                request.user.pk)
-            cloudinary.config(
-                cloud_name="nsdevil-com",
-                api_key="355159163645263",
-                api_secret="riH4CD94zuSXffS_wfSgIFgxmJ0"
+                re.findall("[a-zA-Z0-9]+",
+                           media.name.split('.')[0])) + '' + str(
+                               request.user.pk)
+            cloudinary.config(cloud_name="nsdevil-com",
+                              api_key="355159163645263",
+                              api_secret="riH4CD94zuSXffS_wfSgIFgxmJ0")
+            response = cloudinary.uploader.upload_large(
+                media.file,
+                folder="/id.ublcloud.me",
+                resource_type="video",
+                chunk_size=6000000,  # chunk size default is 6 MB
+                public_id=name,
             )
-            response = cloudinary.uploader.upload_large(media.file,
-                                                        folder="/id.ublcloud.me",
-                                                        resource_type="video",
-                                                        chunk_size=6000000,  # chunk size default is 6 MB
-                                                        public_id=name,
-                                                        )
             embedd_code = '<iframe src="' + response['secure_url'] + '"><video controls preload="none"><source src="' + \
                           response['secure_url'] + '" type="video/mp4" autostart="false"></video></iframe>'
             print(response)
 
-            return JsonResponse(
-                {'link': response['secure_url'], 'media_name': response['public_id'],
-                 # 'html': embedd_code
-                 })
+            return JsonResponse({
+                'link': response['secure_url'],
+                'media_name': response['public_id'],
+                # 'html': embedd_code
+            })
             # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             # filename = fs.save(name, media)
         return JsonResponse({}, status=500)
@@ -1776,7 +2026,9 @@ def save_json(request):
         make_directory_if_not_exists(courseID, chapterID)
 
         # for saving json data for viewing purposes
-        with open(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + chapterID + '.txt', 'w') as outfile:
+        with open(
+                path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' +
+                chapterID + '.txt', 'w') as outfile:
             json.dump(jsondata, outfile, indent=4)
 
         # # for saving all html data of page for API purposes
@@ -1799,12 +2051,12 @@ def export_chapter(request, course, chapter):
     if not os.path.exists(dir_name):
         return HttpResponse('No directory')
     zipfile = shutil.make_archive(
-        path + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) + '_' + str(chapter) + '_',
-        'zip', dir_name)
+        path + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' +
+        str(obj.pk) + '_' + str(chapter) + '_', 'zip', dir_name)
 
-    return redirect(
-        settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) + '_' + str(
-            chapter) + '_' + '.zip')
+    return redirect(settings.MEDIA_URL + '/export/' + str(coursename) +
+                    '_Chapter' + str(chapter) + '_' + str(obj.pk) + '_' +
+                    str(chapter) + '_' + '.zip')
 
 
 def import_chapter(request):
@@ -1813,7 +2065,12 @@ def import_chapter(request):
     if request.FILES['filename']:
         filename = request.FILES['filename']
     if not filename.name.endswith('.zip'):
-        return JsonResponse({'status': 'false', 'message': "Only zip files are allowed"}, status=500)
+        return JsonResponse(
+            {
+                'status': 'false',
+                'message': "Only zip files are allowed"
+            },
+            status=500)
     zip = zipfile.ZipFile(filename)
     checkflag = False
     for file in zip.namelist():
@@ -1821,7 +2078,11 @@ def import_chapter(request):
         if zip.getinfo(file).filename.endswith('.txt'):
             checkflag = True
     if not checkflag:
-        return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
+        return JsonResponse({
+            'status': 'false',
+            'message': "Not valid zip"
+        },
+                            status=500)
 
     path = settings.MEDIA_ROOT
 
@@ -1830,21 +2091,34 @@ def import_chapter(request):
 
     storage_path = path + '/chapterBuilder/' + courseID + '/' + chapterID + '/'
     for file in zip.namelist():
-        if zip.getinfo(file).filename.endswith('.txt') and 'html' not in zip.getinfo(file).filename:
+        if zip.getinfo(file).filename.endswith(
+                '.txt') and 'html' not in zip.getinfo(file).filename:
             with zip.open(zip.getinfo(file).filename) as json_file:
                 my_json = json_file.read().decode('utf8')
 
                 data = json.loads(my_json)
 
                 if not all(k in data for k in ("numberofpages", "pages")):
-                    return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
+                    return JsonResponse(
+                        {
+                            'status': 'false',
+                            'message': "Not valid zip"
+                        },
+                        status=500)
                 elif data['numberofpages'] is 0:
-                    return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
+                    return JsonResponse(
+                        {
+                            'status': 'false',
+                            'message': "Not valid zip"
+                        },
+                        status=500)
 
                 # check if numberofpages and pages are in the dictionary or not
 
             continue
-        zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
+        zip.extract(
+            file, storage_path
+        )  # extract the file to current folder if it is a text file
 
     for u, v in data['pages'].items():
         for x in v:
@@ -1856,7 +2130,8 @@ def import_chapter(request):
                                 p = (j.split('/'))
                                 p[3], p[4] = courseID, chapterID
                                 j = '/'.join(p)
-                                data['pages'][u][0][div][value]['background-image'] = j
+                                data['pages'][u][0][div][value][
+                                    'background-image'] = j
                 if div == 'video':
                     for value in range(len(values)):
                         for i, j in values[value].items():
@@ -1864,7 +2139,8 @@ def import_chapter(request):
                                 p = (j.split('/'))
                                 p[3], p[4] = courseID, chapterID
                                 j = '/'.join(p)
-                                data['pages'][u][0][div][value]['local_link'] = j
+                                data['pages'][u][0][div][value][
+                                    'local_link'] = j
                 if div == '_3d':
                     for value in range(len(values)):
                         for i, j in values[value].items():
@@ -1883,7 +2159,8 @@ def import_chapter(request):
                                 data['pages'][u][0][div][value]['link'] = j
                 if div == 'quizdiv':
                     for value in range(len(values)):
-                        data['pages'][u][0][div][value]['quiz_btn_name'] = "Create Quiz"
+                        data['pages'][u][0][div][value][
+                            'quiz_btn_name'] = "Create Quiz"
                         try:
                             data['pages'][u][0][div][value].pop('link')
                         except Exception as e:
@@ -1891,7 +2168,8 @@ def import_chapter(request):
 
                 if div == 'surveydiv':
                     for value in range(len(values)):
-                        data['pages'][u][0][div][value]['survey_btn_name'] = "Create Survey"
+                        data['pages'][u][0][div][value][
+                            'survey_btn_name'] = "Create Survey"
                         try:
                             data['pages'][u][0][div][value].pop('link')
                         except Exception as e:
@@ -1906,13 +2184,17 @@ def retrievechapterfile(request):
     userID = request.GET['userpk']
     path = settings.MEDIA_ROOT
     image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
-    video_extensions = ['.mp4', ]
+    video_extensions = [
+        '.mp4',
+    ]
     images = []
     videos = []
     pdf = []
     try:
-        if os.path.exists(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID)):
-            chapterfiles = os.listdir(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID))
+        if os.path.exists(path + '/chapterBuilder/' + str(courseID) + '/' +
+                          str(chapterID)):
+            chapterfiles = os.listdir(path + '/chapterBuilder/' +
+                                      str(courseID) + '/' + str(chapterID))
             for files in chapterfiles:
                 if (files[-4:] in image_extensions):
                     images.append(files)
@@ -1924,11 +2206,7 @@ def retrievechapterfile(request):
             print("No directory of this chapter")
     except Exception as e:
         print(e)
-    return JsonResponse({
-        'images': images,
-        'videos': videos,
-        'pdf': pdf
-    })
+    return JsonResponse({'images': images, 'videos': videos, 'pdf': pdf})
 
 
 @xframe_options_exempt
@@ -1949,7 +2227,10 @@ def ThreeDViewer(request, urlpath=None):
             print("MTL doesnt exist", mtlpath_expected)
             mtlurlpath = "static/3D_Viewer/none.mtl"
 
-    return render(request, '3D_Viewer/render_template.html', {'objpath': urlpath, 'mtlpath': mtlurlpath})
+    return render(request, '3D_Viewer/render_template.html', {
+        'objpath': urlpath,
+        'mtlpath': mtlurlpath
+    })
 
 
 class ContentsView(TemplateView):
@@ -1960,24 +2241,32 @@ class ContentsView(TemplateView):
             if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
                 pass
             else:
-                messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                messages.add_message(self.request, messages.WARNING,
+                                     'Chapter is not active.')
                 raise ObjectDoesNotExist
         except:
             if '/students/' in request.path:
-                return redirect('student_courseinfo_detail', pk=self.kwargs.get('course'))
+                return redirect('student_courseinfo_detail',
+                                pk=self.kwargs.get('course'))
             elif '/teachers/' in request.path:
-                return redirect('teacher_courseinfo_detail', pk=self.kwargs.get('course'))
+                return redirect('teacher_courseinfo_detail',
+                                pk=self.kwargs.get('course'))
             else:
-                return redirect('courseinfo_detail', pk=self.kwargs.get('course'))
+                return redirect('courseinfo_detail',
+                                pk=self.kwargs.get('course'))
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True)
-        context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
-        context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['course'] = get_object_or_404(CourseInfo,
+                                              pk=self.kwargs.get('course'))
+        context['chapterList'] = context['course'].chapterinfos.filter(
+            Use_Flag=True)
+        context['chapterList'] = sorted(context['chapterList'],
+                                        key=lambda t: t.Chapter_No)
+        context['chapter'] = get_object_or_404(ChapterInfo,
+                                               pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
         context['chat_details'] = []
@@ -1985,15 +2274,18 @@ class ContentsView(TemplateView):
         path = settings.MEDIA_ROOT
 
         try:
-            with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
-                    chapterID) + '.txt') as json_file:
+            with open(path + '/chapterBuilder/' + str(courseID) + '/' +
+                      str(chapterID) + '/' + str(chapterID) +
+                      '.txt') as json_file:
                 context['data'] = json.load(json_file)
         except Exception as e:
             print(e)
             context['data'] = ""
 
-        list_of_files = sorted(glob.iglob(path + '/chatlog/chapterchat' + str(chapterID) + '/*.txt'),
-                               key=os.path.getctime, reverse=True)[:50]
+        list_of_files = sorted(glob.iglob(path + '/chatlog/chapterchat' +
+                                          str(chapterID) + '/*.txt'),
+                               key=os.path.getctime,
+                               reverse=True)[:50]
 
         for latest_file in list_of_files:
             try:
@@ -2037,13 +2329,11 @@ def get_static_files_info(request, *args, **kwargs):
         'static/js/modernizr.js',
         'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
         'static/vendorsx/font-awesome/css/font-awesome.min.css',
-
         'static/vendorsx/bootstrap/dist/css/bootstrap.css',
         'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
         'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
         'static/vendorsx/jquery/dist/jquery.min.js',
         'static/vendorsx/font-awesome',
-
         'static/pdfjs',
     ]
     if request.GET.get('force') == '1':
@@ -2051,7 +2341,8 @@ def get_static_files_info(request, *args, **kwargs):
             "last_modified": now.strftime("%m/%d/%Y, %H:%M:%S"),
             "list_of_files": list_of_files
         }
-        with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+        with open(os.path.join(path, 'static_files_info.txt'),
+                  'w') as json_file:
             json.dump(json_data, json_file)
         make_zip_file(list_of_files)
     else:
@@ -2060,26 +2351,35 @@ def get_static_files_info(request, *args, **kwargs):
                 "last_modified": now.strftime("%m/%d/%Y, %H:%M:%S"),
                 "list_of_files": list_of_files
             }
-            with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+            with open(os.path.join(path, 'static_files_info.txt'),
+                      'w') as json_file:
                 json.dump(json_data, json_file)
             make_zip_file(list_of_files)
         else:
-            with open(os.path.join(path, 'static_files_info.txt')) as json_file:
+            with open(os.path.join(path,
+                                   'static_files_info.txt')) as json_file:
                 json_data = json.load(json_file)
-            json_file_info_date = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S")
+            json_file_info_date = datetime.strptime(json_data['last_modified'],
+                                                    "%m/%d/%Y, %H:%M:%S")
 
             if os.path.exists(os.path.join(path, 'staticfiles.zip')):
-                file_modified_time = time.ctime(os.path.getmtime(os.path.join(path, 'static_files_info.txt')))
-                file_modified_time = datetime.strptime(file_modified_time, '%a %b %d %H:%M:%S %Y')
+                file_modified_time = time.ctime(
+                    os.path.getmtime(
+                        os.path.join(path, 'static_files_info.txt')))
+                file_modified_time = datetime.strptime(file_modified_time,
+                                                       '%a %b %d %H:%M:%S %Y')
                 if (file_modified_time > json_file_info_date):
-                    json_data['last_modified'] = now.strftime("%m/%d/%Y, %H:%M:%S")
-                    with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+                    json_data['last_modified'] = now.strftime(
+                        "%m/%d/%Y, %H:%M:%S")
+                    with open(os.path.join(path, 'static_files_info.txt'),
+                              'w') as json_file:
                         json.dump(json_data, json_file)
                     make_zip_file(list_of_files)
             else:
                 make_zip_file(list_of_files)
 
-    last_modified = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S").timestamp()
+    last_modified = datetime.strptime(json_data['last_modified'],
+                                      "%m/%d/%Y, %H:%M:%S").timestamp()
     return HttpResponse(int(last_modified))
 
 
@@ -2092,7 +2392,8 @@ def make_zip_file(list_of_files):
             if not os.path.exists(dstfolder):
                 os.makedirs(dstfolder)
         if os.path.isdir(settings.BASE_DIR + '/WebApp/' + src):
-            if (os.path.exists(dst)):  # if folder exists already, removes it and copy again
+            if (os.path.exists(dst)
+                ):  # if folder exists already, removes it and copy again
                 shutil.rmtree(dst)
             shutil.copytree(settings.BASE_DIR + '/WebApp/' + src, dst)
         else:
@@ -2110,13 +2411,19 @@ from quiz.views import Sitting
 def AchievementPage_Student(request, student_id):
     memberinfo = MemberInfo.objects.get(pk=student_id)
     sittings = Sitting.objects.filter(user=student_id)
-    return render(request, 'WebApp/Student_Achievement.html', {'sittings': sittings, 'memberinfo': memberinfo})
+    return render(request, 'WebApp/Student_Achievement.html', {
+        'sittings': sittings,
+        'memberinfo': memberinfo
+    })
 
 
 def AchievementPage_All(request):
-    CourseFilter = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
-    Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code, End_Date__gte=datetime.now(),
-                                              Use_Flag=True)
+    CourseFilter = CourseInfo.objects.filter(
+        Center_Code=request.user.Center_Code, Use_Flag=True)
+    Inningsfilter = InningInfo.objects.filter(
+        Center_Code=request.user.Center_Code,
+        End_Date__gte=datetime.now(),
+        Use_Flag=True)
 
     # Linked relation between course and session
     # InningGroupFilter = InningGroup.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
@@ -2128,41 +2435,58 @@ def AchievementPage_All(request):
     #             temp.append(group.id)
     #     Courses.update({course.id:temp})
 
-    return render(request, 'WebApp/Achievement_all.html',
-                  {"Inningsfilter": Inningsfilter, "CourseFilter": CourseFilter, "Courses": CourseFilter})
+    return render(
+        request, 'WebApp/Achievement_all.html', {
+            "Inningsfilter": Inningsfilter,
+            "CourseFilter": CourseFilter,
+            "Courses": CourseFilter
+        })
 
 
-def AchievementPage_All_Ajax(request, Inningsfilter=None, studentfilter=None, CourseFilter=None):
+def AchievementPage_All_Ajax(request,
+                             Inningsfilter=None,
+                             studentfilter=None,
+                             CourseFilter=None):
     if Inningsfilter:
         # Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code,
         #                                       End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
-        CoursegroupFilter = InningInfo.objects.filter(id=Inningsfilter).values_list('Groups')
+        CoursegroupFilter = InningInfo.objects.filter(
+            id=Inningsfilter).values_list('Groups')
         # print('CoursegroupFilter', CoursegroupFilter)
-        Student_GroupMappingFilter = GroupMapping.objects.filter(id__in=CoursegroupFilter,
-                                                                 Center_Code=request.user.Center_Code).values_list(
-            'Students').order_by('id')
+        Student_GroupMappingFilter = GroupMapping.objects.filter(
+            id__in=CoursegroupFilter,
+            Center_Code=request.user.Center_Code).values_list(
+                'Students').order_by('id')
         # print('Student_GroupMappingFilter', Student_GroupMappingFilter)
-        studentfilter = MemberInfo.objects.filter(id__in=Student_GroupMappingFilter, Is_Student=True,
-                                                  Center_Code=request.user.Center_Code)
+        studentfilter = MemberInfo.objects.filter(
+            id__in=Student_GroupMappingFilter,
+            Is_Student=True,
+            Center_Code=request.user.Center_Code)
         # print('studentfilter', studentfilter)
     elif CourseFilter:
 
-        CoursegroupFilter = InningGroup.objects.filter(Course_Code=CourseFilter)
+        CoursegroupFilter = InningGroup.objects.filter(
+            Course_Code=CourseFilter)
         # print('CoursegroupFilter', CoursegroupFilter)
-        Inningsfilter = InningInfo.objects.filter(Center_Code=request.user.Center_Code,
-                                                  Course_Group__in=CoursegroupFilter,
-                                                  End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
+        Inningsfilter = InningInfo.objects.filter(
+            Center_Code=request.user.Center_Code,
+            Course_Group__in=CoursegroupFilter,
+            End_Date__gte=datetime.now()).values_list('Groups').order_by('id')
         # print('Inningsfilter', Inningsfilter)
-        Student_GroupMappingFilter = GroupMapping.objects.filter(id__in=Inningsfilter,
-                                                                 Center_Code=request.user.Center_Code).values_list(
-            'Students').order_by('id')
+        Student_GroupMappingFilter = GroupMapping.objects.filter(
+            id__in=Inningsfilter,
+            Center_Code=request.user.Center_Code).values_list(
+                'Students').order_by('id')
         # print('Student_GroupMappingFilter', Student_GroupMappingFilter)
-        studentfilter = MemberInfo.objects.filter(id__in=Student_GroupMappingFilter, Is_Student=True,
-                                                  Center_Code=request.user.Center_Code)
+        studentfilter = MemberInfo.objects.filter(
+            id__in=Student_GroupMappingFilter,
+            Is_Student=True,
+            Center_Code=request.user.Center_Code)
 
         # print('studentfilter', studentfilter)
 
-    return render(request, 'WebApp/AchievementPage_All_Ajax.html', {'studentfilter': studentfilter})
+    return render(request, 'WebApp/AchievementPage_All_Ajax.html',
+                  {'studentfilter': studentfilter})
 
 
 def gitpull(request):
@@ -2197,17 +2521,21 @@ class SessionManagerUpdateView(UpdateView):
 
     def get_object(self):
         session_Manager = None
-        if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs.get('pk')).exists():
-            session_Manager = InningManager.objects.get(sessioninfoobj__pk=self.kwargs.get('pk'))
+        if InningManager.objects.filter(
+                sessioninfoobj__pk=self.kwargs.get('pk')).exists():
+            session_Manager = InningManager.objects.get(
+                sessioninfoobj__pk=self.kwargs.get('pk'))
         else:
             session_Manager = InningManager.objects.create(
-                sessioninfoobj=InningInfo.objects.get(pk=self.kwargs.get('pk')))
+                sessioninfoobj=InningInfo.objects.get(
+                    pk=self.kwargs.get('pk')))
         return session_Manager
 
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            messages.add_message(self.request, messages.SUCCESS, 'Session Managers Updated.')
+            messages.add_message(self.request, messages.SUCCESS,
+                                 'Session Managers Updated.')
             # return super().form_valid(form)
             return redirect('inninginfo_detail', self.kwargs.get('pk'))
 
@@ -2218,9 +2546,11 @@ class SessionManagerUpdateView(UpdateView):
 
 
 def viewteacherAttendance(request, attend_date, courseid, teacherid):
-    attend_date = datetime.strptime(str(attend_date), "%m%d%Y").strftime("%m%d%Y")
+    attend_date = datetime.strptime(str(attend_date),
+                                    "%m%d%Y").strftime("%m%d%Y")
     print(attend_date)
-    path = os.path.join(settings.MEDIA_ROOT, ".teacherAttendanceData", str(courseid), attend_date)
+    path = os.path.join(settings.MEDIA_ROOT, ".teacherAttendanceData",
+                        str(courseid), attend_date)
 
     teacher_data_file = os.path.join(path, str(teacherid) + '.txt')
 
@@ -2247,9 +2577,7 @@ def loginforappredirect(request, username, password):
         if request.user.is_authenticated:
             if 'url' in request.GET:
                 url = request.GET.get('url')
-                return redirect(
-                    url
-                )
+                return redirect(url)
             else:
                 return HttpResponse('Login Success', status=200)
         else:
@@ -2270,12 +2598,16 @@ def CourseProgressView(request, coursepk, inningpk=None):
         basefile = "base.html"
     if coursepk:
         if '/teachers' in request.path:
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
-                                                    Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct()
+            inning_info = InningInfo.objects.filter(
+                Course_Group__Teacher_Code__pk=request.user.pk,
+                Course_Group__Course_Code__pk=coursepk,
+                Use_Flag=True,
+                End_Date__gt=datetime.now()).distinct()
         else:
-            inning_info = InningInfo.objects.filter(Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct()
+            inning_info = InningInfo.objects.filter(
+                Course_Group__Course_Code__pk=coursepk,
+                Use_Flag=True,
+                End_Date__gt=datetime.now()).distinct()
         session_list.append(inning_info)
 
         if inning_info.count() > 0:
@@ -2284,18 +2616,25 @@ def CourseProgressView(request, coursepk, inningpk=None):
             else:
                 innings = inning_info.all().first()
 
-            if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
-                list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
-            student_data = getCourseProgress(courseObj, list_of_students, chapters_list)
+            if MemberInfo.objects.filter(
+                    pk__in=innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(
+                    pk__in=innings.Groups.Students.all())
+            student_data = getCourseProgress(courseObj, list_of_students,
+                                             chapters_list)
         else:
-            messages.add_message(request, messages.ERROR,
-                                 'The course is not assosiated with any innings. Please contact administrator')
+            messages.add_message(
+                request, messages.ERROR,
+                'The course is not assosiated with any innings. Please contact administrator'
+            )
             context = {
                 'course': courseObj,
                 'chapter_list': chapters_list,
                 'basefile': basefile,
             }
-            return render(request, 'teacher_module/chapterProgress.html', context=context)
+            return render(request,
+                          'teacher_module/chapterProgress.html',
+                          context=context)
 
     context = {
         'session_list': session_list,
@@ -2306,15 +2645,25 @@ def CourseProgressView(request, coursepk, inningpk=None):
         'chapter_list': chapters_list,
         'basefile': basefile,
     }
-    return render(request, 'teacher_module/chapterProgress.html', context=context)
+    return render(request,
+                  'teacher_module/chapterProgress.html',
+                  context=context)
 
 
-def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, currentPageNumber=None, totalPage=None,
-                          studytimeinseconds=None, createFile=True, isjson=False
-                          ):
-    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
+def chapterProgressRecord(courseid,
+                          chapterid,
+                          studentid,
+                          fromcontents=False,
+                          currentPageNumber=None,
+                          totalPage=None,
+                          studytimeinseconds=None,
+                          createFile=True,
+                          isjson=False):
+    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid,
+                        chapterid)
     try:
-        os.makedirs(path)  # Creates the directories and subdirectories structure
+        os.makedirs(
+            path)  # Creates the directories and subdirectories structure
     except Exception as e:
         pass
     student_data_file = os.path.join(path, studentid + '.txt')
@@ -2329,11 +2678,14 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
             if currentPageNumber is None:
                 return jsondata
 
-            jsondata['contents']['totalstudytime'] = int(jsondata['contents']['totalstudytime']) + int(
-                studytimeinseconds)
-            jsondata['contents']['laststudydate'] = datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S")
+            jsondata['contents']['totalstudytime'] = int(
+                jsondata['contents']['totalstudytime']) + int(
+                    studytimeinseconds)
+            jsondata['contents']['laststudydate'] = datetime.utcnow().strftime(
+                "%m/%d/%Y %H:%M:%S")
 
-            if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
+            if int(currentPageNumber) > int(
+                    jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
                 jsondata['contents']['totalPage'] = totalPage
         with open(student_data_file, "w") as outfile:
@@ -2343,10 +2695,14 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
             if fromcontents:
                 jsondata = {
                     "contents": {
-                        "laststudydate": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
-                        "totalstudytime": studytimeinseconds,
-                        "currentpagenumber": currentPageNumber,
-                        "totalPage": totalPage,
+                        "laststudydate":
+                        datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                        "totalstudytime":
+                        studytimeinseconds,
+                        "currentpagenumber":
+                        currentPageNumber,
+                        "totalPage":
+                        totalPage,
                     },
                 }
             else:
@@ -2359,17 +2715,23 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
     return jsondata
 
 
-def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=None):
+def getCourseProgress(courseObj,
+                      list_of_students,
+                      chapters_list,
+                      student_data=None):
     student_data = []
     for chapter in chapters_list:
         for x in list_of_students:
-            jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
+            jsondata = chapterProgressRecord(str(courseObj.pk),
+                                             str(chapter.pk),
+                                             str(x.id),
                                              createFile=False)
             if jsondata is not None:
                 if int(jsondata['contents']['totalPage']) > 0 and int(
                         jsondata['contents']['currentpagenumber']) > 0:
-                    progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
-                        jsondata['contents']['totalPage'])
+                    progresspercent = int(
+                        jsondata['contents']['currentpagenumber']) * 100 / int(
+                            jsondata['contents']['totalPage'])
                 else:
                     progresspercent = 0
             else:
@@ -2378,7 +2740,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             student_quiz = Quiz.objects.filter(chapter_code=chapter)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
-            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+            student_result = Sitting.objects.order_by('-end').filter(
+                user=x, quiz__in=student_quiz)
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
@@ -2393,47 +2756,66 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                 field and the chapter progress is 100% '''
             if chapter.mustreadtime:
                 attendance = int(
-                    jsondata['contents'][
-                        'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                    jsondata['contents']['totalstudytime']
+                ) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
             else:
                 attendance = None
             student_data.append(
                 {
                     'student': x,
                     'chapter': {
-                        'chapterObj': chapter,
-                        'laststudydate': datetime.strptime(jsondata['contents'][
-                                                               'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
-                            "%Y/%m/%d %H:%M:%S") if jsondata is not None else None,
-                        'totalstudytime': timedelta(seconds=int(jsondata['contents'][
-                                                                    'totalstudytime'])) if jsondata is not None else "00:00:00",
-                        'currentpagenumber': int(
-                            jsondata['contents']['currentpagenumber']) if jsondata is not None else None,
-                        'totalPage': int(
-                            jsondata['contents']['totalPage']) if jsondata is not None else None,
-                        'progresspercent': progresspercent,
-                        'attendance': attendance,
+                        'chapterObj':
+                        chapter,
+                        'laststudydate':
+                        datetime.strptime(
+                            jsondata['contents']['laststudydate'],
+                            "%m/%d/%Y %H:%M:%S").strftime("%Y/%m/%d %H:%M:%S")
+                        if jsondata is not None else None,
+                        'totalstudytime':
+                        timedelta(seconds=int(jsondata['contents']
+                                              ['totalstudytime']))
+                        if jsondata is not None else "00:00:00",
+                        'currentpagenumber':
+                        int(jsondata['contents']['currentpagenumber'])
+                        if jsondata is not None else None,
+                        'totalPage':
+                        int(jsondata['contents']['totalPage'])
+                        if jsondata is not None else None,
+                        'progresspercent':
+                        progresspercent,
+                        'attendance':
+                        attendance,
                     },
                     'quiz': {
-                        'quiz_count': student_quiz.count(),
-                        'completed_quiz': student_result.filter(complete=True).count(),
-                        'progress': student_result.filter(
-                            complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                        'quiz_count':
+                        student_quiz.count(),
+                        'completed_quiz':
+                        student_result.filter(complete=True).count(),
+                        'progress':
+                        student_result.filter(complete=True).count() * 100 /
+                        student_quiz.count()
+                        if student_quiz.count() is not 0 else 0,
                         # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                         # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                        'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
-                            complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
+                        'avg_percent_score':
+                        float(total_quiz_percent_score /
+                              student_result.filter(complete=True).count()) if
+                        student_result.filter(complete=True).count() > 0 else 0
                     }
-                },
-            )
+                }, )
     return student_data
 
 
-def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
+def studentChapterLog(chapterid,
+                      studentid,
+                      type,
+                      createFile=True,
+                      isjson=False):
     date = datetime.now().strftime('%Y%m%d')
     path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog", date)
     try:
-        os.makedirs(path)  # Creates the directories and subdirectories structure
+        os.makedirs(
+            path)  # Creates the directories and subdirectories structure
     except Exception as e:
         pass
     student_data_file = os.path.join(path, studentid + '.txt')
@@ -2449,7 +2831,8 @@ def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False)
         newdata = {
             "chapterid": chapterid,
             "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
-            "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+            "type":
+            type,  # type refers to when the function was called. i.e. upon entering viewer or closing
         }
         jsondata.append(newdata)
         with open(student_data_file, "w+") as outfile:
@@ -2459,8 +2842,10 @@ def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False)
             jsondata = [
                 {
                     "chapterid": chapterid,
-                    "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
-                    "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+                    "visittime":
+                    datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                    "type":
+                    type,  # type refers to when the function was called. i.e. upon entering viewer or closing
                 },
             ]
 
@@ -2521,7 +2906,8 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
             temp_json_data = []
             for data in jsondata:
                 if data['chapterid'] == str(chapterid):
-                    converted_datetime = datetime.strptime(data['visittime'], '%m/%d/%Y %H:%M:%S')
+                    converted_datetime = datetime.strptime(
+                        data['visittime'], '%m/%d/%Y %H:%M:%S')
                     data['visittime'] = converted_datetime
                     temp_json_data.append(data)
                     flag = 1
@@ -2531,7 +2917,9 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
     context['course'] = courseObj
     context['chapter'] = chapterObj
     context['student'] = studentObj
-    return render(request, 'teacher_module/progressdetail.html', context=context)
+    return render(request,
+                  'teacher_module/progressdetail.html',
+                  context=context)
 
 
 def loaderverifylink(request):
