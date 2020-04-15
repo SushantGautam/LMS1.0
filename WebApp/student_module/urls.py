@@ -147,6 +147,8 @@ urlpatterns += (
          name='student_progress_detail'),
     path('quiz/progress', views.QuizUserProgressView.as_view(),
          name='student_progress'),
+    path('quiz/progress_history/<int:quiz>/', views.QuizUserProgressHistoryView.as_view(),
+         name='student_progress_history'),
     path('quiz/exam_list/', quizViews.QuizExamListView.as_view(),
          name='student_quiz_exam_list'),
 )
@@ -162,4 +164,3 @@ urlpatterns += (
     path('studentChapterLogUpdateAjax/<int:chapter>/',
          views.StudentChapterLogUpdateAjax, name='studentChapterLogUpdateAjax'),
 )
-

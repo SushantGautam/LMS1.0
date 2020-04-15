@@ -67,7 +67,7 @@
 
                 <div class="center-name" style="padding: 10px 0;">
                     <span style="font-size:18px;"><b> Course Title: </b></span>
-                    <span style="font-size: 16px;">{{ request.user.Center_Code }}</span>
+                    <span style="font-size: 16px;">{{ course }}</span>
 
                 </div>
                 <div class="session-detail" style="padding: 10px 0;">
@@ -384,15 +384,15 @@
             $("#select_session").on("change", function () {
                 {% if 'iframe' in request.GET %}
                     {% if '/teachers' in request.path %}
-                        window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}/?iframe=1".replace('919', this.value);
+                        window.location.href = `/teachers/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/?iframe=1`
                     {% elif '/students' or '/teachers' not in request.path %}
-                        window.location.href = "{% url 'admin_course_progress_withinning' course.pk 919 %}/?iframe=1".replace('919', this.value);
+                        window.location.href = `/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/?iframe=1`;
                     {% endif %}
                 {% else %}
                     {% if '/teachers' in request.path %}
-                        window.location.href = "{% url 'course_progress_withinning' course.pk 919 %}".replace('919', this.value);
+                        window.location.href = `/teachers/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/`;
                     {% elif '/students' or '/teachers' not in request.path %}
-                        window.location.href = "{% url 'admin_course_progress_withinning' course.pk 919 %}".replace('919', this.value);
+                        window.location.href = `/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/`;
                     {% endif %}
                 {% endif %}
             });

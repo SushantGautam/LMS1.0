@@ -75,7 +75,7 @@ def start(request):
                    'activeAssignments': activeassignments, 'sittings': sittings,
                    'wordCloud': wordCloud,
                    'get_top_thread_keywords': thread_keywords
-                })
+                   })
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -1061,11 +1061,8 @@ class QuizUserProgressView(TemplateView):
         # context['cat_scores'] = progress.list_all_cat_scores
         # context['exams'] = progress.show_exams()
 
-
-
-
-        context['sittings'] = Sitting.objects.filter(user=self.request.user).order_by('-start')
-        pk_list = context['sittings'].values_list('quiz', flat=True)
+        context['sittings'] = []
+        pk_list = Sitting.objects.filter(user=self.request.user).order_by('-start').values_list('quiz', flat=True)
 
         context["quiz_list"] = []
         for pk in pk_list:
@@ -1073,8 +1070,31 @@ class QuizUserProgressView(TemplateView):
             if quiz_obj not in context["quiz_list"]:
                 context["quiz_list"].append(quiz_obj)
         for q in context["quiz_list"]:
-            q.sittings = Sitting.objects.filter(user=self.request.user, quiz=q).order_by('-start')
+            sitting_obj = Sitting.objects.filter(user=self.request.user, quiz=q).order_by('-start').first()
+            sitting_obj.times_played = Sitting.objects.filter(user=self.request.user, quiz=q).count()
+            context['sittings'].append(sitting_obj)
         print(context["quiz_list"])
+        print(context["sittings"])
+        return context
+
+
+class QuizUserProgressHistoryView(TemplateView):
+    template_name = 'ajax_quiz/progress_list_history.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        progress, c = Progress.objects.get_or_create(user=self.request.user)
+        # context['cat_scores'] = progress.list_all_cat_scores
+        # context['exams'] = progress.show_exams()
+
+        related_quiz = Quiz.objects.get(pk=self.kwargs['quiz'])
+
+        context['sittings'] = Sitting.objects.filter(user=self.request.user, quiz=related_quiz).order_by('-start')
+
         return context
 
 
