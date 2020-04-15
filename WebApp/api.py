@@ -5,6 +5,7 @@ from rest_framework import generics, status
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 
+from WebApp.models import AssignmentQuestionInfo
 from . import models
 from . import serializers
 
@@ -86,9 +87,8 @@ class QuestionInfoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         if self.request.GET.get('Assignment_Code', None):
-            query_set = queryset.filter(Assignment_Code=self.request.GET.get('Assignment_Code', None))
-        return query_set
-
+            queryset = queryset.filter(Assignment_Code__pk=self.request.GET.get('Assignment_Code', None))
+        return queryset
 
 
 class AssignAnswerInfoViewSet(viewsets.ModelViewSet):
@@ -97,6 +97,16 @@ class AssignAnswerInfoViewSet(viewsets.ModelViewSet):
     queryset = models.AssignAnswerInfo.objects.all()
     serializer_class = serializers.AssignAnswerInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.GET.get('Student_Code', None)
+        question_id = self.request.GET.get('Question_Code', None)
+        if user_id:
+            queryset = queryset.filter(Student_Code__pk=user_id)
+        if question_id:
+            queryset = queryset.filter(Question_Code__pk=question_id)
+        return queryset
 
 
 class InningGroupViewSet(viewsets.ModelViewSet):
