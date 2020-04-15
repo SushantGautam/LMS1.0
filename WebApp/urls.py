@@ -227,13 +227,15 @@ urlpatterns += (
          name='groupmapping_list'),
     path('groupmapping/create/', views.GroupMappingCreateView.as_view(),
          name='groupmapping_create'),
+    path('groupmapping/saveasnew/<int:pk>/', views.GroupMappingCreateView.as_view(),
+         name='groupmapping_saveasnew'),
     path('groupmapping/<int:pk>/',
          views.GroupMappingDetailView.as_view(), name='groupmapping_detail'),
     path('groupmapping/update/<int:pk>/',
          views.GroupMappingUpdateView.as_view(), name='groupmapping_update'),
     path('groupmapping/delete/<int:pk>/',
          views.GroupMappingDeleteView, name='groupmapping_delete'),
-    path('groupmapping/csv_import', views.GroupMappingCSVImport , name='csv_import_student_group')
+    path('groupmapping/csv_import', views.GroupMappingCSVImport, name='csv_import_student_group')
 
     # path('admin/jsi18n', i18n.javascript_catalog),
 )
