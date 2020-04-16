@@ -29,7 +29,10 @@
         <a href="{% url 'inninginfo_list' %}">Session</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        {% if '/inninginfo/create/' == request.path %} Register New Session {% else %}
+        {% if '/inninginfo/create/' == request.path %} Register New Session
+        {% elif '/saveasnew' in request.path %}
+            Save New Session
+        {% else %}
             Edit Session {% endif %}
     </li>
 {% endblock %}
