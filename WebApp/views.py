@@ -953,9 +953,10 @@ class InningInfoCreateView(CreateView):
         # Copy the dictionary so we don't accidentally change a mutable dict
         initial = initial.copy()
         if 'saveasnew' in self.request.path:
-            initial['Inning_Name'] = InningInfo.objects.get(pk=self.kwargs['pk']).Inning_Name
-            initial['Groups'] = InningInfo.objects.get(pk=self.kwargs['pk']).Groups
-            initial['Course_Group'] = InningInfo.objects.get(pk=self.kwargs['pk']).Course_Group.all()
+            inning = get_object_or_404(InningInfo, pk=self.kwargs['pk'])
+            initial['Inning_Name'] = inning.Inning_Name
+            initial['Groups'] = inning.Groups
+            initial['Course_Group'] = inning.Course_Group.all()
         return initial
 
     def get_context_data(self, **kwargs):
@@ -1186,7 +1187,7 @@ class GroupMappingCreateView(CreateView):
         # Copy the dictionary so we don't accidentally change a mutable dict
         initial = initial.copy()
         if 'saveasnew' in self.request.path:
-            initial['Students'] = GroupMapping.objects.get(pk=self.kwargs['pk']).Students.all()
+            initial['Students'] = get_object_or_404(GroupMapping, pk=self.kwargs['pk']).Students.all()
         return initial
 
     def get_context_data(self, **kwargs):
