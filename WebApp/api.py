@@ -102,6 +102,11 @@ class AssignAnswerInfoViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         user_id = self.request.GET.get('Student_Code', None)
         question_id = self.request.GET.get('Question_Code', None)
+        assignment_id = self.request.GET.get('Assignment_Code', None)
+        if assignment_id:
+            queryset = queryset.filter(
+                Question_Code__in=AssignmentQuestionInfo.objects.filter(Assignment_Code__pk=assignment_id)
+            )
         if user_id:
             queryset = queryset.filter(Student_Code__pk=user_id)
         if question_id:
