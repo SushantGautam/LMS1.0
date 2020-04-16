@@ -195,6 +195,10 @@
 {% block customjss %}
     <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
     <script>
+        document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString()
+        document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString()
+        $('#id_Start_Date').datetimepicker();
+        $('#id_End_Date').datetimepicker();
         $(document).ready(function () {
             {#$("#smartwizard").smartWizard({selected: 0,});#}
 
@@ -419,7 +423,12 @@
                 $(".question_error").html("End Date must be greater than Start Date");
                 return false;
             }
-
+            if ($('#id_Start_Date').val() != "") {
+                $('#id_Start_Date').val(new Date($('#id_Start_Date').val()).toISOString())
+            }
+            if ($('#id_End_Date').val() != "") {
+                $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
+            }
             $.ajax({
                 //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
                 cache: false,
