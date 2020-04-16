@@ -115,11 +115,13 @@ class AssignAssignmentInfoSerializer(serializers.ModelSerializer):
 
 
 class AssignAnswerInfoSerializer(serializers.ModelSerializer):
+    Assignment_Code = serializers.ReadOnlyField(source='Question_Code.Assignment_Code.id')
     class Meta:
         model = models.AssignAnswerInfo
         fields = (
             'pk', 'Assignment_Score', 'Question_Code',
-            'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Assignment_Answer', 'Student_Code'
+            'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Assignment_Answer', 'Assignment_File',
+            'Student_Code', 'Assignment_Code'
         )
 
 
