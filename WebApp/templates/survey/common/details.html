@@ -29,26 +29,26 @@
         <div class="col-md-5 col-sm-5">
           <div class="viewSurveyTitle">
             <ul class="card_labels">
-              <li>
-                <div class="form-group">
-                  <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                         for="first-name">Category :
-                    <span class="category-label">{{ object.Category_Code }}</span>
-                  </label>
-                </div>
-              </li>
-              <li class="surveyViewDates">
-                <i class="fa fa-calendar"></i><label>Start date: <span
-                  class="">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
-              </li>
-              <li class="surveyViewDates">
-                <i class="fa fa-calendar"></i><label>End date: <span
-                  class="">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
-              </li>
-              <li class="surveyViewDates">
-                <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
-                Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
-              </li>
+                <li>
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                               for="first-name">Category :
+                            <span class="category-label">{{ object.Category_Code }}</span>
+                        </label>
+                    </div>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="fa fa-calendar"></i><label>Start date: <span
+                        class="datecon">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="fa fa-calendar"></i><label>End date: <span
+                        class="datecon">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
+                    Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
+                </li>
             </ul>
 
 
