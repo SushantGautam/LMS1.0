@@ -19,7 +19,7 @@ SECRET_KEY = os.environ.get(
     'SECRET_KEY', 'x-v$qxhbfy+jse*f)mx7(r_@_h#3rwo-o36t5j#pnhh25%8h*2')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 #DEBUG_PROPAGATE_EXCEPTIONS = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '210.127.211.100', '103.41.247.44', '192.168.1.29']

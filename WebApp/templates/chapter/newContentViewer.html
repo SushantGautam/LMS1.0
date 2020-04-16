@@ -1,0 +1,351 @@
+{% load staticfiles %}
+{% load define_action %}
+
+
+{% if  "teachers" in request.path %}
+    {% define 1 as ifteacher %}
+{% else %}
+    {% define 0 as ifteacher %}
+{% endif %}
+
+{% block head %}
+    <head>
+        <link rel="icon"
+              type="image/png"
+              href="/static/images/logo.png"/>
+        <meta name="viewport" content="width=device-width, intial-scale=1.0">
+
+        <!-- Bootstrap -->
+        <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+        <link href="{% static 'build/css/theme.min.css' %}" rel="stylesheet">
+        <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
+
+        <link href="{% static 'chapterPageBuilder/css/newViewer.css' %}" rel="stylesheet">
+
+        {% if not connection_offline %}
+            <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
+        {% endif %}
+        <link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
+
+        <script type="text/javascript" crossorigin="anonymous"
+                src="{% static 'vendorsx/jquery/jquery3.4.1.min.js' %}"></script>
+        <link rel='manifest' href='/manifest.webmanifest'>
+
+
+        <!-- Loads <model-viewer> for modern browsers: -->
+        <script type="module" crossorigin="anonymous"
+                src="{% static '3D_Viewer/model-viewer.js' %}">
+        </script>
+
+        <!-- Loads <model-viewer> for old browsers like IE11: -->
+        <script nomodule crossorigin="anonymous"
+                src="{% static '3D_Viewer/model-viewer-legacy.js' %}">
+        </script>
+
+
+    </head>
+{% endblock head %}
+
+
+<body>
+    
+    <div class="top-header">
+        <div class="container">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row top-holder-row">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="course-chapter">
+                            <ul class="course-chapter-holder">
+                                <li class="course-name">Course Title &nbsp;<i style="color:white" class="fa fa-caret-right"></i></li>
+                                <li class="chapter-name">Chapter Title (4/200) </li>
+
+                            </ul>
+                            
+                        </div>
+                        
+
+
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12 page-name-holder">
+                        <div class="page-name">
+                            <span> 
+                                1.
+
+                            </span>
+                            <span>
+                                Page Name
+
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="whole-container">
+
+        <div class="sidenavbar-part">
+            <div class="sidebar-top">
+              
+                  <div class="col-md-12 col-sm-12 profile-description">
+                    <div class="row" style="margin: 0px;">
+                        <div class="col-sm-3 col-md-3" style="padding: 0!important;">
+                            <div class="profile-image">
+                        
+                        
+                            </div>
+    
+                          </div>
+                          <div class="col-sm-9 col-md-9 user-information ">
+                            
+                               <span>Welcome,</span>
+                               <p class="user-name-part">Nsdev ubt (Nsdevil)</p>
+                             
+    
+                          </div>
+
+                    </div>
+                      
+                  </div>
+              </div>
+
+
+
+            <div class="chapter-lists-all">
+                <div class="chapter-name1">
+                    Chapter Lists
+                </div>
+                <ul class="chapter-list">
+                    <li> <a href="javascript:void(0)">
+                        1. &nbsp; Chapter One
+                    </a>
+                        </li>
+                     <li> <a href="javascript:void(0)">
+                         1. &nbsp; Chapter One
+                        </a>
+                            </li>
+                     <li> <a href="javascript:void(0)">
+                          1. &nbsp; Chapter One
+                            </a>
+                                </li>
+                     <li><a href="javascript:void(0)">
+                           1. &nbsp; Chapter One
+                          </a>
+                                    </li>
+                      <li> <a href="javascript:void(0)">
+                              1. &nbsp; Chapter One
+                            </a>
+                                        </li>
+                </ul>
+            </div>
+           
+           
+            <div id="sidebar-buttom" class="side-bar-content ">
+
+                <ul class="sidebar-bottom-icons" style=" list-style:none; padding: 0px !important">
+                    <li>
+                        <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()" data-original-title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+            
+                    </li>
+                    <li>
+                        <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="/profile/" data-original-title="Profile">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        </a>
+            
+                    </li>
+                    <li>
+                        <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title="" href="https://we.tl/t-HCjfXFbUd7" target="_blank" data-original-title="Download u-LMS Android App">
+                            <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+                        </a>
+            
+                    </li>
+                    <li>
+                        <a class="logoutBtn" data-toggle="tooltip" data-placement="top" title="" href="/logout" data-original-title="Logout">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+            
+                    </li>
+            
+                </ul>
+            
+            </div>
+        </div>
+        {% if not connection_offline %}
+      <ul class="chat-sidenav">
+          <li class="glyphicon glyphicon-th" id="hamburg-nav">
+           
+          </li>
+          <li class="icon-for-chat">
+            <i  style="color: white;"  class="chat-icon fa fa-quote-right"></i>
+          </li>
+      </ul>  
+      <ul class="chat-sidenav-close">
+        <li class=close-icon-sidebar>
+            <i class="fa fa-times"></i>
+         
+        </li>
+        <li class="icon-for-chat">
+          <i  style="color: black;"  class="chat-icon fa fa-quote-right"></i>
+        </li>
+    </ul>  
+       
+    {% endif %}
+       
+        <div id="container" class="container12" >
+           <div class="custom-owl-slider">
+            <div class=" owl-carousel owl-theme">
+                <div class="item">
+                    <div class="image-holder">
+                        
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="image-holder">
+                        
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="image-holder">
+                        
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="image-holder">
+                        
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="image-holder">
+                        
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="image-holder">
+                        
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="image-holder">
+                        
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="image-holder">
+                        
+                    </div>
+                </div>
+             
+            </div>
+
+           </div>
+
+           <div class="page-link-view">
+               <ul class="both-views">
+                   <li class="page-view">
+                    <input type="checkbox" >&nbsp; 
+                    <label class="view-label"> Page View</label><br>
+                   </li>
+                   <li class="link-view">
+                    <input type="checkbox">&nbsp;
+                    <label class="view-label"> Link View</label>
+
+                   </li>
+                   
+
+
+               </ul>
+
+           </div>
+
+           <div class="navigation-owl">
+               <div class="navholder">
+                   <ul class="nav-view">
+                       <li><i class="fa fa-angle-left"></i></li>
+                       <li class="view-icon" value="show"><i class="fa fa-list-ul"></i></li>
+                       <li><i class="fa fa-angle-right"></i></li>
+                   </ul>
+                   <div class="page-number-list">
+                       <span style="color: white;">3 &nbsp;&nbsp;</span> / <span>200</span>
+                   </div>
+               </div>
+           </div>
+            
+        </div>
+       
+
+    </section>
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+
+            $(".close-icon-sidebar").click(function() {
+              $(".sidenavbar-part").hide();
+              $(".chat-sidenav-close").css("display", "none");
+            });
+            $(".container12").click(function() {
+                $(".page-link-view").hide();
+              });
+           
+          
+        
+          
+          });
+        
+    </script>
+    <script>
+        $(document).on('click', '#hamburg-nav', function() {
+            $(".sidenavbar-part").css("display", "block");
+            $(".chat-sidenav-close").css("display", "block");
+            $(".sidenavbar-part").fadeIn(2000);
+        });
+        $(document).on('click', '.view-icon', function() {
+            $(".page-link-view").css("display", "block");
+          
+        });
+       
+        
+    </script>
+    <script>
+     
+    </script>
+    <script>
+        $(document).ready(function () {
+           
+            $('.owl-carousel').owlCarousel({
+                nav: false,
+                // slideBy: 5,
+                rewind: true,
+                margin:5,
+                dots: false,
+                items:5,
+                stagePadding:5,
+                navText: ["<i class=' fa fa-chevron-circle-left'></i>",
+                    "<i class='fa  fa-chevron-circle-right'></i>"],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    300: {
+                        items: 2
+    
+                    },
+                    400: {
+                        items: 3
+                    },
+                    600: {
+                        items: 5
+                    },
+                    1000: {
+                        items: 6
+                    }
+                }
+            })
+      
+        });
+    </script>
+</body>

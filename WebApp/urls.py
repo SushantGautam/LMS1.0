@@ -291,6 +291,8 @@ urlpatterns += (
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          views.ContentsView.as_view(), name='contentviewer'),
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newcontents',
+         views.NewContentsView.as_view(), name='NewContentViewer'),    
     # path('courseinfo/<int:course>/chapterinfo/<int:chapter>/offline_contents',
     #     views.OfflineContentsView.as_view(), name='offlinecontentviewer'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/preview',
