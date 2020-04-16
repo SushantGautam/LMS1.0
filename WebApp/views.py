@@ -947,6 +947,17 @@ class InningInfoCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_initial(self):
+        # Get the initial dictionary from the superclass method
+        initial = super(InningInfoCreateView, self).get_initial()
+        # Copy the dictionary so we don't accidentally change a mutable dict
+        initial = initial.copy()
+        if 'saveasnew' in self.request.path:
+            initial['Inning_Name'] = InningInfo.objects.get(pk=self.kwargs['pk']).Inning_Name
+            initial['Groups'] = InningInfo.objects.get(pk=self.kwargs['pk']).Groups
+            initial['Course_Group'] = InningInfo.objects.get(pk=self.kwargs['pk']).Course_Group.all()
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
