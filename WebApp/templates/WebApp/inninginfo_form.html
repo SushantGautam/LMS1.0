@@ -29,7 +29,10 @@
         <a href="{% url 'inninginfo_list' %}">Session</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        {% if '/inninginfo/create/' == request.path %} Register New Session {% else %}
+        {% if '/inninginfo/create/' == request.path %} Register New Session
+        {% elif '/saveasnew' in request.path %}
+            Save New Session
+        {% else %}
             Edit Session {% endif %}
     </li>
 {% endblock %}
@@ -449,4 +452,16 @@
 
     </script>
 
+    <script>
+        startdate = $('#id_Start_Date').val()
+        enddate = $('#id_End_Date').val()
+        if (startdate == "") {
+            $('#id_Start_Date').val(new Date().getFullYear() + '-' + new Date().getFullMonthName() + '-' + new Date().getTwoDigitDate())
+        }
+        if (enddate == "") {
+            d = new Date()
+            d = d.setMonth(d.getMonth() + 6);
+            $('#id_End_Date').val(new Date(d).getFullYear() + '-' + new Date(d).getFullMonthName() + '-' + new Date(d).getTwoDigitDate())
+        }
+    </script>
 {% endblock %}

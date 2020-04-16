@@ -947,6 +947,18 @@ class InningInfoCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_initial(self):
+        # Get the initial dictionary from the superclass method
+        initial = super(InningInfoCreateView, self).get_initial()
+        # Copy the dictionary so we don't accidentally change a mutable dict
+        initial = initial.copy()
+        if 'saveasnew' in self.request.path:
+            inning = get_object_or_404(InningInfo, pk=self.kwargs['pk'])
+            initial['Inning_Name'] = inning.Inning_Name
+            initial['Groups'] = inning.Groups
+            initial['Course_Group'] = inning.Course_Group.all()
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
@@ -1175,7 +1187,7 @@ class GroupMappingCreateView(CreateView):
         # Copy the dictionary so we don't accidentally change a mutable dict
         initial = initial.copy()
         if 'saveasnew' in self.request.path:
-            initial['Students'] = GroupMapping.objects.get(pk=self.kwargs['pk']).Students.all()
+            initial['Students'] = get_object_or_404(GroupMapping, pk=self.kwargs['pk']).Students.all()
         return initial
 
     def get_context_data(self, **kwargs):
@@ -2049,6 +2061,63 @@ class ContentsView(TemplateView):
             except Exception as e:
                 pass
         return context
+
+
+class NewContentsView(TemplateView):
+    template_name = 'chapter/newContentViewer.html'  
+
+    def get(self, request, *args, **kwargs):
+        try:
+            if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
+                pass
+            else:
+                messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                raise ObjectDoesNotExist
+        except:
+            if '/students/' in request.path:
+                return redirect('student_courseinfo_detail', pk=self.kwargs.get('course'))
+            elif '/teachers/' in request.path:
+                return redirect('teacher_courseinfo_detail', pk=self.kwargs.get('course'))
+            else:
+                return redirect('courseinfo_detail', pk=self.kwargs.get('course'))
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True)
+        context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
+        context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        courseID = context['chapter'].Course_Code.id
+        chapterID = self.kwargs.get('chapter')
+        context['chat_details'] = []
+        context['connection_offline'] = False
+        path = settings.MEDIA_ROOT
+
+        try:
+            with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
+                    chapterID) + '.txt') as json_file:
+                context['data'] = json.load(json_file)
+        except Exception as e:
+            print(e)
+            context['data'] = ""
+
+        list_of_files = sorted(glob.iglob(path + '/chatlog/chapterchat' + str(chapterID) + '/*.txt'),
+                               key=os.path.getctime, reverse=True)[:50]
+
+        for latest_file in list_of_files:
+            try:
+                f = open(latest_file, 'r')
+                if f.mode == 'r':
+                    contents = f.read()
+                    contents = contents.replace('`', '')
+                    context['chat_details'].insert(0, contents)
+                f.close()
+
+            except Exception as e:
+                pass
+        return context        
 
 
 class OfflineContentsView(ContentsView):
