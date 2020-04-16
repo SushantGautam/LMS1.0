@@ -262,6 +262,16 @@ class GroupMappingForm(forms.ModelForm):
         self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True, Use_Flag=True,
                                                                      Center_Code=self.request.user.Center_Code)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('GroupMapping_Name')
+        groupmapping = GroupMapping.objects.filter(GroupMapping_Name=name, Center_Code=self.request.user.Center_Code)
+        if groupmapping.exists():
+            if self.instance.id:
+                if groupmapping.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if groupmapping.get(pk=self.instance.id).GroupMapping_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Group Name already Exists')
 
 class InningGroupForm(forms.ModelForm):
     Teacher_Code = forms.ModelMultipleChoiceField(queryset=None, required=True,

@@ -57,7 +57,7 @@
                         &nbsp;Preview
                     </button>
                 </a>
-             
+
             </div>
             <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
                 <a href="
@@ -341,9 +341,6 @@
                             </li>
 
 
-                         
-
-
                         </ul>
 
 
@@ -427,12 +424,12 @@
                     </ul>
 
                 </div>
-                
+
 
                 <div class="add-page">
                     <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
                         <hr>
-    
+
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12">
 
@@ -943,7 +940,7 @@
 
 
         })
-       
+
     });
 </script>
 <script>
@@ -1007,7 +1004,19 @@
     var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
-
+    var centerName = '{{ request.user.Center_Code }}'
+    var imagegalleryid, videogalleryid, audiogalleryid;
+    if (server_name == "Indonesian_Server") {
+        imagegalleryid = 'A8AAAoODp5Za';
+        videogalleryid: 'AYMAfq-EnZOX';
+        audiogalleryid: 'AgLA8o--2Nr0'
+    } else if (server_name == 'Korean_Server') {
+        imagegalleryid = 'AsNAMruu8BjR';
+        audiogalleryid: 'AcFAJqeO8V_R';
+    } else if (server_name == 'Vietnam_Server') {
+        imagegalleryid = 'AUOAUr-S8FbV';
+        audiogalleryid: 'AMOA5rOA85RW';
+    }
 
     $('#chapterlist').val(chapterID);
 

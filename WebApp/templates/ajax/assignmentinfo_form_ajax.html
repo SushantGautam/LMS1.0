@@ -103,8 +103,8 @@
                 location.reload()
             },
             error: function (err) {
-                console.log('Error in posting assignment create form')
-                $('.form-errors').append(err.responseJSON.errors.__all__[0]).css('display', 'block')
+                console.log('Error in posting assignment create form', err.responseJSON)
+                $('.form-errors').empty().append(err.responseJSON.Message).css('display', 'block')
             }
 
         });

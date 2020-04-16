@@ -1173,7 +1173,24 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                 // div.find('.file-upload-icon').remove();
                 // // div.find('.progress').remove();
                 // div.append(html);
+                var request = new XMLHttpRequest()
 
+                request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&rid=${options.rid}`, true)
+                request.onload = function () {
+                    // Begin accessing JSON data here
+                    var data = JSON.parse(this.response)
+                    if (request.status >= 200 && request.status < 400) {
+                        console.log(data.success)
+                    } else {
+                        console.log('error')
+                    }
+                }
+                request.send()
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                    console.log('success')
+                }).fail(function () {
+                    console.log('failed')
+                })
                 div.remove()
                 PictureFunction(
                     $(div)[0].style.top,
@@ -1239,13 +1256,30 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                         // div.find('.file-upload-icon').remove();
                         // // div.find('.progress').remove();
                         // div.append(html);
+                        var request = new XMLHttpRequest()
 
+                        request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&rid=${options.rid}`, true)
+                        request.onload = function () {
+                            // Begin accessing JSON data here
+                            var data = JSON.parse(this.response)
+                            if (request.status >= 200 && request.status < 400) {
+                                console.log(data.success)
+                            } else {
+                                console.log('error')
+                            }
+                        }
+                        request.send()
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                            console.log('success')
+                        }).fail(function () {
+                            console.log('failed')
+                        })
                         div.remove()
                         PictureFunction(
                             $(div)[0].style.top,
                             $(div)[0].style.left,
                             null,
-                            "//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!" + options.rid,
+                            "//www.cincopa.com/media-platform/iframe.aspx?fid=" + imagegalleryid + "!" + options.rid,
                             $(div)[0].style.width,
                             $(div)[0].style.height,
                         );
@@ -1887,6 +1921,24 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                         url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                         chunk_size: 10, // MB
                         onUploadComplete: function (e, options) {
+                            var request = new XMLHttpRequest()
+
+                            request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&rid=${options.rid}`, true)
+                            request.onload = function () {
+                                // Begin accessing JSON data here
+                                var data = JSON.parse(this.response)
+                                if (request.status >= 200 && request.status < 400) {
+                                    console.log(data.success)
+                                } else {
+                                    console.log('error')
+                                }
+                            }
+                            request.send()
+                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                                console.log('success')
+                            }).fail(function () {
+                                console.log('failed')
+                            })
                             var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A4HAcLOLOO68!${options.rid}"
                              frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
                             div.find('#loadingDiv').remove();
@@ -2099,6 +2151,24 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                     url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                     chunk_size: 10, // MB
                     onUploadComplete: function (e, options) {
+                        var request = new XMLHttpRequest()
+
+                        request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&rid=${options.rid}`, true)
+                        request.onload = function () {
+                            // Begin accessing JSON data here
+                            var data = JSON.parse(this.response)
+                            if (request.status >= 200 && request.status < 400) {
+                                console.log(data.success)
+                            } else {
+                                console.log('error')
+                            }
+                        }
+                        request.send()
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                            console.log('success')
+                        }).fail(function () {
+                            console.log('failed')
+                        })
                         var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=AgLA8o--2Nr0!${options.rid}"
                          frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
                         div.find('#loadingDiv').remove();
@@ -2330,9 +2400,13 @@ $(document).ready(function () {
         var btn_name = $('#btn-name').val();
         var btn_link = $('#btn-link').val();
         var btn_id = $('#button_id').val();
-        if (btn_link != "") {
+        if (btn_link != "" && !btn_link.includes("http")) {
             $('#' + btn_id).attr({
                 "href": `http://${btn_link}`
+            });
+        } else if (btn_link.includes("http")) {
+            $('#' + btn_id).attr({
+                "href": `${btn_link}`
             });
         } else {
             $('#' + btn_id).removeAttr('href');
