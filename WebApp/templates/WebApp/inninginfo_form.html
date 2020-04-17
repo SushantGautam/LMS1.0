@@ -464,4 +464,21 @@
             $('#id_End_Date').val(new Date(d).getFullYear() + '-' + new Date(d).getFullMonthName() + '-' + new Date(d).getTwoDigitDate())
         }
     </script>
+
+    {#    <script>#}
+    {#    $(document).ready(function () {#}
+    {#        setTimeout(function () {#}
+    {#            console.log(`{{ form.fields }}`)#}
+    {#            $('.selector select').each(function () {#}
+    {#                options = this.options#}
+    {#                console.log(options.length)#}
+    {#                $(options).each(function () {#}
+    {#                    this.title = "Changed"#}
+    {#                })#}
+    {#            })#}
+    {#        },1000)#}
+    {#    })#}
+    {##}
+    {##}
+    {#    </script>#}
 {% endblock %}
