@@ -32,7 +32,7 @@ from WebApp.forms import GroupMappingForm, InningGroupForm, \
     InningInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
-    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager, Attendance
+    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager, Attendance, Notice, NoticeView
 from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
@@ -84,10 +84,19 @@ def start(request):
             activeassignments += AssignmentInfo.objects.filter(Course_Code=course,
                                                                Assignment_Deadline__gte=datetime_now,
                                                                Chapter_Code__Use_Flag=True)
+        if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
+                                     status=True).exists():
+            notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+            if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
+                notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
+                if notice_view_flag:
+                    notice = None
+        else:
+            notice = None
 
         return render(request, "teacher_module/homepage.html",
                       {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments,
-                       'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
+                       'wordCloud': wordCloud, 'notice': notice, 'get_top_thread_keywords': thread_keywords})
 
 
 def teacher_editprofile(request):

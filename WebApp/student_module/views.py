@@ -30,7 +30,7 @@ from LMS import settings
 from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
-    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
+    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
@@ -70,10 +70,20 @@ def start(request):
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
 
+    if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),status=True).exists():
+        notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+        if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
+            notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
+            if notice_view_flag:
+                notice = None
+    else:
+        notice = None
+
     return render(request, 'student_module/dashboard.html',
                   {'GroupName': batches, 'Group': sessions, 'Course': courses,
                    'activeAssignments': activeassignments, 'sittings': sittings,
                    'wordCloud': wordCloud,
+                   'notice': notice,
                    'get_top_thread_keywords': thread_keywords
                    })
 

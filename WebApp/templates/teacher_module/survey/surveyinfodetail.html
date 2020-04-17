@@ -246,9 +246,12 @@
                       yPos += imgHeight;
                       yPos += 5;
                       if (index === $("svg").length - 1) {
-                          doc.text(150, 285, 'page ' + doc.page);
+                         doc.text(150, 285, 'page ' + doc.page);
                           //doc.output('dataurlnewwindow'); //opens pdf in new tab
-                          doc.save('Test.pdf');
+                          //doc.save('Test.pdf');
+
+                          doc.autoPrint();
+                          doc.output('dataurlnewwindow');
                       } else if ((index + 1) % 2 === 0) {
                           doc.text(150, 285, 'page ' + doc.page);
                           doc.addPage();

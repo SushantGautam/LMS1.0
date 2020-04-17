@@ -294,10 +294,17 @@ class InningGroupForm(forms.ModelForm):
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                         Use_Flag=True)
 
+class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):
+    """
+    Custom multiple select Feild with full name
+    """
+
+    def label_from_instance(self, obj):
+        return "%s (%s)" % (obj, obj.Teacher_Code.count())
 
 class InningInfoForm(forms.ModelForm):
-    Course_Group = forms.ModelMultipleChoiceField(queryset=None, required=True,
-                                                  widget=FilteredSelectMultiple("Courses", is_stacked=False))
+    Course_Group = CoursesMultipleChoiceField(queryset=None, required=True,
+                                              widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }

@@ -198,6 +198,8 @@ urlpatterns += (
     path('inninginfo/', views.InningInfoListView.as_view(), name='inninginfo_list'),
     path('inninginfo/create/', views.InningInfoCreateView.as_view(),
          name='inninginfo_create'),
+    path('inninginfo/saveasnew/<int:pk>/', views.InningInfoCreateView.as_view(),
+         name='inninginfo_saveasnew'),
     path('inninginfo/<int:pk>/',
          views.InningInfoDetailView.as_view(), name='inninginfo_detail'),
     path('inninginfo/update/<int:pk>/',
