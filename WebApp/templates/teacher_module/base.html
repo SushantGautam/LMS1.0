@@ -111,10 +111,11 @@
     <!-- Bootstrap -->
     <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <!-- FastClick -->
-{#    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>#}
-    <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
+    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>
+    {# <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script> #}
     <!-- NProgress -->
     <script src="{% static 'vendorsx/nprogress/nprogress.min.js' %}"></script>
+    <script src=" {% static 'build/js/custom.min.js' %}"></script>
     {% comment %}
     <!-- bootstrap-progressbar -->
     <!-- <script src="{% static "vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js" %}"></script> -->
@@ -170,7 +171,7 @@
             $('#alert-message').fadeOut('slow');
         }, 3000);
     </script>
-    <script src=" {% static 'build/js/custom.js' %}"></script>
+  
 
     <script>
         window.addEventListener('beforeunload', function (e) {

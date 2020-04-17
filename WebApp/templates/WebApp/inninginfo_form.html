@@ -230,6 +230,15 @@
 
                         <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3" style="width: auto;">
                             {{ form.Course_Group }}
+
+                            {% comment %}
+                            <select name="Course_Group" title="vDateField" class="selectfilter" required id="id_Course_Group" multiple data-field-name="Courses" data-is-stacked="0">
+                                {% for c in  form.fields.Course_Group.queryset %}
+                                    <option value="{{ c.id }}" title="My Title">{{  c }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endcomment %}
+                            
                         </div>
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <span id="step3Validate" class="text-danger"></span>
