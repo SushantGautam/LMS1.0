@@ -17,6 +17,8 @@
 
         <!-- Bootstrap -->
         <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+
         <!-- Font Awesome -->
         <link href="{% static 'vendorsx/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
         <link href="{% static 'build/css/theme.min.css' %}" rel="stylesheet">
@@ -142,7 +144,7 @@
     width: 240px;
     border-top: 1px solid white;">
 
-            <ul style="display: inline-flex; list-style:none; padding: 0px !important">
+            <ul style="display: inline-block; list-style:none; padding: 0px !important">
                 <li>
                     <a id="togglefull" data-toggle="tooltip" data-placement="top" title="" onclick="toggleFullScreen()"
                        data-original-title="FullScreen">
@@ -535,6 +537,9 @@
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
+<script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+
 <script src="{% static 'js/modernizr.js' %}"></script>
 <link href="https://unpkg.com/cloudinary-video-player@1.3.4/dist/cld-video-player.min.css"
       rel="stylesheet">
@@ -819,13 +824,23 @@
                         }
                         if (div == 'pic') {
                             $.each(div_value, function (css, css_value) {
-                                src = css_value['background-image']
-                                // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-                                $('#page' + key).append(`
-                                    <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
-                                    <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = "height:100%; width:100%;" class="image-fitting"></img>  </a>
-                                    </div>
-                                `);
+                                if (css_value.hasOwnProperty('background-image')) {
+                                    src = css_value['background-image']
+                                    // imgsrc = src.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
+                                    $('#page' + key).append(`
+                                        <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
+                                        <a href = ${src} data-lightbox="roadtrip"> <img src = ${src} style = "height:100%; width:100%;" class="image-fitting"></img>  </a>
+                                        </div>
+                                    `);
+                                } else if (css_value.hasOwnProperty('link')) {
+                                    $('#page' + key).append(`
+                                        <div style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
+                                        <iframe style="width:100%;height:100%;" src="${css_value.link}"
+                                            frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>
+                                        </div>
+                                    `);
+                                }
+
                                 // $('#page' + key).append(css_value.div);
                             });
                         }
@@ -985,6 +1000,42 @@
                                 $('#page' + key).append(embed)
                                 if (!css_value.hasOwnProperty('online_link') && !css_value.local_link.includes('/media/chapterBuilder')) {
                                     play("#video" + now)
+                                }
+                            });
+                        }
+
+                        if (div == 'audio') {
+                            $.each(div_value, function (css, css_value) {
+                                if (css_value.hasOwnProperty('online_link')) {
+                                    var embed = `<div id = '${now}' style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                        <iframe width="100%" height="94%" src="${css_value.online_link}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+                                        </div>`
+                                } /*else {
+                                    if (css_value.local_link.includes('/media/chapterBuilder/')) {
+                                        var embed = `
+                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                        <audio controls muted"
+                                            class="videodim">
+                                            <source src="${css_value.local_link}"  type="video/mp4">
+                                        </audio>
+                                    </div>
+                                    `
+                                    } else {
+                                        var embed = `
+                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                        <video controls muted id="audio${now}"
+                                            class="audiodim cld-video-player cld-video-player-skin-dark example-player"
+                                            data-cld-public-id="${css_value.local_link}" data-public_id="${css_value.local_link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
+                                            <source src="${css_value.local_link}"  type="audio/mp4">
+                                        </video>
+                                    </div>
+                                    `
+                                    }
+                                }*/
+                                $('#page' + key).append(embed)
+                                if (!css_value.hasOwnProperty('online_link') && !css_value.local_link.includes('/media/chapterBuilder')) {
+                                    play("#audio" + now)
                                 }
                             });
                         }

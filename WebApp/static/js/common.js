@@ -1,4 +1,7 @@
 function DateConvert(date) {
+    if (date == "") {
+        return 'None'
+    }
     date = new Date(date);
     var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
     let newdate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes())).toLocaleString("en-US", options)

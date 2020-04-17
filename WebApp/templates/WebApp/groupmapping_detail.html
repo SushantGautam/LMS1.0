@@ -9,62 +9,6 @@
 
 <div class="outerdiv">
 
-    {% comment %} importing new students and add to current group {% endcomment %}
-
-    <!-- Model for Import CSV file -->
-    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
-                        <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </h4>
-                </div>
-                <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
-                    <form method="POST" id="form_import_csv" enctype="multipart/form-data">
-                        {% csrf_token %} <br><br>
-                        <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
-                        <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
-                        <a target="_blank" class="text-center" href="{% static 'importStudentcsv_sample.csv' %}"
-                           style="padding-top: 2em;">
-                            <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
-                        </a><br>
-
-                        <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
-                            Info...</b></span>
-                        <ul class="info-text" style="display:none;background:azure;">
-                            <li>- Username must be unique for every member (required)</li>
-                            <li>- Gender value must be Male or Female (required)</li>
-                            <li>- Teacher column value should be 1 for teacher</li>
-                            <li>- Student column value should be 1 for student</li>
-                            <li>- If any problem occur in a row then no any member data will be created</li>
-                            <li>- Error message will show the number of row in which the problem occur</li>
-                            <li>- Default password will be 00000 for everyuser</li>
-                        </ul>
-
-                        <div class="import-message"></div>
-                        <div class="text-center">
-                            <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit
-                                File
-                            </button>
-                            <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
-                                    style="margin:3em auto 2em auto">Close
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End of model -->
-
-  
-
-    {% comment %} End {% endcomment %}
-
     <h2 class="detailListHeader">Group Mapping Information</h2>
     <hr class="header_hr">
     <br>
@@ -79,20 +23,20 @@
                         <td>Register Agent</td>
                         <td>{{ object.Register_Agent }}</td>
                     </tr>
-               
+
                 </table>
-            </b>
+        </b>
         </h5>
         <br>
         <div class="text-center">
-              <span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn" style="border:1px solid black; padding:8px; cursor:pointer"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span></a>&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-primary" href="{% url 'groupmapping_saveasnew' object.pk %}"> Save as New</a>&nbsp;&nbsp;&nbsp;
             <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Group Mapping</a>
             <a class="btn btn-danger groupmapping-confirm-delete" id="{{ object.pk }}"
-                style="cursor: pointer;">Delete Group Mapping</a>
+               style="cursor: pointer;">Delete Group Mapping</a>
             <form method="post" action="{% url 'groupmapping_delete' pk=object.pk %}"
-                id="deleteGroupMapping{{ object.pk }}">
+                  id="deleteGroupMapping{{ object.pk }}">
                 {% csrf_token %}
-                <input type="hidden" value="{{object.pk}}" name="groupmapping_id">
+                <input type="hidden" value="{{ object.pk }}" name="groupmapping_id">
             </form>
         </div>
     </div>

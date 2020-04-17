@@ -50,6 +50,8 @@
               rel="stylesheet">
         <link href="{% static 'vendorsx/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet">
         <link href="{% static 'vendorsx/switchery/switchery.min.css' %}" rel="stylesheet">
+        <link href="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+
         <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
 
         {% block extrastyle %}{% endblock %}
@@ -109,10 +111,11 @@
     <!-- Bootstrap -->
     <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <!-- FastClick -->
-{#    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>#}
-    <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
+    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>
+    {# <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script> #}
     <!-- NProgress -->
     <script src="{% static 'vendorsx/nprogress/nprogress.min.js' %}"></script>
+    <script src=" {% static 'build/js/custom.min.js' %}"></script>
     {% comment %}
     <!-- bootstrap-progressbar -->
     <!-- <script src="{% static "vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js" %}"></script> -->
@@ -127,8 +130,7 @@
     <script src="{% static "vendorsx/google-code-prettify/bin/prettify.min.js" %}"></script> -->
     <!-- jQuery Tags Input -->
     <!-- <script src="{% static "vendorsx/jquery.tagsinput/src/jquery.tagsinput.js" %}"></script> -->
-    <!-- Switchery -->
-    <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
+
     <!-- Select2 -->
     <!-- <script src="{% static "vendorsx/select2/dist/js/select2.full.min.js" %}"></script> -->
     <!-- Parsley -->
@@ -140,6 +142,10 @@
     <!-- starrr -->
     <!-- <script src="{% static "vendorsx/starrr/dist/starrr.js" %}"></script> -->
     {% endcomment %}
+    <!-- Switchery -->
+    <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
+    <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'js/circle-progress.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendorsx/pdfmake/build/pdfmake.min.js' %}"></script>
@@ -165,7 +171,7 @@
             $('#alert-message').fadeOut('slow');
         }, 3000);
     </script>
-    <script src=" {% static 'build/js/custom.js' %}"></script>
+  
 
     <script>
         window.addEventListener('beforeunload', function (e) {

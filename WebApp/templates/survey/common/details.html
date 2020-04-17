@@ -29,26 +29,26 @@
         <div class="col-md-5 col-sm-5">
           <div class="viewSurveyTitle">
             <ul class="card_labels">
-              <li>
-                <div class="form-group">
-                  <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                         for="first-name">Category :
-                    <span class="category-label">{{ object.Category_Code }}</span>
-                  </label>
-                </div>
-              </li>
-              <li class="surveyViewDates">
-                <i class="fa fa-calendar"></i><label>Start date: <span
-                  class="">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
-              </li>
-              <li class="surveyViewDates">
-                <i class="fa fa-calendar"></i><label>End date: <span
-                  class="">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
-              </li>
-              <li class="surveyViewDates">
-                <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
-                Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
-              </li>
+                <li>
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                               for="first-name">Category :
+                            <span class="category-label">{{ object.Category_Code }}</span>
+                        </label>
+                    </div>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="fa fa-calendar"></i><label>Start date: <span
+                        class="datecon">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="fa fa-calendar"></i><label>End date: <span
+                        class="datecon">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
+                    Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
+                </li>
             </ul>
 
 
@@ -148,9 +148,9 @@
             </form>
             {% if object.check_expired %}
               <!-- ##################### survey expired so cannot edit  ##############################  -->
-{#              <button type="button" class="btn btn-warning btn-md" disabled>#}
-{#                Survey Expired#}
-{#              </button>#}
+              {#              <button type="button" class="btn btn-warning btn-md" disabled>#}
+              {#                Survey Expired#}
+              {#              </button>#}
             {% elif object.check_started %}
               <!-- ##################### survey started already so only update basic info  ######################  -->
               <button type="button" class="btn btn-info btn-md" id="update_survey_button_limited" data-toggle="modal"
@@ -178,8 +178,9 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <div class="col-md-9">
+        <div class="col-md-9" id="to_print">
           <div class="col-md-12">
+            <button type="button" id="btnDownload" class="btn btn-primary btn-md">Print</button>
             {% for question in questions %}
               {% if question.Question_Type == "MCQ" %}
 
@@ -194,6 +195,7 @@
                   </div>
 
                   <div id="container{{ forloop.counter }}"
+                       data-qn-title="{{ forloop.counter }}. {{ question.Question_Name }}"
                        style="min-width: 310px; height: 400px; margin: 0 auto"></div>
                   <input type="radio" name="mychart" class="mychart" id="column{{ forloop.counter }}"
                          value="column"
@@ -209,42 +211,29 @@
                   <br/>
 
                   <script>
-
                       document.addEventListener("DOMContentLoaded", function (event) {
-
                           $(function () {
-
-
                               // Create the chart
-
                               var options = {
                                   chart: {
                                       events: {
                                           drilldown: function (e) {
                                               if (!e.seriesOptions) {
-
                                                   var chart = this;
-
-
                                                   // Show the loading label
                                                   chart.showLoading('Loading ...');
-
                                                   setTimeout(function () {
                                                       chart.hideLoading();
                                                       chart.addSeriesAsDrilldown(e.point, series);
                                                   }, 1000);
                                               }
-
                                           }
                                       },
                                       plotBorderWidth: 0
                                   },
-
                                   credits: {
                                       enabled: false
                                   },
-
-
                                   title: {
                                       text: '',
                                   },
@@ -258,7 +247,6 @@
                                   },
                                   //
                                   yAxis: {
-
                                       title: {
                                           margin: 10,
                                           text: 'Percentage(%)'
@@ -288,8 +276,6 @@
                                       }
                                   },
                                   //
-
-
                                   tooltip: {
                                       headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
                                       pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
@@ -319,14 +305,12 @@
                               options.chart.type = 'column';
                               var chart1 = new Highcharts.Chart(options);
 
-
                               chartfunc{{ forloop.counter }} = function () {
                                   var column = document.getElementById('column{{ forloop.counter }}');
                                   var bar = document.getElementById('bar{{ forloop.counter }}');
                                   var pie = document.getElementById('pie{{ forloop.counter }}');
                                   var line = document.getElementById('line{{ forloop.counter }}');
-
-                                  $('#chk').prop('checked', false)
+                                  $('#chk').prop('checked', false);
                                   if (column.checked) {
 
                                       options.chart.renderTo = 'container{{ forloop.counter }}';
@@ -345,21 +329,11 @@
                                       options.chart.type = 'line';
                                       var chart1 = new Highcharts.Chart(options);
                                   }
-
                               }
-
-
                           });
                       });
-
-
                   </script>
-
-
                 </div>
-
-
-
                 <!-- <div class="bs-chart-container" id="progressResult" style="width: 80%;">
 
                                 {% for option in question.optioninfo.all %}
@@ -547,3 +521,4 @@ margin: 0 auto"></div>
 </div>
 
 <script src="{% static 'vendorsx/worldcloud.js' %}"></script>
+

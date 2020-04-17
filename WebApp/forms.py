@@ -225,28 +225,11 @@ class CourseInfoForm(forms.ModelForm):
 
 class ChapterInfoForm(forms.ModelForm):
     mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput(attrs={'min': '0'}))
-    Start_Date = forms.DateTimeField(
-        input_formats=['%Y-%m-%d'],
+    Start_Date = forms.CharField(
         required=False,
-        widget=forms.DateInput(
-            attrs={
-                'type': 'date',
-                'class': 'form-control',
-                'max': '9999-12-30',
-            },
-            format='%Y-%m-%d')
     )
-    End_Date = forms.DateTimeField(
-        input_formats=['%Y-%m-%d'],
+    End_Date = forms.CharField(
         required=False,
-        widget=forms.DateInput(
-            attrs={
-                'type': 'date',
-                'class': 'form-control datetimepicker',
-                'min': datetime.date.today(),
-                'max': '9999-12-30'
-            },
-            format='%Y-%m-%d')
     )
 
     class Meta:
@@ -279,6 +262,16 @@ class GroupMappingForm(forms.ModelForm):
         self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True, Use_Flag=True,
                                                                      Center_Code=self.request.user.Center_Code)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('GroupMapping_Name')
+        groupmapping = GroupMapping.objects.filter(GroupMapping_Name=name, Center_Code=self.request.user.Center_Code)
+        if groupmapping.exists():
+            if self.instance.id:
+                if groupmapping.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if groupmapping.get(pk=self.instance.id).GroupMapping_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Group Name already Exists')
 
 class InningGroupForm(forms.ModelForm):
     Teacher_Code = forms.ModelMultipleChoiceField(queryset=None, required=True,
@@ -301,10 +294,17 @@ class InningGroupForm(forms.ModelForm):
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                         Use_Flag=True)
 
+class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):
+    """
+    Custom multiple select Feild with full name
+    """
+
+    def label_from_instance(self, obj):
+        return "%s (%s)" % (obj, obj.Teacher_Code.count())
 
 class InningInfoForm(forms.ModelForm):
-    Course_Group = forms.ModelMultipleChoiceField(queryset=None, required=True,
-                                                  widget=FilteredSelectMultiple("Courses", is_stacked=False))
+    Course_Group = CoursesMultipleChoiceField(queryset=None, required=True,
+                                              widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }

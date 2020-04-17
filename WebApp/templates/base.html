@@ -45,6 +45,8 @@
         <!-- custom tables-->
         <!-- <link href="{% static 'vendorsx/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet"> -->
         {% endcomment %}
+        <link href="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+
         <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
         <link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
               rel="stylesheet">
@@ -108,15 +110,15 @@
     <!-- Bootstrap -->
     <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <!-- FastClick for mobile browser -->
-{#    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>#}
-    <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
+    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>
+    {# <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script> #}
     <!-- NProgress -->
-{#    <script src="{% static 'vendorsx/nprogress/nprogress.min.js' %}"></script>#}
-    <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+    <script src="{% static 'vendorsx/nprogress/nprogress.min.js' %}"></script>
+    {# <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script> #} 
     <!-- Switchery -->
     <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
     <!-- Custom Theme Scripts -->
-    <script src=" {% static 'build/js/custom.js' %}"></script>
+    <script src=" {% static 'build/js/custom.min.js' %}"></script>
 
     <!-- Custom JS -->
     <script src=" {% static 'js/common.js' %}"></script>
@@ -147,6 +149,8 @@
     <!-- starrr -->
     <!-- <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script> -->
     {% endcomment %}
+    <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendorsx/pdfmake/build/pdfmake.min.js' %}"></script>
     <script src="{% static 'vendorsx/pdfmake/build/vfs_fonts.js' %}"></script>

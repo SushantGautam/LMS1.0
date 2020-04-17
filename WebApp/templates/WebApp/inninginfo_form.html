@@ -29,7 +29,10 @@
         <a href="{% url 'inninginfo_list' %}">Session</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        {% if '/inninginfo/create/' == request.path %} Register New Session {% else %}
+        {% if '/inninginfo/create/' == request.path %} Register New Session
+        {% elif '/saveasnew' in request.path %}
+            Save New Session
+        {% else %}
             Edit Session {% endif %}
     </li>
 {% endblock %}
@@ -227,6 +230,15 @@
 
                         <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3" style="width: auto;">
                             {{ form.Course_Group }}
+
+                            {% comment %}
+                            <select name="Course_Group" title="vDateField" class="selectfilter" required id="id_Course_Group" multiple data-field-name="Courses" data-is-stacked="0">
+                                {% for c in  form.fields.Course_Group.queryset %}
+                                    <option value="{{ c.id }}" title="My Title">{{  c }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endcomment %}
+                            
                         </div>
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <span id="step3Validate" class="text-danger"></span>
@@ -449,4 +461,33 @@
 
     </script>
 
+    <script>
+        startdate = $('#id_Start_Date').val()
+        enddate = $('#id_End_Date').val()
+        if (startdate == "") {
+            $('#id_Start_Date').val(new Date().getFullYear() + '-' + new Date().getFullMonthName() + '-' + new Date().getTwoDigitDate())
+        }
+        if (enddate == "") {
+            d = new Date()
+            d = d.setMonth(d.getMonth() + 6);
+            $('#id_End_Date').val(new Date(d).getFullYear() + '-' + new Date(d).getFullMonthName() + '-' + new Date(d).getTwoDigitDate())
+        }
+    </script>
+
+    {#    <script>#}
+    {#    $(document).ready(function () {#}
+    {#        setTimeout(function () {#}
+    {#            console.log(`{{ form.fields }}`)#}
+    {#            $('.selector select').each(function () {#}
+    {#                options = this.options#}
+    {#                console.log(options.length)#}
+    {#                $(options).each(function () {#}
+    {#                    this.title = "Changed"#}
+    {#                })#}
+    {#            })#}
+    {#        },1000)#}
+    {#    })#}
+    {##}
+    {##}
+    {#    </script>#}
 {% endblock %}

@@ -7,13 +7,34 @@
 </li>
 <li class="breadcrumb-item active" aria-current="page">
     {% if '/create/' in request.path %}
-    Create New Chapter
+        Create New Chapter
     {% else %}
-    Edit Chapter
+        Edit Chapter
     {% endif %}
 </li>
 {% endblock %}
 
 {% block content %}
-{% include 'chapter/chapterinfo_form.html' %}
+    {% include 'chapter/chapterinfo_form.html' %}
 {% endblock content %}
+
+{% block customjss %}
+    <script>
+        $('#id_Start_Date').datetimepicker();
+        $('#id_End_Date').datetimepicker();
+        var isSubmit = false
+        $("#FormID").submit(function (e) {
+            if (!isSubmit) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+                if ($('#id_Start_Date').val() != "") {
+                    $('#id_Start_Date').val(new Date($('#id_Start_Date').val()).toISOString())
+                }
+                if ($('#id_End_Date').val() != "") {
+                    $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
+                }
+                isSubmit = true
+                $("#FormID").submit()
+            }
+        });
+    </script>
+{% endblock %}

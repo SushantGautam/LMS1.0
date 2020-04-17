@@ -30,7 +30,7 @@ from LMS import settings
 from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
-    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
+    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
@@ -70,12 +70,22 @@ def start(request):
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
 
+    if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),status=True).exists():
+        notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+        if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
+            notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
+            if notice_view_flag:
+                notice = None
+    else:
+        notice = None
+
     return render(request, 'student_module/dashboard.html',
                   {'GroupName': batches, 'Group': sessions, 'Course': courses,
                    'activeAssignments': activeassignments, 'sittings': sittings,
                    'wordCloud': wordCloud,
+                   'notice': notice,
                    'get_top_thread_keywords': thread_keywords
-                })
+                   })
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -292,8 +302,8 @@ class CourseInfoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'), Use_Flag=True) \
-            .filter(Q(Start_Date__lte=datetime.now().date()) | Q(Start_Date=None)) \
-            .filter(Q(End_Date__gte=datetime.now().date()) | Q(End_Date=None)) \
+            .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
+            .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
             .order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
@@ -1060,7 +1070,41 @@ class QuizUserProgressView(TemplateView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         # context['cat_scores'] = progress.list_all_cat_scores
         # context['exams'] = progress.show_exams()
-        context['sittings'] = Sitting.objects.filter(user=self.request.user)
+
+        context['sittings'] = []
+        pk_list = Sitting.objects.filter(user=self.request.user).order_by('-start').values_list('quiz', flat=True)
+
+        context["quiz_list"] = []
+        for pk in pk_list:
+            quiz_obj = Quiz.objects.get(pk=pk)
+            if quiz_obj not in context["quiz_list"]:
+                context["quiz_list"].append(quiz_obj)
+        for q in context["quiz_list"]:
+            sitting_obj = Sitting.objects.filter(user=self.request.user, quiz=q).order_by('-start').first()
+            sitting_obj.times_played = Sitting.objects.filter(user=self.request.user, quiz=q).count()
+            context['sittings'].append(sitting_obj)
+        print(context["quiz_list"])
+        print(context["sittings"])
+        return context
+
+
+class QuizUserProgressHistoryView(TemplateView):
+    template_name = 'ajax_quiz/progress_list_history.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        progress, c = Progress.objects.get_or_create(user=self.request.user)
+        # context['cat_scores'] = progress.list_all_cat_scores
+        # context['exams'] = progress.show_exams()
+
+        related_quiz = Quiz.objects.get(pk=self.kwargs['quiz'])
+
+        context['sittings'] = Sitting.objects.filter(user=self.request.user, quiz=related_quiz).order_by('-start')
+
         return context
 
 

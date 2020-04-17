@@ -198,6 +198,8 @@ urlpatterns += (
     path('inninginfo/', views.InningInfoListView.as_view(), name='inninginfo_list'),
     path('inninginfo/create/', views.InningInfoCreateView.as_view(),
          name='inninginfo_create'),
+    path('inninginfo/saveasnew/<int:pk>/', views.InningInfoCreateView.as_view(),
+         name='inninginfo_saveasnew'),
     path('inninginfo/<int:pk>/',
          views.InningInfoDetailView.as_view(), name='inninginfo_detail'),
     path('inninginfo/update/<int:pk>/',
@@ -227,13 +229,15 @@ urlpatterns += (
          name='groupmapping_list'),
     path('groupmapping/create/', views.GroupMappingCreateView.as_view(),
          name='groupmapping_create'),
+    path('groupmapping/saveasnew/<int:pk>/', views.GroupMappingCreateView.as_view(),
+         name='groupmapping_saveasnew'),
     path('groupmapping/<int:pk>/',
          views.GroupMappingDetailView.as_view(), name='groupmapping_detail'),
     path('groupmapping/update/<int:pk>/',
          views.GroupMappingUpdateView.as_view(), name='groupmapping_update'),
     path('groupmapping/delete/<int:pk>/',
          views.GroupMappingDeleteView, name='groupmapping_delete'),
-    path('groupmapping/csv_import', views.GroupMappingCSVImport , name='csv_import_student_group')
+    path('groupmapping/csv_import', views.GroupMappingCSVImport, name='csv_import_student_group')
 
     # path('admin/jsi18n', i18n.javascript_catalog),
 )
@@ -291,6 +295,8 @@ urlpatterns += (
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          views.ContentsView.as_view(), name='contentviewer'),
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newcontents',
+         views.NewContentsView.as_view(), name='NewContentViewer'),    
     # path('courseinfo/<int:course>/chapterinfo/<int:chapter>/offline_contents',
     #     views.OfflineContentsView.as_view(), name='offlinecontentviewer'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/preview',
@@ -332,4 +338,10 @@ urlpatterns += (
          views.CourseProgressView, name='admin_course_progress_withinning'),
     path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
          views.StudentChapterProgressView, name='student_chapter_progress'),
+)
+
+# Notice URL
+
+urlpatterns += (
+    path('notice_view_create', views.notice_view_create, name='notice_view_create'),
 )

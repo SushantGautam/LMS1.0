@@ -1,4 +1,5 @@
 {% load static %}
+<link href="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
 
 <div class="outerdiv">
     {% include 'WebApp/theme/alerts.html' %}
@@ -58,11 +59,11 @@
                         <tr>
                             <td>Assignment Start Date</td>
                             {#                            Use Datecon class in td if conversion of date to local time is required#}
-                            <td>{{ object.Assignment_Start|date:'Y-m-d h:i a' }}</td>
+                            <td class="datecon">{{ object.Assignment_Start|date:'M d, Y H:i' }}</td>
                         </tr>
                         <tr>
                             <td>Assignment Deadline</td>
-                            <td>{{ object.Assignment_Deadline|date:'Y-m-d h:i a' }}</td>
+                            <td class="datecon">{{ object.Assignment_Deadline|date:'M d, Y H:i' }}</td>
                         </tr>
                         <tr>
                             <td>Course Code</td>
@@ -369,8 +370,8 @@
                                     {% if questions.id == answer.Question_Code.id %}
                                         {% if answer.Assignment_Answer != '' %}
                                             <p style="margin: 0;color:#000000;">{{ answer.Assignment_Answer }}</p>
-                                            {% now "Y-m-d" as todays_date %}
-                                            {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
+                                            {% now "Y-m-d H:i" as todays_date %}
+                                            {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
                                                 <button class="btn btn-info editanswer"
                                                         data-Student_Code="{{ request.user.id }}"
                                                         data-Question_Code="{{ questions.id }}"
@@ -408,73 +409,73 @@
                                         {#                                            {% csrf_token %}#}
                                         <form>
                                             {% if questions.Answer_Type == 'S' %}
-                                            <div class="form-group">
+                                                <div class="form-group">
                                     <textarea class="form-control rounded-0" rows="5" cols="100"
                                               name="Assignment_Answer" id="id_Assignment_Answer{{ questions.id }}"
                                               placeholder="Enter your Answer" required></textarea>
-                                                <input type="hidden" value="{{ request.user.id }}"
-                                                       name="Student_Code"
-                                                       id="id_Student_Code{{ questions.id }}">
-                                                <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                                       id="id_Question_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ request.user.id }}"
+                                                           name="Student_Code"
+                                                           id="id_Student_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ questions.id }}">
 
-                                            </div>
+                                                </div>
 
-                                            <div class="form-group text-center">
-                                                {% now "Y-m-d" as todays_date %}
-                                                {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
-                                                    <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+                                                <div class="form-group text-center">
+                                                    {% now "Y-m-d H:i" as todays_date %}
+                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
+                                                        <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
-                                                    <button class="btn btn-sm btn-primary" type="reset">Reset
-                                                    </button>
+                                                        <button class="btn btn-sm btn-primary" type="reset">Reset
+                                                        </button>
 
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-success submitAnswer"
-                                                            id="answer{{ questions.id }}"
-                                                            data-id="{{ questions.id }}"
-                                                            data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                                        Submit
-                                                    </button>
-                                                {% else %}
-                                                    <p class="text-danger">Submission is prohibited. Please check
-                                                        assignment start and end date</p>
-                                                {% endif %}
-                                            </div>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}">
+                                                            Submit
+                                                        </button>
+                                                    {% else %}
+                                                        <p class="text-danger">Submission is prohibited. Please check
+                                                            assignment start and end date</p>
+                                                    {% endif %}
+                                                </div>
 
-                                        {% elif questions.Answer_Type == 'F' %}
+                                            {% elif questions.Answer_Type == 'F' %}
 
-                                            <div class="form-group">
-                                                <input type="file" name="Assignment_File"
-                                                       id="id_Assignment_File{{ questions.id }}"
-                                                       required/>
-                                                <input type="hidden" value="{{ request.user.id }}"
-                                                       name="Student_Code"
-                                                       id="id_Student_Code{{ questions.id }}">
-                                                <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                                       id="id_Question_Code{{ questions.id }}">
-                                            </div>
-                                            <div class="form-group text-center">
-                                                {% now "Y-m-d" as todays_date %}
-                                                {% if object.Assignment_Deadline|date:"Y-m-d" >= todays_date and object.Assignment_Start|date:"Y-m-d" <= todays_date %}
-                                                    <button class="btn btn-sm btn-primary" type="reset"
-                                                            id="cancelButton{{ questions.pk }}">
-                                                        Cancel
-                                                    </button>
+                                                <div class="form-group">
+                                                    <input type="file" name="Assignment_File"
+                                                           id="id_Assignment_File{{ questions.id }}"
+                                                           required/>
+                                                    <input type="hidden" value="{{ request.user.id }}"
+                                                           name="Student_Code"
+                                                           id="id_Student_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ questions.id }}">
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    {% now "Y-m-d H:i" as todays_date %}
+                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
+                                                        <button class="btn btn-sm btn-primary" type="reset"
+                                                                id="cancelButton{{ questions.pk }}">
+                                                            Cancel
+                                                        </button>
 
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-success submitAnswer"
-                                                            id="answer{{ questions.id }}"
-                                                            data-id="{{ questions.id }}"
-                                                            data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                                        Submit
-                                                    </button>
-                                                {% else %}
-                                                    <p class="text-danger">Submission is prohibited. Please check
-                                                        assignment start and end date</p>
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}">
+                                                            Submit
+                                                        </button>
+                                                    {% else %}
+                                                        <p class="text-danger">Submission is prohibited. Please check
+                                                            assignment start and end date</p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
                                         </form>
                                     {% endif %}
                                 {% endfor %}
@@ -510,7 +511,7 @@
 <div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="height: 80vh;">
             <div class="modal-header text-center">
                 <h4 class="modal-title" id="exampleModalLabel"><b>Edit Assignment </b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -518,9 +519,11 @@
                     </button>
                 </h4>
             </div>
-            <div class="modal-body modal-auto" id="editAssignment_modal_body">
+            <div class="modal-body modal-90" id="editAssignment_modal_body">
                 <form method="post" id="ajaxassignmentinfoform">
                     {% csrf_token %}
+                    <div class="alert alert-danger form-errors" style="display: none">
+                    </div>
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <div id="div_id_Assignment_Topic_edit" class="form-group">
                             <label for="id_Assignment_Topic_edit" class="control-label ">
@@ -539,10 +542,10 @@
                                 Assignment Start *
                             </label>
                             <div class="controls ">
-                                <input type="date" name="Assignment_Start_edit"
-                                       class="datetimeinput form-control"
+                                <input type="text" name="Assignment_Start_edit"
+                                       class="form-control"
                                        id="id_Assignment_Start_edit"
-                                       value="{{ object.Assignment_Start|date:'Y-m-d' }}"
+                                       value="{{ object.Assignment_Start|date:'c' }}"
                                        min="" max="9999-12-31">
                             </div>
                         </div>
@@ -553,10 +556,10 @@
                                 Assignment Deadline *
                             </label>
                             <div class="controls ">
-                                <input type="date" name="Assignment_Deadline_edit"
-                                       class="datetimeinput form-control"
+                                <input type="text" name="Assignment_Deadline_edit"
+                                       class="form-control"
                                        id="id_Assignment_Deadline_edit"
-                                       value="{{ object.Assignment_Deadline|date:'Y-m-d' }}"
+                                       value="{{ object.Assignment_Deadline|date:'c' }}"
                                        min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31">
                             </div>
                         </div>
@@ -592,8 +595,9 @@
 {% block customjss %}
 
     <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+    <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
     <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
     <script>
         const selectElement = document.querySelector('#id_Assignment_Deadline_edit');
@@ -650,6 +654,10 @@
         });
     </script>
     <script>
+        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString()
+        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString()
+        $('#id_Assignment_Deadline_edit').datetimepicker();
+        $('#id_Assignment_Start_edit').datetimepicker();
         $("#ajaxassignmentinfoform").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
@@ -657,10 +665,8 @@
                 data: {
                     "csrfmiddlewaretoken": '{{ csrf_token }}',
                     "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
-                    //"Assignment_Start": convertDateToUTC($('#id_Assignment_Start_edit').val()),
-                    //"Assignment_Deadline": convertDateToUTC($('#id_Assignment_Deadline_edit').val()),
-                    "Assignment_Start": $('#id_Assignment_Start_edit').val(),
-                    "Assignment_Deadline": $('#id_Assignment_Deadline_edit').val(),
+                    "Assignment_Start": new Date($('#id_Assignment_Start_edit').val()).toISOString(),
+                    "Assignment_Deadline": new Date($('#id_Assignment_Deadline_edit').val()).toISOString(),
                     "Use_Flag": $('#id_Use_Flag').is(":checked"),
                     "Course_Code": $('#id_Course_Code').val(),
                     "Chapter_Code": $('#id_Chapter_Code').val(),
@@ -673,8 +679,9 @@
                     console.log('Success')
                     location.reload()
                 },
-                error: function () {
-                    console.log('Error in posting assignment edit form')
+                error: function (err) {
+                    console.log('Error in posting assignment create form')
+                    $('.form-errors').empty().append(err.responseJSON.Message).css('display', 'block')
                 }
 
             });
