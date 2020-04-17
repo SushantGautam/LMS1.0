@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    id="create_chapter_modal" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title" id="exampleModalLabel"><b>Create Chapter</b>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body modal-auto" id="create_chapter_modal_body">
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="st-pusher">
     <!-- sidebar effects INSIDE of st-pusher: -->
     <!-- st-effect-3, st-effect-6, st-effect-7, st-effect-8, st-effect-14 -->
@@ -55,18 +72,26 @@
                             </div>
                         </li> -->
                         {% for chapter in chapters %}
-                        <li class="list-group-item paper-shadow">
-                            <div class="media v-middle">
-                                <div class="media-left">
-                                    <div class="icon-block s30 bg-green-300 text-white img-circle">
-                                        <i class="fa fa-database"></i>
+                        <a href="{% if '/students' in request.path %}
+                        {{ chapter.student_get_absolute_url }}
+                    {% elif '/teachers' in request.path %}
+                        {{ chapter.teacher_get_absolute_url }}
+                    {% else %}
+                       {{ chapter.get_absolute_url }}
+                    {% endif %}">
+                            <li class="list-group-item paper-shadow">
+                                <div class="media v-middle">
+                                    <div class="media-left">
+                                        <div class="icon-block s30 bg-green-300 text-white img-circle">
+                                            {{ chapter.Chapter_No }}
+                                        </div>
+                                    </div>
+                                    <div class="media-body text-body-2">
+                                        {{ chapter.Chapter_Name }}
                                     </div>
                                 </div>
-                                <div class="media-body text-body-2">
-                                    {{ chapter.Chapter_Name }}
-                                </div>
-                            </div>
-                        </li>
+                            </li>
+                        </a>
                         {% endfor %}
                         <!-- <li class="list-group-item paper-shadow">
                             <div class="media v-middle">
@@ -208,27 +233,29 @@
                             </p>
                         </div>
                         <hr class="margin-none" />
-                        <div class="panel-body text-center">
-                            <p><a class="btn btn-success btn-lg paper-shadow relative" data-z="1" data-hover-z="2"
-                                    data-animated href="app-take-course.html">Start Course</a>
-                            </p>
-                            <p class="text-body-2">or <a href="#">buy course for $1</a></p>
-                        </div>
-                        <ul class="list-group">
+                        <ul class="list-group text-center">
                             <li class="list-group-item">
-                                <a href="#" class="text-light"><i class="fa fa-facebook fa-fw"></i> Share on
-                                    facebook</a>
+                                <a class="btn btn-primary btn-sm paper-shadow relative" data-z="1" data-hover-z="2"
+                                    data-animated href="{% if '/teachers' in request.path %}
+                                /teachers{{ object.get_update_url }}
+                                    {% else %}
+                                        {{ object.get_update_url }}
+                                    {% endif %}">Edit Course</a>
                             </li>
+                            {% if '/students' not in request.path %}
                             <li class="list-group-item">
-                                <a href="#" class="text-light"><i class="fa fa-twitter fa-fw"></i> Tweet this
-                                    course</a>
+                                <button class="btn btn-success btn-sm paper-shadow relative" data-z="1"
+                                    data-toggle="modal" data-target="#create_chapter_modal" data-animated
+                                    id="add-newchapter-btn">Add
+                                    Chapter</button>
                             </li>
+                            {% endif %}
                         </ul>
                     </div>
                     <!-- // END .panel -->
 
                     <!-- .panel -->
-                    <div class="panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
+                    <div class=" panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
                         <div class="panel-body">
                             <div class="media v-middle">
                                 <div class="media-left">
@@ -243,11 +270,14 @@
                             <br />
                             <div class="expandable expandable-indicator-white expandable-trigger">
                                 <div class="expandable-content">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusamus aut
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusamus
+                                        aut
                                         consectetur consequatur cum cupiditate debitis doloribus, error ex
-                                        explicabo harum illum minima mollitia nisi nostrum officiis omnis optio
+                                        explicabo harum illum minima mollitia nisi nostrum officiis omnis
+                                        optio
                                         qui quisquam
-                                        saepe sit sunt totam vel velit voluptatibus? Adipisci ducimus expedita
+                                        saepe sit sunt totam vel velit voluptatibus? Adipisci ducimus
+                                        expedita
                                         id nostrum quas quia!</p>
                                 </div>
                             </div>
@@ -318,4 +348,29 @@
     <!-- /st-content -->
 
 </div>
+<script>
+    $('#add-newchapter-btn').on('click', function () {
+        $('#create_chapter_modal_body').empty();
+        $("#create_chapter_modal_body").append('<div class="se-pre-con-ajax"></div>');
+        $('#create_chapter_modal_body').append(`<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}" class="select form-control">`);
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
+            success: function (response) {
+                $('#create_chapter_modal_body').append(response);
+                Switchery(document.querySelector('.js-switch'));
+            },
+            error: function () {
+                console.log('Error in generating chapter create form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+                $("#id_Chapter_No").val(lastchapter + 1);
+            }
+        });
+
+
+    });
+</script>
 {% endblock %}

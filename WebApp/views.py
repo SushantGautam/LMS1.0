@@ -847,6 +847,7 @@ class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
 class CourseInfoUpdateView(CourseAuthMxnCls, AdminAuthMxnCls, UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
+    template_name = "center_admin/courseinfo_form.html"
 
     def get_form_kwargs(self):
         """
@@ -924,6 +925,7 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
 class ChapterInfoDetailView(DetailView):
     model = ChapterInfo
+    template_name = "center_admin/chapterinfo_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

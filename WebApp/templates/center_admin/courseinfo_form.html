@@ -45,12 +45,12 @@
                     <label for="id_Course_Provider">Course Rating</label>
                 </div>
                 {% if 'edit' in request.path %}
-                <div class="form-group form-control-material static">
-                    <label>
+                <div class="form-group">
+                    <label style="font-weight: normal;">
                         Status
-                    </label>
-                    <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                        {% if object.Use_Flag == False %} &nbsp; {% else %} checked {% endif %}>
+                    </label><br>
+                    <input type="checkbox" id="id_Use_Flag" name="Use_Flag" {% if object.Use_Flag == False %} &nbsp;
+                        {% else %} checked {% endif %}>
                 </div>
                 {% else %}
                 <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">

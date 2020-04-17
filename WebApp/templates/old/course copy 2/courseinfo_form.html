@@ -32,11 +32,8 @@
             </label>
             <div class="controls ">
                 <input type="text" name="Course_Name" value="{{ object.Course_Name }}"
-                       class="textinput textInput form-control" maxlength="70" id="id_Course_Name" required="true"
-                        {% if '/teachers' in request.path %}
-                       readonly
-                        {% endif %}
-                >
+                    class="textinput textInput form-control" maxlength="70" id="id_Course_Name" required="true"
+                    {% if '/teachers' in request.path %} readonly {% endif %}>
             </div>
         </div>
     </div>
