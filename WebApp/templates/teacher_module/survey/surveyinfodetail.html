@@ -205,16 +205,16 @@
                   let svgel = this;
                   let xml = new XMLSerializer().serializeToString(svgel);
 
-                  //let svg = new Blob([xml], {type: "image/svg+xml;charset=utf-8"}),
-                  //    domURL = self.URL || self.webkitURL || self,
-                  //    url = domURL.createObjectURL(svg);
+                  let svg = new Blob([xml], {type: "image/svg+xml;charset=utf-8"}),
+                      domURL = self.URL || self.webkitURL || self,
+                      url = domURL.createObjectURL(svg);
 
                   // make it base64
-                  var svg64 = btoa(xml);
-                  var b64Start = 'data:image/svg+xml;base64,';
+                  //var svg64 = btoa(xml);
+                  //var b64Start = 'data:image/svg+xml;base64,';
 
                   // prepend a "header"
-                  var image64 = b64Start + svg64;
+                  //var image64 = b64Start + svg64;
 
                   //let canvas = document.querySelector("#test_canvas");
                   let canvas = document.createElement("CANVAS");
@@ -260,8 +260,8 @@
                       }
 
                   };
-                  //img.src = url;
-                  img.src = image64;
+                  img.src = url;
+                  //img.src = image64;
 
               });
           }
