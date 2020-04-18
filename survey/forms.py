@@ -113,8 +113,7 @@ class SurveyInfoForm(forms.ModelForm):
 
 class SurveyInfoFormUpdateLimited(forms.ModelForm):
     # Start_Date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date', 'max': '9999-12-31'}))
-    End_Date = forms.DateTimeField(widget=forms.DateInput(
-        attrs={'type': 'date', 'max': '9999-12-31', 'min': datetime.now().date()}))
+    End_Date = forms.CharField()
     End_Time = forms.DurationField()
 
     class Meta:

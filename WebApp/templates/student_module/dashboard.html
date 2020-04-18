@@ -42,6 +42,10 @@
         }*/
     </style>
 
+    {% if notice %}
+        {% include 'popUp.html' %}
+    {% endif %}
+
     <div class=" row col-md-12 col-sm-12 col-xs-12 text-center">
         <h1><b>
             Welcome to Student Portal
@@ -259,9 +263,44 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block customjss %}
+
     <script src="{% static 'js/highcharts.js' %}"></script>
     <script src="{% static 'js/highchart_data.js' %}"></script>
 
+    <script>
+        $("#noticeForm").submit(function (e) {
+    
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            console.log($('#id_dont_show').is(":checked"));
+    
+            if($('#id_dont_show').is(":checked")) {
+                $.ajax({
+                    url: "{% url 'notice_view_create' %}",  // URL to your view that serves new info
+                    data: {
+                        "csrfmiddlewaretoken": $('#noticeForm').find('input[name="csrfmiddlewaretoken"]').val(),
+                        "dont_show": $('#id_dont_show').is(":checked"),
+                        "user_code": $('#id_user_code').val(),
+                        "notice_code": $('#id_notice_code').val(),
+                    },
+    
+                    // get the form data
+                    type: $(this).attr('method'), // GET or POST
+                    success: function (response) {
+                        console.log('Success');
+                        $('.close').click();
+                    },
+                    error: function () {
+                        console.log('Error in submitting response');
+                    }
+                });
+            }else{
+                $('.close').click();
+            }
+        });
+    </script>
 
     <script>
         function RetrieveChatper(urlx, coursepk) {
