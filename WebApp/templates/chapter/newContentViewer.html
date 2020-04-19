@@ -1097,9 +1097,9 @@
 
     $(document).ready(function () {
         setThumbnails();
-       
+
         Layout(x)
-        x.addListener(Layout) // Attach listener function on state changes  
+        x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
 
         $('#next-btn').off().click(function () {
@@ -1239,7 +1239,6 @@
     });
     //for main chhat icon
     $(document).on('click', '.icon-for-chat', function () {
-        x = $(".chat-dialogbox")[0]
         if ($(".chat-dialogbox").css('display') == "none") {
             $(".chat-dialogbox").css('display', 'block');
         } else {
