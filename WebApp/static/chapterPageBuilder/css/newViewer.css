@@ -178,7 +178,7 @@ body{
     position: absolute;
     left: 26.9%;
     bottom: 1%;
-    min-height: 92px;
+    min-height: 91px;
     width: 6%;
     background-color: rgb(54, 60, 69,0.9);
     padding: 7px 0;
@@ -351,7 +351,7 @@ body{
     position: absolute;
     top: 10px;
     left: 10px;
-    z-index: 9;
+    z-index: 999;
    
 }
 .chat-header{
@@ -580,7 +580,7 @@ body{
 .owl-next {
     position: fixed;
     bottom: 10.5vh;
-    right: 9.75%;
+    right: 10.75%;
     border-radius: 50%;
     /* color: #337ab7 !important; */
     box-shadow: 2px 2px 3px #999;
