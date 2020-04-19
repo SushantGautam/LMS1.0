@@ -1747,3 +1747,416 @@ def manifestwebmanifest(request):
     with open('WebApp/templates/WebApp/PWA/manifest.webmanifest', 'r') as f:
         data = f.read()
     return HttpResponse(data, )
+
+
+class SessionManagerUpdateView(UpdateView):
+    model = InningManager
+    form_class = InningManagerForm
+    template_name = 'WebApp/sessionmanager_form.html'
+
+    def get_object(self):
+        session_Manager = None
+        if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs.get('pk')).exists():
+            session_Manager = InningManager.objects.get(sessioninfoobj__pk=self.kwargs.get('pk'))
+        else:
+            session_Manager = InningManager.objects.create(
+                sessioninfoobj=InningInfo.objects.get(pk=self.kwargs.get('pk')))
+        return session_Manager
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            messages.add_message(self.request, messages.SUCCESS, 'Session Managers Updated.')
+            # return super().form_valid(form)
+            return redirect('inninginfo_detail', self.kwargs.get('pk'))
+
+    def get_form_kwargs(self):
+        kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+
+def viewteacherAttendance(request, attend_date, courseid, teacherid):
+    attend_date = datetime.strptime(str(attend_date), "%m%d%Y").strftime("%m%d%Y")
+    print(attend_date)
+    path = os.path.join(settings.MEDIA_ROOT, ".teacherAttendanceData", str(courseid), attend_date)
+
+    teacher_data_file = os.path.join(path, str(teacherid) + '.txt')
+
+    if os.path.isfile(teacher_data_file):
+        with open(teacher_data_file) as json_file:
+            data = json.load(json_file)
+            start_time = data['start_time']
+            end_time = data['end_time']
+            numberoftimesopened = int(data['numberoftimesopened'])
+            chapters = data['chapters']
+            print(data)
+            return JsonResponse(data)
+    else:
+        return HttpResponse("No attendance recorded", status=500)
+
+
+from django.contrib.auth import authenticate, login as auth_login
+
+
+def loginforappredirect(request, username, password):
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        auth_login(request, user)
+        if request.user.is_authenticated:
+            if 'url' in request.GET:
+                url = request.GET.get('url')
+                return redirect(
+                    url
+                )
+            else:
+                return HttpResponse('Login Success', status=200)
+        else:
+            return HttpResponse('User is not authenticated', status=500)
+    else:
+        return HttpResponse('Incorrect Username or Password', status=500)
+
+
+def CourseProgressView(request, coursepk, inningpk=None):
+    session_list = []
+    courseObj = get_object_or_404(CourseInfo, pk=coursepk)
+    chapters_list = courseObj.chapterinfos.all().order_by('Chapter_No')
+    list_of_students = []
+    # student_data = []
+    if '/teachers' in request.path:
+        basefile = "teacher_module/base.html"
+    elif '/teachers' or '/students' not in request.path:
+        basefile = "base.html"
+    if coursepk:
+        if '/teachers' in request.path:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                    Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
+        else:
+            inning_info = InningInfo.objects.filter(Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
+        session_list.append(inning_info)
+
+        if inning_info.count() > 0:
+            if inningpk:
+                innings = get_object_or_404(inning_info, pk=inningpk)
+            else:
+                innings = inning_info.all().first()
+
+            if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
+            student_data = getCourseProgress(courseObj, list_of_students, chapters_list)
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'The course is not assosiated with any innings. Please contact administrator')
+            context = {
+                'course': courseObj,
+                'chapter_list': chapters_list,
+                'basefile': basefile,
+            }
+            return render(request, 'teacher_module/chapterProgress.html', context=context)
+
+    context = {
+        'session_list': session_list,
+        'student_progress_data': student_data,
+        'number_of_students': list_of_students.count(),
+        'course': courseObj,
+        'inning': innings,
+        'chapter_list': chapters_list,
+        'basefile': basefile,
+    }
+    return render(request, 'teacher_module/chapterProgress.html', context=context)
+
+
+def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, currentPageNumber=None, totalPage=None,
+                          studytimeinseconds=None, createFile=True, isjson=False
+                          ):
+    jsondata = None
+    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
+    try:
+        os.makedirs(path)  # Creates the directories and subdirectories structure
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    try:
+        with open(student_data_file) as outfile:
+            jsondata = json.load(outfile)
+        isjson = True
+    except FileNotFoundError:
+        print(FileNotFoundError)
+    except JSONDecodeError:
+        print(JSONDecodeError)
+        # with open(student_data_file) as outfile:
+        #     if outfile.read()[0] == '{' and 'contents' in outfile.read():
+        #         return
+        #     else:
+        #         isjson = False
+    if os.path.isfile(student_data_file):
+        if fromcontents:
+            if currentPageNumber is None:
+                return jsondata
+
+            jsondata['contents']['totalstudytime'] = int(jsondata['contents']['totalstudytime']) + int(
+                studytimeinseconds)
+            jsondata['contents']['laststudydate'] = datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S")
+
+            if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
+                jsondata['contents']['currentpagenumber'] = currentPageNumber
+                jsondata['contents']['totalPage'] = totalPage
+            with open(student_data_file, "w") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+    else:
+        if createFile:
+            if fromcontents:
+                jsondata = {
+                    "contents": {
+                        "laststudydate": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                        "totalstudytime": studytimeinseconds,
+                        "currentpagenumber": currentPageNumber,
+                        "totalPage": totalPage,
+                    },
+                }
+            else:
+                return None
+            # student_file = open(student_data_file, "w+")
+            with open(student_data_file, "w+") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+        else:
+            return None
+    return jsondata
+
+
+def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=None):
+    student_data = []
+    for chapter in chapters_list:
+        for x in list_of_students:
+            jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
+                                             createFile=False)
+            if jsondata is not None:
+                if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
+                    if int(jsondata['contents']['totalPage']) > 0 and int(
+                            jsondata['contents']['currentpagenumber']) > 0:
+                        progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                            jsondata['contents']['totalPage'])
+                else:
+                    progresspercent = 0
+            else:
+                progresspercent = 0
+
+            student_quiz = Quiz.objects.filter(chapter_code=chapter)
+            # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
+
+            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
+            # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+            total_quiz_percent_score = 0
+            temp = []
+            for z in student_result:
+                if z.quiz.pk in temp:
+                    # student_result.get(pk=z.pk).delete()
+                    student_result = student_result.exclude(pk=z.pk)
+                else:
+                    temp.append(z.quiz.pk)
+                    total_quiz_percent_score += float(z.get_percent_correct)
+
+            # Attendance here means chapter completion.
+            ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
+                field and the chapter progress is 100% '''
+            if chapter.mustreadtime and jsondata:
+                if jsondata['contents']['totalstudytime']:
+                    attendance = int(jsondata['contents'][
+                                         'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                else:
+                    attendance = False
+            else:
+                attendance = None
+            if jsondata:
+                student_data.append(
+                    {
+                        'student': x,
+                        'chapter': {
+                            'chapterObj': chapter,
+                            'laststudydate': datetime.strptime(jsondata['contents'][
+                                                                   'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
+                                "%Y/%m/%d %H:%M:%S") if jsondata['contents']['laststudydate'] is not None else None,
+                            'totalstudytime': timedelta(seconds=int(jsondata['contents']['totalstudytime'])) if
+                            jsondata['contents']['totalstudytime'] is not None else "00:00:00",
+                            'currentpagenumber': int(
+                                jsondata['contents']['currentpagenumber']) if jsondata['contents'][
+                                                                                  'currentpagenumber'] is not None else None,
+                            'totalPage': int(
+                                jsondata['contents']['totalPage']) if jsondata['contents'][
+                                                                          'totalPage'] is not None else None,
+                            'progresspercent': progresspercent,
+                            'attendance': attendance,
+                        },
+                        'quiz': {
+                            'quiz_count': student_quiz.count(),
+                            'completed_quiz': student_result.filter(complete=True).count(),
+                            'progress': student_result.filter(
+                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
+                            # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
+                            'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
+                                complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
+                        }
+                    },
+                )
+            else:
+                student_data.append(
+                    {
+                        'student': x,
+                        'chapter': {
+                            'chapterObj': chapter,
+                            'laststudydate': None,
+                            'totalstudytime': "00:00:00",
+                            'currentpagenumber': None,
+                            'totalPage': None,
+                            'progresspercent': progresspercent,
+                            'attendance': attendance,
+                        },
+                        'quiz': {
+                            'quiz_count': student_quiz.count(),
+                            'completed_quiz': student_result.filter(complete=True).count(),
+                            'progress': student_result.filter(
+                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
+                            # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
+                            'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
+                                complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
+                        }
+                    },
+                )
+    return student_data
+
+
+def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
+    date = datetime.now().strftime('%Y%m%d')
+    path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog", date)
+    try:
+        os.makedirs(path)  # Creates the directories and subdirectories structure
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    try:
+        with open(student_data_file) as outfile:
+            jsondata = json.load(outfile)
+        isjson = True
+    except:
+        isjson = False
+    if os.path.isfile(student_data_file) and isjson:
+        if not type:
+            return jsondata
+        newdata = {
+            "chapterid": chapterid,
+            "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+            "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+        }
+        jsondata.append(newdata)
+        with open(student_data_file, "w+") as outfile:
+            json.dump(jsondata, outfile, indent=4)
+    else:
+        if createFile:
+            jsondata = [
+                {
+                    "chapterid": chapterid,
+                    "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                    "type": type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+                },
+            ]
+
+            with open(student_data_file, "w+") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+        else:
+            return None
+    return jsondata
+
+
+def getListOfFiles(dirName, studentid):
+    # create a list of file and sub directories
+    # names in the given directory
+    listOfFile = os.listdir(dirName)
+    allFiles = list()
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory
+        if os.path.isdir(fullPath):
+            # conv and compare is added to get only the files of 7days
+            conv = datetime.strptime(entry, '%Y%m%d').date()
+            compare = (datetime.today() - timedelta(days=30)).date()
+            if (compare < conv):
+                allFiles = allFiles + getListOfFiles(fullPath, studentid)
+        elif entry == str(studentid) + '.txt':
+            allFiles.append(fullPath)
+
+    return allFiles
+
+
+def StudentChapterProgressView(request, courseid, chapterid, studentid):
+    context = dict()
+    courseObj = get_object_or_404(CourseInfo, pk=courseid)
+    chapterObj = get_object_or_404(ChapterInfo, pk=chapterid)
+    studentObj = get_object_or_404(MemberInfo, pk=studentid)
+
+    if '/teachers' in request.path:
+        basefile = "teacher_module/base.html"
+    elif '/teachers' or '/students' not in request.path:
+        basefile = "base.html"
+    context['basefile'] = basefile
+
+    path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog")
+    date_dir = getListOfFiles(path, studentid)
+    temp = []
+    for filepath in date_dir:
+        flag = 0
+        dirname = os.path.split(os.path.split(filepath)[0])[1]
+        date = datetime.strptime(dirname, '%Y%m%d').date()
+        try:
+            with open(filepath) as outfile:
+                jsondata = json.load(outfile)
+        except:
+            jsondata = ''
+        if jsondata:
+            temp_json_data = []
+            for data in jsondata:
+                if data['chapterid'] == str(chapterid):
+                    converted_datetime = datetime.strptime(data['visittime'], '%m/%d/%Y %H:%M:%S')
+                    data['visittime'] = converted_datetime
+                    temp_json_data.append(data)
+                    flag = 1
+            if flag == 1:
+                temp.append({'date': date, 'data': temp_json_data})
+    context['object'] = temp
+    context['course'] = courseObj
+    context['chapter'] = chapterObj
+    context['student'] = studentObj
+    return render(request, 'teacher_module/progressdetail.html', context=context)
+
+
+def loaderverifylink(request):
+    return render(request, 'loaderio.html')
+
+
+def notice_view_create(request):
+    if request.method == 'POST':
+        print(request.POST['user_code'], request.POST['notice_code'], request.POST['dont_show'])
+        user_code = request.user
+        notice_code = Notice.objects.get(id=request.POST['notice_code'])
+        if NoticeView.objects.filter(user_code=user_code, notice_code=notice_code).exists():
+            obj = NoticeView.objects.get(user_code=user_code, notice_code=notice_code)
+        else:
+            obj = NoticeView()
+            obj.user_code = user_code
+            obj.notice_code = notice_code
+        if request.POST['dont_show'] == 'true':
+            obj.dont_show = True
+        else:
+            obj.dont_show = False
+        obj.save()
+        return JsonResponse({'status': 'Success', 'msg': 'Added status'})
+
+def chat(request, chapter):
+    return render(request, 'chat/chat.html', {
+        'room_id': chapter
+    })

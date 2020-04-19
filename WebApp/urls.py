@@ -303,3 +303,37 @@ urlpatterns += (
          name='AchievementPage_All_Ajax'),
 
 )
+
+# url patterns for session manager
+urlpatterns += (
+    path('inninginfo/<int:pk>/sessionmanager/update/', views.SessionManagerUpdateView.as_view(),
+         name='session-manager-update'),
+)
+
+urlpatterns += (
+    path('attendance/<int:attend_date>/<int:courseid>/<int:teacherid>/', views.viewteacherAttendance,
+         name='teacherattendanceview'),
+)
+
+# Course Progress
+
+urlpatterns += (
+    path('courseinfo/detail/<int:coursepk>/progress/',
+         views.CourseProgressView, name='admin_course_progress'),
+    path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
+         views.CourseProgressView, name='admin_course_progress_withinning'),
+    path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
+         views.StudentChapterProgressView, name='student_chapter_progress'),
+)
+
+# Notice URL
+
+urlpatterns += (
+    path('notice_view_create', views.notice_view_create, name='notice_view_create'),
+)
+
+# Chat URL
+
+urlpatterns += (
+     path('chat/<int:chapter>',views.chat, name="chat"),
+)

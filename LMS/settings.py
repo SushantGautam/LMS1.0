@@ -1,13 +1,14 @@
 import os
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import socket
-import subprocess
-
-import django_heroku
-import sentry_sdk
 from django.contrib.messages import constants as messages
-from sentry_sdk.integrations.celery import CeleryIntegration
-from sentry_sdk.integrations.django import DjangoIntegration
+
+# # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# import socket
+# import subprocess
+# import django_heroku
+# import sentry_sdk
+
+# from sentry_sdk.integrations.celery import CeleryIntegration
+# from sentry_sdk.integrations.django import DjangoIntegration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -34,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'channels',
     'crispy_forms',
     'rest_framework',
     'rest_framework.authtoken',
@@ -95,6 +97,16 @@ forum_REG_URL_NAME = "account:reg"
 forum_SITE_NAME = "A lovely forum"
 
 WSGI_APPLICATION = 'LMS.wsgi.application'
+ASGI_APPLICATION = 'LMS.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -115,6 +127,21 @@ DATABASES = {
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
+# }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "ROUTING": "LMS.routing.channel_routing",
+
+#         # Dev Config
+#         "BACKEND": "asgiref.inmemory.ChannelLayer",
+
+#         # Production Config using REDIS
+#         # "BACKEND": "asgi_redis.RedisChannelLayer",
+#         # "CONFIG": {
+#         #    "hosts": [("redis", 6379)],
+#         # },
+#     },
 # }
 
 # Password validation
@@ -144,27 +171,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# Channels
-# https://channels.readthedocs.io/en/stable/getting-started.html
-CHANNEL_LAYERS = {
-    "default": {
-        "ROUTING": "LMS.routing.channel_routing",
-
-        # Dev Config
-        "BACKEND": "asgiref.inmemory.ChannelLayer",
-
-        # Production Config using REDIS
-        # "BACKEND": "asgi_redis.RedisChannelLayer",
-        # "CONFIG": {
-        #    "hosts": [("redis", 6379)],
-        # },
-    },
-}
-
-INSTALLED_APPS += [
-    'channels'
-]
 
 INSTALLED_APPS += ("django_createsuperuserwithpassword",)
 
