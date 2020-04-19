@@ -291,6 +291,8 @@ body{
 }
 .chapter-lists-all{
     padding: 13% 10px 10px 11%;
+    height: 80vh;
+    overflow:auto;
 }
 .chapter-name1{
     color: #8793a6;
