@@ -1210,34 +1210,41 @@
         $(".link-view-box").css("left", '31.9%');
         $(".chat-dialogbox").css("left", '17%');
 
-            $( ".custom-owl-slider" ).css("right", '2%');
+        $(".custom-owl-slider").css("right", '2%');
 
-            $(".sidenavbar-part").fadeIn(2000);
-        });
-        $(document).on('click', '.view-icon', function() {
-            $(".page-link-view").css("display", "block");
+        $(".sidenavbar-part").fadeIn(2000);
+    });
+    $(document).on('click', '.view-icon', function () {
+        $(".page-link-view").css("display", "block");
 
-        });
-        $(document).on('click', '.ham-icon', function() {
-            $(".left-chat").css("display", "block");
+    });
+    $(document).on('click', '.ham-icon', function () {
+        {#$(".left-chat").css("display", "block");#}
+        {#$(".chat-canvas").css("width", "78%");#}
+        if ($(".left-chat").css('display') == "none") {
+            $(".left-chat").css('display', 'block');
             $(".chat-canvas").css("width", "78%");
+        } else {
+            $(".left-chat").css('display', 'none')
+            $(".chat-canvas").css("width", "100%");
+        }
+
+    });
+    //for chat close button
+    $(document).on('click', '.close-chat', function () {
+
+        $(".chat-dialogbox").css("display", "none");
 
 
-        });
-        //for chat close button
-        $(document).on('click', '.close-chat', function() {
-
-            $(".chat-dialogbox").css("display", "none");
-
-
-        });
+    });
     //for main chhat icon
     $(document).on('click', '.icon-for-chat', function () {
-        
-
-        $(".chat-dialogbox").css("display", "block");
-      
-
+        x = $(".chat-dialogbox")[0]
+        if ($(".chat-dialogbox").css('display') == "none") {
+            $(".chat-dialogbox").css('display', 'block');
+        } else {
+            $(".chat-dialogbox").css('display', 'none')
+        }
 
     });
 
