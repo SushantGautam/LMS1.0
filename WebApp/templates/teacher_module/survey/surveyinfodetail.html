@@ -13,16 +13,187 @@
 {% endblock %}
 
 {% block content %}
-  <script src="{% static 'js/highcharts.js' %}"></script>
-  <script src="{% static 'js/highchart_data.js' %}"></script>
-  <script src="{% static 'js/jspdf.debug.js' %}"></script>
-
   {% include 'survey/common/details.html' %}
+  <img id="test_image"/>
 {% endblock %}
 
 {% block customjss %}
 
+  <script src="{% static 'js/highchart_data.js' %}"></script>
+  <script src="{% static 'js/highcharts.js' %}"></script>
+  <script src="{% static 'js/jspdf.debug.js' %}"></script>
+  <script src="{% static 'vendorsx/worldcloud.js' %}"></script>
 
+  {% for question in questions %}
+    {% if question.Question_Type == "MCQ" %}
+      <script>
+          document.addEventListener("DOMContentLoaded", function (event) {
+              $(function () {
+                  // Create the chart
+                  var options = {
+                      chart: {
+                          events: {
+                              drilldown: function (e) {
+                                  if (!e.seriesOptions) {
+                                      var chart = this;
+                                      // Show the loading label
+                                      chart.showLoading('Loading ...');
+                                      setTimeout(function () {
+                                          chart.hideLoading();
+                                          chart.addSeriesAsDrilldown(e.point, series);
+                                      }, 1000);
+                                  }
+                              }
+                          },
+                          plotBorderWidth: 0
+                      },
+                      credits: {
+                          enabled: false
+                      },
+                      title: {
+                          text: '',
+                      },
+                      //
+                      // subtitle: {
+                      //         text: 'Subtitle'
+                      // },
+                      //
+                      xAxis: {
+                          type: 'category',
+                      },
+                      //
+                      yAxis: {
+                          title: {
+                              margin: 10,
+                              text: 'Percentage(%)'
+                          },
+                      },
+                      //
+                      legend: {
+                          enabled: false,
+                      },
+                      //
+                      plotOptions: {
+                          series: {
+                              pointPadding: 0.2,
+                              borderWidth: 0,
+                              dataLabels: {
+                                  enabled: true,
+                                  format: '{point.y:.1f}%'
+                              }
+                          },
+                          pie: {
+                              allowPointSelect: true,
+                              cursor: 'pointer',
+                              dataLabels: {
+                                  enabled: true,
+                                  format: '{point.name}: <b>{point.y}%</b>'
+                              }
+                          }
+                      },
+                      //
+                      tooltip: {
+                          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                          pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
+                      },
+                      series: [{
+                          name: "",
+                          colorByPoint: true,
+                          data: [
+                              {% for option in question.optioninfo.all %}
+                                  {
+                                      name: "{{ forloop.counter }}. {{ option.Option_Name }}",
+                                      y: {{ option.get_option_percentage }},
+                                      drilldown: "Chrome"
+                                  },
+                              {% endfor %}
+
+                          ]
+                      }],
+                      //
+                      drilldown: {
+                          series: []
+                      }
+                  };
+
+                  // Column chart
+                  options.chart.renderTo = 'container{{ forloop.counter }}';
+                  options.chart.type = 'column';
+                  var chart1 = new Highcharts.Chart(options);
+
+                  chartfunc{{ forloop.counter }} = function () {
+                      var column = document.getElementById('column{{ forloop.counter }}');
+                      var bar = document.getElementById('bar{{ forloop.counter }}');
+                      var pie = document.getElementById('pie{{ forloop.counter }}');
+                      var line = document.getElementById('line{{ forloop.counter }}');
+                      $('#chk').prop('checked', false);
+                      if (column.checked) {
+
+                          options.chart.renderTo = 'container{{ forloop.counter }}';
+                          options.chart.type = 'column';
+                          var chart1 = new Highcharts.Chart(options);
+                      } else if (bar.checked) {
+                          options.chart.renderTo = 'container{{ forloop.counter }}';
+                          options.chart.type = 'bar';
+                          var chart1 = new Highcharts.Chart(options);
+                      } else if (pie.checked) {
+                          options.chart.renderTo = 'container{{ forloop.counter }}';
+                          options.chart.type = 'pie';
+                          var chart1 = new Highcharts.Chart(options);
+                      } else {
+                          options.chart.renderTo = 'container{{ forloop.counter }}';
+                          options.chart.type = 'line';
+                          var chart1 = new Highcharts.Chart(options);
+                      }
+                  }
+              });
+          });
+      </script>
+      <script>
+          document.addEventListener("DOMContentLoaded", function (event) {
+
+              var Answer_str = "";
+              $('[id^="{{ forloop.counter }}Answer_"]').each(function () {
+                  Answer_str += $(this).text() + " ";
+
+                  var lines = Answer_str.split(/[,\. ]+/g),
+                      data = Highcharts.reduce(lines, function (arr, word) {
+                          var obj = Highcharts.find(arr, function (obj) {
+                              return obj.name === word;
+                          });
+                          if (obj) {
+                              obj.weight += 1;
+                          } else {
+                              obj = {
+                                  name: word,
+                                  weight: 1
+                              };
+                              arr.push(obj);
+                          }
+                          return arr;
+                      }, []);
+
+                  Highcharts.chart('WordCloud{{ forloop.counter }}',
+                      {
+                          credits: {
+                              enabled: false
+                          },
+
+                          series: [{
+                              type: 'wordcloud',
+                              data: data,
+                              name: 'Occurrences'
+                          }],
+                          title: {
+                              text: ''
+                          }
+                      });
+              });
+          });
+
+      </script>
+    {% endif %}
+  {% endfor %}
 
   <script>
 
@@ -139,9 +310,9 @@
       }
   </script>
 
-{#  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"#}
-{#          integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"#}
-{#          crossorigin="anonymous"></script>#}
+  {#  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"#}
+  {#          integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"#}
+  {#          crossorigin="anonymous"></script>#}
 
   <script>
 
@@ -170,6 +341,26 @@
 
           return y_pos + blockHeight;
       };
+
+      function getLines(ctx, text, maxWidth) {
+          var words = text.split(" ");
+          var lines = [];
+          var currentLine = words[0];
+
+          for (var i = 1; i < words.length; i++) {
+              var word = words[i];
+              var width = ctx.measureText(currentLine + " " + word).width;
+              if (width < maxWidth) {
+                  currentLine += " " + word;
+              } else {
+                  lines.push(currentLine);
+                  currentLine = word;
+              }
+          }
+          lines.push(currentLine);
+          return lines;
+      }
+
       //$(window).on('load', function () {
       $("#btnDownload").on('click', function () {
 
@@ -218,12 +409,21 @@
 
                   //let canvas = document.querySelector("#test_canvas");
                   let canvas = document.createElement("CANVAS");
-                  canvas.height = svgel.height.baseVal.value;
-                  canvas.width = svgel.width.baseVal.value;
+                  canvas.height = svgel.height.baseVal.value + 200;
+                  canvas.width = svgel.width.baseVal.value + 200;
                   var ctx = canvas.getContext("2d");
                   var img = new Image();
                   img.onload = function () {
-                      ctx.drawImage(img, 0, 0); // destination rectangle
+                      let qn_title = $(svgel).parent().parent().attr('data-qn-title');
+                      //let qn_title = `#. 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 end`;
+                      let lines = getLines(ctx, qn_title, canvas.width - 10);
+                      let ini_y = 12;
+                      for (const ln of lines) {
+                          ctx.font = "12px Georgia";
+                          ctx.fillText(ln, 0, ini_y);
+                          ini_y += 15;
+                      }
+                      ctx.drawImage(img, 125, ini_y); // destination rectangle
                       console.log(canvas.toDataURL());
                       //let link = document.createElement('a');
                       //link.href = canvas.toDataURL();
@@ -233,31 +433,38 @@
 
                       //var imgWidth = doc.internal.pageSize.getWidth()*0.7;
                       let a_r = canvas.width / canvas.height;
-                      var imgHeight = doc.internal.pageSize.getHeight() * 0.3;
-                      var imgWidth = imgHeight * a_r;
+                      var imgHeight = (doc.internal.pageSize.getHeight() * 0.6);
+                      var imgWidth = (imgHeight * a_r);
 
-                      let qn_title = $(svgel).parent().parent().attr('data-qn-title')
-                      yPos += 5;
-                      yPos = add_text(doc,
-                          qn_title,
-                          12, xPos, yPos);
+                      //yPos += 5;
+                      //yPos = add_text(doc,
+                      //    qn_title,
+                      //    12, xPos, yPos);
                       yPos += 5;
                       doc.addImage(canvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
                       yPos += imgHeight;
                       yPos += 5;
                       if (index === $("svg").length - 1) {
-                         doc.text(150, 285, 'page ' + doc.page);
+                          doc.text(150, 285, 'page ' + doc.page);
                           //doc.output('dataurlnewwindow'); //opens pdf in new tab
                           //doc.save('Test.pdf');
 
                           doc.autoPrint();
-                          doc.output('dataurlnewwindow');
-                      } else if ((index + 1) % 2 === 0) {
+                          //doc.save('Test.pdf');
+                          window.open(doc.output('bloburl'))
+                      } else {
                           doc.text(150, 285, 'page ' + doc.page);
                           doc.addPage();
                           yPos = 20;
                           doc.page++;
                       }
+
+                      //else if ((index + 1) % 2 === 0) {
+                      //    doc.text(150, 285, 'page ' + doc.page);
+                      //    doc.addPage();
+                      //    yPos = 20;
+                      //    doc.page++;
+                      //}
 
                   };
                   img.src = url;
