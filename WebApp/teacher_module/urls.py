@@ -225,7 +225,7 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          admin_views.ContentsView.as_view(), name='teacher_contentviewer'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newcontents',
-         admin_views.NewContentsView.as_view(), name='NewContentViewer'),
+         admin_views.NewContentsView.as_view(), name='teacher_NewContentViewer'),
 )
 
 urlpatterns += (

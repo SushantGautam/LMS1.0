@@ -157,7 +157,7 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          ContentsView.as_view(), name='student_contentviewer'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newcontents',
-         NewContentsView.as_view(), name='NewContentViewer'),
+         NewContentsView.as_view(), name='student_NewContentViewer'),
 )
 
 urlpatterns += (
