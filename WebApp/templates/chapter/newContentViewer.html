@@ -162,20 +162,20 @@
                     {% if "teachers" in request.path %}
                         <li><a class="focus-page"
                                {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8;"{% endif %}
-                               href="{% url 'teacher_contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
+                               href="{% url 'teacher_NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
                         </li>
                     {% elif "students" in request.path %}
                         <li>
                             <a class="focus-page"
                                {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8;"{% endif %}
-                               href="{% url 'student_contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
+                               href="{% url 'student_NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
                             </a>
                         </li>
                     {% else %}
                         <li>
                             <a class="focus-page"
                                {% if chapterobj.pk == chapter.pk %}style="background-color: #647ca8;"{% endif %}
-                               href="{% url 'contentviewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
+                               href="{% url 'NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
                             </a>
                         </li>
                     {% endif %}
