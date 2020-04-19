@@ -1089,7 +1089,7 @@
         }
         $('.thumbnails').removeAttr('style').removeClass('active');
         $('.thumbnails[value=' + window.currentpage + ']').css({
-            'border': '1px solid red'
+            'border': '1px solid #79a6fb;'
         }).addClass('active');
     }
 
@@ -1231,8 +1231,10 @@
         });
     //for main chhat icon
     $(document).on('click', '.icon-for-chat', function () {
+        
 
         $(".chat-dialogbox").css("display", "block");
+      
 
 
     });

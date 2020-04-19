@@ -347,10 +347,12 @@ body{
     -webkit-box-shadow: 0 0 10px black;
     box-shadow: 0 0 10px black;
     display: none;
+    
     position: absolute;
     top: 10px;
     left: 10px;
     z-index: 9;
+   
 }
 .chat-header{
     background-color: #00aeef;
@@ -566,3 +568,21 @@ body{
 }
 
 /* ENDS */
+ .owl-prev {
+    position: fixed;
+    bottom: 10.5vh;
+    left: 35%;
+    border-radius: 50%;
+    /* color: #337ab7 !important; */
+    box-shadow: 2px 2px 3px #999;
+    font-size: 20px!important;
+}
+.owl-next {
+    position: fixed;
+    bottom: 10.5vh;
+    right: 9.75%;
+    border-radius: 50%;
+    /* color: #337ab7 !important; */
+    box-shadow: 2px 2px 3px #999;
+    font-size: 20px!important;
+}
