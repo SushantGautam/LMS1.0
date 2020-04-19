@@ -65,6 +65,17 @@ body{
     margin: 0px!important;
     transition: all 0.3s ease;
 }
+.page-view-icon{
+    position: absolute;
+    bottom:20px;
+    left: 17px;
+    cursor: pointer;
+
+}
+.page-view-icon i{
+    color: white;
+    font-size: 25px;
+}
 .chat-sidenav-close{
     position: absolute;
     top:20px;
@@ -90,22 +101,28 @@ body{
  }
 
 .chat-icon{
-    font-size: 27px;
+    font-size: 25px;
 }
 .icon-for-chat{
     text-decoration: none;
     cursor: pointer;
 }
 #hamburg-nav{
-    font-size: 31px;
+    font-size: 25px;
     cursor:pointer;
     color:white;
 }
 .close-icon-sidebar i{
-    color: red;
- 
-    font-size: 25px;
-
+    color: white;
+    font-size: 24px;
+    background: rgb(54, 60, 69,0.8);
+    border-radius: 50%;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+.close-icon-sidebar i:hover{
+    color: rgb(182, 36, 36);
+   background-color: white;
 }
 .container12 {
     background-color: white;
@@ -132,7 +149,7 @@ body{
     position: absolute;
     bottom: 1%;
     right: 7%;
-    width: 70%;
+    width: 60%;
     background-color: rgb(54, 60, 69,0.9);
     padding: 10px;
 }
@@ -153,9 +170,29 @@ body{
     position: absolute;
     bottom: 1%;
     left: 8%;
-    width: 11%;
+    width: 9%;
     min-height: 90px;
     background-color: rgb(54, 60, 69,0.9);
+}
+.link-view-box{
+    position: absolute;
+    left: 26.9%;
+    bottom: 1%;
+    min-height: 92px;
+    width: 6%;
+    background-color: rgb(54, 60, 69,0.9);
+    padding: 7px 0;
+}
+
+.number-active{
+    text-align: center;
+    padding: 5px ;
+    background-color: #363c45;
+    margin: 8px 10px;
+    border: 1px solid #79a6fb;
+    font-weight: 600;
+
+
 }
 .image-holder{
     height: 70px;
@@ -308,8 +345,12 @@ body{
     background-color: white;
     border-radius: 5px;
     -webkit-box-shadow: 0 0 10px black;
-     box-shadow: 0 0 10px black;
-     display: none;
+    box-shadow: 0 0 10px black;
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 9;
 }
 .chat-header{
     background-color: #00aeef;

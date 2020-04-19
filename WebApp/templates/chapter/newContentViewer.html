@@ -237,6 +237,12 @@
                 </li>
             </ul>
 
+          <div class="page-view-icon">
+              
+                <i title="Click for page view" style="color: white;" class="fa fa-list"></i>
+             
+          </div>
+
         {% endif %}
 
     <div id="container" class="container12">
@@ -279,6 +285,17 @@
                     <span style="color: white;" id="currentpage"> &nbsp;&nbsp;</span> / <span id="totalpages"></span>
                 </div>
             </div>
+           
+
+        </div>
+        <div class="link-view-box">
+            <div >
+                <div class="number-active">4</div>
+            </div>
+            <div style="font-weight:600; text-align:center">
+                <span>/&nbsp;400</span>
+            </div>
+
         </div>
 
         <div class="chat-dialogbox">
@@ -1078,35 +1095,9 @@
 
     $(document).ready(function () {
         setThumbnails();
-        $('.owl-carousel').owlCarousel({
-            nav: true,
-            // slideBy: 5,
-            rewind: true,
-            dots: false,
-            items: parseInt($('#totalpages').text()),
-            navText: ["<i class=' fa fa-chevron-circle-left'></i>",
-                "<i class='fa  fa-chevron-circle-right'></i>"],
-            responsive: {
-                0: {
-                    items: 1
-                },
-                300: {
-                    items: 2
-
-                },
-                400: {
-                    items: 3
-                },
-                600: {
-                    items: 5
-                },
-                1000: {
-                    items: 8
-                }
-            }
-        })
+       
         Layout(x)
-        x.addListener(Layout) // Attach listener function on state changes
+        x.addListener(Layout) // Attach listener function on state changes  
         getProgressWidth();
 
         $('#next-btn').off().click(function () {
@@ -1196,7 +1187,9 @@
             $(".chat-sidenav-close").css("display", "none");
             $(".navigation-owl").css("left", '8%');
             $(".page-link-view").css("left", '8%');
+            $(".link-view-box").css("left", '26.9%');
             $(".custom-owl-slider").css("right", '7%');
+            $(".chat-dialogbox").css("left", '1%');
         });
         $(".container12").click(function () {
             $(".page-link-view").hide();
@@ -1212,6 +1205,9 @@
         $(".chat-sidenav-close").css("display", "block");
         $(".navigation-owl").css("left", '16%');
         $(".page-link-view").css("left", '16%');
+        $(".link-view-box").css("left", '31.9%');
+        $(".chat-dialogbox").css("left", '17%');
+
             $( ".custom-owl-slider" ).css("right", '2%');
 
             $(".sidenavbar-part").fadeIn(2000);
@@ -1250,7 +1246,7 @@
     $(document).ready(function () {
 
         $('.owl-carousel').owlCarousel({
-            nav: false,
+                nav: true,
                 // slideBy: 5,
                 rewind: true,
                 margin:5,
