@@ -443,7 +443,12 @@
         <div id="iframeholder"></div>
     </div>
 </section>
-
+{% if ifteacher %}
+    {% include "chapter/content-viewer-moules/QuickSurvey.html" %}
+    {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
+{% else %}
+    {% include "chapter/Content_Viewer_WebSocket_students.html" %}
+{% endif %}
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <!-- jQuery -->
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
@@ -1276,6 +1281,114 @@
 
     });
 </script>
+
+<!-- Chapter Progress save feature -->
+{% if not connection_offline %}
+    {% if '/students' in request.path %}
+        <script>
+            var chapterProgress;
+            var currentPageUpdateOnServer = 0;
+
+            function chapterProgressFunction() {
+                var timewhensendingprogress = Date.now() / 1000 | 0; // floors the value
+                //if (currentPageUpdateOnServer) {
+                chapterProgress = setInterval(function () {
+                    $.ajax({
+                        url: "{% url 'pageupdateajax' course.pk chapter.pk %}",
+                        type: "post",
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                            'currentpage': window.currentpage,
+                            'totalpages': data.numberofpages,
+                            'studytimeinseconds': 5,    // because in every 5 seconds the function will be called, therefore studytime is 5 seconds.
+                            'last_study_time': timewhensendingprogress,
+                        },
+                        success: function (data) {
+                            console.log(data)
+                            window.currentPageUpdateOnServer = parseInt(data.contents.currentpagenumber)
+                        },
+                    })
+                }, 5000);
+                //}
+            }
+
+            function chapterProgressStopFunction() {
+                clearInterval(chapterProgress);
+            }
+
+            chapterProgressFunction()
+            StudentChapterLogUpdateAjax(1)
+
+            function StudentChapterLogUpdateAjax(type = 1) {
+                $.ajax({
+                    url: "{% url 'studentChapterLogUpdateAjax' chapter.pk %}",
+                    type: "post",
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'type': type,
+                    },
+                    success: function (data) {
+                        console.log(data)
+                    },
+                })
+            }
+
+            /*
+                            $(window).on("blur focus", async function (e) {
+                                var prevType = $(this).data("prevType");
+
+                                if (prevType != e.type) {   //  reduce double fire issues
+                                    switch (e.type) {
+                                        case "blur":
+                                            StudentChapterLogUpdateAjax(0);
+                                            chapterProgressStopFunction();
+                                            break;
+                                        case "focus":
+                                            StudentChapterLogUpdateAjax(1);
+                                            chapterProgressFunction();
+                                            break;
+                                    }
+                                }
+
+                                $(this).data("prevType", e.type);
+                            })
+
+            */
+            window.addEventListener('beforeunload', function (event) {
+                StudentChapterLogUpdateAjax(0)
+            }, false);
+        </script>
+    {% endif %}
+
+    <script>
+        var teacherchapterProgress;
+
+        // var currentPageUpdateOnServer = 0;
+
+        function teacherchapterProgressFunction() {
+            //if (currentPageUpdateOnServer === 0) {
+            teacherchapterProgress = setTimeout(function () {
+                $.ajax({
+                    url: "{% url 'taketeacherAttendance' course.pk %}",
+                    type: "get",
+                    data: {
+                        'chapterid': '{{chapter.pk }}',
+                        'pagenumber': window.currentpage,
+                    },
+                    success: function (data) {
+                        // window.currentPageUpdateOnServer = parseInt(data)
+                    },
+                })
+            }, 100);
+            //}
+        }
+
+        function teacherchapterProgressStopFunction() {
+            clearTimeout(teacherchapterProgress);
+        }
+
+    </script>
+{% endif %}
 
 <script>
     function play(id) {
