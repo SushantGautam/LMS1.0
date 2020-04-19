@@ -825,6 +825,8 @@ class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['other_courses'] = CourseInfo.objects.all().exclude(
+            id=self.kwargs.get('pk'))
         context['chapters'] = ChapterInfo.objects.filter(
             Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
