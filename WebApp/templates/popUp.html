@@ -1,0 +1,45 @@
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+       <h4 class="modal-title" id="myModalLabel">{{ notice.title }}</h4>
+     </div>
+     <div class="modal-body" style="text-align: center">
+        {{ notice.message }}
+       <!-- <div style="font-size: 50px; font-weight: bold">
+           NEW
+       </div>
+         <div style="color: red; font-size: 50px; font-weight: bold">
+             POP UP STORE
+         </div>
+         put any kind of html inside here...<br>
+
+         <div style="border: 1px solid black; display: inline-block; padding: 10px; margin: 10px">
+             Put any kind of html inside here as well <br>
+             .....<br>
+             .....<br>
+             .....<br>
+             .....<br>
+         </div> -->
+     </div>
+     <div class="modal-footer">
+         <form method="POST" id="noticeForm">
+             {% csrf_token %}
+             <div class="col-md-4">
+                 <label for="id_dont_show">Don't Show again</label>
+                 <input type="checkbox" name="dont_show" id="id_dont_show">
+                 <input type="hidden" name="user_code" id="id_user_code" value="{{ user.id }}">
+                 <input type="hidden" name="notice_code" id="id_notice_code" value="{{ notice.id }}">
+             </div>
+             <div class="col-md-4"></div>
+             <div class="col-md-4">
+                 <button type="submit" class="btn btn-primary">Ok</button>
+                 <button type="button" class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+             </div>
+         </form>
+     </div>
+   </div>
+ </div>
+</div>

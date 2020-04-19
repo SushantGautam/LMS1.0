@@ -54,6 +54,7 @@ $("#SaveBtn").on("click",function(e){
     var numberofpages = 0
     
     data.numberofpages = $('.pagenumber').length
+    data.chaptertitle = $('#chaptertitle').text()
     var json=JSON.stringify(data);
     $.ajax({
       url: save_json_url,
@@ -72,7 +73,7 @@ $("#SaveBtn").on("click",function(e){
         alert("Failed to save data")
       },
       complete: function(data){
-        $('#SaveBtn').html(`<a href="#" id="SaveBtn"><i class="fas fa-save"></i><br/>Save</a>`)
+        $('#SaveBtn').html(`<a href="#" id="SaveBtn" style="background-color:#353c46;"><i style="color:white" class="fas fa-save"></i>&nbsp;Save</a>`)
       }
     });
   }, 3000)

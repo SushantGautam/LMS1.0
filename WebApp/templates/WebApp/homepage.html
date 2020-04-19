@@ -21,6 +21,9 @@
 {% block content %}
 
 
+    {% if notice %}
+        {% include 'popUp.html' %}
+    {% endif %}
     {% include 'WebApp/theme/alerts.html' %}
 
     <div class="container_main" id="adminHome">
@@ -69,11 +72,11 @@
             <div class="panel panel-default">
                 <div class="title">
                     <h2 style="font-size: 2em"><a href="{% url 'inninginfo_list' %}">&nbsp;<b>Sessions</b><span
-                            class="thread">{{ sessioncount.count }}</span></a></h2>
+                            class="thread">{{ sessioncount }}</span></a></h2>
                 </div>
                 <ul class="list-group" data-hover-z="0.5" data-animated="">
 
-                    {% for session in sessioncount %}
+                    {% for session in sessions %}
                         <li class="list-group-item ">
                             <div class="media-body">
                                 <b><span class="forum"><a
@@ -128,11 +131,11 @@
             <div class="panel panel-default">
                 <div class="title">
                     <h2 style="font-size: 2em"><a href="{% url 'surveyinfo_list' %}">&nbsp;<b>SURVEY</b><span
-                            class="thread">{{ surveycount.count }}</span></a></h2>
+                            class="thread">{{ surveycount }}</span></a></h2>
                 </div>
                 <ul class="list-group" data-hover-z="0.5" data-animated="">
 
-                    {% for survey in surveycount %}
+                    {% for survey in surveys %}
                         {% if survey.Category_Code|stringformat:"s" == "General" or survey.Category_Code|stringformat:"s" == "System" %}
                             <li class="list-group-item ">
                                 <div class="media-body">
@@ -279,7 +282,7 @@
                             <div class="content">
                                 <h5>Rojan Bade</h5>
                                 <span>Please review and sign the binding agreement</span>
-                            </div>
+                            </div> 
                         </div>
 
                         <div class="status online">
@@ -399,9 +402,47 @@
     </div>
 
 
+
 {% endblock %}
 {% block customjss %}
     <script>
+        $("#noticeForm").submit(function (e) {
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            console.log($('#id_dont_show').is(":checked"));
+
+            if($('#id_dont_show').is(":checked")) {
+                $.ajax({
+                    url: "{% url 'notice_view_create' %}",  // URL to your view that serves new info
+                    data: {
+                        "csrfmiddlewaretoken": $('#noticeForm').find('input[name="csrfmiddlewaretoken"]').val(),
+                        "dont_show": $('#id_dont_show').is(":checked"),
+                        "user_code": $('#id_user_code').val(),
+                        "notice_code": $('#id_notice_code').val(),
+                    },
+
+                    // get the form data
+                    type: $(this).attr('method'), // GET or POST
+                    success: function (response) {
+                        console.log('Success');
+                        $('.close').click();
+                    },
+                    error: function () {
+                        console.log('Error in submitting response');
+                    }
+                });
+            }else{
+                $('.close').click();
+            }
+        });
+    </script>
+
+    <script>
+        
+       $(window).on('load',function(){
+        $('#myModal').modal('show');
+       });
+
         var config = {
             trace: true,
             spiralResolution: 1, //Lower = better resolution

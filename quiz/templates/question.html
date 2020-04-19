@@ -56,43 +56,48 @@
 	{% include 'correct_answer.html' %}
 
 	<p><strong>{% trans "Explanation" %}:</strong></p>
-	<div class="well " style="background-color: #fcf8e3;">
-	  <p>{{ previous.previous_question.explanation }}</p>
-	</div>
+    <div class="well " style="background-color: #fcf8e3;">
+        <p>{{ previous.previous_question.explanation }}</p>
+    </div>
 
-	<hr>
+    <hr>
 
 {% endif %}
 
 
-<div class="" style="text-align:right; margin-bottom: 10px;">
-	
-		<a href="{% url 'student_progress_detail' pk=sitting_id %}" class=""><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
-</div>
-{% if question %}
-{% if quiz.exam_paper %}
-		<div class="col-md-12 ">
-			<div class="pie degree" id="quiz-timer" data-timer="{{quiz.duration}}">
-				<span class="block-timer"></span>
-					<span id="time"></span>
-					<!-- <span id="time1">0</span> -->
-		</div>
-		</div>
-{% endif %}
+    <div class="" style="text-align:right; margin-bottom: 10px;">
+        <a href="
+		    {% if request.GET.iframe %}
+		        {% url 'student_progress_detail' pk=sitting_id %}?iframe=1
+		    {% else %}
+                {% url 'student_progress_detail' pk=sitting_id %}
+            {% endif %}
+        " class="closelink"><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
+    </div>
+    {% if question %}
+        {% if quiz.exam_paper %}
+            <div class="col-md-12 col-md-12 col-xs-12 ">
+                <div class="pie degree" id="quiz-timer" data-timer="{{ quiz.duration }}">
+                    <span class="block-timer"></span>
+                    <span id="time"></span>
+                    <!-- <span id="time1">0</span> -->
+                </div>
+            </div>
+        {% endif %}
 
-{% if progress %}
-<div style="float: right;">
-{% trans "Question" %} {{ progress.0|add:1 }} {% trans "of" %} {{ progress.1 }}
-</div>
-{% endif %}
+        {% if progress %}
+            <div style="float: right;">
+                {% trans "Question" %} {{ progress.0|add:1 }} {% trans "of" %} {{ progress.2 }}
+            </div>
+        {% endif %}
 
 
 
-<p>
-  <small class="muted"><strong>
-			{% trans "Question category" %}:
+        <p>
+            <small class="muted"><strong>
+                {% trans "Question category" %}:
 
-	</strong>
+            </strong>
 		</small>
   <strong>{{ question.category }}</strong>
 </p>

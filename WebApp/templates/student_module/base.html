@@ -15,7 +15,7 @@
         <title>Student {% block title %}{% endblock %}</title>
 
         <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+        {#        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>#}
         <!-- Bootstrap -->
         <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %} " rel="stylesheet">
         <!-- Font Awesome -->
@@ -32,10 +32,10 @@
         <!-- JQVMap -->
         <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/>
         <!-- Custom Theme Style -->
-        <link href="{% static '/build/css/theme.min.css' %}" rel="stylesheet">
+        <link href="{% static 'build/css/theme.min.css' %}" rel="stylesheet">
         <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
 
-        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+        {#        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">#}
 
 
         {#    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">#}
@@ -51,7 +51,7 @@
 {% block body %}
     <div class="se-pre-con"></div>
 
-    <div class="container body">
+    <div class="container body" style="position: absolute;">
         <div class="main_container">
 
             {% block sidebar %}
@@ -87,8 +87,10 @@
     <!-- Bootstrap -->
     <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <!-- FastClick -->
+{#    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>#}
     <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
     <!-- NProgress -->
+{#    <script src="{% static 'vendorsx/nprogress/nprogress.min.js' %}"></script>#}
     <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script>
     <!-- bootstrap-progressbar -->
     <script src="{% static 'vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script>
@@ -115,7 +117,8 @@
     <script src="{% static 'vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script>
     <!-- starrr -->
     <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script>
-
+    <!-- Custom JS -->
+    <script src=" {% static 'js/common.js' %}"></script>
     <script>
         $(window).load(function () {
             // Animate loader off screen
@@ -133,11 +136,22 @@
 
     {% endblock %}
     <!-- Custom Theme Scripts -->
-    <script src=" {% static '/build/js/custom.js' %}"></script>
+    <script src=" {% static 'build/js/custom.js' %}"></script>
     <script>
         window.addEventListener('beforeunload', function (e) {
             // the absence of a returnValue property on the event will guarantee the browser unload happens
             $(".se-pre-con").fadeIn("fast");
+        });
+    </script>
+    <script>
+        let params_base = new URLSearchParams(location.search);
+        $(document).ready(function () {
+            if (params_base.get('iframe')) {
+                $('.left_col, .top_nav , .breadcrumb, footer').remove();
+                $('.nav-md .container.body .right_col').css({
+                    'margin-left': '10px'
+                })
+            }
         });
     </script>
 {% endblock body %}

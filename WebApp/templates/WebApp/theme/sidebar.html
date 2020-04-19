@@ -14,8 +14,9 @@
 
     <div class="clearfix"></div>
 
+
     <!-- menu profile quick info -->
-    <div class="profile clearfix">
+    <div class="profile clearfix" style="padding-top: 8vh">
         {% if request.user.is_authenticated %}
             <div class="profile_pic">
                 <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img"/>
@@ -23,7 +24,9 @@
 
             <div class="profile_info">
 
+
                 <span>Welcome,</span>
+                <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
                 <h2>{{ request.user.username }}</h2>
             </div>
         {% endif %}
@@ -76,7 +79,7 @@
                         </a>
                         <ul class="nav child_menu">
                             <li><a href="{% url 'quiz_list' %}">Quiz List</a></li>
-                            <li><a href="{% url 'quiz_marking' %}">Marking Page</a></li>
+{#                            <li><a href="{% url 'quiz_marking' %}">Marking Page</a></li>#}
                             <li><a href="{% url 'quiz_exam_list' %}">Quiz Exam</a></li>
                         </ul>
                     </li>
@@ -96,7 +99,6 @@
                         <li><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li> -->
                         </ul>
                     </li>
-
 
                     <li>
                         <a href="{% url 'AchievementPage_All' %}"><i class="fa fa-trophy"></i> Achievement <span></span>
@@ -132,8 +134,9 @@
             <hr>
             <div style=" padding: 10px;">
 
-              <a href="http://ublcloud.me/media/app/lms-app.apk" ><img style='height: 100%; width: 100%; object-fit: contain'
-                     src="{% static "3D_Viewer/google-play-badge.svg" %}"></a>
+                <a href="https://we.tl/t-HCjfXFbUd7" target="_blank"><img
+                        style='height: 100%; width: 100%; object-fit: contain'
+                        src="{% static '3D_Viewer/google-play-badge.svg' %}"></a>
             </div>
         </div>
 
@@ -162,7 +165,7 @@
         {% endif %}
 
         <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App"
-           href="http://ublcloud.me/media/app/lms-app.apk">
+           href="https://we.tl/t-HCjfXFbUd7" target="_blank">
             <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
         </a>
         <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout">

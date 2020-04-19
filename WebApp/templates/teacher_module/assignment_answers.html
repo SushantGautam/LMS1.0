@@ -100,7 +100,7 @@
                         </td>
                     {% endif %}
                     <td>{% if answer %}
-                        Submitted
+                        Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
                     {% elif not answer %}
                         Not Submitted
                     {% endif %}
@@ -126,31 +126,28 @@
 {% endblock content %}
 {% block customjss %}
     <script>
-        $('.showanswer').click(function () {
+        $('table').on('click', '.showanswer', function () {
             {% for answer in Answers %}
                 if (this.value == '{{ answer.id }}') {
-                    $('#answercontent').text('{{answer.Assignment_Answer}}')
+                    $('#answercontent').text(`{{answer.Assignment_Answer}}`)
 
                     if ('{{ answer.Assignment_File }}') {
                         $('#answercontent').append(`
-        <a href="/media/{{ answer.Assignment_File }}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
-                    <b>View File</b>
-                </button>
-                </a>
-
-
-        `)
+                            <a href="/media/{{ answer.Assignment_File }}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
+                                <b>View File</b>
+                            </button>
+                            </a>
+                        `)
                     }
+                    $('#StudentScore').html(`
+                        <form onsubmit="return submitscoreajax()" id="StudentScoreForm">Score <input type="number" id="studentScoresubmit" value=" {{ answer.Assignment_Score }}"  max="{{ answer.Question_Code.Question_Score }}" >
+                            <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">SubmitScore</button>
+                        </form>
+                        <br> Full Score: <b>{{ answer.Question_Code.Question_Score }} </b>
+                         <input type="hidden" id="answerpk" value="{{ answer.pk }}">
 
-                    $('#StudentScore').html(`<form onsubmit="return submitscoreajax()" id="StudentScoreForm">Score <input type="number" id="studentScoresubmit" value=" {{ answer.Assignment_Score }}"  max="{{ answer.Question_Code.Question_Score }}" >
-                    <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">SubmitScore</button>
-                    </form>
-            <br> Full Score: <b>{{ answer.Question_Code.Question_Score }} </b>
-             <input type="hidden" id="answerpk" value="{{ answer.pk }}">
-
-`)
+                    `)
                 }
-
             {% endfor %}
         })
 
@@ -170,8 +167,37 @@
                 }
             }
             return false;
-
         }
+
+
+    </script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var table_main = $('.table').DataTable({
+                responsive: true,
+                stateSave: true,
+                dom: 'lBfrtip',
+
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4,]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }
+                ],
+                columnDefs: []
+
+            });
+        });
 
 
     </script>

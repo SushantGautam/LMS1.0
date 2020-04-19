@@ -4,55 +4,11 @@
 <li class="breadcrumb-item"><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{ object.InningGroup_Name }}</li>
 {% endblock %}
-{% block content %}
 
-<div class="outerdiv">
-
-    <h2 class="detailListHeader">Course Allocation Information</h2>
-    <hr class="header_hr">
-    <br>
-    <div class="col-md-6 col-sm-12 col-xs-12 col-md-offset-3">
-        <h5><b>
-                <table class="table table-striped table-bordered">
-                    <!-- <tr>
-                        <td>Session</td>
-                        <td>{{ object.InningGroup_Name }}</td>
-                    </tr> -->
-                    <tr>
-                        <td>Course Code</td>
-                        <td>{{ object.Course_Code }}</td>
-                    </tr>
-                    <tr>
-                        <td>Teacher Code</td>
-                        <td> {% for teachers in object.Teacher_Code.all %}{{ teachers }}<br>{% endfor %}</td>
-                    </tr>
-                    <tr>
-                        <td>Register Agent</td>
-                        <td>{{ object.Register_Agent }}</td>
-                    </tr>
-                    <tr>
-                        <td>Use Flag</td>
-                        <td>{{ object.Use_Flag }}</td>
-                    </tr>
-                </table>
-            </b>
-        </h5>
-        <br>
-        <div class="text-center">
-
-            <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Teacher Allocation</a>
-            <a class="btn-sm btn-danger inninggroup-confirm-delete" id="{{ object.pk }}" style="cursor: pointer;">Delete
-                Teacher Allocation</a>
-            <form method="post" action="{% url 'inninggroup_delete' pk=object.pk %}"
-                id="deleteInningGroup{{ object.pk }}">
-                {% csrf_token %}
-                <input type="hidden" value="{{object.pk}}" name="inninggroup_id">
-            </form>
-        </div>
-    </div>
-
-</div>
+{% block content%}
+    {% include 'inning/inninggroup_detail.html' %}
 {% endblock %}
+
 {% block customjss %}
 <script>
     $(document).on('click', '.inninggroup-confirm-delete', function () {

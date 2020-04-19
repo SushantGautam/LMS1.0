@@ -52,6 +52,10 @@ urlpatterns += (
     #          name='surveyinfo_category'),
     path('surveyinfo_ajax/', views.SurveyInfo_ajax.as_view(),
          name='surveyinfo_ajax'),
+    path('surveyinfo_ajax_update/<int:pk>/', views.SurveyInfoAjaxUpdate.as_view(),
+         name='surveyinfo_ajax_update'),
+    path('surveyinfo_ajax_update_limited/<int:pk>/', views.SurveyInfoAjaxUpdateLimited.as_view(),
+         name='surveyinfo_ajax_update_limited'),
     path('liveProgressResult/<int:pk>/', views.liveProgressResult.as_view(),
          name='liveProgressResult'),
 
@@ -106,4 +110,9 @@ urlpatterns += (
          views.AnswerInfoDetailView.as_view(), name='answerinfo_detail'),
     path('answerinfo/update/<int:pk>/',
          views.AnswerInfoUpdateView.as_view(), name='answerinfo_update'),
+)
+
+urlpatterns += (
+    # delete survey
+    path('surveyinfo/delete/', views.deleteSurvey, name='surveyinfo_delete'),
 )

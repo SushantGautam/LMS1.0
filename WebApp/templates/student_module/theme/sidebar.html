@@ -21,6 +21,7 @@
             <div class="profile_info">
 
                 <span>Welcome,</span>
+                <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
                 <h2>{{ request.user.username }}</h2>
             </div>
         {% endif %}
@@ -40,7 +41,7 @@
                 </li>
                 <li><a><i class="fa fa-edit"></i> Course <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <!-- <li><a href="{% url 'student_courseinfo_list' %}">Courses list</a></li> -->
+                        {% comment %} <li><a href="{% url 'student_courseinfo_list' %}">Courses list</a></li> {% endcomment %}
                         <li><a href="{% url 'student_mycourses_list' %}">My Courses</a></li>
                         <li><a href="{% url 'student_myassignmentinfo_list' %}">My Assignments</a></li>
                     </ul>
@@ -64,8 +65,9 @@
             <hr>
             <div style=" padding: 10px;">
 
-                     <a href="http://ublcloud.me/media/app/lms-app.apk" ><img style='height: 100%; width: 100%; object-fit: contain'
-                     src="{% static "3D_Viewer/google-play-badge.svg" %}"></a>
+                <a href="https://we.tl/t-HCjfXFbUd7" target="_blank"><img
+                        style='height: 100%; width: 100%; object-fit: contain'
+                        src="{% static '3D_Viewer/google-play-badge.svg' %}"></a>
             </div>
 
 
@@ -84,7 +86,7 @@
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
         </a>
         <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App"
-           href="http://ublcloud.me/media/app/lms-app.apk">
+           href="https://we.tl/t-HCjfXFbUd7" target="_blank">
             <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
         </a>
         <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout">

@@ -98,20 +98,32 @@
                 </div> -->
         </div>
 
-        <div class="text-danger" style="display: none;text-align: center;" id="survey_already_taken">You have already taken this survey.
-        </div>
+          <div class="text-danger" style="display: none;text-align: center;" id="survey_already_taken">
+              {% if datetimeexpired %}
+                  Survey submission date has ended.
+              {% else %}
+                  You have already taken this survey.
+              {% endif %}
+          </div>
 
-        <form id="surveyform" method="post" action="{% url 'ParticipateSurvey' %}">
-          {% csrf_token %}
-          {% for question in questions %}
-            {% if question.Question_Type == "MCQ" %}
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel" id="pollsQuestions" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
-                  <div class="x_title">
-                    <h2 class="title ">
-                      <strong>{{ forloop.counter }} . &nbsp;
-                        {{ question.Question_Name }}</strong>
-                    </h2>
+          <form id="surveyform" method="post" action="
+                {% if request.GET.iframe %}
+                    {% url 'ParticipateSurvey' %}?iframe=1
+                {% else %}
+                    {% url 'ParticipateSurvey' %}
+               {% endif %}
+            ">
+              {% csrf_token %}
+              {% for question in questions %}
+                  {% if question.Question_Type == "MCQ" %}
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                          <div class="x_panel" id="pollsQuestions"
+                               style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                              <div class="title1">
+                                  <h2 class="title ">
+                                      <strong>{{ forloop.counter }} . &nbsp;
+                                          {{ question.Question_Name }}</strong>
+                                  </h2>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">

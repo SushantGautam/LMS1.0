@@ -21,6 +21,7 @@
             <div class="profile_info">
 
                 <span>Welcome,</span>
+                <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
                 <h2>{{ request.user.username }}</h2>
             </div>
         {% endif %}
@@ -58,6 +59,17 @@
         </ul>
       </li> -->
 
+                    {% if request.user.inningmanager_set.all.count is not 0 %}
+                        <li>
+                            <a href="{% url 'teachers_mysession_list' %}"><i class="fa fa-trophy"></i> My Session
+                                <span></span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a href="{% url 'attendance' %}"><i class="fa fa-tasks"></i> Attendance (β)<span></span>
+                        </a>
+                    </li>
                     <li><a><i class="fa fa-question-circle"></i> Quiz <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{% url 'teacher_quiz_list' %}">Quiz List</a></li>
@@ -85,8 +97,9 @@
             <hr>
             <div style=" padding: 10px;">
 
-                     <a href="http://ublcloud.me/media/app/lms-app.apk" ><img style='height: 100%; width: 100%; object-fit: contain'
-                     src="{% static "3D_Viewer/google-play-badge.svg" %}"></a>
+                <a href="https://we.tl/t-HCjfXFbUd7" target="_blank"><img
+                        style='height: 100%; width: 100%; object-fit: contain'
+                        src="{% static '3D_Viewer/google-play-badge.svg' %}"></a>
             </div>
 
 
@@ -105,7 +118,7 @@
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
         </a>
         <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App"
-           href="http://ublcloud.me/media/app/lms-app.apk">
+           href="https://we.tl/t-HCjfXFbUd7" target="_blank">
             <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
         </a>
         <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout">

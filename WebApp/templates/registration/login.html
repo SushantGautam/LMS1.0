@@ -11,23 +11,43 @@
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
     <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/floating-labels.css' %}"/>
-    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet"/>
+    {#    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet"/>#}
 </head>
 <body>
 
+<style>
+    .form-label-group input:not(:placeholder-shown) ~ label {
+        display: none;
+    }
+
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: url(/static/images/uLMS2019_Loading_SVG.svg) center no-repeat #fff;
+    }
+
+</style>
+
+<div class="se-pre-con"></div>
 
 <form class="form-signin" method="POST" action="" id="FormID">
     {% csrf_token %}
+    <a href="/">
+        <div class="text-center mb-4">
+            <img class="mb-4" src="{% static 'images/logo_orange.png' %}" alt="UBL-logo-orange" width="80%"/>
+        </div>
 
-    <div class="text-center mb-4">
-        <img class="mb-4" src="{% static 'images/logo_orange.png' %}" alt="UBL-logo-orange" width="80%"/>
-    </div>
-
-    <h1 class="mb-4" style="color: gray; text-align: center">
-        <hr>
-        u-LMS 2019
-        <hr>
-    </h1>
+        <h1 class="mb-4" style="color: gray; text-align: center">
+            <hr>
+            u-LMS 2019
+            <hr>
+        </h1>
+    </a>
 
     {% include 'WebApp/theme/alerts.html' %}
 
@@ -59,27 +79,46 @@
 </div>
 
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+<script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap-4.3.1.min.js' %}"></script>
 
 <script>
 
-    localStorage.clear();
+    try {
+        Print.postMessage('loginRequired');
+        setTimeout(function () {
+            $('div.alert').fadeOut('slow');
+        }, 3000);
+    } catch (e) {
 
-    self.caches.delete('pwabuilder-adv-cache');
+    }
 
+    try {
+        localStorage.clear();
 
-    navigator.serviceWorker.getRegistrations().then(function (registrations) {
-        for (let registration of registrations) {
-            registration.unregister()
-        }
+    } catch (e) {
+
+    }
+
+    try {
+        self.caches.delete('pwabuilder-adv-cache');
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            for (let registration of registrations) {
+                registration.unregister()
+            }
+        });
+    } catch (e) {
+
+    }
+
+    $(window).load(function () {
+        $(".se-pre-con").fadeOut("fast");
     });
 
-    Print.postMessage('loginRequired');
-    setTimeout(function () {
-        $('div.alert').fadeOut('slow');
-    }, 3000);
+    window.addEventListener('beforeunload', function (e) {
+        // the absence of a returnValue property on the event will guarantee the browser unload happens
+        $(".se-pre-con").fadeIn("fast");
+    });
+
 
 </script>
 

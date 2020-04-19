@@ -1,12 +1,17 @@
+import glob
 import json
 import os
-import shutil
+import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
-from datetime import datetime
+from datetime import datetime, timedelta
+from json import JSONDecodeError
 
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 import pandas as pd
-# import vimeo  # from PyVimeo for uploading videos to vimeo.com
+import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -23,14 +28,17 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.html import escape
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
+from django_datatables_view.base_datatable_view import BaseDatatableView
 
+from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -38,9 +46,11 @@ from quiz.models import Quiz
 from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
-    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm
+    AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, \
+    InningManagerForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
+    InningManager, Notice, NoticeView
 
 
 class Changestate(View):
@@ -86,6 +96,8 @@ class AjaxableResponseMixin:
 
 
 def ProfileView(request):
+    if AuthCheck(request, admn=1) == 2:
+        return redirect('login')
     return render(request, 'WebApp/profile.html')
 
 
@@ -191,20 +203,39 @@ def start(request):
             teachercount = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=request.user.Center_Code).count
             threadcount = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code).count
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
+            surveys = SurveyInfo.objects.filter(Q(Use_Flag=True),
+                                                Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
+                                                Q(End_Date__gte=datetime.now()))[:5]
             surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                     Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                    Q(End_Date__gte=datetime.now()))[:5]
+                                                    Q(End_Date__gte=datetime.now())).count
+            sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
+                                                 End_Date__gte=datetime.now())[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                     End_Date__gte=datetime.now())[:5]
+                                                     End_Date__gte=datetime.now()).count
 
+            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
+                                     status=True).exists():
+                notice = \
+                    Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+                if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
+                    notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[
+                        0].dont_show
+                    if notice_view_flag:
+                        notice = None
+            else:
+                notice = None
             # return HttpResponse("default home")
             return render(request, "WebApp/homepage.html",
                           {'course': course, 'coursecount': coursecount, 'studentcount': studentcount,
                            'teachercount': teachercount,
                            'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,
                            'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords,
+                           'surveys': surveys,
                            'surveycount': surveycount,
-                           'sessioncount': sessioncount})
+                           'sessions': sessions,
+                           'sessioncount': sessioncount,
+                           'notice': notice})
         elif request.user.Is_Student:
             return redirect('student_home')
         elif request.user.Is_Teacher:
@@ -383,11 +414,59 @@ def CenterInfoDeleteView(request, pk):
     return redirect("centerinfo_list")
 
 
-class MemberInfoListView(ListView):
-    model = MemberInfo
+class MemberInfoListView(TemplateView):
+    template_name = "WebApp/memberinfo_list.html"
+    # model = MemberInfo
+    #
+    # def get_queryset(self):
+    #     return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
-    def get_queryset(self):
+
+class MemberInfoListViewAjax(BaseDatatableView):
+    model = MemberInfo
+    counter = 0
+    template_name = "WebApp/memberinfo_list.html"
+    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Phone',
+               'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
+               'Member_BirthDate', 'type', 'action']
+    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Phone',
+                     'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
+
+    def get_initial_queryset(self):
         return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+
+    def render_column(self, row, column):
+        # We want to render user as a custom column
+        if column == "counter":
+            self.counter += 1
+            return self.counter
+        elif column == 'full_name':
+            # escape HTML for security reasons
+            return escape('{0} {1}'.format(row.first_name, row.last_name))
+        elif column == 'type':
+            return row.get_user_type
+        elif column == 'action':
+            return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
+                    <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
+        else:
+            return super(MemberInfoListViewAjax, self).render_column(row, column)
+
+    def filter_queryset(self, qs):
+        # use parameters passed in GET request to filter queryset
+
+        # simple example:
+        search = self.request.GET.get('search[value]', None)
+        onlystudents = self.request.GET.get('onlystudents', None)
+        onlyteachers = self.request.GET.get('onlyteachers', None)
+        if search:
+            qs = qs.filter(username__istartswith=search) | qs.filter(first_name__istartswith=search) | qs.filter(
+                last_name__istartswith=search) | qs.filter(email__istartswith=search) | qs.filter(
+                Member_Phone__istartswith=search)
+        if onlystudents:
+            qs = qs.filter(Is_Student=True)
+        if onlyteachers:
+            qs = qs.filter(Is_Teacher=True)
+        return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
 class MemberInfoListViewInactive(ListView):
@@ -465,7 +544,8 @@ def MemberInfoDeactivate(request, pk):
     return redirect('memberinfo_detail', pk=pk)
 
 
-def ImportCsvFile(request):
+# The following function is for importing the students from the csv file. Used in Memberinfo and GroupMapping
+def ImportCsvFile(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
         center_id = request.user.Center_Code.id
@@ -477,10 +557,13 @@ def ImportCsvFile(request):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name + '.' + extension, media)
         path = os.path.join(path, filename)
-
-        df = pd.read_csv(path)
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df.column = ['Username', 'Member ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Gender', 'Student',
+                     'Teacher', 'Temporary Address', 'Permanent Address', 'Birthdate']
+        print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
         saved_id = []
         for i in range(len(df)):
             try:
@@ -505,25 +588,44 @@ def ImportCsvFile(request):
                 else:
                     obj.Member_Gender = ''
 
-                if df.iloc[i]['Teacher'] == 1:
-                    obj.Is_Teacher = True
-                else:
-                    obj.Is_Teacher = False
-
-                if df.iloc[i]['Student'] == 1:
+                # This is to check if the url contains the query parameter groupmappingpk.
+                # groupmappingpk is added to url when this function is called from groupmapping_detail.html.
+                # If groupmappingpk is in the url then the csv file containing all members are students only.
+                if request.GET.get('groupmappingpk'):
                     obj.Is_Student = True
                 else:
-                    obj.Is_Student = False
+                    if df.iloc[i]['Teacher'] == 1:
+                        obj.Is_Teacher = True
+                    else:
+                        obj.Is_Teacher = False
+
+                    if df.iloc[i]['Student'] == 1:
+                        obj.Is_Student = True
+                    else:
+                        obj.Is_Student = False
 
                 obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
                 obj.set_password('00000')
                 obj.save()
+
+                # Following is to add the new students to the group from which they were imported.
+                # groupmappingpk contains the primary key of the group that is used to call the function.
+                if request.GET.get('groupmappingpk'):
+                    # If no group exist then raise the exception to terminate the process
+                    if GroupMapping.objects.filter(pk=request.GET.get('groupmappingpk')).exists():
+                        g = GroupMapping.objects.get(pk=request.GET.get('groupmappingpk'))
+                    else:
+                        raise Exception('Group %s does not exist' % request.GET.get('groupmappingpk'))
+                    obj.groupmapping_set.add(g)
                 saved_id.append(obj.id)
 
-            except:
+
+            except Exception as e:
                 for j in saved_id:
                     MemberInfo.objects.filter(id=j).delete()
-                msg = "Can't Upload all data. Problem in " + str(i + 1) + "th row of data while uploading."
+                msg = "Can't Upload all data. Problem in " + str(
+                    i + 1) + "th row of data while uploading. <br><br> " + "<br> ".join(
+                    ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>" + str(e)
                 return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         return JsonResponse(data={"message": "All data has been Uploaded Sucessfully", "class": "text-success",
                                   "rmclass": "text-danger"})
@@ -585,26 +687,31 @@ class MemberInfoDeleteView(DeleteView):
 
 class CourseInfoListView(ListView):
     model = CourseInfo
-    paginate_by = 8
+    paginate_by = 6
 
     def get_queryset(self):
         qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
-            qs = qs.filter(Course_Name__contains=query)
+            qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
                 messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
 
-class CourseInfoCreateView(CreateView):
+class CourseInfoCreateView(AdminAuthMxnCls, CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
-class CourseInfoDetailView(DetailView):
+
+class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
     model = CourseInfo
 
     def get_context_data(self, **kwargs):
@@ -621,13 +728,23 @@ class CourseInfoDetailView(DetailView):
         return context
 
 
-class CourseInfoUpdateView(UpdateView):
+class CourseInfoUpdateView(CourseAuthMxnCls, AdminAuthMxnCls, UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 
 def CourseInfoDeleteView(request, pk):
     if request.method == 'POST':
+        if AuthCheck(request, admn=1) == 2 or CourseAuth(request, pk) == 2:
+            return redirect('login')
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = CourseInfo.objects.get(pk=pk)
@@ -660,22 +777,37 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     form_class = ChapterInfoForm
     template_name = 'ajax/chapterinfo_form_ajax.html'
 
-    def post(self, request, *args, **kwargs):
-        Obj = ChapterInfo()
-        Obj.Chapter_No = request.POST["Chapter_No"]
-        Obj.Chapter_Name = request.POST["Chapter_Name"]
-        Obj.Summary = request.POST["Summary"]
-        if request.POST["Use_Flag"] == 'false':
-            Obj.Use_Flag = False
-        else:
-            Obj.Use_Flag = True
-        Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-        Obj.save()
+    # def post(self, request, *args, **kwargs):
+    #     Obj = ChapterInfo()
+    #     Obj.Chapter_No = request.POST["Chapter_No"]
+    #     Obj.Chapter_Name = request.POST["Chapter_Name"]
+    #     Obj.Summary = request.POST["Summary"]
+    #     if request.POST["Use_Flag"] == 'false':
+    #         Obj.Use_Flag = False
+    #     else:
+    #         Obj.Use_Flag = True
+    #     Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
+    #     Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
+    #     Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+    #     Obj.save()
 
+    #     return JsonResponse(
+    #         data={'Message': 'Success'}
+    #     )
+
+    def form_valid(self, form):
+        form.save(commit=False)
+        if form.cleaned_data['Start_Date'] == "":
+            form.instance.Start_Date = None
+        if form.cleaned_data['End_Date'] == "":
+            form.instance.End_Date = None
+        form.save()
         return JsonResponse(
             data={'Message': 'Success'}
         )
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
 
 class ChapterInfoDetailView(DetailView):
@@ -732,6 +864,17 @@ def CourseForum(request, course):
 class ChapterInfoUpdateView(UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
+
+    def form_valid(self, form):
+        form.save(commit=False)
+        if form.cleaned_data['Start_Date'] == "":
+            form.instance.Start_Date = None
+        if form.cleaned_data['End_Date'] == "":
+            form.instance.End_Date = None
+
+        form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
+        form.save()
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -804,9 +947,22 @@ class InningInfoCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_initial(self):
+        # Get the initial dictionary from the superclass method
+        initial = super(InningInfoCreateView, self).get_initial()
+        # Copy the dictionary so we don't accidentally change a mutable dict
+        initial = initial.copy()
+        if 'saveasnew' in self.request.path:
+            inning = get_object_or_404(InningInfo, pk=self.kwargs['pk'])
+            initial['Inning_Name'] = inning.Inning_Name
+            initial['Groups'] = inning.Groups
+            initial['Course_Group'] = inning.Course_Group.all()
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
+        context['base_file'] = 'base.html'
         return context
 
 
@@ -816,6 +972,8 @@ class InningInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
+        if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk=self.kwargs['pk'])
         return context
 
 
@@ -831,6 +989,7 @@ class InningInfoUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['datetime'] = datetime.now()
+        context['base_file'] = 'base.html'
         return context
 
 
@@ -865,6 +1024,11 @@ class InningGroupCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
+
 
 class InningGroupCreateAjax(AjaxableResponseMixin, CreateView):
     model = InningGroup
@@ -890,6 +1054,17 @@ class InningGroupDetailView(DetailView):
 class InningGroupUpdateView(UpdateView):
     model = InningGroup
     form_class = InningGroupForm
+
+    def form_valid(self, form):
+        """If the form is valid, redirect to the supplied URL."""
+        messages.add_message(self.request, messages.SUCCESS, 'Course Teacher Allocation Updated.')
+        self.object = form.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
@@ -930,6 +1105,73 @@ class GroupMappingListView(ListView):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
+def GroupMappingCSVImport(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+        file_name = uuid.uuid4()
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + str(extension)
+        path = 'media/import_csv/student_group' + str(center_id)
+
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name + '.' + extension, media)
+        path = os.path.join(path, filename)
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df = df.dropna(how='all')
+
+        reg_agent = request.user.username
+        center = request.user.Center_Code
+        err_msg = []
+        msg = []
+        try:
+            groups = df['Group'].unique()
+        except Exception as e:
+            return JsonResponse(
+                data={"message": "There is no Column <b>Group</b> in the input file", "class": "text-danger",
+                      "rmclass": "text-success"})
+        for i in range(len(groups)):
+            try:
+                flag = 0
+                obj = GroupMapping()
+                obj.GroupMapping_Name = groups[i]
+                obj.Register_Agent = reg_agent
+                obj.Center_Code = center
+                students = df[df['Group'] == groups[i]].reset_index(drop=True)
+                obj.save()
+                for j in range(len(students)):
+                    if MemberInfo.objects.filter(username=students['Username'][j]).exists():
+                        obj_student = MemberInfo.objects.get(username=students['Username'][j])
+                        obj.Students.add(obj_student)
+                    else:
+                        # obj_create = MemberInfo()
+                        # obj_create.username = students['Username'][j]
+                        # obj_create.Center_Code = center
+                        # obj_create.save()
+                        # obj.Students.add(obj_student)
+                        err_msg.append(
+                            "Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>".format(
+                                groups[i], students['Username'][j]))
+                        flag = 1
+                        break
+
+                if flag == 1:
+                    obj.delete()
+                    if msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+                else:
+                    msg.append("<div class='text-success'>Student Group: <b>{}</b> created</div>".format(groups[i]))
+                    if err_msg:
+                        err_msg = err_msg + msg
+                        msg.clear()
+            except Exception as e:
+                err_msg.append("Student Group: <b>{}</b> can't be created<br> {}".format(groups[i], e))
+    if err_msg:
+        return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
+    return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
+
+
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
@@ -939,6 +1181,20 @@ class GroupMappingCreateView(CreateView):
         kwargs.update({'request': self.request})
         return kwargs
 
+    def get_initial(self):
+        # Get the initial dictionary from the superclass method
+        initial = super(GroupMappingCreateView, self).get_initial()
+        # Copy the dictionary so we don't accidentally change a mutable dict
+        initial = initial.copy()
+        if 'saveasnew' in self.request.path:
+            initial['Students'] = get_object_or_404(GroupMapping, pk=self.kwargs['pk']).Students.all()
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
+
 
 class GroupMappingDetailView(DetailView):
     model = GroupMapping
@@ -947,6 +1203,11 @@ class GroupMappingDetailView(DetailView):
 class GroupMappingUpdateView(UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "base.html"
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
@@ -992,11 +1253,18 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def post(self, request, *args, **kwargs):
         Obj = AssignmentInfo()
         Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+        Obj.Assignment_Start = request.POST["Assignment_Start"]
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
         Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+
+        if Obj.Assignment_Start and Obj.Assignment_Deadline:
+            if (Obj.Assignment_Start > Obj.Assignment_Deadline):
+                return JsonResponse(
+                    data={'Message': 'Assignment Deadline must be greater than start date.'}, status=500
+                )
         Obj.save()
 
         return JsonResponse(
@@ -1011,11 +1279,18 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
         try:
             Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
             Obj.Assignment_Topic = request.POST["Assignment_Topic"]
+            Obj.Assignment_Start = request.POST["Assignment_Start"]
             Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
             Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
             Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+            if Obj.Assignment_Start and Obj.Assignment_Deadline:
+                if (Obj.Assignment_Start > Obj.Assignment_Deadline):
+                    return JsonResponse(
+                        data={'Message': 'Deadline date must be greater than start date'},
+                        status=500
+                    )
             Obj.save()
 
             return JsonResponse(
@@ -1241,6 +1516,21 @@ class AssignAnswerInfoDetailView(DetailView):
     model = AssignAnswerInfo
 
 
+def AssignAnswerInfoDelete(request):
+    if request.method == "POST":
+        answerpk = request.POST.get('answerpk')
+        if AssignAnswerInfo.objects.filter(pk=answerpk).exists():
+            AssignAnswerInfo.objects.get(pk=answerpk).delete()
+            messages.add_message(request, messages.SUCCESS, 'Deleted successfully')
+            return HttpResponse('success', status=200)
+        else:
+            messages.add_message(request, messages.ERROR, 'Answer doesn\'t exist')
+            return HttpResponse('Answer doesn\'t exist', status=404)
+    else:
+        messages.add_message(request, messages.ERROR, 'Invalid')
+        return HttpResponse('GET Method not allowed', status=403)
+
+
 class AssignAnswerInfoUpdateView(UpdateView):
     model = AssignAnswerInfo
     form_class = AssignAnswerInfoForm
@@ -1310,6 +1600,7 @@ def chapterpagebuilder(request, course, chapter):
     chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
+    server_name = settings.SERVER_NAME
     data = {"": ""}
     try:
         with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
@@ -1323,6 +1614,7 @@ def chapterpagebuilder(request, course, chapter):
         'chapterdetails': chapterdetails,
         'chapterlist': chapterlist,
         'file_path': path,
+        'server_name': server_name,
         'data': data
     }
     return render(request, 'WebApp/chapterbuilder.html', context)
@@ -1343,12 +1635,38 @@ def save_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '___' + str(
                 request.user.pk) + '.' + media.name.split('.')[-1]
+            # name = "".join(re.findall("[a-zA-Z0-9]+", name))
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(name, media)
 
         return JsonResponse(data={"message": "success", "media_name": name})
+
+
+def newChapterBuilder(request, course, chapter):
+    chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
+    chapterdetails = chapterlist.get(id=chapter)
+    path = settings.MEDIA_ROOT
+    server_name = settings.SERVER_NAME
+    data = {"": ""}
+    try:
+        with open(path + '/chapterBuilder/' + str(course) + '/' + str(chapter) + '/' + str(
+                chapter) + '.txt') as json_file:
+            data = json.load(json_file)
+    except Exception as e:
+        print(e)
+    context = {
+        'course': course,
+        'chapter': chapter,
+        'chapterdetails': chapterdetails,
+        'chapterlist': chapterlist,
+        'file_path': path,
+        'server_name': server_name,
+        'data': data
+    }
+    return render(request, "WebApp/newChapterBuilder.html", context)
 
 
 def deletechapterfile(request):
@@ -1384,8 +1702,10 @@ def save_3d_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + obj.name.split('.')[0] + '&&&' + str(
+            name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+                re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '___' + str(
                 request.user.pk)
+            # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
@@ -1396,7 +1716,6 @@ def save_3d_file(request):
         return JsonResponse(data={"message": "success", "objname": objname})
 
 
-@csrf_exempt
 def save_video(request):
     if request.method == "POST":
         chapterID = request.POST['chapterID']
@@ -1412,50 +1731,93 @@ def save_video(request):
 
         # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
         # Eg: 561561561&&&test.jpg&&&17
-        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + media.name.split('.')[0] + '&&&' + str(
+        name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
+            re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '___' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
-        fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
-        filename = fs.save(name, media)
-        return JsonResponse({'media_name': name})
-    '''
-        # #video uploading to vimeo.com
 
-        # standard Account
-        # v = vimeo.VimeoClient(
-        #     token='7a954bb83b66a50a95efc2d1cfdd484a',
-        #     key='22a07cf36ea4aa33c9e61a38deacda1476b81809',
-        #     secret='1mX35wDF+GwizSs2NN/ns42c4qj5SFzguquEm2lQcbsmUYrcztOO099Dz3GjlPQvQELcbKPwtb9HWiMikZlgDvL/OcevzTiE13d9Cc4B8CH25BY01FN5LvUcT2KZfg4'
-        # )
+        # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+        # filename = fs.save(name, media)
+        # return JsonResponse({'media_name': name})
+        # video uploading to vimeo.com
+
         # Premium Account
-        v = vimeo.VimeoClient(
-            token='3b42ecf73e2a1d0088dd677089d23e32',
-            key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
-            secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
-        )
+        # v = vimeo.VimeoClient(
+        #     token='3b42ecf73e2a1d0088dd677089d23e32',
+        #     key='3b55a8ee9a7d0702c787c18907e79ceaa535b0e3',
+        #     secret='KU1y3Bl/ZWj3ZgEzi7g5dtr8bESaBkqBtH5np1QUKBI0zLDvxteNURzRW09kl6QXqKLnCjtV15r0VwV+9nsYu6GmNFw5vjb4zKDWqpsWT+qPBn2I23n+ckLglgIvHmBh'
+        # )
 
-        # media = '{path to a video on the file system}'
+        data = {
+            "upload": {
+                "approach": "tus",
+                "size": media.size
+            },
+            'name': name
+        }
+        rs = requests.session()
 
-        uri = v.upload(path + '/chapterBuilder/' + courseID + '/' + chapterID + '/' + name, data={
-            'name': name,
-        })
+        # if getServerIP() != '103.41.247.44':  # 103.41.247.44 is ip of ublcloud.me (indonesian). If request if for ublcloud, then it will save to server else to vimeo
+        if settings.SERVER_NAME != 'Indonesian_Server':
+            r = rs.post(url="https://api.vimeo.com/me/videos",
+                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                 'Content-Type': 'application/json',
+                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                        data=json.dumps(data))
+            if r.status_code == 200:
+                r_responseText = json.loads(r.text)
+                res = rs.patch(r_responseText['upload']['upload_link'], headers={'Tus-Resumable': '1.0.0',
+                                                                                 'Content-Type': 'application/offset+octet-stream',
+                                                                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4',
+                                                                                 'Connection': 'keep-alive',
+                                                                                 'Upload-Offset': '0'},
+                               data=media.file
+                               )
 
-        response = v.get(uri).json()
-        status = response['status']
-        videoid = response['uri'].split('/')[-1]
+                if res.status_code == 204 or res.status_code == 200:
+                    response = rs.head(r_responseText['upload']['upload_link'])
 
-        url = 'https://api.vimeo.com/me/projects/772975/videos/' + videoid  # Premium account Folder
-        # url = 'https://api.vimeo.com/me/projects/936814/videos/'+videoid    #Standard Account Folder
-        v.put(url)
-        print(response['status'])
+                    a = rs.put(
+                        url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[-1],
+                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                 'Content-Type': 'application/json',
+                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                    return JsonResponse(
+                        {'link': r_responseText['upload']['upload_link'], 'media_name': name,
+                         'html': r_responseText['embed']['html']})
+        else:
+            if (media.size / 1024) > (500 * 1024):  # checking if file size is greater than 500 MB in Indonesian Server
+                return JsonResponse(data={"message": "File size exceeds 500 MB"}, status=500)
+            if media.name.split('.')[-1] != 'mp4' and (media.size / 1024) > (
+                    100 * 1024):  # if media size is 100 MB and media is not mp4
+                return JsonResponse(data={"message": "File size above 100 MB must be MP4"}, status=500)
 
-        while status == 'transcode_starting' or status == 'transcoding':
-            r = v.get(uri + '?fields=status').json()
-            status = r['status']
-        return JsonResponse({'link': response['link'], 'media_name': name, 'html': response['embed']['html']})
-    '''
+            name = (str(uuid.uuid4())).replace('-', '') + '' + "".join(
+                re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '' + str(
+                request.user.pk)
+            cloudinary.config(
+                cloud_name="nsdevil-com",
+                api_key="355159163645263",
+                api_secret="riH4CD94zuSXffS_wfSgIFgxmJ0"
+            )
+            response = cloudinary.uploader.upload_large(media.file,
+                                                        folder="/id.ublcloud.me",
+                                                        resource_type="video",
+                                                        chunk_size=6000000,  # chunk size default is 6 MB
+                                                        public_id=name,
+                                                        )
+            embedd_code = '<iframe src="' + response['secure_url'] + '"><video controls preload="none"><source src="' + \
+                          response['secure_url'] + '" type="video/mp4" autostart="false"></video></iframe>'
+            print(response)
+
+            return JsonResponse(
+                {'link': response['secure_url'], 'media_name': response['public_id'],
+                 # 'html': embedd_code
+                 })
+            # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
+            # filename = fs.save(name, media)
+        return JsonResponse({}, status=500)
 
 
-@csrf_exempt
 def save_json(request):
     if request.method == "POST":
         jsondata = json.loads(request.POST['json'])
@@ -1490,11 +1852,15 @@ def export_chapter(request, course, chapter):
     dir_name = path + '/chapterBuilder/' + str(course) + '/' + str(chapter)
     if not os.path.exists(dir_name):
         return HttpResponse('No directory')
-    zipfile = shutil.make_archive(path + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_', 'zip', dir_name)
+    zipfile = shutil.make_archive(
+        path + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) + '_' + str(chapter) + '_',
+        'zip', dir_name)
 
-    return redirect(settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) +'_' + str(chapter) + '_' + '.zip')
+    return redirect(
+        settings.MEDIA_URL + '/export/' + str(coursename) + '_Chapter' + str(chapter) + '_' + str(obj.pk) + '_' + str(
+            chapter) + '_' + '.zip')
 
-import re
+
 def import_chapter(request):
     chapterID = request.POST['chapterID']
     courseID = request.POST['courseID']
@@ -1643,14 +2009,33 @@ def ThreeDViewer(request, urlpath=None):
 class ContentsView(TemplateView):
     template_name = 'chapter/chapter_contents.html'
 
+    def get(self, request, *args, **kwargs):
+        try:
+            if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
+                pass
+            else:
+                messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                raise ObjectDoesNotExist
+        except:
+            if '/students/' in request.path:
+                return redirect('student_courseinfo_detail', pk=self.kwargs.get('course'))
+            elif '/teachers/' in request.path:
+                return redirect('teacher_courseinfo_detail', pk=self.kwargs.get('course'))
+            else:
+                return redirect('courseinfo_detail', pk=self.kwargs.get('course'))
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['chapterList'] = context['course'].chapterinfos.all()
+        context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True)
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
+        context['chat_details'] = []
+        context['connection_offline'] = False
         path = settings.MEDIA_ROOT
 
         try:
@@ -1660,7 +2045,174 @@ class ContentsView(TemplateView):
         except Exception as e:
             print(e)
             context['data'] = ""
+
+        list_of_files = sorted(glob.iglob(path + '/chatlog/chapterchat' + str(chapterID) + '/*.txt'),
+                               key=os.path.getctime, reverse=True)[:50]
+
+        for latest_file in list_of_files:
+            try:
+                f = open(latest_file, 'r')
+                if f.mode == 'r':
+                    contents = f.read()
+                    contents = contents.replace('`', '')
+                    context['chat_details'].insert(0, contents)
+                f.close()
+
+            except Exception as e:
+                pass
         return context
+
+
+class NewContentsView(TemplateView):
+    template_name = 'chapter/newContentViewer.html'  
+
+    def get(self, request, *args, **kwargs):
+        try:
+            if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
+                pass
+            else:
+                messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                raise ObjectDoesNotExist
+        except:
+            if '/students/' in request.path:
+                return redirect('student_courseinfo_detail', pk=self.kwargs.get('course'))
+            elif '/teachers/' in request.path:
+                return redirect('teacher_courseinfo_detail', pk=self.kwargs.get('course'))
+            else:
+                return redirect('courseinfo_detail', pk=self.kwargs.get('course'))
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True)
+        context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
+        context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        courseID = context['chapter'].Course_Code.id
+        chapterID = self.kwargs.get('chapter')
+        context['chat_details'] = []
+        context['connection_offline'] = False
+        path = settings.MEDIA_ROOT
+
+        try:
+            with open(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID) + '/' + str(
+                    chapterID) + '.txt') as json_file:
+                context['data'] = json.load(json_file)
+        except Exception as e:
+            print(e)
+            context['data'] = ""
+
+        list_of_files = sorted(glob.iglob(path + '/chatlog/chapterchat' + str(chapterID) + '/*.txt'),
+                               key=os.path.getctime, reverse=True)[:50]
+
+        for latest_file in list_of_files:
+            try:
+                f = open(latest_file, 'r')
+                if f.mode == 'r':
+                    contents = f.read()
+                    contents = contents.replace('`', '')
+                    context['chat_details'].insert(0, contents)
+                f.close()
+
+            except Exception as e:
+                pass
+        return context        
+
+
+class OfflineContentsView(ContentsView):
+    template_name = 'chapter/offlineviewer.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['connection_offline'] = True
+        return context
+
+
+import shutil
+import time
+
+
+def get_static_files_info(request, *args, **kwargs):
+    path = settings.MEDIA_ROOT
+    now = datetime.now()
+    list_of_files = [
+        'static/lightbox',
+        'static/3D_Viewer/model-viewer.js',
+        'static/build/css/theme.min.css',
+        'static/chapterPageBuilder/css/style-content.css',
+        'static/chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css',
+        'static/chapterPageBuilder/js/owl-carousel/owl.carousel.js',
+        'static/images/blankpage.jpg',
+        'static/images/uLMS2019_Loading_SVG.svg',
+        'static/js/modernizr.js',
+        'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+        'static/vendorsx/font-awesome/css/font-awesome.min.css',
+
+        'static/vendorsx/bootstrap/dist/css/bootstrap.css',
+        'static/vendorsx/bootstrap/dist/css/bootstrap.min.css',
+        'static/vendorsx/bootstrap/dist/js/bootstrap.min.js',
+        'static/vendorsx/jquery/dist/jquery.min.js',
+        'static/vendorsx/font-awesome',
+
+        'static/pdfjs',
+    ]
+    if request.GET.get('force') == '1':
+        json_data = {
+            "last_modified": now.strftime("%m/%d/%Y, %H:%M:%S"),
+            "list_of_files": list_of_files
+        }
+        with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+            json.dump(json_data, json_file)
+        make_zip_file(list_of_files)
+    else:
+        if not os.path.exists(os.path.join(path, 'static_files_info.txt')):
+            json_data = {
+                "last_modified": now.strftime("%m/%d/%Y, %H:%M:%S"),
+                "list_of_files": list_of_files
+            }
+            with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+                json.dump(json_data, json_file)
+            make_zip_file(list_of_files)
+        else:
+            with open(os.path.join(path, 'static_files_info.txt')) as json_file:
+                json_data = json.load(json_file)
+            json_file_info_date = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S")
+
+            if os.path.exists(os.path.join(path, 'staticfiles.zip')):
+                file_modified_time = time.ctime(os.path.getmtime(os.path.join(path, 'static_files_info.txt')))
+                file_modified_time = datetime.strptime(file_modified_time, '%a %b %d %H:%M:%S %Y')
+                if (file_modified_time > json_file_info_date):
+                    json_data['last_modified'] = now.strftime("%m/%d/%Y, %H:%M:%S")
+                    with open(os.path.join(path, 'static_files_info.txt'), 'w') as json_file:
+                        json.dump(json_data, json_file)
+                    make_zip_file(list_of_files)
+            else:
+                make_zip_file(list_of_files)
+
+    last_modified = datetime.strptime(json_data['last_modified'], "%m/%d/%Y, %H:%M:%S").timestamp()
+    return HttpResponse(int(last_modified))
+
+
+def make_zip_file(list_of_files):
+    path = settings.MEDIA_ROOT
+    for src in list_of_files:
+        dst = os.path.join(path, src)
+        if not os.path.isdir(settings.BASE_DIR + '/WebApp/' + src):
+            dstfolder = os.path.dirname(dst)
+            if not os.path.exists(dstfolder):
+                os.makedirs(dstfolder)
+        if os.path.isdir(settings.BASE_DIR + '/WebApp/' + src):
+            if (os.path.exists(dst)):  # if folder exists already, removes it and copy again
+                shutil.rmtree(dst)
+            shutil.copytree(settings.BASE_DIR + '/WebApp/' + src, dst)
+        else:
+            shutil.copy(settings.BASE_DIR + '/WebApp/' + src, dst)
+            shutil.make_archive(path + '/staticfiles', 'zip', path + '/static')
+
+
+def get_static_files(request):
+    return redirect(settings.MEDIA_URL + '/staticfiles.zip')
 
 
 from quiz.views import Sitting

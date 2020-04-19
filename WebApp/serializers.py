@@ -18,7 +18,8 @@ class MemberInfoSerializer(serializers.ModelSerializer):
             'pk', 'username', 'first_name', 'last_name', 'email', 'password', 'Member_Permanent_Address',
             'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar',
             'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
-            'Member_Memo', 'Is_Teacher', 'Is_Student', 'Is_CenterAdmin', 'Is_Parent', 'Member_Avatar', 'Center_Code', 'get_student_courses'
+            'Member_Memo', 'Is_Teacher', 'Is_Student', 'Is_CenterAdmin', 'Is_Parent', 'Member_Avatar', 'Center_Code',
+            'get_student_courses'
         )
 
 
@@ -80,13 +81,16 @@ class GroupMappingSerializer(serializers.ModelSerializer):
 # AssignmentInfoSerializer
 class AssignmentInfoSerializer(serializers.ModelSerializer):
     course_name = serializers.ReadOnlyField(source='Course_Code.Course_Name')
+    course_code = serializers.ReadOnlyField(source='Course_Code.id')
+    chapter_code = serializers.ReadOnlyField(source='Chapter_Code.id')
+
     Register_Agent_Name = serializers.ReadOnlyField(source='Register_Agent.__str__')
 
     class Meta:
         model = models.AssignmentInfo
         fields = (
             'pk', 'Assignment_Topic', 'Assignment_Deadline', 'Use_Flag', 'Register_DateTime',
-            'Updated_DateTime', 'Register_Agent', 'Course_Code', 'course_name', 'Chapter_Code', 'Register_Agent_Name'
+            'Updated_DateTime', 'Register_Agent', 'course_code', 'course_name', 'chapter_code', 'Register_Agent_Name'
         )
 
 
@@ -96,8 +100,8 @@ class QuestionInfoSerializer(serializers.ModelSerializer):
         fields = (
             'pk',
             'Question_Title', 'Question_Score', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime',
-            'Register_Agent', 'Question_Media_File', 'Question_Description', 'Course_Code', 'Chapter_Code',
-            'Answer_Choices', 'Answer_Type'
+            'Register_Agent', 'Question_Media_File', 'Question_Description',
+            'Answer_Choices', 'Answer_Type', 'Assignment_Code'
         )
 
 
@@ -111,11 +115,13 @@ class AssignAssignmentInfoSerializer(serializers.ModelSerializer):
 
 
 class AssignAnswerInfoSerializer(serializers.ModelSerializer):
+    Assignment_Code = serializers.ReadOnlyField(source='Question_Code.Assignment_Code.id')
     class Meta:
         model = models.AssignAnswerInfo
         fields = (
             'pk', 'Assignment_Score', 'Question_Code',
-            'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Assignment_Answer', 'Student_Code'
+            'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Assignment_Answer', 'Assignment_File',
+            'Student_Code', 'Assignment_Code'
         )
 
 
@@ -126,4 +132,14 @@ class MessageInfoSerializer(serializers.ModelSerializer):
             'pk',
             'teacher_code', 'message', 'message_read', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime',
             'Register_Agent'
+        )
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Attendance
+        fields = (
+            'pk',
+            'created',
+            'present',
         )

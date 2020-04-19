@@ -1,3 +1,7 @@
+# from django.db.models.fields.reverse_related import ManyToOneRel
+# from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
+import datetime
+
 from crispy_forms.bootstrap import Accordion, AccordionGroup, FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, HTML, Submit
@@ -5,12 +9,10 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import SelectDateWidget
-# from django.db.models.fields.reverse_related import ManyToOneRel
-# from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
-import datetime
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
+    InningManager, Attendance
 
 
 class UserRegisterForm(UserCreationForm):
@@ -18,7 +20,7 @@ class UserRegisterForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         Member_BirthDate = forms.DateField(widget=SelectDateWidget(
-            years=range(1955, datetime.date.today().year-10)))
+            years=range(1955, datetime.date.today().year - 10)))
         model = MemberInfo
         fields = ('username', 'email', 'Member_Gender',
                   'Center_Code', 'Is_Student', 'Is_Teacher', 'Use_Flag')
@@ -27,7 +29,7 @@ class UserRegisterForm(UserCreationForm):
 class UserUpdateForm(forms.ModelForm):
     # role = forms.MultipleChoiceField(choices=USER_ROLES, )
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
-        years=range(1985, datetime.date.today().year+10)))
+        years=range(1985, datetime.date.today().year + 10)))
 
     class Meta:
         model = MemberInfo
@@ -55,7 +57,7 @@ class CenterInfoForm(forms.ModelForm):
 class MemberInfoForm(forms.ModelForm):
     Use_Flag = forms.BooleanField(initial=True, required=False)
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
-        years=range(1985, datetime.date.today().year+10)))
+        years=range(1985, datetime.date.today().year + 10)))
     password = forms.CharField(initial='00000')
     helper = FormHelper()
     helper.layout = Layout(
@@ -124,7 +126,8 @@ class MemberInfoForm(forms.ModelForm):
         ),
         FormActions(
             Submit('submit', 'Create Member', css_class='btn btn-success'),
-            HTML(''' <button class='btn btn-primary' id="saveandnew" type="submit" formtarget="_blank"> Save and New </button> ''')
+            HTML(
+                ''' <button class='btn btn-primary' id="saveandnew" type="submit" formtarget="_blank"> Save and New </button> ''')
             # Button('cancel', 'Cancel')
         )
     )
@@ -132,14 +135,14 @@ class MemberInfoForm(forms.ModelForm):
     class Meta:
         model = MemberInfo
         Member_BirthDate = forms.DateField(widget=SelectDateWidget(
-            years=range(1985, datetime.date.today().year+10)))
+            years=range(1985, datetime.date.today().year + 10)))
         fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
 
 
 class MemberUpdateForm(forms.ModelForm):
     helper = FormHelper()
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
-        years=range(1985, datetime.date.today().year+10)))
+        years=range(1985, datetime.date.today().year + 10)))
     helper.layout = Layout(
 
         Accordion(
@@ -165,7 +168,6 @@ class MemberUpdateForm(forms.ModelForm):
                                Field(
                                    'email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
-
 
                            Div(
                                Field('Is_Teacher', 'Is_Student',
@@ -202,6 +204,7 @@ class MemberUpdateForm(forms.ModelForm):
             # Button('cancel', 'Cancel')
         )
     )
+
     # helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
 
     class Meta:
@@ -210,6 +213,10 @@ class MemberUpdateForm(forms.ModelForm):
 
 
 class CourseInfoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Course_Provider'].initial = self.request.user.Center_Code
 
     class Meta:
         model = CourseInfo
@@ -217,6 +224,14 @@ class CourseInfoForm(forms.ModelForm):
 
 
 class ChapterInfoForm(forms.ModelForm):
+    mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput(attrs={'min': '0'}))
+    Start_Date = forms.CharField(
+        required=False,
+    )
+    End_Date = forms.CharField(
+        required=False,
+    )
+
     class Meta:
         model = ChapterInfo
         fields = '__all__'
@@ -247,6 +262,16 @@ class GroupMappingForm(forms.ModelForm):
         self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True, Use_Flag=True,
                                                                      Center_Code=self.request.user.Center_Code)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('GroupMapping_Name')
+        groupmapping = GroupMapping.objects.filter(GroupMapping_Name=name, Center_Code=self.request.user.Center_Code)
+        if groupmapping.exists():
+            if self.instance.id:
+                if groupmapping.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if groupmapping.get(pk=self.instance.id).GroupMapping_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Group Name already Exists')
 
 class InningGroupForm(forms.ModelForm):
     Teacher_Code = forms.ModelMultipleChoiceField(queryset=None, required=True,
@@ -269,10 +294,17 @@ class InningGroupForm(forms.ModelForm):
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                         Use_Flag=True)
 
+class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):
+    """
+    Custom multiple select Feild with full name
+    """
+
+    def label_from_instance(self, obj):
+        return "%s (%s)" % (obj, obj.Teacher_Code.count())
 
 class InningInfoForm(forms.ModelForm):
-    Course_Group = forms.ModelMultipleChoiceField(queryset=None, required=True,
-                                                  widget=FilteredSelectMultiple("Courses", is_stacked=False))
+    Course_Group = CoursesMultipleChoiceField(queryset=None, required=True,
+                                              widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
@@ -347,3 +379,70 @@ class AchievementPage_All_form(forms.Form):
         self.fields['GroupMappingFilter'].queryset = kwargs['initial']['GroupMappingFilter']
 
         # (choice.pk, choice) for choice in studentfilter]
+
+
+class InningManagerForm(forms.ModelForm):
+    memberinfoobj = forms.ModelMultipleChoiceField(queryset=MemberInfo.objects.all(), required=False,
+                                                   widget=FilteredSelectMultiple("Members", is_stacked=False),
+                                                   label="Please select Session Admin(s)")
+
+    class Meta:
+        model = InningManager
+        fields = '__all__'
+        widgets = {
+            'sessioninfoobj': forms.HiddenInput(),
+        }
+
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/static/build/js/jsi18n.js',)
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['memberinfoobj'].queryset = MemberInfo.objects.filter(Use_Flag=True,
+                                                                          Center_Code=self.request.user.Center_Code,
+                                                                          Is_Teacher=True)
+
+
+class AttendanceForm(forms.ModelForm):
+    attendance_date = forms.DateTimeField(
+        input_formats=['%Y-%m-%dT%H:%M'],
+        widget=forms.DateTimeInput(
+            attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'},
+            format='%Y-%m-%d')
+    )
+
+    class Meta:
+        model = Attendance
+        fields = ['present', 'member_code', 'course', 'attendance_date']
+
+
+from django.forms.models import modelformset_factory
+
+AttendanceFormSetForm = modelformset_factory(Attendance,
+                                             fields=['present', 'member_code', 'course', 'attendance_date', 'id']
+                                             )
+
+
+class AttendanceFormSetFormT(forms.ModelForm):
+    # attendance_date = forms.DateTimeField(
+    #     input_formats=['%Y-%m-%dT%H:%M'],
+    #     widget=forms.DateTimeInput(
+    #         attrs={
+    #             'type': 'datetime-local',
+    #             'class': 'form-control'},
+    #         format='%Y-%m-%d')
+    # )
+    # present = forms.BooleanField(label='')
+
+    class Meta:
+        model = Attendance
+        fields = ['present', 'member_code', 'course', 'attendance_date']
+        widgets = {'member_code': forms.HiddenInput(),
+                   'course': forms.HiddenInput(),
+                   'attendance_date': forms.HiddenInput(), }
+        labels = {
+            "present": "", }

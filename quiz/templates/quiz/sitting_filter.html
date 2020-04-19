@@ -3,7 +3,7 @@
 {% load i18n %}
 {% block title %}{% trans "All Quizzes" %}{% endblock %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">QUIZ</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
 
 
     <li class="breadcrumb-item active" aria-current="page">MARKING</li>
@@ -12,7 +12,7 @@
 
 {% block content %}
 
-        {% include 'WebApp/theme/alerts.html' %}
+    {% include 'WebApp/theme/alerts.html' %}
 
     <h2>{% trans "List of Submitted Answers" %}</h2>
 
@@ -57,12 +57,22 @@
                 <tr>
                     <td>{{ sitting.user }}</td>
                     <td>{{ sitting.quiz }}</td>
-                    <td>{{ sitting.end|date }}</td>
+                    {% if sitting.complete %}
+                        <td>{{ sitting.end|date }}</td>
+                    {% else %}
+                        <td><i class="fa fa-hourglass"></i></td>
+
+                    {% endif %}
                     <td>{{ sitting.get_percent_correct }}</td>
                     <td>
-                        <a href="{% url 'quiz_marking_detail' pk=sitting.id %}">
-                            {% trans "View details" %}
-                        </a>
+                        {% if sitting.complete %}
+                            <a href="{% url 'quiz_marking_detail' pk=sitting.id %}">
+                                <span class="text text-bold"> {% trans "View details" %} </span>
+                            </a>
+                        {% else %}
+                            Not Submitted
+                        {% endif %}
+                    </td>
                 </tr>
 
             {% endfor %}
@@ -104,7 +114,7 @@
         </tbody>
     </table>
 
-<br>
+    <br>
 
     <script>
         function askIfRemoveAll() {
@@ -118,7 +128,7 @@
 
     </script>
 
-    <a onclick="askIfRemoveAll()" class="btn btn-danger btn-2x" style="
+    <a onclick="askIfRemoveAll()" class="deleteallanswers btn btn-danger btn-2x" style="
     float: left;
 ">
         <span class="glyphicon glyphicon-remove"></span> Delete All Submitted Answers
@@ -148,11 +158,22 @@
         $(document).ready(function () {
             var table_main = $('#MarkingList').DataTable({
                 dom: 'lBfrtip',
-                buttons: []
-
+                buttons: [],
+                {% if 'iframe' in request.GET %}
+                    columnDefs: [{
+                        targets: -1,
+                        visible: false
+                    }]
+                {% endif %}
             });
         });
 
+        {% if 'iframe' in request.GET %}
+            $('.deleteallanswers').remove()
+            $(document).on('click', 'a', function (e) {
+                e.preventDefault()
+            })
+        {% endif %}
 
     </script>
 {% endblock %}

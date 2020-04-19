@@ -6,6 +6,7 @@
 
 
 
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
 <div class="x_panel">
     <div class="x_title">
@@ -45,83 +46,88 @@
     </div>
 
 
+     <div class="container">
+            <table id="NodeTable" class="table table-striped table-bordered ">
+                    <p class="text-muted font-13 m-b-30 ">{{ node_group.description }}</p>
+                    <thead class="thead-light bg-primary">
+            
+                        <tr class="tableTitleRow">
+            
+                            <th>Topic icon</th>
+                            <th>Sub
+                                category
+                            </th>
+                            <th>
+                                Posts
+                            </th>
+                            <th>
+                                Replies
+                            </th>
+                            <th>Last
+                                Thread
+                            </th>
+            
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                    {% for list in latest_thread_for_topics %}
+                  
+                       <tr>
+                            <td class="sorting_1">
+                                <div class="icon-block half img-circle bg-grey-300">
+                                    {% if list.0.topic_icon %}
+                                    <i class="fa fa-{{ list.0.topic_icon }}"></i>
+                                    {% else %}
+                                    <i class="fa fa-book"></i>
+                                    {% endif %}
+            
+                                </div>
+                            </td>
+                            <td><a href="{% if '/teachers' in request.path %}
+                                    {% url 'teacher_topic' pk=list.0.pk %}
+                                    {% elif '/students' in request.path %}
+                                    {% url 'student_topic' pk=list.0.pk %}
+                                    {% elif '/forum' in request.path %}
+                                    {% url 'forum:topic' pk=list.0.pk %}
+                                    {% endif %}
+                                   ">{{ list.0 }}</a>
+                            </td>
+                            {% if '/teachers' in request.path %}
+                            <td> {{ list.0.get_thread_count_Center_Admin }} </td>
+                            {% elif '/forum' in request.path %}
+                            <td> {{ list.0.get_thread_count_Center_Admin }} </td>
+                            {% else %}
+                            <td> {{ list.0.thread_count }} </td>
+                            {% endif %}
+            
+                            <td> {{ list.2 }} </td>
+                            {% if list.1 %}
+                            <td><a href="{% if '/teachers' in request.path %}
+                                    {% url 'teacher_thread' pk=list.1.pk %}
+                                    {% elif '/students' in request.path %}
+                                    {% url 'student_thread' pk=list.1.pk %}
+                                    {% elif '/forum' in request.path %}
+                                 {% url 'forum:thread' pk=list.1.pk %}
+                                    {% endif %}
+                                    "> {{ list.1.title }} </a></td>
+                            {% else %}
+                            <td> No threads yet</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    
+                    </tbody>
+            
+            
+            
+                </table>
 
-    <table id="NodeTable" class="table table-striped table-bordered ">
-        <p class="text-muted font-13 m-b-30 ">{{ node_group.description }}</p>
-        <thead class="thead-light bg-primary">
+     </div>
+       
 
-            <tr class="tableTitleRow">
-
-                <th>Topic icon</th>
-                <th>Sub
-                    category
-                </th>
-                <th>
-                    Posts
-                </th>
-                <th>
-                    Replies
-                </th>
-                <th>Last
-                    Thread
-                </th>
-
-            </tr>
-        </thead>
-
-        {% for list in latest_thread_for_topics %}
-        <tbody>
-
-
-
-            <tr>
-                <td class="sorting_1">
-                    <div class="icon-block half img-circle bg-grey-300">
-                        {% if list.0.topic_icon %}
-                        <i class="fa fa-{{ list.0.topic_icon }}"></i>
-                        {% else %}
-                        <i class="fa fa-book"></i>
-                        {% endif %}
-
-                    </div>
-                </td>
-                <td><a href="{% if '/teachers' in request.path %}
-                        {% url 'teacher_topic' pk=list.0.pk %}
-                        {% elif '/students' in request.path %}
-                        {% url 'student_topic' pk=list.0.pk %}
-                        {% elif '/forum' in request.path %}
-                        {% url 'forum:topic' pk=list.0.pk %}
-                        {% endif %}
-                       ">{{ list.0 }}</a>
-                </td>
-                {% if '/teachers' in request.path %}
-                <td> {{ list.0.get_thread_count_Center_Admin }} </td>
-                {% elif '/forum' in request.path %}
-                <td> {{ list.0.get_thread_count_Center_Admin }} </td>
-                {% else %}
-                <td> {{ list.0.thread_count }} </td>
-                {% endif %}
-
-                <td> {{ list.2 }} </td>
-                {% if list.1 %}
-                <td><a href="{% if '/teachers' in request.path %}
-                        {% url 'teacher_thread' pk=list.1.pk %}
-                        {% elif '/students' in request.path %}
-                        {% url 'student_thread' pk=list.1.pk %}
-                        {% elif '/forum' in request.path %}
-                     {% url 'forum:thread' pk=list.1.pk %}
-                        {% endif %}
-                        "> {{ list.1.title }} </a></td>
-                {% else %}
-                <td> No threads yet</td>
-                {% endif %}
-            </tr>
-        </tbody>
-        {% endfor %}
-
-
-
-    </table>
+ </div>
+    
 
 
 

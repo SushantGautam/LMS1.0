@@ -3,6 +3,9 @@
 
 <form method="post" id="ajaxchapterinfoform">
     {% csrf_token %}
+
+    <div class="alert alert-danger form-errors" style="display: none">
+    </div>
     <div class="col-md-3 col-sm-12 col-xs-12 text-center">
         {{ form.Chapter_No|as_crispy_field }}<br>
     </div>
@@ -15,10 +18,20 @@
                 Summary
             </label>
             <div class="controls ">
-                <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary" cols="40">{{ object.Summary }}</textarea>
+                <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
+                          cols="40">{{ object.Summary }}</textarea>
             </div>
         </div>
         <br>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        {{ form.Start_Date|as_crispy_field }}<br>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        {{ form.End_Date|as_crispy_field }}<br>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        {{ form.mustreadtime|as_crispy_field }}<br>
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12" id="div_use_flag">
         <label for="id_Use_Flag" class="control-label ">Publish</label>
@@ -27,7 +40,7 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.pk }}"
-            class="select form-control">
+               class="select form-control">
     </div>
 
     <div class="col-md-12 text-center" style="margin:2em auto;">
@@ -38,10 +51,11 @@
 
 <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
 <script>
+    $('#id_Start_Date').datetimepicker();
+    $('#id_End_Date').datetimepicker();
     $("#ajaxchapterinfoform").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        console.log($('#id_Use_Flag').val())
         $.ajax({
             url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
@@ -49,9 +63,12 @@
                 "Chapter_No": $('#id_Chapter_No').val(),
                 "Chapter_Name": $('#id_Chapter_Name').val(),
                 "Summary": $('#id_Summary').val(),
+                "mustreadtime": $('#id_mustreadtime').val() * 60,
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Register_Agent": $('#id_Register_Agent').val(),
-                "Course_Code": $('#id_Course_Code').val()
+                "Course_Code": $('#id_Course_Code').val(),
+                "Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
+                "End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
 
             },
             // get the form data
@@ -60,8 +77,9 @@
                 console.log('Success')
                 location.reload()
             },
-            error: function () {
-                console.log('Error in posting chapter create form')
+            error: function (err) {
+                console.log('Error in posting chapter create form', err.responseJSON.errors.__all__[0])
+                $('.form-errors').append(err.responseJSON.errors.__all__[0]).css('display', 'block')
             }
         });
     });

@@ -21,6 +21,7 @@ SECRET_KEY = os.environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG_PROPAGATE_EXCEPTIONS = False
 
 ALLOWED_HOSTS = ['127.0.0.1', '210.127.211.100', '103.41.247.44', '192.168.1.29']
 
@@ -121,9 +122,9 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'LMS',
-#         'USER': 'postgres',
-#         'PASSWORD': 'root',
+#         'NAME': 'ulmsdb',
+#         'USER': 'lms',
+#         'PASSWORD': 'Ulms@2019',
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
@@ -183,7 +184,7 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = '/'
@@ -221,6 +222,8 @@ REST_FRAMEWORK = {
 #         'LOCATION': '.cache',
 #     }
 # }
+
+SERVER_NAME = 'Indonesian_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

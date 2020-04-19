@@ -1,11 +1,11 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.hashers import make_password
 from import_export.admin import ImportExportModelAdmin
 from import_export.resources import ModelResource
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
-    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo
+    CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
+    InningManager, Attendance, Notice, NoticeView
 
 
 class CenterInfoAdminForm(forms.ModelForm):
@@ -60,6 +60,7 @@ class MemberInfoAdmin(ImportExportModelAdmin):
                     'Member_Gender', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                     'Member_Memo']
     list_display_links = ['id', 'username']
+    search_fields = ('username',)
 
 
 admin.site.register(MemberInfo, MemberInfoAdmin)
@@ -73,9 +74,10 @@ class CourseInfoAdminForm(forms.ModelForm):
 
 class CourseInfoAdmin(admin.ModelAdmin):
     form = CourseInfoAdminForm
-    list_display = ['Course_Name', 'Course_Cover_File', 'Course_Level',
+    list_display = ['id', 'Course_Name', 'Course_Cover_File', 'Course_Level',
                     'Course_Info', 'Use_Flag', 'Register_DateTime', 'Updated_DateTime', 'Register_Agent',
                     'Course_Provider', 'Center_Code']
+    search_fields = ('Course_Name',)
 
 
 admin.site.register(CourseInfo, CourseInfoAdmin)
@@ -89,8 +91,9 @@ class ChapterInfoAdminForm(forms.ModelForm):
 
 class ChapterInfoAdmin(admin.ModelAdmin):
     form = ChapterInfoAdminForm
-    list_display = ['Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag',
+    list_display = ['id', 'Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag', 'mustreadtime',
                     'Register_DateTime', 'Updated_DateTime', 'Register_Agent', 'Course_Code']
+    search_fields = ('Chapter_Name',)
 
 
 admin.site.register(ChapterInfo, ChapterInfoAdmin)
@@ -236,3 +239,39 @@ class MessageInfoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(MessageInfo, MessageInfoAdmin)
+
+
+class InningManagerAdmin(admin.ModelAdmin):
+    list_display = ["sessioninfoobj", ]
+
+
+admin.site.register(InningManager, InningManagerAdmin)
+
+
+class AttendanceAdminForm(forms.ModelForm):
+    class Meta:
+        model = Attendance
+        fields = '__all__'
+
+
+class AttendanceAdmin(admin.ModelAdmin):
+    form = AttendanceAdminForm
+    list_display = ['attendance_date', 'present']
+    readonly_fields = ['attendance_date', 'present']
+
+
+admin.site.register(Attendance, AttendanceAdmin)
+
+
+class NoticeAdmin(admin.ModelAdmin):
+    list_display = ['title', 'status', 'show', 'Start_Date', 'End_Date']
+
+
+admin.site.register(Notice, NoticeAdmin)
+
+
+class NoticeViewAdmin(admin.ModelAdmin):
+    list_display = ['user_code', 'notice_code', 'dont_show']
+
+
+admin.site.register(NoticeView, NoticeViewAdmin)

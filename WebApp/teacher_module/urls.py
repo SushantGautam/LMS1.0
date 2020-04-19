@@ -2,9 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.teacher_module import views
+from quiz import views as quizViews
 from survey import views as survey_views
 from .. import views as admin_views
-from quiz import views as quizViews
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -65,7 +65,6 @@ urlpatterns += (
     path('submitStudentscore/<int:Answer_id>/<int:score>/',
          views.submitStudentscore, name='submitStudentscore'),
 
-
 )
 
 urlpatterns += (
@@ -98,6 +97,12 @@ urlpatterns += (
          name='teacherSurveyFilterCategory'),
     path('TeacherSurveyInfo_ajax/', views.TeacherSurveyInfo_ajax.as_view(),
          name='TeacherSurveyInfo_ajax'),
+    # path('TeacherSurveyInfo_ajax/', survey_views.SurveyInfo_ajax.as_view(),
+    #      name='TeacherSurveyInfo_ajax'),
+    path('TeacherSurveyInfo_ajax_update/<int:pk>/', survey_views.SurveyInfoAjaxUpdate.as_view(),
+         name='TeacherSurveyInfo_ajax_update'),
+    path('TeacherSurveyInfo_ajax_update_limited/<int:pk>/', survey_views.SurveyInfoAjaxUpdateLimited.as_view(),
+         name='TeacherSurveyInfo_ajax_update_limited'),
     path('surveyinforetake_ajax/<int:pk>/', survey_views.SurveyInfoRetake_ajax.as_view(),
          name='teacher_surveyinfo_retake_ajax'),
 
@@ -219,4 +224,66 @@ urlpatterns += (
          admin_views.chapterpagebuilder, name='teachers_chapterpagebuilder'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          admin_views.ContentsView.as_view(), name='teacher_contentviewer'),
+)
+
+urlpatterns += (
+    path('mysessions/inactive', views.SessionAdminInningInfoListViewInactive.as_view(),
+         name='teachers_mysession_list_inactive'),
+    path('mysessions/', views.SessionAdminInningInfoListView.as_view(), name='teachers_mysession_list'),
+    path('mysessions/<int:pk>/', views.SessionAdminInningInfoDetailView.as_view(), name='teachers_mysession_detail'),
+
+    path('groupmapping/update/<int:pk>/', views.GroupMappingUpdateView.as_view(), name='teachers_groupmapping_update'),
+    path('inninggroup/detail/<int:pk>/', views.InningGroupDetailView.as_view(), name='teachers_inninggroup_detail'),
+    path('inninggroup/update/<int:pk>/', views.InningGroupUpdateView.as_view(), name='teachers_inninggroup_update'),
+    path('inninginfo/update/<int:pk>/', views.InningInfoUpdateView.as_view(), name='teachers_inninginfo_update'),
+
+)
+from django.conf.urls import url
+
+urlpatterns += (
+    # urls for Attendance
+    path('attendance-home/', views.AttendanceListView.as_view(), name='teacher_attendance_list'),
+    path('attendance/create/', views.AttendanceCreateView.as_view(), name='teacher_attendance_create'),
+    path('attendance/detail/<int:pk>/', views.AttendanceDetailView.as_view(), name='teacher_attendance_detail'),
+    path('attendance/update/<int:pk>/', views.AttendanceUpdateView.as_view(), name='teacher_attendance_update'),
+
+    url(r'^attendance/class/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$',
+        views.CourseAttendance, name='course_attendance'),
+    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/(?P<attend_date>\d{4}-\d{2}-\d{2})/$',
+        views.CourseAttendanceList, name='course_attendance_list'),
+    url(r'^attendance/class-list/(?P<inningpk>\d+)/(?P<course>\d+)/$', views.CourseAttendanceList,
+        name='course_attendance_list_nodate'),
+
+    url(r'^attendance/$', views.CourseAttendanceList, name='attendance'),
+    path('courseinfo/detail/<int:course>/attendance/', views.CourseAttendanceList,
+         name='teacher_courseinfo_detail_attendance'),
+
+)
+
+# Chapter Progress
+
+urlpatterns += (
+    path('courseinfo/<int:course>/chapterinfo/<int:pk>/student_progress/',
+         views.chapterStudentProgress, name='chapter_student_progress'),
+    path('inninginfo/<int:inningpk>/courseinfo/<int:course>/chapterinfo/<int:pk>/student_progress/',
+         views.chapterStudentProgress, name='chapter_student_progress_inning'),
+
+)
+
+# Course Progress
+
+urlpatterns += (
+    path('courseinfo/detail/<int:coursepk>/progress/',
+         admin_views.CourseProgressView, name='course_progress'),
+    path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
+         admin_views.CourseProgressView, name='course_progress_withinning'),
+    path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
+         admin_views.StudentChapterProgressView, name='student_chapter_progress_teacher'),
+)
+
+# Teacher's Attendance
+
+urlpatterns += (
+    path('courseinfo/detail/<int:courseid>/take-attendance/',
+         views.teacherAttendance, name='taketeacherAttendance'),
 )

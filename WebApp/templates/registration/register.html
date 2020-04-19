@@ -4,119 +4,133 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>LMS | Register</title>
 
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-    <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/floating-labels.css' %}" />
-    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/floating-labels.css' %}"/>
+    {#    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />#}
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="row">
+<div class="container">
+    <div class="row">
 
-            <div class="col-lg-6 col-md-6 col-xs-12">
+        <div class="col-lg-6 col-md-6 col-xs-12">
+            <a href="/">
                 <div class="reg-div">
                     <img src="/static/images/logo_orange.png" alt="ULMS-logo" width="70%">
-                    <h1 class="text-secondary ml-4"> <hr>u-LMS 2019 </h1>
+                    <h1 class="text-secondary ml-4">
+                        <hr>
+                        u-LMS 2019
+                    </h1>
                 </div>
-            </div>
+            </a>
+        </div>
 
-            <div class="col-lg-6 col-md-6 col-xs-12">
 
-                <form class="form-reg" method="POST" action="" id="registration-form">
-                    <legend><h1 class="h2"> Register New User </h1></legend><hr>
+        <div class="col-lg-6 col-md-6 col-xs-12">
 
-                    {% csrf_token %}
+            <form class="form-reg" method="POST" action="" id="registration-form">
+                <legend><h1 class="h2"> Register New User </h1></legend>
+                <hr>
 
-                    <div id="div_id_username" class="form-group has-error">
-                        <label for="id_username" class="control-label requiredField">
-                            Username*
-                        </label>
-                        <div class="controls ">
-                            <input type="text" name="username" maxlength="150" autofocus="" id="id_username" class="textinput textInput form-control" placeholder="Username" required> 
-                        </div>
-                        <small id="username-error-message" class="input-error text-danger"></small>
+                {% csrf_token %}
+
+                <div id="div_id_username" class="form-group has-error">
+                    <label for="id_username" class="control-label requiredField">
+                        Username*
+                    </label>
+                    <div class="controls ">
+                        <input type="text" name="username" maxlength="150" autofocus="" id="id_username"
+                               class="textinput textInput form-control" placeholder="Username" required>
                     </div>
+                    <small id="username-error-message" class="input-error text-danger"></small>
+                </div>
 
-                    <div id="div_id_email" class="form-group">
-                        <label for="id_email" class="control-label">
-                            Email address
-                        </label>
-                        <div class="controls ">
-                            <input type="email" name="email" maxlength="254" id="id_email" class="emailinput form-control" placeholder="Your email">
+                <div id="div_id_email" class="form-group">
+                    <label for="id_email" class="control-label">
+                        Email address
+                    </label>
+                    <div class="controls ">
+                        <input type="email" name="email" maxlength="254" id="id_email" class="emailinput form-control"
+                               placeholder="Your email">
+                    </div>
+                </div>
+
+                {{ form.Center_Code|as_crispy_field }}
+
+                {{ form.Member_Gender|as_crispy_field }}
+
+                <div id="div_id_Member_Type" class="form-group">
+                    <label for="id_Member_Type" class="control-label ">
+                        Member Type*
+                    </label><br>
+                    <div class="form-group" style="display: inline; float: left;">
+                        <div id="div_id_Is_Student" class="checkbox">
+                            <input type="radio" name="member_type" id="id_Is_Student" value="Is_Student"
+                                   class="checkboxinput" checked>
+                            <label for="id_Is_Student">Student</label>
                         </div>
                     </div>
-
-                    {{ form.Center_Code|as_crispy_field }}
-
-                    {{ form.Member_Gender|as_crispy_field }}
-
-                    <div id="div_id_Member_Type" class="form-group">
-                        <label for="id_Member_Type" class="control-label ">
-                            Member Type*
-                        </label><br>
-                        <div class="form-group" style="display: inline; float: left;">
-                            <div id="div_id_Is_Student" class="checkbox">
-                                <input type="radio" name="member_type" id="id_Is_Student" value = "Is_Student" class="checkboxinput" checked>
-                                <label for="id_Is_Student">Student</label>
-                            </div>
+                    <div class="form-group" style="display: inline; float: left; margin-left: 2em;">
+                        <div id="div_id_Is_Teacher" class="checkbox">
+                            <input type="radio" name="member_type" id="id_Is_Teacher" value="Is_Teacher"
+                                   class="checkboxinput">
+                            <label for="id_Is_Teacher">Teacher</label>
                         </div>
-                        <div class="form-group" style="display: inline; float: left; margin-left: 2em;">
-                            <div id="div_id_Is_Teacher" class="checkbox">
-                                <input type="radio" name="member_type" id="id_Is_Teacher" value = "Is_Teacher" class="checkboxinput">
-                                <label for="id_Is_Teacher">Teacher</label>
-                            </div>
-                        </div>
-                        <br>
                     </div>
-                    
-                    <div id="div_id_password1" class="form-group" style="clear: both;">
-                        <label for="id_password1" class="control-label requiredField"> Password* </label>
-                        <div class="controls ">
-                            <input type="password" name="password1" id="id_password1" class="textinput textInput form-control" required>
-                        </div>
-                        {% if form.non_field_errors %}
-                            <ul class='form-errors'>
-                                {% for error in form.non_field_errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                        <small id="password-error-message" class="input-error text-danger"></small>
+                    <br>
+                </div>
+
+                <div id="div_id_password1" class="form-group" style="clear: both;">
+                    <label for="id_password1" class="control-label requiredField"> Password* </label>
+                    <div class="controls ">
+                        <input type="password" name="password1" id="id_password1"
+                               class="textinput textInput form-control" required>
                     </div>
+                    {% if form.non_field_errors %}
+                        <ul class='form-errors'>
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <small id="password-error-message" class="input-error text-danger"></small>
+                </div>
 
-                    <div id="div_id_password2" class="form-group">
-                        <label for="id_password2" class="control-label requiredField">
-                            Password confirmation<span class="asteriskField">*</span>
-                        </label>
-                        <div class="controls ">
-                            <input type="password" name="password2" id="id_password2" class="textinput textInput form-control" required>
-                        </div>
-                        <small id="confirm-password-error-message" class="input-error text-danger"></small>
+                <div id="div_id_password2" class="form-group">
+                    <label for="id_password2" class="control-label requiredField">
+                        Password confirmation<span class="asteriskField">*</span>
+                    </label>
+                    <div class="controls ">
+                        <input type="password" name="password2" id="id_password2"
+                               class="textinput textInput form-control" required>
                     </div>
+                    <small id="confirm-password-error-message" class="input-error text-danger"></small>
+                </div>
 
-                    <div class="control-label">
-                        <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False" class="select form-control">
-                    </div>
+                <div class="control-label">
+                    <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False" class="select form-control">
+                </div>
 
-                    <small class="text-info">* are the required fields</small><br>
+                <small class="text-info">* are the required fields</small><br>
 
-                    <div>Already a member? <a href="{% url 'login' %}">Login</a></div><br>
+                <div>Already a member? <a href="{% url 'login' %}">Login</a></div>
+                <br>
 
-                    <button class="btn btn-lg btn-success btn-block" type="submit">
-                        Register
-                    </button>
+                <button class="btn btn-lg btn-success btn-block" type="submit">
+                    Register
+                </button>
 
-                </form>
-            </div>
+            </form>
         </div>
     </div>
+</div>
 
 </body>
 
@@ -125,29 +139,28 @@
 <!-- jQuery -->
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function () {
         $('#id_Center_Code option:first').attr("disabled", "true")
-        $('#id_Member_Gender option:first').attr("disabled", "true")
+        // $('#id_Member_Gender option:first').attr("disabled", "true")
 
-        $('#id_username').change(function(){
+        $('#id_username').change(function () {
             let username = $('#id_username').val();
-            if( /[^a-zA-Z0-9\@\.\+\-_]/.test( username ) ) {
+            if (/[^a-zA-Z0-9\@\.\+\-_]/.test(username)) {
                 $('#username-error-message').text("Username can have only alphanumeric character and symbols @ -  .  +  _");
-            }
-            else{
+            } else {
                 $.ajax({
                     url: '{% url "validate_username" %}',
                     type: "GET",
                     data: {
-                        'username' : username,
+                        'username': username,
                     },
-                    success: function(data){
-                        if(data.is_taken == true){
+                    success: function (data) {
+                        if (data.is_taken == true) {
                             $('#username-error-message').text(data.error_message);
                             $('#id_username').focus();
-                        }else if(data.is_taken != true){
+                        } else if (data.is_taken != true) {
                             $('#username-error-message').text('');
-                        }else if(pw1.includes(username) && username != "" && pw1.length < 16){
+                        } else if (pw1.includes(username) && username != "" && pw1.length < 16) {
                             $("#password-error-message").text("Username and Password are similar.");
                             $('#id_password1').focus();
                             $('#username-error-message').text('');
@@ -157,60 +170,56 @@
             }
         });
 
-        $('#id_password1').change(function(){
+        $('#id_password1').keyup(function () {
             let username = $('#id_username').val();
             pw1 = $('#id_password1').val();
             var upperCaseLetters = /[A-Z]/g;
             var lowerCaseLetters = /[a-z]/g;
             var numbers = /[0-9]/g;
 
-            if(pw1.length < 8) {
+            if (pw1.length < 8) {
                 $("#password-error-message").text("Password must be of at least 8 characters.");
                 $('#id_password1').focus();
-            }
-            else if(!pw1.match(lowerCaseLetters) && !pw1.match(upperCaseLetters)){
+            } else if (!pw1.match(lowerCaseLetters) && !pw1.match(upperCaseLetters)) {
                 $("#password-error-message").text("Password cannot be only numeric.");
                 $('#id_password1').focus();
-            }
-            else if(pw1.includes(username) && username != "" && pw1.length < 16){
+            } else if (pw1.includes(username) && username != "" && pw1.length < 16) {
                 $("#password-error-message").text("Username and Password are similar.");
                 $('#id_password1').focus();
-            }
-            else{
+            } else {
                 $('#password-error-message').text('');
                 $.ajax({
                     url: '{% url "validate_password" %}',
                     type: "POST",
                     data: {
                         'csrfmiddlewaretoken': '{{csrf_token}}',
-                        'username' : username,
+                        'username': username,
                         'password': pw1,
                     },
-                    success: function(data){
+                    success: function (data) {
                         $('#password-error-message').text(data);
                     },
                 });
             }
         });
 
-        $('#id_password2').change(function(){
+        $('#id_password2').change(function () {
             pw1 = $('#id_password1').val();
             pw2 = $('#id_password2').val();
-            if(pw1 != pw2){
+            if (pw1 != pw2) {
                 $("#confirm-password-error-message").text("Password must be same as above.");
                 $('#id_password2').focus();
-            }
-            else
+            } else
                 $('#confirm-password-error-message').text('');
         });
 
-        $('#registration-form').submit(function(e){
+        $('#registration-form').submit(function (e) {
             let submitOK = true;
-            $('.input-error').each(function(){
-                if($(this).text() != "")
+            $('.input-error').each(function () {
+                if ($(this).text() != "")
                     submitOK = false
             });
-            if(!submitOK)
+            if (!submitOK)
                 return false
         })
     });

@@ -5,9 +5,9 @@
 <div class="headerDiv">
     <h2 class="infoFormHeader">
         {% if '/create/' in request.path %}
-        Create New Chapter
+            Create New Chapter
         {% else %}
-        Edit Chapter
+            Edit Chapter
         {% endif %}
     </h2>
     <hr class="header_hr">
@@ -16,6 +16,20 @@
 
     <form method="post" id="FormID">
         {% csrf_token %}
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
         <div class="col-md-12 col-sm-12 col-xs-12">
             {{ form.Chapter_No|as_crispy_field }}<br>
         </div>
@@ -29,29 +43,39 @@
                 </label>
                 <div class="controls ">
                     <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
-                        cols="40">{{ object.Summary }}</textarea>
+                              cols="40">{{ object.Summary }}</textarea>
                 </div>
-            </div><br>
+            </div>
+            <br>
         </div>
         {#        <div class="col-md-12 col-sm-12 col-xs-12">#}
         {#            {{ form.Page_Num|as_crispy_field }}<br>#}
         {#        </div>#}
         <div class="col-md-12 col-sm-12 col-xs-12">
+            {{ form.Start_Date|as_crispy_field }}<br>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            {{ form.End_Date|as_crispy_field }}<br>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 mustreadtime">
+            {{ form.mustreadtime|as_crispy_field }}<br>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
             <label>
                 Publish
             </label><br>
             <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
-                &nbsp; {% elif object.Use_Flag == True %} checked {% endif %}><br> <br>
+                   &nbsp; {% elif object.Use_Flag == True %} checked {% endif %}><br> <br>
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
-                class="select form-control">
+                   class="select form-control">
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ Course_Code.id }}"
-                class="select form-control">
+                   class="select form-control">
         </div>
 
         <div class="col-md-12" align="center">
@@ -59,3 +83,9 @@
         </div>
     </form>
 </div>
+<script src="{% static 'js/common.js' %}"></script>
+<script>
+    document.getElementById('id_mustreadtime').value = document.getElementById('id_mustreadtime').value / 60
+    document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString()
+    document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString()
+</script>

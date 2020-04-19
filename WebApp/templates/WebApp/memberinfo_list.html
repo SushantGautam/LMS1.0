@@ -2,107 +2,109 @@
 {% load static %}
 
 {% block stylesheets %}
-<link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Members</li>
+    <li class="breadcrumb-item active" aria-current="page">Members</li>
 {% endblock %}
 
 {% block content %}
 
-{% include 'WebApp/theme/alerts.html' %}
+    {% include 'WebApp/theme/alerts.html' %}
 
-<!-- Model for Import CSV file -->
-<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header text-center">
-                <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </h4>
-            </div>
-            <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
-                <form method="POST" id="form_import_csv" enctype="multipart/form-data">
-                    {% csrf_token %} <br><br>
-                    <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
-                    <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
-                    <a class="text-center" href="{% static 'importcsv_sample.csv' %}" style="padding-top: 2em;">
-                        <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
-                    </a><br>
+    <!-- Model for Import CSV file -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
+                        <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </h4>
+                </div>
+                <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
+                    <form method="POST" id="form_import_csv" enctype="multipart/form-data">
+                        {% csrf_token %} <br><br>
+                        <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
+                        <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
+                        <a target="_blank" class="text-center" href="{% static 'importcsv_sample.csv' %}"
+                           style="padding-top: 2em;">
+                            <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
+                        </a><br>
 
-                    <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
+                        <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
                             Info...</b></span>
-                    <ul class="info-text" style="display:none;background:azure;">
-                        <li>- Username must be unique for every member (required)</li>
-                        <li>- Gender value must be Male or Female (required)</li>
-                        <li>- Teacher column value should be 1 for teacher</li>
-                        <li>- Student column value should be 1 for student</li>
-                        <li>- If any problem occur in a row then no any member data will be created</li>
-                        <li>- Error message will show the number of row in which the problem occur</li>
-                        <li>- Default password will be 00000 for everyuser</li>
-                    </ul>
+                        <ul class="info-text" style="display:none;background:azure;">
+                            <li>- Username must be unique for every member (required)</li>
+                            <li>- Gender value must be Male or Female (required)</li>
+                            <li>- Teacher column value should be 1 for teacher</li>
+                            <li>- Student column value should be 1 for student</li>
+                            <li>- If any problem occur in a row then no any member data will be created</li>
+                            <li>- Error message will show the number of row in which the problem occur</li>
+                            <li>- Default password will be 00000 for everyuser</li>
+                        </ul>
 
-                    <div class="import-message"></div>
-                    <div class="text-center">
-                        <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit
-                            File</button>
-                        <button class="btn btn-primary" data-dismiss="modal" aria-label="Close"
-                            style="margin:3em auto 2em auto">Close</button>
-                    </div>
-                </form>
+                        <div class="import-message"></div>
+                        <div class="text-center">
+                            <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit
+                                File
+                            </button>
+                            <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
+                                    style="margin:3em auto 2em auto">Close
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- End of model -->
+    <!-- End of model -->
 
-<div class="memberDiv">
-    <hr class="header_hr">
-    <h2 class="tableHeader">List of Members</h2>
+    <div class="memberDiv">
+        <hr class="header_hr">
+        <h2 class="tableHeader">List of Members</h2>
 
-    <nav id="navbar_parent" class="navbar navbar-light" style="background-color: grey">
-        <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-md-8 col-sm-8 col-xs-12">
-                                <ul class="nav navbar-nav navbar-center member-list">
-                                        <li><a class="navbar-brand" id="all_button" href="#">All</a></li>
-                                        <li><a class="navbar-brand" id="teacher_button" href="#">Teacher</a></li>
-                                        <li><a class="navbar-brand" id="student_button" href="#">Student</a></li>
-                                    </ul>
-                        </div>
-                        <div class="col-md-4 col-sm-4 col-xs-12 blocked-members">
-                                <span class="span-member" style="margin:2px"><a href="{% url 'memberinfo_list_inactive' %}" style="color: white">View
+        <nav id="navbar_parent" class="navbar-light" style="background-color: grey">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: #808080;">
+                    <div class="col-md-8 col-sm-8 col-xs-7">
+                        <ul class="nav navbar-nav navbar-center member-list">
+                            <li><a class="navbar-brand" id="all_button" href="#">All</a></li>
+                            <li><a class="navbar-brand" id="teacher_button" href="#">Teacher</a></li>
+                            <li><a class="navbar-brand" id="student_button" href="#">Student</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-5 blocked-members">
+                                <span class="span-member" style="margin:2px"><a
+                                        href="{% url 'memberinfo_list_inactive' %}" style="color: white">View
                                         Blocked Members</a></span>
-                        </div>
-            
                     </div>
 
-        </div>
-       
+                </div>
 
-        
-        
-    </nav>
-    <hr class="header_hr">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <nav id="navbar_parent" class="navbar navbar-dark">
-
-            <div class="btn-createnew">
-                <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
             </div>
+
+
         </nav>
-    </div>
+        <hr class="header_hr">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <nav id="navbar_parent" class="navbar-dark">
+
+                <div class="btn-createnew">
+                    <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
+                </div>
+            </nav>
+        </div>
 
 
-    <div class="membertable col-md-12 col-sm-12 col-xs-12 table-responsive">
-        <table class="table table-striped dt-responsive table-bordered bg-white nowrap">
-            <thead class="thead-light bg-primary">
+        <div class="groupmappingtable col-md-12 col-sm-12 col-xs-12 table-responsive">
+            <table class="table table-striped dt-responsive table-bordered bg-white nowrap">
+                <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
                     <td class="text-center">S. No.</td>
                     <td>Username</td>
@@ -121,204 +123,184 @@
                     <td>Type</td>
                     <td class="text-center">Action</td>
                 </tr>
-            </thead>
-            {% for object in object_list %}
-            {% if object.id != request.user.id %}
-            <tr>
-                <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
-                <td style="vertical-align: middle;"><b><a
-                            href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
-                <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
-                <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
-                <td>{{ object.first_name }}</td>
-                <td>{{ object.last_name }}</td>
-                <td style="vertical-align: middle;">{{ object.email }}</td>
-                <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
-                <td style="vertical-align: middle;">
-                    {{ object.get_Member_Gender_display }}
-                </td>
-                <td>
-                    {% if object.Is_Student == True %}
-                    1
-                    {% else %}
-                    0
-                    {% endif %}
-                </td>
-                <td>
-                    {% if object.Is_Teacher == True %}
-                    1
-                    {% else %}
-                    0
-                    {% endif %}
-                </td>
-                <td>{{ object.Member_Temporary_Address }}</td>
-                <td>{{ object.Member_Permanent_Address }}</td>
-                <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
-                <td style="vertical-align: middle;">
-                    {% if object.Is_Teacher == True and object.Is_Student == True %}
-                    Teacher, Student
-                    {% elif object.Is_Teacher == True %}
-                    Teacher
-                    {% elif object.Is_Student == True %}
-                    Student
-                    {% else %}
-                    Not Assigned
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    <a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
-                    <a class="btn btn-sm btn-danger confirm-delete" id="{{ object.id }}">Delete</a>
-                    <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form{{ object.id }}">
-                        {% csrf_token %}
-                        <input type="hidden">
-                    </form>
-                </td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </table>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<br>
-<br>
+    <br>
+    <br>
 
 
 {% endblock %}
 {% block customjss %}
-<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
-<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
 
-<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 
-<script type="text/javascript">
-    $("#all_button").css("color", "white");
-    $("#student_button").css("color", "black");
-    $("#teacher_button").css("color", "black");
+    <script type="text/javascript">
+        $("#all_button").css("color", "white");
+        $("#student_button").css("color", "black");
+        $("#teacher_button").css("color", "black");
 
-    $(".button-info").click(function () {
-        $("ul.info-text").toggle();
-    });
-
-    $(document).on('click', '.confirm-delete', function () {
-        ans = confirm('Are you sure you want to delete this Member? (You can deactivate the member instead of deleting)');
-        if (ans == true) {
-            $(`#delete_form${this.id}`).submit();
-        } else {
-            return false;
-        }
-    });
-
-
-    setTimeout(function () {
-        $('#message').fadeOut('slow');
-    }, 3000);
-
-    $(document).ready(function () {
-
-        var table_main = $('.table').DataTable({
-            dom: 'lBfrtip',
-            responsive: true,
-            buttons: [
-                {
-                    extend: 'csv',
-                    text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
-                    exportOptions: {
-                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-                    }
-                },
-                {
-                    text: '<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
-                },
-                {
-                    extend: 'print',
-                    text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
-                    fieldSeparator: '\t'
-                }],
-            "columnDefs": [
-                {
-                    "targets": [4, 5, 9, 10, 11, 12, 13],
-                    "visible": false,
-                    "searchable": true
-                }
-
-            ]
-
+        $(".button-info").click(function () {
+            $("ul.info-text").toggle();
         });
 
-
-        $("#student_button").bind("click", function () {
-            $("#student_button").css("color", "white");
-            $("#teacher_button").css("color", "black");
-            $("#all_button").css("color", "black");
-            table_main.columns().search('').draw();
-            table_main.column(9).search("1").draw();
-            table_main.column(0).visible(false);
-
-
-
-        });
-        $("#teacher_button").bind("click", function () {
-            $("#student_button").css("color", "black");
-            $("#teacher_button").css("color", "white");
-            $("#all_button").css("color", "black");
-
-            table_main.columns().search('').draw();
-            table_main.column(10).search("1").draw();
-            table_main.column(0).visible(false);
-
-
-        });
-
-        $("#all_button").bind("click", function () {
-            $("#all_button").css("color", "white");
-            $("#student_button").css("color", "black");
-            $("#teacher_button").css("color", "black");
-            table_main.columns().search('').draw();
-            table_main.column(0).visible(true);
-
-        });
-
-
-        $('#form_import_csv').submit(function (e) {
-            e.preventDefault();
-            var formData = new FormData($('form').get(0));
-            // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
-            csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
-            formData.append("csrfmiddlewaretoken", csrf);
-            if ($('#id_import_csv').val()) {
+        $(document).on('click', '.confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Member? (You can deactivate the member instead of deleting)');
+            if (ans == true) {
                 $.ajax({
-                    type: "POST",
-                    url: "{% url 'csv_import_ajax' %}",  // URL to your view that serves new info
-                    data: formData,
-                    cache: false,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        $('.import-message').addClass(response.class);
-                        $('.import-message').removeClass(response.rmclass);
-                        $('.import-message').html(response.message);
+                    url: '{% url 'memberinfo_delete' pk='000123' %}'.replace('000123', this.id),
+                    method: 'post',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
                     },
-                    error: function () {
-                        $('.import-message').addClass('text-danger');
-                        $('.import-message').removeClass('text-sucess');
-                        $('.import-message').html("Error while processing data please try again and verify the format.");
-                    },
-                });
+                    success: function () {
+                        location.reload();
+                    }
+                })
+                $(`#delete_form${this.id}`).submit();
             } else {
-                $('.import-message').addClass('text-danger');
-                $('.import-message').html("Please upload a csv file with defined format.");
+                return false;
             }
         });
 
 
-    });
-</script>
+        setTimeout(function () {
+            $('#message').fadeOut('slow');
+        }, 3000);
+
+        $(document).ready(function () {
+
+            var table_main = $('.table').DataTable({
+                dom: 'lBfrtip',
+                stateSave: true,
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                ajax: "{% url 'memberinfo_listajax' %}",
+                language: {
+                    "infoFiltered": "",
+                },
+                order: [],
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                            columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                        }
+                    },
+                    {
+                        text: '<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }],
+                "columnDefs": [
+                    {
+                        "targets": [4, 5, 9, 10, 11, 12, 13],
+                        "visible": false,
+                        "searchable": true,
+                    },
+                    {
+                        "orderable": false,
+                        "targets": [0, 3, 11, 12, 13, 14, 15]
+                    }
+
+                ]
+
+            });
+
+
+            $("#student_button").bind("click", function () {
+                $("#student_button").css("color", "white");
+                $("#teacher_button").css("color", "black");
+                $("#all_button").css("color", "black");
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(9).search("1").draw();#}
+                {#table_main.column(0).visible(false);#}
+                {#$(#table).DataTable({#}
+
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlystudents=true").load();
+
+            });
+            $("#teacher_button").bind("click", function () {
+                $("#student_button").css("color", "black");
+                $("#teacher_button").css("color", "white");
+                $("#all_button").css("color", "black");
+
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(10).search("1").draw();#}
+                {#table_main.column(0).visible(false);#}
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlyteachers=true").load();
+
+
+            });
+
+            $("#all_button").bind("click", function () {
+                $("#all_button").css("color", "white");
+                $("#student_button").css("color", "black");
+                $("#teacher_button").css("color", "black");
+                {#table_main.columns().search('').draw();#}
+                {#table_main.column(0).visible(true);#}
+                table_main.ajax.url("{% url 'memberinfo_listajax' %}").load();
+
+            });
+
+
+            $('#form_import_csv').submit(function (e) {
+                e.preventDefault();
+                var formData = new FormData($('form').get(0));
+                // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
+                csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
+                formData.append("csrfmiddlewaretoken", csrf);
+                if ($('#id_import_csv').val()) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'csv_import_ajax' %}",  // URL to your view that serves new info
+                        data: formData,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            $('.import-message').addClass(response.class);
+                            $('.import-message').removeClass(response.rmclass);
+                            $('.import-message').html(response.message);
+                        },
+                        error: function () {
+                            $('.import-message').addClass('text-danger');
+                            $('.import-message').removeClass('text-sucess');
+                            $('.import-message').html("Error while processing data please try again and verify the format.");
+                        },
+                    });
+                } else {
+                    $('.import-message').addClass('text-danger');
+                    $('.import-message').html("Please upload a csv file with defined format.");
+                }
+            });
+
+
+        });
+
+
+        $('.closeImportCSV').click(function () {
+
+            window.location.reload();
+
+        })
+
+    </script>
 
 {% endblock %}

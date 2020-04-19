@@ -1,4 +1,6 @@
 # from django.core.checks import messages
+import json
+import os
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -23,10 +25,14 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
-from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm
+from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls
+from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm, AttendanceFormSetForm, \
+    AttendanceFormSetFormT
+from WebApp.forms import GroupMappingForm, InningGroupForm, \
+    InningInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
-    AssignAnswerInfo, MemberInfo, GroupMapping
+    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager, Attendance, Notice, NoticeView
 from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
@@ -50,7 +56,6 @@ from quiz.models import Progress
 
 from django.http import JsonResponse
 
-from WebApp.filters import MyCourseFilter
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 User = get_user_model()
@@ -64,26 +69,34 @@ def start(request):
     if request.user.Is_Teacher:
         wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
         thread_keywords = get_top_thread_keywords(request, 10)
-    
-        mycourse = InningGroup.objects.filter(Teacher_Code=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
-        if mycourse:
-            for course in mycourse:
-                session = InningInfo.objects.filter(Course_Group=course.id, End_Date__gt=datetime_now)
-                sessions += session
-        courseID = []
-        for groups in mycourse:
-            courseID.append(groups.Course_Code.id)
 
+        x = request.user.get_teacher_courses()
+        mycourse = x['courses']
+        sessions_list = x['session']
+        x = [x for x in sessions_list]
+        for y in x:
+            for z in y:
+                if z not in sessions:
+                    sessions.append(z)
         activeassignments = []
-        for course in courseID:
-            activeassignments += AssignmentInfo.objects.filter(Register_Agent=request.user.id, Course_Code=course,
-                                                               Assignment_Deadline__gte=datetime_now)
+        for course in mycourse:
+            activeassignments += AssignmentInfo.objects.filter(Course_Code=course,
+                                                               Assignment_Deadline__gte=datetime_now,
+                                                               Chapter_Code__Use_Flag=True)
+        if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
+                                     status=True).exists():
+            notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+            if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
+                notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
+                if notice_view_flag:
+                    notice = None
+        else:
+            notice = None
 
         return render(request, "teacher_module/homepage.html",
-                      {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments, 'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
-
-
+                      {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments,
+                       'wordCloud': wordCloud, 'notice': notice, 'get_top_thread_keywords': thread_keywords})
 
 
 def teacher_editprofile(request):
@@ -157,22 +170,24 @@ class MyCourseListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id,
-                                             Center_Code=self.request.user.Center_Code)
-        context['courses'] = courses
-        sessions = []
-        if context['courses']:
-            for course in context['courses']:
-                # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=course.id, End_Date__gt=datetime_now)
-                sessions += session
-        context['sessions'] = sessions
-
-        filtered_qs = MyCourseFilter(
-            self.request.GET,
-            queryset=courses
-        ).qs
-        paginator = Paginator(filtered_qs, 8)
+        # courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id,
+        #                                      Center_Code=self.request.user.Center_Code)
+        # context['courses'] = courses
+        # sessions = []
+        # if context['courses']:
+        #     for course in context['courses']:
+        #         # Filtering out only active sessions
+        #         session = InningInfo.objects.filter(Groups__id=course.id, End_Date__gt=datetime_now)
+        #         sessions += session
+        # context['sessions'] = sessions
+        #
+        # filtered_qs = MyCourseFilter(
+        #     self.request.GET,
+        #     queryset=courses
+        # ).qs
+        # filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
+        courses = self.object_list
+        paginator = Paginator(courses, 8)
         page = self.request.GET.get('page')
         try:
             response = paginator.page(page)
@@ -185,22 +200,27 @@ class MyCourseListView(ListView):
         return context
 
     def get_queryset(self):
-        qsearch = self.model.objects.all()
-
+        qsearch = self.request.user.get_teacher_courses()['courses']
+        courses = []
         query = self.request.GET.get('teacher_mycoursequery')
         if query:
             query = query.strip()
-            qsearch = qsearch.filter(Course_Name__contains=query)
-            if not len(qsearch):
+            # qsearch = qsearch.filter(Course_Name__icontains=query)
+            for course in qsearch:
+                if query in course.Course_Name.lower():
+                    courses.append(course)
+            if not len(courses):
                 messages.error(self.request, 'Sorry no course found! Try with a different keyword')
-        qsearch = qsearch.order_by("-id")  # you don't need this if you set up your ordering on the model
-        return qsearch
+        else:
+            courses = qsearch
+        # qsearch = qsearch.order_by("-id")  # you don't need this if you set up your ordering on the model
+        return courses
 
 
 class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'teacher_module/courseinfo_list.html'
-    paginate_by = 8
+    paginate_by = 6
 
     def get_queryset(self):
         qs = self.model.objects.all()
@@ -208,7 +228,7 @@ class CourseInfoListView(ListView):
         query = self.request.GET.get('teacher_coursequery')
         if query:
             query = query.strip()
-            qs = qs.filter(Course_Name__contains=query)
+            qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
                 messages.error(self.request, 'Sorry no course found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
@@ -242,7 +262,7 @@ class CourseInfoCreateView(CreateView):
         return reverse_lazy('teacher_courseinfo_detail', kwargs={'pk': self.object.pk})
 
 
-class CourseInfoDetailView(DetailView):
+class CourseInfoDetailView(TeacherAuthMxnCls, CourseAuthMxnCls, DetailView):
     model = CourseInfo
     template_name = 'teacher_module/courseinfo_detail.html'
 
@@ -264,10 +284,19 @@ class CourseInfoUpdateView(UpdateView):
     form_class = CourseInfoForm
     template_name = 'teacher_module/courseinfo_form.html'
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
     #     context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
     #     return context
+
     def get_success_url(self, **kwargs):
         return reverse_lazy('teacher_courseinfo_detail', kwargs={'pk': self.object.pk})
 
@@ -320,6 +349,17 @@ class ChapterInfoUpdateView(UpdateView):
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         return context
 
+    def form_valid(self, form):
+        form.save(commit=False)
+        if form.cleaned_data['Start_Date'] == "":
+            form.instance.Start_Date = None
+        if form.cleaned_data['End_Date'] == "":
+            form.instance.End_Date = None
+
+        form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
+        form.save()
+        return super().form_valid(form)
+
     def get_success_url(self, **kwargs):
         return reverse_lazy('teacher_chapterinfo_detail',
                             kwargs={'course': self.object.Course_Code.id, 'pk': self.object.pk})
@@ -332,7 +372,7 @@ class AssignmentInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),
-                                                                     Register_Agent=self.request.user.id)
+                                                                     )
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['datetime'] = datetime.now()
@@ -371,7 +411,7 @@ class AssignmentAnswers(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
-                                                          Register_Agent=self.request.user.id)
+                                                          )
         context['questions'] = questions
         context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
         context['Assignment'] = AssignmentInfo.objects.get(pk=self.kwargs['pk'])
@@ -415,17 +455,18 @@ class MyAssignmentsListView(ListView):
         expiredAssignment = []
         activeAssignment = []
         for course in course:
-            Assignment.append(AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course))
+            Assignment.append(AssignmentInfo.objects.filter(Course_Code=course))
             expiredAssignment.append(
-                AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course,
+                AssignmentInfo.objects.filter(Course_Code=course,
                                               Assignment_Deadline__lt=datetime_now))
             activeAssignment.append(
-                AssignmentInfo.objects.filter(Register_Agent=self.request.user.id, Course_Code=course,
+                AssignmentInfo.objects.filter(Course_Code=course,
                                               Assignment_Deadline__gte=datetime_now))
         context['Assignment'].append(Assignment)
         context['activeAssignment'].append(activeAssignment)
         context['expiredAssignment'].append(expiredAssignment)
         return context
+
 
 def submitStudentscore(request, Answer_id, score):
     if request.method == "GET":
@@ -437,8 +478,8 @@ def submitStudentscore(request, Answer_id, score):
 
     else:
         return HttpResponse("You are not allowed to do this")
-   
-    
+
+
 def ProfileView(request):
     return render(request, 'teacher_module/profile.html')
 
@@ -1205,14 +1246,14 @@ class teacherSurveyFilterCategory(ListView):
                 my_queryset = system_survey
 
         if date_filter == "active":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
             print(date_filter, "query", len(my_queryset))
         elif date_filter == "expire":
             my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
             print(date_filter, "query", len(my_queryset))
-        elif date_filter == "live":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
-            print(date_filter, "query", len(my_queryset))
+        # elif date_filter == "live":
+        #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+        #     print(date_filter, "query", len(my_queryset))
 
         return my_queryset
 
@@ -1669,6 +1710,8 @@ def Thread_related_to_user(request):
 
 
 from textblob import TextBlob
+
+
 def get_top_thread_keywords(request, number_of_keyword):
     obj = Thread.objects.visible().filter(topic__in=Topic_related_to_user(request))
     word_counter = {}
@@ -1683,7 +1726,6 @@ def get_top_thread_keywords(request, number_of_keyword):
 
     popular_words = sorted(word_counter, key=word_counter.get, reverse=True)
     return popular_words[:number_of_keyword]
-
 
 
 import operator
@@ -1703,3 +1745,454 @@ def ThreadSearchAjax(request, topic_id, threadkeywordList):
         pass
     RelevantThread = RelevantThread.filter(reduce(operator.and_, (Q(title__contains=x) for x in threadkeywordList)))[:5]
     return render(request, 'teacher_module/teacher_forum/ThreadSearchAjax.html', {'RelevantThread': RelevantThread})
+
+
+class SessionAdminInningInfoListView(ListView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_list.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now(),
+                                         inningmanager__memberinfoobj__pk=self.request.user.pk)
+
+
+class SessionAdminInningInfoListViewInactive(ListView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_list_inactive.html'
+
+    def get_queryset(self):
+        return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__lte=datetime.now(),
+                                         inningmanager__memberinfoobj__pk=self.request.user.pk)
+
+
+class SessionAdminInningInfoDetailView(DetailView):
+    model = InningInfo
+    template_name = 'teacher_module/inninginfo_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['SessionSurvey'] = SurveyInfo.objects.filter(Session_Code=self.kwargs['pk'])
+        if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs['pk']).exists():
+            context['session_managers'] = get_object_or_404(InningManager, sessioninfoobj__pk=self.kwargs['pk'])
+        return context
+
+
+class GroupMappingUpdateView(UpdateView):
+    model = GroupMapping
+    form_class = GroupMappingForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "teacher_module/base.html"
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(GroupMappingUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            messages.add_message(self.request, messages.SUCCESS, 'Successfully updated.')
+            return redirect('teachers_mysession_detail', form.initial['id'])
+
+
+class InningGroupDetailView(DetailView):
+    model = InningGroup
+    template_name = 'teacher_module/inninggroup_detail.html'
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            return redirect('teachers_mysession_list')
+
+
+class InningGroupUpdateView(UpdateView):
+    model = InningGroup
+    form_class = InningGroupForm
+    template_name = 'teacher_module/inning_group_update.html'
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS, 'Course Teacher Allocation Updated.')
+        self.object = form.save()
+        return redirect('teachers_inninggroup_detail', self.kwargs.get('pk'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['base_file'] = "teacher_module/base.html"
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(InningGroupUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+
+class InningInfoUpdateView(UpdateView):
+    model = InningInfo
+    form_class = InningInfoForm
+    template_name = 'teacher_module/changestudentgroup_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['datetime'] = datetime.now()
+        context['base_file'] = 'teacher_module/base.html'
+        return context
+
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+            messages.add_message(self.request, messages.SUCCESS, 'Successfully updated.')
+            return redirect('teachers_mysession_detail', form.initial['id'])
+
+
+class AttendanceListView(ListView):
+    model = Attendance
+    template_name = 'teacher_module/attendance/attendance_list.html'
+
+    # def get_queryset(self):
+    #     return Attendance.objects.filter(course=' #TODO make get_teacher_course function  in models.py')
+
+
+class AttendanceCreateView(CreateView):
+    model = Attendance
+    form_class = AttendanceForm
+    template_name = 'teacher_module/attendance/attendance_form.html'
+
+
+class AttendanceDetailView(DetailView):
+    model = Attendance
+    template_name = 'teacher_module/attendance/attendance_detail.html'
+
+
+class AttendanceUpdateView(UpdateView):
+    model = Attendance
+    form_class = AttendanceForm
+    template_name = 'teacher_module/attendance/attendance_form.html'
+
+
+from django.forms.models import modelformset_factory
+
+
+def CourseAttendance(request, inningpk, course, attend_date):
+    global list_of_students
+    studentattendancejson = []
+    if not CourseInfo.objects.filter(pk=course).exists():
+        messages.error(request,
+                       "Course Does not exist.")
+    # if datetime.strptime(attend_date, "%Y-%M-%d") > datetime.today().date():
+    #     messages.error(request,
+    #                        "You cannot take attendance of future date.")
+    #     return HttpResponse('hello')
+
+    if request.method == "POST":
+        modelformset = AttendanceFormSetForm(request.POST or None, queryset=Attendance.objects.all())
+
+        for cn, i in enumerate(modelformset.cleaned_data):
+            if not isinstance(i['id'], int) and len(i) and i['id'] if len(i) else 0:
+                a = Attendance.objects.get(pk=i['id'].pk)
+                a.present = i['present']
+                a.updated = datetime.utcnow()
+                a.save()
+            else:
+                k = modelformset.forms[cn]
+                k.save()
+        pass
+        messages.success(request, 'Submitted successfully')
+
+    else:
+        if InningInfo.objects.filter(pk=inningpk).exists():
+            innings = InningInfo.objects.get(pk=inningpk)
+            if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
+
+            AttendanceFormSetx = modelformset_factory(Attendance, form=AttendanceFormSetFormT,
+
+                                                      extra=len(list_of_students))
+
+            for x in list_of_students:
+                a = Attendance.objects.filter(member_code__pk=x.pk, attendance_date=attend_date, course__pk=course)
+                if a.exists():
+                    print(a[0].pk)
+                    studentattendancejson.append({
+                        'attendance_date': a[0].attendance_date,
+                        'present': a[0].present,
+                        'member_code': a[0].member_code,
+                        'course': a[0].course,
+                        'id': a[0].pk,
+                        'updated': a[0].updated,
+                    })
+                else:
+                    studentattendancejson.append({
+                        'attendance_date': attend_date,
+                        'present': False,
+                        'member_code': x,
+                        'course': course,
+                    })
+            formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
+                                         initial=studentattendancejson)
+            context = {
+                'attendance': formset,
+                'course': CourseInfo.objects.get(pk=course),
+                'inning': InningInfo.objects.get(pk=inningpk),
+                'attend_date': attend_date,
+            }
+            return render(request, 'teacher_module/attendance/course_attendance_form.html', context)
+
+        else:
+            messages.error(request,
+                           "Inning does not exist.")
+    return redirect('course_attendance_list', inningpk, course, attend_date)
+
+
+def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
+    formset = None
+    session_list = []
+    session_course = []
+    if attend_date == None:
+        attend_date = str(datetime.today().date())
+    studentattendancejson = []
+    if InningInfo.objects.filter(pk=inningpk).exists():
+        innings = InningInfo.objects.get(pk=inningpk)
+        if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+            list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
+
+        AttendanceFormSetx = modelformset_factory(Attendance,
+                                                  fields=['present', 'member_code', 'course', 'attendance_date', 'id'],
+                                                  extra=len(list_of_students))
+
+        for x in list_of_students:
+            a = Attendance.objects.filter(member_code__pk=x.pk, attendance_date=attend_date, course__pk=course)
+            if a.exists():
+                studentattendancejson.append({
+                    'attendance_date': a[0].attendance_date,
+                    'present': a[0].present,
+                    'member_code': a[0].member_code,
+                    'course': a[0].course,
+                    'id': a[0].pk,
+                    'updated': a[0].updated,
+
+                })
+            else:
+                studentattendancejson.append({
+                    'attendance_date': attend_date,
+                    'present': False,
+                    'member_code': x,
+                    'course': course,
+                    'updated': None
+                })
+        formset = AttendanceFormSetx(queryset=Attendance.objects.none(),
+                                     initial=studentattendancejson)
+
+    # session_list = InningInfo.objects.filter(Course_Group__in = a)
+    ig = InningGroup.objects.filter(Teacher_Code=request.user)
+    # session_list = InningInfo.objects.filter(Course_Group__in = ig)
+
+    if not inningpk and course:
+        c = CourseInfo.objects.get(pk=course)
+        if c:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                    Course_Group__Course_Code__pk=c.pk, Use_Flag=True,
+                                                    End_Date__gt=datetime_now).distinct()
+            session_list.append(inning_info)
+
+    else:
+        for i in ig:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                    Course_Group__pk=i.pk, Use_Flag=True,
+                                                    End_Date__gt=datetime_now).distinct()
+            if inning_info.exists():
+                session_course.append([
+                    {
+                        'course': i.Course_Code,
+                        'session': inning_info,
+                    },
+                ])
+                # for i in inning_info:
+                #     if len(session_list) > 0:
+                #         for m in session_list:
+                #             for n in m:
+                #                 if not i.pk == n.pk:
+                #                     session_list.append(inning_info)
+                #     else:
+                #         session_list.append(inning_info)
+        for i in session_course:
+            for m in i:
+                session_list += (list(m['session'].values_list('pk', flat=True)))
+        session_list = [InningInfo.objects.filter(pk__in=set(session_list))]
+    context = {
+        'attendance': formset,
+        'course': CourseInfo.objects.get(pk=course) if course else None,
+        'inning': InningInfo.objects.get(pk=inningpk) if inningpk else None,
+        'attend_date': attend_date,
+        'session_list': session_list,
+        'session_course': session_course,
+        'todays_date': datetime_now,
+    }
+
+    return render(request, 'attendance/course_attendance_list.html', context)
+
+
+# chapter progress of students function
+def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=None, totalPage=None, createFile=True):
+    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
+    try:
+        os.makedirs(path)
+    except Exception as e:
+        pass
+    student_data_file = os.path.join(path, studentid + '.txt')
+    if os.path.isfile(student_data_file):
+        student_file = open(student_data_file, "r")
+        if student_file.mode == 'r':
+            x = student_file.read()
+            x = x.split(',')
+            LastPageNumberFromFileSystem, totalPage = x[0], x[1]
+            student_file.close()
+        if currentPageNumber is None:
+            return LastPageNumberFromFileSystem, totalPage
+        if int(currentPageNumber) > int(LastPageNumberFromFileSystem):
+            student_file = open(student_data_file, "w+")
+            if currentPageNumber and totalPage:
+                student_file.write(currentPageNumber + "," + totalPage)
+                student_file.close()
+        else:
+            student_file = open(student_data_file, "r")
+            if student_file.mode == 'r':
+                x = student_file.read()
+                x = x.split(',')
+                LastPageNumberFromFileSystem, totalPage = x[0], x[1]
+                student_file.close()
+    else:
+        if createFile:
+            student_file = open(student_data_file, "w+")
+            if currentPageNumber and totalPage:
+                student_file.write(currentPageNumber + "," + totalPage)
+            else:
+                student_file.write("0,0")
+
+            student_file.close()
+        else:
+            return None, None
+    return currentPageNumber, totalPage
+
+
+def chapterStudentProgress(request, course, pk, inningpk=None):
+    session_list = []
+    studentjson = []
+
+    course = get_object_or_404(CourseInfo, pk=course)
+    chapter = get_object_or_404(ChapterInfo, pk=pk)
+
+    if course and chapter:
+        inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
+                                                Course_Group__Course_Code__pk=course.pk, Use_Flag=True,
+                                                End_Date__gt=datetime_now).distinct()
+        session_list.append(inning_info)
+
+        if inning_info.count() > 0:
+            if inningpk:
+                if inning_info.filter(pk=inningpk).exists():
+                    innings = inning_info.get(pk=inningpk)
+                else:
+                    innings = inning_info.all().first()
+            else:
+                innings = inning_info.all().first()
+
+            if MemberInfo.objects.filter(pk__in=innings.Groups.Students.all()).exists():
+                list_of_students = MemberInfo.objects.filter(pk__in=innings.Groups.Students.all())
+
+            for x in list_of_students:
+                currentPage, totalpage = maintainLastPageofStudent(str(course.pk), str(chapter.pk), str(x.id),
+                                                                   createFile=False)
+                if totalpage is not None and int(totalpage) > 0 and int(currentPage) > 0:
+                    progresspercent = int(currentPage) * 100 / int(totalpage)
+                else:
+                    progresspercent = 1
+                studentjson.append({
+                    'member_code': x,
+                    'currentpage': currentPage,
+                    'totalpage': totalpage,
+                    'progresspercent': progresspercent,
+                })
+
+    context = {
+        'course': course,
+        'chapter': chapter,
+        'inning': InningInfo.objects.get(pk=inningpk) if inningpk else None,
+        'session_list': session_list,
+        'studentjson': studentjson,
+    }
+
+    return render(request, 'teacher_module/chapterProgress.html', context)
+
+
+def teacherAttendance(request, courseid, createFile=True):
+    chapters = []
+    pagenumber = []
+    if request.GET.get('chapterid'):
+        chapterid = request.GET.get('chapterid')
+        pagenumber = request.GET.get('pagenumber')
+    today = datetime_now.strftime("%m%d%Y")
+    path = os.path.join(settings.MEDIA_ROOT, ".teacherAttendanceData", str(courseid), today)
+    try:
+        os.makedirs(path)
+    except Exception as e:
+        pass
+    teacher_data_file = os.path.join(path, str(request.user.pk) + '.txt')
+
+    if os.path.isfile(teacher_data_file):
+        new_data = None
+        with open(teacher_data_file) as json_file:
+            data = json.load(json_file)
+            start_time = data['start_time']
+            # end_time = data['end_time']
+            numberoftimesopened = int(data['numberoftimesopened'])
+            new_data = data
+
+        if createFile:
+            numberoftimesopened += 1
+            new_data.update({
+                'end_time': datetime_now.strftime("%m/%d/%Y, %H:%M:%S"),
+                'numberoftimesopened': numberoftimesopened,
+            })
+            if request.GET.get('chapterid'):
+                chapters = new_data['chapters']
+                create = 0
+                for x in new_data['chapters']:
+                    if request.GET.get('chapterid') == x['chapterid']:
+                        create = 1
+                        if request.GET.get('pagenumber') not in x['pagenumber']:
+                            x['pagenumber'].append(request.GET.get('pagenumber'))
+                            break
+                if create == 0:
+                    new_data['chapters'] = new_data['chapters'] + [{
+                        'chapterid': request.GET.get('chapterid'),
+                        'pagenumber': [request.GET.get('pagenumber'), ]
+                    }]
+            with open(teacher_data_file, 'w+') as teacher_data_file:
+                json.dump(new_data, teacher_data_file, indent=4)
+    else:
+        if createFile:
+            data = {
+                'start_time': datetime_now.strftime("%m/%d/%Y, %H:%M:%S"),
+                'end_time': datetime_now.strftime("%m/%d/%Y, %H:%M:%S"),
+                'numberoftimesopened': 1,
+            }
+            if request.GET.get('chapterid'):
+                chapters.append({
+                    'chapterid': request.GET.get('chapterid'),
+                    'pagenumber': [request.GET.get('pagenumber'), ]
+                })
+                data.update({
+                    'chapters': chapters,
+                })
+            with open(teacher_data_file, 'w+') as teacher_file:
+                json.dump(data, teacher_file, indent=4)
+
+    return HttpResponse('success')

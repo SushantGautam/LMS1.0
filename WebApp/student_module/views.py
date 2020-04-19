@@ -12,9 +12,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.http import JsonResponse
-from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -24,19 +22,21 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import FormView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from textblob import TextBlob
 
 from LMS import settings
 from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
-    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup
+    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
-
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
+from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog
 
 datetime_now = datetime.now()
 
@@ -46,6 +46,7 @@ from quiz.views import QuizUserProgressView, Sitting, Progress
 
 
 def start(request):
+    global courses, activeassignments, sessions, batches
     if request.user.Is_Student:
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
@@ -58,18 +59,33 @@ def start(request):
         activeassignments = []
         if sessions:
             for session in sessions:
-                course = session.Course_Group.all()
+                course = session.Course_Group.filter(Course_Code__Use_Flag=True)
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
-                    Assignment_Deadline__gte=datetime_now, Course_Code=course.Course_Code.id)[:7]
+                    Assignment_Deadline__gte=datetime.now().date(), Assignment_Start__lte=datetime.now().date(),
+                    Course_Code__id=course.Course_Code.id,
+                    Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
-            
+
+    if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),status=True).exists():
+        notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+        if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
+            notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
+            if notice_view_flag:
+                notice = None
+    else:
+        notice = None
+
     return render(request, 'student_module/dashboard.html',
                   {'GroupName': batches, 'Group': sessions, 'Course': courses,
-                   'activeAssignments': activeassignments, 'sittings': sittings, 'wordCloud': wordCloud, 'get_top_thread_keywords': thread_keywords})
+                   'activeAssignments': activeassignments, 'sittings': sittings,
+                   'wordCloud': wordCloud,
+                   'notice': notice,
+                   'get_top_thread_keywords': thread_keywords
+                   })
 
 
 class PasswordChangeView(PasswordContextMixin, FormView):
@@ -144,7 +160,7 @@ def calendar(request):
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
-                    Course_Code=course.Course_Code.id)[:7]
+                    Course_Code=course.Course_Code.id, Chapter_Code__Use_Flag=True)[:7]
 
         student_group = request.user.groupmapping_set.all()
         student_session = InningInfo.objects.filter(Groups__in=student_group)
@@ -163,8 +179,9 @@ def calendar(request):
         my_queryset = None
         my_queryset = general_survey | session_survey | course_survey | system_survey
         my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
-           
-        return render(request, 'student_module/calendar.html', {'activeassignments':activeassignments, 'activesurvey':my_queryset})
+
+        return render(request, 'student_module/calendar.html',
+                      {'activeassignments': activeassignments, 'activesurvey': my_queryset})
 
 
 class MyCoursesListView(ListView):
@@ -185,11 +202,12 @@ class MyCoursesListView(ListView):
         courses = InningGroup.objects.none()
         if sessions:
             for session in sessions:
-                course = session.Course_Group.all()
+                course = session.Course_Group.filter(Course_Code__Use_Flag=True)
                 courses |= course
 
         courses = courses.distinct()
         filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
+        filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
         paginator = Paginator(filtered_qs, 8)
         page = self.request.GET.get('page')
 
@@ -208,7 +226,7 @@ class MyCoursesListView(ListView):
         queryset = self.request.GET.get('studentmycoursequery')
         if queryset:
             queryset = queryset.strip()
-            qset = qset.filter(Course_Name__contains=queryset)
+            qset = qset.filter(Course_Name__icontains=queryset)
             if not len(qset):
                 messages.error(
                     self.request, 'Sorry no courses found! Try with a different keyword')
@@ -231,19 +249,24 @@ class MyAssignmentsListView(ListView):
         context['currentDate'] = datetime.now()
         GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
         for group in GroupName:
-            Sessions += InningInfo.objects.filter(Groups__id=group.id)
+            Sessions += InningInfo.objects.filter(Groups__id=group.id, End_Date__gt=datetime_now)
 
         for session in Sessions:
-            for coursegroup in session.Course_Group.all():
+            for coursegroup in session.Course_Group.filter(Course_Code__Use_Flag=True):
                 Courses.add(coursegroup.Course_Code)
 
         for course in Courses:
             Assignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Use_Flag=True))
+                Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True,
+                Assignment_Start__lte=datetime_now.date()))
             activeAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now, Use_Flag=True))
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now.date(),
+                Assignment_Start__lte=datetime_now.date(),
+                Use_Flag=True,
+                Chapter_Code__Use_Flag=True))
             expiredAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now, Use_Flag=True))
+                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now.date(), Use_Flag=True,
+                Chapter_Code__Use_Flag=True))
         context['Assignment'].append(Assignment)
         context['activeAssignment'].append(activeAssignment)
         context['expiredAssignment'].append(expiredAssignment)
@@ -254,7 +277,7 @@ class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'student_module/courseinfo_list.html'
 
-    paginate_by = 8
+    paginate_by = 6
 
     def get_queryset(self):
         qs = self.model.objects.all()
@@ -262,7 +285,7 @@ class CourseInfoListView(ListView):
         query = self.request.GET.get('coursequery')
         if query:
             query = query.strip()
-            qs = qs.filter(Course_Name__contains=query)
+            qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
                 messages.error(
                     self.request, 'Sorry no course found! Try with a different keyword')
@@ -278,7 +301,10 @@ class CourseInfoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['chapters'] = ChapterInfo.objects.filter(
-            Course_Code=self.kwargs.get('pk'), Use_Flag=True).order_by('Chapter_No')
+            Course_Code=self.kwargs.get('pk'), Use_Flag=True) \
+            .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
+            .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
+            .order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         context['quizcount'] = Quiz.objects.filter(
@@ -289,6 +315,8 @@ class CourseInfoDetailView(DetailView):
             draft=False)
         context['topic'] = Topic.objects.filter(
             course_associated_with=self.kwargs.get('pk'))
+
+        context['student_data'] = getCourseProgress(self.object, [self.request.user], context['chapters'])
         return context
 
 
@@ -348,7 +376,10 @@ class submitAnswer(View):
     model = AssignAnswerInfo()
 
     def post(self, request, *args, **kwargs):
-        Obj = AssignAnswerInfo()
+        if request.GET.get('editanswer'):
+            Obj = AssignAnswerInfo.objects.get(pk=int(request.GET.get('editanswer')))
+        else:
+            Obj = AssignAnswerInfo()
         Obj.Assignment_Answer = request.POST["Assignment_Answer"]
         Obj.Student_Code = MemberInfo.objects.get(
             pk=request.POST["Student_Code"])
@@ -358,8 +389,8 @@ class submitAnswer(View):
         if bool(request.FILES.get('Assignment_File', False)) == True:
             media = request.FILES['Assignment_File']
             # print(media)
-            if media.size / 1024 > 2048:
-                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 2MB"}, status=500)
+            if media.size / 1024 > 10240:
+                return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 10MB"}, status=500)
             path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
@@ -418,34 +449,40 @@ class questions_student_detail(DetailView):
         context['saq_answers'] = AnswerInfo.objects.filter(
             Question_Code__in=QuestionInfo.objects.filter(Survey_Code=self.object.id, Question_Type='SAQ')
         )
-        try:
-            context['submit_survey'] = SubmitSurvey.objects.get(
-                Survey_Code__id=self.object.id,
-                Student_Code__id=self.request.user.id
-            )
-        except SubmitSurvey.DoesNotExist:
-            context['submit_survey'] = None
+        # try:
+        #     context['submit_survey'] = SubmitSurvey.objects.get(
+        #         Survey_Code__id=self.object.id,
+        #         Student_Code__id=self.request.user.id
+        #     )
+        # except SubmitSurvey.DoesNotExist:
+        #     context['submit_survey'] = None
+        #
+        # if context['submit_survey']:
+        #     for x in context['options']:
+        #         if len(context['submit_survey'].answerinfo.filter(Answer_Value=x.id)) > 0:
+        #             x.was_chosen = True
+        #         else:
+        #             x.was_chosen = False
+        #
+        #     for x in context['questions']:
+        #         try:
+        #             x.answer = AnswerInfo.objects.get(
+        #                 Submit_Code=context['submit_survey'].id, Question_Code=x.id)
+        #         except AnswerInfo.DoesNotExist:
+        #             x.answer = None
+        #
+        #     context['can_submit'] = False
+        #
+        #
+        # else:
+        #     if self.object.End_Date > datetime.now(timezone.utc):
+        #         context['can_submit'] = True
+        #     else:
+        #         context['can_submit'] = False
+        #         context['datetimeexpired'] = 1
 
-        if context['submit_survey']:
-            for x in context['options']:
-                if len(context['submit_survey'].answerinfo.filter(Answer_Value=x.id)) > 0:
-                    x.was_chosen = True
-                else:
-                    x.was_chosen = False
-
-            for x in context['questions']:
-                try:
-                    x.answer = AnswerInfo.objects.get(
-                        Submit_Code=context['submit_survey'].id, Question_Code=x.id)
-                except AnswerInfo.DoesNotExist:
-                    x.answer = None
-
-            context['can_submit'] = False
-
-
-        else:
-            context['can_submit'] = True
-
+        context['can_submit'], context['datetimeexpired'], context['options'], context[
+            'questions'] = self.object.can_submit(self.request.user)
         return context
 
 
@@ -488,7 +525,11 @@ class ParticipateSurvey(View):
             answerObject.Submit_Code = submitSurvey
             answerObject.save()
         messages.add_message(request, messages.SUCCESS, 'Your Survey has been submitted successfully.')
-        return redirect('questions_student')
+        if 'iframe' in request.GET:
+            return redirect(reverse('questions_student') + '?iframe=' + self.request.GET.get(
+                'iframe'))
+        else:
+            return redirect('questions_student')
 
 
 class surveyFilterCategory_student(ListView):
@@ -535,14 +576,14 @@ class surveyFilterCategory_student(ListView):
                 my_queryset = system_survey
 
         if date_filter == "active":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
             print(date_filter, "query", len(my_queryset))
         elif date_filter == "expire":
             my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
             print(date_filter, "query", len(my_queryset))
-        elif date_filter == "live":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
-            print(date_filter, "query", len(my_queryset))
+        # elif date_filter == "live":
+        #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+        #     print(date_filter, "query", len(my_queryset))
 
         return my_queryset
 
@@ -613,7 +654,7 @@ class Index(ListView):
         context['title'] = _('Index')
         context['topics'] = Topic.objects.all().filter(id__in=Topic_related_to_user(self.request))
         context['show_order'] = True
-        context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
+        # context['get_top_thread_keywords'] = get_top_thread_keywords(self.request, 10)
         return context
 
 
@@ -1016,7 +1057,6 @@ def get_top_thread_keywords(request, number_of_keyword):
     return popular_words[:number_of_keyword]
 
 
-
 class QuizUserProgressView(TemplateView):
     template_name = 'student_quiz/progress.html'
 
@@ -1030,7 +1070,41 @@ class QuizUserProgressView(TemplateView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         # context['cat_scores'] = progress.list_all_cat_scores
         # context['exams'] = progress.show_exams()
-        context['sittings'] = Sitting.objects.filter(user=self.request.user)
+
+        context['sittings'] = []
+        pk_list = Sitting.objects.filter(user=self.request.user).order_by('-start').values_list('quiz', flat=True)
+
+        context["quiz_list"] = []
+        for pk in pk_list:
+            quiz_obj = Quiz.objects.get(pk=pk)
+            if quiz_obj not in context["quiz_list"]:
+                context["quiz_list"].append(quiz_obj)
+        for q in context["quiz_list"]:
+            sitting_obj = Sitting.objects.filter(user=self.request.user, quiz=q).order_by('-start').first()
+            sitting_obj.times_played = Sitting.objects.filter(user=self.request.user, quiz=q).count()
+            context['sittings'].append(sitting_obj)
+        print(context["quiz_list"])
+        print(context["sittings"])
+        return context
+
+
+class QuizUserProgressHistoryView(TemplateView):
+    template_name = 'ajax_quiz/progress_list_history.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        progress, c = Progress.objects.get_or_create(user=self.request.user)
+        # context['cat_scores'] = progress.list_all_cat_scores
+        # context['exams'] = progress.show_exams()
+
+        related_quiz = Quiz.objects.get(pk=self.kwargs['quiz'])
+
+        context['sittings'] = Sitting.objects.filter(user=self.request.user, quiz=related_quiz).order_by('-start')
+
         return context
 
 
@@ -1041,3 +1115,141 @@ class QuizUserProgressDetailView(DetailView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+
+def PageUpdateAjax(request, course, chapter):
+    if request.method == 'POST':
+        jsondata = chapterProgressRecord(str(course), str(chapter), str(request.user.id),
+                                         currentPageNumber=request.POST['currentpage'],
+                                         totalPage=request.POST['totalpages'],
+                                         fromcontents=True, studytimeinseconds=request.POST['studytimeinseconds'],
+                                         )
+    else:
+        # currentPageNumber, totalpage = maintainLastPageofStudent(str(course), str(chapter), str(request.user.id),
+        #                                                          )
+        jsondata = chapterProgressRecord(str(course), str(chapter), str(request.user.id), fromcontents=True,
+                                         currentPageNumber=None, totalPage=None,
+                                         studytimeinseconds=None,
+                                         )
+    return JsonResponse(jsondata) if jsondata else None
+
+
+def StudentChapterLogUpdateAjax(request, chapter):
+    if request.method == 'POST':
+        jsondata = studentChapterLog(str(chapter), str(request.user.id), type=request.POST['type'])
+    else:
+        jsondata = studentChapterLog(str(chapter), str(request.user.id), type=None)
+    return JsonResponse(jsondata, safe=False)
+
+
+from django.contrib.auth import authenticate, login as auth_login
+
+from django.shortcuts import redirect, reverse
+
+
+def loginforapp(request, course, chapter, username, password):
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        auth_login(request, user)
+        if request.user.is_authenticated:
+            return redirect(
+                "/students/courseinfo/" + str(course) + "/chapterinfo/" + str(
+                    chapter) + "/contents" + '?mobileViewer=1',
+            )
+        else:
+            return HttpResponse('failed')
+    else:
+        return HttpResponse('failed')
+
+
+from django.db.models import F
+
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def singleUserHomePageJSON(request):
+    if request.user.Is_Student:
+        courses = request.user.get_student_courses().distinct()
+        assignments = AssignmentInfo.objects.filter(
+            Course_Code__in=courses,
+            Chapter_Code__Use_Flag=True)[:7]
+
+        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
+        sessions = []
+        if batches:
+            for batch in batches:
+                # Filtering out only active sessions
+                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
+                sessions += session
+
+        student_group = request.user.groupmapping_set.all()
+        student_session = InningInfo.objects.filter(Groups__in=student_group)
+        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+
+        # Predefined category name "general, session, course, system"
+        general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
+                                                   Center_Code=request.user.Center_Code, Use_Flag=True)
+        session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
+                                                   Session_Code__in=student_session, Use_Flag=True)
+        course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
+                                                  Course_Code__in=student_course, Use_Flag=True)
+        system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+
+        sitting_queryset = Sitting.objects.filter(user=request.user, complete=True).order_by('-end')[:5]
+
+        survey_queryset = general_survey | session_survey | course_survey | system_survey
+        survey_queryset = survey_queryset.filter(End_Date__gte=timezone.now()).exclude(
+            submitsurvey__Student_Code__pk__in=[request.user.pk, ])
+
+        user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'first_name', 'last_name', 'Member_Avatar',
+                                                                    'email', 'username', 'Member_Permanent_Address',
+                                                                    'Member_Temporary_Address', 'Member_BirthDate',
+                                                                    'Member_Phone', 'Use_Flag', 'Is_Teacher',
+                                                                    'Is_Student', 'Is_CenterAdmin', 'Member_Gender',
+                                                                    'Center_Code')
+        courses_list = courses.values(pk=F('Course_Code__pk'), Course_Name=F('Course_Code__Course_Name'),
+                                      Course_Description=F('Course_Code__Course_Description'),
+                                      Course_Cover_File=F('Course_Code__Course_Cover_File'),
+                                      Course_Level=F('Course_Code__Course_Level'),
+                                      Course_Info=F('Course_Code__Course_Info'), Use_Flag=F('Course_Code__Use_Flag'),
+                                      Center_Code=F('Course_Code__Center_Code'),
+                                      Register_Agent=F('Course_Code__Register_Agent'))
+        assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
+                                              'Register_DateTime',
+                                              course_code=F('Course_Code__pk'),
+                                              course_name=F('Course_Code__Course_Name'),
+                                              chapter_code=F('Chapter_Code__pk'),
+                                              Register_Agent_Username=F('Register_Agent__username'),
+                                              Register_Agent_Firstname=F('Register_Agent__first_name'),
+                                              Register_Agent_Lastname=F('Register_Agent__last_name'))
+        survey_list = survey_queryset.values('id', 'Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover', 'Use_Flag',
+                                             'Retaken_From', 'Version_No', 'Center_Code', 'Category_Code',
+                                             'Session_Code', 'Course_Code', 'Added_By')
+        sitting_list = sitting_queryset.values('pk', 'user', 'question_order', 'question_list', 'incorrect_questions',
+                                               'current_score', 'complete', 'user_answers', 'start', 'end',
+                                               'score_list', course_name=F('quiz__course_code__Course_Name'),
+                                               course_pk=F('quiz__course_code__pk'), quiz_pk=F('quiz__pk'),
+                                               quiz_title=F('quiz__title'), single_attempt=F('quiz__single_attempt'))
+
+        for counter, assg in enumerate(assignments_list):
+            questions = AssignmentQuestionInfo.objects.filter(Assignment_Code__pk=assg['id'])
+            answers = AssignAnswerInfo.objects.filter(Question_Code__in=questions, Student_Code=request.user)
+            if len(questions) == len(answers):
+                assignments_list[counter].update({
+                    'complete': True,
+                    'question_count': questions.count(),
+                    'answer_count': answers.count(),
+                })
+            else:
+                assignments_list[counter].update({
+                    'complete': False,
+                    'question_count': questions.count(),
+                    'answer_count': answers.count(),
+                })
+
+        response = {'userinfo': list(user), 'courses': list(courses_list), 'assignments': list(assignments_list),
+                    'survey': list(survey_list), 'sitting': list(sitting_list)}
+        return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
+    else:
+        HttpResponse('You are not a student.')

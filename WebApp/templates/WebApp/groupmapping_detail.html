@@ -23,26 +23,84 @@
                         <td>Register Agent</td>
                         <td>{{ object.Register_Agent }}</td>
                     </tr>
-                    <tr>
-                        <td>Enrolled Students</td>
-                        <td> {% for students in object.Students.all %}
-                            {{ students }}<br>{% endfor %}</td>
-                    </tr>
+
                 </table>
-            </b>
+        </b>
         </h5>
         <br>
         <div class="text-center">
+            <a class="btn btn-primary" href="{% url 'groupmapping_saveasnew' object.pk %}"> Save as New</a>&nbsp;&nbsp;&nbsp;
             <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Group Mapping</a>
-            <a class="btn-sm btn-danger groupmapping-confirm-delete" id="{{ object.pk }}"
-                style="cursor: pointer;">Delete Group Mapping</a>
+            <a class="btn btn-danger groupmapping-confirm-delete" id="{{ object.pk }}"
+               style="cursor: pointer;">Delete Group Mapping</a>
             <form method="post" action="{% url 'groupmapping_delete' pk=object.pk %}"
-                id="deleteGroupMapping{{ object.pk }}">
+                  id="deleteGroupMapping{{ object.pk }}">
                 {% csrf_token %}
-                <input type="hidden" value="{{object.pk}}" name="groupmapping_id">
+                <input type="hidden" value="{{ object.pk }}" name="groupmapping_id">
             </form>
         </div>
     </div>
+</div> 
+<div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:20px"> 
+        <h5 class="detailListHeader2">Enrolled Students</h5>
+
+</div>
+<div class="membertable col-md-12 col-sm-12 col-xs-12 table-responsive">
+    <table class="table table-striped dt-responsive table-bordered bg-white nowrap">
+        <thead class="thead-light bg-primary">
+        <tr class="tableTitleRow">
+            <td class="text-center">S. No.</td>
+            <td>Username</td>
+            <td>Member ID</td>
+            <td>Full Name</td>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Email</td>
+            <td>Phone</td>
+            <td>Gender</td>
+            
+            <td>Temporary Address</td>
+            <td>Permanent Address</td>
+            <td>Birthdate</td>
+            <td>Type</td>
+            
+        </tr>
+        </thead>
+        {% for object in object.Students.all %}
+            
+                <tr>
+                    <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
+                    <td style="vertical-align: middle;"><b><a
+                            href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
+                    <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
+                    <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
+                    <td style="vertical-align: middle;">{{ object.first_name }}</td>
+                    <td style="vertical-align: middle;">{{ object.last_name }}</td>
+                    <td style="vertical-align: middle;">{{ object.email }}</td>
+                    <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
+                    <td style="vertical-align: middle;">
+                        {{ object.get_Member_Gender_display }}
+                    </td>
+                 
+                    <td style="vertical-align: middle;">{{ object.Member_Temporary_Address }}</td>
+                    <td style="vertical-align: middle;">{{ object.Member_Permanent_Address }}</td>
+                    <td style="vertical-align: middle;">{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
+                    <td style="vertical-align: middle;">
+                        {% if object.Is_Teacher == True and object.Is_Student == True %}
+                            Teacher, Student
+                        {% elif object.Is_Teacher == True %}
+                            Teacher
+                        {% elif object.Is_Student == True %}
+                            Student
+                        {% else %}
+                            Not Assigned
+                        {% endif %}
+                    </td>
+                   
+                </tr>
+          
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}
 {% block customjss %}
@@ -56,4 +114,42 @@
         }
     });
 </script>
+    <script>
+    $(document).ready(function(){
+        $('#form_import_csv').submit(function (e) {
+                e.preventDefault();
+                var formData = new FormData($('form').get(0));
+                // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
+                csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
+                formData.append("csrfmiddlewaretoken", csrf);
+                if ($('#id_import_csv').val()) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'csv_import_ajax' %}?groupmappingpk={{object.pk}}",  // URL to your view that serves new info
+                        data: formData,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            $('.import-message').addClass(response.class);
+                            $('.import-message').removeClass(response.rmclass);
+                            $('.import-message').html(response.message);
+                        },
+                        error: function () {
+                            $('.import-message').addClass('text-danger');
+                            $('.import-message').removeClass('text-sucess');
+                            $('.import-message').html("Error while processing data please try again and verify the format.");
+                        },
+                    });
+                } else {
+                    $('.import-message').addClass('text-danger');
+                    $('.import-message').html("Please upload a csv file with defined format.");
+                }
+            });
+        });
+
+        $('.closeImportCSV').click(function () {
+            window.location.reload();
+        })
+    </script>
 {% endblock %}

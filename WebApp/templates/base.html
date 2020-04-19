@@ -19,7 +19,7 @@
 
         <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
 
-        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+        {#        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>#}
 
         <!-- Bootstrap -->
         <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -33,6 +33,7 @@
         <link href="{% static 'build/css/theme.min.css' %}" rel="stylesheet">
         <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
 
+        {% comment %}
         <!-- bootstrap-daterangepicker -->
         <!-- <link href="{% static 'vendorsx/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet"> -->
         <!-- iCheck -->
@@ -43,6 +44,9 @@
         <!-- <link href="{% static 'vendorsx/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/> -->
         <!-- custom tables-->
         <!-- <link href="{% static 'vendorsx/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet"> -->
+        {% endcomment %}
+        <link href="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+
         <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
         <link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
               rel="stylesheet">
@@ -106,16 +110,21 @@
     <!-- Bootstrap -->
     <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <!-- FastClick for mobile browser -->
-    <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script>
+    <script src="{% static 'vendorsx/fastclick/lib/fastclick.min.js' %}"></script>
+    {# <script src="{% static 'vendorsx/fastclick/lib/fastclick.js' %}"></script> #}
     <!-- NProgress -->
-    <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+    <script src="{% static 'vendorsx/nprogress/nprogress.min.js' %}"></script>
+    {# <script src="{% static 'vendorsx/nprogress/nprogress.js' %}"></script> #} 
     <!-- Switchery -->
     <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
     <!-- Custom Theme Scripts -->
-    <script src=" {% static 'build/js/custom.js' %}"></script>
+    <script src=" {% static 'build/js/custom.min.js' %}"></script>
 
+    <!-- Custom JS -->
+    <script src=" {% static 'js/common.js' %}"></script>
 
     <!-- bootstrap-progressbar -->
+    {% comment %}
     <!-- <script src="{% static 'vendorsx/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script> -->
     <!-- iCheck -->
     <!-- <script src="{% static 'vendorsx/iCheck/icheck.min.js' %}"></script> -->
@@ -125,7 +134,7 @@
     <!-- bootstrap-wysiwyg -->
     <!-- <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
     <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
-    <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script> -->
+    <script src="{% static 'vendorsx/google-code-prettify/bin/prettify.min.js' %}"></script> -->
     <!-- jQuery Tags Input -->
     <!-- <script src="{% static 'vendorsx/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script> -->
 
@@ -139,8 +148,12 @@
     <!-- <script src="{% static 'vendorsx/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script> -->
     <!-- starrr -->
     <!-- <script src="{% static 'vendorsx/starrr/dist/starrr.js' %}"></script> -->
-
+    {% endcomment %}
+    <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendorsx/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'vendorsx/pdfmake/build/vfs_fonts.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
@@ -150,10 +163,10 @@
     <script src="{% static 'vendorsx/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-    <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive-bootstrap.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
 
-
+    <script src="{% static 'js/circle-progress.min.js' %}"></script>
     <!-- Fade out spinner image when the page is loaded -->
     <script>
         $(window).load(function () {
@@ -163,13 +176,13 @@
             $('#alert-message').fadeOut('slow');
         }, 3000);
     </script>
-    <script>
-        $('#feedbackbtn').click(function () {
-            $('.w3-container').html(`<iframe style="height: 90vh; width: 100%"
-          src="https://docs.google.com/forms/d/e/1FAIpQLSfKpfYtiFs5YLnIMALd3rxUa2q1cgYTuM7owdcmGiNhAyhy3w/viewform?embedded=true&entry.511019843={{ request.path }}"
-          frameborder="0px"></iframe>`);
-        })
-    </script>
+    {#    <script>#}
+    {#        $('#feedbackbtn').click(function () {#}
+    {#            $('.w3-container').html(`<iframe style="height: 90vh; width: 100%"#}
+    {#          src="https://docs.google.com/forms/d/e/1FAIpQLSfKpfYtiFs5YLnIMALd3rxUa2q1cgYTuM7owdcmGiNhAyhy3w/viewform?embedded=true&entry.511019843={{ request.path }}"#}
+    {#          frameborder="0px"></iframe>`);#}
+    {#        })#}
+    {#    </script>#}
 
 
     <script>
@@ -178,28 +191,44 @@
             $(".se-pre-con").fadeIn("fast");
         });
     </script>
-
+    <script>
+        {% if 'iframe' in request.GET %}
+            $('.left_col, .top_nav , .breadcrumb, .edit-buttons, #retakeSurveyBtn, footer').remove();
+            $('.nav-md .container.body .right_col').css({
+                'margin-left': '10px'
+            })
+            $(document).on('click', 'a', function (e) {
+                if ($(this).hasClass('closelink')) {
+                    return
+                } else {
+                    e.preventDefault()
+                }
+            })
+        {% endif %}
+    </script>
     {% block customjss %}{% endblock %}
 
 {% endblock %}
 
 {#Dont Remove this Google analytics code-sushant#}
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-149010152-1"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
+{#<script async src="https://www.googletagmanager.com/gtag/js?id=UA-149010152-1"></script>#}
 
-    function gtag() {
-        dataLayer.push(arguments);
-    }
+{#<script>#}
+{#    window.dataLayer = window.dataLayer || [];#}
+{##}
+{#    function gtag() {#}
+{#        dataLayer.push(arguments);#}
+{#    }#}
+{##}
+{#    gtag('js', new Date());#}
+{##}
+{#    gtag('config', 'UA-149010152-1');#}
+{#    gtag('config', 'GA_TRACKING_ID', {#}
+{#        'user_id': '{{ user.id }}|{{ user.Center_Code.Center_Name }}'#}
+{#    });#}
+{#</script>#}
 
-    gtag('js', new Date());
-
-    gtag('config', 'UA-149010152-1');
-    gtag('config', 'GA_TRACKING_ID', {
-        'user_id': '{{ user.id }}|{{ user.Center_Code.Center_Name }}'
-    });
-</script>
 
 </body>
 

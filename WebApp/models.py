@@ -1,13 +1,17 @@
 import os
+from datetime import datetime
 from time import timezone
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
     FileField
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
@@ -58,10 +62,10 @@ class MemberInfo(AbstractUser):
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
-        _('username'),
+        _('        Username for Login'),
         max_length=150,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. Used for login'),
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. Unique in the system.'),
         validators=[username_validator],
         error_messages={
             'unique': _("A user with that username already exists."),
@@ -72,7 +76,7 @@ class MemberInfo(AbstractUser):
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
         _('staff status'),
-        default=False,
+        default=True,  # to make admin widgets accessible
         help_text=_('Designates whether the user can log into this admin site.'),
     )
     is_superuser = models.BooleanField(
@@ -89,7 +93,8 @@ class MemberInfo(AbstractUser):
         ),
     )
 
-    Member_ID = models.CharField(max_length=150, blank=True, null=True,
+    Member_ID = models.CharField(max_length=150, blank=True, null=True, verbose_name='Registration ID',
+
                                  help_text=_('ID assigned by university/Roll No'))
     password = models.CharField(_('password'), max_length=264)
     Member_Permanent_Address = models.CharField(max_length=500, blank=True, null=True)
@@ -106,7 +111,7 @@ class MemberInfo(AbstractUser):
     Is_Student = models.BooleanField(default=True)
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
-    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices)
+    Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -115,9 +120,23 @@ class MemberInfo(AbstractUser):
     )
 
     def get_student_courses(self):
-        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk))
+        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk),
+                                            End_Date__gt=datetime.now())
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
+
+    def get_teacher_courses(self):
+        courses = []
+        session_list = []
+        ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
+        for i in ig:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
+                                                    Course_Group__pk=i.pk, Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
+            if inning_info.exists():
+                courses.append(i.Course_Code)
+                session_list.append(inning_info)
+        return {'courses': courses, 'session': session_list}
 
     @property
     def get_user_type(self):
@@ -162,8 +181,15 @@ class MemberInfo(AbstractUser):
         return reverse('memberinfo_update', args=(self.pk,))
 
     def __str__(self):
-        if self.first_name and self.last_name:
-            return self.first_name + " " + self.last_name + " (" + self.username + ")"
+        return self.first_name + " " + self.last_name + " (" + self.username + ")"
+        # if self.first_name and self.last_name:
+        #     return self.first_name + " " + self.last_name + " (" + self.username + ")"
+        # else:
+        #     return "-- (" + self.username + ")"
+
+    def getFullName(self):
+        if self.first_name or self.last_name:
+            return self.first_name + " " + self.last_name
         else:
             return "-- (" + self.username + ")"
 
@@ -185,7 +211,7 @@ class CourseInfo(models.Model):
     Updated_DateTime = DateTimeField(auto_now=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
-    Course_Provider = CharField(max_length=250)
+    Course_Provider = CharField(max_length=250, blank=True, null=True)
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -210,6 +236,11 @@ class CourseInfo(models.Model):
     def get_update_url(self):
         return reverse('courseinfo_update', args=(self.pk,))
 
+    def get_teachers_of_this_course(self):
+        teachers_of_this_course_id = InningGroup.objects.filter(Course_Code=self.pk).values('Teacher_Code')
+        teachers_of_this_course = MemberInfo.objects.filter(pk__in=teachers_of_this_course_id)
+        return teachers_of_this_course
+
     # def get_exam_quiz(self):
     #     return Quiz.objects.get(exam_paper=True, course_code=self.id)
 
@@ -222,10 +253,12 @@ class ChapterInfo(models.Model):
     Chapter_Name = CharField(max_length=200)
     Summary = TextField(blank=True, null=True)
     Page_Num = IntegerField(blank=True, null=True)
-
+    mustreadtime = IntegerField(blank=True, null=True)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+    Start_Date = DateTimeField(null=True, blank=True)
+    End_Date = DateTimeField(null=True, blank=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
     # Relationship Fields
@@ -252,8 +285,18 @@ class ChapterInfo(models.Model):
     def get_update_url(self):
         return reverse('chapterinfo_update', args=(self.Course_Code.id, self.pk,))
 
+    def getmustreadtimeinformat(self):
+        return str(int(self.mustreadtime / 3600)) + ':' + str(int(self.mustreadtime % 3600 / 60)) + ':' + str(
+            int(self.mustreadtime % 60)) if self.mustreadtime is not None else None
+
     def __str__(self):
         return self.Chapter_Name
+
+    def clean(self):
+        super().clean()
+        if(self.Start_Date and self.End_Date):
+            if(self.Start_Date > self.End_Date):
+                raise ValidationError("End date must be greater than start date")
 
 
 class ChapterContentsInfo(models.Model):
@@ -296,6 +339,7 @@ class AssignmentInfo(models.Model):
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+    Assignment_Start = DateTimeField(default=timezone.now)
     Assignment_Deadline = DateTimeField(default=in_three_days)
     Course_Code = ForeignKey(
         'CourseInfo',
@@ -327,6 +371,33 @@ class AssignmentInfo(models.Model):
     def get_update_url(self):
         return reverse('assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
+    def get_student_assignment_status(self, user):
+        status = False
+        questions = AssignmentQuestionInfo.objects.filter(
+            Assignment_Code=self.pk)
+        answers = []
+        AnsweredQuestion = set()
+        Question = set()
+        for question in questions:
+            Answer = AssignAnswerInfo.objects.filter(
+                Student_Code=user.pk, Question_Code=question.id)
+            answers += Answer
+            Question.add(question.id)
+        for ans in answers:
+            # print (answers.Question_Code.id)
+            AnsweredQuestion.add(ans.Question_Code.id)
+        unanswered = Question - AnsweredQuestion
+        if not unanswered:
+            status = True
+        print(status)
+        return status
+
+    def clean(self):
+        super().clean()
+        if self.Assignment_Start and self.Assignment_Deadline:
+            if self.Assignment_Start > self.Assignment_Deadline:
+                raise ValidationError("End date must be greater than start date")
+
 
 def upload_to(instance, filename):
     return 'questions/{0}/{1}'.format(instance.id, filename)
@@ -334,7 +405,7 @@ def upload_to(instance, filename):
 
 class AssignmentQuestionInfo(models.Model):
     Question_Title = CharField(max_length=4000)
-    Question_Score = IntegerField(blank=True, null=True)
+    Question_Score = IntegerField(blank=False, null=True, default=10)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
@@ -345,7 +416,7 @@ class AssignmentQuestionInfo(models.Model):
         ('S', 'Short Answer'),
         ('F', 'File Upload'),
     )
-    Answer_Type = CharField(max_length=1, choices=Answer_Choices)
+    Answer_Type = CharField(max_length=1, choices=Answer_Choices, default='S')
 
     Assignment_Code = ForeignKey(
         'AssignmentInfo',
@@ -443,6 +514,11 @@ class AssignAnswerInfo(models.Model):
 
     def get_update_url(self):
         return reverse('assignanswerinfo_update', args=(self.pk,))
+
+
+@receiver(post_delete, sender=AssignAnswerInfo)
+def submission_delete(sender, instance, **kwargs):
+    instance.Assignment_File.delete(False)
 
 
 class SessionInfo(models.Model):
@@ -574,7 +650,6 @@ class InningInfo(models.Model):
 
     Course_Group = models.ManyToManyField(
         'InningGroup',
-
     )
 
     class Meta:
@@ -586,8 +661,14 @@ class InningInfo(models.Model):
     def get_absolute_url(self):
         return reverse('inninginfo_detail', args=(self.pk,))
 
+    def get_teacher_url(self):
+        return reverse('teachers_mysession_detail', args=(self.pk,))
+
     def get_update_url(self):
         return reverse('inninginfo_update', args=(self.pk,))
+
+    def get_teacher_update_url(self):
+        return reverse('teachers_inninginfo_update', args=(self.pk,))
 
     def __str__(self):
         return self.Inning_Name.Session_Name
@@ -632,3 +713,62 @@ class Events(models.Model):
 
     def __str__(self):
         return self.event_name
+
+
+class InningManager(models.Model):
+    sessioninfoobj = models.OneToOneField('InningInfo', on_delete=models.CASCADE)
+    memberinfoobj = models.ManyToManyField('MemberInfo', blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('mysessions', args=(self.pk,))
+
+
+class Attendance(models.Model):
+    # Fields
+    updated = models.DateTimeField(auto_now=True)
+    attendance_date = models.DateField(editable=True)
+    present = models.BooleanField()
+
+    member_code = ForeignKey(
+        'MemberInfo', on_delete=models.CASCADE
+    )
+
+    course = ForeignKey(
+        'CourseInfo', on_delete=models.CASCADE
+    )
+
+    class Meta:
+        ordering = ('-attendance_date',)
+
+    def __unicode__(self):
+        return u'%s' % self.pk
+
+    def get_absolute_url(self):
+        return reverse('teacher_attendance_detail', args=(self.pk,))
+
+    def get_update_url(self):
+        return reverse('teacher_attendance_update', args=(self.pk,))
+
+
+class Notice(models.Model):
+    SHOW_CHOICES = (("1", "One time"), ("2", "Provide Don't show option"), ("3", "Always"))
+
+    title = CharField(max_length=124)
+    message = TextField(blank=True, null=True)
+    status = BooleanField(default=True)
+    show = CharField(max_length=1, choices=SHOW_CHOICES)
+    Start_Date = DateTimeField(null=True, blank=True)
+    End_Date = DateTimeField(null=True, blank=True)
+    Register_DateTime = DateTimeField(auto_now_add=True)
+    Updated_DateTime = DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+
+class NoticeView(models.Model):
+    notice_code = ForeignKey('Notice', on_delete=models.CASCADE)
+    user_code = ForeignKey('MemberInfo', on_delete=models.CASCADE)
+    dont_show = BooleanField(default=False)
+    Register_DateTime = DateTimeField(auto_now_add=True)
+    Updated_DateTime = DateTimeField(auto_now=True)

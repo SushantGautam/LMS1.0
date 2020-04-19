@@ -1,6 +1,8 @@
 {% load static %}
+{% load model_template_relation %}
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true" id="create_chapter_modal">
+     aria-hidden="true" id="create_chapter_modal" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
@@ -19,17 +21,18 @@
 <div class="outerdiv">
     {% include 'WebApp/theme/alerts.html' %}
 
-    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+    <div class=" course-info col-md-12 col-sm-12 col-xs-12 text-center">
         <h2 class="detailListHeader">Course Information</h2>
     </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <hr class="header_hr" style="margin-bottom: 5px;margin-top: 5px;">
+
+        <hr class="course-info header_hr" style="margin-bottom: 5px;margin-top: 5px;">
         <div class="col-md-6 col-sm-12 col-xs-12 no-padding">
-            <h3 align="center"><b>{{ object.Course_Name }}</b></h3>
+            <h3 class="course-info" align="center"><b>{{ object.Course_Name }}</b></h3>
             <br>
 
-            <img class="card-img-top" src="
+            <img class="course-info card-img-top" src="
                             {% if object.Course_Cover_File %}
                                 /media/{{ object.Course_Cover_File }}
                             {% else %}
@@ -44,7 +47,7 @@
             <div class="courseDetailStyle1 row" style="margin-top: 10px">
 
 
-                <div class="col-lg-6" style="font-size: 15px;">
+                <div class="course-info " style="font-size: 15px;">
 
                     <h5 align="center">
                         {% if topic %}
@@ -72,25 +75,47 @@
                     </h5>
                 </div>
                 {% if '/students' not in request.path %}
-                    <div class="col-md-6 col-sm-12 col-xs-12" style="margin-top: 10px;">
+                    <div class="col-md-7 col-sm-12 col-xs-12" style="margin-top: 10px;">
                         <a href="{% if '/teachers' in request.path %}
                     /teachers{{ object.get_update_url }}
                         {% else %}
                             {{ object.get_update_url }}
-                        {% endif %}"><b><u>Edit Course</u></b></a>
-                        <span style="float: right;">
+                        {% endif %}"><span><b>Edit Course</b></span></a>
+                        <span style="margin-left:30px">
+                            <a href='
+                            {% if '/teachers' in request.path %}
+                                {% url 'course_progress' object.pk %}
+                            {% elif '/students' or '/teachers' not in request.path %}
+                                {% url 'admin_course_progress' object.pk %}
+                            {% endif %}
+    '
+                               style="color: green; cursor:pointer"><i
+                                    class="fa fa-trophy"></i> <b> ACHIEVEMENT </b></a></a>
+                        </span>
+                        {% if '/teachers' not in request.path %}
+
+                            <span style="float: right;">
                         <a id="{{ object.pk }}" class="course-confirm-delete"
                            style="color: rgb(255, 0, 0);cursor:pointer">Delete</a>
                     </span>
-                        <form method="post" action="{% url 'courseinfo_delete' pk=object.pk %}"
-                              id="deleteCourse{{ object.pk }}">
-                            {% csrf_token %}
-                            <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
-                            <input type="hidden" value="{{ object.pk }}" name="course_id">
-                        </form>
+                            <form method="post" action="{% url 'courseinfo_delete' pk=object.pk %}"
+                                  id="deleteCourse{{ object.pk }}">
+                                {% csrf_token %}
+                                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                                <input type="hidden" value="{{ object.pk }}" name="course_id">
+                            </form>
+                        {% else %}
+                            <span style="margin-left:20px;">
+                        <a href='attendance/'
+                           style="color: green; cursor:pointer;"><i class="fa fa-tasks"></i> <b> ATTENDANCE </b></a></a>
+                    </span>
+
+                        {% endif %}
+
                     </div>
                 {% endif %}
             </div>
+
             <table class="table">
 
                 <tr>
@@ -114,28 +139,64 @@
                     <td>Status</td>
                     <td>
                         {% if object.Use_Flag == True %}
-                            Active
+                            <span style="color:green"> <b>Active</b>
+                        </span>
                         {% elif object.Use_Flag == False %}
-                            Deactivated
+                            <span class="text-danger"><b>Inactive</b></span>
                         {% endif %}
                     </td>
                 </tr>
+
+                <tr>
+                    <td>Teachers</td>
+                    <td>
+                        {% if object.get_teachers_of_this_course %}
+                            <ul class="row">
+                                {% for eachTeacher in object.get_teachers_of_this_course %}
+                                    <li class="col-md-4"><img class="img-circle" src="{{ eachTeacher.Avatar }}"
+                                                              alt="Profile_picture" width="20" height="22">
+                                        {{ eachTeacher.getFullName }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            No Teachers Assigned Yet
+                        {% endif %}
+                    </td>
+                </tr>
+
+
             </table>
-            <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class=" course-info col-md-12 col-sm-12 col-xs-12 no-padding">
                 <h4 align="center"><b>Course Description</b></h4>
                 <p style="margin-left: 10px; overflow-wrap:break-word; "> {{ object.Course_Description }} </p>
                 <hr>
             </div>
+            {% if not "students" in request.path %}
+                <!-- Quick   Button -->
+                <button type="button" class="btn qts-button" id="new_survey_btn"
+                        data-toggle="modal"
+                        data-target="#survey_content_modal"><i class="fa fa-plus"></i> Survey
+                </button>
+                <!-- End of Quick Survey Button -->
+
+                <button type="button" class="btn qts-button" id="exam_paper_popup"
+                        data-toggle="modal"
+                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
+                </button>
+                <hr>
+            {% endif %}
+
+
 
             <table class="table">
                 {% if quizcount %}
-                    <tr>
+                    <tr class="course-info">
                         <td style="border-top:0 ">
                             <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
     width: -webkit-fill-available;
 ">
 
-                                <div class="panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
+                                <div class=" panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
 
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="headingTwobb">
@@ -150,15 +211,20 @@
                                         </div>
                                         <div id="collapseTwoc" class="panel-collapse collapse" role="tabpanel"
                                              aria-labelledby="headingTwobb">
-                                            <div class="panel-body">
+                                            <div class="panel-body custom-panel-body">
                                                 {% for eachquiz in quizcount %}
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
                                                         {% if not eachquiz.draft %}
-                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
-                                                                Exam</a>
+                                                            {% if eachquiz.sitting_set.all.count > 0 %}
+                                                                <span style="color: limegreen; font-weight: bold">Completed</span>
+                                                            {% else %}
+                                                                <a target="_blank"
+                                                                   href="/quiz/quiz{{ eachquiz.pk }}/take/">
+                                                                    Take Exam</a>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% elif  "teachers" in request.path %}
+                                                    {% elif "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
                                                                   href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
                                                         <br>
@@ -190,34 +256,15 @@
                         {#                        </td>#}
 
                         <td style="border-top:0; ">
-                            {% if 'students' in request.path %}
-                            {% else %}
-                                <button type="button" class="btn qts-button" id="exam_paper_popup"
-                                        data-toggle="modal"
-                                        data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
-                                </button>
-                            {% endif %}
+
                         </td>
                     </tr>
                 {% else %}
                     No Active Exams
-                    {% if not "students" in request.path %}
-                        <button style="float: right" type="button" class="btn qts-button" id="exam_paper_popup"
-                                data-toggle="modal"
-                                data-target="#quiz_create_popup"><i class="fa fa-plus"></i> Exam
-                        </button>
-                    {% endif %}
 
                     <hr>
 
-                    {% if not "students" in request.path %}
-                        <!-- Quick Survey Button -->
-                        <button style="float: right" type="button" class="btn qts-button" id="new_survey_btn"
-                                data-toggle="modal"
-                                data-target="#survey_content_modal"><i class="fa fa-plus"></i> Survey
-                        </button>
-                        <!-- End of Quick Survey Button -->
-                    {% endif %}
+
 
 
                 {% endif %}
@@ -253,15 +300,22 @@
                                         </div>
                                         <div id="collapseTwocd" class="panel-collapse collapse" role="tabpanel"
                                              aria-labelledby="headingTwobbv">
-                                            <div class="panel-body">
+                                            <div class="panel-body custom-panel-body">
                                                 {% for eachquiz in surveycount %}
                                                     <br> {{ eachquiz.Survey_Title }}
                                                     {% if "students" in request.path %}-
                                                         {% if not eachquiz.draft %}
                                                             <a target="_blank"
-                                                               href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">Participate</a>
+                                                               href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">
+                                                                {% getSurveyStatus eachquiz user as can_submit %}
+                                                                {% if can_submit.0 %}
+                                                                    Participate
+                                                                {% else %}
+                                                                    View Details
+                                                                {% endif %}
+                                                            </a>
                                                         {% endif %}
-                                                    {% elif  "teachers" in request.path %}
+                                                    {% elif "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
                                                                   href="/teachers/surveyinfodetail/detail/{{ eachquiz.pk }}/">Detail</a>
                                                         <br>
@@ -297,7 +351,7 @@
                 </tr>
 
 
-                <tr>
+                <tr class="course-info">
                     {% if numberOfQuizExclExams.count %}
                         <td>
 
@@ -319,19 +373,30 @@
                                         </div>
                                         <div id="collapseTwocn" class="panel-collapse collapse" role="tabpanel"
                                              aria-labelledby="headingTwobbx">
-                                            <div class="panel-body">
+                                            <div class="panel-body custom-panel-body">
                                                 {% for eachquiz in numberOfQuizExclExams %}
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
-                                                        <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
-                                                            Quiz</a>
-                                                    {% elif  "teachers" in request.path %}
+                                                        {% if eachquiz.sitting_set.all.count > 0 %}
+                                                            {% if eachquiz.single_attempt %}
+                                                                <span style="color: limegreen; font-weight: bold">Completed</span>
+                                                            {% else %}
+                                                                <a target="_blank"
+                                                                   href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
+                                                                    Quiz Again</a>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
+                                                                Quiz</a>
+                                                        {% endif %}
+                                                    {% elif "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
                                                                   href="/teachers/quiz/detail/{{ eachquiz.pk }}/">Detail</a>
                                                         <br>
                                                         <p style="color: #00A000">
                                                             {{ eachquiz.draft|yesno:"Inactive, Active" }}
                                                         <p>
+
                                                         <hr>
                                                     {% else %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
@@ -388,15 +453,23 @@
 
         </div>
         <div class="col-md-6 col-sm-12 xol-xs-12">
-            <div class="col-md-12 col-sm-12 xol-xs-12">
+            <div class="col-md-12 col-sm-12 xol-xs-12" style="height: 100vh; overflow:auto">
                 <div class="col-md-8 col-sm-12 col-xs-12 text-center">
-                    <h2 class="subHeader">Chapters</h2>
+                    <h2 class="course-info subHeader">Chapters</h2>
 
 
                 </div>
+                <div class="col-md-12">
+                    {% if object.Use_Flag is False %}
+                        <p style="color:red">Note: Course is inactive, therefore chapters and assignments are not
+                            assigned to students.</p>
+                    {% endif %}
+
+                </div>
+
 
                 {% if '/students' not in request.path %}
-                    <div class="col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
+                    <div class=" course-info col-md-4 col-sm-12 col-xs-12 text-center" style="margin-top: 10px">
                         <button type="button" class="btn-sm btn-success" data-toggle="modal"
                                 data-target="#exampleModal1"
                                 id="add-newchapter-btn">
@@ -404,30 +477,165 @@
                         </button>
                     </div>
                 {% endif %}
+
                 <div class="col-md-12 col-sm-12 xol-xs-12">
                     <script> var lastchapter = 0;</script>
                     {% for o in chapters %}
-                        <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
-                            <div class="col-md-8 col-sm-8 col-xs-12">
-                                <h5 style="padding-top: 2px; color: #000000"> Chapter No: {{ o.Chapter_No }}</h5>
-                                <h4>
-                                    <b style="color: #000000">{{ o.Chapter_Name }}</b>
-                                </h4>
+                        <div class=" course-info col-md-12 col-sm-12 col-xs-12 leftborder" style=" margin: 5px;">
+
+
+                            <div>
+                            <span style="padding: 2px 0; font-weight:600;font-size:14px;margin-left:10px; color: #000000"> Chapter No: {{ o.Chapter_No }}
+
+                                {% if o.Use_Flag == False %}
+                                    <span class="text-danger"><b>[Inactive]</b></span>
+                                {% endif %}
+                            </span>
+
+
+
+
+
+
+
+                                {% if '/students' in request.path %}
+                                    {% for x in student_data %}
+                                        {% if  o.pk == x.chapter.chapterObj.pk %}
+
+
+
+
+                                            {% if x.chapter.attendance %}
+                                                <strong style="color: #00A000;font-weight: 700;"></strong>
+                                            {% else %}
+                                                <strong style="color: red;font-weight: 700;">[Studied time must meet the
+                                                    Running time to complete chapter]</strong>
+                                            {% endif %}
+
+
+
+
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
                             </div>
-                            <div class="col-md-4 col-sm-4 col-xs-12">
-                                <a href="{% if '/students' in request.path %}
-                                {{ o.student_get_absolute_url }}
-                            {% elif '/teachers' in request.path %}
-                                {{ o.teacher_get_absolute_url }}
-                            {% else %}
-                               {{ o.get_absolute_url }}
-                            {% endif %}">
-                                    <button type="button" style="float: right;width:150px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                margin-top: 20px;margin-bottom: 10px;">View Chapter &nbsp;<i
-                                            class="fa fa-arrow-right"></i>
-                                    </button>
-                                </a>
+
+
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4>
+
+                                            <span style="color: #000000 ; font-size:16px; font-weight:700;">{{ o.Chapter_Name }}</span>
+                                        </h4>
+
+                                    </div>
+                                    <div class="col-md-6 hidden-xs">
+                                        <a href="{% if '/students' in request.path %}
+                                        {{ o.student_get_absolute_url }}
+                                    {% elif '/teachers' in request.path %}
+                                        {{ o.teacher_get_absolute_url }}
+                                    {% else %}
+                                       {{ o.get_absolute_url }}
+                                    {% endif %}">
+                                            <button type="button" style="float: right;width:115px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                        margin-top: 10px;margin-bottom: 10px;">View Chapter &nbsp;<i
+                                                    class="fa fa-arrow-right"></i>
+                                            </button>
+                                        </a>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px !important;">
+                                    <h4>
+                                        <span class="running-time" style="font-weight:600;  font-style: italic;">
+                                            Period: <b>{{ o.Start_Date|date:'M d, Y' }} - {{ o.End_Date|date:'M d, Y' }}</b>
+                                        </span>
+                                    </h4>
+                                </div>
+
+
+
+
+                                {% if '/students' in request.path %}
+                                    {% for x in student_data %}
+                                        {% if  o.pk == x.chapter.chapterObj.pk %}
+                                            <div class="col-md-6 col-sm-6 col-xs-12" style="padding: 0px !important;">
+                                                <h4>
+                                                <span class="running-time"
+                                                      style="font-weight:600;  font-style: italic;">
+                                                    Running Time: <b>{{ o.getmustreadtimeinformat }}</b>
+                                                </span>
+                                                </h4>
+
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-xs-12" style="padding: 0px !important;">
+
+                                                <div class="laststudydate"
+                                                     style="font-size: 12px; font-weight:600;font-style: italic; margin:5px 0;"
+                                                     data-laststudydate="{{ x.chapter.laststudydate }}"
+                                                     data-laststudydatewithutc="{{ x.chapter.laststudydate }} UTC">
+                                                    Last Studied: <b>{{ x.chapter.laststudydate }}</b>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px !important;">
+                                                <div class="col-md-6 col-sm-6 col-xs-12"
+                                                     style="padding: 0px !important;">
+                                                    <span style="font-weight: 600; font-style:italic">Status:</span>
+                                                    {% if x.chapter.attendance %}
+                                                        <span> <strong
+                                                                style="color: #00A000;font-weight: 700;">Complete</strong></span>
+                                                    {% else %}
+                                                        <span>   <strong style="color: red;font-weight: 700;">In Progress</strong></span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-6 col-sm-6 col-xs-12"
+                                                     style="padding: 0px !important;">
+                                            <span class="studied-time" style=" font-weight:600; font-style: italic;">
+                                                Studied Time: <b>{{ x.chapter.totalstudytime }}</b>
+                                            </span>
+                                                </div>
+
+
+                                                <div class="col-md-12 col-sm-12 col-xs-12">
+
+
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                                             aria-valuemin="0" aria-valuemax="100"
+                                                             style="width:{{ x.chapter.progresspercent }}%;
+                                                                     {% if x.chapter.attendance %}
+                                                                         background-color:green
+                                                                     {% endif %}
+                                                                     ">
+                                                            <span class="sr-only">{{ x.chapter.progresspercent }}% Complete</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="col-md-6 hidden-sm hidden-md hidden-lg">
+                                    <a href="{% if '/students' in request.path %}
+                                    {{ o.student_get_absolute_url }}
+                                {% elif '/teachers' in request.path %}
+                                    {{ o.teacher_get_absolute_url }}
+                                {% else %}
+                                   {{ o.get_absolute_url }}
+                                {% endif %}">
+                                        <button type="button" style="float: right;width:115px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    margin-top: 10px;margin-bottom: 10px;">View Chapter &nbsp;<i
+                                                class="fa fa-arrow-right"></i>
+                                        </button>
+                                    </a>
+
+                                </div>
+
                             </div>
+
 
                             <div class="col-md-12 col-sm-12 col-xs-12">
                                 <hr style="margin-top: 5px; margin-bottom: 5px;">
@@ -449,15 +657,14 @@
         </div>
     </div>
 </div>
-
 <div id="quiz_create_popup" class="modal fade">
     <div class="modal-dialog" style="    width: 80%;">
-        <div class="modal-content">
+        <div class="modal-content" style="height: 90vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Create Quiz</h4>
             </div>
-            <div class="modal-body modal-auto" id="quiz_form_ajax" style="    padding: 10%;">
+            <div class="modal-body modal-auto" id="quiz_form_ajax" style="padding: 10%;">
                 <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
 
             </div>
@@ -469,12 +676,13 @@
 
 <div id="question_form_popup" class="modal fade">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="overflow-y: scroll; height: 90vh">
             <div class="modal-header">
                 <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title" id="question_model_title">Add Question</h4>
             </div>
             <div class="modal-body modal-auto" id="question_form_ajax">
+                <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
             </div>
             <div class="modal-footer">
             </div>
@@ -483,7 +691,7 @@
 </div>
 
 {% block customjss %}
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
     <script>
 
         if (parseInt('{{object.Course_Level}}'))
@@ -533,6 +741,12 @@
 
 
         });
+
+        $('.laststudydate').each(function () {
+            if ($(this).attr('data-laststudydate') != 'None') {
+                $(this).text(new Date($(this).attr('data-laststudydatewithutc')).toLocaleString())
+            }
+        })
     </script>
     <script>
         $('#exam_paper_popup').on('click', function () {
@@ -555,6 +769,18 @@
             console.log(response['student_url']);
             location.reload();
         }
+    </script>
+    <script>
+        let params = new URLSearchParams(location.search);
+        $(document).ready(function () {
+            if (params.get('ifsurvey')) {
+                $('.left_col, .top_nav , .breadcrumb  , #exam_paper_popup , .courseDetailStyle1 , #course-info-teacher , .course-info').remove();
+                $('#new_survey_btn').click();
+
+            }
+        });
+
+
     </script>
 {% endblock %}
 

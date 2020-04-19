@@ -1,10 +1,10 @@
 {% load static %}
 {# <script src="https://player.vimeo.com/api/player.js"></script> #}
-
+{% now "Y-m-d" as todays_date %}
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true" id="create_assignment_modal">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="height: 80vh;   overflow-y: scroll;">
             <div class="modal-header text-center">
                 <h4 class="modal-title" id="exampleModalLabel"><b>Create New Assignment</b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -14,7 +14,7 @@
             </div>
             <input type="hidden" name="today_date" id="id_today_date" value="{{ datetime|date:"Y-m-d" }}"
                    class="select form-control">
-            <div class="modal-body modal-auto" id="create_assignment_modal_body">
+            <div class="modal-body modal-90" id="create_assignment_modal_body">
             </div>
         </div>
     </div>
@@ -64,7 +64,7 @@
 
         {% if '/students' not in request.path %}
 
-            <div class="col-md-12 col-sm-12 col-xs-12">
+            <div id="edit-delete" class="col-md-12 col-sm-12 col-xs-12">
                 <br>
                 <a style="margin-top:5px;margin-right: 15px;" href="{% if '/teachers' in request.path %}
         /teachers{{ object.get_update_url }}
@@ -93,9 +93,33 @@
                 </tr>
 
                 <tr>
+                    <td>Published</td>
+                    <td>
+                        {% if object.Use_Flag is True %}<span style="color:green"> <b>Published</b>
+                        </span>{% elif object.Use_Flag is False %}
+                            <span class="text-danger"><b>Not Published</b></span>{% endif %}
+                    </td>
+                </tr>
+                <tr>
                     <td>Status</td>
-                    <td>{% if object.Use_Flag is True %}Active{% elif object.Use_Flag is False %}
-                        Inactive{% endif %}</td>
+                    <td>
+                        {% now "Y-m-d H:i" as todays_datewithtime %}
+                        {% if object.Start_Date and todays_datewithtime < object.Start_Date|date:"Y-m-d H:i" %}
+                            <span class="text-danger"><b>Inactive</b></span>
+                        {% elif object.End_Date and todays_datewithtime > object.End_Date|date:"Y-m-d H:i" %}
+                            <span class="text-danger"><b>Expired</b></span>
+                        {% else %}
+                            <span class="text-info"><b>Active</b></span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Start Date</td>
+                    <td class="datecon">{{ object.Start_Date|date:"d M, Y H:i" }}</td>
+                </tr>
+                <tr>
+                    <td>End Date</td>
+                    <td class="datecon">{{ object.End_Date|date:"d M, Y H:i" }}</td>
                 </tr>
 
                 <tr>
@@ -118,12 +142,27 @@
                                     <span> {{ pre_quiz.title }} </span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                                        <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
-                                                class=" qts-button " data-toggle="modal" data-target="#quizmodal">
-                                            Play Quiz
-                                        </button>
-                                    </a>
+                                    {% if pre_quiz.sitting_set.all.count > 0 %}
+                                        {% if pre_quiz.single_attempt %}
+                                            <span style="color: limegreen; font-weight: bold">Completed</span>
+                                        {% else %}
+                                            <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                                                <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
+                                                        class=" qts-button " data-toggle="modal"
+                                                        data-target="#quizmodal">
+                                                    Play Again
+                                                </button>
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                                            <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
+                                                    class=" qts-button " data-toggle="modal" data-target="#quizmodal">
+                                                Play Quiz
+                                            </button>
+                                        </a>
+                                    {% endif %}
+
                                 </div>
                             {% empty %}
                                 <p>No pre quiz</p>
@@ -167,7 +206,7 @@
                             </button>
                         </td>
                     {% endif %}
-                    
+
                 </tr>
                 <!--Pre Quiz End  -->
 
@@ -181,12 +220,28 @@
                                     <span> {{ post_quiz.title }} </span>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
-                                                class=" qts-button " data-toggle="modal" data-target="#quizmodal">Play
-                                            Quiz
-                                        </button>
-                                    </a>
+                                    {% if post_quiz.sitting_set.all.count > 0 %}
+                                        {% if post_quiz.single_attempt %}
+                                            <span style="color: limegreen; font-weight: bold">Completed</span>
+                                        {% else %}
+                                            <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                                                <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
+                                                        class=" qts-button " data-toggle="modal"
+                                                        data-target="#quizmodal">Play
+                                                    Again
+                                                </button>
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                                            <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
+                                                    class=" qts-button " data-toggle="modal" data-target="#quizmodal">
+                                                Play
+                                                Quiz
+                                            </button>
+                                        </a>
+                                    {% endif %}
+
                                 </div>
                             {% empty %}
                                 <p>No post quiz</p>
@@ -225,7 +280,7 @@
                         </td>
                     {% endif %}
         </div>
-        
+
         </tr>
         <!-- Post Quiz End -->
 
@@ -252,10 +307,17 @@
     </div>
     <div class="col-md-12">
         <hr class="header_hr">
+        {% if object.Use_Flag is False %}
+            <p style="color:red">Note: Chapter is inactive, therefore assignments are not assigned to students.</p>
+        {% endif %}
         {% for o in assignments %}
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
                 <div class="col-md-8 col-sm-8 col-xs-8">
-                    <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5>
+                    <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
+                        {% if o.Use_Flag == False %}
+                            <span class="text-danger"><b>[Inactive]</b></span>
+                        {% endif %}
+                    </h5>
                     <h5>
                         <b style="color: #000000">{{ o.Assignment_Topic }}</b>
                     </h5>
@@ -276,7 +338,10 @@
 
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
-                    <p>Submission Deadline - {{ o.Assignment_Deadline }}</p>
+                    <p>Start Date - <span
+                            class="datecon">{{ o.Assignment_Start|date:'M d, Y H:i' }}</span></p>
+                    <p>Submission Deadline - <span
+                            class="datecon">{{ o.Assignment_Deadline|date:'M d, Y H:i' }}</span></p>
                 </div>
             </div>
         {% endfor %}
@@ -291,7 +356,7 @@
 
 
         <!-- Modal content-->
-        <div class="modal-content" style="height:100%">
+        <div class="modal-content" style="height:100%">ur
             <div class="modal-header">
                 <div class="col-md-12">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -319,13 +384,15 @@
 </div>
 
 <div id="quiz_create_popup" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog" style="width: 80%;">
+        <div class="modal-content" style="height: 80vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Create Quiz</h4>
             </div>
-            <div class="modal-body modal-auto" id="quiz_form_ajax">
+            <div class="modal-body modal-auto" id="quiz_form_ajax" style="padding: 10%;">
+                <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+
             </div>
             <div class="modal-footer">
             </div>
@@ -335,12 +402,14 @@
 
 <div id="question_form_popup" class="modal fade">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="height: 80vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title" id="question_model_title">Add Question</h4>
             </div>
             <div class="modal-body" id="question_form_ajax">
+                <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+
             </div>
             <div class="modal-footer">
             </div>
@@ -349,7 +418,8 @@
 </div>
 
 {% block customjss %}
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
     <script>
         $(document).on('click', '.chapter-confirm-delete', function () {
             ans = confirm('Are you sure you want to delete this Chapter?');
@@ -359,6 +429,21 @@
                 return false;
             }
         });
+    </script>
+    <script>
+        let params = new URLSearchParams(location.search);
+        $(document).ready(function () {
+
+
+            if (params.get('ifquiz')) {
+                $('.left_col, .top_nav , .breadcrumb  , .detailListHeader , #buttons , #add-newassignment-btn , .header_hr , #edit-delete , #footerText').remove();
+                $('#pre_test_popup').click();
+
+            }
+            params.get('ifquiz')
+        });
+
+
     </script>
 
     <script>

@@ -1,254 +1,340 @@
 {% load readmore %}
-
+{% load static %}
 
 <div style="position: sticky; width: 100%; top: 0; z-index: 1">
 
-    <div class="progress">
-        <div id="dynamic" class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar"
-             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-            <span id="current-progress"></span>
-        </div>
-
+  <div class="progress">
+    <div id="dynamic" class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar"
+         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+      <span id="current-progress"></span>
     </div>
-    <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" id="chk" checked>
-        <label class="custom-control-label" for="customSwitch1">Live Survey</label>
-    </div
+
+  </div>
+  <div class="custom-control custom-switch">
+    <input type="checkbox" class="custom-control-input" id="chk" checked>
+    <label class="custom-control-label" for="customSwitch1">Live Survey</label>
+  </div>
 </div>
 <div class="clearfix">
 </div>
 
 <div class="container">
-    <div class="row" id="surveyView">
+  <div class="row" id="surveyView">
 
 
-        <h1 class="pollTitle">{{ object.Survey_Title }}</h1>
+    <h1 class="pollTitle">{{ object.Survey_Title }}</h1>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-9 col-sm-9">
-                    <div class="viewSurveyTitle">
-                        <ul class="card_labels">
-                            <li>
-                                <div class="form-group">
-                                    <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                                           for="first-name">Category
-                                        :
-                                        <span class="category-label">{{ object.Category_Code }}</span>
-                                    </label>
-                                </div>
-                            </li>
-                            <li class="surveyViewDates">
-                                <i class="fa fa-calendar"></i><label>Start date: {{ object.Start_Date }}</label>
-                            </li>
-                            <li class="surveyViewDates">
-                                <i class="fa fa-calendar"></i><label>End date: {{ object.End_Date }}</label>
-                            </li>
-                            <li class="surveyViewDates">
-                                <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
-                                Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
-                            </li>
-                        </ul>
-
-
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-5 col-sm-5">
+          <div class="viewSurveyTitle">
+            <ul class="card_labels">
+                <li>
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                               for="first-name">Category :
+                            <span class="category-label">{{ object.Category_Code }}</span>
+                        </label>
                     </div>
-                </div>
-                <div class="col-md-3 col-sm-3" style="text-align:right">
-                    <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-toggle="modal"
-                            data-target="#survey_form_modal">
-                        Retake survey
-                    </button>
-                </div>
-            </div>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="fa fa-calendar"></i><label>Start date: <span
+                        class="datecon">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="fa fa-calendar"></i><label>End date: <span
+                        class="datecon">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
+                    Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
+                </li>
+            </ul>
+
+
+          </div>
         </div>
-        <div class=" horizontalBar
-          ">
+        <div class="col-md-5 col-sm-5">
+          <ul class="card_labels">
+            <li>
+              <div class="form-group">
+                <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                       for="first-name">Status</label>
+              </div>
+            </li>
+            <li class="surveyViewDates">
+              <h4>
+                {% if object.get_status == "Expired" %}
+                  <span class="label label-danger">Expired</span>
+                {% elif object.get_status == "Active" %}
+                  <span class="label label-success">Active</span>
+                {% elif object.get_status == "Upcoming" %}
+                  <span class="label label-info">Upcoming</span>
+                {% endif %}
+              </h4>
+            </li>
+            <li class="surveyViewDates">
+              <h4>
+                {% if object.Use_Flag == False %}
+                  <span class="label label-warning">Hidden</span>
+                {% endif %}
+              </h4>
+            </li>
+          </ul>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-9">
-                    <div class="col-md-12">
-                        {% for question in questions %}
-                            {% if question.Question_Type == "MCQ" %}
 
-                                <div class="x_panel" id="pollsQuestions"
-                                     style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
-                                    <div class="x_title">
-                                        <h2 class="title ">
-                                            <strong>{{ forloop.counter }} . &nbsp;
-                                                {{ question.Question_Name }}</strong>
-                                        </h2>
-
-                                    </div>
-
-                                    <div id="container{{ forloop.counter }}"
-                                         style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-                                    <input type="radio" name="mychart" class="mychart" id="column{{ forloop.counter }}"
-                                           value="column"
-                                           onclick="chartfunc{{ forloop.counter }}()" checked>Column &nbsp;
-                                    <input type="radio" name="mychart" class="mychart" id="bar{{ forloop.counter }}"
-                                           value="bar"
-                                           onclick="chartfunc{{ forloop.counter }}()">Bar&nbsp;
-                                    <input type="radio" name="mychart" class="mychart" id="pie{{ forloop.counter }}"
-                                           value="pie"
-                                           onclick="chartfunc{{ forloop.counter }}()">Pie&nbsp;
-                                    <input type="radio" name="mychart" class="mychart" id="line" value="line"
-                                           onclick="chartfunc{{ forloop.counter }}()">Line&nbsp;
-                                    <br/>
-
-                                    <script>
-
-                                        document.addEventListener("DOMContentLoaded", function (event) {
-
-                                            $(function () {
-
-
-                                                // Create the chart
-
-                                                var options = {
-                                                    chart: {
-                                                        events: {
-                                                            drilldown: function (e) {
-                                                                if (!e.seriesOptions) {
-
-                                                                    var chart = this;
+        <div class="col-md-2 col-sm-2" style="text-align:right">
+          {#          {% if not '/students' in request.path and not '/teachers' in request.path %}#}
+          {#            <form method="POST" action="{% url 'surveyinfo_delete' %}"#}
+          {#                  onsubmit="return confirm('Are you sure you want to delete?');">#}
+          {#              {% csrf_token %}#}
+          {#              <input type="hidden" value="{{ object.pk }}" name="objectpk">#}
+          {#              <button type="submit" class="btn btn-danger btn-lg">#}
+          {#                <i class="fa fa-trash" aria-hidden="true"></i> Delete Survey#}
+          {#              </button>#}
+          {#            </form>#}
+          {##}
+          {#          {% endif %}#}
+          {#          <button type="button" class="btn btn-info btn-lg" id="update_survey_button" data-toggle="modal"#}
+          {#                  data-target="#survey_form_modal">#}
+          {#            Update survey#}
+          {#          </button>#}
+          {#          <button type="button" class="btn btn-info btn-lg" id="update_survey_button_limited" data-toggle="modal"#}
+          {#                  data-target="#survey_form_modal">#}
+          {#            Update survey info#}
+          {#          </button>#}
+          {#          <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-toggle="modal"#}
+          {#                  data-target="#survey_form_modal">#}
+          {#            Retake survey#}
+          {#          </button>#}
+          {#          <br>#}
+          {#          {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk %}#}
+          {#            teacher and own: TRUE#}
+          {#          {% else %}#}
+          {#            teacher and own: FALSE#}
+          {#          {% endif %}#}
+          {#          <br>#}
+          {#          {% if not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" %}#}
+          {#            admin and not system: TRUE#}
+          {#          {% else %}#}
+          {#            admin and not system: FALSE#}
+          {#          {% endif %}#}
+          {#          <br>#}
+          {#          {% if not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}#}
+          {#            admin and own: TRUE#}
+          {#          {% else %}#}
+          {#            admin and own: FALSE#}
+          {#          {% endif %}#}
+          {##}
+          {#          <br>#}
 
 
-                                                                    // Show the loading label
-                                                                    chart.showLoading('Loading ...');
+          <!-- ##################### check if user has access to change  ##############################  -->
+          <button type="button" class="btn btn-info btn-md" id="retakeSurveyBtn" data-toggle="modal"
+                  data-target="#survey_form_modal">
+            Retake survey
+          </button>
+          {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
+            <!-- ##################### user has access  ##############################  -->
+            <!-- ##################### user can delete  ##############################  -->
 
-                                                                    setTimeout(function () {
-                                                                        chart.hideLoading();
-                                                                        chart.addSeriesAsDrilldown(e.point, series);
-                                                                    }, 1000);
-                                                                }
+            <form method="POST" action="{% url 'surveyinfo_delete' %}"
+                  onsubmit="return confirm('Are you sure you want to delete?');">
+              {% csrf_token %}
+              <input type="hidden" value="{{ object.pk }}" name="objectpk">
+              <button type="submit" class="btn btn-danger btn-md">
+                <i class="fa fa-trash" aria-hidden="true"></i> Delete Survey
+              </button>
+            </form>
+            {% if object.check_expired %}
+              <!-- ##################### survey expired so cannot edit  ##############################  -->
+              {#              <button type="button" class="btn btn-warning btn-md" disabled>#}
+              {#                Survey Expired#}
+              {#              </button>#}
+            {% elif object.check_started %}
+              <!-- ##################### survey started already so only update basic info  ######################  -->
+              <button type="button" class="btn btn-info btn-md" id="update_survey_button_limited" data-toggle="modal"
+                      data-target="#survey_form_modal">
+                Edit Basic Info
+              </button>
+            {% else %}
+              <!-- ##################### else full update access  ##############################  -->
+              <button type="button" class="btn btn-info btn-md" id="update_survey_button" data-toggle="modal"
+                      data-target="#survey_form_modal">
+                Edit
+              </button>
+            {% endif %}
+          {% else %}
+            <!-- ##################### No Access  ##############################  -->
+            <button type="button" class="btn btn-warning btn-md" disabled>
+              No Edit Permission
+            </button>
+          {% endif %}
 
-                                                            }
-                                                        },
-                                                        plotBorderWidth: 0
-                                                    },
+        </div>
+      </div>
+    </div>
+    <div class=" horizontalBar">
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-9" id="to_print">
+          <div class="col-md-12">
+            <button type="button" id="btnDownload" class="btn btn-primary btn-md">Print</button>
+            {% for question in questions %}
+              {% if question.Question_Type == "MCQ" %}
 
-                                                    credits: {
-                                                        enabled: false
-                                                    },
+                <div class="x_panel" id="pollsQuestions"
+                     style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                  <div class="title1">
+                    <h2 class="title ">
+                      <strong>{{ forloop.counter }} . &nbsp;
+                        {{ question.Question_Name }}</strong>
+                    </h2>
 
+                  </div>
 
-                                                    title: {
-                                                        text: '',
-                                                    },
-                                                    //
-                                                    // subtitle: {
-                                                    //         text: 'Subtitle'
-                                                    // },
-                                                    //
-                                                    xAxis: {
-                                                        type: 'category',
-                                                    },
-                                                    //
-                                                    yAxis: {
+                  <div id="container{{ forloop.counter }}"
+                       data-qn-title="{{ forloop.counter }}. {{ question.Question_Name }}"
+                       style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                  <input type="radio" name="mychart" class="mychart" id="column{{ forloop.counter }}"
+                         value="column"
+                         onclick="chartfunc{{ forloop.counter }}()" checked>Column &nbsp;
+                  <input type="radio" name="mychart" class="mychart" id="bar{{ forloop.counter }}"
+                         value="bar"
+                         onclick="chartfunc{{ forloop.counter }}()">Bar&nbsp;
+                  <input type="radio" name="mychart" class="mychart" id="pie{{ forloop.counter }}"
+                         value="pie"
+                         onclick="chartfunc{{ forloop.counter }}()">Pie&nbsp;
+                  <input type="radio" name="mychart" class="mychart" id="line" value="line"
+                         onclick="chartfunc{{ forloop.counter }}()">Line&nbsp;
+                  <br/>
 
-                                                        title: {
-                                                            margin: 10,
-                                                            text: 'Percentage(%)'
-                                                        },
-                                                    },
-                                                    //
-                                                    legend: {
-                                                        enabled: false,
-                                                    },
-                                                    //
-                                                    plotOptions: {
-                                                        series: {
-                                                            pointPadding: 0.2,
-                                                            borderWidth: 0,
-                                                            dataLabels: {
-                                                                enabled: true,
-                                                                format: '{point.y:.1f}%'
-                                                            }
-                                                        },
-                                                        pie: {
-                                                            allowPointSelect: true,
-                                                            cursor: 'pointer',
-                                                            dataLabels: {
-                                                                enabled: true,
-                                                                format: '{point.name}: <b>{point.y}%</b>'
-                                                            }
-                                                        }
-                                                    },
-                                                    //
+                  <script>
+                      document.addEventListener("DOMContentLoaded", function (event) {
+                          $(function () {
+                              // Create the chart
+                              var options = {
+                                  chart: {
+                                      events: {
+                                          drilldown: function (e) {
+                                              if (!e.seriesOptions) {
+                                                  var chart = this;
+                                                  // Show the loading label
+                                                  chart.showLoading('Loading ...');
+                                                  setTimeout(function () {
+                                                      chart.hideLoading();
+                                                      chart.addSeriesAsDrilldown(e.point, series);
+                                                  }, 1000);
+                                              }
+                                          }
+                                      },
+                                      plotBorderWidth: 0
+                                  },
+                                  credits: {
+                                      enabled: false
+                                  },
+                                  title: {
+                                      text: '',
+                                  },
+                                  //
+                                  // subtitle: {
+                                  //         text: 'Subtitle'
+                                  // },
+                                  //
+                                  xAxis: {
+                                      type: 'category',
+                                  },
+                                  //
+                                  yAxis: {
+                                      title: {
+                                          margin: 10,
+                                          text: 'Percentage(%)'
+                                      },
+                                  },
+                                  //
+                                  legend: {
+                                      enabled: false,
+                                  },
+                                  //
+                                  plotOptions: {
+                                      series: {
+                                          pointPadding: 0.2,
+                                          borderWidth: 0,
+                                          dataLabels: {
+                                              enabled: true,
+                                              format: '{point.y:.1f}%'
+                                          }
+                                      },
+                                      pie: {
+                                          allowPointSelect: true,
+                                          cursor: 'pointer',
+                                          dataLabels: {
+                                              enabled: true,
+                                              format: '{point.name}: <b>{point.y}%</b>'
+                                          }
+                                      }
+                                  },
+                                  //
+                                  tooltip: {
+                                      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                      pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
+                                  },
+                                  series: [{
+                                      name: "",
+                                      colorByPoint: true,
+                                      data: [
+                                          {% for option in question.optioninfo.all %}
+                                              {
+                                                  name: "{{ forloop.counter }}. {{ option.Option_Name }}",
+                                                  y: {{ option.get_option_percentage }},
+                                                  drilldown: "Chrome"
+                                              },
+                                          {% endfor %}
 
+                                      ]
+                                  }],
+                                  //
+                                  drilldown: {
+                                      series: []
+                                  }
+                              };
 
-                                                    tooltip: {
-                                                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                                                        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
-                                                    },
-                                                    series: [{
-                                                        name: "",
-                                                        colorByPoint: true,
-                                                        data: [
-                                                            {% for option in question.optioninfo.all %}
-                                                                {
-                                                                    name: "{{ forloop.counter }}. {{ option.Option_Name }}",
-                                                                    y: {{ option.get_option_percentage }},
-                                                                    drilldown: "Chrome"
-                                                                },
-                                                            {% endfor %}
+                              // Column chart
+                              options.chart.renderTo = 'container{{ forloop.counter }}';
+                              options.chart.type = 'column';
+                              var chart1 = new Highcharts.Chart(options);
 
-                                                        ]
-                                                    }],
-                                                    //
-                                                    drilldown: {
-                                                        series: []
-                                                    }
-                                                };
+                              chartfunc{{ forloop.counter }} = function () {
+                                  var column = document.getElementById('column{{ forloop.counter }}');
+                                  var bar = document.getElementById('bar{{ forloop.counter }}');
+                                  var pie = document.getElementById('pie{{ forloop.counter }}');
+                                  var line = document.getElementById('line{{ forloop.counter }}');
+                                  $('#chk').prop('checked', false);
+                                  if (column.checked) {
 
-                                                // Column chart
-                                                options.chart.renderTo = 'container{{ forloop.counter }}';
-                                                options.chart.type = 'column';
-                                                var chart1 = new Highcharts.Chart(options);
-
-
-                                                chartfunc{{ forloop.counter }} = function () {
-                                                    var column = document.getElementById('column{{ forloop.counter }}');
-                                                    var bar = document.getElementById('bar{{ forloop.counter }}');
-                                                    var pie = document.getElementById('pie{{ forloop.counter }}');
-                                                    var line = document.getElementById('line{{ forloop.counter }}');
-
-                                                    $('#chk').prop('checked', false)
-                                                    if (column.checked) {
-
-                                                        options.chart.renderTo = 'container{{ forloop.counter }}';
-                                                        options.chart.type = 'column';
-                                                        var chart1 = new Highcharts.Chart(options);
-                                                    } else if (bar.checked) {
-                                                        options.chart.renderTo = 'container{{ forloop.counter }}';
-                                                        options.chart.type = 'bar';
-                                                        var chart1 = new Highcharts.Chart(options);
-                                                    } else if (pie.checked) {
-                                                        options.chart.renderTo = 'container{{ forloop.counter }}';
-                                                        options.chart.type = 'pie';
-                                                        var chart1 = new Highcharts.Chart(options);
-                                                    } else {
-                                                        options.chart.renderTo = 'container{{ forloop.counter }}';
-                                                        options.chart.type = 'line';
-                                                        var chart1 = new Highcharts.Chart(options);
-                                                    }
-
-                                                }
-
-
-                                            });
-                                        });
-
-
-                                    </script>
-
-
-                                </div>
-
-
-
-                                <!-- <div class="bs-chart-container" id="progressResult" style="width: 80%;">
+                                      options.chart.renderTo = 'container{{ forloop.counter }}';
+                                      options.chart.type = 'column';
+                                      var chart1 = new Highcharts.Chart(options);
+                                  } else if (bar.checked) {
+                                      options.chart.renderTo = 'container{{ forloop.counter }}';
+                                      options.chart.type = 'bar';
+                                      var chart1 = new Highcharts.Chart(options);
+                                  } else if (pie.checked) {
+                                      options.chart.renderTo = 'container{{ forloop.counter }}';
+                                      options.chart.type = 'pie';
+                                      var chart1 = new Highcharts.Chart(options);
+                                  } else {
+                                      options.chart.renderTo = 'container{{ forloop.counter }}';
+                                      options.chart.type = 'line';
+                                      var chart1 = new Highcharts.Chart(options);
+                                  }
+                              }
+                          });
+                      });
+                  </script>
+                </div>
+                <!-- <div class="bs-chart-container" id="progressResult" style="width: 80%;">
 
                                 {% for option in question.optioninfo.all %}
                                 <div class="surveyResults">
@@ -272,167 +358,167 @@
 
 
 
-                            {% else %}
-                                <div class="">
-                                    <div class="x_panel" id="pollsQuestions"
-                                         style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
-                                        <div>
-                                            <h2 class="title ">
-                                                <strong>{{ forloop.counter }}.
-                                                    &nbsp; {{ question.Question_Name }}</strong>
-                                            </h2>
-                                            <h5>
-                                                {#                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}#}
-                                            </h5>
-                                        </div>
-                                        <div style="
+              {% else %}
+                <div class="">
+                  <div class="x_panel" id="pollsQuestions"
+                       style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                    <div>
+                      <h2 class="title ">
+                        <strong>{{ forloop.counter }}.
+                          &nbsp; {{ question.Question_Name }}</strong>
+                      </h2>
+                      <h5>
+                        {#                    {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}#}
+                      </h5>
+                    </div>
+                    <div style="
                                         width: 100%;
                                         height: 2px;
                                         display: flex;
                                         flex-direction: auto;
                                         background-color: #f1f1f1; "></div>
 
-                                        <div id="WordCloud{{ forloop.counter }}" style="min-width: 310px;
+                    <div id="WordCloud{{ forloop.counter }}" style="min-width: 310px;
 max-width: 800px;
 margin: 0 auto"></div>
 
 
-                                        <div class="x_content" style="margin-left: 40px;">
+                    <div class="x_content" style="margin-left: 40px;">
 
-                                            <a class="panel-heading collapsed" role="tab"
-                                               id="heading{{ forloop.counter }}"
-                                               data-toggle="collapse" data-parent="#accordion"
-                                               href="#collapse{{ forloop.counter }}" aria-expanded="false"
-                                               aria-controls="collapse{{ forloop.counter }}">
-                                                <h4 class="panel-title" onclick="$('#chk').prop('checked',
+                      <a class="panel-heading collapsed" role="tab"
+                         id="heading{{ forloop.counter }}"
+                         data-toggle="collapse" data-parent="#accordion"
+                         href="#collapse{{ forloop.counter }}" aria-expanded="false"
+                         aria-controls="collapse{{ forloop.counter }}">
+                        <h4 class="panel-title" onclick="$('#chk').prop('checked',
                                         false)">Click to See Answers
-                                                </h4>
-                                            </a>
+                        </h4>
+                      </a>
 
-                                            <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse"
-                                                 role="tabpanel" aria-labelledby="heading{{ forloop.counter }}"
-                                                 aria-expanded="false" style="height: 0px;">
-                                                <p class="SAQ_answer">
-                                                    {% for answer in question.get_answers %}
-                                                        <div id="{{ forloop.parentloop.counter }}Answer_{{ forloop.counter }}">
-                                                            <b> S.N:
-                                                                {{ forloop.counter }}</b><br>{{ answer.Answer_Value|readmore:15 }}
+                      <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse"
+                           role="tabpanel" aria-labelledby="heading{{ forloop.counter }}"
+                           aria-expanded="false" style="height: 0px;">
+                        <p class="SAQ_answer">
+                          {% for answer in question.get_answers %}
+                            <div id="{{ forloop.parentloop.counter }}Answer_{{ forloop.counter }}">
+                              <b> S.N:
+                                {{ forloop.counter }}</b><br>{{ answer.Answer_Value|readmore:15 }}
 
-                                                        </div>
-                                                        <strong>{{ answer.Submit_Code.Student_Code }}</strong> : on
-                                                        August 8
-                                                        at
-                                                        12:30 PM<br/>
-                                                        <hr>
-                                                    {% endfor %}
+                            </div>
+                            <strong>{{ answer.Submit_Code.Student_Code }}</strong> : on
+                            <span class="datecon"> {{ answer.Submit_Code.Created_Date|date:'Y-m-d H:i' }} </span>
+                            <br/>
+                            <hr>
+                          {% endfor %}
 
-                                                </p>
-
-
-                                            </div>
+                        </p>
 
 
-                                            <script>
-                                                document.addEventListener("DOMContentLoaded", function (event) {
-
-                                                    var Answer_str = "";
-                                                    $('[id^="{{ forloop.counter }}Answer_"]').each(function () {
-                                                        Answer_str += $(this).text() + " ";
-
-                                                        var lines = Answer_str.split(/[,\. ]+/g),
-                                                            data = Highcharts.reduce(lines, function (arr, word) {
-                                                                var obj = Highcharts.find(arr, function (obj) {
-                                                                    return obj.name === word;
-                                                                });
-                                                                if (obj) {
-                                                                    obj.weight += 1;
-                                                                } else {
-                                                                    obj = {
-                                                                        name: word,
-                                                                        weight: 1
-                                                                    };
-                                                                    arr.push(obj);
-                                                                }
-                                                                return arr;
-                                                            }, []);
-
-                                                        Highcharts.chart('WordCloud{{ forloop.counter }}',
-                                                            {
-                                                                credits: {
-                                                                    enabled: false
-                                                                },
-
-                                                                series: [{
-                                                                    type: 'wordcloud',
-                                                                    data: data,
-                                                                    name: 'Occurrences'
-                                                                }],
-                                                                title: {
-                                                                    text: ''
-                                                                }
-                                                            });
-                                                    });
-                                                });
-
-                                            </script>
+                      </div>
 
 
-                                            <!-- <label class="SAQ_answer_label">Answers:</label> -->
-                                        </div>
-                                    </div>
-                                </div>
+                      <script>
+                          document.addEventListener("DOMContentLoaded", function (event) {
 
-                            {% endif %} {% endfor %}
+                              var Answer_str = "";
+                              $('[id^="{{ forloop.counter }}Answer_"]').each(function () {
+                                  Answer_str += $(this).text() + " ";
+
+                                  var lines = Answer_str.split(/[,\. ]+/g),
+                                      data = Highcharts.reduce(lines, function (arr, word) {
+                                          var obj = Highcharts.find(arr, function (obj) {
+                                              return obj.name === word;
+                                          });
+                                          if (obj) {
+                                              obj.weight += 1;
+                                          } else {
+                                              obj = {
+                                                  name: word,
+                                                  weight: 1
+                                              };
+                                              arr.push(obj);
+                                          }
+                                          return arr;
+                                      }, []);
+
+                                  Highcharts.chart('WordCloud{{ forloop.counter }}',
+                                      {
+                                          credits: {
+                                              enabled: false
+                                          },
+
+                                          series: [{
+                                              type: 'wordcloud',
+                                              data: data,
+                                              name: 'Occurrences'
+                                          }],
+                                          title: {
+                                              text: ''
+                                          }
+                                      });
+                              });
+                          });
+
+                      </script>
+
+
+                      <!-- <label class="SAQ_answer_label">Answers:</label> -->
                     </div>
+                  </div>
                 </div>
-                <div class="col-md-3">
-                    {% for survey in history %}
-                        <div class="x_panel" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
 
-                            {% if survey.id == object.id %}
-                                <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
-                                <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-danger text-center">{{ survey.Created_Date }}</h4>
-                                <h4 class="text-danger text-center">{{ survey.Updated_Date }}</h4>
-                            {% else %}
-                                <h4 class="text-info text-center"><a
-                                        href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
-                                <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-info text-center">{{ survey.Created_Date }}</h4>
-                                <h4 class="text-info text-center">{{ survey.Updated_Date }}</h4>
-                            {% endif %}
-
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+              {% endif %} {% endfor %}
+          </div>
         </div>
+        <div class="col-md-3">
+          {% for survey in history %}
+            <div class="x_panel" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+
+              {% if survey.id == object.id %}
+                <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
+                <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
+                <h4 class="text-danger text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
+                <h4 class="text-danger text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
+              {% else %}
+                <h4 class="text-info text-center"><a
+                    href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
+                <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
+                <h4 class="text-info text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
+                <h4 class="text-info text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
+              {% endif %}
+
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <div id="survey_form_modal" class="modal fade" style="height: -webkit-fill-available;">
-    <div class="modal-dialog">
-        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Survey</h4>
-                <div class="form-group">
-                    <label class="control-label " id="categoryTitle" for="first-name">
-                        {% for category in categories %}
-                            <span class="generalLabel">{{ category.Category_Name }}</span>
-                        {% endfor %}
-                    </label>
-                </div>
-            </div>
-            <div class="modal-body" id="surveyForm">
-                <div>
-                    <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
-                </div>
-            </div>
-            <div class="modal-footer">
-            </div>
+  <div class="modal-dialog">
+    <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create Survey</h4>
+        <div class="form-group">
+          <label class="control-label " id="categoryTitle" for="first-name">
+            {% for category in categories %}
+              <span class="generalLabel">{{ category.Category_Name }}</span>
+            {% endfor %}
+          </label>
         </div>
+      </div>
+      <div class="modal-body" id="surveyForm">
+        <div>
+          <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
     </div>
+  </div>
 </div>
 
-<script src="https://code.highcharts.com/modules/wordcloud.js"></script>
+<script src="{% static 'vendorsx/worldcloud.js' %}"></script>
+

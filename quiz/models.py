@@ -415,7 +415,7 @@ class Quiz(models.Model):
     # start_time=
     title = models.CharField(
         verbose_name=_("Title"),
-        max_length=60, blank=False)
+        max_length=255, blank=False)
 
     description = models.TextField(
         verbose_name=_("Description"),
@@ -611,8 +611,22 @@ class Quiz(models.Model):
     def anon_q_data(self):
         return str(self.id) + "_data"
 
-
-
+    # User Quiz submission can be checked by quiz.sitting_set.all.count > 0.
+    # Each completed quiz will have the user sitting
+    # def can_take(self, user):
+    #     if self.draft and not user.has_perm('quiz.change_quiz'):
+    #         raise PermissionDenied
+    #
+    #     try:
+    #         self.logged_in_user = user.is_authenticated()
+    #     except TypeError:
+    #         self.logged_in_user = user.is_authenticated
+    #
+    #     if self.logged_in_user:
+    #         self.sitting = Sitting.objects.user_sitting(
+    #             user, self)
+    #
+    #     return self.sitting
 
 
 @python_2_unicode_compatible
@@ -737,7 +751,7 @@ class Sitting(models.Model):
     score_list = models.CharField(
         max_length=1024,
         verbose_name=_("Score List"),
-        validators=[validate_comma_separated_integer_list])
+        validators=[])
 
     incorrect_questions = models.CharField(
         max_length=1024,
@@ -919,7 +933,8 @@ class Sitting(models.Model):
         """
         answered = len(json.loads(self.user_answers))
         total = self.get_max_score
-        return answered, total
+        total_questions = len(self.question_order.split(',')[:-1])
+        return answered, total, total_questions
 
     def get_progress(self):
         answered = len(json.loads(self.user_answers))

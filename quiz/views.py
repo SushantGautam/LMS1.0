@@ -75,7 +75,8 @@ class QuizListView(ListView):
     model = Quiz
 
     def get_queryset(self):
-        queryset = super(QuizListView, self).get_queryset()
+        queryset = super(QuizListView, self).get_queryset().order_by('-pk')
+        print(queryset.values('pk', 'title'))
         return queryset.filter(cent_code=self.request.user.Center_Code)
 
 
@@ -343,7 +344,12 @@ class QuizTake(FormView):
 
         # if self.quiz.exam_paper is False:
         #    self.sitting.delete()
-        return redirect('student_progress_detail', pk=self.sitting.id)
+        if self.request.GET.get('iframe'):
+            return redirect(
+                reverse('student_progress_detail', kwargs={'pk': self.sitting.id}) + '?iframe=' + self.request.GET.get(
+                    'iframe'))
+        else:
+            return redirect('student_progress_detail', pk=self.sitting.id)
 
         # return render(self.request, self.result_template_name, results)
 
@@ -506,7 +512,7 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['answers_formset'] = AnsFormset(self.request.POST)
+            context['answers_formset'] = AnsFormset(self.request.POST),
             context['quiz_id'] = self.request.POST.get("quiz_id", None)
         else:
             context['answers_formset'] = AnsFormset()
@@ -518,7 +524,7 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         vform = super().form_valid(form)
         context = self.get_context_data()
-        ans = context['answers_formset']
+        ans = context['answers_formset'][0]
         if context['quiz_id'] is not None:
             get_object_or_404(Quiz, id=context['quiz_id']).mcquestion.add(self.object)
         with transaction.atomic():

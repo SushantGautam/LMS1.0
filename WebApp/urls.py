@@ -1,12 +1,8 @@
-from django.conf.urls import url
 # from django.contrib.auth.views import login, logout
 from django.contrib.auth.decorators import login_required
-from django.urls import path, include
-from rest_framework import routers
+from django.urls import path
 
-from . import api
 from . import views
-
 
 urlpatterns = (
     # urls for Profile
@@ -47,6 +43,8 @@ urlpatterns += (
 urlpatterns += (
     # urls for MemberInfo
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
+    path('memberinfoajax/', views.MemberInfoListViewAjax.as_view(), name='memberinfo_listajax'),
+    # path('memberinfoajax/', views.MemberInfoListViewAjax.as_view(), name='memberinfo_listajax'),
     path('memberinfo/inactive', views.MemberInfoListViewInactive.as_view(),
          name='memberinfo_list_inactive'),
     path('memberinfo/activate/<int:pk>/',
@@ -166,6 +164,8 @@ urlpatterns += (
          views.AssignAnswerInfoDetailView.as_view(), name='assignanswerinfo_detail'),
     path('questioninfo/<int:questioncode>/assignanswerinfo/update/<int:pk>/',
          views.AssignAnswerInfoUpdateView.as_view(), name='assignanswerinfo_update'),
+    path('deleteassignanswer/',
+         views.AssignAnswerInfoDelete, name='assignanswerinfo_delete'),
 )
 
 urlpatterns += (
@@ -198,6 +198,8 @@ urlpatterns += (
     path('inninginfo/', views.InningInfoListView.as_view(), name='inninginfo_list'),
     path('inninginfo/create/', views.InningInfoCreateView.as_view(),
          name='inninginfo_create'),
+    path('inninginfo/saveasnew/<int:pk>/', views.InningInfoCreateView.as_view(),
+         name='inninginfo_saveasnew'),
     path('inninginfo/<int:pk>/',
          views.InningInfoDetailView.as_view(), name='inninginfo_detail'),
     path('inninginfo/update/<int:pk>/',
@@ -227,12 +229,15 @@ urlpatterns += (
          name='groupmapping_list'),
     path('groupmapping/create/', views.GroupMappingCreateView.as_view(),
          name='groupmapping_create'),
+    path('groupmapping/saveasnew/<int:pk>/', views.GroupMappingCreateView.as_view(),
+         name='groupmapping_saveasnew'),
     path('groupmapping/<int:pk>/',
          views.GroupMappingDetailView.as_view(), name='groupmapping_detail'),
     path('groupmapping/update/<int:pk>/',
          views.GroupMappingUpdateView.as_view(), name='groupmapping_update'),
     path('groupmapping/delete/<int:pk>/',
          views.GroupMappingDeleteView, name='groupmapping_delete'),
+    path('groupmapping/csv_import', views.GroupMappingCSVImport, name='csv_import_student_group')
 
     # path('admin/jsi18n', i18n.javascript_catalog),
 )
@@ -275,6 +280,10 @@ urlpatterns += (
     # urls for chapterpagebuilder
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
          views.chapterpagebuilder, name='chapterpagebuilder'),
+
+     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newChapterBuilder',
+       views.newChapterBuilder, name='newChapterBuilder'),
+
     path('viewchapter',
          views.chapterviewer, name='chapterviewer'),
     path('saveFile', views.save_file, name='saveFile'),
@@ -286,6 +295,10 @@ urlpatterns += (
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          views.ContentsView.as_view(), name='contentviewer'),
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newcontents',
+         views.NewContentsView.as_view(), name='NewContentViewer'),    
+    # path('courseinfo/<int:course>/chapterinfo/<int:chapter>/offline_contents',
+    #     views.OfflineContentsView.as_view(), name='offlinecontentviewer'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/preview',
          views.ContentsView.as_view(), name='previewcontentviewer'),
     path('delete-chapter-files',
@@ -299,7 +312,8 @@ urlpatterns += (
          name='AchievementPage_Student'),
     path('AchievementPage_All', views.AchievementPage_All,
          name='AchievementPage_All'),
-    path('AchievementPage_All_Ajax/<int:Inningsfilter>/<slug:studentfilter>/<int:CourseFilter>/', views.AchievementPage_All_Ajax,
+    path('AchievementPage_All_Ajax/<int:Inningsfilter>/<slug:studentfilter>/<int:CourseFilter>/',
+         views.AchievementPage_All_Ajax,
          name='AchievementPage_All_Ajax'),
 
 )
