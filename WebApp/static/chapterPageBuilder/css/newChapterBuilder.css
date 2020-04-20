@@ -1378,5 +1378,8 @@ html {
 .baselayout:hover {
     border: 1px solid #ddd;
 }
-
+.fas{
+    margin-right: 5px;
+    cursor: pointer;
+}
 /*======================== End of Layout CSS ====================================================*/
