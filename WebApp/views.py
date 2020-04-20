@@ -665,12 +665,12 @@ class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
     model = MemberInfo
 
 
-class MemberInfoUpdateView(UpdateView):
+class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
 
 
-class MemberInfoDeleteView(DeleteView):
+class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
     model = MemberInfo
     success_url = reverse_lazy('memberinfo_list')
 
@@ -825,7 +825,7 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         return context
 
 
-class ChapterInfoDeleteView(DeleteView):
+class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
     model = ChapterInfo
 
     def post(self, request, *args, **kwargs):
@@ -862,7 +862,7 @@ def CourseForum(request, course):
     return redirect('forum:topic', pk=course_forum.pk)
 
 
-class ChapterInfoUpdateView(UpdateView):
+class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
 
@@ -978,7 +978,7 @@ class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
         return context
 
 
-class InningInfoUpdateView(UpdateView):
+class InningInfoUpdateView(InningInfoAuthMxnCls, UpdateView):
     model = InningInfo
     form_class = InningInfoForm
 
@@ -1052,7 +1052,7 @@ class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
     model = InningGroup
 
 
-class InningGroupUpdateView(UpdateView):
+class InningGroupUpdateView(InningGroupAuthMxnCls, UpdateView):
     model = InningGroup
     form_class = InningGroupForm
 
@@ -1201,7 +1201,7 @@ class GroupMappingDetailView(GroupMappingAuthMxnCls, DetailView):
     model = GroupMapping
 
 
-class GroupMappingUpdateView(UpdateView):
+class GroupMappingUpdateView(GroupMappingAuthMxnCls, UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
 
@@ -1316,7 +1316,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
         return context
 
 
-class AssignmentInfoUpdateView(UpdateView):
+class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, UpdateView):
     model = AssignmentInfo
     form_class = AssignmentInfoForm
 
