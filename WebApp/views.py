@@ -39,7 +39,7 @@ from django.views.generic.edit import FormView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth, MemberAuthMxnCls, \
-    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls
+    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls, ChapterAuthMxnCls, AssignmentInfoAuthMxnCls
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -665,12 +665,12 @@ class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
     model = MemberInfo
 
 
-class MemberInfoUpdateView(UpdateView):
+class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
 
 
-class MemberInfoDeleteView(DeleteView):
+class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
     model = MemberInfo
     success_url = reverse_lazy('memberinfo_list')
 
@@ -811,7 +811,7 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         return JsonResponse({'errors': form.errors}, status=500)
 
 
-class ChapterInfoDetailView(DetailView):
+class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
 
     def get_context_data(self, **kwargs):
@@ -825,7 +825,7 @@ class ChapterInfoDetailView(DetailView):
         return context
 
 
-class ChapterInfoDeleteView(DeleteView):
+class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
     model = ChapterInfo
 
     def post(self, request, *args, **kwargs):
@@ -862,7 +862,7 @@ def CourseForum(request, course):
     return redirect('forum:topic', pk=course_forum.pk)
 
 
-class ChapterInfoUpdateView(UpdateView):
+class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
 
@@ -978,7 +978,7 @@ class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
         return context
 
 
-class InningInfoUpdateView(UpdateView):
+class InningInfoUpdateView(InningInfoAuthMxnCls, UpdateView):
     model = InningInfo
     form_class = InningInfoForm
 
@@ -1052,7 +1052,7 @@ class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
     model = InningGroup
 
 
-class InningGroupUpdateView(UpdateView):
+class InningGroupUpdateView(InningGroupAuthMxnCls, UpdateView):
     model = InningGroup
     form_class = InningGroupForm
 
@@ -1201,7 +1201,7 @@ class GroupMappingDetailView(GroupMappingAuthMxnCls, DetailView):
     model = GroupMapping
 
 
-class GroupMappingUpdateView(UpdateView):
+class GroupMappingUpdateView(GroupMappingAuthMxnCls, UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
 
@@ -1304,7 +1304,7 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             )
 
 
-class AssignmentInfoDetailView(DetailView):
+class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
     model = AssignmentInfo
 
     def get_context_data(self, **kwargs):
@@ -1316,7 +1316,7 @@ class AssignmentInfoDetailView(DetailView):
         return context
 
 
-class AssignmentInfoUpdateView(UpdateView):
+class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, UpdateView):
     model = AssignmentInfo
     form_class = AssignmentInfoForm
 
