@@ -38,7 +38,8 @@ from django.views.generic import DetailView, ListView, UpdateView, CreateView, D
 from django.views.generic.edit import FormView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth
+from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth, MemberAuthMxnCls, \
+    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -660,7 +661,7 @@ class PasswordChangeView(PasswordContextMixin, FormView):
         return super().form_valid(form)
 
 
-class MemberInfoDetailView(DetailView):
+class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
     model = MemberInfo
 
 
@@ -966,7 +967,7 @@ class InningInfoCreateView(CreateView):
         return context
 
 
-class InningInfoDetailView(DetailView):
+class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
     model = InningInfo
 
     def get_context_data(self, **kwargs):
@@ -1047,7 +1048,7 @@ class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
     template_name = 'ajax/sessioncreate_form_ajax.html'
 
 
-class InningGroupDetailView(DetailView):
+class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
     model = InningGroup
 
 
@@ -1196,7 +1197,7 @@ class GroupMappingCreateView(CreateView):
         return context
 
 
-class GroupMappingDetailView(DetailView):
+class GroupMappingDetailView(GroupMappingAuthMxnCls, DetailView):
     model = GroupMapping
 
 
