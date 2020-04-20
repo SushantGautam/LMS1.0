@@ -39,7 +39,7 @@ from django.views.generic.edit import FormView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth, MemberAuthMxnCls, \
-    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls
+    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls, ChapterAuthMxnCls, AssignmentInfoAuthMxnCls
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -811,7 +811,7 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         return JsonResponse({'errors': form.errors}, status=500)
 
 
-class ChapterInfoDetailView(DetailView):
+class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
 
     def get_context_data(self, **kwargs):
@@ -1304,7 +1304,7 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             )
 
 
-class AssignmentInfoDetailView(DetailView):
+class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
     model = AssignmentInfo
 
     def get_context_data(self, **kwargs):

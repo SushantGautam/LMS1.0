@@ -25,7 +25,8 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, T
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
-from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls
+from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls, InningInfoAuthMxnCls, InningInfoAuth, ChapterAuthMxnCls, \
+    AssignmentInfoAuthMxnCls, SurveyInfoAuthMxnCls, GroupMappingAuthMxnCls, MemberAuth, InningGroupAuthMxnCls
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm, AttendanceFormSetForm, \
     AttendanceFormSetFormT
 from WebApp.forms import GroupMappingForm, InningGroupForm, \
@@ -123,7 +124,7 @@ def Dashboard(request):
     return render(request, 'teacher_module/homepage.html', )
 
 
-class GroupMappingDetailViewTeacher(DetailView):
+class GroupMappingDetailViewTeacher(GroupMappingAuthMxnCls, DetailView):
     model = GroupMapping
     template_name = 'teacher_module/groupmapping_detail.html'
 
@@ -132,6 +133,8 @@ from quiz.views import QuizUserProgressView, Sitting
 
 
 def Student_DetailInfo(request, id):
+    if MemberAuth(request, id) != 1:
+        return redirect('login')
     memberinfo = MemberInfo.objects.get(pk=id)
     groupmapping = GroupMapping.objects.filter(Students__in=[id])[0]
     sittings = Sitting.objects.filter(user=memberinfo)
@@ -321,7 +324,7 @@ class ChapterInfoCreateView(CreateView):
                             kwargs={'course': self.object.Course_Code.id, 'pk': self.object.pk})
 
 
-class ChapterInfoDetailView(DetailView):
+class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
     template_name = 'teacher_module/chapterinfo_detail.html'
 
@@ -360,7 +363,7 @@ class ChapterInfoUpdateView(UpdateView):
                             kwargs={'course': self.object.Course_Code.id, 'pk': self.object.pk})
 
 
-class AssignmentInfoDetailView(DetailView):
+class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
     model = AssignmentInfo
     template_name = 'teacher_module/assignmentinfo_detail.html'
 
@@ -1263,7 +1266,7 @@ class teacherSurveyFilterCategory(ListView):
         return context
 
 
-class TeacherSurveyInfoDetailView(DetailView):
+class TeacherSurveyInfoDetailView(SurveyInfoAuthMxnCls, DetailView):
     model = SurveyInfo
     template_name = 'teacher_module/survey/surveyinfodetail.html'
 
@@ -1760,7 +1763,7 @@ class SessionAdminInningInfoListViewInactive(ListView):
                                          inningmanager__memberinfoobj__pk=self.request.user.pk)
 
 
-class SessionAdminInningInfoDetailView(DetailView):
+class SessionAdminInningInfoDetailView(InningInfoAuthMxnCls, DetailView):
     model = InningInfo
     template_name = 'teacher_module/inninginfo_detail.html'
 
@@ -1793,7 +1796,7 @@ class GroupMappingUpdateView(UpdateView):
             return redirect('teachers_mysession_detail', form.initial['id'])
 
 
-class InningGroupDetailView(DetailView):
+class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
     model = InningGroup
     template_name = 'teacher_module/inninggroup_detail.html'
 
@@ -1803,7 +1806,7 @@ class InningGroupDetailView(DetailView):
             return redirect('teachers_mysession_list')
 
 
-class InningGroupUpdateView(UpdateView):
+class InningGroupUpdateView(InningGroupAuthMxnCls, UpdateView):
     model = InningGroup
     form_class = InningGroupForm
     template_name = 'teacher_module/inning_group_update.html'
@@ -1876,6 +1879,8 @@ from django.forms.models import modelformset_factory
 
 
 def CourseAttendance(request, inningpk, course, attend_date):
+    if InningInfoAuth(request, inningpk) != 1:  # if inning does not belong to the center of requested user.
+        return redirect('login')
     global list_of_students
     studentattendancejson = []
     if not CourseInfo.objects.filter(pk=course).exists():
@@ -1947,6 +1952,9 @@ def CourseAttendance(request, inningpk, course, attend_date):
 
 
 def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
+    if inningpk:
+        if InningInfoAuth(request, inningpk) != 1:  # if inning does not belong to the center of requested user.
+            return redirect('login')
     formset = None
     session_list = []
     session_course = []

@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 
-from WebApp.models import CourseInfo, MemberInfo, GroupMapping, InningInfo, InningGroup
+from WebApp.models import CourseInfo, MemberInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo
 from survey.models import SurveyInfo
 
 
@@ -68,6 +68,18 @@ def CourseAuth(request, pk):
         pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
 
 
+class ChapterAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if ChapterAuth(request,
+                                                                    kwargs.get(
+                                                                        'pk')) == 1 else redirect('login')
+
+
+def ChapterAuth(request, pk):
+    return 1 if ChapterInfo.objects.get(
+        pk=pk).Course_Code.Center_Code == request.user.Center_Code else returnResultFunc(request)
+
+
 class MemberAuthMxnCls:
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs) if MemberAuth(request,
@@ -127,6 +139,7 @@ def SurveyInfoAuth(request, pk):
     return 1 if SurveyInfo.objects.get(
         pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
 
+
 # class ForumTopicAuthMxnCls:
 #     def get(self, request, *args, **kwargs):
 #         return super().get(request, *args, **kwargs) if ForumTopicAuth(request,
@@ -136,3 +149,14 @@ def SurveyInfoAuth(request, pk):
 # def ForumTopicAuth(request, pk):
 #     return 1 if Topic.objects.get(
 #         pk=pk).center_associated_with == request.user.Center_Code else returnResultFunc(request)
+
+class AssignmentInfoAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if AssignmentInfoAuth(request,
+                                                                           kwargs.get(
+                                                                               'pk')) == 1 else redirect('login')
+
+
+def AssignmentInfoAuth(request, pk):
+    return 1 if AssignmentInfo.objects.get(
+        pk=pk).Course_Code.Center_Code == request.user.Center_Code else returnResultFunc(request)
