@@ -65,6 +65,9 @@
 
         <link href="{% static 'chapterPageBuilder/css/newViewer.css' %}" rel="stylesheet">
 
+        <!-- Animate CSS -->
+        <link href="{% static 'vendorsx/animate.css/animate.min.css' %}" rel="stylesheet">
+
         {% if not connection_offline %}
             <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
         {% endif %}
@@ -127,7 +130,7 @@
 </div>
 <section class="whole-container">
 
-    <div class="sidenavbar-part">
+    <div class="sidenavbar-part slideInLeft animate">
         <div class="sidebar-top">
 
             <div class="col-md-12 col-sm-12 profile-description">
@@ -185,7 +188,7 @@
         </div>
 
 
-        <div id="sidebar-buttom" class="side-bar-content ">
+        <div id="sidebar-buttom slideInLeft animate" class="side-bar-content ">
 
             <ul class="sidebar-bottom-icons" style=" list-style:none; padding: 0px !important">
                 <li>
@@ -227,7 +230,7 @@
                     <i style="color: white;" class="chat-icon fa fa-quote-right"></i>
                 </li>
             </ul>
-            <ul class="chat-sidenav-close">
+            <ul class="chat-sidenav-close slideInLeft animate">
                 <li class=close-icon-sidebar>
                     <i class="fa fa-times"></i>
 
@@ -298,7 +301,7 @@
 
         </div>
 
-        <div class="chat-dialogbox">
+        <div class="chat-dialogbox fadeIn animate">
 
             <ul class="chat-header">
                 <li class="ham-icon">
@@ -790,7 +793,7 @@
                                 $('#page' + key).append(`
                                 <div class = "chapterbuttons btn-div" style = "z-index: 1;position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
                                     <a ${link} target="_blank">
-                                        <button class="custom-btn-only">
+                                        <button class="custom-btn-only" style="height:100% ; width:100%" >
                                             <div class="row text-center" width=100%>
                                                 <span class="resizable-text-only" style = "font-size: ${font_size}">${css_value.btn_name} </span>
                                             </div>
