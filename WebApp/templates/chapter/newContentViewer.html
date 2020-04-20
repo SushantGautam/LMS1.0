@@ -65,6 +65,9 @@
 
         <link href="{% static 'chapterPageBuilder/css/newViewer.css' %}" rel="stylesheet">
 
+        <!-- Animate CSS -->
+        <link href="{% static 'vendorsx/animate.css/animate.min.css' %}" rel="stylesheet">
+
         {% if not connection_offline %}
             <link rel="stylesheet" href="{% static 'chapterPageBuilder/SummerNote/summernote.css' %}">
         {% endif %}
@@ -127,7 +130,7 @@
 </div>
 <section class="whole-container">
 
-    <div class="sidenavbar-part">
+    <div class="sidenavbar-part slideInLeft animate">
         <div class="sidebar-top">
 
             <div class="col-md-12 col-sm-12 profile-description">
@@ -185,7 +188,7 @@
         </div>
 
 
-        <div id="sidebar-buttom" class="side-bar-content ">
+        <div id="sidebar-buttom slideInLeft animate" class="side-bar-content ">
 
             <ul class="sidebar-bottom-icons" style=" list-style:none; padding: 0px !important">
                 <li>
@@ -227,7 +230,7 @@
                     <i style="color: white;" class="chat-icon fa fa-quote-right"></i>
                 </li>
             </ul>
-            <ul class="chat-sidenav-close">
+            <ul class="chat-sidenav-close slideInLeft animate">
                 <li class=close-icon-sidebar>
                     <i class="fa fa-times"></i>
 
@@ -298,7 +301,7 @@
 
         </div>
 
-        <div class="chat-dialogbox">
+        <div class="chat-dialogbox fadeIn animate">
 
             <ul class="chat-header">
                 <li class="ham-icon">
@@ -1097,9 +1100,9 @@
 
     $(document).ready(function () {
         setThumbnails();
-       
+
         Layout(x)
-        x.addListener(Layout) // Attach listener function on state changes  
+        x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
 
         $('#next-btn').off().click(function () {
@@ -1239,7 +1242,6 @@
     });
     //for main chhat icon
     $(document).on('click', '.icon-for-chat', function () {
-        x = $(".chat-dialogbox")[0]
         if ($(".chat-dialogbox").css('display') == "none") {
             $(".chat-dialogbox").css('display', 'block');
         } else {

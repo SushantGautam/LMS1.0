@@ -3473,6 +3473,14 @@ async function setThumbnails(prev_page) {
             'background-repeat': 'no-repeat'
         })
     });
+    $('#tab').find('.audio-div').each(function () {
+        $(this).css({
+            'background-image': `url('${audio_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    });
     $('#tab').find('._3dobj-div').each(function () {
         $(this).css({
             'background-image': `url('${_3d_icon}')`,
@@ -3480,7 +3488,7 @@ async function setThumbnails(prev_page) {
             'background-size': 'contain',
             'background-repeat': 'no-repeat'
         })
-    })
+    });
 
     html2canvas($('#tab')[0]).then(canvas => {
         $('.pagenumber[value= ' + prev_page + ']').each(function () {
