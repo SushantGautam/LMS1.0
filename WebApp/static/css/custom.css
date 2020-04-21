@@ -24,3 +24,27 @@
   flex-direction: column;
   height: 200px;
 }
+
+.profile-edit-dropdown {
+  color: black;
+  padding: 7px;
+  font-size: large;
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 35px;
+  cursor: pointer;
+}
+
+.profile-edit-dropdown:hover {
+  color: grey;
+  border: 1px solid grey;
+}
+
+.gapping {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.font-weight-bold {
+  font-weight: bold !important;
+}
