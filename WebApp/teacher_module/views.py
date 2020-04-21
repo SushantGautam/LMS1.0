@@ -99,6 +99,8 @@ def start(request):
         return render(request, "teacher_module/homepage.html",
                       {'MyCourses': mycourse, 'Session': sessions, 'activeAssignments': activeassignments,
                        'wordCloud': wordCloud, 'notice': notice, 'get_top_thread_keywords': thread_keywords})
+    else:
+        return redirect('login')
 
 
 def teacher_editprofile(request):
