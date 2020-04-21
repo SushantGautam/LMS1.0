@@ -40,7 +40,7 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth, MemberAuthMxnCls, \
     GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls, ChapterAuthMxnCls, AssignmentInfoAuthMxnCls, \
-    MemberAuth
+    MemberAuth, TeacherCourseAuth, StudentCourseAuth
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -2080,9 +2080,18 @@ class ContentsView(TemplateView):
 
 
 class NewContentsView(TemplateView):
-    template_name = 'chapter/newContentViewer.html'  
+    template_name = 'chapter/newContentViewer.html'
 
     def get(self, request, *args, **kwargs):
+        if CourseAuth(request, self.kwargs.get('course')) == 1:
+            if '/teachers' in request.path:
+                if TeacherCourseAuth(request, self.kwargs.get('course')) != 1:
+                    return redirect('login')
+            elif '/students' in request.path:
+                if StudentCourseAuth(request, self.kwargs.get('course')) != 1:
+                    return redirect('login')
+        else:
+            return redirect('login')
         try:
             if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
                 pass
