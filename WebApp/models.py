@@ -28,7 +28,7 @@ USER_ROLES = (
 
 
 class CenterInfo(models.Model):
-    Center_Name = CharField(max_length=500, blank=True, null=True)
+    Center_Name = CharField(max_length=500, unique=True)
     Center_Address = CharField(max_length=500, blank=True, null=True)
     Use_Flag = BooleanField(default=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
