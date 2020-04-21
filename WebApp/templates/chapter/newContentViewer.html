@@ -301,7 +301,7 @@
 
         </div>
 
-        <div class="chat-dialogbox fadeIn animate">
+        <div id="main-chat-box"class="chat-dialogbox  animate">
 
             <ul class="chat-header">
                 <li class="ham-icon">
@@ -1197,6 +1197,8 @@
             $(".link-view-box").css("left", '26.9%');
             $(".custom-owl-slider").css("right", '7%');
             $(".chat-dialogbox").css("left", '1%');
+            $(".owl-prev").css("left", '35%');
+            $(".owl-next").css("right", '10.75%');
             $( "#main-bottom-slider" ).addClass( "slideInLeft" );
             $( "#main-bottom-slider" ).removeClass( "slideOutLeft" );
         });
@@ -1218,6 +1220,8 @@
         $(".page-link-view").css("left", '16%');
         $(".link-view-box").css("left", '31.9%');
         $(".chat-dialogbox").css("left", '17%');
+        $(".owl-prev").css("left", '39%');
+        $(".owl-next").css("right", '5.75%');
         $( "#main-bottom-slider" ).addClass( "slideInLeft" );
         $( "#main-bottom-slider" ).removeClass( "slideOutLeft" );
 
@@ -1254,9 +1258,14 @@
     $(document).on('click', '.icon-for-chat', function () {
         if ($(".chat-dialogbox").css('display') == "none") {
             $(".chat-dialogbox").css('display', 'block');
+            $( "#main-chat-box" ).addClass( "fadeIn" );
+            $( "#main-bottom-slider" ).removeClass( "fadeOut" );
+    
            
         } else {
-            $(".chat-dialogbox").css('display', 'none')
+            
+            $( "#main-chat-box" ).addClass( "fadeOut" );
+            $( "#main-bottom-slider" ).removeClass( "fadeIn" );
         }
 
     });

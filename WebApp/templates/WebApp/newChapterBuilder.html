@@ -1020,7 +1020,8 @@
     var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
-    var centerName = '{{ request.user.Center_Code }}'
+    var centerName = '{{ request.user.Center_Code }}';
+    var courseName = '{{ course_name }}'
     var imagegalleryid, videogalleryid, audiogalleryid;
     if (server_name == "Indonesian_Server") {
         imagegalleryid = 'A8AAAoODp5Za';

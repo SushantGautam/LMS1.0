@@ -119,8 +119,8 @@ class Textbox {
                         <div id="editor${id}" class="messageText"></div>
                         
                          <div id="text-actions" class = "text-actions">
-                             <i class="fas fa-trash" id=${id}></i>
-                             <i class="fas fa-arrows-alt" id="draghere" ></i>
+                             <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                             <i title="Drag" class="fas fa-arrows-alt" id="draghere" ></i>
                          </div>
                      </div>
               `;
@@ -233,9 +233,9 @@ class picture {
         let html =
             `<div class='pic'>
             <div id="pic-actions">
-                <i class="fas fa-trash" id=${id}></i>
-                <i class="fas fa-upload" id=${id}></i>
-                <i class="fas fa-link imagelink" id=${id}></i>
+                <i title="Delete " class="fas fa-trash" id=${id}></i>
+                <i title="Upload File" class="fas fa-upload" id=${id}></i>
+                <i title="Link Image" class="fas fa-link imagelink" id=${id}></i>
             </div>
             ${img}
             <div>
@@ -347,9 +347,9 @@ class video {
         let html =
             `<div class='video-div'>
                 <div id="video-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                    <i class="fas fa-link videolink" id=${id}></i>
+                    <i title="Delete " class="fas fa-trash" id=${id}></i>
+                    <i title="Upload " class="fas fa-upload" id=${id}></i>
+                    <i title="Link File" class="fas fa-link videolink" id=${id}></i>
                 </div>
                 <div>
                     <p id="video-drag">${message}</p>
@@ -448,8 +448,8 @@ class Audio {
         let html =
             `<div class='audio-div'>
                 <div id="audio-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
+                    <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                    <i title="Upload File " class="fas fa-upload" id=${id}></i>
                 </div>
                 <div>
                     <p id="audio-drag">${message}</p>
@@ -512,9 +512,9 @@ class Button {
         let html = `
                     <div class="btn-div" data-width = "${width}">
                         <div class="options">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-link"   id=${id} ></i>
-                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                            <i title="Link Button" class="fas fa-link"   id=${id} ></i>
+                            <i title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
 
@@ -580,9 +580,9 @@ class Quiz {
         let html = `
                     <div class="quiz-div" data-width = "${width}">
                         <div class="options">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-link"   id=${id} ></i>
-                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                            <i title="Link Button" class="fas fa-link"   id=${id} ></i>
+                            <i title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder ">
@@ -654,9 +654,9 @@ class Survey {
         let html = `
                     <div class="survey-div" data-width = "${width}">
                         <div class="options">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-link"   id=${id} ></i>
-                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                            <i title="Link Button" class="fas fa-link"   id=${id} ></i>
+                            <i title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder">
@@ -738,8 +738,8 @@ class PDF {
         let html = `
         <div class='pdfdiv'>
             <div id="pdfdiv-actions1">
-                <i class="fas fa-trash" id=${id}></i>
-                <i class="fas fa-upload" id=${id}></i>
+                <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                <i title="Upload File"class="fas fa-upload" id=${id}></i>
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -820,8 +820,8 @@ class _3Dobject {
         let html =
             `<div class='_3dobj-div'>
                 <div id="_3dobj-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
+                    <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                    <i title="Upload File" class="fas fa-upload" id=${id}></i>
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -875,7 +875,7 @@ class BaseLayout {
 
         let html = `<div class="baselayout">
                     <div class="layout-actions">
-                        <i class="fas fa-trash"></i>
+                        <i title="delete-button" class="fas fa-trash"></i>
                     </div>
                     <div class="layout-icon-placement">
                         <div>
@@ -885,7 +885,7 @@ class BaseLayout {
                                 <span title="Upload Image" class="layout-icons layout-image">
                                 <img  class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/picture.svg "></img>
                                 </span>
-                                <span class="layout-icons layout-video">
+                                <span  title="Upload Video" class="layout-icons layout-video">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/video.svg "></img>
                                 
                                 </span>
@@ -893,13 +893,13 @@ class BaseLayout {
                         </div>
                         <div>
 
-                                <span class="layout-icons layout-audio">
+                                <span title="Upload Audio" class="layout-icons layout-audio">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/audio.png "></img>
                                 </span>
-                                <span class="layout-icons layout-pdf">
+                                <span title="Upload PDF" class="layout-icons layout-pdf">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/pdf.svg "></img>
                                 </span>
-                                <span class="layout-icons layout-3d">
+                                <span title="Upload 3D-FILE" class="layout-icons layout-3d">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/3d-cube.svg "></img>
                                 </span>
 
@@ -1186,7 +1186,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     }
                 }
                 request.send()
-                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                     console.log('success')
                 }).fail(function () {
                     console.log('failed')
@@ -1269,7 +1269,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},,${courseName}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -1934,7 +1934,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 }
                             }
                             request.send()
-                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                                 console.log('success')
                             }).fail(function () {
                                 console.log('failed')
@@ -2164,7 +2164,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
