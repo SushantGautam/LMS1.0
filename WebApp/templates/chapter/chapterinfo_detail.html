@@ -48,13 +48,13 @@
             {% if '/students' not in request.path %}
                 {% if '/teachers' in request.path %}
                     <a class="btn-sm btn-success"
-                       href="{% url 'teachers_chapterpagebuilder' object.Course_Code.id object.id %}"> <i
+                       href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}"> <i
                             class="fa fa-pencil"></i> Content
                         Builder
                         &nbsp;</a>
                 {% else %}
                     <a class="btn-sm btn-success"
-                       href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}"> <i
+                       href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}"> <i
                             class="fa fa-pencil"></i> Content
                         Builder &nbsp;</a>
                 {% endif %}
