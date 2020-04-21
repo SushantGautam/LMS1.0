@@ -39,7 +39,8 @@ from django.views.generic.edit import FormView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth, MemberAuthMxnCls, \
-    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls, ChapterAuthMxnCls, AssignmentInfoAuthMxnCls
+    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls, ChapterAuthMxnCls, AssignmentInfoAuthMxnCls, \
+    MemberAuth
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -2220,6 +2221,8 @@ from quiz.views import Sitting
 
 
 def AchievementPage_Student(request, student_id):
+    if MemberAuth(request, student_id) != 1:
+        return redirect('login')
     memberinfo = MemberInfo.objects.get(pk=student_id)
     sittings = Sitting.objects.filter(user=student_id)
     return render(request, 'WebApp/Student_Achievement.html', {'sittings': sittings, 'memberinfo': memberinfo})

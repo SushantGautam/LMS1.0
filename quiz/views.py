@@ -13,6 +13,7 @@ from django.views import View
 from django.views.generic import DetailView, ListView, TemplateView, FormView, CreateView, UpdateView
 from django_addanother.views import CreatePopupMixin
 
+from LMS.auth_views import QuizInfoAuthMxnCls, QuizInfoAuth
 from WebApp.models import CourseInfo, ChapterInfo, InningGroup, InningInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
     QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
@@ -80,12 +81,12 @@ class QuizListView(ListView):
         return queryset.filter(cent_code=self.request.user.Center_Code)
 
 
-class QuizUpdateView(UpdateView):
+class QuizUpdateView(QuizInfoAuthMxnCls, UpdateView):
     model = Quiz
     form_class = QuizForm
 
 
-class QuizDetailView(DetailView):
+class QuizDetailView(QuizInfoAuthMxnCls, DetailView):
     model = Quiz
     slug_field = 'url'
 
@@ -814,7 +815,7 @@ class CreateQuizAjax(CreateView):
         return kwargs
 
 
-class UpdateQuizBasicInfo(UpdateView):
+class UpdateQuizBasicInfo(QuizInfoAuthMxnCls, UpdateView):
     model = Quiz
     form_class = QuizBasicInfoForm
     template_name = 'quiz/quiz_update_basic_info.html'
@@ -1056,6 +1057,8 @@ class QuizSAQChoosePrevious(UpdateView):
 
 
 def FilterMarkingForTeachers(request, Quiz_Id):
+    if QuizInfoAuth(request, Quiz_Id) != 1:  # if Quiz do not belong to the user center then redirect
+        return redirect('login')
     filtered = Sitting.objects.filter(user__Center_Code=request.user.Center_Code, quiz=Quiz_Id)
     quiz = Quiz.objects.get(id=Quiz_Id)
 

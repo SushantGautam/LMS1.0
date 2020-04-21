@@ -26,7 +26,8 @@ from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
 
 from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls, InningInfoAuthMxnCls, InningInfoAuth, ChapterAuthMxnCls, \
-    AssignmentInfoAuthMxnCls, SurveyInfoAuthMxnCls, GroupMappingAuthMxnCls, MemberAuth, InningGroupAuthMxnCls
+    AssignmentInfoAuthMxnCls, SurveyInfoAuthMxnCls, GroupMappingAuthMxnCls, MemberAuth, InningGroupAuthMxnCls, \
+    QuizInfoAuthMxnCls, TeacherCourseAuthMxnCls, TeacherChapterAuthMxnCls, TeacherAssignmentAuthMxnCls
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm, AttendanceFormSetForm, \
     AttendanceFormSetFormT
 from WebApp.forms import GroupMappingForm, InningGroupForm, \
@@ -265,7 +266,7 @@ class CourseInfoCreateView(CreateView):
         return reverse_lazy('teacher_courseinfo_detail', kwargs={'pk': self.object.pk})
 
 
-class CourseInfoDetailView(TeacherAuthMxnCls, CourseAuthMxnCls, DetailView):
+class CourseInfoDetailView(TeacherAuthMxnCls, CourseAuthMxnCls, TeacherCourseAuthMxnCls, DetailView):
     model = CourseInfo
     template_name = 'teacher_module/courseinfo_detail.html'
 
@@ -282,7 +283,7 @@ class CourseInfoDetailView(TeacherAuthMxnCls, CourseAuthMxnCls, DetailView):
         return context
 
 
-class CourseInfoUpdateView(UpdateView):
+class CourseInfoUpdateView(CourseAuthMxnCls, TeacherCourseAuthMxnCls, UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
     template_name = 'teacher_module/courseinfo_form.html'
@@ -324,7 +325,7 @@ class ChapterInfoCreateView(CreateView):
                             kwargs={'course': self.object.Course_Code.id, 'pk': self.object.pk})
 
 
-class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, DetailView):
+class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapterAuthMxnCls, DetailView):
     model = ChapterInfo
     template_name = 'teacher_module/chapterinfo_detail.html'
 
@@ -342,7 +343,7 @@ def ChapterInfoBuildView(request):
     return render(request, 'teacher_module/coursebuilder.html')
 
 
-class ChapterInfoUpdateView(UpdateView):
+class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
     template_name = 'teacher_module/chapterinfo_form.html'
@@ -363,7 +364,7 @@ class ChapterInfoUpdateView(UpdateView):
                             kwargs={'course': self.object.Course_Code.id, 'pk': self.object.pk})
 
 
-class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
+class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMxnCls, DetailView):
     model = AssignmentInfo
     template_name = 'teacher_module/assignmentinfo_detail.html'
 
@@ -402,7 +403,7 @@ class AssignmentInfoDeleteView(DeleteView):
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
-class AssignmentAnswers(ListView):
+class AssignmentAnswers(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMxnCls, ListView):
     model = AssignAnswerInfo
     template_name = 'teacher_module/assignment_answers.html'
 
@@ -418,7 +419,7 @@ class AssignmentAnswers(ListView):
         return context
 
 
-class AssignmentInfoUpdateView(UpdateView):
+class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMxnCls, UpdateView):
     model = AssignmentInfo
     form_class = AssignmentInfoForm
     template_name = 'teacher_module/assignmentinfo_form.html'
@@ -663,12 +664,12 @@ class QuizListView(ListView):
         )
 
 
-class QuizUpdateView(UpdateView):
+class QuizUpdateView(QuizInfoAuthMxnCls, UpdateView):
     model = Quiz
     form_class = QuizForm
 
 
-class UpdateQuizBasicInfo(UpdateView):
+class UpdateQuizBasicInfo(QuizInfoAuthMxnCls, UpdateView):
     model = Quiz
     form_class = QuizBasicInfoForm
     template_name = 'teacher_quiz/quiz_update_basic_info.html'
@@ -685,7 +686,7 @@ class UpdateQuizBasicInfo(UpdateView):
         )
 
 
-class QuizDetailView(DetailView):
+class QuizDetailView(QuizInfoAuthMxnCls, DetailView):
     model = Quiz
     slug_field = 'url'
     template_name = 'teacher_quiz/quiz_detail.html'
