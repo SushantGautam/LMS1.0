@@ -1660,6 +1660,8 @@ def save_file(request):
 def newChapterBuilder(request, course, chapter):
     chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
+    # Course name passed for tag
+    course_name = CourseInfo.objects.get(id=course).Course_Name
     path = settings.MEDIA_ROOT
     server_name = settings.SERVER_NAME
     data = {"": ""}
@@ -1672,6 +1674,7 @@ def newChapterBuilder(request, course, chapter):
     context = {
         'course': course,
         'chapter': chapter,
+        'course_name': course_name,
         'chapterdetails': chapterdetails,
         'chapterlist': chapterlist,
         'file_path': path,

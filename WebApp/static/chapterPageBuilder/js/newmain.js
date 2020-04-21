@@ -1186,7 +1186,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     }
                 }
                 request.send()
-                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                     console.log('success')
                 }).fail(function () {
                     console.log('failed')
@@ -1269,7 +1269,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},,${courseName}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -1934,7 +1934,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 }
                             }
                             request.send()
-                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                                 console.log('success')
                             }).fail(function () {
                                 console.log('failed')
@@ -2164,7 +2164,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
