@@ -561,15 +561,21 @@ def ImportCsvFile(request, *args, **kwargs):
         df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
         df.column = ['Username', 'Member ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Gender', 'Student',
                      'Teacher', 'Temporary Address', 'Permanent Address', 'Birthdate']
-        print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
         saved_id = []
+        previous_uname = []
         for i in range(len(df)):
             try:
+
+                obj_username = df.iloc[i]['Username']
+                if MemberInfo.objects.filter(username__iexact=obj_username).exists():
+                    previous_uname.append(obj_username)
+                    continue
+                
                 obj = MemberInfo()
-                obj.username = df.iloc[i]['Username']
+                obj.username = obj_username
                 obj.Member_ID = df.iloc[i]['Member ID']
                 obj.first_name = df.iloc[i]['First Name']
                 obj.last_name = df.iloc[i]['Last Name']
@@ -605,7 +611,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     else:
                         obj.Is_Student = False
 
-                obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
+                obj.Center_Code = request.user.Center_Code
                 obj.set_password('00000')
                 obj.save()
 
@@ -626,9 +632,14 @@ def ImportCsvFile(request, *args, **kwargs):
                     MemberInfo.objects.filter(id=j).delete()
                 msg = "Can't Upload all data. Problem in " + str(
                     i + 1) + "th row of data while uploading. <br><br> " + "<br> ".join(
-                    ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>" + str(e)
+                    ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>"
                 return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
-        return JsonResponse(data={"message": "All data has been Uploaded Sucessfully", "class": "text-success",
+        if previous_uname:
+            messages = """User Data has been uploaded<br><div class='text-danger'>But These users are already
+             present in the system so are not registered:<br>""" + str(previous_uname) + """</div>"""
+        else:
+            messages = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": messages, "class": "text-success",
                                   "rmclass": "text-danger"})
 
 
