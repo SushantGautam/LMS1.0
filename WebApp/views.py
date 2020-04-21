@@ -237,12 +237,12 @@ def start(request):
                            'sessions': sessions,
                            'sessioncount': sessioncount,
                            'notice': notice})
-        elif request.user.Is_Student:
-            return redirect('student_home')
         elif request.user.Is_Teacher:
             return redirect('teacher_home')
-        elif request.user.Is_Parent:
-            return redirect('parent_home')
+        elif request.user.Is_Student:
+            return redirect('student_home')
+        # elif request.user.Is_Parent:
+        #     return redirect('parent_home')
         else:
             logout(request)
             messages.add_message(request, messages.ERROR,
