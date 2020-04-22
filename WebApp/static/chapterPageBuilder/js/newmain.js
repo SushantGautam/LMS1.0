@@ -119,8 +119,8 @@ class Textbox {
                         <div id="editor${id}" class="messageText"></div>
                         
                          <div id="text-actions" class = "text-actions">
-                         <i class=" hints fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
-                             <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="hints fas fa-arrows-alt" id="draghere" ></i>
+                             <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                             <i title="Drag" class="fas fa-arrows-alt" id="draghere" ></i>
                          </div>
                      </div>
               `;
@@ -189,8 +189,7 @@ class Textbox {
                 }
             });
             $('.note-editable').css('font-size', '15px');
-            $('.note-toolbar').css('display', 'none');
-            $('[data-toggle="tooltip"]').tooltip()
+            $('.note-toolbar').css('display', 'none')
 
 
             $('#editor' + id).parent().find('.note-statusbar').remove();
@@ -234,9 +233,9 @@ class picture {
         let html =
             `<div class='pic'>
             <div id="pic-actions">
-                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="hints fas fa-trash" id=${id} ></i>
-                <i data-toggle="tooltip" data-placement="bottom"  title='Upload File' class="hints fas fa-upload" id=${id}></i>
-                <i data-toggle="tooltip" data-placement="bottom"  title='Link Image' class="hints fas fa-link imagelink" id=${id}></i>
+                <i title="Delete " class="fas fa-trash" id=${id}></i>
+                <i title="Upload File" class="fas fa-upload" id=${id}></i>
+                <i title="Link Image" class="fas fa-link imagelink" id=${id}></i>
             </div>
             ${img}
             <div>
@@ -278,11 +277,9 @@ class picture {
                     $(this).css("width", w);
                 }
             });
-            
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
-            $('[data-toggle="tooltip"]').tooltip();
-
         };
     }
 }
@@ -350,9 +347,9 @@ class video {
         let html =
             `<div class='video-div'>
                 <div id="video-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload File' class="fas fa-upload" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link File' class="fas fa-link videolink" id=${id}></i>
+                    <i title="Delete " class="fas fa-trash" id=${id}></i>
+                    <i title="Upload " class="fas fa-upload" id=${id}></i>
+                    <i title="Link File" class="fas fa-link videolink" id=${id}></i>
                 </div>
                 <div>
                     <p id="video-drag">${message}</p>
@@ -395,7 +392,7 @@ class video {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom)
         };
@@ -451,8 +448,8 @@ class Audio {
         let html =
             `<div class='audio-div'>
                 <div id="audio-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload  File' class="fas fa-upload" id=${id}></i>
+                    <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                    <i title="Upload File " class="fas fa-upload" id=${id}></i>
                 </div>
                 <div>
                     <p id="audio-drag">${message}</p>
@@ -495,7 +492,7 @@ class Audio {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom)
         };
@@ -515,9 +512,9 @@ class Button {
         let html = `
                     <div class="btn-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link Button' class="fas fa-link"   id=${id} ></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                            <i title="Link Button" class="fas fa-link"   id=${id} ></i>
+                            <i title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
 
@@ -562,7 +559,7 @@ class Button {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -583,7 +580,7 @@ class Quiz {
         let html = `
                     <div class="quiz-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash"  class="fas fa-trash" id=${id}></i>
+                            <i title="Delete Button" class="fas fa-trash" id=${id}></i>
                             <i title="Link Button" class="fas fa-link"   id=${id} ></i>
                             <i title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
@@ -636,7 +633,7 @@ class Quiz {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -657,9 +654,9 @@ class Survey {
         let html = `
                     <div class="survey-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link File' class="fas fa-link"   id=${id} ></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                            <i title="Link Button" class="fas fa-link"   id=${id} ></i>
+                            <i title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder">
@@ -706,7 +703,7 @@ class Survey {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -741,8 +738,8 @@ class PDF {
         let html = `
         <div class='pdfdiv'>
             <div id="pdfdiv-actions1">
-                <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" ></i>
-                <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload File' class="fas fa-upload" id=${id}></i>
+                <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                <i title="Upload File"class="fas fa-upload" id=${id}></i>
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -783,7 +780,7 @@ class PDF {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // Making element Resizable
@@ -823,8 +820,8 @@ class _3Dobject {
         let html =
             `<div class='_3dobj-div'>
                 <div id="_3dobj-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete Button' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload fIle' class="fas fa-upload" id=${id}></i>
+                    <i title="Delete Button" class="fas fa-trash" id=${id}></i>
+                    <i title="Upload File" class="fas fa-upload" id=${id}></i>
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -865,7 +862,7 @@ class _3Dobject {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
         };
@@ -3511,10 +3508,3 @@ function setThumbnailscallback(data, dive) {
         'background-repeat': 'no-repeat',
     });
 }
-
-    $(document).ready(function(){
-        $(function () {
-          $('[data-toggle="tooltip"]').tooltip()
-        })       
-   });
-
