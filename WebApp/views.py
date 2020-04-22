@@ -38,7 +38,8 @@ from django.views.generic import DetailView, ListView, UpdateView, CreateView, D
 from django.views.generic.edit import FormView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth
+from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth, MemberAuthMxnCls, \
+    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls, ChapterAuthMxnCls, AssignmentInfoAuthMxnCls
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -236,12 +237,12 @@ def start(request):
                            'sessions': sessions,
                            'sessioncount': sessioncount,
                            'notice': notice})
-        elif request.user.Is_Student:
-            return redirect('student_home')
         elif request.user.Is_Teacher:
             return redirect('teacher_home')
-        elif request.user.Is_Parent:
-            return redirect('parent_home')
+        elif request.user.Is_Student:
+            return redirect('student_home')
+        # elif request.user.Is_Parent:
+        #     return redirect('parent_home')
         else:
             logout(request)
             messages.add_message(request, messages.ERROR,
@@ -560,15 +561,21 @@ def ImportCsvFile(request, *args, **kwargs):
         df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
         df.column = ['Username', 'Member ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Gender', 'Student',
                      'Teacher', 'Temporary Address', 'Permanent Address', 'Birthdate']
-        print(df)
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
         saved_id = []
+        previous_uname = []
         for i in range(len(df)):
             try:
+
+                obj_username = df.iloc[i]['Username']
+                if MemberInfo.objects.filter(username__iexact=obj_username).exists():
+                    previous_uname.append(obj_username)
+                    continue
+                
                 obj = MemberInfo()
-                obj.username = df.iloc[i]['Username']
+                obj.username = obj_username
                 obj.Member_ID = df.iloc[i]['Member ID']
                 obj.first_name = df.iloc[i]['First Name']
                 obj.last_name = df.iloc[i]['Last Name']
@@ -604,7 +611,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     else:
                         obj.Is_Student = False
 
-                obj.Center_Code = CenterInfo.objects.get(id=request.user.Center_Code.id)
+                obj.Center_Code = request.user.Center_Code
                 obj.set_password('00000')
                 obj.save()
 
@@ -625,9 +632,14 @@ def ImportCsvFile(request, *args, **kwargs):
                     MemberInfo.objects.filter(id=j).delete()
                 msg = "Can't Upload all data. Problem in " + str(
                     i + 1) + "th row of data while uploading. <br><br> " + "<br> ".join(
-                    ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>" + str(e)
+                    ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>"
                 return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
-        return JsonResponse(data={"message": "All data has been Uploaded Sucessfully", "class": "text-success",
+        if previous_uname:
+            messages = """User Data has been uploaded<br><div class='text-danger'>But These users are already
+             present in the system so are not registered:<br>""" + str(previous_uname) + """</div>"""
+        else:
+            messages = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": messages, "class": "text-success",
                                   "rmclass": "text-danger"})
 
 
@@ -660,16 +672,16 @@ class PasswordChangeView(PasswordContextMixin, FormView):
         return super().form_valid(form)
 
 
-class MemberInfoDetailView(DetailView):
+class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
     model = MemberInfo
 
 
-class MemberInfoUpdateView(UpdateView):
+class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
 
 
-class MemberInfoDeleteView(DeleteView):
+class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
     model = MemberInfo
     success_url = reverse_lazy('memberinfo_list')
 
@@ -810,7 +822,7 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         return JsonResponse({'errors': form.errors}, status=500)
 
 
-class ChapterInfoDetailView(DetailView):
+class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
 
     def get_context_data(self, **kwargs):
@@ -824,7 +836,7 @@ class ChapterInfoDetailView(DetailView):
         return context
 
 
-class ChapterInfoDeleteView(DeleteView):
+class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
     model = ChapterInfo
 
     def post(self, request, *args, **kwargs):
@@ -861,7 +873,7 @@ def CourseForum(request, course):
     return redirect('forum:topic', pk=course_forum.pk)
 
 
-class ChapterInfoUpdateView(UpdateView):
+class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
 
@@ -966,7 +978,7 @@ class InningInfoCreateView(CreateView):
         return context
 
 
-class InningInfoDetailView(DetailView):
+class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
     model = InningInfo
 
     def get_context_data(self, **kwargs):
@@ -977,7 +989,7 @@ class InningInfoDetailView(DetailView):
         return context
 
 
-class InningInfoUpdateView(UpdateView):
+class InningInfoUpdateView(InningInfoAuthMxnCls, UpdateView):
     model = InningInfo
     form_class = InningInfoForm
 
@@ -1047,11 +1059,11 @@ class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
     template_name = 'ajax/sessioncreate_form_ajax.html'
 
 
-class InningGroupDetailView(DetailView):
+class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
     model = InningGroup
 
 
-class InningGroupUpdateView(UpdateView):
+class InningGroupUpdateView(InningGroupAuthMxnCls, UpdateView):
     model = InningGroup
     form_class = InningGroupForm
 
@@ -1196,11 +1208,11 @@ class GroupMappingCreateView(CreateView):
         return context
 
 
-class GroupMappingDetailView(DetailView):
+class GroupMappingDetailView(GroupMappingAuthMxnCls, DetailView):
     model = GroupMapping
 
 
-class GroupMappingUpdateView(UpdateView):
+class GroupMappingUpdateView(GroupMappingAuthMxnCls, UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
 
@@ -1303,7 +1315,7 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             )
 
 
-class AssignmentInfoDetailView(DetailView):
+class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
     model = AssignmentInfo
 
     def get_context_data(self, **kwargs):
@@ -1315,7 +1327,7 @@ class AssignmentInfoDetailView(DetailView):
         return context
 
 
-class AssignmentInfoUpdateView(UpdateView):
+class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, UpdateView):
     model = AssignmentInfo
     form_class = AssignmentInfoForm
 
@@ -1648,6 +1660,8 @@ def save_file(request):
 def newChapterBuilder(request, course, chapter):
     chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
+    # Course name passed for tag
+    course_name = CourseInfo.objects.get(id=course).Course_Name
     path = settings.MEDIA_ROOT
     server_name = settings.SERVER_NAME
     data = {"": ""}
@@ -1660,6 +1674,7 @@ def newChapterBuilder(request, course, chapter):
     context = {
         'course': course,
         'chapter': chapter,
+        'course_name': course_name,
         'chapterdetails': chapterdetails,
         'chapterlist': chapterlist,
         'file_path': path,

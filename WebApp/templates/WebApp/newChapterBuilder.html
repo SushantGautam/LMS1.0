@@ -283,7 +283,7 @@
 
                                     <div class="dropdown ">
                                         <button class="btn  dropdown-toggle custom-dropdown" type="button"
-                                                data-toggle="dropdown"><span> All Items
+                                                data-toggle="dropdown"><span> All Items</span>
 
                                         </button>
                                         <ul class="dropdown-menu">
@@ -296,7 +296,13 @@
 
                                         </ul>
                                     </div>
-
+                                    <div class="dropdown-items">
+                                        <div class="image-gallery"></div>
+                                        <div class="video-gallery"></div>
+                                        <div class="pdf-gallery"></div>
+                                        <div class="3d-gallery"></div>
+                                        <div class="audio-gallery"></div>
+                                    </div>
 
                                 </div>
                             </div>
@@ -321,7 +327,7 @@
                                    data-original-title="FullScreen">
                               <span><img style="height: 15px; width:15px ; margin-top:-5px"
                                          src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">
-                              </span>&nbsp;&nbsp;
+                              </span>&nbsp;
                                     <span style="font-size: 15px;">Full Screen</span> &nbsp;&nbsp;</a>
 
                                 <a class="second-toggle" id="togglefull" data-toggle="tooltip" data-placement="top"
@@ -522,14 +528,14 @@
         <!-- Modal content-->
         <div id="quiz-link-chapter" class="modal-content">
             <form id="quiz-form">
-                <div class="modal-header">
-                    <div class="row">
-                        <div class="col-md-11">
-                            <h4 class="modal-title">Quiz</h4>
+                <div class="modal-header" style="background-color: #353c46;">
+                    <div class="col-sm-12">
+                        <div class="col-sm-8">
+                            <h4 class="modal-title" style="color: white;">Quiz</h4>
 
                         </div>
-                        <div class="col-md-1">
-                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                        <div class="col-sm-4">
+                            <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;
                             </button>
 
                         </div>
@@ -552,7 +558,7 @@
                     </div>
 
 
-                    <hr>
+               
 
                     <input type="hidden" name="quiz-link" id="quiz-link">
 
@@ -577,7 +583,7 @@
                                 </h5>
                                 <input class="form-control" id="myInput" type="text" placeholder="Search..">
                             </div>
-                            <div class="modal-table-container" style="height:200px;overflow:auto">
+                            <div class="modal-table-container" style="max-height:200px;overflow:auto">
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
@@ -634,14 +640,14 @@
         <!-- Modal content-->
         <div id="survey-link-chapter" class="modal-content">
             <form id="survey-form">
-                <div class="modal-header">
-                    <div class="row">
-                        <div class="col-sm-8 col-xs-6">
-                            <h4 class="modal-title">Survey</h4>
+                <div class="modal-header" style="background-color: #353c46;">
+                    <div class="col-md-12 col-sm-12 " >
+                        <div class="col-sm-8  col-xs-6">
+                            <h4 style ="color:white" class="modal-title">Survey</h4>
 
                         </div>
                         <div class="col-sm-4 col-xs-6">
-                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                            <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;
                             </button>
 
                         </div>
@@ -664,7 +670,7 @@
                     </div>
 
 
-                    <hr>
+                   
 
                     <input type="hidden" name="survey-link" id="survey-link">
 
@@ -693,7 +699,7 @@
                                 </h5>
                                 <input class="form-control" id="mySurveyInput" type="text" placeholder="Search..">
                             </div>
-                            <div class="modal-table-container" style="height:200px;overflow:auto">
+                            <div class="modal-table-container" style="max-height:200px;overflow:auto">
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
@@ -846,6 +852,15 @@
 <script src="{% static 'chapterPageBuilder/js/newmain.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/color-picker/pickr.min.js' %}"></script>
+<!-- Loads <model-viewer> for modern browsers: -->
+<script type="module" crossorigin="anonymous"
+        src="{% static '3D_Viewer/model-viewer.js' %}">
+</script>
+
+<!-- Loads <model-viewer> for old browsers like IE11: -->
+<script nomodule crossorigin="anonymous"
+        src="{% static '3D_Viewer/model-viewer-legacy.js' %}">
+</script>
 
 
 <script>
@@ -1001,21 +1016,23 @@
     var import_zip_url = '{% url "importzip" %}';
     var csrf_token = '{{csrf_token}}';
     var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}';
+    var audio_icon = '{% static "chapterPageBuilder/images/audio_icon.png" %}';
     var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
-    var centerName = '{{ request.user.Center_Code }}'
+    var centerName = '{{ request.user.Center_Code }}';
+    var courseName = '{{ course_name }}'
     var imagegalleryid, videogalleryid, audiogalleryid;
     if (server_name == "Indonesian_Server") {
         imagegalleryid = 'A8AAAoODp5Za';
-        videogalleryid: 'AYMAfq-EnZOX';
-        audiogalleryid: 'AgLA8o--2Nr0'
+        videogalleryid = 'AYMAfq-EnZOX';
+        audiogalleryid = 'AgLA8o--2Nr0';
     } else if (server_name == 'Korean_Server') {
         imagegalleryid = 'AsNAMruu8BjR';
-        audiogalleryid: 'AcFAJqeO8V_R';
+        audiogalleryid = 'AcFAJqeO8V_R';
     } else if (server_name == 'Vietnam_Server') {
         imagegalleryid = 'AUOAUr-S8FbV';
-        audiogalleryid: 'AMOA5rOA85RW';
+        audiogalleryid = 'AMOA5rOA85RW';
     }
 
     $('#chapterlist').val(chapterID);
@@ -1072,6 +1089,7 @@
         let link = $("#survey_create_link").attr('href');
         loadPreview(link, 1)
     })
+    /*
     setTimeout(function () {
         $.ajax({
             url: "{% url 'retrieve-chapter-files' %}",
@@ -1082,25 +1100,25 @@
             },
             success: function (data) {
                 if (data.images.length > 0) {
-                    $('#image-gallery').find('p').empty()
+                    $('.dropdown-items').empty()
                     data.images.forEach(x => {
-                        $('#image-gallery .individual-file').append(
+                        $('.dropdown-items .image-gallery').append(
                             `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
                         )
                     });
                 }
                 if (data.videos.length > 0) {
-                    $('#video-gallery').find('p').empty()
+                    $('.dropdown-items .video-gallery').empty()
                     data.videos.forEach(x => {
-                        $('#video-gallery').append(
+                        $('.dropdown-items').append(
                             x.split('&&&')[1]
                         )
                     });
                 }
                 if (data.pdf.length > 0) {
-                    $('#pdf-gallery').find('p').empty()
+                    $('.dropdown-items .pdf-gallery').empty()
                     data.pdf.forEach(x => {
-                        $('#pdf-gallery').append(
+                        $('.dropdown-items pdf').append(
                             x.split('&&&')[1]
                         )
                     });
@@ -1108,8 +1126,8 @@
             },
             // dataType: dataType
         });
-    }, 5000)
-
+    }, 5000);
+*/
     // Add circular progress bar
     function addprogress() {
 
