@@ -286,7 +286,7 @@
                     <li><i class="fa fa-angle-right"></i></li>
                 </ul>
                 <div class="page-number-list">
-                    <span style="color: white;" id="currentpage"> &nbsp;&nbsp;</span> / <span id="totalpages"></span>
+                    <span style="color: white;" id="currentpage" contenteditable="true"> &nbsp;&nbsp;</span > / <span id="totalpages"></span>
                 </div>
             </div>
            
@@ -887,30 +887,37 @@
 
                                         </div>`
                                 } else {
-                                    if (css_value.local_link.includes('/media/chapterBuilder/')) {
-                                        var embed = `
-                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                        <video controls muted"
-                                            class="videodim">
-                                            <source src="${css_value.local_link}"  type="video/mp4">
-                                        </video>
-                                    </div>
-                                    `
+                                    if (css_value.hasOwnProperty('local_link')) {
+                                        if (css_value.local_link.includes('/media/chapterBuilder/')) {
+                                            var embed = `
+                                        <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                            <video controls muted"
+                                                class="videodim">
+                                                <source src="${css_value.local_link}"  type="video/mp4">
+                                            </video>
+                                        </div>
+                                        `
+                                        } else {
+                                            var embed = `
+                                        <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                            <video controls muted id="video${now}"
+                                                class="videodim cld-video-player cld-video-player-skin-dark example-player"
+                                                data-cld-public-id="${css_value.local_link}" data-public_id="${css_value.local_link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
+                                                <source src="${css_value.local_link}"  type="video/mp4">
+                                            </video>
+                                        </div>
+                                        `
+                                        }
                                     } else {
-                                        var embed = `
-                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                        <video controls muted id="video${now}"
-                                            class="videodim cld-video-player cld-video-player-skin-dark example-player"
-                                            data-cld-public-id="${css_value.local_link}" data-public_id="${css_value.local_link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
-                                            <source src="${css_value.local_link}"  type="video/mp4">
-                                        </video>
-                                    </div>
-                                    `
+                                        var embed = ""
                                     }
+
                                 }
                                 $('#page' + key).append(embed)
-                                if (!css_value.hasOwnProperty('online_link') && !css_value.local_link.includes('/media/chapterBuilder')) {
-                                    play("#video" + now)
+                                if (!css_value.hasOwnProperty('online_link') && css_value.hasOwnProperty('local_link')) {
+                                    if (!css_value.local_link.includes('/media/chapterBuilder')) {
+                                        play("#video" + now)
+                                    }
                                 }
                             });
                         }
@@ -1031,8 +1038,8 @@
                 $('.thumbnail-container').append(`
                 <div class="thumbnails item"  value = ${key}>
                     <div class="image-holder">
-                        <div class="key-holder" style="position:absolute; top:0px ; left:3px"> ${key} </div>
-                        <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}"></img>
+                        <div class="key-holder" style="position:absolute; top:0px ; left:3px;font-size: large;font-weight:700;text-shadow: 2px 2px 6px #ffffff;"> ${key} </div>
+                        <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}" height=100% width=100%></img>
                     </div>
                  
 
@@ -1043,7 +1050,10 @@
                 <div class="thumbnails item"  value = ${key}>
                     <div class="image-holder">
                         <div class="key-holder" style="position:absolute;top:0px;left:3px;font-size: large;font-weight:700;text-shadow: 2px 2px 6px #ffffff;"> ${key} </div>
-                        <img  class="thumb-img" src = "${value[0]['thumbnail']}" onError="this.onerror=null;this.src='{% static 'images/blankpage.jpg' %}';"></img>
+                        <img  class="thumb-img" src = "${value[0]['thumbnail']}"
+                            onError="this.onerror=null;this.src='{% static 'images/blankpage.jpg' %}';"
+                            height=100% width=100%>
+                        </img>
                     </div>
                 </div>
                 `);
@@ -1067,7 +1077,7 @@
         }
         $('.thumbnails').removeAttr('style').removeClass('active');
         $('.thumbnails[value=' + window.currentpage + ']').css({
-            'border': '1px solid #79a6fb;'
+            'border': '2px solid #79a6fb'
         }).addClass('active');
     }
 

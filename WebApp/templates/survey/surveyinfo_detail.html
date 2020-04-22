@@ -29,6 +29,19 @@
 
 {% block customjss %}
   {#  {% if object.Survey_Live %}#}
+
+  <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+  <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+  <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+
+
   <script src="{% static 'js/highchart_data.js' %}"></script>
   <script src="{% static 'js/highcharts.js' %}"></script>
   <script src="{% static 'js/jspdf.debug.js' %}"></script>
@@ -37,178 +50,183 @@
   {% for question in questions %}
     {% if question.Question_Type == "MCQ" %}
       <script>
-                      document.addEventListener("DOMContentLoaded", function (event) {
-                          $(function () {
-                              // Create the chart
-                              var options = {
-                                  chart: {
-                                      events: {
-                                          drilldown: function (e) {
-                                              if (!e.seriesOptions) {
-                                                  var chart = this;
-                                                  // Show the loading label
-                                                  chart.showLoading('Loading ...');
-                                                  setTimeout(function () {
-                                                      chart.hideLoading();
-                                                      chart.addSeriesAsDrilldown(e.point, series);
-                                                  }, 1000);
-                                              }
-                                          }
-                                      },
-                                      plotBorderWidth: 0
-                                  },
-                                  credits: {
-                                      enabled: false
-                                  },
-                                  title: {
-                                      text: '',
-                                  },
-                                  //
-                                  // subtitle: {
-                                  //         text: 'Subtitle'
-                                  // },
-                                  //
-                                  xAxis: {
-                                      type: 'category',
-                                  },
-                                  //
-                                  yAxis: {
-                                      title: {
-                                          margin: 10,
-                                          text: 'Percentage(%)'
-                                      },
-                                  },
-                                  //
-                                  legend: {
-                                      enabled: false,
-                                  },
-                                  //
-                                  plotOptions: {
-                                      series: {
-                                          pointPadding: 0.2,
-                                          borderWidth: 0,
-                                          dataLabels: {
-                                              enabled: true,
-                                              format: '{point.y:.1f}%'
-                                          }
-                                      },
-                                      pie: {
-                                          allowPointSelect: true,
-                                          cursor: 'pointer',
-                                          dataLabels: {
-                                              enabled: true,
-                                              format: '{point.name}: <b>{point.y}%</b>'
-                                          }
-                                      }
-                                  },
-                                  //
-                                  tooltip: {
-                                      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                                      pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
-                                  },
-                                  series: [{
-                                      name: "",
-                                      colorByPoint: true,
-                                      data: [
-                                          {% for option in question.optioninfo.all %}
-                                              {
-                                                  name: "{{ forloop.counter }}. {{ option.Option_Name }}",
-                                                  y: {{ option.get_option_percentage }},
-                                                  drilldown: "Chrome"
-                                              },
-                                          {% endfor %}
-
-                                      ]
-                                  }],
-                                  //
-                                  drilldown: {
-                                      series: []
-                                  }
-                              };
-
-                              // Column chart
-                              options.chart.renderTo = 'container{{ forloop.counter }}';
-                              options.chart.type = 'column';
-                              var chart1 = new Highcharts.Chart(options);
-
-                              chartfunc{{ forloop.counter }} = function () {
-                                  var column = document.getElementById('column{{ forloop.counter }}');
-                                  var bar = document.getElementById('bar{{ forloop.counter }}');
-                                  var pie = document.getElementById('pie{{ forloop.counter }}');
-                                  var line = document.getElementById('line{{ forloop.counter }}');
-                                  $('#chk').prop('checked', false);
-                                  if (column.checked) {
-
-                                      options.chart.renderTo = 'container{{ forloop.counter }}';
-                                      options.chart.type = 'column';
-                                      var chart1 = new Highcharts.Chart(options);
-                                  } else if (bar.checked) {
-                                      options.chart.renderTo = 'container{{ forloop.counter }}';
-                                      options.chart.type = 'bar';
-                                      var chart1 = new Highcharts.Chart(options);
-                                  } else if (pie.checked) {
-                                      options.chart.renderTo = 'container{{ forloop.counter }}';
-                                      options.chart.type = 'pie';
-                                      var chart1 = new Highcharts.Chart(options);
-                                  } else {
-                                      options.chart.renderTo = 'container{{ forloop.counter }}';
-                                      options.chart.type = 'line';
-                                      var chart1 = new Highcharts.Chart(options);
+          document.addEventListener("DOMContentLoaded", function (event) {
+              $(function () {
+                  // Create the chart
+                  var options = {
+                      chart: {
+                          events: {
+                              drilldown: function (e) {
+                                  if (!e.seriesOptions) {
+                                      var chart = this;
+                                      // Show the loading label
+                                      chart.showLoading('Loading ...');
+                                      setTimeout(function () {
+                                          chart.hideLoading();
+                                          chart.addSeriesAsDrilldown(e.point, series);
+                                      }, 1000);
                                   }
                               }
-                          });
-                      });
-                  </script>
+                          },
+                          plotBorderWidth: 0
+                      },
+                      credits: {
+                          enabled: false
+                      },
+                      title: {
+                          text: '',
+                      },
+                      //
+                      // subtitle: {
+                      //         text: 'Subtitle'
+                      // },
+                      //
+                      xAxis: {
+                          type: 'category',
+                      },
+                      //
+                      yAxis: {
+                          title: {
+                              margin: 10,
+                              text: 'Percentage(%)'
+                          },
+                      },
+                      //
+                      legend: {
+                          enabled: false,
+                      },
+                      //
+                      plotOptions: {
+                          series: {
+                              pointPadding: 0.2,
+                              borderWidth: 0,
+                              dataLabels: {
+                                  enabled: true,
+                                  format: '{point.y:.1f}%'
+                              }
+                          },
+                          pie: {
+                              allowPointSelect: true,
+                              cursor: 'pointer',
+                              dataLabels: {
+                                  enabled: true,
+                                  format: '{point.name}: <b>{point.y}%</b>'
+                              }
+                          }
+                      },
+                      //
+                      tooltip: {
+                          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                          pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
+                      },
+                      series: [{
+                          name: "",
+                          colorByPoint: true,
+                          data: [
+                              {% for option in question.optioninfo.all %}
+                                  {
+                                      name: "{{ forloop.counter }}. {{ option.Option_Name }}",
+                                      y: {{ option.get_option_percentage }},
+                                      drilldown: "Chrome"
+                                  },
+                              {% endfor %}
+
+                          ]
+                      }],
+                      //
+                      drilldown: {
+                          series: []
+                      }
+                  };
+
+                  // Column chart
+                  options.chart.renderTo = 'container{{ forloop.counter }}';
+                  options.chart.type = 'column';
+                  var chart1 = new Highcharts.Chart(options);
+
+                  chartfunc{{ forloop.counter }} = function () {
+                      var column = document.getElementById('column{{ forloop.counter }}');
+                      var bar = document.getElementById('bar{{ forloop.counter }}');
+                      var pie = document.getElementById('pie{{ forloop.counter }}');
+                      var line = document.getElementById('line{{ forloop.counter }}');
+                      $('#chk').prop('checked', false);
+                      if (column.checked) {
+
+                          options.chart.renderTo = 'container{{ forloop.counter }}';
+                          options.chart.type = 'column';
+                          var chart1 = new Highcharts.Chart(options);
+                      } else if (bar.checked) {
+                          options.chart.renderTo = 'container{{ forloop.counter }}';
+                          options.chart.type = 'bar';
+                          var chart1 = new Highcharts.Chart(options);
+                      } else if (pie.checked) {
+                          options.chart.renderTo = 'container{{ forloop.counter }}';
+                          options.chart.type = 'pie';
+                          var chart1 = new Highcharts.Chart(options);
+                      } else {
+                          options.chart.renderTo = 'container{{ forloop.counter }}';
+                          options.chart.type = 'line';
+                          var chart1 = new Highcharts.Chart(options);
+                      }
+                  }
+              });
+          });
+      </script>
       <script>
-                          document.addEventListener("DOMContentLoaded", function (event) {
+          document.addEventListener("DOMContentLoaded", function (event) {
 
-                              var Answer_str = "";
-                              $('[id^="{{ forloop.counter }}Answer_"]').each(function () {
-                                  Answer_str += $(this).text() + " ";
+              var Answer_str = "";
+              $('[id^="{{ forloop.counter }}Answer_"]').each(function () {
+                  Answer_str += $(this).text() + " ";
 
-                                  var lines = Answer_str.split(/[,\. ]+/g),
-                                      data = Highcharts.reduce(lines, function (arr, word) {
-                                          var obj = Highcharts.find(arr, function (obj) {
-                                              return obj.name === word;
-                                          });
-                                          if (obj) {
-                                              obj.weight += 1;
-                                          } else {
-                                              obj = {
-                                                  name: word,
-                                                  weight: 1
-                                              };
-                                              arr.push(obj);
-                                          }
-                                          return arr;
-                                      }, []);
-
-                                  Highcharts.chart('WordCloud{{ forloop.counter }}',
-                                      {
-                                          credits: {
-                                              enabled: false
-                                          },
-
-                                          series: [{
-                                              type: 'wordcloud',
-                                              data: data,
-                                              name: 'Occurrences'
-                                          }],
-                                          title: {
-                                              text: ''
-                                          }
-                                      });
-                              });
+                  var lines = Answer_str.split(/[,\. ]+/g),
+                      data = Highcharts.reduce(lines, function (arr, word) {
+                          var obj = Highcharts.find(arr, function (obj) {
+                              return obj.name === word;
                           });
+                          if (obj) {
+                              obj.weight += 1;
+                          } else {
+                              obj = {
+                                  name: word,
+                                  weight: 1
+                              };
+                              arr.push(obj);
+                          }
+                          return arr;
+                      }, []);
 
-                      </script>
+                  Highcharts.chart('WordCloud{{ forloop.counter }}',
+                      {
+                          credits: {
+                              enabled: false
+                          },
+
+                          series: [{
+                              type: 'wordcloud',
+                              data: data,
+                              name: 'Occurrences'
+                          }],
+                          title: {
+                              text: ''
+                          }
+                      });
+              });
+          });
+
+      </script>
     {% endif %}
   {% endfor %}
 
   <script>
       var current_progress = 0;
       $(document).ready(function () {
+          var table_main = $('.SATable').DataTable({
+              responsive: true,
+              dom: 'lBfrtip',
+              buttons: [],
 
+          });
 
           $('#survey_form_modal').on('hidden.bs.modal', function () {
               location.reload();
@@ -404,6 +422,16 @@
           return lines;
       }
 
+      function addTextCanvas(canv, ctx, text, xx, yy) {
+          let h = parseInt(ctx.font.split("px")[0]);
+          let lines = getLines(ctx, text, canv.width);
+          for (const ln of lines) {
+              ctx.fillText(ln, xx, yy);
+              yy += h + 3;
+          }
+          return yy
+      }
+
       //$(window).on('load', function () {
       $("#btnDownload").on('click', function () {
 
@@ -415,25 +443,53 @@
               var yPos = 20;
               var xPos = lMargin;
 
-              yPos = add_text(doc,
-                  "{{ object.Survey_Title }}",
-                  20, xPos, yPos, true);
+              //yPos = add_text(doc,
+              {#//    "{{ object.Survey_Title }}",#}
+              //    20, xPos, yPos, true);
 
-              yPos = add_text(doc,
-                  "SURVEY REPORT",
-                  14, xPos, yPos, true);
+              //yPos = add_text(doc,
+              //    "SURVEY REPORT",
+              //    14, xPos, yPos, true);
 
-              yPos = add_text(doc,
-                  "Start Date: {{ object.Start_Date|date:'M d, Y H:i' }}",
-                  12, xPos, yPos);
+              //yPos = add_text(doc,
+              {#//    "Start Date: {{ object.Start_Date|date:'M d, Y H:i' }}",#}
+              //    12, xPos, yPos);
 
-              yPos = add_text(doc,
-                  "End Date: {{ object.End_Date|date:'M d, Y H:i' }}",
-                  12, xPos, yPos);
+              //yPos = add_text(doc,
+              {#//    "End Date: {{ object.End_Date|date:'M d, Y H:i' }}",#}
+              //    12, xPos, yPos);
 
-              yPos = add_text(doc,
-                  "Number of Participants: {{ submit }}",
-                  12, xPos, yPos);
+              //yPos = add_text(doc,
+              {#//    "Number of Participants: {{ submit }}",#}
+              //    12, xPos, yPos);
+
+
+              let hcanvas = document.createElement("CANVAS");
+              hcanvas.height = 150;
+              hcanvas.width = 400;
+              var hctx = hcanvas.getContext("2d");
+
+              let ini_y = 14;
+              hctx.textAlign = "center";
+              hctx.font = "16px Georgia";
+              ini_y = addTextCanvas(hcanvas, hctx, "SURVEY REPORT", hcanvas.width * 0.5, ini_y);
+              ini_y = addTextCanvas(hcanvas, hctx, "{{ object.Survey_Title }}", hcanvas.width * 0.5, ini_y);
+              hctx.textAlign = "start";
+              hctx.font = "12px Georgia";
+              ini_y += 14;
+              ini_y = addTextCanvas(hcanvas, hctx, "Start Date: " + DateConvert("{{ object.Start_Date|date:'M d, Y H:i' }}"), 0, ini_y);
+              ini_y = addTextCanvas(hcanvas, hctx, "End Date: " + DateConvert("{{ object.End_Date|date:'M d, Y H:i' }}"), 0, ini_y);
+              ini_y = addTextCanvas(hcanvas, hctx, "Number of Participants: {{ submit }}", 0, ini_y);
+
+              let a_r = hcanvas.width / hcanvas.height;
+              var imgHeight = (doc.internal.pageSize.getHeight() * 0.2);
+              var imgWidth = (imgHeight * a_r);
+              yPos += 5;
+              doc.addImage(hcanvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
+              yPos += imgHeight;
+              yPos += 5;
+              //$("#test_image").attr('src', hcanvas.toDataURL());
+
 
               $("svg").each(function (index) {
                   let svgel = this;
@@ -452,17 +508,17 @@
 
                   //let canvas = document.querySelector("#test_canvas");
                   let canvas = document.createElement("CANVAS");
-                  canvas.height = svgel.height.baseVal.value  + 200;
+                  canvas.height = svgel.height.baseVal.value + 200;
                   canvas.width = svgel.width.baseVal.value + 200;
                   var ctx = canvas.getContext("2d");
                   var img = new Image();
                   img.onload = function () {
                       let qn_title = $(svgel).parent().parent().attr('data-qn-title');
-                      //let qn_title = `#. 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 end`;
-                      let lines = getLines(ctx, qn_title, canvas.width-10);
+                      //let qn_title = `#. 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 end`;
+                      ctx.font = "12px Georgia";
+                      let lines = getLines(ctx, qn_title, canvas.width - 10);
                       let ini_y = 12;
                       for (const ln of lines) {
-                          ctx.font = "12px Georgia";
                           ctx.fillText(ln, 0, ini_y);
                           ini_y += 15;
                       }
@@ -496,7 +552,7 @@
                           doc.autoPrint();
                           //doc.save('Test.pdf');
                           window.open(doc.output('bloburl'))
-                      } else{
+                      } else {
                           doc.text(150, 285, 'page ' + doc.page);
                           doc.addPage();
                           yPos = 20;

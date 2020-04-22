@@ -1,7 +1,8 @@
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 
 from WebApp.models import CourseInfo, MemberInfo, GroupMapping, InningInfo, InningGroup, ChapterInfo, AssignmentInfo
+from quiz.models import Quiz, Sitting
 from survey.models import SurveyInfo
 
 
@@ -34,7 +35,7 @@ def AuthCheck(request, admn=0, tchr=0, stdn=0):
                 initStat *= 0
 
         if stdn:
-            if not request.user.Is_Studnet:
+            if not request.user.Is_Student:
                 initStat *= 0
     except:
         return redirect('login')
@@ -64,8 +65,36 @@ class CourseAuthMxnCls:
 
 
 def CourseAuth(request, pk):
-    return 1 if CourseInfo.objects.get(
-        pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
+    return 1 if get_object_or_404(CourseInfo,
+                                  pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
+
+
+class TeacherCourseAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if TeacherCourseAuth(request,
+                                                                          kwargs.get(
+                                                                              'pk')) == 1 else redirect('login')
+
+
+def TeacherCourseAuth(request, pk):
+    return 1 if request.user in get_object_or_404(CourseInfo,
+                                                  pk=pk).get_teachers_of_this_course() else returnResultFunc(request)
+
+
+class StudentCourseAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if StudentCourseAuth(request,
+                                                                          kwargs.get(
+                                                                              'pk')) == 1 else redirect('login')
+
+
+def StudentCourseAuth(request, pk):
+    courselist = []
+    for x in request.user.get_student_courses():
+        for y in x:
+            courselist.append(y)
+    return 1 if get_object_or_404(CourseInfo, pk=pk).pk in courselist else returnResultFunc(
+        request)
 
 
 class ChapterAuthMxnCls:
@@ -75,9 +104,24 @@ class ChapterAuthMxnCls:
                                                                         'pk')) == 1 else redirect('login')
 
 
+class TeacherChapterAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if TeacherCourseAuth(request,
+                                                                          kwargs.get('course')) == 1 else redirect(
+            'login')
+
+
+class StudentChapterAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if StudentCourseAuth(request,
+                                                                          kwargs.get(
+                                                                              'course')) == 1 else redirect('login')
+
+
 def ChapterAuth(request, pk):
-    return 1 if ChapterInfo.objects.get(
-        pk=pk).Course_Code.Center_Code == request.user.Center_Code else returnResultFunc(request)
+    return 1 if get_object_or_404(ChapterInfo,
+                                  pk=pk).Course_Code.Center_Code == request.user.Center_Code else returnResultFunc(
+        request)
 
 
 class MemberAuthMxnCls:
@@ -88,8 +132,8 @@ class MemberAuthMxnCls:
 
 
 def MemberAuth(request, pk):
-    return 1 if MemberInfo.objects.get(
-        pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
+    return 1 if get_object_or_404(MemberInfo,
+                                  pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
 
 
 class GroupMappingAuthMxnCls:
@@ -100,8 +144,8 @@ class GroupMappingAuthMxnCls:
 
 
 def GroupMappingAuth(request, pk):
-    return 1 if GroupMapping.objects.get(
-        pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
+    return 1 if get_object_or_404(GroupMapping,
+                                  pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
 
 
 class InningInfoAuthMxnCls:
@@ -112,8 +156,8 @@ class InningInfoAuthMxnCls:
 
 
 def InningInfoAuth(request, pk):
-    return 1 if InningInfo.objects.get(
-        pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
+    return 1 if get_object_or_404(InningInfo,
+                                  pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
 
 
 class InningGroupAuthMxnCls:
@@ -124,8 +168,8 @@ class InningGroupAuthMxnCls:
 
 
 def InningGroupAuth(request, pk):
-    return 1 if InningGroup.objects.get(
-        pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
+    return 1 if get_object_or_404(InningGroup,
+                                  pk=pk).Center_Code == request.user.Center_Code else returnResultFunc(request)
 
 
 class SurveyInfoAuthMxnCls:
@@ -160,3 +204,42 @@ class AssignmentInfoAuthMxnCls:
 def AssignmentInfoAuth(request, pk):
     return 1 if AssignmentInfo.objects.get(
         pk=pk).Course_Code.Center_Code == request.user.Center_Code else returnResultFunc(request)
+
+
+class TeacherAssignmentAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if TeacherCourseAuth(request,
+                                                                          kwargs.get('course')) == 1 else redirect(
+            'login')
+
+
+class StudentAssignmentAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if StudentCourseAuth(request,
+                                                                          kwargs.get(
+                                                                              'course')) == 1 else redirect('login')
+
+
+class QuizInfoAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if QuizInfoAuth(request,
+                                                                     kwargs.get(
+                                                                         'pk')) == 1 else redirect('login')
+
+
+def QuizInfoAuth(request, pk):
+    return 1 if get_object_or_404(Quiz,
+                                  pk=pk).course_code.Center_Code == request.user.Center_Code else returnResultFunc(
+        request)
+
+
+class SittingInfoAuthMxnCls:
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs) if SittingInfoAuth(request,
+                                                                        kwargs.get(
+                                                                            'pk')) == 1 else redirect('login')
+
+
+def SittingInfoAuth(request, pk):
+    return 1 if Sitting.objects.get(
+        pk=pk).quiz.course_code.Center_Code == request.user.Center_Code else returnResultFunc(request)

@@ -3493,7 +3493,7 @@ async function setThumbnails(prev_page) {
     html2canvas($('#tab')[0]).then(canvas => {
         $('.pagenumber[value= ' + prev_page + ']').each(function () {
             if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
-                resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
+                resizeImage(canvas.toDataURL('image/png', 0.00), 120, 60, setThumbnailscallback, $(this));
             }
         });
     });
