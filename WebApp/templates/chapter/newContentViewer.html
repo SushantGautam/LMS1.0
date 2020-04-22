@@ -1059,7 +1059,7 @@
                 <div class="thumbnails item"  value = ${key}>
                     <div class="image-holder">
                         <div class="key-holder" style="position:absolute; top:0px ; left:3px"> ${key} </div>
-                        <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}"></img>
+                        <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}" height=100% width=100%></img>
                     </div>
                  
 
@@ -1070,7 +1070,10 @@
                 <div class="thumbnails item"  value = ${key}>
                     <div class="image-holder">
                         <div class="key-holder" style="position:absolute;top:0px;left:3px;font-size: large;font-weight:700;text-shadow: 2px 2px 6px #ffffff;"> ${key} </div>
-                        <img  class="thumb-img" src = "${value[0]['thumbnail']}" onError="this.onerror=null;this.src='{% static 'images/blankpage.jpg' %}';"></img>
+                        <img  class="thumb-img" src = "${value[0]['thumbnail']}"
+                            onError="this.onerror=null;this.src='{% static 'images/blankpage.jpg' %}';"
+                            height=100% width=100%>
+                        </img>
                     </div>
                 </div>
                 `);
