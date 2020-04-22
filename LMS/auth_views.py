@@ -35,7 +35,7 @@ def AuthCheck(request, admn=0, tchr=0, stdn=0):
                 initStat *= 0
 
         if stdn:
-            if not request.user.Is_Studnet:
+            if not request.user.Is_Student:
                 initStat *= 0
     except:
         return redirect('login')
@@ -228,8 +228,9 @@ class QuizInfoAuthMxnCls:
 
 
 def QuizInfoAuth(request, pk):
-    return 1 if Quiz.objects.get(
-        pk=pk).course_code.Center_Code == request.user.Center_Code else returnResultFunc(request)
+    return 1 if get_object_or_404(Quiz,
+                                  pk=pk).course_code.Center_Code == request.user.Center_Code else returnResultFunc(
+        request)
 
 
 class SittingInfoAuthMxnCls:
