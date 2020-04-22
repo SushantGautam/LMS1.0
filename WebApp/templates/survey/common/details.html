@@ -1,4 +1,5 @@
 {% load readmore %}
+{% load i18n %}
 {% load static %}
 
 <div style="position: sticky; width: 100%; top: 0; z-index: 1">
@@ -28,26 +29,26 @@
         <div class="col-md-5 col-sm-5">
           <div class="viewSurveyTitle">
             <ul class="card_labels">
-                <li>
-                    <div class="form-group">
-                        <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                               for="first-name">Category :
-                            <span class="category-label">{{ object.Category_Code }}</span>
-                        </label>
-                    </div>
-                </li>
-                <li class="surveyViewDates">
-                    <i class="fa fa-calendar"></i><label>Start date: <span
-                        class="datecon">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
-                </li>
-                <li class="surveyViewDates">
-                    <i class="fa fa-calendar"></i><label>End date: <span
-                        class="datecon">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
-                </li>
-                <li class="surveyViewDates">
-                    <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
-                    Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
-                </li>
+              <li>
+                <div class="form-group">
+                  <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                         for="first-name">Category :
+                    <span class="category-label">{{ object.Category_Code }}</span>
+                  </label>
+                </div>
+              </li>
+              <li class="surveyViewDates">
+                <i class="fa fa-calendar"></i><label>Start date: <span
+                  class="datecon">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
+              </li>
+              <li class="surveyViewDates">
+                <i class="fa fa-calendar"></i><label>End date: <span
+                  class="datecon">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
+              </li>
+              <li class="surveyViewDates">
+                <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
+                Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
+              </li>
             </ul>
 
 
@@ -209,129 +210,129 @@
                          onclick="chartfunc{{ forloop.counter }}()">Line&nbsp;
                   <br/>
 
-{#                  <script>#}
-{#                      document.addEventListener("DOMContentLoaded", function (event) {#}
-{#                          $(function () {#}
-{#                              // Create the chart#}
-{#                              var options = {#}
-{#                                  chart: {#}
-{#                                      events: {#}
-{#                                          drilldown: function (e) {#}
-{#                                              if (!e.seriesOptions) {#}
-{#                                                  var chart = this;#}
-{#                                                  // Show the loading label#}
-{#                                                  chart.showLoading('Loading ...');#}
-{#                                                  setTimeout(function () {#}
-{#                                                      chart.hideLoading();#}
-{#                                                      chart.addSeriesAsDrilldown(e.point, series);#}
-{#                                                  }, 1000);#}
-{#                                              }#}
-{#                                          }#}
-{#                                      },#}
-{#                                      plotBorderWidth: 0#}
-{#                                  },#}
-{#                                  credits: {#}
-{#                                      enabled: false#}
-{#                                  },#}
-{#                                  title: {#}
-{#                                      text: '',#}
-{#                                  },#}
-{#                                  //#}
-{#                                  // subtitle: {#}
-{#                                  //         text: 'Subtitle'#}
-{#                                  // },#}
-{#                                  //#}
-{#                                  xAxis: {#}
-{#                                      type: 'category',#}
-{#                                  },#}
-{#                                  //#}
-{#                                  yAxis: {#}
-{#                                      title: {#}
-{#                                          margin: 10,#}
-{#                                          text: 'Percentage(%)'#}
-{#                                      },#}
-{#                                  },#}
-{#                                  //#}
-{#                                  legend: {#}
-{#                                      enabled: false,#}
-{#                                  },#}
-{#                                  //#}
-{#                                  plotOptions: {#}
-{#                                      series: {#}
-{#                                          pointPadding: 0.2,#}
-{#                                          borderWidth: 0,#}
-{#                                          dataLabels: {#}
-{#                                              enabled: true,#}
-{#                                              format: '{point.y:.1f}%'#}
-{#                                          }#}
-{#                                      },#}
-{#                                      pie: {#}
-{#                                          allowPointSelect: true,#}
-{#                                          cursor: 'pointer',#}
-{#                                          dataLabels: {#}
-{#                                              enabled: true,#}
-{#                                              format: '{point.name}: <b>{point.y}%</b>'#}
-{#                                          }#}
-{#                                      }#}
-{#                                  },#}
-{#                                  //#}
-{#                                  tooltip: {#}
-{#                                      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',#}
-{#                                      pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'#}
-{#                                  },#}
-{#                                  series: [{#}
-{#                                      name: "",#}
-{#                                      colorByPoint: true,#}
-{#                                      data: [#}
-{#                                          {% for option in question.optioninfo.all %}#}
-{#                                              {#}
-{#                                                  name: "{{ forloop.counter }}. {{ option.Option_Name }}",#}
-{#                                                  y: {{ option.get_option_percentage }},#}
-{#                                                  drilldown: "Chrome"#}
-{#                                              },#}
-{#                                          {% endfor %}#}
-{##}
-{#                                      ]#}
-{#                                  }],#}
-{#                                  //#}
-{#                                  drilldown: {#}
-{#                                      series: []#}
-{#                                  }#}
-{#                              };#}
-{##}
-{#                              // Column chart#}
-{#                              options.chart.renderTo = 'container{{ forloop.counter }}';#}
-{#                              options.chart.type = 'column';#}
-{#                              var chart1 = new Highcharts.Chart(options);#}
-{##}
-{#                              chartfunc{{ forloop.counter }} = function () {#}
-{#                                  var column = document.getElementById('column{{ forloop.counter }}');#}
-{#                                  var bar = document.getElementById('bar{{ forloop.counter }}');#}
-{#                                  var pie = document.getElementById('pie{{ forloop.counter }}');#}
-{#                                  var line = document.getElementById('line{{ forloop.counter }}');#}
-{#                                  $('#chk').prop('checked', false);#}
-{#                                  if (column.checked) {#}
-{##}
-{#                                      options.chart.renderTo = 'container{{ forloop.counter }}';#}
-{#                                      options.chart.type = 'column';#}
-{#                                      var chart1 = new Highcharts.Chart(options);#}
-{#                                  } else if (bar.checked) {#}
-{#                                      options.chart.renderTo = 'container{{ forloop.counter }}';#}
-{#                                      options.chart.type = 'bar';#}
-{#                                      var chart1 = new Highcharts.Chart(options);#}
-{#                                  } else if (pie.checked) {#}
-{#                                      options.chart.renderTo = 'container{{ forloop.counter }}';#}
-{#                                      options.chart.type = 'pie';#}
-{#                                      var chart1 = new Highcharts.Chart(options);#}
-{#                                  } else {#}
-{#                                      options.chart.renderTo = 'container{{ forloop.counter }}';#}
-{#                                      options.chart.type = 'line';#}
-{#                                      var chart1 = new Highcharts.Chart(options);#}
-{#                                  }#}
-{#                              }#}
-{#                          });#}
-{#                      });#}
-{#                  </script>#}
+                  {#                  <script>#}
+                  {#                      document.addEventListener("DOMContentLoaded", function (event) {#}
+                  {#                          $(function () {#}
+                  {#                              // Create the chart#}
+                  {#                              var options = {#}
+                  {#                                  chart: {#}
+                  {#                                      events: {#}
+                  {#                                          drilldown: function (e) {#}
+                  {#                                              if (!e.seriesOptions) {#}
+                  {#                                                  var chart = this;#}
+                  {#                                                  // Show the loading label#}
+                  {#                                                  chart.showLoading('Loading ...');#}
+                  {#                                                  setTimeout(function () {#}
+                  {#                                                      chart.hideLoading();#}
+                  {#                                                      chart.addSeriesAsDrilldown(e.point, series);#}
+                  {#                                                  }, 1000);#}
+                  {#                                              }#}
+                  {#                                          }#}
+                  {#                                      },#}
+                  {#                                      plotBorderWidth: 0#}
+                  {#                                  },#}
+                  {#                                  credits: {#}
+                  {#                                      enabled: false#}
+                  {#                                  },#}
+                  {#                                  title: {#}
+                  {#                                      text: '',#}
+                  {#                                  },#}
+                  {#                                  //#}
+                  {#                                  // subtitle: {#}
+                  {#                                  //         text: 'Subtitle'#}
+                  {#                                  // },#}
+                  {#                                  //#}
+                  {#                                  xAxis: {#}
+                  {#                                      type: 'category',#}
+                  {#                                  },#}
+                  {#                                  //#}
+                  {#                                  yAxis: {#}
+                  {#                                      title: {#}
+                  {#                                          margin: 10,#}
+                  {#                                          text: 'Percentage(%)'#}
+                  {#                                      },#}
+                  {#                                  },#}
+                  {#                                  //#}
+                  {#                                  legend: {#}
+                  {#                                      enabled: false,#}
+                  {#                                  },#}
+                  {#                                  //#}
+                  {#                                  plotOptions: {#}
+                  {#                                      series: {#}
+                  {#                                          pointPadding: 0.2,#}
+                  {#                                          borderWidth: 0,#}
+                  {#                                          dataLabels: {#}
+                  {#                                              enabled: true,#}
+                  {#                                              format: '{point.y:.1f}%'#}
+                  {#                                          }#}
+                  {#                                      },#}
+                  {#                                      pie: {#}
+                  {#                                          allowPointSelect: true,#}
+                  {#                                          cursor: 'pointer',#}
+                  {#                                          dataLabels: {#}
+                  {#                                              enabled: true,#}
+                  {#                                              format: '{point.name}: <b>{point.y}%</b>'#}
+                  {#                                          }#}
+                  {#                                      }#}
+                  {#                                  },#}
+                  {#                                  //#}
+                  {#                                  tooltip: {#}
+                  {#                                      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',#}
+                  {#                                      pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'#}
+                  {#                                  },#}
+                  {#                                  series: [{#}
+                  {#                                      name: "",#}
+                  {#                                      colorByPoint: true,#}
+                  {#                                      data: [#}
+                  {#                                          {% for option in question.optioninfo.all %}#}
+                  {#                                              {#}
+                  {#                                                  name: "{{ forloop.counter }}. {{ option.Option_Name }}",#}
+                  {#                                                  y: {{ option.get_option_percentage }},#}
+                  {#                                                  drilldown: "Chrome"#}
+                  {#                                              },#}
+                  {#                                          {% endfor %}#}
+                  {##}
+                  {#                                      ]#}
+                  {#                                  }],#}
+                  {#                                  //#}
+                  {#                                  drilldown: {#}
+                  {#                                      series: []#}
+                  {#                                  }#}
+                  {#                              };#}
+                  {##}
+                  {#                              // Column chart#}
+                  {#                              options.chart.renderTo = 'container{{ forloop.counter }}';#}
+                  {#                              options.chart.type = 'column';#}
+                  {#                              var chart1 = new Highcharts.Chart(options);#}
+                  {##}
+                  {#                              chartfunc{{ forloop.counter }} = function () {#}
+                  {#                                  var column = document.getElementById('column{{ forloop.counter }}');#}
+                  {#                                  var bar = document.getElementById('bar{{ forloop.counter }}');#}
+                  {#                                  var pie = document.getElementById('pie{{ forloop.counter }}');#}
+                  {#                                  var line = document.getElementById('line{{ forloop.counter }}');#}
+                  {#                                  $('#chk').prop('checked', false);#}
+                  {#                                  if (column.checked) {#}
+                  {##}
+                  {#                                      options.chart.renderTo = 'container{{ forloop.counter }}';#}
+                  {#                                      options.chart.type = 'column';#}
+                  {#                                      var chart1 = new Highcharts.Chart(options);#}
+                  {#                                  } else if (bar.checked) {#}
+                  {#                                      options.chart.renderTo = 'container{{ forloop.counter }}';#}
+                  {#                                      options.chart.type = 'bar';#}
+                  {#                                      var chart1 = new Highcharts.Chart(options);#}
+                  {#                                  } else if (pie.checked) {#}
+                  {#                                      options.chart.renderTo = 'container{{ forloop.counter }}';#}
+                  {#                                      options.chart.type = 'pie';#}
+                  {#                                      var chart1 = new Highcharts.Chart(options);#}
+                  {#                                  } else {#}
+                  {#                                      options.chart.renderTo = 'container{{ forloop.counter }}';#}
+                  {#                                      options.chart.type = 'line';#}
+                  {#                                      var chart1 = new Highcharts.Chart(options);#}
+                  {#                                  }#}
+                  {#                              }#}
+                  {#                          });#}
+                  {#                      });#}
+                  {#                  </script>#}
                 </div>
                 <!-- <div class="bs-chart-container" id="progressResult" style="width: 80%;">
 
@@ -397,68 +398,92 @@ margin: 0 auto"></div>
                       <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse"
                            role="tabpanel" aria-labelledby="heading{{ forloop.counter }}"
                            aria-expanded="false" style="height: 0px;">
-                        <p class="SAQ_answer">
+                        {#                        <p class="SAQ_answer">#}
+                        {#                          {% for answer in question.get_answers %}#}
+                        {#                            <div id="{{ forloop.parentloop.counter }}Answer_{{ forloop.counter }}">#}
+                        {#                              <b> S.N:#}
+                        {#                                {{ forloop.counter }}</b><br>{{ answer.Answer_Value|readmore:15 }}#}
+                        {##}
+                        {#                            </div>#}
+                        {#                            <strong>{{ answer.Submit_Code.Student_Code }}</strong> : on#}
+                        {#                            <span class="datecon"> {{ answer.Submit_Code.Created_Date|date:'Y-m-d H:i' }} </span>#}
+                        {#                            <br/>#}
+                        {#                            <hr>#}
+                        {#                          {% endfor %}#}
+                        {#                        </p>#}
+
+                        <table class="SATable table table-striped table-bordered" style="width:100%">
+                          <thead>
+                          <tr>
+                            <th>{% trans "S.N." %}</th>
+                            <th>{% trans "Full Name (Username)" %}</th>
+                            <th>{% trans "Answer" %}</th>
+                            <th>{% trans "Date Submitted" %}</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+
                           {% for answer in question.get_answers %}
-                            <div id="{{ forloop.parentloop.counter }}Answer_{{ forloop.counter }}">
-                              <b> S.N:
-                                {{ forloop.counter }}</b><br>{{ answer.Answer_Value|readmore:15 }}
 
-                            </div>
-                            <strong>{{ answer.Submit_Code.Student_Code }}</strong> : on
-                            <span class="datecon"> {{ answer.Submit_Code.Created_Date|date:'Y-m-d H:i' }} </span>
-                            <br/>
-                            <hr>
+                            <tr>
+                              <td>{{ forloop.counter }}</td>
+                              <td>{{ answer.Submit_Code.Student_Code.getFullName }}</td>
+                              <td>{{ answer.Answer_Value }}</td>
+                              <td class="datecon">{{ answer.Submit_Code.Created_Date|date:'M d, Y H:i' }}</td>
+                            </tr>
+
                           {% endfor %}
+                          </tbody>
 
-                        </p>
+                        </table>
 
 
                       </div>
 
 
-{#                      <script>#}
-{#                          document.addEventListener("DOMContentLoaded", function (event) {#}
-{##}
-{#                              var Answer_str = "";#}
-{#                              $('[id^="{{ forloop.counter }}Answer_"]').each(function () {#}
-{#                                  Answer_str += $(this).text() + " ";#}
-{##}
-{#                                  var lines = Answer_str.split(/[,\. ]+/g),#}
-{#                                      data = Highcharts.reduce(lines, function (arr, word) {#}
-{#                                          var obj = Highcharts.find(arr, function (obj) {#}
-{#                                              return obj.name === word;#}
-{#                                          });#}
-{#                                          if (obj) {#}
-{#                                              obj.weight += 1;#}
-{#                                          } else {#}
-{#                                              obj = {#}
-{#                                                  name: word,#}
-{#                                                  weight: 1#}
-{#                                              };#}
-{#                                              arr.push(obj);#}
-{#                                          }#}
-{#                                          return arr;#}
-{#                                      }, []);#}
-{##}
-{#                                  Highcharts.chart('WordCloud{{ forloop.counter }}',#}
-{#                                      {#}
-{#                                          credits: {#}
-{#                                              enabled: false#}
-{#                                          },#}
-{##}
-{#                                          series: [{#}
-{#                                              type: 'wordcloud',#}
-{#                                              data: data,#}
-{#                                              name: 'Occurrences'#}
-{#                                          }],#}
-{#                                          title: {#}
-{#                                              text: ''#}
-{#                                          }#}
-{#                                      });#}
-{#                              });#}
-{#                          });#}
-{##}
-{#                      </script>#}
+                      {#                      <script>#}
+                      {#                          document.addEventListener("DOMContentLoaded", function (event) {#}
+                      {##}
+                      {#                              var Answer_str = "";#}
+                      {#                              $('[id^="{{ forloop.counter }}Answer_"]').each(function () {#}
+                      {#                                  Answer_str += $(this).text() + " ";#}
+                      {##}
+                      {#                                  var lines = Answer_str.split(/[,\. ]+/g),#}
+                      {#                                      data = Highcharts.reduce(lines, function (arr, word) {#}
+                      {#                                          var obj = Highcharts.find(arr, function (obj) {#}
+                      {#                                              return obj.name === word;#}
+                      {#                                          });#}
+                      {#                                          if (obj) {#}
+                      {#                                              obj.weight += 1;#}
+                      {#                                          } else {#}
+                      {#                                              obj = {#}
+                      {#                                                  name: word,#}
+                      {#                                                  weight: 1#}
+                      {#                                              };#}
+                      {#                                              arr.push(obj);#}
+                      {#                                          }#}
+                      {#                                          return arr;#}
+                      {#                                      }, []);#}
+                      {##}
+                      {#                                  Highcharts.chart('WordCloud{{ forloop.counter }}',#}
+                      {#                                      {#}
+                      {#                                          credits: {#}
+                      {#                                              enabled: false#}
+                      {#                                          },#}
+                      {##}
+                      {#                                          series: [{#}
+                      {#                                              type: 'wordcloud',#}
+                      {#                                              data: data,#}
+                      {#                                              name: 'Occurrences'#}
+                      {#                                          }],#}
+                      {#                                          title: {#}
+                      {#                                              text: ''#}
+                      {#                                          }#}
+                      {#                                      });#}
+                      {#                              });#}
+                      {#                          });#}
+                      {##}
+                      {#                      </script>#}
 
 
                       <!-- <label class="SAQ_answer_label">Answers:</label> -->
