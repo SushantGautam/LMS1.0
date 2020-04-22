@@ -460,41 +460,33 @@ a:hover {
 [data-title] {
     position: relative;
     cursor: help;
+    transition: all 0.3s ease;
 }
 
 [data-title]:hover::before {
     content: attr(data-title);
-    position: absolute;
-    bottom: -29px;
-    right: 6px;
-    display: inline-block;
-    padding: 3px 6px;
-    border-radius: 2px;
+        position: absolute;
+        bottom: -25px;
+        right:0px;
+    
+  
+    padding: 3px ;
+    border-radius: 5px;
     background: #000;
     color: #fff;
-    font-size: 12px;
+    font-size: 10px;
     font-family: sans-serif;
     white-space: nowrap;
     z-index: 9999;
 
 }
 
-[data-title]:hover::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: -12px;
-    display: inline-block;
-    color: #fff;
-    border: 8px solid transparent;
-    border-bottom: 8px solid #000;
-    z-index: 9999;
-}
+
 .note-holder {
     padding: 6px 11px !important;
     color: white;
     background-color: #586474;
-    max-height: 76px;
+    max-height: 80px;
 }
 .chp
 .chapter-list-holder{
@@ -523,7 +515,7 @@ a:hover {
 
 .additional-canvas {
 
-height: 64vh;
+height: 69vh;
 
 overflow: auto;
 }
@@ -552,12 +544,12 @@ overflow: auto;
 }
 .small-canvases {
     height: 110px;
-    width: 176px;
+    width: 175px;
     background-color: white;
     /* margin: auto; */
     /* margin: 15px auto; */
     margin-top: 20px;
-    margin-bottom: 30px;
+    
     margin-left: auto;
     margin-right: auto;
     }
@@ -618,7 +610,7 @@ hr {
 
     font-size: 12px;
     font-weight: 500;
-    padding-top: 15px;
+    padding-top: 0px;
    
     position: absolute;
     bottom: 10px;
@@ -1381,5 +1373,20 @@ html {
 .fas{
     margin-right: 5px;
     cursor: pointer;
+}
+.custom-file-input{
+    cursor: pointer;
+}
+.clickButton{
+    padding: 2px 5px;
+    border-radius:5px;
+    color: white;
+    background-color: #363c45;
+    text-decoration: none;
+    margin-left: 10px;
+}
+.clickButton:hover , .clickButton:focus , .clickButton:active{
+    color: white;
+    text-decoration: none;
 }
 /*======================== End of Layout CSS ====================================================*/
