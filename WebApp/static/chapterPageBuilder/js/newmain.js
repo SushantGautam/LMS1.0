@@ -189,7 +189,7 @@ class Textbox {
                 }
             });
             $('.note-editable').css('font-size', '15px');
-            $('.note-toolbar').css('display', 'none')
+            $('.note-toolbar').css('display', 'block')
 
 
             $('#editor' + id).parent().find('.note-statusbar').remove();
@@ -1070,7 +1070,7 @@ function TextboxFunction(top = null, left = null, height = "20%", width = "30%",
     );
     $('.note-editing-area').on('focusout', function (e) {
         if (!resultsSelected) {
-            $('.panel-heading.note-toolbar').css('display', 'none')
+            $('.panel-heading.note-toolbar').css('display', 'block')
         }
     });
 }
