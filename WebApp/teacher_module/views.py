@@ -27,7 +27,8 @@ from django_addanother.views import CreatePopupMixin
 
 from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls, InningInfoAuthMxnCls, InningInfoAuth, ChapterAuthMxnCls, \
     AssignmentInfoAuthMxnCls, SurveyInfoAuthMxnCls, GroupMappingAuthMxnCls, MemberAuth, InningGroupAuthMxnCls, \
-    QuizInfoAuthMxnCls, TeacherCourseAuthMxnCls, TeacherChapterAuthMxnCls, TeacherAssignmentAuthMxnCls
+    QuizInfoAuthMxnCls, TeacherCourseAuthMxnCls, TeacherChapterAuthMxnCls, TeacherAssignmentAuthMxnCls, \
+    TeacherCourseAuth
 from WebApp.forms import CourseInfoForm, ChapterInfoForm, AssignmentInfoForm, AttendanceForm, AttendanceFormSetForm, \
     AttendanceFormSetFormT
 from WebApp.forms import GroupMappingForm, InningGroupForm, \
@@ -728,7 +729,7 @@ class QuizUserProgressView(TemplateView):
         return context
 
 
-class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
+class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
     template_name = 'teacher_quiz/sitting_list.html'
 
@@ -747,9 +748,15 @@ class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
         return queryset
 
 
-class QuizMarkingDetail(QuizMarkerMixin, DetailView):
+class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
     model = Sitting
     template_name = 'teacher_quiz/sitting_detail.html'
+
+    def dispatch(self, *args, **kwargs):
+        # Check if the teacher is allocated to course of not
+        if TeacherCourseAuth(self.request, get_object_or_404(Sitting, pk=kwargs.get('pk')).quiz.course_code.pk) != 1:
+            return redirect('login')
+        return super(QuizMarkingDetail, self).dispatch(self.request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()
