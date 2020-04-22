@@ -482,7 +482,7 @@ a:hover {
 }
 
 
-.note-holder {
+.note-holder1 {
     padding: 6px 11px !important;
     color: white;
     background-color: #586474;
@@ -493,7 +493,7 @@ a:hover {
     background-color: #eef2f5;
 }
 
-.note-holder i {
+.note-holder1 i {
     color: #8592a4;
 }
 .note-chapter-part:hover , .note-chapter-part:active , .note-chapter-part:focus{
