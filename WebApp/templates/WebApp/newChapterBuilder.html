@@ -146,7 +146,7 @@
                                                  src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
                                             <span class="object-name-size">TEXT BOX</span>
                                         </li>
-
+                                      
                                         <!-- <li class="individual-objects draggable draggable-style ">
                                                 <span>
                                                  <img class="object-image-size"
@@ -389,14 +389,28 @@
 
                 </div>
 
-                <a class="note-chapter-part" title=" Write A Note" href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
-                    <div class="note-holder">
+                <a class="note-chapter-part" title=" Write A Note" href="
+                {% if '/teachers' in request.path %}
+                    /teachers{{ chapterdetails.get_update_url }}
+                {% else %}
+                    {{ chapterdetails.get_update_url }}
+                {% endif %}
+
+                " target="_blank">
+                    <div class="note-holder1">
                         <span style="color: white; font-weight:600">Description <i class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
                             <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:70 }} </p>
                         </div>
                     </div>
                 </a>
+
+                <!-- popup for description -->
+              
+                <!-- ends -->
+
+
+
 
                 <div class="additional-canvas tabs-to-click" style="position: relative;">
                     <ul class="small-canvases-list">
@@ -815,21 +829,37 @@
 
         <!-- Modal content-->
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Link</h4>
+            <div class="modal-header" style="background-color: #353c46;">
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <h4 class="modal-title" style="color: white;">Link</h4>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="close" data-dismiss="modal" style="color:white">&times;</button>
+
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
                 <!-- Modal Contents Here -->
-                <div>
-                    <label>Upload 3D file(.glb or .gltf)</label>
-                    <input type="file" name="_3dfile" id="_3dfile-link" accept=".glb,.gltf"/>
-                </div>
-                <div>For converting 3D files online,
-                    <a href="https://blackthread.io/gltf-converter/" target="_blank">
-                        Click Here.
-                    </a>
-                </div>
+                <div class="col-sm-12"> 
+                        <label>Upload 3D file(.glb or .gltf)</label>
+                       
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input"  name="_3dfile" id="_3dfile-link" accept=".glb,.gltf">
+                            <label class="custom-file-label" for="_3dfile-link">Choose file</label>
+                          </div>
+                          
+
+                       
+                
+                    <div style="margin-top: 15px; font-weight:600">For converting 3D files online,
+                        <a class="clickButton" href="https://blackthread.io/gltf-converter/" target="_blank">
+                            Click Here
+                        </a>
+                   </div>
+               </div>
                 <!-- <div>
                 <label>Upload 3D file (MTL)</label>
                 <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
@@ -1037,7 +1067,7 @@
 
     $('#chapterlist').val(chapterID);
 
-    var previous;
+    var previous = chapterID;
     (function () {
 
         $("select").on('focus', function () {
@@ -1154,5 +1184,12 @@
     }
 
 </script>
+<script>
+   
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+    </script>
 
 {# End of Scripts from old builder #}

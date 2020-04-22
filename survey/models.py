@@ -170,8 +170,8 @@ class QuestionInfo(models.Model):
 
     @property
     def get_answers(self):
-        answers = AnswerInfo.objects.all().filter(Question_Code=self.pk).exclude(
-            Answer_Value__isnull=True)[:4]
+        # answers = AnswerInfo.objects.all().filter(Question_Code=self.pk).exclude(Answer_Value__isnull=True)[:4]
+        answers = AnswerInfo.objects.all().filter(Question_Code=self.pk).exclude(Answer_Value__isnull=True)
 
         return answers
 

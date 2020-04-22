@@ -39,7 +39,8 @@ from django.views.generic.edit import FormView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from LMS.auth_views import CourseAuthMxnCls, AdminAuthMxnCls, AuthCheck, CourseAuth, MemberAuthMxnCls, \
-    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls, ChapterAuthMxnCls, AssignmentInfoAuthMxnCls
+    GroupMappingAuthMxnCls, InningInfoAuthMxnCls, InningGroupAuthMxnCls, ChapterAuthMxnCls, AssignmentInfoAuthMxnCls, \
+    MemberAuth, TeacherCourseAuth, StudentCourseAuth
 from LMS.settings import BASE_DIR
 from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
@@ -1609,6 +1610,15 @@ def chapterviewer(request):
 
 
 def chapterpagebuilder(request, course, chapter):
+    if CourseAuth(request, course) == 1:
+        if '/teachers' not in request.path and '/students' not in request.path:
+            if not request.user.Is_CenterAdmin:
+                return redirect('login')
+        if '/teachers' in request.path:
+            if TeacherCourseAuth(request, course) != 1:
+                return redirect('login')
+    else:
+        return redirect('login')
     chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
@@ -1658,6 +1668,15 @@ def save_file(request):
 
 
 def newChapterBuilder(request, course, chapter):
+    if CourseAuth(request, course) == 1:
+        if '/teachers' not in request.path and '/students' not in request.path:
+            if not request.user.Is_CenterAdmin:
+                return redirect('login')
+        if '/teachers' in request.path:
+            if TeacherCourseAuth(request, course) != 1:
+                return redirect('login')
+    else:
+        return redirect('login')
     chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     # Course name passed for tag
@@ -2025,6 +2044,18 @@ class ContentsView(TemplateView):
     template_name = 'chapter/chapter_contents.html'
 
     def get(self, request, *args, **kwargs):
+        if CourseAuth(request, self.kwargs.get('course')) == 1:
+            if '/teachers' not in request.path and '/students' not in request.path:
+                if not request.user.Is_CenterAdmin:
+                    return redirect('login')
+            if '/teachers' in request.path:
+                if TeacherCourseAuth(request, self.kwargs.get('course')) != 1:
+                    return redirect('login')
+            elif '/students' in request.path:
+                if StudentCourseAuth(request, self.kwargs.get('course')) != 1:
+                    return redirect('login')
+        else:
+            return redirect('login')
         try:
             if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
                 pass
@@ -2079,9 +2110,21 @@ class ContentsView(TemplateView):
 
 
 class NewContentsView(TemplateView):
-    template_name = 'chapter/newContentViewer.html'  
+    template_name = 'chapter/newContentViewer.html'
 
     def get(self, request, *args, **kwargs):
+        if CourseAuth(request, self.kwargs.get('course')) == 1:
+            if '/teachers' not in request.path and '/students' not in request.path:
+                if not request.user.Is_CenterAdmin:
+                    return redirect('login')
+            if '/teachers' in request.path:
+                if TeacherCourseAuth(request, self.kwargs.get('course')) != 1:
+                    return redirect('login')
+            elif '/students' in request.path:
+                if StudentCourseAuth(request, self.kwargs.get('course')) != 1:
+                    return redirect('login')
+        else:
+            return redirect('login')
         try:
             if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
                 pass
@@ -2234,6 +2277,8 @@ from quiz.views import Sitting
 
 
 def AchievementPage_Student(request, student_id):
+    if MemberAuth(request, student_id) != 1:
+        return redirect('login')
     memberinfo = MemberInfo.objects.get(pk=student_id)
     sittings = Sitting.objects.filter(user=student_id)
     return render(request, 'WebApp/Student_Achievement.html', {'sittings': sittings, 'memberinfo': memberinfo})
