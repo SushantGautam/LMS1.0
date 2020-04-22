@@ -389,7 +389,14 @@
 
                 </div>
 
-                <a class="note-chapter-part" title=" Write A Note" href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
+                <a class="note-chapter-part" title=" Write A Note" href="
+                {% if '/teachers' in request.path %}
+                    /teachers{{ chapterdetails.get_update_url }}
+                {% else %}
+                    {{ chapterdetails.get_update_url }}
+                {% endif %}
+
+                " target="_blank">
                     <div class="note-holder">
                         <span style="color: white; font-weight:600">Description <i class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
