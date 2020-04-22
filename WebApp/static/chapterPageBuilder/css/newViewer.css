@@ -342,7 +342,7 @@ body{
 
 
 .chat-dialogbox{
-    height: 435px;
+    /* height: 435px; */
     width: 340px;
     background-color: white;
     border-radius: 5px;
