@@ -3263,9 +3263,11 @@ function changePage(page_number) {
             $('.pagenumber[value=1]').addClass('current')
             // $('#add-page-btn').click();
             display(data)
+            $('.pcr-button')[0].style.color = data.pages[currentPage][0].backgroundcolor
             return
         } else {
             newpagefunction()
+            $('.pcr-button')[0].style.color = "white"
         }
     } else {
         window.currentPage = page_number.replace(/^\D+/g, '')
@@ -3291,6 +3293,11 @@ function changePage(page_number) {
             // })
         }
         display(data)
+        if (data.pages[currentPage]) {
+            $('.pcr-button')[0].style.color = data.pages[currentPage][0].backgroundcolor
+        } else {
+            $('.pcr-button')[0].style.color = "white"
+        }
     }
     // localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
 }
