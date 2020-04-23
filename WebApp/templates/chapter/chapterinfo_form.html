@@ -86,6 +86,6 @@
 <script src="{% static 'js/common.js' %}"></script>
 <script>
     document.getElementById('id_mustreadtime').value = document.getElementById('id_mustreadtime').value / 60
-    document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString()
-    document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString()
+    document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")
+    document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
 </script>

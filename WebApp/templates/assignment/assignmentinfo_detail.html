@@ -654,8 +654,8 @@
         });
     </script>
     <script>
-        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString()
-        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString()
+        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
+        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")
         $('#id_Assignment_Deadline_edit').datetimepicker();
         $('#id_Assignment_Start_edit').datetimepicker();
         $("#ajaxassignmentinfoform").submit(function (e) {

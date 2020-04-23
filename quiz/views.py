@@ -13,8 +13,7 @@ from django.views import View
 from django.views.generic import DetailView, ListView, TemplateView, FormView, CreateView, UpdateView
 from django_addanother.views import CreatePopupMixin
 
-from LMS.auth_views import QuizInfoAuthMxnCls, QuizInfoAuth, AdminAuthMxnCls, StudentAuthMxnCls, \
-    StudentCourseAuth
+from LMS.auth_views import QuizInfoAuthMxnCls, QuizInfoAuth, AdminAuthMxnCls, StudentCourseAuth
 from WebApp.models import CourseInfo, ChapterInfo, InningGroup, InningInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
     QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
@@ -208,7 +207,7 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
         return context
 
 
-class QuizTake(StudentAuthMxnCls, FormView):
+class QuizTake(FormView):
     form_class = QuestionForm
     template_name = 'question.html'
     result_template_name = 'result.html'
