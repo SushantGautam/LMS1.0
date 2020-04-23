@@ -37,7 +37,8 @@ def AuthCheck(request, admn=0, tchr=0, stdn=0):
         if stdn:
             if not request.user.Is_Student:
                 initStat *= 0
-    except:
+    except Exception as e:
+        print(e)
         return redirect('login')
 
     if initStat:
