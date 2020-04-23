@@ -948,10 +948,11 @@ class BaseLayout {
                     $(this).css("width", w);
                 }
             });
-
+           
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
         };
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }
 

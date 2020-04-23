@@ -735,6 +735,7 @@ hr {
     left: 20%;
     height: fit-content;
     width: auto;
+    z-index: 999!important;
 }
 
 .panel-default > .panel-heading {
