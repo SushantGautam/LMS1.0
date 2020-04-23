@@ -190,8 +190,6 @@ class Textbox {
             });
             $('.note-editable').css('font-size', '15px');
             $('.note-toolbar').css('display', 'none');
-            $('[data-toggle="tooltip"]').tooltip()
-
 
             $('#editor' + id).parent().find('.note-statusbar').remove();
             $('#editor' + id).parent().find('.note-editable').html(message);
@@ -287,7 +285,6 @@ class picture {
             
 
         };
-        $('[data-toggle="tooltip"]').tooltip();
     }
 }
 
@@ -400,7 +397,6 @@ class video {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom)
         };
@@ -500,7 +496,6 @@ class Audio {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom)
         };
@@ -568,7 +563,7 @@ class Button {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -643,7 +638,7 @@ class Quiz {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -713,7 +708,7 @@ class Survey {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -790,7 +785,7 @@ class PDF {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // Making element Resizable
@@ -872,7 +867,7 @@ class _3Dobject {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
         };
@@ -885,7 +880,7 @@ class BaseLayout {
 
         let html = `<div class="baselayout">
                     <div class="layout-actions">
-                        <i title="delete-button" class="fas fa-trash"></i>
+                        <i title="delete-button" class="fas fa-trash" data-toggle="tooltip" data-placement="bottom"></i>
                     </div>
                     <div class="layout-icon-placement">
                         <div>    
@@ -1019,6 +1014,7 @@ function LayoutFunction(top = null, left = null, height = "100%", width = "100%"
                 null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
                 "Button", "", font_size = "75px")
         }
+        $('[data-toggle="tooltip"]').tooltip()
     })
 }
 
@@ -2743,6 +2739,7 @@ function dropfunction(event, ui) {
     $('.fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
 function displaypagenumbers() {
