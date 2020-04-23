@@ -23,7 +23,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '210.127.211.100', '103.41.247.44', '192.168.1.29']
+ALLOWED_HOSTS = ['127.0.0.1', 'id.ublcloud.me', 'kr.ublcloud.me', 'vn.ublcloud.me']
 
 # Application definition
 
@@ -229,6 +229,8 @@ REST_FRAMEWORK = {
 # }
 
 SERVER_NAME = 'Indonesian_Server'
+# SERVER_NAME = 'Korean_Server'
+# SERVER_NAME = 'Vietnam_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
