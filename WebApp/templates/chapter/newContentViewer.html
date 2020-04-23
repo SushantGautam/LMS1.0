@@ -285,23 +285,24 @@
                     <li><i class="fa fa-angle-right"></i></li>
                 </ul>
                 <div class="page-number-list">
-                    <span style="color: white;" id="currentpage" > &nbsp;&nbsp;</span > / <span id="totalpages"></span>
+                    <span style="color: white;" class="currentpage" id="currentpage"> &nbsp;&nbsp;</span> / <span
+                        class="totalpages" id="totalpages"></span>
                 </div>
             </div>
-           
+
 
         </div>
         <div class="link-view-box">
-            <div data-toggle="tooltip" data-placement="top"  title='Enter Page Number' style="text-align:center">
-                <input class="number-active" type="text" id="pg-change" name="firstname" placeholder="page"> 
+            <div data-toggle="tooltip" data-placement="top" title='Enter Page Number' style="text-align:center">
+                <input class="number-active" type="text" id="pg-change" name="firstname" placeholder="page">
             </div>
             <div style="font-weight:600; text-align:center">
-                <span>/&nbsp;400</span>
+                <span>/&nbsp; </span><span class="totalpages"></span>
             </div>
 
         </div>
 
-        <div id="main-chat-box"class="chat-dialogbox  animate">
+        <div id="main-chat-box" class="chat-dialogbox  animate">
 
             <ul class="chat-header">
                 <li class="ham-icon">
@@ -729,10 +730,19 @@
         $('#iframeholder').empty();
     })
 
+    $('#pg-change').on('change', function () {
+        if (parseInt(this.value) <= parseInt(data.numberofpages) && parseInt(this.value) > 0) {
+            loaddata(data, this.value)
+        }
+    })
+
     function loaddata(data, currentpage = 1) {
         window.currentpage = currentpage
-        $('#totalpages').text(data.numberofpages);
-        $('#currentpage').text(window.currentpage);
+        $('.totalpages').text(data.numberofpages);
+        $('.currentpage').text(window.currentpage);
+
+        $('#pg-change').val(window.currentpage);
+
         $.each(data.pages, function (key, value) {
             if (key == window.currentpage) {
                 $.each(value, function (count) {
