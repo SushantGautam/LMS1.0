@@ -411,7 +411,7 @@ class AssignmentInfoDeleteView(DeleteView):
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
-class AssignmentAnswers(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMxnCls, ListView):
+class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
     model = AssignAnswerInfo
     template_name = 'teacher_module/assignment_answers.html'
 
