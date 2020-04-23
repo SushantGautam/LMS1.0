@@ -142,6 +142,7 @@
                   // Column chart
                   options.chart.renderTo = 'container{{ forloop.counter }}';
                   options.chart.type = 'column';
+                  options.yAxis.max = 100;
                   var chart1 = new Highcharts.Chart(options);
 
                   chartfunc{{ forloop.counter }} = function () {
@@ -154,6 +155,7 @@
 
                           options.chart.renderTo = 'container{{ forloop.counter }}';
                           options.chart.type = 'column';
+                          options.yAxis.max = 100;
                           var chart1 = new Highcharts.Chart(options);
                       } else if (bar.checked) {
                           options.chart.renderTo = 'container{{ forloop.counter }}';

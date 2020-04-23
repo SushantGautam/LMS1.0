@@ -339,6 +339,12 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
         context['pre_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
 
+        for q in context['post_quizes']:
+            q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
+
+        for q in context['pre_quizes']:
+            q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
+
         return context
 
 
