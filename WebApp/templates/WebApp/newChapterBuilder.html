@@ -353,7 +353,7 @@
                     </div>
                     <div class="main-central-canvas tabs" id="tabs-for-download">
                         <p id="tab" value="0" class="tab-content-no   droppable editor-canvas current"
-                           style="height: 100%">
+                           style="height: 100%; background-color: white;">
 
                         </p>
                         <p id="copy_tab" value="0" style="display: none;">
@@ -940,11 +940,8 @@
         }
     });
     pickr.on('save', (color, instance) => {
-
         const rgbaColor = color.toRGBA().toString();
-
         document.querySelector('.current').style.backgroundColor = rgbaColor;
-
     })
 
 </script>
