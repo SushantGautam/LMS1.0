@@ -178,7 +178,7 @@ body{
     position: absolute;
     left: 26.9%;
     bottom: 1%;
-    min-height: 91px;
+    min-height: 94px;
     width: 6%;
     background-color: rgb(54, 60, 69,0.9);
     padding: 7px 0;
@@ -186,11 +186,13 @@ body{
 
 .number-active{
     text-align: center;
-    padding: 5px ;
+    padding: 2px ;
     background-color: #363c45;
     margin: 8px 10px;
     border: 1px solid #79a6fb;
     font-weight: 600;
+    width: 40px;
+    color: white;
 
 
 }

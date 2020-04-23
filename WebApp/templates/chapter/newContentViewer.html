@@ -223,15 +223,15 @@
         </div>
         {% if not connection_offline %}
             <ul class="chat-sidenav">
-                <li class="glyphicon glyphicon-th" id="hamburg-nav">
+                <li  data-toggle="tooltip" data-placement="right"  title='Open Navgation' class="glyphicon glyphicon-th" id="hamburg-nav">
 
                 </li>
-                <li class="icon-for-chat">
+                <li  data-toggle="tooltip" data-placement="right"  title='Chat Icon' class="icon-for-chat">
                     <i style="color: white;" class="chat-icon fa fa-quote-right"></i>
                 </li>
             </ul>
             <ul  class="chat-sidenav-close slideInLeft animate">
-                <li class=close-icon-sidebar>
+                <li  class=close-icon-sidebar>
                     <i class="fa fa-times"></i>
 
                 </li>
@@ -285,15 +285,15 @@
                     <li><i class="fa fa-angle-right"></i></li>
                 </ul>
                 <div class="page-number-list">
-                    <span style="color: white;" id="currentpage" contenteditable="true"> &nbsp;&nbsp;</span > / <span id="totalpages"></span>
+                    <span style="color: white;" id="currentpage" > &nbsp;&nbsp;</span > / <span id="totalpages"></span>
                 </div>
             </div>
            
 
         </div>
         <div class="link-view-box">
-            <div >
-                <div class="number-active">4</div>
+            <div data-toggle="tooltip" data-placement="top"  title='Enter Page Number' style="text-align:center">
+                <input class="number-active" type="text" id="pg-change" name="firstname" placeholder="page"> 
             </div>
             <div style="font-weight:600; text-align:center">
                 <span>/&nbsp;400</span>
@@ -1282,7 +1282,13 @@
 
 
 </script>
+
 <script>
+    $(document).ready(function(){
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })       
+   });
 
 </script>
 <script>
