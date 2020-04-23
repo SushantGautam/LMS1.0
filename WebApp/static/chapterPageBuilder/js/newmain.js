@@ -119,8 +119,8 @@ class Textbox {
                         <div id="editor${id}" class="messageText"></div>
                         
                          <div id="text-actions" class = "text-actions">
-                         <i class=" hints fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
-                             <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="hints fas fa-arrows-alt" id="draghere" ></i>
+                         <i class="   fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
+                             <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghere" ></i>
                          </div>
                      </div>
               `;
@@ -234,9 +234,12 @@ class picture {
         let html =
             `<div class='pic'>
             <div id="pic-actions">
-                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="hints fas fa-trash" id=${id} ></i>
-                <i data-toggle="tooltip" data-placement="bottom"  title='Upload File' class="hints fas fa-upload" id=${id}></i>
-                <i data-toggle="tooltip" data-placement="bottom"  title='Link Image' class="hints fas fa-link imagelink" id=${id}></i>
+                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
+              <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+              <span data-toggle="tooltip" data-placement="bottom"  title='Link Image'>
+              <i  class= fas fa-link imagelink" id=${id}></i>
+              </span>
+                
             </div>
             ${img}
             <div>
@@ -281,9 +284,10 @@ class picture {
             
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
-            $('[data-toggle="tooltip"]').tooltip();
+            
 
         };
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }
 
@@ -350,9 +354,10 @@ class video {
         let html =
             `<div class='video-div'>
                 <div id="video-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload File' class="fas fa-upload" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link File' class="fas fa-link videolink" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom" id=" " title='Delete item' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                   
+                    <i data-toggle="tooltip" data-placement="bottom" id=" " title='Link File' class="fas fa-link videolink" id=${id}></i>
                 </div>
                 <div>
                     <p id="video-drag">${message}</p>
@@ -451,8 +456,8 @@ class Audio {
         let html =
             `<div class='audio-div'>
                 <div id="audio-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload  File' class="fas fa-upload" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom" id=" " title='Delete item' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 </div>
                 <div>
                     <p id="audio-drag">${message}</p>
@@ -515,9 +520,10 @@ class Button {
         let html = `
                     <div class="btn-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link Button' class="fas fa-link"   id=${id} ></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom" id=" " title='Delete item' class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
+                            
+                            <i data-toggle="tooltip" data-placement="bottom" id=" " title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
 
@@ -583,9 +589,10 @@ class Quiz {
         let html = `
                     <div class="quiz-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash"  class="fas fa-trash" id=${id}></i>
-                            <i title="Link Button" class="fas fa-link"   id=${id} ></i>
-                            <i title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash"  class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
+                            
+                            <i data-toggle="tooltip" data-placement="bottom" title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder ">
@@ -657,9 +664,9 @@ class Survey {
         let html = `
                     <div class="survey-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link File' class="fas fa-link"   id=${id} ></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span> 
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder">
@@ -741,8 +748,8 @@ class PDF {
         let html = `
         <div class='pdfdiv'>
             <div id="pdfdiv-actions1">
-                <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" ></i>
-                <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload File' class="fas fa-upload" id=${id}></i>
+                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" ></i>
+                <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -823,8 +830,8 @@ class _3Dobject {
         let html =
             `<div class='_3dobj-div'>
                 <div id="_3dobj-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete Button' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload fIle' class="fas fa-upload" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Delete Button' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -881,14 +888,15 @@ class BaseLayout {
                         <i title="delete-button" class="fas fa-trash"></i>
                     </div>
                     <div class="layout-icon-placement">
-                        <div>
-                                <span title="Text-box" class="layout-icons layout-text">
+                        <div>    
+                      
+                                <span data-toggle="tooltip" data-placement="top" title="Text-box" class="layout-icons layout-text">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/text.svg "></img>
                                 </span>
-                                <span title="Upload Image" class="layout-icons layout-image">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload Image" class="layout-icons layout-image">
                                 <img  class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/picture.svg "></img>
                                 </span>
-                                <span  title="Upload Video" class="layout-icons layout-video">
+                                <span data-toggle="tooltip" data-placement="top"  title="Upload Video" class="layout-icons layout-video">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/video.svg "></img>
                                 
                                 </span>
@@ -896,13 +904,13 @@ class BaseLayout {
                         </div>
                         <div>
 
-                                <span title="Upload Audio" class="layout-icons layout-audio">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload Audio" class="layout-icons layout-audio">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/audio.png "></img>
                                 </span>
-                                <span title="Upload PDF" class="layout-icons layout-pdf">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload PDF" class="layout-icons layout-pdf">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/pdf.svg "></img>
                                 </span>
-                                <span title="Upload 3D-FILE" class="layout-icons layout-3d">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload 3D-FILE" class="layout-icons layout-3d">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/3d-cube.svg "></img>
                                 </span>
 

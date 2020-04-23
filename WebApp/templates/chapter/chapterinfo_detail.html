@@ -142,7 +142,8 @@
                                     <span> {{ pre_quiz.title }} </span>
                                 </div>
                                 <div class="col-md-3">
-                                    {% if pre_quiz.sitting_set.all.count > 0 %}
+{#                                    {% if pre_quiz.sitting_set.all.count > 0 %}#}
+                                    {% if pre_quiz.sitting_list.count > 0 %}
                                         {% if pre_quiz.single_attempt %}
                                             <span style="color: limegreen; font-weight: bold">Completed</span>
                                         {% else %}
@@ -220,7 +221,7 @@
                                     <span> {{ post_quiz.title }} </span>
                                 </div>
                                 <div class="col-md-6">
-                                    {% if post_quiz.sitting_set.all.count > 0 %}
+                                    {% if post_quiz.sitting_list.count > 0 %}
                                         {% if post_quiz.single_attempt %}
                                             <span style="color: limegreen; font-weight: bold">Completed</span>
                                         {% else %}
