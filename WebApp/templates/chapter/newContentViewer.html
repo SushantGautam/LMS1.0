@@ -202,7 +202,15 @@
 
                 </li>
                 <li>
-                    <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="/profile/"
+                    <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="
+                    {% if '/teachers' in request.path %}
+                        {% url 'teacher_user_profile' %}
+                    {% elif '/students' in request.path %}
+                        {% url 'student_user_profile' %}
+                    {% else %}
+                    /profile/
+                    {% endif %}
+                        "
                        data-original-title="Profile">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                     </a>
