@@ -279,10 +279,10 @@ class picture {
                     $(this).css("width", w);
                 }
             });
-            
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
-            
+
 
         };
     }
@@ -943,7 +943,7 @@ class BaseLayout {
                     $(this).css("width", w);
                 }
             });
-           
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
         };
@@ -3527,7 +3527,7 @@ function setThumbnailscallback(data, dive) {
 
     $(document).ready(function(){
         $(function () {
-          $('[data-toggle="tooltip"]').tooltip()
-        })       
+            $('[data-toggle="tooltip"]').tooltip()
+        })
    });
 
