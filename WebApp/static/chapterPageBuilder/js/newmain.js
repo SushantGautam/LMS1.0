@@ -351,10 +351,10 @@ class video {
         let html =
             `<div class='video-div'>
                 <div id="video-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id=" " title='Delete item' class="fas fa-trash" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom" title='Delete item' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                    
-                    <i data-toggle="tooltip" data-placement="bottom" id=" " title='Link File' class="fas fa-link videolink" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Link File' class="fas fa-link videolink" id=${id}></i>
                 </div>
                 <div>
                     <p id="video-drag">${message}</p>
@@ -452,7 +452,7 @@ class Audio {
         let html =
             `<div class='audio-div'>
                 <div id="audio-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id=" " title='Delete item' class="fas fa-trash" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 </div>
                 <div>
@@ -515,10 +515,10 @@ class Button {
         let html = `
                     <div class="btn-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id=" " title='Delete item' class="fas fa-trash" id=${id}></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                             <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
                             
-                            <i data-toggle="tooltip" data-placement="bottom" id=" " title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
 
@@ -743,7 +743,7 @@ class PDF {
         let html = `
         <div class='pdfdiv'>
             <div id="pdfdiv-actions1">
-                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" ></i>
+            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                 <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
             </div>
             <div>
