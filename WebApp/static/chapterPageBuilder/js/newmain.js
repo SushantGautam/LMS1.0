@@ -2598,7 +2598,7 @@ function clearPage(page_number) {
 }
 
 function dropfunction(event, ui) {
-    let top = ui.helper.position().top;
+    let top = ui.helper.position().top - $('.ols-objects').height() - $('.component-container').height();
     let left = ui.helper.position().left;
 
     $(this).removeClass("over");
@@ -2606,9 +2606,9 @@ function dropfunction(event, ui) {
         top = $('#tab').position().top
     }
 
-    if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
-        top = $('#tab').height() - (0.25 * $('#tab').height())
-    }
+    // if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
+    //     top = $('#tab').height() - (0.25 * $('#tab').height())
+    // }
 
     if (ui.helper.offset().left + (0.20 * $('#tab').width()) > $('#tab').width() && !ui.helper.hasClass('button')) {   // 0.25 is multiplied to sum the height of element to the current pointer position
         left = $('#tab').width() - (0.40 * $('#tab').width()) + sidebarWidth
