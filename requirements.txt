@@ -6,7 +6,7 @@ django-crispy-forms==1.7.0
 psycopg2-binary==2.8.3
 channels==2.4.0
 channels-redis==2.4.2
-gunicorn
+#gunicorn
 whitenoise
 django-heroku
 coverage
@@ -31,7 +31,7 @@ django-import-export
 pandas==0.24.2
 markdown
 django-decorator-include
-sentry-sdk==0.13.1
+#sentry-sdk==0.13.1
 django-url-filter
 python-resize-image
 django-createsuperuserwithpassword
