@@ -209,9 +209,8 @@ def AssignmentInfoAuth(request, pk):
 
 class TeacherAssignmentAuthMxnCls:
     def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs) if TeacherCourseAuth(request,
-                                                                          kwargs.get('course')) == 1 else redirect(
-            'login')
+        return super().get(request, *args, **kwargs) if TeacherCourseAuth(
+            request, get_object_or_404(AssignmentInfo, pk=kwargs.get('pk')).Course_Code.pk) == 1 else redirect('login')
 
 
 class StudentAssignmentAuthMxnCls:
