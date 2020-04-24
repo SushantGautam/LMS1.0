@@ -80,6 +80,8 @@ urlpatterns += (
     # urls for ChapterInfo
     path('chapterinfo/create/ajax', views.ChapterInfoCreateViewAjax.as_view(),
          name='chapterinfo_create_ajax'),
+    path('chapterinfo/update/<int:pk>/ajax/', views.PartialChapterInfoUpdateViewAjax.as_view(),
+         name='partialchapterinfo_update_ajax'),
     path('courseinfo/<int:course>/chapterinfo/',
          views.ChapterInfoListView.as_view(), name='chapterinfo_list'),
     path('courseinfo/<int:course>/create/',

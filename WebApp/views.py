@@ -822,6 +822,36 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
 
+class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
+    model = ChapterInfo
+    form_class = ChapterInfoForm
+    template_name = 'ajax/chapterinfo_form_ajax.html'
+
+    def post(self, request, *args, **kwargs):
+        Obj = ChapterInfo.objects.get(pk=kwargs.get('pk'))
+        Obj.Chapter_No = request.POST["Chapter_No"]
+        Obj.Chapter_Name = request.POST["Chapter_Name"]
+        Obj.Summary = request.POST["Summary"]
+        # if request.POST["Use_Flag"] == 'false':
+        #     Obj.Use_Flag = False
+        # else:
+        #     Obj.Use_Flag = True
+        # Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
+        # Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
+        # Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+        Obj.save()
+
+        return JsonResponse(
+            data={
+                'Message': 'Success',
+                'chapter_no': Obj.Chapter_No,
+                'summary': (Obj.Summary[:70] + '..') if len(Obj.Summary) > 70 else Obj.Summary,
+                'chapter_name': Obj.Chapter_Name,
+                'chapter_pk': Obj.pk,
+            },
+
+            status=200
+        )
 
 class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
