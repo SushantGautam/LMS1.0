@@ -201,24 +201,36 @@
                     </a>
 
                 </li>
-                    <li>
-                        <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="/profile/" data-original-title="Profile">
-                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                        </a>
+                <li>
+                    <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="
+                    {% if '/teachers' in request.path %}
+                        {% url 'teacher_user_profile' %}
+                    {% elif '/students' in request.path %}
+                        {% url 'student_user_profile' %}
+                    {% else %}
+                    /profile/
+                    {% endif %}
+                        "
+                       data-original-title="Profile">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    </a>
 
-                    </li>
-                    <li>
-                        <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title="" href="https://we.tl/t-HCjfXFbUd7" target="_blank" data-original-title="Download u-LMS Android App">
-                            <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
-                        </a>
+                </li>
+                <li>
+                    <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title=""
+                       href="https://we.tl/t-zd5ecmEThc" target="_blank"
+                       data-original-title="Download u-LMS Android App">
+                        <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+                    </a>
 
-                    </li>
-                    <li>
-                        <a class="logoutBtn" data-toggle="tooltip" data-placement="top" title="" href="/logout" data-original-title="Logout">
-                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                        </a>
+                </li>
+                <li>
+                    <a class="logoutBtn" data-toggle="tooltip" data-placement="top" title="" href="/logout"
+                       data-original-title="Logout">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
 
-                    </li>
+                </li>
 
                 </ul>
 

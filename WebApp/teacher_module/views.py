@@ -358,6 +358,11 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
+        if form.cleaned_data['Start_Date'] == "":
+            form.instance.Start_Date = None
+        if form.cleaned_data['End_Date'] == "":
+            form.instance.End_Date = None
+
         form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         form.save()
         return super().form_valid(form)
@@ -406,7 +411,7 @@ class AssignmentInfoDeleteView(DeleteView):
     # success_url = reverse_lazy('assignmentinfo_detail', course=self.request.POST['course_id'], chapter=self.request.POST['chapter_id'], pk =self.request.POST['assignment_id'])
 
 
-class AssignmentAnswers(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMxnCls, ListView):
+class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
     model = AssignAnswerInfo
     template_name = 'teacher_module/assignment_answers.html'
 
