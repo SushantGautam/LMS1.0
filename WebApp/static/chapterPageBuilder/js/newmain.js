@@ -119,8 +119,8 @@ class Textbox {
                         <div id="editor${id}" class="messageText"></div>
                         
                          <div id="text-actions" class = "text-actions">
-                             <i class="fas fa-trash" id=${id}></i>
-                             <i class="fas fa-arrows-alt" id="draghere" ></i>
+                         <i class="   fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
+                             <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghere" ></i>
                          </div>
                      </div>
               `;
@@ -189,8 +189,7 @@ class Textbox {
                 }
             });
             $('.note-editable').css('font-size', '15px');
-            $('.note-toolbar').css('display', 'none')
-
+            $('.note-toolbar').css('display', 'none');
 
             $('#editor' + id).parent().find('.note-statusbar').remove();
             $('#editor' + id).parent().find('.note-editable').html(message);
@@ -233,9 +232,12 @@ class picture {
         let html =
             `<div class='pic'>
             <div id="pic-actions">
-                <i class="fas fa-trash" id=${id}></i>
-                <i class="fas fa-upload" id=${id}></i>
-                <i class="fas fa-link imagelink" id=${id}></i>
+                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
+              <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+              <span data-toggle="tooltip" data-placement="bottom"  title='Link Image'>
+              <i  class= fas fa-link imagelink" id=${id}></i>
+              </span>
+                
             </div>
             ${img}
             <div>
@@ -280,6 +282,8 @@ class picture {
 
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
+
+
         };
     }
 }
@@ -347,9 +351,10 @@ class video {
         let html =
             `<div class='video-div'>
                 <div id="video-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
-                    <i class="fas fa-link videolink" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom" title='Delete item' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                   
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Link File' class="fas fa-link videolink" id=${id}></i>
                 </div>
                 <div>
                     <p id="video-drag">${message}</p>
@@ -392,7 +397,6 @@ class video {
                     $(this).css("width", w);
                 }
             });
-
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom)
         };
@@ -448,8 +452,8 @@ class Audio {
         let html =
             `<div class='audio-div'>
                 <div id="audio-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 </div>
                 <div>
                     <p id="audio-drag">${message}</p>
@@ -492,7 +496,6 @@ class Audio {
                     $(this).css("width", w);
                 }
             });
-
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom)
         };
@@ -512,9 +515,10 @@ class Button {
         let html = `
                     <div class="btn-div" data-width = "${width}">
                         <div class="options">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-link"   id=${id} ></i>
-                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
+                            
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
 
@@ -580,9 +584,10 @@ class Quiz {
         let html = `
                     <div class="quiz-div" data-width = "${width}">
                         <div class="options">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-link"   id=${id} ></i>
-                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash"  class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
+                            
+                            <i data-toggle="tooltip" data-placement="bottom" title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder ">
@@ -654,9 +659,9 @@ class Survey {
         let html = `
                     <div class="survey-div" data-width = "${width}">
                         <div class="options">
-                            <i class="fas fa-trash" id=${id}></i>
-                            <i class="fas fa-link"   id=${id} ></i>
-                            <i class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span> 
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder">
@@ -738,8 +743,8 @@ class PDF {
         let html = `
         <div class='pdfdiv'>
             <div id="pdfdiv-actions1">
-                <i class="fas fa-trash" id=${id}></i>
-                <i class="fas fa-upload" id=${id}></i>
+            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -820,8 +825,8 @@ class _3Dobject {
         let html =
             `<div class='_3dobj-div'>
                 <div id="_3dobj-actions">
-                    <i class="fas fa-trash" id=${id}></i>
-                    <i class="fas fa-upload" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Delete Button' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -875,17 +880,18 @@ class BaseLayout {
 
         let html = `<div class="baselayout">
                     <div class="layout-actions">
-                        <i class="fas fa-trash"></i>
+                        <i title="delete-button" class="fas fa-trash" data-toggle="tooltip" data-placement="bottom"></i>
                     </div>
                     <div class="layout-icon-placement">
-                        <div>
-                                <span title="Text-box" class="layout-icons layout-text">
+                        <div>    
+                      
+                                <span data-toggle="tooltip" data-placement="top" title="Text-box" class="layout-icons layout-text">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/text.svg "></img>
                                 </span>
-                                <span title="Upload Image" class="layout-icons layout-image">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload Image" class="layout-icons layout-image">
                                 <img  class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/picture.svg "></img>
                                 </span>
-                                <span class="layout-icons layout-video">
+                                <span data-toggle="tooltip" data-placement="top"  title="Upload Video" class="layout-icons layout-video">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/video.svg "></img>
                                 
                                 </span>
@@ -893,13 +899,13 @@ class BaseLayout {
                         </div>
                         <div>
 
-                                <span class="layout-icons layout-audio">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload Audio" class="layout-icons layout-audio">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/audio.png "></img>
                                 </span>
-                                <span class="layout-icons layout-pdf">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload PDF" class="layout-icons layout-pdf">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/pdf.svg "></img>
                                 </span>
-                                <span class="layout-icons layout-3d">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload 3D-FILE" class="layout-icons layout-3d">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/3d-cube.svg "></img>
                                 </span>
 
@@ -941,6 +947,7 @@ class BaseLayout {
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
         };
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }
 
@@ -1007,6 +1014,7 @@ function LayoutFunction(top = null, left = null, height = "100%", width = "100%"
                 null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
                 "Button", "", font_size = "75px")
         }
+        $('[data-toggle="tooltip"]').tooltip()
     })
 }
 
@@ -1186,7 +1194,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     }
                 }
                 request.send()
-                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                     console.log('success')
                 }).fail(function () {
                     console.log('failed')
@@ -1269,7 +1277,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},,${courseName}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -1934,7 +1942,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 }
                             }
                             request.send()
-                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                                 console.log('success')
                             }).fail(function () {
                                 console.log('failed')
@@ -2164,7 +2172,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -2590,7 +2598,7 @@ function clearPage(page_number) {
 }
 
 function dropfunction(event, ui) {
-    let top = ui.helper.position().top;
+    let top = ui.helper.position().top - $('.ols-objects').height() - $('.component-container').height();
     let left = ui.helper.position().left;
 
     $(this).removeClass("over");
@@ -2598,9 +2606,9 @@ function dropfunction(event, ui) {
         top = $('#tab').position().top
     }
 
-    if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
-        top = $('#tab').height() - (0.25 * $('#tab').height())
-    }
+    // if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
+    //     top = $('#tab').height() - (0.25 * $('#tab').height())
+    // }
 
     if (ui.helper.offset().left + (0.20 * $('#tab').width()) > $('#tab').width() && !ui.helper.hasClass('button')) {   // 0.25 is multiplied to sum the height of element to the current pointer position
         left = $('#tab').width() - (0.40 * $('#tab').width()) + sidebarWidth
@@ -2731,6 +2739,7 @@ function dropfunction(event, ui) {
     $('.fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
 function displaypagenumbers() {
@@ -3252,9 +3261,11 @@ function changePage(page_number) {
             $('.pagenumber[value=1]').addClass('current')
             // $('#add-page-btn').click();
             display(data)
+            $('.pcr-button')[0].style.color = data.pages[currentPage][0].backgroundcolor
             return
         } else {
             newpagefunction()
+            $('.pcr-button')[0].style.color = "white"
         }
     } else {
         window.currentPage = page_number.replace(/^\D+/g, '')
@@ -3280,6 +3291,11 @@ function changePage(page_number) {
             // })
         }
         display(data)
+        if (data.pages[currentPage]) {
+            $('.pcr-button')[0].style.color = data.pages[currentPage][0].backgroundcolor
+        } else {
+            $('.pcr-button')[0].style.color = "white"
+        }
     }
     // localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
 }
@@ -3473,6 +3489,14 @@ async function setThumbnails(prev_page) {
             'background-repeat': 'no-repeat'
         })
     });
+    $('#tab').find('.audio-div').each(function () {
+        $(this).css({
+            'background-image': `url('${audio_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    });
     $('#tab').find('._3dobj-div').each(function () {
         $(this).css({
             'background-image': `url('${_3d_icon}')`,
@@ -3480,12 +3504,12 @@ async function setThumbnails(prev_page) {
             'background-size': 'contain',
             'background-repeat': 'no-repeat'
         })
-    })
+    });
 
     html2canvas($('#tab')[0]).then(canvas => {
         $('.pagenumber[value= ' + prev_page + ']').each(function () {
             if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
-                resizeImage(canvas.toDataURL('image/png', 0.00), 60, 30, setThumbnailscallback, $(this));
+                resizeImage(canvas.toDataURL('image/png', 0.00), 120, 60, setThumbnailscallback, $(this));
             }
         });
     });
@@ -3500,3 +3524,10 @@ function setThumbnailscallback(data, dive) {
         'background-repeat': 'no-repeat',
     });
 }
+
+    $(document).ready(function(){
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+   });
+

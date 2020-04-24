@@ -64,6 +64,9 @@
         <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
         <link href="{% static 'chapterPageBuilder/css/newViewer.css' %}" rel="stylesheet">
+        
+        <!-- Chat CSS -->
+        <link href="{% static 'chapterPageBuilder/css/chat.css' %}" rel="stylesheet">
 
         <!-- Animate CSS -->
         <link href="{% static 'vendorsx/animate.css/animate.min.css' %}" rel="stylesheet">
@@ -130,7 +133,7 @@
 </div>
 <section class="whole-container">
 
-    <div class="sidenavbar-part slideInLeft animate">
+    <div id="sidebar-id" class="sidenavbar-part  animate">
         <div class="sidebar-top">
 
             <div class="col-md-12 col-sm-12 profile-description">
@@ -198,24 +201,36 @@
                     </a>
 
                 </li>
-                    <li>
-                        <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="/profile/" data-original-title="Profile">
-                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                        </a>
+                <li>
+                    <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="
+                    {% if '/teachers' in request.path %}
+                        {% url 'teacher_user_profile' %}
+                    {% elif '/students' in request.path %}
+                        {% url 'student_user_profile' %}
+                    {% else %}
+                    /profile/
+                    {% endif %}
+                        "
+                       data-original-title="Profile">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    </a>
 
-                    </li>
-                    <li>
-                        <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title="" href="https://we.tl/t-zd5ecmEThc" target="_blank" data-original-title="Download u-LMS Android App">
-                            <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
-                        </a>
+                </li>
+                <li>
+                    <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title=""
+                       href="https://we.tl/t-zd5ecmEThc" target="_blank"
+                       data-original-title="Download u-LMS Android App">
+                        <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+                    </a>
 
-                    </li>
-                    <li>
-                        <a class="logoutBtn" data-toggle="tooltip" data-placement="top" title="" href="/logout" data-original-title="Logout">
-                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                        </a>
+                </li>
+                <li>
+                    <a class="logoutBtn" data-toggle="tooltip" data-placement="top" title="" href="/logout"
+                       data-original-title="Logout">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
 
-                    </li>
+                </li>
 
                 </ul>
 
@@ -223,15 +238,15 @@
         </div>
         {% if not connection_offline %}
             <ul class="chat-sidenav">
-                <li class="glyphicon glyphicon-th" id="hamburg-nav">
+                <li  data-toggle="tooltip" data-placement="right"  title='Open Navgation' class="glyphicon glyphicon-th" id="hamburg-nav">
 
                 </li>
-                <li class="icon-for-chat">
+                <li  data-toggle="tooltip" data-placement="right"  title='Chat Icon' class="icon-for-chat">
                     <i style="color: white;" class="chat-icon fa fa-quote-right"></i>
                 </li>
             </ul>
-            <ul class="chat-sidenav-close slideInLeft animate">
-                <li class=close-icon-sidebar>
+            <ul  class="chat-sidenav-close slideInLeft animate">
+                <li  class=close-icon-sidebar>
                     <i class="fa fa-times"></i>
 
                 </li>
@@ -253,7 +268,7 @@
         <div id="page-contents" class="page-contents"></div>
 
 
-        <div class="custom-owl-slider">
+        <div id="main-bottom-slider" class="custom-owl-slider">
             <div class="owl-carousel owl-theme thumbnail-container" id="thumbnail-slider">
 
             </div>
@@ -281,45 +296,42 @@
             <div class="navholder">
                 <ul class="nav-view">
                     <li><i class="fa fa-angle-left"></i></li>
-                    <li class="view-icon" value="show"><i class="fa fa-list-ul"></i></li>
+                    <li data-toggle="tooltip" data-placement="top"  title='View Page Options' class="view-icon" value="show"><i class="fa fa-list-ul"></i></li>
                     <li><i class="fa fa-angle-right"></i></li>
                 </ul>
                 <div class="page-number-list">
-                    <span style="color: white;" id="currentpage"> &nbsp;&nbsp;</span> / <span id="totalpages"></span>
+                    <span style="color: white;" class="currentpage" id="currentpage"> &nbsp;&nbsp;</span> / <span
+                        class="totalpages" id="totalpages"></span>
                 </div>
             </div>
-           
+
 
         </div>
         <div class="link-view-box">
-            <div >
-                <div class="number-active">4</div>
+            <div data-toggle="tooltip" data-placement="top" title='Enter Page Number' style="text-align:center">
+                <input class="number-active" type="number" id="pg-change" name="firstname" placeholder="page">
             </div>
             <div style="font-weight:600; text-align:center">
-                <span>/&nbsp;400</span>
+                <span>/&nbsp; </span><span class="totalpages"></span>
             </div>
 
         </div>
 
-        <div class="chat-dialogbox fadeIn animate">
-
+        <!-- Chat BOX UI -->
+        <span class="chat-info" data-userName="{{ user }}" data-userID = "{{ user.id }}" data-userIcon="{{ user.Avatar }}"
+                                data-chapterID="{{ chapter.id }}"></span>
+        <div id="main-chat-box"class="chat-dialogbox  animate">
             <ul class="chat-header">
                 <li class="ham-icon">
                     <i class="fa fa-bars"></i>
-
                 </li>
-                <li class="user-image-padding">
 
-
+                <!-- <li class="user-image-padding">
                     <div class="chat-user-image">
-
                     </div>
-                </li>
+                </li> -->
 
-
-                <li class="name-user">User One</li>
-
-
+                <!-- <li class="name-user">User One</li> -->
                 <li class="options-chat">Options <i class="fa fa-caret-down"></i></li>
                 <li class="close-chat"><i class="fa fa-times"></i></li>
             </ul>
@@ -327,128 +339,67 @@
             <ul class="chat-body">
                 <li class="left-chat">
 
-
                     <div class="eachbox">
-
-
                         <ul class="leftchat-userbox">
                             <li>
                                 <div class="chat-user-image2"></div>
                             </li>
                             <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
                         </ul>
-
-
                     </div>
+
                     <div class="eachbox">
-
-
                         <ul class="leftchat-userbox">
                             <li>
                                 <div class="chat-user-image2"></div>
                             </li>
                             <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
                         </ul>
-
-
                     </div>
-                    <div class="eachbox">
-
-
-                        <ul class="leftchat-userbox">
-                            <li>
-                                <div class="chat-user-image2"></div>
-                            </li>
-                            <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
-                        </ul>
-
-
-                    </div>
-                    <div class="eachbox">
-
-
-                        <ul class="leftchat-userbox">
-                            <li>
-                                <div class="chat-user-image2"></div>
-                            </li>
-                            <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
-                        </ul>
-
-
-                    </div>
-                    <div class="eachbox">
-
-
-                        <ul class="leftchat-userbox">
-                            <li>
-                                <div class="chat-user-image2"></div>
-                            </li>
-                            <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
-                        </ul>
-
-
-                    </div>
-
-
                 </li>
+
                 <li class="chat-canvas">
-                    <div>
-                        <div class=" holder-chat col-sm-12">
-                            <ul class="chat-canavas-boxes">
-                                <li class="image-canvas-part">
-                                    <div class="chat-user-image"></div>
-                                </li>
-                                <li class="chat-space">
-                                    <div class="chat-text">
-                                        elit. Alias dolorum facilis iusto quae ex quaerat esse maiores hic nisi fugit?
-                                    </div>
-                                </li>
-                            </ul>
-
-                        </div>
-
-                        <div class=" friend holder-chat col-sm-12">
-                            <ul class="chat-canavas-boxes">
-                                <li class="image-canvas-part"> <div class="chat-user-image"></div></li>
-                                <li class="chat-space">
-                                    <div class="chat-text2">
-                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Alias dolorum facilis
-                                        iusto quae ex quaerat esse maiores hic nisi fugit?
-                                    </div>
-                                </li>
-                            </ul>
-
-                        </div>
-
-
+                    <div id="chat-log">
+                      
+                          <div class="msg left-msg">
+                            <div
+                             class="msg-img"
+                             style="background-image: url({% static 'images/bot.png' %})"
+                            ></div>
+                      
+                            <div class="msg-bubble">
+                              <div class="msg-info">
+                                <div class="msg-info-name">LMS BOT</div>
+                                <div class="default-time msg-info-time"></div>
+                              </div>
+                      
+                              <div class="msg-text">
+                                Hello! You can now send message to everyone here.
+                              </div>
+                            </div>
+                          </div>
                     </div>
-
-
                 </li>
-
             </ul>
 
             <div class="input-send">
-                <div class="row" style="margin: 0px!important;">
+                <div class="msger-inputarea">
+                    <input type="text" class="msger-input" id="chat-message-input" placeholder="Enter your message...">
+                    <button type="submit" class="msger-send-btn" id="chat-message-submit"><i class=" custom-send fa fa-paper-plane"></i></button>
+                </div>
+                <!-- <div class="row" style="margin: 0px!important;">
                     <div class="col-sm-10" style="padding: 0!important;">
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="1"></textarea>
+                        <textarea class="form-control" id="chat-message-input" rows="1"></textarea>
                     </div>
                     <div class="send-button col-sm-2">
-                        <i class=" custom-send fa fa-paper-plane"></i>
+                        <button type="submit" id="chat-message-submit"><i class=" custom-send fa fa-paper-plane"></i></button>
                     </div>
-
-                </div>
-
-
+                </div> -->
             </div>
 
 
         </div>
+        <!-- Chat UI end -->
 
     </div>
 
@@ -490,6 +441,9 @@
     <script src="{% static 'chapterPageBuilder/SummerNote/summernote.min.js' %}"></script>
 {% endif %}
 
+<!-- CHAT SCRIPT -->
+<script src="{% static 'chapterPageBuilder/js/chat.js' %}"></script>
+
 <script type="text/javascript">
     {% if not data %}
         alert("No contents in this page. Returning back to previous page...");
@@ -499,63 +453,69 @@
 
     var currentpage = 1;
     var studystarttime = Date.now() / 1000 | 0; // Floors the value
-    var roomName = "chapterchat{{chapter.id}}";
 
-    {% if not connection_offline %}
-        {% block chatwebsocket %}
-            var chatSocket;
+    {% comment %}
+    // var roomName = "chapterchat{{chapter.id}}";
 
-            function startWebsocket() {
-                var webSProtocal = '';
+    // {% if not connection_offline %}
+    //     {% block chatwebsocket %}
+    //         var chatSocket;
 
-                if (location.protocol === 'https:') {
-                    webSProtocal = "wss://";
-                } else {
-                    webSProtocal = "ws://";
-                }
+    //         function startWebsocket() {
+    //             var webSProtocal = '';
 
-                var locationhost = location.host;
-                if (locationhost === 'ulms.me') {
-                    locationhost = "ulms.me:9002";
-                }
+    //             if (location.protocol === 'https:') {
+    //                 webSProtocal = "wss://";
+    //             } else {
+    //                 webSProtocal = "ws://";
+    //             }
+
+    //             var locationhost = location.host;
+    //             if (locationhost === 'ulms.me') {
+    //                 locationhost = "ulms.me:9002";
+    //             }
 
 
-                chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomName + '/');
-                chatSocket.onclose = function () {
-                    // connection closed, discard old websocket and create a new one in 5s
-                    chatSocket = null;
-                    console.log("Websocket restarting. . . ")
-                    try {
-                        setTimeout(startWebsocket, 5000)
-                    } catch (error) {
-                    }
+    //             chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomName + '/');
+    //             chatSocket.onclose = function () {
+    //                 // connection closed, discard old websocket and create a new one in 5s
+    //                 chatSocket = null;
+    //                 console.log("Websocket restarting. . . ")
+    //                 try {
+    //                     setTimeout(startWebsocket, 5000)
+    //                 } catch (error) {
+    //                 }
 
-                }
-            }
+    //             }
+    //         }
 
-            try {
-                startWebsocket();
-            } catch (error) {
-            }
+    //         try {
+    //             startWebsocket();
+    //         } catch (error) {
+    //         }
 
-            // Connection opened
-            chatSocket.addEventListener('open', function (event) {
-                chatSocket.send(
-                    JSON.stringify({
-                        sender_id: "{{  user.id }}",
-                        sender_name: "{{  user }}",
-                        sender_icon: "{{  user.Avatar }}",
-                        {% if ifteacher %}
-                            isteacher: 1,
-                            page: currentpage,
-                            force: $('#forceScreen').prop("checked") ? 1 : 0,
-                        {%  endif %}
-                    })
-                );
-            });
-        {% endblock %}
+    //         // Connection opened
+    //         chatSocket.addEventListener('open', function (event) {
+    //             chatSocket.send(
+    //                 JSON.stringify({
+    //                     sender_id: "{{  user.id }}",
+    //                     sender_name: "{{  user }}",
+    //                     sender_icon: "{{  user.Avatar }}",
+    //                     {% if ifteacher %}
+    //                         isteacher: 1,
+    //                         page: currentpage,
+    //                         force: $('#forceScreen').prop("checked") ? 1 : 0,
+    //                     {%  endif %}
+    //                 })
+    //             );
+    //         });
+    //     {% endblock %}
 
-    {% endif %}
+    // {% endif %}
+    
+    {% endcomment %}
+
+
     lightbox.option({
         'resizeDuration': 200,
         'wrapAround': true
@@ -642,6 +602,13 @@
     }
 
     $(document).ready(function () {
+        // Chat BOT time added
+        let currentdate = new Date().toLocaleTimeString('en-US', { hour12: true,
+                                             hour: "numeric",
+                                             minute: "numeric"});
+        $('.default-time').text(currentdate);
+        
+
         $('#hamburg-nav').on('click mouseover', function () {
             {#openNav();#}
         });
@@ -729,10 +696,19 @@
         $('#iframeholder').empty();
     })
 
+    $('#pg-change').on('change', function () {
+        if (parseInt(this.value) <= parseInt(data.numberofpages) && parseInt(this.value) > 0) {
+            loaddata(data, this.value)
+        }
+    })
+
     function loaddata(data, currentpage = 1) {
         window.currentpage = currentpage
-        $('#totalpages').text(data.numberofpages);
-        $('#currentpage').text(window.currentpage);
+        $('.totalpages').text(data.numberofpages);
+        $('.currentpage').text(window.currentpage);
+
+        $('#pg-change').val(window.currentpage);
+
         $.each(data.pages, function (key, value) {
             if (key == window.currentpage) {
                 $.each(value, function (count) {
@@ -914,30 +890,37 @@
 
                                         </div>`
                                 } else {
-                                    if (css_value.local_link.includes('/media/chapterBuilder/')) {
-                                        var embed = `
-                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                        <video controls muted"
-                                            class="videodim">
-                                            <source src="${css_value.local_link}"  type="video/mp4">
-                                        </video>
-                                    </div>
-                                    `
+                                    if (css_value.hasOwnProperty('local_link')) {
+                                        if (css_value.local_link.includes('/media/chapterBuilder/')) {
+                                            var embed = `
+                                        <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                            <video controls muted"
+                                                class="videodim">
+                                                <source src="${css_value.local_link}"  type="video/mp4">
+                                            </video>
+                                        </div>
+                                        `
+                                        } else {
+                                            var embed = `
+                                        <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
+                                            <video controls muted id="video${now}"
+                                                class="videodim cld-video-player cld-video-player-skin-dark example-player"
+                                                data-cld-public-id="${css_value.local_link}" data-public_id="${css_value.local_link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
+                                                <source src="${css_value.local_link}"  type="video/mp4">
+                                            </video>
+                                        </div>
+                                        `
+                                        }
                                     } else {
-                                        var embed = `
-                                    <div style = "position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height: ${css_value.height}; width: ${css_value.width};">
-                                        <video controls muted id="video${now}"
-                                            class="videodim cld-video-player cld-video-player-skin-dark example-player"
-                                            data-cld-public-id="${css_value.local_link}" data-public_id="${css_value.local_link}" data-cld-source-types='["mp4", "ogg", "webm"]'>
-                                            <source src="${css_value.local_link}"  type="video/mp4">
-                                        </video>
-                                    </div>
-                                    `
+                                        var embed = ""
                                     }
+
                                 }
                                 $('#page' + key).append(embed)
-                                if (!css_value.hasOwnProperty('online_link') && !css_value.local_link.includes('/media/chapterBuilder')) {
-                                    play("#video" + now)
+                                if (!css_value.hasOwnProperty('online_link') && css_value.hasOwnProperty('local_link')) {
+                                    if (!css_value.local_link.includes('/media/chapterBuilder')) {
+                                        play("#video" + now)
+                                    }
                                 }
                             });
                         }
@@ -1058,8 +1041,8 @@
                 $('.thumbnail-container').append(`
                 <div class="thumbnails item"  value = ${key}>
                     <div class="image-holder">
-                        <div class="key-holder" style="position:absolute; top:0px ; left:3px"> ${key} </div>
-                        <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}"></img>
+                        <div class="key-holder" style="position:absolute; top:0px ; left:3px;font-size: large;font-weight:700;text-shadow: 2px 2px 6px #ffffff;"> ${key} </div>
+                        <img  class="thumb-img" src = "{% static 'images/blankpage.jpg' %}" height=100% width=100%></img>
                     </div>
                  
 
@@ -1070,7 +1053,10 @@
                 <div class="thumbnails item"  value = ${key}>
                     <div class="image-holder">
                         <div class="key-holder" style="position:absolute;top:0px;left:3px;font-size: large;font-weight:700;text-shadow: 2px 2px 6px #ffffff;"> ${key} </div>
-                        <img  class="thumb-img" src = "${value[0]['thumbnail']}" onError="this.onerror=null;this.src='{% static 'images/blankpage.jpg' %}';"></img>
+                        <img  class="thumb-img" src = "${value[0]['thumbnail']}"
+                            onError="this.onerror=null;this.src='{% static 'images/blankpage.jpg' %}';"
+                            height=100% width=100%>
+                        </img>
                     </div>
                 </div>
                 `);
@@ -1094,15 +1080,15 @@
         }
         $('.thumbnails').removeAttr('style').removeClass('active');
         $('.thumbnails[value=' + window.currentpage + ']').css({
-            'border': '1px solid #79a6fb;'
+            'border': '2px solid #79a6fb'
         }).addClass('active');
     }
 
     $(document).ready(function () {
         setThumbnails();
-       
+
         Layout(x)
-        x.addListener(Layout) // Attach listener function on state changes  
+        x.addListener(Layout) // Attach listener function on state changes
         getProgressWidth();
 
         $('#next-btn').off().click(function () {
@@ -1188,13 +1174,19 @@
     $(document).ready(function () {
 
         $(".close-icon-sidebar").click(function () {
-            $(".sidenavbar-part").hide();
+            
+            $( "#sidebar-id" ).addClass( "slideOutLeft" );
+            $( "#sidebar-id" ).removeClass( "slideInLeft" );
             $(".chat-sidenav-close").css("display", "none");
             $(".navigation-owl").css("left", '8%');
             $(".page-link-view").css("left", '8%');
             $(".link-view-box").css("left", '26.9%');
             $(".custom-owl-slider").css("right", '7%');
             $(".chat-dialogbox").css("left", '1%');
+            $(".owl-prev").css("left", '35%');
+            $(".owl-next").css("right", '10.75%');
+            $( "#main-bottom-slider" ).addClass( "slideInLeft" );
+            $( "#main-bottom-slider" ).removeClass( "slideOutLeft" );
         });
         $(".container12").click(function () {
             $(".page-link-view").hide();
@@ -1206,14 +1198,22 @@
 </script>
 <script>
     $(document).on('click', '#hamburg-nav', function () {
-        $(".sidenavbar-part").css("display", "block");
+        
+        $( "#sidebar-id" ).addClass( "slideInLeft" );
+        $( "#sidebar-id" ).removeClass( "slideOutLeft" );
         $(".chat-sidenav-close").css("display", "block");
         $(".navigation-owl").css("left", '16%');
         $(".page-link-view").css("left", '16%');
         $(".link-view-box").css("left", '31.9%');
         $(".chat-dialogbox").css("left", '17%');
+        $(".owl-prev").css("left", '39%');
+        $(".owl-next").css("right", '5.75%');
+        $( "#main-bottom-slider" ).addClass( "slideInLeft" );
+        $( "#main-bottom-slider" ).removeClass( "slideOutLeft" );
 
         $(".custom-owl-slider").css("right", '2%');
+       
+
 
         $(".sidenavbar-part").fadeIn(2000);
     });
@@ -1242,18 +1242,29 @@
     });
     //for main chhat icon
     $(document).on('click', '.icon-for-chat', function () {
-        x = $(".chat-dialogbox")[0]
-        if ($(".chat-dialogbox").css('display') == "none") {
-            $(".chat-dialogbox").css('display', 'block');
-        } else {
-            $(".chat-dialogbox").css('display', 'none')
-        }
+        $(".chat-dialogbox").fadeToggle();
+        // if ($(".chat-dialogbox").css('display') == "none") {
+        //     $(".chat-dialogbox").css('display', 'block');
+        //     $( "#main-chat-box" ).addClass( "fadeIn" );
+        //     $( "#main-bottom-slider" ).removeClass( "fadeOut" );
+    
+           
+        // } else {
+        //     $( "#main-chat-box" ).addClass( "fadeOut" );
+        //     $( "#main-bottom-slider" ).removeClass( "fadeIn" );
+        // }
 
     });
 
 
 </script>
+
 <script>
+    $(document).ready(function(){
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })       
+   });
 
 </script>
 <script>

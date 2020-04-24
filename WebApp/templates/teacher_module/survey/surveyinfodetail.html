@@ -19,6 +19,17 @@
 
 {% block customjss %}
 
+  <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+  <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+  <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+
   <script src="{% static 'js/highchart_data.js' %}"></script>
   <script src="{% static 'js/highcharts.js' %}"></script>
   <script src="{% static 'js/jspdf.debug.js' %}"></script>
@@ -119,6 +130,7 @@
                   // Column chart
                   options.chart.renderTo = 'container{{ forloop.counter }}';
                   options.chart.type = 'column';
+                  options.yAxis.max = 100;
                   var chart1 = new Highcharts.Chart(options);
 
                   chartfunc{{ forloop.counter }} = function () {
@@ -131,6 +143,7 @@
 
                           options.chart.renderTo = 'container{{ forloop.counter }}';
                           options.chart.type = 'column';
+                          options.yAxis.max = 100;
                           var chart1 = new Highcharts.Chart(options);
                       } else if (bar.checked) {
                           options.chart.renderTo = 'container{{ forloop.counter }}';
@@ -200,6 +213,12 @@
       var current_progress = 0;
       $(document).ready(function () {
 
+          var table_main = $('.SATable').DataTable({
+              responsive: true,
+              dom: 'lBfrtip',
+              buttons: [],
+
+          });
 
           $('#survey_form_modal').on('hidden.bs.modal', function () {
               location.reload();
@@ -361,6 +380,16 @@
           return lines;
       }
 
+      function addTextCanvas(canv, ctx, text, xx, yy) {
+          let h = parseInt(ctx.font.split("px")[0]);
+          let lines = getLines(ctx, text, canv.width);
+          for (const ln of lines) {
+              ctx.fillText(ln, xx, yy);
+              yy += h + 3;
+          }
+          return yy
+      }
+
       //$(window).on('load', function () {
       $("#btnDownload").on('click', function () {
 
@@ -372,25 +401,53 @@
               var yPos = 20;
               var xPos = lMargin;
 
-              yPos = add_text(doc,
-                  "{{ object.Survey_Title }}",
-                  20, xPos, yPos, true);
+              //yPos = add_text(doc,
+              {#//    "{{ object.Survey_Title }}",#}
+              //    20, xPos, yPos, true);
 
-              yPos = add_text(doc,
-                  "SURVEY REPORT",
-                  14, xPos, yPos, true);
+              //yPos = add_text(doc,
+              //    "SURVEY REPORT",
+              //    14, xPos, yPos, true);
 
-              yPos = add_text(doc,
-                  "Start Date: {{ object.Start_Date|date:'M d, Y H:i' }}",
-                  12, xPos, yPos);
+              //yPos = add_text(doc,
+              {#//    "Start Date: {{ object.Start_Date|date:'M d, Y H:i' }}",#}
+              //    12, xPos, yPos);
 
-              yPos = add_text(doc,
-                  "End Date: {{ object.End_Date|date:'M d, Y H:i' }}",
-                  12, xPos, yPos);
+              //yPos = add_text(doc,
+              {#//    "End Date: {{ object.End_Date|date:'M d, Y H:i' }}",#}
+              //    12, xPos, yPos);
 
-              yPos = add_text(doc,
-                  "Number of Participants: {{ submit }}",
-                  12, xPos, yPos);
+              //yPos = add_text(doc,
+              {#//    "Number of Participants: {{ submit }}",#}
+              //    12, xPos, yPos);
+
+
+              let hcanvas = document.createElement("CANVAS");
+              hcanvas.height = 150;
+              hcanvas.width = 400;
+              var hctx = hcanvas.getContext("2d");
+
+              let ini_y = 14;
+              hctx.textAlign = "center";
+              hctx.font = "16px Georgia";
+              ini_y = addTextCanvas(hcanvas, hctx, "SURVEY REPORT", hcanvas.width * 0.5, ini_y);
+              ini_y = addTextCanvas(hcanvas, hctx, "{{ object.Survey_Title }}", hcanvas.width * 0.5, ini_y);
+              hctx.textAlign = "start";
+              hctx.font = "12px Georgia";
+              ini_y += 14;
+              ini_y = addTextCanvas(hcanvas, hctx, "Start Date: " + DateConvert("{{ object.Start_Date|date:'M d, Y H:i' }}"), 0, ini_y);
+              ini_y = addTextCanvas(hcanvas, hctx, "End Date: " + DateConvert("{{ object.End_Date|date:'M d, Y H:i' }}"), 0, ini_y);
+              ini_y = addTextCanvas(hcanvas, hctx, "Number of Participants: {{ submit }}", 0, ini_y);
+
+              let a_r = hcanvas.width / hcanvas.height;
+              var imgHeight = (doc.internal.pageSize.getHeight() * 0.2);
+              var imgWidth = (imgHeight * a_r);
+              yPos += 5;
+              doc.addImage(hcanvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
+              yPos += imgHeight;
+              yPos += 5;
+              //$("#test_image").attr('src', hcanvas.toDataURL());
+
 
               $("svg").each(function (index) {
                   let svgel = this;
@@ -415,16 +472,17 @@
                   var img = new Image();
                   img.onload = function () {
                       let qn_title = $(svgel).parent().parent().attr('data-qn-title');
-                      //let qn_title = `#. 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 팔에 가보고 싶나요 end`;
+                      //let qn_title = `#. 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 end`;
+                      ctx.font = "12px Georgia";
                       let lines = getLines(ctx, qn_title, canvas.width - 10);
                       let ini_y = 12;
                       for (const ln of lines) {
-                          ctx.font = "12px Georgia";
                           ctx.fillText(ln, 0, ini_y);
                           ini_y += 15;
                       }
                       ctx.drawImage(img, 125, ini_y); // destination rectangle
                       console.log(canvas.toDataURL());
+
                       //let link = document.createElement('a');
                       //link.href = canvas.toDataURL();
                       //link.download = "test.png";

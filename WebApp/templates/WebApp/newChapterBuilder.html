@@ -52,7 +52,7 @@
                     <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export
                     </button>
                 </a>
-                <a href="{% url 'previewcontentviewer' course chapter %}" id="previewBtn">
+                <a href="{% url 'newpreviewcontentviewer' course chapter %}" id="previewBtn">
                     <button class="btn-type1" id="previewBtn"><i style="color:white" class="fas fa-play-circle"></i>
                         &nbsp;Preview
                     </button>
@@ -146,7 +146,7 @@
                                                  src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
                                             <span class="object-name-size">TEXT BOX</span>
                                         </li>
-
+                                      
                                         <!-- <li class="individual-objects draggable draggable-style ">
                                                 <span>
                                                  <img class="object-image-size"
@@ -283,7 +283,7 @@
 
                                     <div class="dropdown ">
                                         <button class="btn  dropdown-toggle custom-dropdown" type="button"
-                                                data-toggle="dropdown"><span> All Items
+                                                data-toggle="dropdown"><span> All Items</span>
 
                                         </button>
                                         <ul class="dropdown-menu">
@@ -296,7 +296,13 @@
 
                                         </ul>
                                     </div>
-
+                                    <div class="dropdown-items">
+                                        <div class="image-gallery"></div>
+                                        <div class="video-gallery"></div>
+                                        <div class="pdf-gallery"></div>
+                                        <div class="3d-gallery"></div>
+                                        <div class="audio-gallery"></div>
+                                    </div>
 
                                 </div>
                             </div>
@@ -321,7 +327,7 @@
                                    data-original-title="FullScreen">
                               <span><img style="height: 15px; width:15px ; margin-top:-5px"
                                          src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">
-                              </span>&nbsp;&nbsp;
+                              </span>&nbsp;
                                     <span style="font-size: 15px;">Full Screen</span> &nbsp;&nbsp;</a>
 
                                 <a class="second-toggle" id="togglefull" data-toggle="tooltip" data-placement="top"
@@ -347,7 +353,7 @@
                     </div>
                     <div class="main-central-canvas tabs" id="tabs-for-download">
                         <p id="tab" value="0" class="tab-content-no   droppable editor-canvas current"
-                           style="height: 100%">
+                           style="height: 100%; background-color: white;">
 
                         </p>
                         <p id="copy_tab" value="0" style="display: none;">
@@ -383,14 +389,84 @@
 
                 </div>
 
-                <a class="note-chapter-part" title=" Write A Note" href="{% url 'chapterinfo_update' course chapter %}" target="_blank">
-                    <div class="note-holder">
-                        <span style="color: white; font-weight:600">Description <i class="fas fa-pencil-alt"></i></span>
+                <a class="note-chapter-part"  data-toggle="modal" data-target="#link-description">
+                    <div class="note-holder1">
+                        <span data-toggle="tooltip" data-placement="right"  title='Write A Note' style="color: white; font-weight:600; cursor:pointer;">Description <i class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
                             <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:70 }} </p>
                         </div>
                     </div>
                 </a>
+
+                <!-- popup for description -->
+
+                <div id="link-description" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #353c46;">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6">
+                                        <h4 class="modal-title" style="color: white;">Description</h4>
+                
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button type="button" class="close" data-dismiss="modal" style="color:white">&times;</button>
+                
+                                    </div>
+                                </div>
+                            </div>
+                            <form id="chapter-description-form" method="post" action="{% url 'partialchapterinfo_update_ajax' chapterdetails.pk %}">
+                                    {% csrf_token %}
+                            <div class="modal-body">
+                                <!-- Modal Contents Here -->
+
+                                    <div class="col-sm-12">
+                                      <div id="div_id_Chapter_No" class="form-group" style="margin-bottom: 10px!important;">
+                                        <label for="id_Chapter_No" class="control-label  requiredField">
+                                            Chapter No<span class="asteriskField">*</span>
+                                        </label>
+                                        
+                                            <div class="controls ">
+                                                <input type="number" name="Chapter_No" value="{{ chapterdetails.Chapter_No }}" class="numberinput form-control" min="1" required="" id="id_Chapter_No">
+                                            </div>
+                                        </div>
+
+                                         <div id="div_id_Chapter_Name" class="form-group" style="margin-bottom: 10px!important;">
+                                            <label for="id_Chapter_Name" class="control-label  requiredField">
+                                                Chapter Name<span class="asteriskField">*</span>
+                                            </label>
+                                            <div class="controls ">
+                                                <input type="text" name="Chapter_Name" value="{{ chapterdetails.Chapter_Name }}" maxlength="200" class="textinput textInput form-control" required="" id="id_Chapter_Name">
+                                            </div>
+                                         </div>
+                                        
+                                         <div id="div_id_Summary" class="form-group" style="margin-bottom: 10px!important;">
+                                            <label for="id_Summary" class="control-label ">
+                                                Desription
+                                            </label>
+                                            <div class="controls ">
+                                                <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary" cols="40"> {{ chapterdetails.Summary }}</textarea>
+                                            </div>
+                                        </div>
+                               </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="#">Submit</button>
+                                <button type="button" class="#" data-dismiss="modal">Close</button>
+                            </div>
+                            </form>
+                        </div>
+                
+                    </div>
+                </div>
+              
+                <!-- ends -->
+
+
+
 
                 <div class="additional-canvas tabs-to-click" style="position: relative;">
                     <ul class="small-canvases-list">
@@ -401,7 +477,7 @@
 
                                 <span style="float:right">
                                     <button class="clone-button" value="1">
-                                    <span  data-title="Clone Page">
+                                    <span  data-toggle="tooltip" data-placement="botton"  title=' Clone Button'>
                                     <i class="fa fa-clone " aria-hidden="true"></i>
                                     </span>
 
@@ -410,7 +486,7 @@
 
                                 <span style="float:right">
                                     <button class="delete-page-btn" value="1">
-                                    <span data-title="Delete Page">
+                                    <span data-toggle="tooltip" data-placement="botton"  title=' Delete Page'>
                                     <i class="fa fa-times " aria-hidden="true"></i>
                                     </span>
 
@@ -522,14 +598,14 @@
         <!-- Modal content-->
         <div id="quiz-link-chapter" class="modal-content">
             <form id="quiz-form">
-                <div class="modal-header">
-                    <div class="row">
-                        <div class="col-md-11">
-                            <h4 class="modal-title">Quiz</h4>
+                <div class="modal-header" style="background-color: #353c46;">
+                    <div class="col-sm-12">
+                        <div class="col-sm-8">
+                            <h4 class="modal-title" style="color: white;">Quiz</h4>
 
                         </div>
-                        <div class="col-md-1">
-                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                        <div class="col-sm-4">
+                            <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;
                             </button>
 
                         </div>
@@ -552,7 +628,7 @@
                     </div>
 
 
-                    <hr>
+               
 
                     <input type="hidden" name="quiz-link" id="quiz-link">
 
@@ -577,7 +653,7 @@
                                 </h5>
                                 <input class="form-control" id="myInput" type="text" placeholder="Search..">
                             </div>
-                            <div class="modal-table-container" style="height:200px;overflow:auto">
+                            <div class="modal-table-container" style="max-height:200px;overflow:auto">
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
@@ -634,14 +710,14 @@
         <!-- Modal content-->
         <div id="survey-link-chapter" class="modal-content">
             <form id="survey-form">
-                <div class="modal-header">
-                    <div class="row">
-                        <div class="col-sm-8 col-xs-6">
-                            <h4 class="modal-title">Survey</h4>
+                <div class="modal-header" style="background-color: #353c46;">
+                    <div class="col-md-12 col-sm-12 " >
+                        <div class="col-sm-8  col-xs-6">
+                            <h4 style ="color:white" class="modal-title">Survey</h4>
 
                         </div>
                         <div class="col-sm-4 col-xs-6">
-                            <button type="button" class="close" data-dismiss="modal" style="color: black;">&times;
+                            <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;
                             </button>
 
                         </div>
@@ -664,7 +740,7 @@
                     </div>
 
 
-                    <hr>
+                   
 
                     <input type="hidden" name="survey-link" id="survey-link">
 
@@ -693,7 +769,7 @@
                                 </h5>
                                 <input class="form-control" id="mySurveyInput" type="text" placeholder="Search..">
                             </div>
-                            <div class="modal-table-container" style="height:200px;overflow:auto">
+                            <div class="modal-table-container" style="max-height:200px;overflow:auto">
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
@@ -809,21 +885,39 @@
 
         <!-- Modal content-->
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Link</h4>
+            <div class="modal-header" style="background-color: #353c46;">
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <h4 class="modal-title" style="color: white;">Link</h4>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="close" data-dismiss="modal" style="color:white">&times;</button>
+
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
                 <!-- Modal Contents Here -->
-                <div>
-                    <label>Upload 3D file(.glb or .gltf)</label>
-                    <input type="file" name="_3dfile" id="_3dfile-link" accept=".glb,.gltf"/>
-                </div>
-                <div>For converting 3D files online,
-                    <a href="https://blackthread.io/gltf-converter/" target="_blank">
-                        Click Here.
-                    </a>
-                </div>
+                <div class="col-sm-12"> 
+                        <label>Upload 3D file(.glb or .gltf)</label>
+                       
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input"  name="_3dfile" id="_3dfile-link" accept=".glb,.gltf">
+                            <label class="custom-file-label" for="_3dfile-link">Choose file</label>
+                          </div>
+
+                         
+                          
+
+                       
+                
+                    <div style="margin-top: 15px; font-weight:600">For converting 3D files online,
+                        <a class="clickButton" href="https://blackthread.io/gltf-converter/" target="_blank">
+                            Click Here
+                        </a>
+                   </div>
+               </div>
                 <!-- <div>
                 <label>Upload 3D file (MTL)</label>
                 <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
@@ -846,6 +940,15 @@
 <script src="{% static 'chapterPageBuilder/js/newmain.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/color-picker/pickr.min.js' %}"></script>
+<!-- Loads <model-viewer> for modern browsers: -->
+<script type="module" crossorigin="anonymous"
+        src="{% static '3D_Viewer/model-viewer.js' %}">
+</script>
+
+<!-- Loads <model-viewer> for old browsers like IE11: -->
+<script nomodule crossorigin="anonymous"
+        src="{% static '3D_Viewer/model-viewer-legacy.js' %}">
+</script>
 
 
 <script>
@@ -895,11 +998,8 @@
         }
     });
     pickr.on('save', (color, instance) => {
-
         const rgbaColor = color.toRGBA().toString();
-
         document.querySelector('.current').style.backgroundColor = rgbaColor;
-
     })
 
 </script>
@@ -1001,26 +1101,28 @@
     var import_zip_url = '{% url "importzip" %}';
     var csrf_token = '{{csrf_token}}';
     var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}';
+    var audio_icon = '{% static "chapterPageBuilder/images/audio_icon.png" %}';
     var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
-    var centerName = '{{ request.user.Center_Code }}'
+    var centerName = '{{ request.user.Center_Code }}';
+    var courseName = '{{ course_name }}'
     var imagegalleryid, videogalleryid, audiogalleryid;
     if (server_name == "Indonesian_Server") {
         imagegalleryid = 'A8AAAoODp5Za';
-        videogalleryid: 'AYMAfq-EnZOX';
-        audiogalleryid: 'AgLA8o--2Nr0'
+        videogalleryid = 'AYMAfq-EnZOX';
+        audiogalleryid = 'AgLA8o--2Nr0';
     } else if (server_name == 'Korean_Server') {
         imagegalleryid = 'AsNAMruu8BjR';
-        audiogalleryid: 'AcFAJqeO8V_R';
+        audiogalleryid = 'AcFAJqeO8V_R';
     } else if (server_name == 'Vietnam_Server') {
         imagegalleryid = 'AUOAUr-S8FbV';
-        audiogalleryid: 'AMOA5rOA85RW';
+        audiogalleryid = 'AMOA5rOA85RW';
     }
 
     $('#chapterlist').val(chapterID);
 
-    var previous;
+    var previous = chapterID;
     (function () {
 
         $("select").on('focus', function () {
@@ -1072,6 +1174,7 @@
         let link = $("#survey_create_link").attr('href');
         loadPreview(link, 1)
     })
+    /*
     setTimeout(function () {
         $.ajax({
             url: "{% url 'retrieve-chapter-files' %}",
@@ -1082,25 +1185,25 @@
             },
             success: function (data) {
                 if (data.images.length > 0) {
-                    $('#image-gallery').find('p').empty()
+                    $('.dropdown-items').empty()
                     data.images.forEach(x => {
-                        $('#image-gallery .individual-file').append(
+                        $('.dropdown-items .image-gallery').append(
                             `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
                         )
                     });
                 }
                 if (data.videos.length > 0) {
-                    $('#video-gallery').find('p').empty()
+                    $('.dropdown-items .video-gallery').empty()
                     data.videos.forEach(x => {
-                        $('#video-gallery').append(
+                        $('.dropdown-items').append(
                             x.split('&&&')[1]
                         )
                     });
                 }
                 if (data.pdf.length > 0) {
-                    $('#pdf-gallery').find('p').empty()
+                    $('.dropdown-items .pdf-gallery').empty()
                     data.pdf.forEach(x => {
-                        $('#pdf-gallery').append(
+                        $('.dropdown-items pdf').append(
                             x.split('&&&')[1]
                         )
                     });
@@ -1108,8 +1211,8 @@
             },
             // dataType: dataType
         });
-    }, 5000)
-
+    }, 5000);
+*/
     // Add circular progress bar
     function addprogress() {
 
@@ -1135,6 +1238,32 @@
         return percentage / 100 * 360
     }
 
+</script>
+<script>
+   
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+
+    $('#chapter-description-form').on('submit', function (e) {
+        e.preventDefault()
+
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),  // URL to your view that serves new info
+            data: $(this).serialize(),
+            success: function (data) {
+                $('#link-description').modal('toggle');
+                $('.chapter-name').text(data.chapter_name)
+                $('#chapter-description').find('p').text(data.summary)
+                $(`#chapterlist option[value=${data.chapter_pk}]`).text(data.chapter_no +'. '+ data.chapter_name)
+            },
+            error: function () {
+                console.log('Error in updating')
+            },
+        });
+    });
 </script>
 
 {# End of Scripts from old builder #}

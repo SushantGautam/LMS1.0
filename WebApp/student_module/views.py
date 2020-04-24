@@ -27,6 +27,8 @@ from rest_framework.permissions import IsAuthenticated
 from textblob import TextBlob
 
 from LMS import settings
+from LMS.auth_views import CourseAuthMxnCls, StudentCourseAuthMxnCls, ChapterAuthMxnCls, StudentChapterAuthMxnCls, \
+    AssignmentInfoAuthMxnCls, StudentAssignmentAuthMxnCls
 from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
@@ -294,7 +296,7 @@ class CourseInfoListView(ListView):
         return qs
 
 
-class CourseInfoDetailView(DetailView):
+class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView):
     model = CourseInfo
     template_name = 'student_module/courseinfo_detail.html'
 
@@ -324,7 +326,7 @@ class ChapterInfoListView(ListView):
     model = ChapterInfo
 
 
-class ChapterInfoDetailView(DetailView):
+class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailView):
     model = ChapterInfo
     template_name = 'student_module/chapterinfo_detail.html'
 
@@ -337,10 +339,16 @@ class ChapterInfoDetailView(DetailView):
         context['pre_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
 
+        for q in context['post_quizes']:
+            q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
+
+        for q in context['pre_quizes']:
+            q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
+
         return context
 
 
-class AssignmentInfoDetailView(DetailView):
+class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMxnCls, DetailView):
     model = AssignmentInfo
     template_name = 'student_module/assignmentinfo_detail.html'
 

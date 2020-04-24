@@ -13,6 +13,7 @@ from django.views import View
 from django.views.generic import DetailView, ListView, TemplateView, FormView, CreateView, UpdateView
 from django_addanother.views import CreatePopupMixin
 
+from LMS.auth_views import QuizInfoAuthMxnCls, QuizInfoAuth, AdminAuthMxnCls, StudentCourseAuth
 from WebApp.models import CourseInfo, ChapterInfo, InningGroup, InningInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
     QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
@@ -71,7 +72,7 @@ class QuizCreateView(CreatePopupMixin, CreateView):
     success_url = reverse_lazy('quiz_list')
 
 
-class QuizListView(ListView):
+class QuizListView(AdminAuthMxnCls, ListView):
     model = Quiz
 
     def get_queryset(self):
@@ -80,12 +81,12 @@ class QuizListView(ListView):
         return queryset.filter(cent_code=self.request.user.Center_Code)
 
 
-class QuizUpdateView(UpdateView):
+class QuizUpdateView(AdminAuthMxnCls, QuizInfoAuthMxnCls, UpdateView):
     model = Quiz
     form_class = QuizForm
 
 
-class QuizDetailView(DetailView):
+class QuizDetailView(AdminAuthMxnCls, QuizInfoAuthMxnCls, DetailView):
     model = Quiz
     slug_field = 'url'
 
@@ -214,6 +215,11 @@ class QuizTake(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_name'])
+        if QuizInfoAuth(request, self.quiz.pk) != 1:  # check if quiz belongs to the same center as user
+            return redirect('login')
+        if StudentCourseAuth(request,
+                             self.quiz.course_code.pk) != 1:  # check if student has access to course that the quiz belongs to
+            return redirect('login')
         if self.quiz.draft and not request.user.has_perm('quiz.change_quiz'):
             raise PermissionDenied
 
@@ -694,7 +700,7 @@ TEMPLATES = {"form1": "wizard/step1.html",
              "form3": "wizard/step3.html"}
 
 
-class QuizCreateWizard(SessionWizardView):
+class QuizCreateWizard(AdminAuthMxnCls, SessionWizardView):
     form_list = FORMS
 
     def get_template_names(self):
@@ -814,7 +820,7 @@ class CreateQuizAjax(CreateView):
         return kwargs
 
 
-class UpdateQuizBasicInfo(UpdateView):
+class UpdateQuizBasicInfo(AdminAuthMxnCls, QuizInfoAuthMxnCls, UpdateView):
     model = Quiz
     form_class = QuizBasicInfoForm
     template_name = 'quiz/quiz_update_basic_info.html'
@@ -1056,6 +1062,8 @@ class QuizSAQChoosePrevious(UpdateView):
 
 
 def FilterMarkingForTeachers(request, Quiz_Id):
+    if QuizInfoAuth(request, Quiz_Id) != 1:  # if Quiz do not belong to the user center then redirect
+        return redirect('login')
     filtered = Sitting.objects.filter(user__Center_Code=request.user.Center_Code, quiz=Quiz_Id)
     quiz = Quiz.objects.get(id=Quiz_Id)
 

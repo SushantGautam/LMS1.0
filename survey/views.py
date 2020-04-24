@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 from django.views.generic.base import View
 
+from LMS.auth_views import SurveyInfoAuthMxnCls, AdminAuthMxnCls
 from WebApp.models import CourseInfo
 from .forms import CategoryInfoForm, SurveyInfoForm, QuestionInfoForm, OptionInfoForm, SubmitSurveyForm, AnswerInfoForm, \
     QuestionInfoFormset, QuestionAnsInfoFormset, SurveyInfoFormUpdateLimited
@@ -82,7 +83,7 @@ class SurveyList(ListView):
     #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
 
 
-class SurveyInfoListView(ListView):
+class SurveyInfoListView(AdminAuthMxnCls, ListView):
     model = SurveyInfo
     template_name = 'survey/surveylist.html'
 
@@ -525,7 +526,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
                              )
 
 
-class SurveyInfoDetailView(DetailView):
+class SurveyInfoDetailView(AdminAuthMxnCls, SurveyInfoAuthMxnCls, DetailView):
     model = SurveyInfo
 
     def get_context_data(self, **kwargs):
