@@ -515,10 +515,10 @@ class Button {
         let html = `
                     <div class="btn-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id=" " title='Delete item' class="fas fa-trash" id=${id}></i>
-                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
+                            <i data-toggle="tooltip" data-placement="bottom" title='Delete item' class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom" title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
                             
-                            <i data-toggle="tooltip" data-placement="bottom" id=" " title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom" title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
 
