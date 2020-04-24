@@ -64,6 +64,9 @@
         <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
         <link href="{% static 'chapterPageBuilder/css/newViewer.css' %}" rel="stylesheet">
+        
+        <!-- Chat CSS -->
+        <link href="{% static 'chapterPageBuilder/css/chat.css' %}" rel="stylesheet">
 
         <!-- Animate CSS -->
         <link href="{% static 'vendorsx/animate.css/animate.min.css' %}" rel="stylesheet">
@@ -302,25 +305,21 @@
 
         </div>
 
-        <div id="main-chat-box" class="chat-dialogbox  animate">
-
+        <!-- Chat BOX UI -->
+        <span class="chat-info" data-userName="{{ user }}" data-userID = "{{ user.id }}" data-userIcon="{{ user.Avatar }}"
+                                data-chapterID="{{ chapter.id }}"></span>
+        <div id="main-chat-box"class="chat-dialogbox  animate">
             <ul class="chat-header">
                 <li class="ham-icon">
                     <i class="fa fa-bars"></i>
-
                 </li>
-                <li class="user-image-padding">
 
-
+                <!-- <li class="user-image-padding">
                     <div class="chat-user-image">
-
                     </div>
-                </li>
+                </li> -->
 
-
-                <li class="name-user">User One</li>
-
-
+                <!-- <li class="name-user">User One</li> -->
                 <li class="options-chat">Options <i class="fa fa-caret-down"></i></li>
                 <li class="close-chat"><i class="fa fa-times"></i></li>
             </ul>
@@ -328,128 +327,67 @@
             <ul class="chat-body">
                 <li class="left-chat">
 
-
                     <div class="eachbox">
-
-
                         <ul class="leftchat-userbox">
                             <li>
                                 <div class="chat-user-image2"></div>
                             </li>
                             <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
                         </ul>
-
-
                     </div>
+
                     <div class="eachbox">
-
-
                         <ul class="leftchat-userbox">
                             <li>
                                 <div class="chat-user-image2"></div>
                             </li>
                             <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
                         </ul>
-
-
                     </div>
-                    <div class="eachbox">
-
-
-                        <ul class="leftchat-userbox">
-                            <li>
-                                <div class="chat-user-image2"></div>
-                            </li>
-                            <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
-                        </ul>
-
-
-                    </div>
-                    <div class="eachbox">
-
-
-                        <ul class="leftchat-userbox">
-                            <li>
-                                <div class="chat-user-image2"></div>
-                            </li>
-                            <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
-                        </ul>
-
-
-                    </div>
-                    <div class="eachbox">
-
-
-                        <ul class="leftchat-userbox">
-                            <li>
-                                <div class="chat-user-image2"></div>
-                            </li>
-                            <li><span style="font-size:10px ; font-weight:600">User One</span></li>
-
-                        </ul>
-
-
-                    </div>
-
-
                 </li>
+
                 <li class="chat-canvas">
-                    <div>
-                        <div class=" holder-chat col-sm-12">
-                            <ul class="chat-canavas-boxes">
-                                <li class="image-canvas-part">
-                                    <div class="chat-user-image"></div>
-                                </li>
-                                <li class="chat-space">
-                                    <div class="chat-text">
-                                        elit. Alias dolorum facilis iusto quae ex quaerat esse maiores hic nisi fugit?
-                                    </div>
-                                </li>
-                            </ul>
-
-                        </div>
-
-                        <div class=" friend holder-chat col-sm-12">
-                            <ul class="chat-canavas-boxes">
-                                <li class="image-canvas-part"> <div class="chat-user-image"></div></li>
-                                <li class="chat-space">
-                                    <div class="chat-text2">
-                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Alias dolorum facilis
-                                        iusto quae ex quaerat esse maiores hic nisi fugit?
-                                    </div>
-                                </li>
-                            </ul>
-
-                        </div>
-
-
+                    <div id="chat-log">
+                      
+                          <div class="msg left-msg">
+                            <div
+                             class="msg-img"
+                             style="background-image: url({% static 'images/bot.png' %})"
+                            ></div>
+                      
+                            <div class="msg-bubble">
+                              <div class="msg-info">
+                                <div class="msg-info-name">LMS BOT</div>
+                                <div class="default-time msg-info-time"></div>
+                              </div>
+                      
+                              <div class="msg-text">
+                                Hello! You can now send message to everyone here.
+                              </div>
+                            </div>
+                          </div>
                     </div>
-
-
                 </li>
-
             </ul>
 
             <div class="input-send">
-                <div class="row" style="margin: 0px!important;">
+                <div class="msger-inputarea">
+                    <input type="text" class="msger-input" id="chat-message-input" placeholder="Enter your message...">
+                    <button type="submit" class="msger-send-btn" id="chat-message-submit"><i class=" custom-send fa fa-paper-plane"></i></button>
+                </div>
+                <!-- <div class="row" style="margin: 0px!important;">
                     <div class="col-sm-10" style="padding: 0!important;">
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="1"></textarea>
+                        <textarea class="form-control" id="chat-message-input" rows="1"></textarea>
                     </div>
                     <div class="send-button col-sm-2">
-                        <i class=" custom-send fa fa-paper-plane"></i>
+                        <button type="submit" id="chat-message-submit"><i class=" custom-send fa fa-paper-plane"></i></button>
                     </div>
-
-                </div>
-
-
+                </div> -->
             </div>
 
 
         </div>
+        <!-- Chat UI end -->
 
     </div>
 
@@ -491,6 +429,9 @@
     <script src="{% static 'chapterPageBuilder/SummerNote/summernote.min.js' %}"></script>
 {% endif %}
 
+<!-- CHAT SCRIPT -->
+<script src="{% static 'chapterPageBuilder/js/chat.js' %}"></script>
+
 <script type="text/javascript">
     {% if not data %}
         alert("No contents in this page. Returning back to previous page...");
@@ -500,63 +441,69 @@
 
     var currentpage = 1;
     var studystarttime = Date.now() / 1000 | 0; // Floors the value
-    var roomName = "chapterchat{{chapter.id}}";
 
-    {% if not connection_offline %}
-        {% block chatwebsocket %}
-            var chatSocket;
+    {% comment %}
+    // var roomName = "chapterchat{{chapter.id}}";
 
-            function startWebsocket() {
-                var webSProtocal = '';
+    // {% if not connection_offline %}
+    //     {% block chatwebsocket %}
+    //         var chatSocket;
 
-                if (location.protocol === 'https:') {
-                    webSProtocal = "wss://";
-                } else {
-                    webSProtocal = "ws://";
-                }
+    //         function startWebsocket() {
+    //             var webSProtocal = '';
 
-                var locationhost = location.host;
-                if (locationhost === 'ulms.me') {
-                    locationhost = "ulms.me:9002";
-                }
+    //             if (location.protocol === 'https:') {
+    //                 webSProtocal = "wss://";
+    //             } else {
+    //                 webSProtocal = "ws://";
+    //             }
+
+    //             var locationhost = location.host;
+    //             if (locationhost === 'ulms.me') {
+    //                 locationhost = "ulms.me:9002";
+    //             }
 
 
-                chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomName + '/');
-                chatSocket.onclose = function () {
-                    // connection closed, discard old websocket and create a new one in 5s
-                    chatSocket = null;
-                    console.log("Websocket restarting. . . ")
-                    try {
-                        setTimeout(startWebsocket, 5000)
-                    } catch (error) {
-                    }
+    //             chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomName + '/');
+    //             chatSocket.onclose = function () {
+    //                 // connection closed, discard old websocket and create a new one in 5s
+    //                 chatSocket = null;
+    //                 console.log("Websocket restarting. . . ")
+    //                 try {
+    //                     setTimeout(startWebsocket, 5000)
+    //                 } catch (error) {
+    //                 }
 
-                }
-            }
+    //             }
+    //         }
 
-            try {
-                startWebsocket();
-            } catch (error) {
-            }
+    //         try {
+    //             startWebsocket();
+    //         } catch (error) {
+    //         }
 
-            // Connection opened
-            chatSocket.addEventListener('open', function (event) {
-                chatSocket.send(
-                    JSON.stringify({
-                        sender_id: "{{  user.id }}",
-                        sender_name: "{{  user }}",
-                        sender_icon: "{{  user.Avatar }}",
-                        {% if ifteacher %}
-                            isteacher: 1,
-                            page: currentpage,
-                            force: $('#forceScreen').prop("checked") ? 1 : 0,
-                        {%  endif %}
-                    })
-                );
-            });
-        {% endblock %}
+    //         // Connection opened
+    //         chatSocket.addEventListener('open', function (event) {
+    //             chatSocket.send(
+    //                 JSON.stringify({
+    //                     sender_id: "{{  user.id }}",
+    //                     sender_name: "{{  user }}",
+    //                     sender_icon: "{{  user.Avatar }}",
+    //                     {% if ifteacher %}
+    //                         isteacher: 1,
+    //                         page: currentpage,
+    //                         force: $('#forceScreen').prop("checked") ? 1 : 0,
+    //                     {%  endif %}
+    //                 })
+    //             );
+    //         });
+    //     {% endblock %}
 
-    {% endif %}
+    // {% endif %}
+    
+    {% endcomment %}
+
+
     lightbox.option({
         'resizeDuration': 200,
         'wrapAround': true
@@ -643,6 +590,13 @@
     }
 
     $(document).ready(function () {
+        // Chat BOT time added
+        let currentdate = new Date().toLocaleTimeString('en-US', { hour12: true,
+                                             hour: "numeric",
+                                             minute: "numeric"});
+        $('.default-time').text(currentdate);
+        
+
         $('#hamburg-nav').on('click mouseover', function () {
             {#openNav();#}
         });
@@ -1276,17 +1230,17 @@
     });
     //for main chhat icon
     $(document).on('click', '.icon-for-chat', function () {
-        if ($(".chat-dialogbox").css('display') == "none") {
-            $(".chat-dialogbox").css('display', 'block');
-            $( "#main-chat-box" ).addClass( "fadeIn" );
-            $( "#main-bottom-slider" ).removeClass( "fadeOut" );
+        $(".chat-dialogbox").fadeToggle();
+        // if ($(".chat-dialogbox").css('display') == "none") {
+        //     $(".chat-dialogbox").css('display', 'block');
+        //     $( "#main-chat-box" ).addClass( "fadeIn" );
+        //     $( "#main-bottom-slider" ).removeClass( "fadeOut" );
     
            
-        } else {
-            
-            $( "#main-chat-box" ).addClass( "fadeOut" );
-            $( "#main-bottom-slider" ).removeClass( "fadeIn" );
-        }
+        // } else {
+        //     $( "#main-chat-box" ).addClass( "fadeOut" );
+        //     $( "#main-bottom-slider" ).removeClass( "fadeIn" );
+        // }
 
     });
 
