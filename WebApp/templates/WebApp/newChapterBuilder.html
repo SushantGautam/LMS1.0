@@ -406,6 +406,80 @@
                 </a>
 
                 <!-- popup for description -->
+
+                <div id="link-description" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #353c46;">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6">
+                                        <h4 class="modal-title" style="color: white;">Description</h4>
+                
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button type="button" class="close" data-dismiss="modal" style="color:white">&times;</button>
+                
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Modal Contents Here -->
+                                <div class="col-sm-12"> 
+                                    <div id="div_id_Chapter_No" class="form-group">
+        
+                                        <label for="id_Chapter_No" class="control-label  requiredField">
+                                            Chapter No<span class="asteriskField">*</span>
+                                        </label>
+                                        
+                                            <div class="controls ">
+                                                <input type="number" name="Chapter_No" value="1" class="numberinput form-control" required="" id="id_Chapter_No">
+                                                
+                            
+                                            </div>
+                                        
+                                        </div>
+
+                                         <div id="div_id_Chapter_Name" class="form-group">
+        
+                                            <label for="id_Chapter_Name" class="control-label  requiredField">
+                                                Chapter Name<span class="asteriskField">*</span>
+                                            </label>
+                                            <div class="controls ">
+                                                    <input type="text" name="Chapter_Name" value="sentence" maxlength="200" class="textinput textInput form-control" required="" id="id_Chapter_Name">
+                                                 
+                                                </div>
+                                            
+                                        
+                                         </div>
+                                        
+                                         <div id="div_id_Summary" class="form-group">
+                                            <label for="id_Summary" class="control-label ">
+                                                Desription
+                                            </label>
+                                            <div class="controls ">
+                                                <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary" cols="40"> This is the first chapter</textarea>
+                                            </div>
+                                        </div>
+                   
+                                       
+                                
+                                   
+                               </div>
+                                <!-- <div>
+                                <label>Upload 3D file (MTL)</label>
+                                <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
+                            </div> -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="link-3d-submit" class="#">Submit</button>
+                                <button type="button" class="#" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                
+                    </div>
+                </div>
               
                 <!-- ends -->
 
@@ -850,6 +924,8 @@
                             <input type="file" class="custom-file-input"  name="_3dfile" id="_3dfile-link" accept=".glb,.gltf">
                             <label class="custom-file-label" for="_3dfile-link">Choose file</label>
                           </div>
+
+                         
                           
 
                        
