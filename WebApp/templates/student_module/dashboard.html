@@ -164,10 +164,15 @@
                                     <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
                                         <div class="assignment-status-margin"
                                              style="font-size:14px; font-style: italic;  font-weight:600 ; ">Status:
-                                            {% getStatusoOfAssignment object user %}
+                                            {% getStatusoOfAssignment object user as assignment_status %}
+                                            {% if assignment_status == "Complete" %}
+                                                <span style="color: green"> Complete </span>
+                                            {% else %}
+                                                <span style="color: red"> Incomplete </span>
+                                            {% endif %}
                                         </div>
                                         <span style="font-size:14px; font-style: italic;  font-weight:600; color:red"> Deadline </span>
-                                        <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ object.Assignment_Deadline|date:'Y-m-d h:i a' }}</span>
+                                        <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ object.Assignment_Deadline|timeuntil }}</span>
                                     </div>
                                 </div>
                             </div>
