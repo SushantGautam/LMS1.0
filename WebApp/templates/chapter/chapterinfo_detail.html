@@ -93,24 +93,23 @@
                 </tr>
 
                 <tr>
-                    <td>Published</td>
-                    <td>
-                        {% if object.Use_Flag is True %}<span style="color:green"> <b>Published</b>
-                        </span>{% elif object.Use_Flag is False %}
-                            <span class="text-danger"><b>Not Published</b></span>{% endif %}
-                    </td>
-                </tr>
-                <tr>
                     <td>Status</td>
                     <td>
+                        {% if object.Use_Flag is True %}
+                            <span class="badge badge-success">Published</span>
+                        {% elif object.Use_Flag is False %}
+                            <span class="badge badge-danger">Not Published</span>
+                        {% endif %}
+
                         {% now "Y-m-d H:i" as todays_datewithtime %}
                         {% if object.Start_Date and todays_datewithtime < object.Start_Date|date:"Y-m-d H:i" %}
-                            <span class="text-danger"><b>Inactive</b></span>
+                            <span class="badge badge-info">Upcoming</span>
                         {% elif object.End_Date and todays_datewithtime > object.End_Date|date:"Y-m-d H:i" %}
-                            <span class="text-danger"><b>Expired</b></span>
+                            <span class="badge badge-danger">Expired</span>
                         {% else %}
-                            <span class="text-info"><b>Active</b></span>
+                            <span class="badge badge-success">Active</span>
                         {% endif %}
+                        
                     </td>
                 </tr>
                 <tr>
