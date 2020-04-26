@@ -306,6 +306,8 @@ body{
 }
 .user-name-part{
     margin: 0px!important;
+    font-size:13px;
+    
 }
 .chapter-lists-all{
     padding: 13% 10px 10px 11%;
