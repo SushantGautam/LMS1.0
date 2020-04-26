@@ -2252,7 +2252,7 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
         },
     });
 
-    $('.3dobj').on('dragover', function (e) {
+    $('._3dobj').on('dragover', function (e) {
         e.stopPropagation();
         e.preventDefault();
         //   $(this).css('border',"2px solid #39F")
@@ -2303,8 +2303,13 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
                 div.find('#loadingDiv').remove();
             },
             success: function (data) {
-                _3dFunction(div.css('top'),
-                    div.css('left'), '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname, div.css('height'), div.css('width'));
+                _3dFunction(
+                    $(div)[0].style.top,
+                    $(div)[0].style.left,
+                    '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname,
+                    $(div)[0].style.height,
+                    $(div)[0].style.width,
+                );
                 div.remove()
             },
             error: function (data, status, errorThrown) {
