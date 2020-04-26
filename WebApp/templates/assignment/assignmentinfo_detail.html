@@ -79,11 +79,21 @@
                         </tr>
                         <tr>
                             <td>Status</td>
-                            <td>{% if object.Use_Flag == True %}
-                                <span class="text-success">Active</span>
-                            {% else %}
-                                <span class="text-danger">Inactive</span>
-                            {% endif %}
+                            <td>
+                                {% if object.Use_Flag is True %}
+                                    <span class="badge badge-success">Published</span>
+                                {% elif object.Use_Flag is False %}
+                                    <span class="badge badge-danger">Not Published</span>
+                                {% endif %}
+
+                                {% now "Y-m-d H:i" as todays_datewithtime %}
+                                {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-info">Upcoming</span>
+                                {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-danger">Expired</span>
+                                {% else %}
+                                    <span class="badge badge-success">Active</span>
+                                {% endif %}
                             </td>
                         </tr>
                     </table>
