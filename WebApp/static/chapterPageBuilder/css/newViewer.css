@@ -107,6 +107,21 @@ body{
     text-decoration: none;
     cursor: pointer;
 }
+.icon-for-chat2{
+    text-decoration: none;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    background: rgb(54, 60, 69,0.8);
+    border-radius: 10%;
+    padding-left: 3px;
+    transition: color 0.3s ease;
+}
+
+.icon-for-chat2:hover{
+    color: black;
+   background-color: white;
+}
 #hamburg-nav{
     font-size: 30px;
     cursor:pointer;
@@ -116,7 +131,7 @@ body{
     color: white;
     font-size: 24px;
     background: rgb(54, 60, 69,0.8);
-    border-radius: 50%;
+    border-radius: 10%;
     padding: 5px;
     transition: color 0.3s ease;
 }
@@ -173,6 +188,7 @@ body{
     width: 9%;
     min-height: 90px;
     background-color: rgb(54, 60, 69,0.9);
+    min-width: 120px;
 }
 .link-view-box{
     position: absolute;
@@ -290,6 +306,8 @@ body{
 }
 .user-name-part{
     margin: 0px!important;
+    font-size:13px;
+    
 }
 .chapter-lists-all{
     padding: 13% 10px 10px 11%;

@@ -2252,7 +2252,7 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
         },
     });
 
-    $('.3dobj').on('dragover', function (e) {
+    $('._3dobj').on('dragover', function (e) {
         e.stopPropagation();
         e.preventDefault();
         //   $(this).css('border',"2px solid #39F")
@@ -2303,8 +2303,13 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
                 div.find('#loadingDiv').remove();
             },
             success: function (data) {
-                _3dFunction(div.css('top'),
-                    div.css('left'), '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname, div.css('height'), div.css('width'));
+                _3dFunction(
+                    $(div)[0].style.top,
+                    $(div)[0].style.left,
+                    '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname,
+                    $(div)[0].style.height,
+                    $(div)[0].style.width,
+                );
                 div.remove()
             },
             error: function (data, status, errorThrown) {
@@ -3261,11 +3266,10 @@ function changePage(page_number) {
             $('.pagenumber[value=1]').addClass('current')
             // $('#add-page-btn').click();
             display(data)
-            $('.pcr-button')[0].style.color = data.pages[currentPage][0].backgroundcolor
+            pickr.setColor(data.pages[currentPage][0].backgroundcolor)
             return
         } else {
             newpagefunction()
-            $('.pcr-button')[0].style.color = "white"
         }
     } else {
         window.currentPage = page_number.replace(/^\D+/g, '')
@@ -3292,9 +3296,8 @@ function changePage(page_number) {
         }
         display(data)
         if (data.pages[currentPage]) {
-            $('.pcr-button')[0].style.color = data.pages[currentPage][0].backgroundcolor
+            pickr.setColor(data.pages[currentPage][0].backgroundcolor)
         } else {
-            $('.pcr-button')[0].style.color = "white"
         }
     }
     // localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);

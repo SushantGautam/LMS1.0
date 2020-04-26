@@ -18,43 +18,54 @@
                 left: 0;
                 position: absolute;
                 z-index: 9999;
+
             }
 
             .closeiframebtn {
                 display: none;
                 position: fixed;
                 float: right;
-                top: 60vh;
+                height: -webkit-fit-content;
+                height: -moz-fit-content;
+                height: fit-content;
+                top: 6vh;
+                /* left: inherit; */
                 right: 1%;
                 cursor: pointer;
                 bottom: 0;
                 /* background-color: white; */
                 /* width: 100%; */
                 /* left: 48%; */
-                text-align: center
+                text-align: center;
+                border: none;
+                z-index: 99;
             }
+            
 
             .closeiframebtn button {
-                background-color: #2A3F54;
-                height: 75px;
-                width: 75px;
+                background-color: white;
+                height: 35px;
+                width: 35px;
                 border-radius: 50%;
+                border-color: black;
+                background-color: #79a6fb;
             }
 
             .closeiframebtn i {
                 /* float: right; */
-                font-size: xx-large;
+                font-size: 22px;
                 font-weight: bold;
                 color: white;
                 /* border-bottom: groove; */
                 /* text-align: center; */
-
+                border: none;
             }
         </style>
         <link rel="icon"
               type="image/png"
               href="/static/images/logo.png"/>
         <meta name="viewport" content="width=device-width, intial-scale=1.0">
+        <title>LMS</title>
 
         <!-- Bootstrap -->
         <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -64,6 +75,7 @@
         <link href="{% static 'lightbox/css/lightbox.css' %}" rel="stylesheet"/>
 
         <link href="{% static 'chapterPageBuilder/css/newViewer.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/responsive-viewer.css' %}">
         
         <!-- Chat CSS -->
         <link href="{% static 'chapterPageBuilder/css/chat.css' %}" rel="stylesheet">
@@ -167,20 +179,20 @@
                 {% for chapterobj in chapterList %}
                     {% if "teachers" in request.path %}
                         <li><a class="focus-page"
-                               {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8;"{% endif %}
+                               {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8; padding:5px;"{% endif %}
                                href="{% url 'teacher_NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
                         </li>
                     {% elif "students" in request.path %}
                         <li>
                             <a class="focus-page"
-                               {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8;"{% endif %}
+                               {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8; padding:5px;"{% endif %}
                                href="{% url 'student_NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
                             </a>
                         </li>
                     {% else %}
                         <li>
                             <a class="focus-page"
-                               {% if chapterobj.pk == chapter.pk %}style="background-color: #647ca8;"{% endif %}
+                               {% if chapterobj.pk == chapter.pk %}style="background-color: #647ca8;padding:5px;"{% endif %}
                                href="{% url 'NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
                             </a>
                         </li>
@@ -238,20 +250,21 @@
         </div>
         {% if not connection_offline %}
             <ul class="chat-sidenav">
-                <li  data-toggle="tooltip" data-placement="right"  title='Open Navgation' class="glyphicon glyphicon-th" id="hamburg-nav">
+                <li data-toggle="tooltip" data-placement="right" title='Open Navgation' class="glyphicon glyphicon-th"
+                    id="hamburg-nav">
 
                 </li>
-                <li  data-toggle="tooltip" data-placement="right"  title='Chat Icon' class="icon-for-chat">
-                    <i style="color: white;" class="chat-icon fa fa-quote-right"></i>
+                <li data-toggle="tooltip" data-placement="right" title='Chat Icon' class="icon-for-chat">
+                    <i style="color: white;" class="chat-icon closechatopen fa fa-quote-right" id="closechatopen"></i>
                 </li>
             </ul>
-            <ul  class="chat-sidenav-close slideInLeft animate">
-                <li  class=close-icon-sidebar>
+            <ul class="chat-sidenav-close slideInLeft animate">
+                <li class=close-icon-sidebar>
                     <i class="fa fa-times"></i>
 
                 </li>
-                <li class="icon-for-chat">
-                    <i style="color: black;" class="chat-icon fa fa-quote-right"></i>
+                <li class="icon-for-chat2">
+                    <i  class="  fa fa-quote-right"></i>
                 </li>
             </ul>
 
@@ -278,12 +291,12 @@
         <div class="page-link-view">
             <ul class="both-views">
                 <li class="page-view">
-                    <input type="checkbox">&nbsp;
-                    <label class="view-label"> Page View</label><br>
+                    <input id="page-id" type="checkbox" checked>&nbsp;
+                    <label for="page-id" class="view-label"> Page View</label><br>
                 </li>
                 <li class="link-view">
-                    <input type="checkbox">&nbsp;
-                    <label class="view-label"> Link View</label>
+                    <input id="link-id" type="checkbox" checked>&nbsp;
+                    <label for="link-id" class="view-label"> Link View</label>
 
                 </li>
 
@@ -295,9 +308,10 @@
         <div class="navigation-owl">
             <div class="navholder">
                 <ul class="nav-view">
-                    <li><i class="fa fa-angle-left"></i></li>
-                    <li data-toggle="tooltip" data-placement="top"  title='View Page Options' class="view-icon" value="show"><i class="fa fa-list-ul"></i></li>
-                    <li><i class="fa fa-angle-right"></i></li>
+                    <li id="prev-btn"><i class="fa fa-angle-left"></i></li>
+                    <li data-toggle="tooltip" data-placement="top" title='View Page Options' class="view-icon"
+                        value="show"><i class="fa fa-list-ul"></i></li>
+                    <li id="next-btn"><i class="fa fa-angle-right"></i></li>
                 </ul>
                 <div class="page-number-list">
                     <span style="color: white;" class="currentpage" id="currentpage"> &nbsp;&nbsp;</span> / <span
@@ -309,7 +323,8 @@
         </div>
         <div class="link-view-box">
             <div data-toggle="tooltip" data-placement="top" title='Enter Page Number' style="text-align:center">
-                <input class="number-active" type="number" id="pg-change" name="firstname" placeholder="page">
+                <input class="number-active" type="number" min="1" max="{{ data.numberofpages }}" id="pg-change"
+                       name="firstname" placeholder="page">
             </div>
             <div style="font-weight:600; text-align:center">
                 <span>/&nbsp; </span><span class="totalpages"></span>
@@ -318,20 +333,20 @@
         </div>
 
         <!-- Chat BOX UI -->
-        <span class="chat-info" data-userName="{{ user }}" data-userID = "{{ user.id }}" data-userIcon="{{ user.Avatar }}"
-                                data-chapterID="{{ chapter.id }}"></span>
+        <span class="chat-info" data-userName="{{ user }}" data-userID="{{ user.id }}" data-userIcon="{{ user.Avatar }}"
+              data-chapterID="{{ chapter.id }}"></span>
         <div id="main-chat-box"class="chat-dialogbox  animate">
             <ul class="chat-header">
                 <li class="ham-icon">
                     <i class="fa fa-bars"></i>
                 </li>
 
-                <!-- <li class="user-image-padding">
+                <li class="user-image-padding">
                     <div class="chat-user-image">
                     </div>
-                </li> -->
+                </li>
 
-                <!-- <li class="name-user">User One</li> -->
+                <li class="name-user">User One</li>
                 <li class="options-chat">Options <i class="fa fa-caret-down"></i></li>
                 <li class="close-chat"><i class="fa fa-times"></i></li>
             </ul>
@@ -402,17 +417,38 @@
         <!-- Chat UI end -->
 
     </div>
+    {#  Close Button   #}
+    <a href="
+        {% if '/teachers' in request.path %}
+            {% url 'teacher_chapterinfo_detail' course.pk chapter.pk %}
+        {% elif '/students' in request.path %}
+           {% url 'student_chapterinfo_detail' course.pk chapter.pk %}
+       {% else %}
+           {% url 'chapterinfo_detail' course.pk chapter.pk %}
+       {% endif %}
+       " class="back-btn-content" style="position: absolute; top:10px;right:10px; font-size:20px">
+        <div class="closebtn"><i style="
+               background-color: #2A3F54;
+               color:white;
 
+               border-radius: 50%;
+               padding: 0.5px 2px;
+            " class="fa fa-times"></i>
+        </div>
+    </a>
+    {# End of close button #}
+
+    {#  Iframe Holder   #}
     <div id="examiframeholder">
         <div id="closeiframebtn" class="closeiframebtn">
             <button>
                 <i class="fa fa-close" aria-hidden="true">
                 </i>
-
             </button>
         </div>
         <div id="iframeholder"></div>
     </div>
+
 </section>
 {% if ifteacher %}
     {% include "chapter/content-viewer-moules/QuickSurvey.html" %}
@@ -567,24 +603,6 @@
         }
     });
 
-    {% if not connection_offline %}
-        $('#closechatbox').on('click mouseover', function (e) {
-            $('#closechatopen').show();
-            $('.chatonly').hide();
-
-        });
-
-        $('#closechatopen').on('click mouseover', function () {
-            $('.chatonly').show();
-            $('#closechatopen').hide();
-
-            {%  if ifteacher %}
-                updatePageByTeacher();
-                updateStudentOnlineBox("");
-            {% endif  %}
-        });
-    {% endif %}
-
     {% if data %}
         var data = {{ data | safe}};
     {% endif %}
@@ -613,11 +631,7 @@
             {#openNav();#}
         });
 
-        $('#container').click(function () {
-            $('.chatonly').hide();
-            $('.closechatopen').show();
-            {#$('.closenav').click();#}
-        });
+
         $('#page-contents').on('click', '.iframefullscreenbtn', function () {
             // check if fullscreen mode is available
             if (document.fullscreenEnabled ||
@@ -668,12 +682,15 @@
         $('iframe').on('load', function () {
             if ($(this).contents().find('#survey_already_taken').is(':visible')) {
                 $('#closeiframebtn').css('display', 'block')
+               
             }
             if (link != this.contentWindow.location.href && link + '/' != this.contentWindow.location.href) {
                 $('#closeiframebtn').css('display', 'block')
+                
             }
             if (ShowCloseBoxonInit) {
                 $('#closeiframebtn').css('display', 'block')
+                
             }
         });
     }
@@ -698,7 +715,9 @@
 
     $('#pg-change').on('change', function () {
         if (parseInt(this.value) <= parseInt(data.numberofpages) && parseInt(this.value) > 0) {
-            loaddata(data, this.value)
+            pauseAllVideos();
+            currentpage = this.value;
+            changePage(this.value)
         }
     })
 
@@ -1185,11 +1204,15 @@
             $(".chat-dialogbox").css("left", '1%');
             $(".owl-prev").css("left", '35%');
             $(".owl-next").css("right", '10.75%');
-            $( "#main-bottom-slider" ).addClass( "slideInLeft" );
-            $( "#main-bottom-slider" ).removeClass( "slideOutLeft" );
+            $("#main-bottom-slider").addClass("slideInLeft");
+            $("#main-bottom-slider").removeClass("slideOutLeft");
         });
-        $(".container12").click(function () {
-            $(".page-link-view").hide();
+        $(".container12").click(function (e) {
+            var target = $(e.target);
+            console.log(target)
+            if (!target.hasClass('page-link-view') && target.parents('.page-link-view').length == 0 && !target.hasClass('view-icon') && target.parents('.view-icon').length == 0) {
+                $(".page-link-view").hide();
+            }
         });
 
 
@@ -1198,8 +1221,8 @@
 </script>
 <script>
     $(document).on('click', '#hamburg-nav', function () {
-        
-        $( "#sidebar-id" ).addClass( "slideInLeft" );
+
+        $("#sidebar-id").addClass("slideInLeft");
         $( "#sidebar-id" ).removeClass( "slideOutLeft" );
         $(".chat-sidenav-close").css("display", "block");
         $(".navigation-owl").css("left", '16%');
@@ -1208,18 +1231,16 @@
         $(".chat-dialogbox").css("left", '17%');
         $(".owl-prev").css("left", '39%');
         $(".owl-next").css("right", '5.75%');
-        $( "#main-bottom-slider" ).addClass( "slideInLeft" );
-        $( "#main-bottom-slider" ).removeClass( "slideOutLeft" );
+        $("#main-bottom-slider").addClass("slideInLeft");
+        $("#main-bottom-slider").removeClass("slideOutLeft");
 
         $(".custom-owl-slider").css("right", '2%');
-       
 
 
         $(".sidenavbar-part").fadeIn(2000);
     });
     $(document).on('click', '.view-icon', function () {
-        $(".page-link-view").css("display", "block");
-
+        $(".page-link-view").toggle()
     });
     $(document).on('click', '.ham-icon', function () {
         {#$(".left-chat").css("display", "block");#}
@@ -1253,6 +1274,11 @@
         //     $( "#main-chat-box" ).addClass( "fadeOut" );
         //     $( "#main-bottom-slider" ).removeClass( "fadeIn" );
         // }
+
+    });
+    $(document).on('click', '.icon-for-chat2', function () {
+        $(".chat-dialogbox").fadeToggle();
+     
 
     });
 
@@ -1421,5 +1447,20 @@
             playbackRates: ['0.25', '0.5', '1', '1.25', '1.5', '2'],
         });
     }
+
+    $('.page-view input[type=checkbox]').change(function () {
+        if ($(this).is(':checked')) {
+            $('#main-bottom-slider').css('visibility', 'visible')
+        } else {
+            $('#main-bottom-slider').css('visibility', 'hidden')
+        }
+    });
+    $('.link-view input[type=checkbox]').change(function () {
+        if ($(this).is(':checked')) {
+            $('.link-view-box').css('visibility', 'visible')
+        } else {
+            $('.link-view-box').css('visibility', 'hidden')
+        }
+    });
 </script>
 </body>

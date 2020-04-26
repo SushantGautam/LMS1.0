@@ -139,10 +139,10 @@
                     <td>Status</td>
                     <td>
                         {% if object.Use_Flag == True %}
-                            <span style="color:green"> <b>Active</b>
+                            <span class="badge badge-success">Active</span>
                         </span>
                         {% elif object.Use_Flag == False %}
-                            <span class="text-danger"><b>Inactive</b></span>
+                            <span class="badge badge-danger">Inactive</span>
                         {% endif %}
                     </td>
                 </tr>

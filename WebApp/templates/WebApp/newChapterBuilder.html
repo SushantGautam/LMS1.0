@@ -3,14 +3,14 @@
 <head>
     <link rel="icon" type="image/png" href="/static/images/logo.png"/>
     <meta name="viewport" content="width=device-width, intial-scale=1.0">
-
+    <title>LMS</title>
     <meta charset="UTF-8">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}"/>
+    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}" />
 
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
@@ -391,7 +391,7 @@
 
                 <a class="note-chapter-part"  data-toggle="modal" data-target="#link-description">
                     <div class="note-holder1">
-                        <span data-toggle="tooltip" data-placement="right"  title='Write A Note' style="color: white; font-weight:600; cursor:pointer;">Description <i class="fas fa-pencil-alt"></i></span>
+                        <span data-toggle="tooltip" data-placement="right"  title='Edit Chapter information' style="color: white; font-weight:600; cursor:pointer;">Description <i class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
                             <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:70 }} </p>
                         </div>
@@ -447,7 +447,12 @@
                                                 Desription
                                             </label>
                                             <div class="controls ">
-                                                <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary" cols="40"> {{ chapterdetails.Summary }}</textarea>
+                                                
+                                                    <textarea style="width: 100%;" name="Summary" rows="5" class="textarea  " id="id_Summary" > {{ chapterdetails.Summary }}</textarea>
+
+                                            
+                                                
+                                               
                                             </div>
                                         </div>
                                </div>

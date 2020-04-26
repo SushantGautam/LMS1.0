@@ -219,7 +219,7 @@
                         <tr>
                             <th>{% trans " No." %}</th>
                             <th>{% trans "Study Progress" %}</th>
-                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Fullname" %}</th>
                             <th>{% trans "Chapter " %}</th>
                             <th>{% trans "Running Time" %}</th>
                             <th>{% trans "Study Time" %}</th>
@@ -234,14 +234,14 @@
                             <tr data-chapterpk="{{ a.chapter.chapterObj.pk }}">
                                 <td>  {{ forloop.counter }} </td>
                                 <td>
-                                    <span style="visibility: hidden">{{ a.chapter.progresspercent }}</span>
                                     <div class="progressbar" data-animate="false">
                                         <div class="circle" data-percent="{{ a.chapter.progresspercent }}">
                                             <div></div>
                                         </div>
                                     </div>
+                                    <span style="visibility: hidden">{{ a.chapter.progresspercent }}</span>
                                 </td>
-                                <td>  {{ a.student.username }} </td>
+                                <td>  {{ a.student }} </td>
                                 <td>  {{ a.chapter.chapterObj.Chapter_No }}. {{ a.chapter.chapterObj.Chapter_Name }} </td>
                                 <td>  {{ a.chapter.chapterObj.getmustreadtimeinformat }} </td>
                                 <td>  {{ a.chapter.totalstudytime }} </td>
