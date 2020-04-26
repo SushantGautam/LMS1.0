@@ -18,37 +18,47 @@
                 left: 0;
                 position: absolute;
                 z-index: 9999;
+             
             }
 
             .closeiframebtn {
-                display: none;
+                display: block;
                 position: fixed;
                 float: right;
-                top: 60vh;
+                height: -webkit-fit-content;
+                height: -moz-fit-content;
+                height: fit-content;
+                top: 6vh;
+                /* left: inherit; */
                 right: 1%;
                 cursor: pointer;
                 bottom: 0;
                 /* background-color: white; */
                 /* width: 100%; */
                 /* left: 48%; */
-                text-align: center
+                text-align: center;
+                border: none;
+                z-index: 99;
             }
+            
 
             .closeiframebtn button {
-                background-color: #2A3F54;
-                height: 75px;
-                width: 75px;
+                background-color: white;
+                height: 35px;
+                width: 35px;
                 border-radius: 50%;
+                border-color: black;
+                background-color: #79a6fb;
             }
 
             .closeiframebtn i {
                 /* float: right; */
-                font-size: xx-large;
+                font-size: 22px;
                 font-weight: bold;
                 color: white;
                 /* border-bottom: groove; */
                 /* text-align: center; */
-
+                border: none;
             }
         </style>
         <link rel="icon"
@@ -408,8 +418,19 @@
 
     </div>
 
-    <div id="examiframeholder">
+    <a href="{% if '/students' in request.path %}
+    {{ o.student_get_absolute_url }}
+{% elif '/teachers' in request.path %}
+    {{ o.teacher_get_absolute_url }}
+{% else %}
+   {{ o.get_absolute_url }}
+{% endif %}">
+    <div id="examiframeholder slideInLeft animate">
         <div id="closeiframebtn" class="closeiframebtn">
+
+          
+               
+          
             <button>
                 <i class="fa fa-close" aria-hidden="true">
                 </i>
@@ -668,12 +689,15 @@
         $('iframe').on('load', function () {
             if ($(this).contents().find('#survey_already_taken').is(':visible')) {
                 $('#closeiframebtn').css('display', 'block')
+               
             }
             if (link != this.contentWindow.location.href && link + '/' != this.contentWindow.location.href) {
                 $('#closeiframebtn').css('display', 'block')
+                
             }
             if (ShowCloseBoxonInit) {
                 $('#closeiframebtn').css('display', 'block')
+                
             }
         });
     }
