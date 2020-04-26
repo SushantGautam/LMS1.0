@@ -1173,7 +1173,8 @@
         });
         $(".container12").click(function (e) {
             var target = $(e.target);
-            if (!target.hasClass('page-link-view') && target.parents('.page-link-view').length == 0) {
+            console.log(target)
+            if (!target.hasClass('page-link-view') && target.parents('.page-link-view').length == 0 && !target.hasClass('view-icon') && target.parents('.view-icon').length == 0) {
                 $(".page-link-view").hide();
             }
         });
@@ -1194,18 +1195,16 @@
         $(".chat-dialogbox").css("left", '17%');
         $(".owl-prev").css("left", '39%');
         $(".owl-next").css("right", '5.75%');
-        $( "#main-bottom-slider" ).addClass( "slideInLeft" );
-        $( "#main-bottom-slider" ).removeClass( "slideOutLeft" );
+        $("#main-bottom-slider").addClass("slideInLeft");
+        $("#main-bottom-slider").removeClass("slideOutLeft");
 
         $(".custom-owl-slider").css("right", '2%');
-       
 
 
         $(".sidenavbar-part").fadeIn(2000);
     });
     $(document).on('click', '.view-icon', function () {
-        $(".page-link-view").css("display", "block");
-
+        $(".page-link-view").toggle()
     });
     $(document).on('click', '.ham-icon', function () {
         {#$(".left-chat").css("display", "block");#}
