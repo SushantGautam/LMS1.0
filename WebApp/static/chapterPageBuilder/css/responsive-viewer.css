@@ -1,0 +1,51 @@
+@media  all and  (min-width:1700px) {
+
+ 
+
+  
+
+}
+
+
+ @media (min-width:1401px) and (max-width:1500px){
+
+
+}
+ @media (min-width:1301px) and (max-width:1400px){
+   
+  
+    
+}
+ @media (min-width:1201px) and (max-width:1300px){
+    .chat-sidenav {
+        position: absolute;
+        top: 20px;
+        left: 10px;
+        padding: 0px!important;
+        margin: 0px!important;
+        transition: all 0.3s ease;
+    }
+   
+
+ }
+ @media (min-width:1001px) and (max-width:1200px){
+    .chat-sidenav {
+        position: absolute;
+        top: 20px;
+        left: 14px;
+        padding: 0px!important;
+        margin: 0px!important;
+        transition: all 0.3s ease;
+        
+    }
+    .container12{
+        width: 89vw;
+    }
+ 
+}      
+ @media (min-width:700px) and (max-width:999px) {
+     .container12{
+         width: 86vw;
+     }
+    
+ }

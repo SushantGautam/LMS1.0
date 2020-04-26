@@ -188,6 +188,7 @@ body{
     width: 9%;
     min-height: 90px;
     background-color: rgb(54, 60, 69,0.9);
+    min-width: 120px;
 }
 .link-view-box{
     position: absolute;
