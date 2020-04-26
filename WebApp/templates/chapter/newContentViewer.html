@@ -407,6 +407,23 @@
         <!-- Chat UI end -->
 
     </div>
+    <a href="
+    {% if '/teachers' in request.path %}
+       {% url 'teacher_chapterinfo_detail' course.pk chapter.pk %}
+   {% elif '/students' in request.path %}
+       {% url 'student_chapterinfo_detail' course.pk chapter.pk %}
+   {% else %}
+       {% url 'chapterinfo_detail' course.pk chapter.pk %}
+   {% endif %}
+   " class="back-btn-content" style="position: absolute; top:10px;right:10px; font-size:20px">
+           <div class="closebtn"><i style="
+   background-color: #2A3F54;
+   color:white;
+
+   border-radius: 50%;
+   padding: 0.5px 2px;
+" class="fa fa-times"></i></div>
+       </a>
 
     <div id="examiframeholder">
         <div id="closeiframebtn" class="closeiframebtn">
