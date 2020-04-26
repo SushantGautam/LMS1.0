@@ -55,6 +55,7 @@
               type="image/png"
               href="/static/images/logo.png"/>
         <meta name="viewport" content="width=device-width, intial-scale=1.0">
+        <title>LMS</title>
 
         <!-- Bootstrap -->
         <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -250,8 +251,8 @@
                     <i class="fa fa-times"></i>
 
                 </li>
-                <li class="icon-for-chat">
-                    <i style="color: black;" class="chat-icon fa fa-quote-right"></i>
+                <li class="icon-for-chat2">
+                    <i  class="  fa fa-quote-right"></i>
                 </li>
             </ul>
 
@@ -278,12 +279,12 @@
         <div class="page-link-view">
             <ul class="both-views">
                 <li class="page-view">
-                    <input type="checkbox">&nbsp;
-                    <label class="view-label"> Page View</label><br>
+                    <input id="page-id" type="checkbox">&nbsp;
+                    <label for="page-id" class="view-label"> Page View</label><br>
                 </li>
                 <li class="link-view">
-                    <input type="checkbox">&nbsp;
-                    <label class="view-label"> Link View</label>
+                    <input id="link-id" type="checkbox">&nbsp;
+                    <label for="link-id" class="view-label"> Link View</label>
 
                 </li>
 
@@ -326,12 +327,12 @@
                     <i class="fa fa-bars"></i>
                 </li>
 
-                <!-- <li class="user-image-padding">
+                <li class="user-image-padding">
                     <div class="chat-user-image">
                     </div>
-                </li> -->
+                </li>
 
-                <!-- <li class="name-user">User One</li> -->
+                <li class="name-user">User One</li>
                 <li class="options-chat">Options <i class="fa fa-caret-down"></i></li>
                 <li class="close-chat"><i class="fa fa-times"></i></li>
             </ul>
@@ -1253,6 +1254,11 @@
         //     $( "#main-chat-box" ).addClass( "fadeOut" );
         //     $( "#main-bottom-slider" ).removeClass( "fadeIn" );
         // }
+
+    });
+    $(document).on('click', '.icon-for-chat2', function () {
+        $(".chat-dialogbox").fadeToggle();
+     
 
     });
 
