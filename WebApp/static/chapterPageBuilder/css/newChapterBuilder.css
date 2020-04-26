@@ -907,6 +907,7 @@ html {
     left: 0;
     position: absolute;
     z-index: 9999;
+   
 }
 
 .closeiframebtn {
@@ -916,7 +917,7 @@ html {
     height: -webkit-fit-content;
     height: -moz-fit-content;
     height: fit-content;
-    top: 5vh;
+    top: 6vh;
     /* left: inherit; */
     right: 1%;
     cursor: pointer;
@@ -924,25 +925,28 @@ html {
     /* background-color: white; */
     /* width: 100%; */
     /* left: 48%; */
-    text-align: center
+    text-align: center;
+    border: none;
+    z-index: 99;
 }
 
 .closeiframebtn button {
     background-color: white;
-    height: 50px;
-    width: 50px;
+    height: 35px;
+    width: 35px;
     border-radius: 50%;
-    border-color: #d6768c;
+    border-color: black;
+    background-color: #79a6fb;
 }
 
 .closeiframebtn i {
     /* float: right; */
-    font-size: xx-large;
+    font-size: 22px;
     font-weight: bold;
-    color: #d6768c;;
+    color: white;
     /* border-bottom: groove; */
     /* text-align: center; */
-
+    border: none;
 }
 
 .ribbon {
