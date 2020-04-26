@@ -570,24 +570,6 @@
         }
     });
 
-    {% if not connection_offline %}
-        $('#closechatbox').on('click mouseover', function (e) {
-            $('#closechatopen').show();
-            $('.chatonly').hide();
-
-        });
-
-        $('#closechatopen').on('click mouseover', function () {
-            $('.chatonly').show();
-            $('#closechatopen').hide();
-
-            {%  if ifteacher %}
-                updatePageByTeacher();
-                updateStudentOnlineBox("");
-            {% endif  %}
-        });
-    {% endif %}
-
     {% if data %}
         var data = {{ data | safe}};
     {% endif %}
@@ -616,11 +598,7 @@
             {#openNav();#}
         });
 
-        $('#container').click(function () {
-            $('.chatonly').hide();
-            $('.closechatopen').show();
-            {#$('.closenav').click();#}
-        });
+
         $('#page-contents').on('click', '.iframefullscreenbtn', function () {
             // check if fullscreen mode is available
             if (document.fullscreenEnabled ||
