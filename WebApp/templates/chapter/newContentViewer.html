@@ -295,9 +295,10 @@
         <div class="navigation-owl">
             <div class="navholder">
                 <ul class="nav-view">
-                    <li><i class="fa fa-angle-left"></i></li>
-                    <li data-toggle="tooltip" data-placement="top"  title='View Page Options' class="view-icon" value="show"><i class="fa fa-list-ul"></i></li>
-                    <li><i class="fa fa-angle-right"></i></li>
+                    <li id="prev-btn"><i class="fa fa-angle-left"></i></li>
+                    <li data-toggle="tooltip" data-placement="top" title='View Page Options' class="view-icon"
+                        value="show"><i class="fa fa-list-ul"></i></li>
+                    <li id="next-btn"><i class="fa fa-angle-right"></i></li>
                 </ul>
                 <div class="page-number-list">
                     <span style="color: white;" class="currentpage" id="currentpage"> &nbsp;&nbsp;</span> / <span
@@ -309,7 +310,8 @@
         </div>
         <div class="link-view-box">
             <div data-toggle="tooltip" data-placement="top" title='Enter Page Number' style="text-align:center">
-                <input class="number-active" type="number" id="pg-change" name="firstname" placeholder="page">
+                <input class="number-active" type="number" min="1" max="{{ data.numberofpages }}" id="pg-change"
+                       name="firstname" placeholder="page">
             </div>
             <div style="font-weight:600; text-align:center">
                 <span>/&nbsp; </span><span class="totalpages"></span>
@@ -318,8 +320,8 @@
         </div>
 
         <!-- Chat BOX UI -->
-        <span class="chat-info" data-userName="{{ user }}" data-userID = "{{ user.id }}" data-userIcon="{{ user.Avatar }}"
-                                data-chapterID="{{ chapter.id }}"></span>
+        <span class="chat-info" data-userName="{{ user }}" data-userID="{{ user.id }}" data-userIcon="{{ user.Avatar }}"
+              data-chapterID="{{ chapter.id }}"></span>
         <div id="main-chat-box"class="chat-dialogbox  animate">
             <ul class="chat-header">
                 <li class="ham-icon">
@@ -698,7 +700,9 @@
 
     $('#pg-change').on('change', function () {
         if (parseInt(this.value) <= parseInt(data.numberofpages) && parseInt(this.value) > 0) {
-            loaddata(data, this.value)
+            pauseAllVideos();
+            currentpage = this.value;
+            changePage(this.value)
         }
     })
 
