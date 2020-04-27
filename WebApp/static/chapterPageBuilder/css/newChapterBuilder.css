@@ -453,7 +453,7 @@ a:hover {
 
 .main-central-canvas {
     height: 62vh;
-    background-color: white;
+    /* background-color: white; */
     position: relative;
 }
 
