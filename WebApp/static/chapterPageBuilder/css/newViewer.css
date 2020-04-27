@@ -260,13 +260,13 @@ body{
 .sidebar-top{
     height: 11vh;
 }
-#sidebar-buttom{
+.sidebar-buttom{
     position: fixed;
     left: 0px;
     right: 0px;
     bottom: 0px;
     background: #363c45;
-    width:15%;
+
     padding: 10px;
     
 }
