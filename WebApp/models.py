@@ -15,6 +15,8 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from tinymce.models import HTMLField
+
 # from quiz.models import Quiz
 
 fs = FileSystemStorage(location='LMS')
@@ -754,7 +756,7 @@ class Notice(models.Model):
     SHOW_CHOICES = (("1", "One time"), ("2", "Provide Don't show option"), ("3", "Always"))
 
     title = CharField(max_length=124)
-    message = TextField(blank=True, null=True)
+    message = HTMLField()
     status = BooleanField(default=True)
     show = CharField(max_length=1, choices=SHOW_CHOICES)
     Start_Date = DateTimeField(null=True, blank=True)

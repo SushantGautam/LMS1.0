@@ -1,13 +1,16 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+{{ form.media }}
+
 <form method="post" id="ajaxquestioninfoform" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         {{ form.Question_Title|as_crispy_field }}
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <div id="div_id_Question_Description" class="form-group">
+        {{ form.Question_Description|as_crispy_field }}
+        <!-- <div id="div_id_Question_Description" class="form-group">
             <label for="id_Question_Description" class="control-label ">
                 Question Description
             </label>
@@ -15,7 +18,7 @@
                 <textarea name="Question_Description" rows="5" cols="40" class="textarea form-control"
                     id="id_Question_Description"></textarea>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
         {{ form.Question_Score|as_crispy_field }}
@@ -81,4 +84,23 @@
             }
         });
     });
+</script>
+
+
+
+<!-- Tinmce editor configuration -->
+<script>
+
+tinymce.init({
+  selector: 'textarea#id_Question_Description',
+  height: 500,
+  menubar: false,
+  plugins: [
+    'advlist autolink lists link image charmap print preview anchor',
+    'searchreplace visualblocks code fullscreen',
+    'insertdatetime media table paste code help wordcount'
+  ],
+  toolbar: 'undo redo | formatselect | ' +
+  'bold italic | alignleft aligncenter alignright alignjustify | removeformat'
+});
 </script>

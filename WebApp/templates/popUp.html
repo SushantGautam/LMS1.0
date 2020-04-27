@@ -7,7 +7,7 @@
        <h4 class="modal-title" id="myModalLabel">{{ notice.title }}</h4>
      </div>
      <div class="modal-body" style="text-align: center">
-        {{ notice.message }}
+        {{ notice.message|safe }}
        <!-- <div style="font-size: 50px; font-weight: bold">
            NEW
        </div>
