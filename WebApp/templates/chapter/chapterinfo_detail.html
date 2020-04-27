@@ -109,16 +109,18 @@
                         {% else %}
                             <span class="badge badge-success">Active</span>
                         {% endif %}
-                        
+
                     </td>
                 </tr>
                 <tr>
                     <td>Start Date</td>
-                    <td class="datecon">{{ object.Start_Date|date:"d M, Y H:i" }}</td>
+                    <td> {{ object.Start_Date|date:"d M, Y" }} <span
+                            class="timecon">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></td>
                 </tr>
                 <tr>
                     <td>End Date</td>
-                    <td class="datecon">{{ object.End_Date|date:"d M, Y H:i" }}</td>
+                    <td> {{ object.End_Date|date:"d M, Y" }} <span
+                            class="timecon">{{ object.End_Date|date:"d M, Y h:i A" }}</span></td>
                 </tr>
 
                 <tr>
@@ -339,9 +341,11 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
                     <p>Start Date - <span
-                            class="datecon">{{ o.Assignment_Start|date:'M d, Y H:i' }}</span></p>
+                            class="">{{ o.Assignment_Start|date:'M d, Y' }}</span> <span
+                            class="timecon">{{ o.Assignment_Start|date:"d M, Y h:i A" }}</span></p>
                     <p>Submission Deadline - <span
-                            class="datecon">{{ o.Assignment_Deadline|date:'M d, Y H:i' }}</span></p>
+                            class="">{{ o.Assignment_Deadline|date:'M d, Y' }}</span> <span
+                            class="timecon">{{ o.Assignment_Deadline|date:"d M, Y h:i A" }}</span></p>
                 </div>
             </div>
         {% endfor %}

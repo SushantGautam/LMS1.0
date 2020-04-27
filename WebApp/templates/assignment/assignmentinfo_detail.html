@@ -59,11 +59,13 @@
                         <tr>
                             <td>Assignment Start Date</td>
                             {#                            Use Datecon class in td if conversion of date to local time is required#}
-                            <td class="datecon">{{ object.Assignment_Start|date:'M d, Y H:i' }}</td>
+                            <td class="">{{ object.Assignment_Start|date:'M d, Y' }} <span
+                                    class="timecon">{{ object.Assignment_Start|date:"d M, Y h:i A" }}</span></td>
                         </tr>
                         <tr>
                             <td>Assignment Deadline</td>
-                            <td class="datecon">{{ object.Assignment_Deadline|date:'M d, Y H:i' }}</td>
+                            <td class="">{{ object.Assignment_Deadline|date:'M d, Y' }} <span
+                                    class="timecon">{{ object.Assignment_Deadline|date:"d M, Y h:i A" }}</span></td>
                         </tr>
                         <tr>
                             <td>Course Code</td>

@@ -9,6 +9,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import SelectDateWidget
+from tinymce.widgets import TinyMCE
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
@@ -337,6 +338,7 @@ class AssignmentInfoForm(forms.ModelForm):
 
 
 class QuestionInfoForm(forms.ModelForm):
+    # Question_Description = forms.CharField(widget=TinyMCE(mce_attrs={},attrs={'cols': 40, 'rows': 10}))
     class Meta:
         model = AssignmentQuestionInfo
         fields = '__all__'

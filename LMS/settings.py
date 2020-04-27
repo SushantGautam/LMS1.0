@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'quiz',
     'survey',
     'decorator_include',
+    'tinymce',
 ]
 
 MIDDLEWARE = [

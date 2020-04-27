@@ -83,7 +83,15 @@
         </a>
 
         {% if '/teachers' in request.path %}
-            <a href="chapterpagebuilder">
+            <a href="{% url 'teachers_newChapterBuilder' course.pk chapter.pk %}">
+                <div class="editbtn" title=""><i style="
+    color: #3c8dbc;
+    padding: 0.5px 2px;
+    text-shadow: 2px 2px #f9f5f5;
+" class="fa fa-pencil"></i></div>
+            </a>
+        {% elif '/teachers' not in request.path and '/students' not in request.path %}
+            <a href="{% url 'newChapterBuilder' course.pk chapter.pk %}">
                 <div class="editbtn" title=""><i style="
     color: #3c8dbc;
     padding: 0.5px 2px;
