@@ -5,17 +5,119 @@
   
 
 }
+@media (min-width:1451px) and (max-width:1500px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 16px;
+        margin: 0px 14px;
+    }
+}  
 
-
- @media (min-width:1401px) and (max-width:1500px){
+ @media (min-width:1401px) and (max-width:1450px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 16px;
+        margin: 0px 13px;
+    }
 
 
 }
- @media (min-width:1301px) and (max-width:1400px){
+@media (min-width:1351px) and (max-width:1400px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 16px;
+        margin: 0px 12px;
+    }
    
   
     
 }
+ @media (min-width:1301px) and (max-width:1350px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 16px;
+        margin: 0px 11px;
+    }
+   
+  
+    
+}
+@media (min-width:1251px) and (max-width:1300px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 15px;
+        margin: 0px 11px;
+    }
+   
+  
+    
+}
+@media (min-width:1201px) and (max-width:1250px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 14px;
+        margin: 0px 10px;
+    }
+   
+  
+    
+}
+@media (min-width:1101px) and (max-width:1200px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 14px;
+        margin: 0px 8px;
+    }
+   
+  
+   
+ 
+} 
+@media (min-width:1001px) and (max-width:1100px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 14px;
+        margin: 0px 6px;
+    }
+   
+  
+   
+ 
+} 
+@media (min-width:901px) and (max-width:1000px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 13px;
+        margin: 0px 5px;
+    }
+   
+  
+   
+ 
+} 
+@media (min-width:801px) and (max-width:900px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 12px;
+        margin: 0px 4px;
+    }
+   
+  
+   
+ 
+} 
+@media (min-width:701px) and (max-width:800px){
+    .glyphicon-fullscreen , .glyphicon-user , .glyphicon-phone , .glyphicon-off{
+        color: white;
+        font-size: 10px;
+        margin: 0px 3px;
+    }
+   
+  
+   
+ 
+} 
+
  @media (min-width:1201px) and (max-width:1300px){
     .chat-sidenav {
         position: absolute;
@@ -41,6 +143,7 @@
     .container12{
         width: 89vw;
     }
+   
  
 }      
  @media (min-width:700px) and (max-width:999px) {

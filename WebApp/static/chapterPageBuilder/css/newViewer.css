@@ -167,6 +167,7 @@ body{
     width: 60%;
     background-color: rgb(54, 60, 69,0.9);
     padding: 10px;
+    z-index: 999;
 }
 .page-link-view{
     position: absolute;
@@ -190,6 +191,7 @@ body{
     min-height: 90px;
     background-color: rgb(54, 60, 69,0.9);
     min-width: 120px;
+    z-index: 999;
 }
 .link-view-box{
     position: absolute;
@@ -199,6 +201,7 @@ body{
     width: 6%;
     background-color: rgb(54, 60, 69,0.9);
     padding: 7px 0;
+    z-index: 999;
 }
 
 .number-active{
@@ -260,13 +263,13 @@ body{
 .sidebar-top{
     height: 11vh;
 }
-#sidebar-buttom{
+.sidebar-buttom{
     position: fixed;
     left: 0px;
     right: 0px;
     bottom: 0px;
     background: #363c45;
-    width:15%;
+
     padding: 10px;
     
 }
@@ -599,6 +602,7 @@ body{
     /* color: #337ab7 !important; */
     box-shadow: 2px 2px 3px #999;
     font-size: 20px!important;
+    z-index: 999;
 }
 .owl-next {
     position: fixed;
@@ -608,6 +612,7 @@ body{
     /* color: #337ab7 !important; */
     box-shadow: 2px 2px 3px #999;
     font-size: 20px!important;
+    z-index: 999;
 }
 textarea.form-control {
     height: auto;
