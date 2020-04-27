@@ -494,26 +494,26 @@ margin: 0 auto"></div>
               {% endif %} {% endfor %}
           </div>
         </div>
-        <div class="col-md-3">
-          {% for survey in history %}
-            <div class="x_panel" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+          <div class="col-md-3">
+              {% for survey in history %}
+                  <div class="x_panel" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
 
-              {% if survey.id == object.id %}
-                <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
-                <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
-                <h4 class="text-danger text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                <h4 class="text-danger text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
-              {% else %}
-                <h4 class="text-info text-center"><a
-                    href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
-                <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
-                <h4 class="text-info text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                <h4 class="text-info text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
-              {% endif %}
+                      {% if survey.id == object.id %}
+                          <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
+                          <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
+                          <h4 class="text-danger text-center datecon">{{ survey.Start_Date|date:'M d, Y H:i' }}</h4>
+                          <h4 class="text-danger text-center datecon">{{ survey.End_Date|date:'M d, Y H:i' }}</h4>
+                      {% else %}
+                          <h4 class="text-info text-center"><a
+                                  href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
+                          <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
+                          <h4 class="text-info text-center datecon">{{ survey.Start_Date|date:'M d, Y H:i' }}</h4>
+                          <h4 class="text-info text-center datecon">{{ survey.End_Date|date:'M d, Y H:i' }}</h4>
+                      {% endif %}
 
-            </div>
-          {% endfor %}
-        </div>
+                  </div>
+              {% endfor %}
+          </div>
       </div>
     </div>
   </div>
