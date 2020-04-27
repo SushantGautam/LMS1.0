@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}" />
+    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}"/>
 
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
@@ -152,7 +152,7 @@
                                                  src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
                                             <span class="object-name-size">TEXT BOX</span>
                                         </li>
-                                      
+
                                         <!-- <li class="individual-objects draggable draggable-style ">
                                                 <span>
                                                  <img class="object-image-size"
@@ -395,9 +395,11 @@
 
                 </div>
 
-                <a class="note-chapter-part"  data-toggle="modal" data-target="#link-description">
+                <a class="note-chapter-part" data-toggle="modal" data-target="#link-description">
                     <div class="note-holder1">
-                        <span data-toggle="tooltip" data-placement="right"  title='Edit Chapter information' style="color: white; font-weight:600; cursor:pointer;">Description <i class="fas fa-pencil-alt"></i></span>
+                        <span data-toggle="tooltip" data-placement="right" title='Edit Chapter information'
+                              style="color: white; font-weight:600; cursor:pointer;">Description <i
+                                class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
                             <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:70 }} </p>
                         </div>
@@ -408,75 +410,85 @@
 
                 <div id="link-description" class="modal fade" role="dialog">
                     <div class="modal-dialog">
-                
+
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header" style="background-color: #353c46;">
                                 <div class="col-sm-12">
                                     <div class="col-sm-6">
                                         <h4 class="modal-title" style="color: white;">Description</h4>
-                
+
                                     </div>
                                     <div class="col-sm-6">
-                                        <button type="button" class="close" data-dismiss="modal" style="color:white">&times;</button>
-                
+                                        <button type="button" class="close" data-dismiss="modal" style="color:white">
+                                            &times;
+                                        </button>
+
                                     </div>
                                 </div>
                             </div>
-                            <form id="chapter-description-form" method="post" action="{% url 'partialchapterinfo_update_ajax' chapterdetails.pk %}">
-                                    {% csrf_token %}
-                            <div class="modal-body">
-                                <!-- Modal Contents Here -->
+                            <form id="chapter-description-form" method="post"
+                                  action="{% url 'partialchapterinfo_update_ajax' chapterdetails.pk %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <!-- Modal Contents Here -->
 
                                     <div class="col-sm-12">
-                                      <div id="div_id_Chapter_No" class="form-group" style="margin-bottom: 10px!important;">
-                                        <label for="id_Chapter_No" class="control-label  requiredField">
-                                            Chapter No<span class="asteriskField">*</span>
-                                        </label>
-                                        
+                                        <div id="div_id_Chapter_No" class="form-group"
+                                             style="margin-bottom: 10px!important;">
+                                            <label for="id_Chapter_No" class="control-label  requiredField">
+                                                Chapter No<span class="asteriskField">*</span>
+                                            </label>
+
                                             <div class="controls ">
-                                                <input type="number" name="Chapter_No" value="{{ chapterdetails.Chapter_No }}" class="numberinput form-control" min="1" required="" id="id_Chapter_No">
+                                                <input type="number" name="Chapter_No"
+                                                       value="{{ chapterdetails.Chapter_No }}"
+                                                       class="numberinput form-control" min="1" required=""
+                                                       id="id_Chapter_No">
                                             </div>
                                         </div>
 
-                                         <div id="div_id_Chapter_Name" class="form-group" style="margin-bottom: 10px!important;">
+                                        <div id="div_id_Chapter_Name" class="form-group"
+                                             style="margin-bottom: 10px!important;">
                                             <label for="id_Chapter_Name" class="control-label  requiredField">
                                                 Chapter Name<span class="asteriskField">*</span>
                                             </label>
                                             <div class="controls ">
-                                                <input type="text" name="Chapter_Name" value="{{ chapterdetails.Chapter_Name }}" maxlength="200" class="textinput textInput form-control" required="" id="id_Chapter_Name">
+                                                <input type="text" name="Chapter_Name"
+                                                       value="{{ chapterdetails.Chapter_Name }}" maxlength="200"
+                                                       class="textinput textInput form-control" required=""
+                                                       id="id_Chapter_Name">
                                             </div>
-                                         </div>
-                                        
-                                         <div id="div_id_Summary" class="form-group" style="margin-bottom: 10px!important;">
+                                        </div>
+
+                                        <div id="div_id_Summary" class="form-group"
+                                             style="margin-bottom: 10px!important;">
                                             <label for="id_Summary" class="control-label ">
                                                 Desription
                                             </label>
                                             <div class="controls ">
-                                                
-                                                    <textarea style="width: 100%;" name="Summary" rows="5" class="textarea  " id="id_Summary" > {{ chapterdetails.Summary }}</textarea>
 
-                                            
-                                                
-                                               
+                                                <textarea style="width: 100%;" name="Summary" rows="5"
+                                                          class="textarea  "
+                                                          id="id_Summary"> {{ chapterdetails.Summary }}</textarea>
+
+
                                             </div>
                                         </div>
-                               </div>
+                                    </div>
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="#">Submit</button>
-                                <button type="button" class="#" data-dismiss="modal">Close</button>
-                            </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="#">Submit</button>
+                                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                                </div>
                             </form>
                         </div>
-                
+
                     </div>
                 </div>
-              
+
                 <!-- ends -->
-
-
 
 
                 <div class="additional-canvas tabs-to-click" style="position: relative;">
@@ -488,7 +500,7 @@
 
                                 <span style="float:right">
                                     <button class="clone-button" value="1">
-                                    <span  data-toggle="tooltip" data-placement="botton"  title=' Clone Button'>
+                                    <span data-toggle="tooltip" data-placement="botton" title=' Clone Button'>
                                     <i class="fa fa-clone " aria-hidden="true"></i>
                                     </span>
 
@@ -497,7 +509,7 @@
 
                                 <span style="float:right">
                                     <button class="delete-page-btn" value="1">
-                                    <span data-toggle="tooltip" data-placement="botton"  title=' Delete Page'>
+                                    <span data-toggle="tooltip" data-placement="botton" title=' Delete Page'>
                                     <i class="fa fa-times " aria-hidden="true"></i>
                                     </span>
 
@@ -556,37 +568,33 @@
                 <div class="modal-header button-header-color">
                     <h4 class="modal-title button-position">Button</h4>
                     <button type="" class="close" data-dismiss="modal">
-                        <i style="color:white !important "class="fa fa-times"></i>
+                        <i style="color:white !important " class="fa fa-times"></i>
 
                     </button>
-                    
+
                 </div>
                 <div class="modal-body">
                     <!-- Modal Contents Here -->
                     <div class="col-md-12" style="padding: 10px;">
 
-                        
-                          
-                         
+
                         <label class="col-sm-4">Display Name</label>
-                        <div style="margin-bottom:10px"class="col-sm-8">
+                        <div style="margin-bottom:10px" class="col-sm-8">
                             <input class="form-control" type="text" name="btn-name" id="btn-name">
 
                         </div>
-                        
+
                         <br>
                         <label class="col-sm-4">Link &nbsp; (http://)</label>
                         <div class="col-sm-8">
                             <span class="btnlink">
                                 
-                                <input class="form-control" type="text" name="btn-link" id="btn-link" placeholder="ublcloud.me">
+                                <input class="form-control" type="text" name="btn-link" id="btn-link"
+                                       placeholder="ublcloud.me">
                             </span>
 
                         </div>
-                        
-                                
 
-                                 
 
                     </div>
 
@@ -638,8 +646,6 @@
 
                     </div>
 
-
-               
 
                     <input type="hidden" name="quiz-link" id="quiz-link">
 
@@ -722,9 +728,9 @@
         <div id="survey-link-chapter" class="modal-content">
             <form id="survey-form">
                 <div class="modal-header" style="background-color: #353c46;">
-                    <div class="col-md-12 col-sm-12 " >
+                    <div class="col-md-12 col-sm-12 ">
                         <div class="col-sm-8  col-xs-6">
-                            <h4 style ="color:white" class="modal-title">Survey</h4>
+                            <h4 style="color:white" class="modal-title">Survey</h4>
 
                         </div>
                         <div class="col-sm-4 col-xs-6">
@@ -750,8 +756,6 @@
 
                     </div>
 
-
-                   
 
                     <input type="hidden" name="survey-link" id="survey-link">
 
@@ -910,25 +914,22 @@
             </div>
             <div class="modal-body">
                 <!-- Modal Contents Here -->
-                <div class="col-sm-12"> 
-                        <label>Upload 3D file(.glb or .gltf)</label>
-                       
-                        <div class="custom-file mb-3">
-                            <input type="file" class="custom-file-input"  name="_3dfile" id="_3dfile-link" accept=".glb,.gltf">
-                            <label class="custom-file-label" for="_3dfile-link">Choose file</label>
-                          </div>
+                <div class="col-sm-12">
+                    <label>Upload 3D file(.glb or .gltf)</label>
 
-                         
-                          
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" name="_3dfile" id="_3dfile-link"
+                               accept=".glb,.gltf">
+                        <label class="custom-file-label" for="_3dfile-link">Choose file</label>
+                    </div>
 
-                       
-                
+
                     <div style="margin-top: 15px; font-weight:600">For converting 3D files online,
                         <a class="clickButton" href="https://blackthread.io/gltf-converter/" target="_blank">
                             Click Here
                         </a>
-                   </div>
-               </div>
+                    </div>
+                </div>
                 <!-- <div>
                 <label>Upload 3D file (MTL)</label>
                 <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
@@ -1251,10 +1252,10 @@
 
 </script>
 <script>
-   
-    $(".custom-file-input").on("change", function() {
-      var fileName = $(this).val().split("\\").pop();
-      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
     $('#chapter-description-form').on('submit', function (e) {
@@ -1268,7 +1269,7 @@
                 $('#link-description').modal('toggle');
                 $('.chapter-name').text(data.chapter_name)
                 $('#chapter-description').find('p').text(data.summary)
-                $(`#chapterlist option[value=${data.chapter_pk}]`).text(data.chapter_no +'. '+ data.chapter_name)
+                $(`#chapterlist option[value=${data.chapter_pk}]`).text(data.chapter_no + '. ' + data.chapter_name)
             },
             error: function () {
                 console.log('Error in updating')
@@ -1278,3 +1279,58 @@
 </script>
 
 {# End of Scripts from old builder #}
+
+<script>
+    function retrieveVideoMedias() {
+        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=video&page=1&items_per_page=5&tag=test&ident=y', function (data) {
+            data['items'].forEach(element => {
+                $('.video-gallery').append(`
+                    <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
+                    <div class="source-img-holder"> <img src = ${element.thumbnail.url}></div>
+                    </a>
+                `)
+                $('.mediafiles').off().on('dblclick', function (e) {
+                    e.preventDefault()
+                    loadPreview($(this).attr('data-href'), 1, null, 1)
+                })
+            });
+        })
+    }
+
+    function retrieveImageMedias() {
+        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=image&page=1&items_per_page=5&tag=test&ident=y', function (data) {
+            data['items'].forEach(element => {
+                $('.image-gallery').append(`
+                    <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
+                    <div class="source-img-holder"> <img src = ${element.thumbnail.url}></div>
+                    </a>
+                `)
+                $('.mediafiles').off().on('dblclick', function (e) {
+                    e.preventDefault()
+                    loadPreview($(this).attr('data-href'), 1, null, 1)
+                })
+            });
+        })
+    }
+
+    function retrieveAudioMedias() {
+        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=audio&page=1&items_per_page=5&tag=test&ident=y', function (data) {
+            data['items'].forEach(element => {
+                $('.audio-gallery').append(`
+                    <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
+                    <div class="source-img-holder">${element.filename}</div>
+                    </a>
+                `)
+                $('.mediafiles').on('dblclick', function (e) {
+                    e.preventDefault()
+                    loadPreview($(this).attr('data-href'), 1, null, 1)
+                })
+            });
+        })
+    }
+
+    retrieveVideoMedias()
+    retrieveImageMedias()
+    retrieveAudioMedias()
+
+</script>

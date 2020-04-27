@@ -1,4 +1,5 @@
 import os
+
 from django.contrib.messages import constants as messages
 
 # # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -228,9 +229,9 @@ REST_FRAMEWORK = {
 #     }
 # }
 
-SERVER_NAME = 'Indonesian_Server'
+# SERVER_NAME = 'Indonesian_Server'
 # SERVER_NAME = 'Korean_Server'
-# SERVER_NAME = 'Vietnam_Server'
+SERVER_NAME = 'Vietnam_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

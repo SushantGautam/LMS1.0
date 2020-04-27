@@ -209,7 +209,6 @@ class Textbox {
 
 class picture {
     constructor(top, left, pic = null, link = null, width = null, height = null) {
-
         let id = (new Date).getTime();
         let position = {top, left, width, height};
         let message = "";
@@ -235,7 +234,7 @@ class picture {
                 <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
               <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
               <span data-toggle="tooltip" data-placement="bottom"  title='Link Image'>
-              <i  class= fas fa-link imagelink" id=${id}></i>
+              <i  class= "fas fa-link imagelink" id=${id}></i>
               </span>
                 
             </div>
@@ -1120,14 +1119,15 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
             link = '' + link
         }
-
         PictureFunction(
             $(div)[0].style.top,
             $(div)[0].style.left,
             link,
+            null,
             $(div)[0].style.width,
             $(div)[0].style.height,
         );
+        debugger
         div.remove()
     });
 
