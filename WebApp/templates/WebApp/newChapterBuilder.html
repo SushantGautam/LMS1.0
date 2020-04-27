@@ -52,7 +52,13 @@
                     <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export
                     </button>
                 </a>
-                <a href="{% url 'newpreviewcontentviewer' course chapter %}" id="previewBtn">
+                <a href="
+                {% if 'teachers/' in request.path %}
+                    {% url 'teachersnewpreviewcontentviewer' course chapter %}
+                {% else %}
+                    {% url 'newpreviewcontentviewer' course chapter %}
+               {% endif %}
+                " id="previewBtn">
                     <button class="btn-type1" id="previewBtn"><i style="color:white" class="fas fa-play-circle"></i>
                         &nbsp;Preview
                     </button>

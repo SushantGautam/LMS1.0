@@ -1344,12 +1344,22 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
+    $('.btn-div button').off().on('click', function (e) {
+        e.preventDefault()
+        link = $(this).closest('.btn-div').find('a')[0].href
+        if (link) {
+            window.open(link, '_blank');
+        } else {
+            $(this).closest('.btn-div').find('.fa-link').click()
+        }
+    });
+
     $('.fa-link').bind("click", function (e) {
         var btn_id = parseInt(e.currentTarget.id) + 1
 
         $('#btn-form input[type=text]').val('');
-        $('#btn-name').val($(this).parent().parent().find('a').text().trim());
-        var link = $(this).parent().parent().find('a').attr('href');
+        $('#btn-name').val($(this).closest('.btn-div').find('a').text().trim());
+        var link = $(this).closest('.btn-div').find('a').attr('href');
         if (link != undefined) {
             link = link.replace('http://', '');
         }
@@ -1393,7 +1403,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
 
     $('.quiz-div button').off().on('click', function (e) {
         e.preventDefault()
-        link = $(this).parent().parent().find('a')[0].href
+        link = $(this).closest('.quiz-div').find('a')[0].href
         if (link) {
             quizpk = (link.split('/')[4]).match(/\d+/);
             if (window.location.href.indexOf("/teachers") > -1) {
@@ -1412,7 +1422,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
     const div1 = $('i').parent();
 
     $('.fa-trash').click(function (e) {
-        $('#' + e.currentTarget.id).parent().parent().remove();
+        $('#' + e.currentTarget.id).closest('.quiz-div').remove();
     });
 
     $('.quiz-div .fa-link').bind("click", function (e) {
@@ -1437,8 +1447,8 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
         });
         var btn_id = parseInt(e.currentTarget.id) + 1
         $('#quiz-form input[type=text]').val('');
-        $('#quiz-btn-name').val($(this).parent().parent().find('.resizable-text-only').text().trim());
-        var link = $(this).parent().parent().find('a').attr('href');
+        $('#quiz-btn-name').val($(this).closest('.quiz-div').find('.resizable-text-only').text().trim());
+        var link = $(this).closest('.quiz-div').find('a').attr('href');
         if (link != undefined) {
             link = link.replace('http://', '');
         } else {
@@ -1446,7 +1456,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
             $('#quiz-name').parent().parent().hide()
         }
         $('#quiz-link').val(link);
-        $('#quiz-name').val($(this).parent().parent().find('.quiz-name').text().trim());
+        $('#quiz-name').val($(this).closest('.quiz-div').find('.quiz-name').text().trim());
         $('#quiz_id').val(btn_id);
         $('#quiz-modal').modal('show');
     });
@@ -1485,7 +1495,7 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
 
     $('.survey-div button').off().on('click', function (e) {
         e.preventDefault()
-        link = $(this).parent().parent().find('a')[0].href
+        link = $(this).closest('.survey-div').find('a')[0].href
         if (link) {
             surveypk = (link.split('/')[6]).match(/\d+/);
             if (window.location.href.indexOf("/teachers") > -1) {
@@ -1528,8 +1538,8 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
         });
         var btn_id = parseInt(e.currentTarget.id) + 1
         $('#survey-form input[type=text]').val('');
-        $('#survey-btn-name').val($(this).parent().parent().find('.resizable-text-only').text().trim());
-        var link = $(this).parent().parent().find('a').attr('href');
+        $('#survey-btn-name').val($(this).closest('.survey-div').find('.resizable-text-only').text().trim());
+        var link = $(this).closest('.survey-div').find('a').attr('href');
         if (link != undefined) {
             link = link.replace('http://', '');
         } else {
@@ -1537,7 +1547,7 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
             $('#survey-name').parent().parent().hide()
         }
         $('#survey-link').val(link);
-        $('#survey-name').val($(this).parent().parent().find('.survey-name').text().trim());
+        $('#survey-name').val($(this).closest('.survey-div').find('.survey-name').text().trim());
         $('#survey_id').val(btn_id);
         $('#survey-modal').modal('show');
     });
