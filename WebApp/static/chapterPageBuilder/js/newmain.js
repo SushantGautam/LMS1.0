@@ -460,6 +460,8 @@ class Audio {
                 <div id="audio-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Link File' class="fas fa-link audiolink" id=${id}></i>
+
                 </div>
                 <div>
                     <p id="audio-drag">${message}</p>
@@ -2113,23 +2115,35 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
     });
-    // $('.videolink').off().bind("click", function (e) {
-    //     var link_id = parseInt(e.currentTarget.id) + 1
-    //     var div = $(this).parent().parent();
-    //     var prevlink = $(this).parent().parent().find('iframe').attr('src');
-    //     if (prevlink == undefined) {
-    //         prevlink = "http://";
-    //     }
-    //     var link = prompt("Url (Youtube, DailyMotion)", prevlink);
-    //     if (link == null) {
-    //         return false
-    //     } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
-    //         link = 'http://' + link
-    //     }
-    //     video_link = getEmbedVideo(link)
-    //     div.find('p, iframe, video').remove();
-    //     div.append(video_link);
-    // });
+    $('.audiolink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
+            link = 'http://' + link
+        }
+        var cincopaRegExp = /(mediacdnl3.cincopa.com)/g;
+        var cincopaMatch = link.match(cincopaRegExp);
+        if (cincopaMatch && cincopaMatch[0].length === 22) {
+            AudioFunction(
+                $(div)[0].style.top,
+                $(div)[0].style.left,
+                link,
+                $(div)[0].style.height,
+                $(div)[0].style.width,
+            );
+            div.remove()
+        } else {
+            alert("Link is not Valid")
+        }
+
+    });
 
     $('.audio').on('dragover', function (e) {
         e.stopPropagation();
