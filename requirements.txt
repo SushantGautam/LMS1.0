@@ -8,7 +8,7 @@ channels==2.4.0
 channels-redis==2.4.2
 #gunicorn
 whitenoise
-django-heroku
+#django-heroku
 coverage
 django-coverage
 celery==4.3.0
@@ -21,7 +21,7 @@ django-filter==2.2.0
 django-addanother==2.0.0
 textblob
 django-formtools
-selenium
+#selenium
 pytest
 pytest-django
 pytest-cov
@@ -37,4 +37,5 @@ python-resize-image
 django-createsuperuserwithpassword
 django-cors-headers
 django-datatables-view==1.19.1
-cloudinary==1.20.0
+#cloudinary==1.20.0
+django-tinymce==3.0.2
