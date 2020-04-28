@@ -1449,12 +1449,28 @@ html {
     width: 25%;
 
 }
-.icon2-link{
+
+.icon2-link {
     width: 25%;
 
 }
-.select-link-box{
+
+.select-link-box {
     margin: 3px 0;
 }
+
 /* ENDS */
 /*======================== End of Layout CSS ====================================================*/
+
+/* For Media Files */
+.media-selected {
+    border: 2px #af4f0b solid;
+    cursor: pointer;
+    /*margin: 7px 5px;*/
+    -ms-transform: scale(1.2); /* IE 9 */
+    -webkit-transform: scale(1.2); /* Safari 3-8 */
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+
+/* End for media files */

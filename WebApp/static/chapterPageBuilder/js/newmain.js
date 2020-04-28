@@ -751,8 +751,9 @@ class PDF {
         let html = `
         <div class='pdfdiv'>
             <div id="pdfdiv-actions1">
-            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                 <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                <i  class= "fas fa-link pdflink" id=${id}></i>
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -1604,6 +1605,28 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
+    $('.pdflink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        }
+        PDFFunction(
+            $(div)[0].style.top,
+            $(div)[0].style.left,
+            link,
+            $(div)[0].style.height,
+            $(div)[0].style.width,
+        );
+        div.remove()
+
+    });
+
     $('.pdfdiv').on('dragover', function (e) {
         e.stopPropagation();
         e.preventDefault();
@@ -2142,7 +2165,6 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
         } else {
             alert("Link is not Valid")
         }
-
     });
 
     $('.audio').on('dragover', function (e) {

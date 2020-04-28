@@ -302,14 +302,16 @@
 
                                         </ul>
                                     </div>
-                                    <div class="select-link-box">
+                                    <div class="select-link-box" style="display: none">
                                         <ul class="select-link-ul">
-                                           
+
                                             <li class="icon1-link">
-                                                <span  data-toggle="tooltip" data-placement="left"  title='Copy Link'><i class="fas fa-link"  ></i></span>
+                                                <span data-toggle="tooltip" data-placement="left" title='Copy Link'><i
+                                                        class="fas fa-link"></i></span>
                                             </li>
                                             <li class="icon2-link">
-                                                <span  data-toggle="tooltip" data-placement="right"  title='Preview'>  <i style="color:black" class="fas fa-play-circle"></i></span>
+                                                <span data-toggle="tooltip" data-placement="right" title='Preview'>  <i
+                                                        style="color:black" class="fas fa-play-circle"></i></span>
                                             </li>
                                         </ul>
                                     </div>
@@ -1304,32 +1306,35 @@
                 'userpk': '{{ request.user.pk }}'
             },
             success: function (data) {
-                console.log(data)
                 if (data.pdf.length > 0) {
                     $('#pdf-gallery').find('p').empty()
                     data.pdf.forEach(x => {
                         title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
                         $('.pdf-gallery').append(`
-                            <div class = "mediaitemcontainer">
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
                                 <a class="mediafiles" href="javascript:void(0)" data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}/">
-                                <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"
-                                    title='${title}'>
-                                ${title}
-                                </div>
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> ${title}</div>
                                 </a>
+                                </div>
                             </div>
                             `
                         )
                     });
                 }
-                $('.mediafiles').on('mouseover', function (e) {
-                    $(this).after($('.copy-link-btn').css('display', 'block'))
-                    $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                    $(this).after($('.copy-link-text').css('display', 'block'))
-                })
-                $('.mediafiles').on('mouseout', function (e) {
-                    $('.copy-link-btn').css('display', 'none')
-                    $('.copy-link-text').css('display', 'none')
+                $('.mediafiles').on('click', function (e) {
+                    e.stopImmediatePropagation();
+                    if ($(this).closest('.mediaitemcontainer').hasClass('media-selected')) {
+                        $(this).closest('.mediaitemcontainer').toggleClass('media-selected')
+                    } else {
+                        $('.mediaitemcontainer').removeClass('media-selected')
+                        $(this).closest('.mediaitemcontainer').toggleClass('media-selected')
+                    }
+                    if ($('.media-selected').length > 0) {
+                        $('.select-link-box').css('display', 'block')
+                    } else {
+                        $('.select-link-box').css('display', 'none')
+                    }
                 })
                 $('[data-toggle="tooltip"]').tooltip();
             },
@@ -1354,25 +1359,33 @@
         $.get(media_link, function (data) {
             data['items'].forEach(element => {
                 gallery_name.append(`
-                    <div class = "mediaitemcontainer">
-                    <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                    <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"  title='${element.filename}'> <img src = ${element.thumbnail.url}></div>
-                    </a>
-                    </div>
+                    <div class="col-sm-6 col-xs-12 media-items-holder">
+                        <div class = "mediaitemcontainer">
+                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
+                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> <img src = ${element.thumbnail.url}></div>
+                        </a>
+                        </div>
+                 </div>
                 `)
             });
-            $('.mediafiles').off().on('dblclick', function (e) {
+            $('.mediafiles').on('dblclick', function (e) {
                 e.preventDefault()
-                loadPreview($(this).attr('data-href'), 1, null, 1)
+                {#loadPreview($(this).attr('data-href'), 1, null, 1)#}
             })
-            $('.mediafiles').on('mouseover', function (e) {
-                $(this).after($('.copy-link-btn').css('display', 'block'))
-                $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                $(this).after($('.copy-link-text').css('display', 'block'))
-            })
-            $('.mediafiles').on('mouseout', function (e) {
-                $('.copy-link-btn').css('display', 'none')
-                $('.copy-link-text').css('display', 'none')
+
+            $('.mediafiles').on('click', function (e) {
+                e.stopImmediatePropagation();
+                if ($(this).closest('.mediaitemcontainer').hasClass('media-selected')) {
+                    $(this).closest('.mediaitemcontainer').toggleClass('media-selected')
+                } else {
+                    $('.mediaitemcontainer').removeClass('media-selected')
+                    $(this).closest('.mediaitemcontainer').toggleClass('media-selected')
+                }
+                if ($('.media-selected').length > 0) {
+                    $('.select-link-box').css('display', 'block')
+                } else {
+                    $('.select-link-box').css('display', 'none')
+                }
             })
 
             $('[data-toggle="tooltip"]').tooltip();
@@ -1483,10 +1496,17 @@
     retrieveMedias(2)
     retrieveMedias(3)
 
-    $('.copy-link-btn').on('click', function () {
-        var copyText = document.getElementById('copy-link-text')
+    $('.icon1-link').on('click', function () {
+        var copyText = document.createElement("input");
+        copyText.value = $('.media-selected').find('a').attr('data-href');
+        document.body.appendChild(copyText);
         copyText.select();
         copyText.setSelectionRange(0, 999)
         document.execCommand("copy");
+        document.body.removeChild(copyText);
+    })
+
+    $('.icon2-link').on('click', function () {
+        loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1)
     })
 </script>
