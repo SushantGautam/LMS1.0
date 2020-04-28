@@ -163,8 +163,8 @@ body{
 .custom-owl-slider{
     position: absolute;
     bottom: 1%;
-    right: 7%;
-    width: 60%;
+    right: 1%;
+    width: 74%;
     background-color: rgb(54, 60, 69,0.9);
     padding: 10px;
     z-index: 999;
@@ -186,7 +186,7 @@ body{
 .navigation-owl{
     position: absolute;
     bottom: 1%;
-    left: 8%;
+    left: 1%;
     width: 9%;
     min-height: 90px;
     background-color: rgb(54, 60, 69,0.9);
@@ -195,7 +195,7 @@ body{
 }
 .link-view-box{
     position: absolute;
-    left: 26.9%;
+    left: 18.9%;
     bottom: 1%;
     min-height: 94px;
     width: 6%;
@@ -208,10 +208,10 @@ body{
     text-align: center;
     padding: 2px ;
     background-color: #363c45;
-    margin: 8px 10px;
+    margin: 20px 0;
     border: 1px solid #79a6fb;
     font-weight: 600;
-    width: 40px;
+    width: 35px;
     color: white;
 
 
@@ -597,7 +597,7 @@ body{
  .owl-prev {
     position: fixed;
     bottom: 10.5vh;
-    left: 35%;
+    left: 27.5%;
     border-radius: 50%;
     /* color: #337ab7 !important; */
     box-shadow: 2px 2px 3px #999;
@@ -607,7 +607,7 @@ body{
 .owl-next {
     position: fixed;
     bottom: 10.5vh;
-    right: 10.75%;
+    right: 4.75%;
     border-radius: 50%;
     /* color: #337ab7 !important; */
     box-shadow: 2px 2px 3px #999;
