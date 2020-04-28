@@ -284,7 +284,7 @@
 
                             </div>
                             <div style="color: black;" class="tab-pane" id="3a">
-                                <div class="media-items-only col-md-12">
+                                <div class="media-items-only col-md-12 col-xs-12">
 
 
                                     <div class="dropdown ">
@@ -300,6 +300,17 @@
                                             <li class="divider"></li>
                                             <li><a href="#">DISPLAY ALL</a></li>
 
+                                        </ul>
+                                    </div>
+                                    <div class="select-link-box">
+                                        <ul class="select-link-ul">
+                                           
+                                            <li class="icon1-link">
+                                                <span  data-toggle="tooltip" data-placement="left"  title='Copy Link'><i class="fas fa-link"  ></i></span>
+                                            </li>
+                                            <li class="icon2-link">
+                                                <span  data-toggle="tooltip" data-placement="right"  title='Preview'>  <i style="color:black" class="fas fa-play-circle"></i></span>
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="dropdown-items">
@@ -464,7 +475,7 @@
                                         <div id="div_id_Summary" class="form-group"
                                              style="margin-bottom: 10px!important;">
                                             <label for="id_Summary" class="control-label ">
-                                                Desription
+                                                Description
                                             </label>
                                             <div class="controls ">
 
@@ -1288,28 +1299,30 @@
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=video&page=1&items_per_page=5&tag=test&ident=y', function (data) {
             data['items'].forEach(element => {
                 $('.video-gallery').append(`
-                    <div class = "mediaitemcontainer">
-                    <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                    <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"  title='${element.filename}'>
-                        <img src = ${element.thumbnail.url}>
-                    </div>
-                    </a>
-                    </div>
+                  <div class="col-sm-6 col-xs-12 media-items-holder">
+                        <div class = "mediaitemcontainer">
+                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
+                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom"  title='Click To Select'>
+                            <img src = ${element.thumbnail.url}>
+                        </div>
+                        </a>
+                        </div>
+                </div>   
                 `)
             });
             $('.mediafiles').off().on('dblclick', function (e) {
                 e.preventDefault()
                 loadPreview($(this).attr('data-href'), 1, null, 1)
             })
-            $('.mediafiles').on('mouseover', function (e) {
-                $(this).after($('.copy-link-btn').css('display', 'block'))
-                $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                $(this).after($('.copy-link-text').css('display', 'block'))
-            })
-            $('.mediafiles').on('mouseout', function (e) {
-                $('.copy-link-btn').css('display', 'none')
-                $(this).after($('.copy-link-text').css('display', 'none'))
-            })
+            // $('.mediafiles').on('mouseover', function (e) {
+              //  $(this).after($('.copy-link-btn').css('display', 'block'))
+             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
+                //$(this).after($('.copy-link-text').css('display', 'block'))
+           // })
+           // $('.mediafiles').on('mouseout', function (e) {
+              //  $('.copy-link-btn').css('display', 'none')
+               // $('.copy-link-text').css('display', 'none')
+           // })
             $('[data-toggle="tooltip"]').tooltip();
 
         })
@@ -1319,26 +1332,29 @@
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=image&page=1&items_per_page=5&tag=test&ident=y', function (data) {
             data['items'].forEach(element => {
                 $('.image-gallery').append(`
-                    <div class = "mediaitemcontainer">
-                    <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                    <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"  title='${element.filename}'> <img src = ${element.thumbnail.url}></div>
-                    </a>
-                    </div>
+                  <div class="col-sm-6 col-xs-12 media-items-holder">
+                        <div class = "mediaitemcontainer">
+                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
+                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> <img src = ${element.thumbnail.url}></div>
+                        </a>
+                        </div>
+                 </div> 
                 `)
             });
             $('.mediafiles').off().on('dblclick', function (e) {
                 e.preventDefault()
                 loadPreview($(this).attr('data-href'), 1, null, 1)
             })
-            $('.mediafiles').on('mouseover', function (e) {
-                $(this).after($('.copy-link-btn').css('display', 'block'))
-                $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                $(this).after($('.copy-link-text').css('display', 'block'))
-            })
-            $('.mediafiles').on('mouseout', function (e) {
-                $('.copy-link-btn').css('display', 'none')
-                $('.copy-link-text').css('display', 'none')
-            })
+         
+           // $('.mediafiles').on('mouseover', function (e) {
+              //  $(this).after($('.copy-link-btn').css('display', 'block'))
+             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
+                //$(this).after($('.copy-link-text').css('display', 'block'))
+           // })
+           // $('.mediafiles').on('mouseout', function (e) {
+              //  $('.copy-link-btn').css('display', 'none')
+               // $('.copy-link-text').css('display', 'none')
+           // })
 
             $('[data-toggle="tooltip"]').tooltip();
         })
@@ -1348,26 +1364,28 @@
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=audio&page=1&items_per_page=5&tag=test&ident=y', function (data) {
             data['items'].forEach(element => {
                 $('.audio-gallery').append(`
-                    <div class = "mediaitemcontainer">
-                    <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                    <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"  title='${element.filename}'>${element.filename}</div>
-                    </a>
-                    </div>
+                    <div class="col-sm-12 col-xs-12 media-items-holder">
+                        <div class = "mediaitemcontainer">
+                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
+                        <div class="source-media-holder" data-toggle="tooltip" data-placement="bottom"  title='Click To Select'>${element.filename}</div>
+                        </a>
+                        </div>
+                    </div>    
                 `)
             });
             $('.mediafiles').off().on('dblclick', function (e) {
                 e.preventDefault()
                 loadPreview($(this).attr('data-href'), 1, null, 1)
             })
-            $('.mediafiles').on('mouseover', function (e) {
-                $(this).after($('.copy-link-btn').css('display', 'block'))
-                $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                $(this).after($('.copy-link-text').css('display', 'block'))
-            })
-            $('.mediafiles').on('mouseout', function (e) {
-                $('.copy-link-btn').css('display', 'none')
-                $('.copy-link-text').css('display', 'none')
-            })
+             // $('.mediafiles').on('mouseover', function (e) {
+              //  $(this).after($('.copy-link-btn').css('display', 'block'))
+             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
+                //$(this).after($('.copy-link-text').css('display', 'block'))
+           // })
+           // $('.mediafiles').on('mouseout', function (e) {
+              //  $('.copy-link-btn').css('display', 'none')
+               // $('.copy-link-text').css('display', 'none')
+           // })
             $('[data-toggle="tooltip"]').tooltip();
         })
     }
