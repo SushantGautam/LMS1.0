@@ -295,6 +295,7 @@
                                         <ul class="dropdown-menu">
                                             <li><a href="#">IMAGES</a></li>
                                             <li><a href="#">VIDEOS</a></li>
+                                            <li><a href="#">AUDIOS</a></li>
                                             <li><a href="#">PDF</a></li>
                                             <li><a href="#">3D</a></li>
                                             <li class="divider"></li>
@@ -319,7 +320,7 @@
                                         <div class="image-gallery"></div>
                                         <div class="video-gallery"></div>
                                         <div class="pdf-gallery"></div>
-                                        <div class="3d-gallery"></div>
+                                        <div class="_3d-gallery"></div>
                                         <div class="audio-gallery"></div>
                                     </div>
 
@@ -1347,17 +1348,17 @@
         var media_link = null
         if (mediatype == 1) {
             gallery_name = $('.image-gallery')
-            media_link = 'https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=image&page=1&items_per_page=5&tag=test&ident=y'
+            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         } else if (mediatype == 2) {
             gallery_name = $('.video-gallery')
-            media_link = 'https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=video&page=1&items_per_page=5&tag=test&ident=y'
+            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         } else if (mediatype == 3) {
             gallery_name = $('.audio-gallery')
-            media_link = 'https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=audio&page=1&items_per_page=5&tag=test&ident=y'
+            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         }
 
         $.get(media_link, function (data) {
-            data['items'].forEach(element => {
+            data['folder']['items'].forEach(element => {
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
                         <div class = "mediaitemcontainer">
@@ -1508,5 +1509,26 @@
 
     $('.icon2-link').on('click', function () {
         loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1)
+    })
+
+    $('.dropdown-menu li').on('click', function () {
+        $('.dropdown-selected').removeClass('dropdown-selected')
+        $(this).addClass('dropdown-selected')
+        $('.custom-dropdown>span').text($(this).find('a').text())
+        $('.dropdown-items>div').css('display', 'none');
+        console.log($(this).find('a').text().toLowerCase())
+        if ($(this).find('a').text().toLowerCase() == "images") {
+            $('.image-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "videos") {
+            $('.video-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "audios") {
+            $('.audio-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "pdf") {
+            $('.pdf-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "3d") {
+            $('._3d-gallery').css('display', 'block')
+        } else {
+            $('.dropdown-items div').css('display', 'block');
+        }
     })
 </script>

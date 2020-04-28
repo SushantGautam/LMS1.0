@@ -1473,4 +1473,7 @@ html {
     opacity: 0.8;
 }
 
+.dropdown-selected {
+    border: 2px #af4f0b solid;
+}
 /* End for media files */
