@@ -1284,6 +1284,91 @@
 {# End of Scripts from old builder #}
 
 <script>
+    setTimeout(function () {
+        $.ajax({
+            url: "{% url 'retrieve-chapter-files' %}",
+            data: {
+                'courseID': courseID,
+                'chapterID': chapterID,
+                'userpk': '{{ request.user.pk }}'
+            },
+            success: function (data) {
+                console.log(data)
+                if (data.pdf.length > 0) {
+                    $('#pdf-gallery').find('p').empty()
+                    data.pdf.forEach(x => {
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        $('.pdf-gallery').append(`
+                            <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}/">
+                                <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"
+                                    title='${title}'>
+                                ${title}
+                                </div>
+                                </a>
+                            </div>
+                            `
+                        )
+                    });
+                }
+                $('.mediafiles').on('mouseover', function (e) {
+                    $(this).after($('.copy-link-btn').css('display', 'block'))
+                    $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
+                    $(this).after($('.copy-link-text').css('display', 'block'))
+                })
+                $('.mediafiles').on('mouseout', function (e) {
+                    $('.copy-link-btn').css('display', 'none')
+                    $('.copy-link-text').css('display', 'none')
+                })
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+            // dataType: dataType
+        });
+    }, 2000)
+
+    function retrieveMedias(mediatype) {
+        var gallery_name = null
+        var media_link = null
+        if (mediatype == 1) {
+            gallery_name = $('.image-gallery')
+            media_link = 'https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=image&page=1&items_per_page=5&tag=test&ident=y'
+        } else if (mediatype == 2) {
+            gallery_name = $('.video-gallery')
+            media_link = 'https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=video&page=1&items_per_page=5&tag=test&ident=y'
+        } else if (mediatype == 3) {
+            gallery_name = $('.audio-gallery')
+            media_link = 'https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=audio&page=1&items_per_page=5&tag=test&ident=y'
+        }
+
+        $.get(media_link, function (data) {
+            data['items'].forEach(element => {
+                gallery_name.append(`
+                    <div class = "mediaitemcontainer">
+                    <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
+                    <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"  title='${element.filename}'> <img src = ${element.thumbnail.url}></div>
+                    </a>
+                    </div>
+                `)
+            });
+            $('.mediafiles').off().on('dblclick', function (e) {
+                e.preventDefault()
+                loadPreview($(this).attr('data-href'), 1, null, 1)
+            })
+            $('.mediafiles').on('mouseover', function (e) {
+                $(this).after($('.copy-link-btn').css('display', 'block'))
+                $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
+                $(this).after($('.copy-link-text').css('display', 'block'))
+            })
+            $('.mediafiles').on('mouseout', function (e) {
+                $('.copy-link-btn').css('display', 'none')
+                $('.copy-link-text').css('display', 'none')
+            })
+
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    }
+
+    /*
     function retrieveVideoMedias() {
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=video&page=1&items_per_page=5&tag=test&ident=y', function (data) {
             data['items'].forEach(element => {
@@ -1375,6 +1460,10 @@
     retrieveVideoMedias()
     retrieveImageMedias()
     retrieveAudioMedias()
+    */
+    retrieveMedias(1)
+    retrieveMedias(2)
+    retrieveMedias(3)
 
     $('.copy-link-btn').on('click', function () {
         var copyText = document.getElementById('copy-link-text')
