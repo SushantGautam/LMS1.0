@@ -33,6 +33,8 @@ function getEmbedVideo(url) {
     var webmMatch = url.match(webmRegExp);
     var fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
     var fbMatch = url.match(fbRegExp);
+    var cincopaRegExp = /(mediacdnl3.cincopa.com)/g;
+    var cincopaMatch = url.match(cincopaRegExp);
     var $video_element;
     if (ytMatch && ytMatch[1].length === 11) {
         var youtubeId = ytMatch[1];
@@ -67,6 +69,11 @@ function getEmbedVideo(url) {
             .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (mp4Match || oggMatch || webmMatch) {
         $video_element = $('<video controls>')
+            .attr('src', url)
+            .attr('width', '100%').attr('height', '100%');
+    } else if (cincopaMatch && cincopaMatch[0].length === 22) {
+        $video_element = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
             .attr('src', url)
             .attr('width', '100%').attr('height', '100%');
     } else {
@@ -1127,7 +1134,6 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
             $(div)[0].style.width,
             $(div)[0].style.height,
         );
-        debugger
         div.remove()
     });
 
@@ -1805,8 +1811,9 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
             link = 'http://' + link
         }
         video_link = getEmbedVideo(link)
-        div.find('p, iframe, video').remove();
+        div.find('p, iframe, video, .progress').remove();
         div.append(video_link);
+
     });
 
     $('.video-div').on('dragover', function (e) {

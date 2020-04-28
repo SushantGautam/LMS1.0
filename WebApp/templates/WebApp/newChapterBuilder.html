@@ -943,7 +943,10 @@
 
     </div>
 </div>
-
+<div>
+    <button type="button" class="copy-link-btn" style="display: none">Copy Link</button>
+    <input type="text" class="copy-link-text" id="copy-link-text" style="display: none">
+</div>
 </body>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
@@ -1285,15 +1288,30 @@
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=video&page=1&items_per_page=5&tag=test&ident=y', function (data) {
             data['items'].forEach(element => {
                 $('.video-gallery').append(`
+                    <div class = "mediaitemcontainer">
                     <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                    <div class="source-img-holder"> <img src = ${element.thumbnail.url}></div>
+                    <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"  title='${element.filename}'>
+                        <img src = ${element.thumbnail.url}>
+                    </div>
                     </a>
+                    </div>
                 `)
-                $('.mediafiles').off().on('dblclick', function (e) {
-                    e.preventDefault()
-                    loadPreview($(this).attr('data-href'), 1, null, 1)
-                })
             });
+            $('.mediafiles').off().on('dblclick', function (e) {
+                e.preventDefault()
+                loadPreview($(this).attr('data-href'), 1, null, 1)
+            })
+            $('.mediafiles').on('mouseover', function (e) {
+                $(this).after($('.copy-link-btn').css('display', 'block'))
+                $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
+                $(this).after($('.copy-link-text').css('display', 'block'))
+            })
+            $('.mediafiles').on('mouseout', function (e) {
+                $('.copy-link-btn').css('display', 'none')
+                $(this).after($('.copy-link-text').css('display', 'none'))
+            })
+            $('[data-toggle="tooltip"]').tooltip();
+
         })
     }
 
@@ -1301,15 +1319,28 @@
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=image&page=1&items_per_page=5&tag=test&ident=y', function (data) {
             data['items'].forEach(element => {
                 $('.image-gallery').append(`
+                    <div class = "mediaitemcontainer">
                     <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                    <div class="source-img-holder"> <img src = ${element.thumbnail.url}></div>
+                    <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"  title='${element.filename}'> <img src = ${element.thumbnail.url}></div>
                     </a>
+                    </div>
                 `)
-                $('.mediafiles').off().on('dblclick', function (e) {
-                    e.preventDefault()
-                    loadPreview($(this).attr('data-href'), 1, null, 1)
-                })
             });
+            $('.mediafiles').off().on('dblclick', function (e) {
+                e.preventDefault()
+                loadPreview($(this).attr('data-href'), 1, null, 1)
+            })
+            $('.mediafiles').on('mouseover', function (e) {
+                $(this).after($('.copy-link-btn').css('display', 'block'))
+                $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
+                $(this).after($('.copy-link-text').css('display', 'block'))
+            })
+            $('.mediafiles').on('mouseout', function (e) {
+                $('.copy-link-btn').css('display', 'none')
+                $('.copy-link-text').css('display', 'none')
+            })
+
+            $('[data-toggle="tooltip"]').tooltip();
         })
     }
 
@@ -1317,15 +1348,27 @@
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=audio&page=1&items_per_page=5&tag=test&ident=y', function (data) {
             data['items'].forEach(element => {
                 $('.audio-gallery').append(`
+                    <div class = "mediaitemcontainer">
                     <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                    <div class="source-img-holder">${element.filename}</div>
+                    <div class="source-img-holder" data-toggle="tooltip" data-placement="bottom"  title='${element.filename}'>${element.filename}</div>
                     </a>
+                    </div>
                 `)
-                $('.mediafiles').on('dblclick', function (e) {
-                    e.preventDefault()
-                    loadPreview($(this).attr('data-href'), 1, null, 1)
-                })
             });
+            $('.mediafiles').off().on('dblclick', function (e) {
+                e.preventDefault()
+                loadPreview($(this).attr('data-href'), 1, null, 1)
+            })
+            $('.mediafiles').on('mouseover', function (e) {
+                $(this).after($('.copy-link-btn').css('display', 'block'))
+                $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
+                $(this).after($('.copy-link-text').css('display', 'block'))
+            })
+            $('.mediafiles').on('mouseout', function (e) {
+                $('.copy-link-btn').css('display', 'none')
+                $('.copy-link-text').css('display', 'none')
+            })
+            $('[data-toggle="tooltip"]').tooltip();
         })
     }
 
@@ -1333,4 +1376,10 @@
     retrieveImageMedias()
     retrieveAudioMedias()
 
+    $('.copy-link-btn').on('click', function () {
+        var copyText = document.getElementById('copy-link-text')
+        copyText.select();
+        copyText.setSelectionRange(0, 999)
+        document.execCommand("copy");
+    })
 </script>
