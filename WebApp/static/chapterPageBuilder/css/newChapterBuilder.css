@@ -231,7 +231,7 @@ a:hover {
 .custom-dropdown {
     text-align: center;
     width: 100%;
-    margin-bottom: 2px;
+    margin-bottom: 5px;
     padding: 2px 12px 0px 12px !important;
 }
 .custom-dropdown-2{
@@ -1464,15 +1464,18 @@ html {
 
 /* For Media Files */
 .media-selected {
-    border: 2px #79a6fb solid;
+    border: 3px #79a6fb solid;
     cursor: pointer;
    
   
-    opacity: 0.8;
+    opacity: 1;
     overflow: hidden;
     height: 75px;
     overflow: hidden;
     
+}
+.media-selected img{
+    opacity:0.3;
 }
 
 .dropdown-selected {
