@@ -126,7 +126,7 @@ class Textbox {
                         <div id="editor${id}" class="messageText"></div>
                         
                          <div id="text-actions" class = "text-actions">
-                         <i class="   fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
+                         <i classfa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
                              <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghere" ></i>
                          </div>
                      </div>
@@ -1364,7 +1364,7 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
         }
     });
 
-    $('.fa-link').bind("click", function (e) {
+    $('.btn-div .fa-link').bind("click", function (e) {
         var btn_id = parseInt(e.currentTarget.id) + 1
 
         $('#btn-form input[type=text]').val('');
