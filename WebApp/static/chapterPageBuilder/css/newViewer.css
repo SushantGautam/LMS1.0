@@ -173,7 +173,7 @@ body{
     position: absolute;
     bottom: 16%;
     left: 1%;
-    width: 11%;
+    width: 9%;
     min-height: 90px;
     background-color: white;
     border: 1px solid #363c45;
@@ -181,6 +181,7 @@ body{
     box-shadow: 0 0 6px rgba(0,0,0,0.6);
     display: none;
     z-index: 99;
+    min-width: 120px;
 }
 
 .navigation-owl{
