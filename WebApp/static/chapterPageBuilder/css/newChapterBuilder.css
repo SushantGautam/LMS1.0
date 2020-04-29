@@ -1464,13 +1464,15 @@ html {
 
 /* For Media Files */
 .media-selected {
-    border: 2px #af4f0b solid;
+    border: 2px #79a6fb solid;
     cursor: pointer;
-    /*margin: 7px 5px;*/
-    -ms-transform: scale(1.2); /* IE 9 */
-    -webkit-transform: scale(1.2); /* Safari 3-8 */
-    transform: scale(1.2);
+   
+  
     opacity: 0.8;
+    overflow: hidden;
+    height: 75px;
+    overflow: hidden;
+    
 }
 
 .dropdown-selected {
