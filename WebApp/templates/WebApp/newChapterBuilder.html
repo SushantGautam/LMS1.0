@@ -1508,7 +1508,15 @@
     })
 
     $('.icon2-link').on('click', function () {
-        loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1)
+        if ($('.media-selected').parents().hasClass('image-gallery')) {
+            $('#examiframeholder').addClass('examiframeholder')
+            $('#iframeholder').append(`
+                <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%">
+            `);
+            $('#closeiframebtn').css('display', 'block')
+        } else {
+            loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1)
+        }
     })
 
     $('.dropdown-menu li').on('click', function () {
@@ -1516,7 +1524,7 @@
         $(this).addClass('dropdown-selected')
         $('.custom-dropdown>span').text($(this).find('a').text())
         $('.dropdown-items>div').css('display', 'none');
-        
+
         if ($(this).find('a').text().toLowerCase() == "images") {
             $('.image-gallery').css('display', 'block')
         } else if ($(this).find('a').text().toLowerCase() == "videos") {
