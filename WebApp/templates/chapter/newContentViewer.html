@@ -1083,6 +1083,9 @@
 
     function Layout(x) {
         if (x.matches) {
+            $('.navigation-owl').css('visibility', 'hidden')
+            $('#main-bottom-slider').css('width', '100%')
+            $('.owl-prev').css('left', '0')
             $('#page-contents').empty();
             loaddata(data, window.currentpage);
             $('#page-contents div').each(function () {
@@ -1090,6 +1093,9 @@
                 $(this).css('padding', '10px')
             })
         } else {
+            $('.navigation-owl').css('visibility', 'visible')
+            $('#main-bottom-slider').css('width', '74%')
+            $('.owl-prev').css('left', '27.5%')
             $('#page-contents').empty();
             loaddata(data, window.currentpage)
         }
