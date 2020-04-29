@@ -1119,10 +1119,11 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         var link_id = parseInt(e.currentTarget.id) + 1
         var div = $('#' + e.currentTarget.id).parent().parent();
         // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
-        var prevlink = $(this).parent().parent().find('img').attr('src')
+        var prevlink = $(this).closest('.pic').find('img').attr('src')
         if (prevlink == undefined) {
             prevlink = "";
         }
+        debugger
         var link = prompt("Link of image", prevlink);
         if (link == null) {
             return false

@@ -1784,6 +1784,8 @@ def save_video(request):
     if request.method == "POST":
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
+        courseObj = CourseInfo.objects.get(pk=courseID)
+        chapterObj = ChapterInfo.objects.get(pk=chapterID)
         media_type = request.POST['type']
         path = ''
         if request.FILES['file-0']:
@@ -1840,11 +1842,33 @@ def save_video(request):
                 if res.status_code == 204 or res.status_code == 200:
                     response = rs.head(r_responseText['upload']['upload_link'])
 
-                    a = rs.put(
-                        url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[-1],
+                    if settings.SERVER_NAME == "Korean_Server":
+                        a = rs.put(
+                            url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[
+                                -1],
+                            headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                     'Content-Type': 'application/json',
+                                     'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                    elif settings.SERVER_NAME == "Vietnam_Server":
+                        a = rs.put(
+                            url='https://api.vimeo.com/me/projects/1796938/videos/' + r_responseText['uri'].split('/')[
+                                -1],
+                            headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                     'Content-Type': 'application/json',
+                                     'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+
+                    tags = rs.put(
+                        url='https://api.vimeo.com/' + r_responseText['uri'] + '/tags',
                         headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                                  'Content-Type': 'application/json',
-                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                        data=json.dumps([
+                            {"name": "center_" + request.user.Center_Code.Center_Name},
+                            {"name": "userid_" + str(request.user.pk)},
+                            {"name": "course_" + courseObj.Course_Name},
+                            {"name": "chapter_" + chapterObj.Chapter_Name}
+                        ])
+                    )
                     return JsonResponse(
                         {'link': r_responseText['upload']['upload_link'], 'media_name': name,
                          'html': r_responseText['embed']['html']})
