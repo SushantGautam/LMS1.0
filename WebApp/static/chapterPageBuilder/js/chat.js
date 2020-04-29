@@ -18,11 +18,6 @@ if (location.protocol === 'https:') {
 
 console.log(locationhost);
 
-if (locationhost === 'ulms.me') {
-    locationhost = "ulms.me:9002";
-}
-
-
 const chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomID + '/');
 
 chatSocket.onmessage = function(e) {

@@ -289,17 +289,18 @@
 
                                     <div class="dropdown ">
                                         <button class="btn  dropdown-toggle custom-dropdown" type="button"
-                                                data-toggle="dropdown"><span> All Items</span>
+                                                data-toggle="dropdown"><span> Filter Items</span>
 
                                         </button>
                                         <ul class="dropdown-menu">
+                                            <li><a href="#">ALL ITEMS</a></li>
+                                            <li class="divider"></li>
                                             <li><a href="#">IMAGES</a></li>
                                             <li><a href="#">VIDEOS</a></li>
                                             <li><a href="#">AUDIOS</a></li>
                                             <li><a href="#">PDF</a></li>
                                             <li><a href="#">3D</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">DISPLAY ALL</a></li>
+                                            
 
                                         </ul>
                                     </div>
@@ -563,14 +564,14 @@
 
 </section>
 <div id="examiframeholder">
-    <div id="closeiframebtn" class="closeiframebtn">
+    <div id="closeiframebtn" class="closeiframebtn" title="Close Preview">
         <button>
             <i class="fa fa-times">
             </i>
 
         </button>
     </div>
-    <div id="iframeholder"></div>
+    <div id="iframeholder" style="background: rgba(0,0,0,0.9);"></div>
 </div>
 <!-- Button Modal -->
 <div id="btn-modal" class="modal fade" role="dialog">
@@ -1511,17 +1512,17 @@
         if ($('.media-selected').parents().hasClass('image-gallery')) {
             $('#examiframeholder').addClass('examiframeholder')
             $('#iframeholder').append(`
-                <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%">
+                <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%" style="object-fit:contain;">
             `);
-            $('#closeiframebtn').css('display', 'block')
+            $('#closeiframebtn').css({'display':'block', 'top':'1vh'});
         } else {
-            loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1)
+            loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1);
         }
     })
 
     $('.dropdown-menu li').on('click', function () {
-        $('.dropdown-selected').removeClass('dropdown-selected')
-        $(this).addClass('dropdown-selected')
+        $('.dropdown-selected').removeClass('dropdown-selected active')
+        $(this).addClass('dropdown-selected active')
         $('.custom-dropdown>span').text($(this).find('a').text())
         $('.dropdown-items>div').css('display', 'none');
 
