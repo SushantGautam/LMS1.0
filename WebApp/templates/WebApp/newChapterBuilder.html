@@ -1347,19 +1347,33 @@
     function retrieveMedias(mediatype) {
         var gallery_name = null
         var media_link = null
+
+        let api_token = '1453562iobwp33x0qrt34ip4bjiynb5olte';
+        let media_type = '';
+        let page_no = 1;
+        let item_per_page = 10;
+        let tags = server_name + ',' + centerName + ',' + courseName;
+        
         if (mediatype == 1) {
-            gallery_name = $('.image-gallery')
-            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+            gallery_name = $('.image-gallery');
+            media_type = 'image';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+            
         } else if (mediatype == 2) {
-            gallery_name = $('.video-gallery')
-            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+            gallery_name = $('.video-gallery');
+            media_type = 'video';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         } else if (mediatype == 3) {
-            gallery_name = $('.audio-gallery')
-            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+            gallery_name = $('.audio-gallery');
+            media_type = 'audio';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         }
 
         $.get(media_link, function (data) {
-            data['folder']['items'].forEach(element => {
+            data['items'].forEach(element => {
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
                         <div class = "mediaitemcontainer">
