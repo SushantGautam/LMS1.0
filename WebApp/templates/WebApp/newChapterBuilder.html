@@ -1315,7 +1315,7 @@
                         $('.pdf-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
-                                <a class="mediafiles" href="javascript:void(0)" data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}/">
+                                <a class="mediafiles" href="javascript:void(0)" data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
                                 <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> ${title}</div>
                                 </a>
                                 </div>
@@ -1408,106 +1408,6 @@
         })
     }
 
-    /*
-    function retrieveVideoMedias() {
-        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=video&page=1&items_per_page=5&tag=test&ident=y', function (data) {
-            data['items'].forEach(element => {
-                $('.video-gallery').append(`
-                  <div class="col-sm-6 col-xs-12 media-items-holder">
-                        <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom"  title='Click To Select'>
-                            <img src = ${element.thumbnail.url}>
-                        </div>
-                        </a>
-                        </div>
-                </div>   
-                `)
-            });
-            $('.mediafiles').off().on('dblclick', function (e) {
-                e.preventDefault()
-                loadPreview($(this).attr('data-href'), 1, null, 1)
-            })
-            // $('.mediafiles').on('mouseover', function (e) {
-              //  $(this).after($('.copy-link-btn').css('display', 'block'))
-             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                //$(this).after($('.copy-link-text').css('display', 'block'))
-           // })
-           // $('.mediafiles').on('mouseout', function (e) {
-              //  $('.copy-link-btn').css('display', 'none')
-               // $('.copy-link-text').css('display', 'none')
-           // })
-            $('[data-toggle="tooltip"]').tooltip();
-
-        })
-    }
-
-    function retrieveImageMedias() {
-        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=image&page=1&items_per_page=5&tag=test&ident=y', function (data) {
-            data['items'].forEach(element => {
-                $('.image-gallery').append(`
-                  <div class="col-sm-6 col-xs-12 media-items-holder">
-                        <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> <img src = ${element.thumbnail.url}></div>
-                        </a>
-                        </div>
-                 </div> 
-                `)
-            });
-            $('.mediafiles').off().on('dblclick', function (e) {
-                e.preventDefault()
-                loadPreview($(this).attr('data-href'), 1, null, 1)
-            })
-         
-           // $('.mediafiles').on('mouseover', function (e) {
-              //  $(this).after($('.copy-link-btn').css('display', 'block'))
-             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                //$(this).after($('.copy-link-text').css('display', 'block'))
-           // })
-           // $('.mediafiles').on('mouseout', function (e) {
-              //  $('.copy-link-btn').css('display', 'none')
-               // $('.copy-link-text').css('display', 'none')
-           // })
-
-            $('[data-toggle="tooltip"]').tooltip();
-        })
-    }
-
-    function retrieveAudioMedias() {
-        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=audio&page=1&items_per_page=5&tag=test&ident=y', function (data) {
-            data['items'].forEach(element => {
-                $('.audio-gallery').append(`
-                    <div class="col-sm-12 col-xs-12 media-items-holder">
-                        <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                        <div class="source-media-holder" data-toggle="tooltip" data-placement="bottom"  title='Click To Select'>${element.filename}</div>
-                        </a>
-                        </div>
-                    </div>    
-                `)
-            });
-            $('.mediafiles').off().on('dblclick', function (e) {
-                e.preventDefault()
-                loadPreview($(this).attr('data-href'), 1, null, 1)
-            })
-             // $('.mediafiles').on('mouseover', function (e) {
-              //  $(this).after($('.copy-link-btn').css('display', 'block'))
-             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                //$(this).after($('.copy-link-text').css('display', 'block'))
-           // })
-           // $('.mediafiles').on('mouseout', function (e) {
-              //  $('.copy-link-btn').css('display', 'none')
-               // $('.copy-link-text').css('display', 'none')
-           // })
-            $('[data-toggle="tooltip"]').tooltip();
-        })
-    }
-
-    retrieveVideoMedias()
-    retrieveImageMedias()
-    retrieveAudioMedias()
-    */
     retrieveMedias(1)
     retrieveMedias(2)
     retrieveMedias(3)
