@@ -40,7 +40,7 @@
                 border: none;
                 z-index: 99;
             }
-            
+
 
             .closeiframebtn button {
                 background-color: white;
@@ -76,7 +76,7 @@
 
         <link href="{% static 'chapterPageBuilder/css/newViewer.css' %}" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/responsive-viewer.css' %}">
-        
+
         <!-- Chat CSS -->
         <link href="{% static 'chapterPageBuilder/css/chat.css' %}" rel="stylesheet">
 
@@ -139,7 +139,8 @@
                                         {% else %}
                                             {% url 'chapterinfo_detail' course.pk chapter.pk %}
                                         {% endif %}
-                                        " class="back-btn-content" style="position: absolute; top:0px;right:5px; font-size:20px">
+                                        " class="back-btn-content"
+                                               style="position: absolute; top:0px;right:5px; font-size:20px">
                                             <div class="closebtn"><i style="
                                                 background-color: #2A3F54;
                                                 color:white;
@@ -153,11 +154,11 @@
                                   {# End of close button #}
 
                             </span>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 <section class="whole-container">
 
@@ -168,7 +169,8 @@
                 <div class="row" style="margin: 0px;">
                     <div class="col-sm-3 col-md-3" style="padding: 0!important;">
                         <div>
-                            <img class="img img-circle" src="{{ user.Avatar }}" alt="Profile_picture" width="50" height="50">
+                            <img class="img img-circle" src="{{ user.Avatar }}" alt="Profile_picture" width="50"
+                                 height="50">
                         </div>
 
                     </div>
@@ -218,7 +220,7 @@
         </div>
 
 
-        <div class="sidebar-buttom " >
+        <div class="sidebar-buttom ">
 
             <ul class="sidebar-bottom-icons" style=" list-style:none; padding: 0px !important">
                 <li>
@@ -259,37 +261,37 @@
 
                 </li>
 
-                </ul>
+            </ul>
 
-            </div>
         </div>
-        {% if not connection_offline %}
-            <ul class="chat-sidenav">
-                <li data-toggle="tooltip" data-placement="right" title='Open Navgation' class="glyphicon glyphicon-th"
-                    id="hamburg-nav">
+    </div>
+    {% if not connection_offline %}
+        <ul class="chat-sidenav">
+            <li data-toggle="tooltip" data-placement="right" title='Open Navgation' class="glyphicon glyphicon-th"
+                id="hamburg-nav">
 
-                </li>
-                <li data-toggle="tooltip" data-placement="right" title='Chat Icon' class="icon-for-chat">
-                    <i style="color: white;" class="chat-icon closechatopen fa fa-quote-right" id="closechatopen"></i>
-                </li>
-            </ul>
-            <ul class="chat-sidenav-close slideInLeft animate">
-                <li class=close-icon-sidebar>
-                    <i class="fa fa-times"></i>
+            </li>
+            <li data-toggle="tooltip" data-placement="right" title='Chat Icon' class="icon-for-chat">
+                <i style="color: white;" class="chat-icon closechatopen fa fa-quote-right" id="closechatopen"></i>
+            </li>
+        </ul>
+        <ul class="chat-sidenav-close slideInLeft animate">
+            <li class=close-icon-sidebar>
+                <i class="fa fa-times"></i>
 
-                </li>
-                <li class="icon-for-chat2">
-                    <i  class="  fa fa-quote-right"></i>
-                </li>
-            </ul>
+            </li>
+            <li class="icon-for-chat2">
+                <i class="  fa fa-quote-right"></i>
+            </li>
+        </ul>
 
-          <!-- <div class="page-view-icon">
-              
-                <i title="Click for page view" style="color: white;" class="fa fa-list"></i>
-             
-          </div> -->
+        <!-- <div class="page-view-icon">
 
-        {% endif %}
+              <i title="Click for page view" style="color: white;" class="fa fa-list"></i>
+
+        </div> -->
+
+    {% endif %}
 
     <div id="container" class="container12">
 
@@ -341,16 +343,14 @@
                 <input class="number-active" type="number" min="1" max="{{ data.numberofpages }}" id="pg-change"
                        name="firstname" placeholder="page"> <span>/ </span><span class="totalpages"></span>
             </div>
-           
-               
-           
+
 
         </div>
 
         <!-- Chat BOX UI -->
         <span class="chat-info" data-userName="{{ user }}" data-userID="{{ user.id }}" data-userIcon="{{ user.Avatar }}"
               data-chapterID="{{ chapter.id }}"></span>
-        <div id="main-chat-box"class="chat-dialogbox  animate">
+        <div id="main-chat-box" class="chat-dialogbox  animate">
             <ul class="chat-header">
                 <li class="ham-icon">
                     <i class="fa fa-bars"></i>
@@ -390,24 +390,24 @@
 
                 <li class="chat-canvas">
                     <div id="chat-log">
-                      
-                          <div class="msg left-msg">
+
+                        <div class="msg left-msg">
                             <div
-                             class="msg-img"
-                             style="background-image: url({% static 'images/bot.png' %})"
+                                    class="msg-img"
+                                    style="background-image: url({% static 'images/bot.png' %})"
                             ></div>
-                      
+
                             <div class="msg-bubble">
-                              <div class="msg-info">
-                                <div class="msg-info-name">LMS BOT</div>
-                                <div class="default-time msg-info-time"></div>
-                              </div>
-                      
-                              <div class="msg-text">
-                                Hello! You can now send message to everyone here.
-                              </div>
+                                <div class="msg-info">
+                                    <div class="msg-info-name">LMS BOT</div>
+                                    <div class="default-time msg-info-time"></div>
+                                </div>
+
+                                <div class="msg-text">
+                                    Hello! You can now send message to everyone here.
+                                </div>
                             </div>
-                          </div>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -415,7 +415,8 @@
             <div class="input-send">
                 <div class="msger-inputarea">
                     <input type="text" class="msger-input" id="chat-message-input" placeholder="Enter your message...">
-                    <button type="submit" class="msger-send-btn" id="chat-message-submit"><i class=" custom-send fa fa-paper-plane"></i></button>
+                    <button type="submit" class="msger-send-btn" id="chat-message-submit"><i
+                            class=" custom-send fa fa-paper-plane"></i></button>
                 </div>
                 <!-- <div class="row" style="margin: 0px!important;">
                     <div class="col-sm-10" style="padding: 0!important;">
@@ -432,7 +433,7 @@
         <!-- Chat UI end -->
 
     </div>
-  
+
 
     {#  Iframe Holder   #}
     <div id="examiframeholder">
@@ -617,11 +618,13 @@
 
     $(document).ready(function () {
         // Chat BOT time added
-        let currentdate = new Date().toLocaleTimeString('en-US', { hour12: true,
-                                             hour: "numeric",
-                                             minute: "numeric"});
+        let currentdate = new Date().toLocaleTimeString('en-US', {
+            hour12: true,
+            hour: "numeric",
+            minute: "numeric"
+        });
         $('.default-time').text(currentdate);
-        
+
 
         $('#hamburg-nav').on('click mouseover', function () {
             {#openNav();#}
@@ -678,15 +681,15 @@
         $('iframe').on('load', function () {
             if ($(this).contents().find('#survey_already_taken').is(':visible')) {
                 $('#closeiframebtn').css('display', 'block')
-               
+
             }
             if (link != this.contentWindow.location.href && link + '/' != this.contentWindow.location.href) {
                 $('#closeiframebtn').css('display', 'block')
-                
+
             }
             if (ShowCloseBoxonInit) {
                 $('#closeiframebtn').css('display', 'block')
-                
+
             }
         });
     }
@@ -1195,18 +1198,20 @@
     $(document).ready(function () {
 
         $(".close-icon-sidebar").click(function () {
-            
-            $( "#sidebar-id" ).addClass( "slideOutLeft" );
-            $( "#sidebar-id" ).removeClass( "slideInLeft" );
+            if (!x.matches) {
+                $(".custom-owl-slider").css("right", '1%');
+                $(".custom-owl-slider").css("width", '74%');
+                $(".chat-dialogbox").css("left", '1%');
+                $(".owl-prev").css("left", '27.5%');
+                $(".owl-next").css("right", '4.75%');
+            }
+            $("#sidebar-id").addClass("slideOutLeft");
+            $("#sidebar-id").removeClass("slideInLeft");
             $(".chat-sidenav-close").css("display", "none");
             $(".navigation-owl").css("left", '1%');
             $(".page-link-view").css("left", '1%');
             $(".link-view-box").css("left", '26.9%');
-            $(".custom-owl-slider").css("right", '1%');
-            $(".custom-owl-slider").css("width", '74%');
-            $(".chat-dialogbox").css("left", '1%');
-            $(".owl-prev").css("left", '27.5%');
-            $(".owl-next").css("right", '4.75%');
+
             $("#main-bottom-slider").addClass("slideInLeft");
             $("#main-bottom-slider").removeClass("slideOutLeft");
             $(".link-view-box").css("left", '18.9%');
@@ -1225,21 +1230,23 @@
 </script>
 <script>
     $(document).on('click', '#hamburg-nav', function () {
+        if (!x.matches) {
+            $(".owl-prev").css("left", '39%');
+            $(".owl-next").css("right", '5.75%');
+            $(".custom-owl-slider").css("right", '2%');
+            $(".custom-owl-slider").css("width", '60%');
+        }
 
         $("#sidebar-id").addClass("slideInLeft");
-        $( "#sidebar-id" ).removeClass( "slideOutLeft" );
+        $("#sidebar-id").removeClass("slideOutLeft");
         $(".chat-sidenav-close").css("display", "block");
         $(".navigation-owl").css("left", '16%');
         $(".page-link-view").css("left", '16%');
         $(".link-view-box").css("left", '31.9%');
         $(".chat-dialogbox").css("left", '17%');
-        $(".owl-prev").css("left", '39%');
-        $(".owl-next").css("right", '5.75%');
+
         $("#main-bottom-slider").addClass("slideInLeft");
         $("#main-bottom-slider").removeClass("slideOutLeft");
-
-        $(".custom-owl-slider").css("right", '2%');
-        $(".custom-owl-slider").css("width", '60%');
 
 
         $(".sidenavbar-part").fadeIn(2000);
@@ -1273,8 +1280,8 @@
         //     $(".chat-dialogbox").css('display', 'block');
         //     $( "#main-chat-box" ).addClass( "fadeIn" );
         //     $( "#main-bottom-slider" ).removeClass( "fadeOut" );
-    
-           
+
+
         // } else {
         //     $( "#main-chat-box" ).addClass( "fadeOut" );
         //     $( "#main-bottom-slider" ).removeClass( "fadeIn" );
@@ -1283,7 +1290,7 @@
     });
     $(document).on('click', '.icon-for-chat2', function () {
         $(".chat-dialogbox").fadeToggle();
-     
+
 
     });
 
@@ -1291,44 +1298,44 @@
 </script>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         $(function () {
-          $('[data-toggle="tooltip"]').tooltip()
-        })       
-   });
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    });
 
 </script>
 <script>
     $(document).ready(function () {
 
         $('.owl-carousel').owlCarousel({
-                nav: true,
-                // slideBy: 5,
-                rewind: true,
-                margin:5,
-                dots: false,
-                items:5,
-                stagePadding:5,
-                navText: ["<i class=' fa fa-chevron-circle-left'></i>",
-                    "<i class='fa  fa-chevron-circle-right'></i>"],
-                responsive: {
-                    0: {
-                        items: 1
-                    },
-                    300: {
-                        items: 2
+            nav: true,
+            // slideBy: 5,
+            rewind: true,
+            margin: 5,
+            dots: false,
+            items: 5,
+            stagePadding: 5,
+            navText: ["<i class=' fa fa-chevron-circle-left'></i>",
+                "<i class='fa  fa-chevron-circle-right'></i>"],
+            responsive: {
+                0: {
+                    items: 1
+                },
+                300: {
+                    items: 2
 
-                    },
-                    400: {
-                        items: 3
-                    },
-                    600: {
-                        items: 5
-                    },
-                    1000: {
-                        items: 8
-                    }
+                },
+                400: {
+                    items: 3
+                },
+                600: {
+                    items: 5
+                },
+                1000: {
+                    items: 8
                 }
+            }
         })
 
     });
