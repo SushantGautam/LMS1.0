@@ -169,6 +169,10 @@ body{
     padding: 10px;
     z-index: 999;
 }
+.custom-owl-slider2{
+    
+    display: none;
+}
 .page-link-view{
     position: absolute;
     bottom: 16%;

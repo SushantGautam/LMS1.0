@@ -160,7 +160,14 @@
         </div>
     </div>
 </div>
+<div id="main-bottom-slider" class="custom-owl-slider2">
+    <div class="owl-carousel owl-theme thumbnail-container" id="thumbnail-slider">
+
+    </div>
+
+</div>
 <section class="whole-container">
+    
 
     <div id="sidebar-id" class="sidenavbar-part  animate">
         <div class="sidebar-top">
@@ -292,6 +299,7 @@
         </div> -->
 
     {% endif %}
+    
 
     <div id="container" class="container12">
 
@@ -1158,16 +1166,20 @@
                 teacherchapterProgressFunction()
             {% endif %}
         {% endif %}
-        if (page_number >= parseInt($('#totalpages').text())) {
-            $('#next-btn').css('visibility', 'hidden')
-        } else {
-            $('#next-btn').css('visibility', 'visible')
+        if (!x.matches){
+            if (page_number >= parseInt($('#totalpages').text())) {
+                $('#next-btn').css('visibility', 'hidden')
+            } else {
+                $('#next-btn').css('visibility', 'visible')
+            }
+            if (page_number <= 1) {
+                $('#prev-btn').css('visibility', 'hidden')
+            } else {
+                $('#prev-btn').css('visibility', 'visible')
+            }
+
         }
-        if (page_number <= 1) {
-            $('#prev-btn').css('visibility', 'hidden')
-        } else {
-            $('#prev-btn').css('visibility', 'visible')
-        }
+      
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
@@ -1205,6 +1217,7 @@
                 $(".owl-prev").css("left", '27.5%');
                 $(".owl-next").css("right", '4.75%');
             }
+           
             $("#sidebar-id").addClass("slideOutLeft");
             $("#sidebar-id").removeClass("slideInLeft");
             $(".chat-sidenav-close").css("display", "none");
@@ -1236,6 +1249,7 @@
             $(".custom-owl-slider").css("right", '2%');
             $(".custom-owl-slider").css("width", '60%');
         }
+        
 
         $("#sidebar-id").addClass("slideInLeft");
         $("#sidebar-id").removeClass("slideOutLeft");

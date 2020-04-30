@@ -217,7 +217,35 @@
     .icon-for-chat2{
         display: none;
     }
+    
 }
+@media (min-width:300px) and (max-width:567px){
+    .owl-prev{
+        /* left: 8.5%; */
+        bottom: 5%;
+        left: 3%;
+    }
+    .owl-next{
+        right: 1.75%;
+        bottom: 5%;
+    }
+    .custom-owl-slider{
+        display: none;
+    }
+    .custom-owl-slider2{
+        display: block;
+        position: absolute;
+        bottom: 1%;
+        right: 1%;
+        width: 74%;
+        background-color: rgb(54, 60, 69,0.9);
+        padding: 10px;
+        z-index: 999;
+    }
+
+}
+
+
 @media (min-width:300px) and (max-width:350px){
     .container12{
         width: 81vw;
