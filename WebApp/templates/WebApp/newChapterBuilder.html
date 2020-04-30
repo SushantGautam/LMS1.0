@@ -289,17 +289,18 @@
 
                                     <div class="dropdown ">
                                         <button class="btn  dropdown-toggle custom-dropdown" type="button"
-                                                data-toggle="dropdown"><span> All Items</span>
+                                                data-toggle="dropdown"><span> Filter Items</span>
 
                                         </button>
                                         <ul class="dropdown-menu">
+                                            <li><a href="#">ALL ITEMS</a></li>
+                                            <li class="divider"></li>
                                             <li><a href="#">IMAGES</a></li>
                                             <li><a href="#">VIDEOS</a></li>
                                             <li><a href="#">AUDIOS</a></li>
                                             <li><a href="#">PDF</a></li>
                                             <li><a href="#">3D</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">DISPLAY ALL</a></li>
+                                            
 
                                         </ul>
                                     </div>
@@ -563,14 +564,14 @@
 
 </section>
 <div id="examiframeholder">
-    <div id="closeiframebtn" class="closeiframebtn">
+    <div id="closeiframebtn" class="closeiframebtn" title="Close Preview">
         <button>
             <i class="fa fa-times">
             </i>
 
         </button>
     </div>
-    <div id="iframeholder"></div>
+    <div id="iframeholder" style="background: rgba(0,0,0,0.9);"></div>
 </div>
 <!-- Button Modal -->
 <div id="btn-modal" class="modal fade" role="dialog">
@@ -1346,19 +1347,33 @@
     function retrieveMedias(mediatype) {
         var gallery_name = null
         var media_link = null
+
+        let api_token = '1453562iobwp33x0qrt34ip4bjiynb5olte';
+        let media_type = '';
+        let page_no = 1;
+        let item_per_page = 10;
+        let tags = server_name + ',' + centerName + ',' + courseName;
+        
         if (mediatype == 1) {
-            gallery_name = $('.image-gallery')
-            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+            gallery_name = $('.image-gallery');
+            media_type = 'image';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+            
         } else if (mediatype == 2) {
-            gallery_name = $('.video-gallery')
-            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+            gallery_name = $('.video-gallery');
+            media_type = 'video';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         } else if (mediatype == 3) {
-            gallery_name = $('.audio-gallery')
-            media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+            gallery_name = $('.audio-gallery');
+            media_type = 'audio';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         }
 
         $.get(media_link, function (data) {
-            data['folder']['items'].forEach(element => {
+            data['items'].forEach(element => {
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
                         <div class = "mediaitemcontainer">
@@ -1511,17 +1526,17 @@
         if ($('.media-selected').parents().hasClass('image-gallery')) {
             $('#examiframeholder').addClass('examiframeholder')
             $('#iframeholder').append(`
-                <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%">
+                <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%" style="object-fit:contain;">
             `);
-            $('#closeiframebtn').css('display', 'block')
+            $('#closeiframebtn').css({'display':'block', 'top':'1vh'});
         } else {
-            loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1)
+            loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1);
         }
     })
 
     $('.dropdown-menu li').on('click', function () {
-        $('.dropdown-selected').removeClass('dropdown-selected')
-        $(this).addClass('dropdown-selected')
+        $('.dropdown-selected').removeClass('dropdown-selected active')
+        $(this).addClass('dropdown-selected active')
         $('.custom-dropdown>span').text($(this).find('a').text())
         $('.dropdown-items>div').css('display', 'none');
 
