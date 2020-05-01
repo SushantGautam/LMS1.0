@@ -284,7 +284,8 @@
         </ul>
         <ul class="chat-sidenav-close slideInLeft animate">
             <li class=close-icon-sidebar>
-                <i class="fa fa-times"></i>
+                <i class="fa fa-times icon1-largescreen"></i>
+                <i class="fa fa-minus-square icon2-smallscreen" ></i>
 
             </li>
             <li class="icon-for-chat2">
@@ -1216,10 +1217,11 @@
             if (!x.matches) {
                 $(".custom-owl-slider").css("right", '1%');
                 $(".custom-owl-slider").css("width", '74%');
-                $(".chat-dialogbox").css("left", '1%');
+               
                 $(".owl-prev").css("left", '27.5%');
                 $(".owl-next").css("right", '4.75%');
             }
+            $(".chat-dialogbox").css("left", '1%');
            
             $("#sidebar-id").addClass("slideOutLeft");
             $("#sidebar-id").removeClass("slideInLeft");

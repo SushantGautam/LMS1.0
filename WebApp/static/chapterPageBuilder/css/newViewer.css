@@ -626,3 +626,6 @@ textarea.form-control {
     height: auto;
     resize: none!important;
 }
+.icon2-smallscreen{
+    display: none;
+}

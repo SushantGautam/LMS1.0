@@ -217,6 +217,12 @@
     .icon-for-chat2{
         display: none;
     }
+    .icon1-largescreen{
+        display: none;
+    }
+    .icon2-smallscreen{
+        display: block;
+    }
     
 }
 @media (min-width:300px) and (max-width:567px){
@@ -241,6 +247,9 @@
         background-color: rgb(54, 60, 69,0.9);
         padding: 10px;
         z-index: 999;
+    }
+    .sidebar-bottom-icons{
+        text-align: center;
     }
 
 }
