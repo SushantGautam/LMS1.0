@@ -489,6 +489,53 @@
 <!-- CHAT SCRIPT -->
 <script src="{% static 'chapterPageBuilder/js/chat.js' %}"></script>
 
+<!-- Retrieve Chat History -->
+<script>
+
+    {% if chat_history %}
+
+        $(document).ready(function () {
+            const chatLog = document.querySelector('#chat-log');
+            let chat_history = {{ chat_history|safe }};
+            let userID = '{{ request.user.id }}';
+
+            // Clear chatlog at first
+            chatLog.innerHTML = '';
+            
+            chat_history.forEach(data => {
+                let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
+
+                // converting datetime to local
+                let sender_datetime = new Date(data.sender_datetime);
+                let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
+                        sender_datetime.getMonth(),
+                        sender_datetime.getDate(),
+                        sender_datetime.getHours(),
+                        sender_datetime.getMinutes(),
+                        sender_datetime.getSeconds())).toLocaleString('en-US', { hour12: true, hour: "numeric", minute: "numeric"});
+                            
+                // Appending message to canvas log
+                chatLog.innerHTML += `
+                        <div class="msg ${msgClass}">
+                            <div class="msg-img" style="background-image: url(${data.sender_icon})"></div>
+                            <div class="msg-bubble">
+                                <div class="msg-info">
+                                <div class="msg-info-name">${data.sender_name}</div>
+                                <div class="msg-info-time timecon">${localtime}</div>
+                                </div>
+                                <div class="msg-text">
+                                ${data.message}
+                                </div>
+                            </div>
+                            </div>`;
+            });
+        });
+
+    {% endif %}
+
+</script>
+
+
 <script type="text/javascript">
     {% if not data %}
         alert("No contents in this page. Returning back to previous page...");
