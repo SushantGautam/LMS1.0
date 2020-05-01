@@ -1863,10 +1863,11 @@ def save_video(request):
                                  'Content-Type': 'application/json',
                                  'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
                         data=json.dumps([
-                            {"name": "center_" + request.user.Center_Code.Center_Name},
+                            {"name": "center_" + request.user.Center_Code.Center_Name.lower()},
                             {"name": "userid_" + str(request.user.pk)},
-                            {"name": "course_" + courseObj.Course_Name},
-                            {"name": "chapter_" + chapterObj.Chapter_Name}
+                            {"name": "course_" + courseObj.Course_Name.lower()},
+                            {"name": "chapterid_" + str(chapterObj.pk)},
+                            {"name": settings.SERVER_NAME.lower()},
                         ])
                     )
                     return JsonResponse(
@@ -2043,33 +2044,41 @@ def import_chapter(request):
 
 
 def retrievechapterfile(request):
+    max_items = 10
     chapterID = request.GET['chapterID']
     courseID = request.GET['courseID']
     userID = request.GET['userpk']
+    if request.GET.get('max_items'):
+        max_items = int(request.GET.get('max_items'))
     path = settings.MEDIA_ROOT
     image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
     video_extensions = ['.mp4', ]
-    images = []
-    videos = []
+    _3d_extensions = ['.gltf', '.glb']
+    # images = []
+    # videos = []
     pdf = []
+    _3d = []
     try:
         if os.path.exists(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID)):
             chapterfiles = os.listdir(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID))
             for files in chapterfiles:
-                if (files[-4:] in image_extensions):
-                    images.append(files)
-                elif (files[-4:] in video_extensions):
-                    videos.append(files)
-                elif (files.endswith('.pdf')):
+                if (files.endswith('.pdf')):
                     pdf.append(files)
+                elif (files[-4:] in _3d_extensions):
+                    _3d.append(files)
+                # elif (files[-4:] in image_extensions):
+                #     images.append(files)
+                # elif (files[-4:] in video_extensions):
+                #     videos.append(files)
         else:
             print("No directory of this chapter")
     except Exception as e:
         print(e)
     return JsonResponse({
-        'images': images,
-        'videos': videos,
-        'pdf': pdf
+        # 'images': images,
+        # 'videos': videos,
+        'pdf': pdf[:max_items] if len(pdf) > max_items else pdf,
+        '_3d': _3d[:max_items] if len(_3d) > max_items else _3d,
     })
 
 

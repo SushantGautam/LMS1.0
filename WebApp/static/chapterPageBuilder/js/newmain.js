@@ -836,6 +836,7 @@ class _3Dobject {
                 <div id="_3dobj-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete Button' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                    <i  class= "fas fa-link _3dlink" id=${id}></i>
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -1204,7 +1205,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     }
                 }
                 request.send()
-                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},${centerName},${courseName}`, function () {
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                     console.log('success')
                 }).fail(function () {
                     console.log('failed')
@@ -1287,7 +1288,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},${centerName},${courseName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -1985,7 +1986,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 }
                             }
                             request.send()
-                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},${centerName},${courseName}`, function () {
+                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                                 console.log('success')
                             }).fail(function () {
                                 console.log('failed')
@@ -2226,7 +2227,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},${centerName},${courseName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -2291,6 +2292,27 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
+    $('._3dlink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        }
+        _3dFunction(
+            $(div)[0].style.top,
+            $(div)[0].style.left,
+            link,
+            $(div)[0].style.height,
+            $(div)[0].style.width,
+        );
+        div.remove()
+
+    });
     $('._3dobj-div').resizable({
         containment: $('#tabs-for-download'),
         grid: [20, 20],

@@ -300,7 +300,7 @@
                                             <li><a href="#">AUDIOS</a></li>
                                             <li><a href="#">PDF</a></li>
                                             <li><a href="#">3D</a></li>
-                                            
+
 
                                         </ul>
                                     </div>
@@ -962,6 +962,7 @@
     <button type="button" class="copy-link-btn" style="display: none">Copy Link</button>
     <input type="text" class="copy-link-text" id="copy-link-text" style="display: none">
 </div>
+<div class="alert-info infomessage" style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">Link Copied</div>
 </body>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
@@ -1136,7 +1137,8 @@
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
     var centerName = '{{ request.user.Center_Code }}';
-    var courseName = '{{ course_name }}'
+    var courseName = '{{ course_name }}';
+    var user = '{{ user.pk }}'
     var imagegalleryid, videogalleryid, audiogalleryid;
     if (server_name == "Indonesian_Server") {
         imagegalleryid = 'A8AAAoODp5Za';
@@ -1299,24 +1301,77 @@
 {# End of Scripts from old builder #}
 
 <script>
+    function mediaFilesClickFunction($this) {
+        if ($($this).closest('.mediaitemcontainer').hasClass('media-selected')) {
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
+            $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
+            $('.selectedmediafilename').remove()
+        } else {
+            $('.selectedmediafilename').remove()
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
+            $('.mediaitemcontainer').removeClass('media-selected')
+            $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', $('.media-selected').find('.mediafiles').attr('data-filename'))
+            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-filename')}</div>`)
+        }
+        if ($('.media-selected').length > 0) {
+            $('.select-link-box').css('display', 'block')
+        } else {
+            $('.select-link-box').css('display', 'none')
+        }
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
     setTimeout(function () {
+        retrieveServerMedias(10)
+    }, 2000)
+
+    function retrieveServerMedias(max_items = 10) {
         $.ajax({
-            url: "{% url 'retrieve-chapter-files' %}",
+            url: "{% url 'retrieve-chapter-files' %}?max_items=" + max_items,
             data: {
                 'courseID': courseID,
                 'chapterID': chapterID,
                 'userpk': '{{ request.user.pk }}'
             },
             success: function (data) {
+                {#counter = 1#} //for combine limit
                 if (data.pdf.length > 0) {
-                    $('#pdf-gallery').find('p').empty()
                     data.pdf.forEach(x => {
+                        /*if (counter >= max_items){
+                            return
+                        }
+                        counter++*/
                         title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
                         $('.pdf-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
-                                <a class="mediafiles" href="javascript:void(0)" data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}/">
-                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> ${title}</div>
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}" style="object-fit: contain;">
+                                </div>
+                                </a>
+                                </div>
+                            </div>
+                            `
+                        )
+                    });
+                }
+                if (data._3d.length > 0) {
+                    data._3d.forEach(x => {
+                        /*
+                        if (counter >= max_items){
+                            return
+                        }
+                        counter++*/
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        $('._3d-gallery').append(`
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}" style="object-fit: contain;">
+                                </div>
                                 </a>
                                 </div>
                             </div>
@@ -1326,23 +1381,14 @@
                 }
                 $('.mediafiles').on('click', function (e) {
                     e.stopImmediatePropagation();
-                    if ($(this).closest('.mediaitemcontainer').hasClass('media-selected')) {
-                        $(this).closest('.mediaitemcontainer').toggleClass('media-selected')
-                    } else {
-                        $('.mediaitemcontainer').removeClass('media-selected')
-                        $(this).closest('.mediaitemcontainer').toggleClass('media-selected')
-                    }
-                    if ($('.media-selected').length > 0) {
-                        $('.select-link-box').css('display', 'block')
-                    } else {
-                        $('.select-link-box').css('display', 'none')
-                    }
+                    mediaFilesClickFunction(this)
+
                 })
                 $('[data-toggle="tooltip"]').tooltip();
             },
             // dataType: dataType
         });
-    }, 2000)
+    }
 
     function retrieveMedias(mediatype) {
         var gallery_name = null
@@ -1353,13 +1399,13 @@
         let page_no = 1;
         let item_per_page = 10;
         let tags = server_name + ',' + centerName + ',' + courseName;
-        
+
         if (mediatype == 1) {
             gallery_name = $('.image-gallery');
             media_type = 'image';
             media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
             // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
-            
+
         } else if (mediatype == 2) {
             gallery_name = $('.video-gallery');
             media_type = 'video';
@@ -1374,11 +1420,19 @@
 
         $.get(media_link, function (data) {
             data['items'].forEach(element => {
+                if (mediatype == 3) {
+                    if (element.thumbnail.url && element.thumbnail.url != "")
+                        var thumbnail = element.thumbnail.url;
+                    else
+                        var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
+                }
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
                         <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> <img src = ${element.thumbnail.url}></div>
+                        <a class="mediafiles" href="javascript:void(0)" data-filename=${element.filename} data-href = ${element.content.url}>
+                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                        <img src = ${thumbnail} style="object-fit: contain">
+                        </div>
                         </a>
                         </div>
                  </div>
@@ -1391,123 +1445,13 @@
 
             $('.mediafiles').on('click', function (e) {
                 e.stopImmediatePropagation();
-                if ($(this).closest('.mediaitemcontainer').hasClass('media-selected')) {
-                    $(this).closest('.mediaitemcontainer').toggleClass('media-selected')
-                } else {
-                    $('.mediaitemcontainer').removeClass('media-selected')
-                    $(this).closest('.mediaitemcontainer').toggleClass('media-selected')
-                }
-                if ($('.media-selected').length > 0) {
-                    $('.select-link-box').css('display', 'block')
-                } else {
-                    $('.select-link-box').css('display', 'none')
-                }
+                mediaFilesClickFunction(this)
             })
 
             $('[data-toggle="tooltip"]').tooltip();
         })
     }
 
-    /*
-    function retrieveVideoMedias() {
-        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=video&page=1&items_per_page=5&tag=test&ident=y', function (data) {
-            data['items'].forEach(element => {
-                $('.video-gallery').append(`
-                  <div class="col-sm-6 col-xs-12 media-items-holder">
-                        <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom"  title='Click To Select'>
-                            <img src = ${element.thumbnail.url}>
-                        </div>
-                        </a>
-                        </div>
-                </div>   
-                `)
-            });
-            $('.mediafiles').off().on('dblclick', function (e) {
-                e.preventDefault()
-                loadPreview($(this).attr('data-href'), 1, null, 1)
-            })
-            // $('.mediafiles').on('mouseover', function (e) {
-              //  $(this).after($('.copy-link-btn').css('display', 'block'))
-             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                //$(this).after($('.copy-link-text').css('display', 'block'))
-           // })
-           // $('.mediafiles').on('mouseout', function (e) {
-              //  $('.copy-link-btn').css('display', 'none')
-               // $('.copy-link-text').css('display', 'none')
-           // })
-            $('[data-toggle="tooltip"]').tooltip();
-
-        })
-    }
-
-    function retrieveImageMedias() {
-        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=image&page=1&items_per_page=5&tag=test&ident=y', function (data) {
-            data['items'].forEach(element => {
-                $('.image-gallery').append(`
-                  <div class="col-sm-6 col-xs-12 media-items-holder">
-                        <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> <img src = ${element.thumbnail.url}></div>
-                        </a>
-                        </div>
-                 </div> 
-                `)
-            });
-            $('.mediafiles').off().on('dblclick', function (e) {
-                e.preventDefault()
-                loadPreview($(this).attr('data-href'), 1, null, 1)
-            })
-         
-           // $('.mediafiles').on('mouseover', function (e) {
-              //  $(this).after($('.copy-link-btn').css('display', 'block'))
-             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                //$(this).after($('.copy-link-text').css('display', 'block'))
-           // })
-           // $('.mediafiles').on('mouseout', function (e) {
-              //  $('.copy-link-btn').css('display', 'none')
-               // $('.copy-link-text').css('display', 'none')
-           // })
-
-            $('[data-toggle="tooltip"]').tooltip();
-        })
-    }
-
-    function retrieveAudioMedias() {
-        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type=audio&page=1&items_per_page=5&tag=test&ident=y', function (data) {
-            data['items'].forEach(element => {
-                $('.audio-gallery').append(`
-                    <div class="col-sm-12 col-xs-12 media-items-holder">
-                        <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                        <div class="source-media-holder" data-toggle="tooltip" data-placement="bottom"  title='Click To Select'>${element.filename}</div>
-                        </a>
-                        </div>
-                    </div>    
-                `)
-            });
-            $('.mediafiles').off().on('dblclick', function (e) {
-                e.preventDefault()
-                loadPreview($(this).attr('data-href'), 1, null, 1)
-            })
-             // $('.mediafiles').on('mouseover', function (e) {
-              //  $(this).after($('.copy-link-btn').css('display', 'block'))
-             //   $('.copy-link-text').val($(this).closest('.mediaitemcontainer').find('a').attr('data-href'))
-                //$(this).after($('.copy-link-text').css('display', 'block'))
-           // })
-           // $('.mediafiles').on('mouseout', function (e) {
-              //  $('.copy-link-btn').css('display', 'none')
-               // $('.copy-link-text').css('display', 'none')
-           // })
-            $('[data-toggle="tooltip"]').tooltip();
-        })
-    }
-
-    retrieveVideoMedias()
-    retrieveImageMedias()
-    retrieveAudioMedias()
-    */
     retrieveMedias(1)
     retrieveMedias(2)
     retrieveMedias(3)
@@ -1520,6 +1464,9 @@
         copyText.setSelectionRange(0, 999)
         document.execCommand("copy");
         document.body.removeChild(copyText);
+        $('.infomessage').fadeIn(1500)
+        $('.infomessage').fadeOut(1500)
+
     })
 
     $('.icon2-link').on('click', function () {
@@ -1528,7 +1475,18 @@
             $('#iframeholder').append(`
                 <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%" style="object-fit:contain;">
             `);
-            $('#closeiframebtn').css({'display':'block', 'top':'1vh'});
+            $('#closeiframebtn').css({'display': 'block', 'top': '1vh'});
+        } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
+            $('#examiframeholder').addClass('examiframeholder')
+            $('#iframeholder').append(`
+                <model-viewer
+                src="${$('.media-selected').find('a').attr('data-href')}"
+                alt="Here is a 3D Object."
+                auto-rotate
+                camera-controls
+                style="height: 100%;width:100%;"></model-viewer>
+            `);
+            $('#closeiframebtn').css({'display': 'block', 'top': '1vh'});
         } else {
             loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1);
         }

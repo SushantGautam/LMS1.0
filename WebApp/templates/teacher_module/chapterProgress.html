@@ -232,7 +232,7 @@
                         <tbody>
                         {% for a in student_progress_data %}
                             <tr data-chapterpk="{{ a.chapter.chapterObj.pk }}">
-                                <td>  {{ forloop.counter }} </td>
+                                <td></td>
                                 <td>
                                     <div class="progressbar" data-animate="false">
                                         <div class="circle" data-percent="{{ a.chapter.progresspercent }}">
@@ -282,7 +282,8 @@
 {% endblock %}
 
 {% block customjss %}
-    <script src="https://code.highcharts.com/highcharts.js"></script>
+    {#    <script src="https://code.highcharts.com/highcharts.js"></script>#}
+    <script src="{% static 'js/highcharts.js' %}"></script>
     <!-- Highchart for Quiz Achievement -->
     <script>
         $(document).ready(function () {
@@ -547,12 +548,14 @@
                             modifier: {
                                 page: 'visible'
                             }
-                        }
+                        },
+                        orientation: 'landscape',
                     },
                     {
                         extend: 'print',
                         text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
-                        fieldSeparator: '\t'
+                        fieldSeparator: '\t',
+                        orientation: 'landscape',
                     }
                 ],
                 columnDefs: [
@@ -560,6 +563,12 @@
                 ]
 
             });
+            table2_main.on('order.dt search.dt', function () {
+                table2_main.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                    table2_main.cell(cell).invalidate('dom');
+                });
+            }).draw();
 
             $('.chapterBtn').on('click', function () {
                 chapterpk = this.value
