@@ -1300,16 +1300,25 @@
 
 <script>
     setTimeout(function () {
+        retrieveServerMedias(10)
+    }, 2000)
+
+    function retrieveServerMedias(max_items = 10) {
         $.ajax({
-            url: "{% url 'retrieve-chapter-files' %}",
+            url: "{% url 'retrieve-chapter-files' %}?max_items=" + max_items,
             data: {
                 'courseID': courseID,
                 'chapterID': chapterID,
                 'userpk': '{{ request.user.pk }}'
             },
             success: function (data) {
+                {#counter = 1#} //for combine limit
                 if (data.pdf.length > 0) {
                     data.pdf.forEach(x => {
+                        /*if (counter >= max_items){
+                            return
+                        }
+                        counter++*/
                         title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
                         $('.pdf-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
@@ -1327,6 +1336,11 @@
                 }
                 if (data._3d.length > 0) {
                     data._3d.forEach(x => {
+                        /*
+                        if (counter >= max_items){
+                            return
+                        }
+                        counter++*/
                         title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
                         $('._3d-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
@@ -1360,7 +1374,7 @@
             },
             // dataType: dataType
         });
-    }, 2000)
+    }
 
     function retrieveMedias(mediatype) {
         var gallery_name = null

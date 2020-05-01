@@ -2043,9 +2043,12 @@ def import_chapter(request):
 
 
 def retrievechapterfile(request):
+    max_items = 10
     chapterID = request.GET['chapterID']
     courseID = request.GET['courseID']
     userID = request.GET['userpk']
+    if request.GET.get('max_items'):
+        max_items = int(request.GET.get('max_items'))
     path = settings.MEDIA_ROOT
     image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
     video_extensions = ['.mp4', ]
@@ -2073,8 +2076,8 @@ def retrievechapterfile(request):
     return JsonResponse({
         # 'images': images,
         # 'videos': videos,
-        'pdf': pdf,
-        '_3d': _3d
+        'pdf': pdf[:max_items] if len(pdf) > max_items else pdf,
+        '_3d': _3d[:max_items] if len(_3d) > max_items else _3d,
     })
 
 
