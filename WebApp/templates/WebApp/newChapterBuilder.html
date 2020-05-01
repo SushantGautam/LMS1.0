@@ -1309,27 +1309,32 @@
             },
             success: function (data) {
                 if (data.pdf.length > 0) {
-                    $('#pdf-gallery').find('p').empty()
                     data.pdf.forEach(x => {
                         title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
                         $('.pdf-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
                                 <a class="mediafiles" href="javascript:void(0)" data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
-                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> ${title}</div>
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}" style="object-fit: contain;">
+                                </div>
                                 </a>
                                 </div>
                             </div>
                             `
                         )
                     });
+                }
+                if (data._3d.length > 0) {
                     data._3d.forEach(x => {
                         title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
                         $('._3d-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
                                 <a class="mediafiles" href="javascript:void(0)" data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
-                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> ${title}</div>
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}" style="object-fit: contain;">
+                                </div>
                                 </a>
                                 </div>
                             </div>
@@ -1387,11 +1392,19 @@
 
         $.get(media_link, function (data) {
             data['items'].forEach(element => {
+                if (mediatype == 3) {
+                    if (element.thumbnail.url && element.thumbnail.url != "")
+                        var thumbnail = element.thumbnail.url;
+                    else
+                        var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
+                }
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
                         <div class = "mediaitemcontainer">
                         <a class="mediafiles" href="javascript:void(0)" data-href = ${element.content.url}>
-                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> <img src = ${element.thumbnail.url}></div>
+                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                        <img src = ${thumbnail} style="object-fit: contain">
+                        </div>
                         </a>
                         </div>
                  </div>

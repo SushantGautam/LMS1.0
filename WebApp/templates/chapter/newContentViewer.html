@@ -981,8 +981,10 @@
                                     }
                                 }*/
                                 $('#page' + key).append(embed)
-                                if (!css_value.hasOwnProperty('online_link') && !css_value.local_link.includes('/media/chapterBuilder')) {
-                                    play("#audio" + now)
+                                if (!css_value.hasOwnProperty('online_link') && css_value.hasOwnProperty('local_link')) {
+                                    if (!css_value.local_link.includes('/media/chapterBuilder')) {
+                                        play("#audio" + now)
+                                    }
                                 }
                             });
                         }

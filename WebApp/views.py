@@ -2050,29 +2050,29 @@ def retrievechapterfile(request):
     image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
     video_extensions = ['.mp4', ]
     _3d_extensions = ['.gltf', '.glb']
-    images = []
-    videos = []
+    # images = []
+    # videos = []
     pdf = []
     _3d = []
     try:
         if os.path.exists(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID)):
             chapterfiles = os.listdir(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID))
             for files in chapterfiles:
-                if (files[-4:] in image_extensions):
-                    images.append(files)
-                elif (files[-4:] in video_extensions):
-                    videos.append(files)
-                elif (files.endswith('.pdf')):
+                if (files.endswith('.pdf')):
                     pdf.append(files)
                 elif (files[-4:] in _3d_extensions):
                     _3d.append(files)
+                # elif (files[-4:] in image_extensions):
+                #     images.append(files)
+                # elif (files[-4:] in video_extensions):
+                #     videos.append(files)
         else:
             print("No directory of this chapter")
     except Exception as e:
         print(e)
     return JsonResponse({
-        'images': images,
-        'videos': videos,
+        # 'images': images,
+        # 'videos': videos,
         'pdf': pdf,
         '_3d': _3d
     })
