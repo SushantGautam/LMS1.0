@@ -1863,10 +1863,11 @@ def save_video(request):
                                  'Content-Type': 'application/json',
                                  'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
                         data=json.dumps([
-                            {"name": "center_" + request.user.Center_Code.Center_Name},
+                            {"name": "center_" + request.user.Center_Code.Center_Name.lower()},
                             {"name": "userid_" + str(request.user.pk)},
-                            {"name": "course_" + courseObj.Course_Name},
-                            {"name": "chapter_" + chapterObj.Chapter_Name}
+                            {"name": "course_" + courseObj.Course_Name.lower()},
+                            {"name": "chapterid_" + str(chapterObj.pk)},
+                            {"name": settings.SERVER_NAME.lower()},
                         ])
                     )
                     return JsonResponse(
