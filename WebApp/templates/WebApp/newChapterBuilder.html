@@ -962,7 +962,7 @@
     <button type="button" class="copy-link-btn" style="display: none">Copy Link</button>
     <input type="text" class="copy-link-text" id="copy-link-text" style="display: none">
 </div>
-<div class="alert-info infomessage" style="display: none; position: absolute; top: 10%; left: 50%;">Link Copied</div>
+<div class="alert-info infomessage" style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">Link Copied</div>
 </body>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
@@ -1312,7 +1312,7 @@
             $('.mediaitemcontainer').removeClass('media-selected')
             $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
             $('.media-selected').find('.source-gallery-holder').attr('data-original-title', $('.media-selected').find('.mediafiles').attr('data-filename'))
-            $('.select-link-ul').after(`<div class="selectedmediafilename">${$('.media-selected').find('.mediafiles').attr('data-filename')}</div>`)
+            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-filename')}</div>`)
         }
         if ($('.media-selected').length > 0) {
             $('.select-link-box').css('display', 'block')
@@ -1464,8 +1464,8 @@
         copyText.setSelectionRange(0, 999)
         document.execCommand("copy");
         document.body.removeChild(copyText);
-        $('.infomessage').fadeIn()
-        $('.infomessage').fadeOut()
+        $('.infomessage').fadeIn(1500)
+        $('.infomessage').fadeOut(1500)
 
     })
 
