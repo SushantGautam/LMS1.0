@@ -1323,6 +1323,19 @@
                             `
                         )
                     });
+                    data._3d.forEach(x => {
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        $('._3d-gallery').append(`
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'> ${title}</div>
+                                </a>
+                                </div>
+                            </div>
+                            `
+                        )
+                    });
                 }
                 $('.mediafiles').on('click', function (e) {
                     e.stopImmediatePropagation();
@@ -1428,7 +1441,18 @@
             $('#iframeholder').append(`
                 <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%" style="object-fit:contain;">
             `);
-            $('#closeiframebtn').css({'display':'block', 'top':'1vh'});
+            $('#closeiframebtn').css({'display': 'block', 'top': '1vh'});
+        } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
+            $('#examiframeholder').addClass('examiframeholder')
+            $('#iframeholder').append(`
+                <model-viewer
+                src="${$('.media-selected').find('a').attr('data-href')}"
+                alt="Here is a 3D Object."
+                auto-rotate
+                camera-controls
+                style="height: 100%;width:100%;"></model-viewer>
+            `);
+            $('#closeiframebtn').css({'display': 'block', 'top': '1vh'});
         } else {
             loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1);
         }

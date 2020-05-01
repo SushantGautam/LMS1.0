@@ -2049,9 +2049,11 @@ def retrievechapterfile(request):
     path = settings.MEDIA_ROOT
     image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
     video_extensions = ['.mp4', ]
+    _3d_extensions = ['.gltf', '.glb']
     images = []
     videos = []
     pdf = []
+    _3d = []
     try:
         if os.path.exists(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID)):
             chapterfiles = os.listdir(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID))
@@ -2062,6 +2064,8 @@ def retrievechapterfile(request):
                     videos.append(files)
                 elif (files.endswith('.pdf')):
                     pdf.append(files)
+                elif (files[-4:] in _3d_extensions):
+                    _3d.append(files)
         else:
             print("No directory of this chapter")
     except Exception as e:
@@ -2069,7 +2073,8 @@ def retrievechapterfile(request):
     return JsonResponse({
         'images': images,
         'videos': videos,
-        'pdf': pdf
+        'pdf': pdf,
+        '_3d': _3d
     })
 
 
