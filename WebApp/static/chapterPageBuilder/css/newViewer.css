@@ -157,8 +157,11 @@ body{
     left: 0;
     right: 0;
     position: relative;
-    padding-bottom: 20px !important;
+    
     padding-top: 0 !important;
+}
+.page-contents{
+    height: 100%;
 }
 .custom-owl-slider{
     position: absolute;
@@ -622,4 +625,7 @@ body{
 textarea.form-control {
     height: auto;
     resize: none!important;
+}
+.icon2-smallscreen{
+    display: none;
 }
