@@ -1206,45 +1206,7 @@
         let link = $("#survey_create_link").attr('href');
         loadPreview(link, 1)
     })
-    /*
-    setTimeout(function () {
-        $.ajax({
-            url: "{% url 'retrieve-chapter-files' %}",
-            data: {
-                'courseID': courseID,
-                'chapterID': chapterID,
-                'userpk': '{{ request.user.pk }}'
-            },
-            success: function (data) {
-                if (data.images.length > 0) {
-                    $('.dropdown-items').empty()
-                    data.images.forEach(x => {
-                        $('.dropdown-items .image-gallery').append(
-                            `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
-                        )
-                    });
-                }
-                if (data.videos.length > 0) {
-                    $('.dropdown-items .video-gallery').empty()
-                    data.videos.forEach(x => {
-                        $('.dropdown-items').append(
-                            x.split('&&&')[1]
-                        )
-                    });
-                }
-                if (data.pdf.length > 0) {
-                    $('.dropdown-items .pdf-gallery').empty()
-                    data.pdf.forEach(x => {
-                        $('.dropdown-items pdf').append(
-                            x.split('&&&')[1]
-                        )
-                    });
-                }
-            },
-            // dataType: dataType
-        });
-    }, 5000);
-*/
+
     // Add circular progress bar
     function addprogress() {
 
@@ -1398,7 +1360,7 @@
         let media_type = '';
         let page_no = 1;
         let item_per_page = 10;
-        let tags = server_name + ',' + centerName + ',' + courseName;
+        let tags = server_name + ',' + 'center_' + centerName + ',' + 'course_' + courseName;
 
         if (mediatype == 1) {
             gallery_name = $('.image-gallery');
@@ -1420,11 +1382,13 @@
 
         $.get(media_link, function (data) {
             data['items'].forEach(element => {
+                var thumbnail = element.thumbnail.url;
                 if (mediatype == 3) {
-                    if (element.thumbnail.url && element.thumbnail.url != "")
+                    if (element.thumbnail.url && element.thumbnail.url != "") {
                         var thumbnail = element.thumbnail.url;
-                    else
+                    } else {
                         var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
+                    }
                 }
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
