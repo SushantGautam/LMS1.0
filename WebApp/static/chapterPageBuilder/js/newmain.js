@@ -225,6 +225,16 @@ class picture {
                     <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
                 </div>
                 <p>Drag and drop images here...</p>
+                <div class="progressc mx-auto loadingDiv" data-value='0' style="display:none">
+                <span class="progress-left">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <span class="progress-right">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                <div class="h2 font-weight-bold percentcomplete">0<span class="small">%</span></div>
+                </div>
                 `
         }
         let img = '';
@@ -1205,7 +1215,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     }
                 }
                 request.send()
-                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},${centerName},${courseName}`, function () {
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                     console.log('success')
                 }).fail(function () {
                     console.log('failed')
@@ -1264,6 +1274,9 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                 data.append('chapterID', chapterID);
                 data.append('courseID', courseID);
                 file = input.files[0]
+                $(div).find('.file-upload-icon').hide()
+                $(div).find('p').hide()
+                $(div).find('.loadingDiv').show();
                 var options = {
                     url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                     chunk_size: 10, // MB
@@ -1288,7 +1301,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},${centerName},${courseName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -1304,8 +1317,8 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                         );
                     },
                     onUploadProgress: function (e) {
-                        $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
-                        $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                        $(div).find('.loadingDiv').attr('data-value', parseInt(e.percentComplete));
+                        $(div).find('.percentcomplete').html(parseInt(e.percentComplete) + '%');
                         addprogress();
                     },
                     onUploadError: function (e) {
@@ -1863,89 +1876,6 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
         },
     });
 
-    // $('.video-div').on('drop', function (e) {
-    //     e.stopPropagation();
-    //     e.preventDefault();
-
-
-    //     $(this).css({
-    //         'padding': '5px'
-    //     })
-
-    //     const files = e.originalEvent.dataTransfer.files;
-    //     var file = files[0];
-    //     upload(file);
-    // });
-
-    // function upload(file) {
-    //     var data = new FormData();
-
-    //     data.append("FileName", file);
-    //     data.append('chapterID', chapterID);
-    //     data.append('courseID', courseID);
-    //     data.append('type', 'video');
-    //     $.ajax({
-    //         xhr: function () {
-    //             var xhr = new window.XMLHttpRequest();
-
-    //             xhr.upload.addEventListener("progress", function (evt) {
-    //                 $('#progress-bar').css("display", "block");
-
-    //                 if (evt.lengthComputable) {
-    //                     var percentComplete = evt.loaded / evt.total;
-    //                     percentComplete = parseInt(percentComplete * 100);
-    //                     console.log(percentComplete);
-    //                     // $('#progress-bar-fill').css('width', percentComplete + '%');
-    //                     $("#progress-bar").attr('aria-valuenow', percentComplete).css('width', percentComplete + '%').text(percentComplete + '%');
-
-    //                     if (percentComplete === 100) {
-    //                         // $('#progress-bar').css("display", "none");
-    //                         let div = $('#video-drag').parent().parent();
-    //                         $('#video-drag').css({
-    //                             'display': 'none'
-    //                         });
-
-    //                         div.append(`
-    //                                 <video width="400" height="200" controls>
-    //                                 <source src="../uploads/${data.media_name}" type="video/mp4">
-    //                                 Your browser does not support the video tag.
-    //                             </video>
-    //                         `);
-
-    //                         $(div).hover(function () {
-    //                             $(this).css("border", "1px solid red");
-    //                         }, function () {
-    //                             $(this).css("border", '0')
-    //                         })
-
-    //                         $('.video-div').resizable({
-    //                             containment: $('.editor-canvas'),
-    //                             grid: [20, 20],
-    //                             autoHide: true,
-    //                             minWidth: 150,
-    //                             minHeight: 150
-    //                         });
-    //                     }
-
-    //                 }
-    //             }, false);
-
-    //             return xhr;
-    //         },
-    //         url: save_video_url,
-    //         data: data,
-    //         contentType: false,
-    //         processData: false,
-    //         method: 'POST',
-    //         type: 'POST',
-    //         success: function (data) {
-    //             console.log(data);
-    //         }
-
-    //     });
-
-    // }
-
     function readURL(input) {
         if (input.files && input.files[0]) {
             if (!input.files[0].type.match('video.*')) {
@@ -1986,7 +1916,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 }
                             }
                             request.send()
-                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},${centerName},${courseName}`, function () {
+                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                                 console.log('success')
                             }).fail(function () {
                                 console.log('failed')
@@ -2227,7 +2157,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},${centerName},${courseName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -3604,9 +3534,9 @@ function setThumbnailscallback(data, dive) {
     });
 }
 
-    $(document).ready(function(){
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-   });
+$(document).ready(function () {
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+});
 

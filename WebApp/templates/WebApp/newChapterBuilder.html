@@ -1137,7 +1137,8 @@
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
     var centerName = '{{ request.user.Center_Code }}';
-    var courseName = '{{ course_name }}'
+    var courseName = '{{ course_name }}';
+    var user = '{{ user.pk }}'
     var imagegalleryid, videogalleryid, audiogalleryid;
     if (server_name == "Indonesian_Server") {
         imagegalleryid = 'A8AAAoODp5Za';
@@ -1205,45 +1206,7 @@
         let link = $("#survey_create_link").attr('href');
         loadPreview(link, 1)
     })
-    /*
-    setTimeout(function () {
-        $.ajax({
-            url: "{% url 'retrieve-chapter-files' %}",
-            data: {
-                'courseID': courseID,
-                'chapterID': chapterID,
-                'userpk': '{{ request.user.pk }}'
-            },
-            success: function (data) {
-                if (data.images.length > 0) {
-                    $('.dropdown-items').empty()
-                    data.images.forEach(x => {
-                        $('.dropdown-items .image-gallery').append(
-                            `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
-                        )
-                    });
-                }
-                if (data.videos.length > 0) {
-                    $('.dropdown-items .video-gallery').empty()
-                    data.videos.forEach(x => {
-                        $('.dropdown-items').append(
-                            x.split('&&&')[1]
-                        )
-                    });
-                }
-                if (data.pdf.length > 0) {
-                    $('.dropdown-items .pdf-gallery').empty()
-                    data.pdf.forEach(x => {
-                        $('.dropdown-items pdf').append(
-                            x.split('&&&')[1]
-                        )
-                    });
-                }
-            },
-            // dataType: dataType
-        });
-    }, 5000);
-*/
+
     // Add circular progress bar
     function addprogress() {
 
@@ -1300,6 +1263,12 @@
 {# End of Scripts from old builder #}
 
 <script>
+    const truncateString = (string, maxLength = 30) => {
+        if (!string) return null;
+        const showDots = string.length > maxLength;
+        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+    };
+
     function mediaFilesClickFunction($this) {
         if ($($this).closest('.mediaitemcontainer').hasClass('media-selected')) {
             $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
@@ -1311,7 +1280,7 @@
             $('.mediaitemcontainer').removeClass('media-selected')
             $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
             $('.media-selected').find('.source-gallery-holder').attr('data-original-title', $('.media-selected').find('.mediafiles').attr('data-filename'))
-            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-filename')}</div>`)
+            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-truncfilename')}</div>`)
         }
         if ($('.media-selected').length > 0) {
             $('.select-link-box').css('display', 'block')
@@ -1334,18 +1303,22 @@
                 'userpk': '{{ request.user.pk }}'
             },
             success: function (data) {
-                {#counter = 1#} //for combine limit
+                //counter = 1 //for combine limit
                 if (data.pdf.length > 0) {
                     data.pdf.forEach(x => {
                         /*if (counter >= max_items){
                             return
                         }
                         counter++*/
-                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
+                        trunctitle = title
+                        if (title.length > 25) {
+                            trunctitle = truncateString(title, 25)
+                        }
                         $('.pdf-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
-                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
                                 <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
                                     <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}" style="object-fit: contain;">
                                 </div>
@@ -1363,7 +1336,7 @@
                             return
                         }
                         counter++*/
-                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
                         $('._3d-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
@@ -1397,7 +1370,7 @@
         let media_type = '';
         let page_no = 1;
         let item_per_page = 10;
-        let tags = server_name + ',' + centerName + ',' + courseName;
+        let tags = server_name + ',' + 'center_' + centerName + ',' + 'course_' + courseName;
 
         if (mediatype == 1) {
             gallery_name = $('.image-gallery');
@@ -1419,16 +1392,23 @@
 
         $.get(media_link, function (data) {
             data['items'].forEach(element => {
+                var thumbnail = element.thumbnail.url;
                 if (mediatype == 3) {
-                    if (element.thumbnail.url && element.thumbnail.url != "")
+                    if (element.thumbnail.url && element.thumbnail.url != "") {
                         var thumbnail = element.thumbnail.url;
-                    else
+                    } else {
                         var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
+                    }
+                }
+                title = element.filename
+                trunctitle = title
+                if (title.length > 25) {
+                    trunctitle = truncateString(title, 25)
                 }
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
                         <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-filename=${element.filename} data-href = ${element.content.url}>
+                        <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = ${element.content.url}>
                         <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
                         <img src = ${thumbnail} style="object-fit: contain">
                         </div>
@@ -1439,7 +1419,7 @@
             });
             $('.mediafiles').on('dblclick', function (e) {
                 e.preventDefault()
-                {#loadPreview($(this).attr('data-href'), 1, null, 1)#}
+                //loadPreview($(this).attr('data-href'), 1, null, 1)
             })
 
             $('.mediafiles').on('click', function (e) {
@@ -1511,4 +1491,5 @@
             $('.dropdown-items div').css('display', 'block');
         }
     })
+
 </script>

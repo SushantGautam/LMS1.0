@@ -1,5 +1,11 @@
 import json
+import os
+from datetime import datetime
+from pathlib import Path
+from .settings import MEDIA_ROOT
+
 from channels.generic.websocket import AsyncWebsocketConsumer
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -29,6 +35,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sender_icon = text_data_json['sender_icon']
         sender_datetime = text_data_json['sender_datetime']
         message = text_data_json['message']
+
+        # Calls function to store the chat
+        storeChat(text_data_json, self.room_group_name)
 
         # Send message to room group
         await self.channel_layer.group_send(
@@ -61,6 +70,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
         }))
 
 
+# Function to store each chat text in new file inside chapterid folder
+def storeChat(data, room_name):
+    file_path = os.path.join(MEDIA_ROOT,'chatlog', room_name)
+
+    Path(file_path).mkdir(parents=True, exist_ok=True)
+
+    currenttime = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
+    file_name = currenttime + '.txt'
+
+    try:
+        if 'message' in data:
+            with open(file_path + '/' + file_name, 'w') as outfile:
+                json.dump(data, outfile, indent=4)
+        return
+
+    except Exception as e:
+        print(e)
+        return
+
 
 # from channels import Group
 # import time
@@ -85,33 +113,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 #     Group(group_id).discard(message.reply_channel)
 
 
-# from datetime import datetime
+
 # from django.conf import settings
-# import os
-# import json
 # from functools import reduce
-
-# def storeChat(message, room_name):
-#     path = settings.MEDIA_ROOT
-#     if not os.path.exists(os.path.join(path, 'chatlog')):
-#         os.makedirs(os.path.join(path, 'chatlog'))
-#     if not os.path.exists(os.path.join(path, 'chatlog/' + room_name)):
-#         os.makedirs(os.path.join(path, 'chatlog/' + room_name))
-#     data = json.loads(message.content['text'])
-#     currenttime = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
-#     data['currenttime'] = currenttime
-#     # pathfilelist = [path,'chatlog',room_name + '' + currenttime + '.txt']
-#     # # pathfile = reduce(os.path.join, pathfilelist)
-#     # pathfile = os.path.join(*pathfilelist)
-#     # pathfile = path + '/chatlog/' + room_name + '/' + currenttime + '.txt',
-#     # print(pathfile)
-
-#     try:
-#         if 'chat_message' in data:
-#             with open(path + '/chatlog/' + room_name + '/' + currenttime + '.txt', 'w') as outfile:
-#                 json.dump(data, outfile, indent=4)
-#     except:
-#         pass
-
-#     else:
-#         return
