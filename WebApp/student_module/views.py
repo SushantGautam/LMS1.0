@@ -1278,9 +1278,12 @@ def studentCourseProgress(request, coursepk):
         .order_by('Chapter_No')
     student_data = getCourseProgress(courseObj, [request.user], chapters_list)
     for count in range(len(student_data)):
-        student_data[count]['student'] = serializers.serialize('json', [student_data[count]['student'], ])
+        del student_data[count]['student']
         student_data[count]['chapter']['chapterObj'] = serializers.serialize('json', [
             student_data[count]['chapter']['chapterObj'], ])
         totalCourseProgress += student_data[count]['chapter']['progresspercent']
-    return JsonResponse({'student_data': student_data, 'avgCourseProgress': totalCourseProgress / len(chapters_list)},
-                        safe=False, json_dumps_params={'indent': 4})
+    return JsonResponse(
+        {
+            'student_data': student_data,
+            'avgCourseProgress': totalCourseProgress / len(chapters_list) if len(chapters_list) > 0 else 0
+        }, safe=False, json_dumps_params={'indent': 4})
