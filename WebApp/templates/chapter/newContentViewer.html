@@ -1147,7 +1147,7 @@
 
     function Layout(x) {
         if (x.matches) {
-            $('.navigation-owl').css('visibility', 'hidden')
+            $('.navigation-owl').css('display', 'none')
             $('#main-bottom-slider').css('width', '100%')
             $('.owl-prev').css('left', '0')
             $('#page-contents').empty();
@@ -1157,7 +1157,7 @@
                 $(this).css('padding', '10px')
             })
         } else {
-            $('.navigation-owl').css('visibility', 'visible')
+            $('.navigation-owl').css('display', 'block')
             $('#main-bottom-slider').css('width', '74%')
             $('.owl-prev').css('left', '27.5%')
             $('#page-contents').empty();
