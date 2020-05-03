@@ -1263,6 +1263,12 @@
 {# End of Scripts from old builder #}
 
 <script>
+    const truncateString = (string, maxLength = 30) => {
+        if (!string) return null;
+        const showDots = string.length > maxLength;
+        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+    };
+
     function mediaFilesClickFunction($this) {
         if ($($this).closest('.mediaitemcontainer').hasClass('media-selected')) {
             $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
@@ -1274,7 +1280,7 @@
             $('.mediaitemcontainer').removeClass('media-selected')
             $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
             $('.media-selected').find('.source-gallery-holder').attr('data-original-title', $('.media-selected').find('.mediafiles').attr('data-filename'))
-            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-filename')}</div>`)
+            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-truncfilename')}</div>`)
         }
         if ($('.media-selected').length > 0) {
             $('.select-link-box').css('display', 'block')
@@ -1297,18 +1303,22 @@
                 'userpk': '{{ request.user.pk }}'
             },
             success: function (data) {
-                {#counter = 1#} //for combine limit
+                //counter = 1 //for combine limit
                 if (data.pdf.length > 0) {
                     data.pdf.forEach(x => {
                         /*if (counter >= max_items){
                             return
                         }
                         counter++*/
-                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
+                        trunctitle = title
+                        if (title.length > 25) {
+                            trunctitle = truncateString(title, 25)
+                        }
                         $('.pdf-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
-                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
                                 <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
                                     <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}" style="object-fit: contain;">
                                 </div>
@@ -1326,7 +1336,7 @@
                             return
                         }
                         counter++*/
-                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
                         $('._3d-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
@@ -1404,7 +1414,7 @@
             });
             $('.mediafiles').on('dblclick', function (e) {
                 e.preventDefault()
-                {#loadPreview($(this).attr('data-href'), 1, null, 1)#}
+                //loadPreview($(this).attr('data-href'), 1, null, 1)
             })
 
             $('.mediafiles').on('click', function (e) {
@@ -1476,4 +1486,5 @@
             $('.dropdown-items div').css('display', 'block');
         }
     })
+
 </script>

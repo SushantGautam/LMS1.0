@@ -3604,9 +3604,9 @@ function setThumbnailscallback(data, dive) {
     });
 }
 
-    $(document).ready(function(){
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-   });
+$(document).ready(function () {
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+});
 
