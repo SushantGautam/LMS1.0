@@ -763,7 +763,8 @@ class PDF {
             <div id="pdfdiv-actions1">
                 <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                 <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
-                <i  class= "fas fa-link pdflink" id=${id}></i>
+                
+                <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i  class= "fas fa-link pdflink" id=${id}></i></span> 
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -846,7 +847,8 @@ class _3Dobject {
                 <div id="_3dobj-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete Button' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
-                    <i  class= "fas fa-link _3dlink" id=${id}></i>
+                    
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i  class= "fas fa-link _3dlink" id=${id}></i></span> 
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
