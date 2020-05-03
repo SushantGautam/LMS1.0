@@ -114,13 +114,19 @@
                 </tr>
                 <tr>
                     <td>Start Date</td>
-                    <td> {{ object.Start_Date|date:"d M, Y" }} <span
-                            class="timecon">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></td>
+                    <td>
+                        {% if object.Start_Date %}
+                            {{ object.Start_Date|date:"d M, Y" }} <span
+                                class="timecon">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></td>
+                        {% endif %}
                 </tr>
                 <tr>
                     <td>End Date</td>
-                    <td> {{ object.End_Date|date:"d M, Y" }} <span
-                            class="timecon">{{ object.End_Date|date:"d M, Y h:i A" }}</span></td>
+                    <td>
+                        {% if object.End_Date %}
+                            {{ object.End_Date|date:"d M, Y" }} <span
+                                class="timecon">{{ object.End_Date|date:"d M, Y h:i A" }}</span></td>
+                        {% endif %}
                 </tr>
 
                 <tr>
