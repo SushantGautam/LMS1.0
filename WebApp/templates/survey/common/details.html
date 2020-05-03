@@ -29,26 +29,28 @@
         <div class="col-md-5 col-sm-5">
           <div class="viewSurveyTitle">
             <ul class="card_labels">
-              <li>
-                <div class="form-group">
-                  <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                         for="first-name">Category :
-                    <span class="category-label">{{ object.Category_Code }}</span>
-                  </label>
-                </div>
-              </li>
-              <li class="surveyViewDates">
-                <i class="fa fa-calendar"></i><label>Start date: <span
-                  class="datecon">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
-              </li>
-              <li class="surveyViewDates">
-                <i class="fa fa-calendar"></i><label>End date: <span
-                  class="datecon">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
-              </li>
-              <li class="surveyViewDates">
-                <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
-                Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
-              </li>
+                <li>
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                               for="first-name">Category :
+                            <span class="category-label">{{ object.Category_Code }}</span>
+                        </label>
+                    </div>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="fa fa-calendar"></i><label>Start date: <span
+                        class="">{{ object.Start_Date|date:'M d, Y' }}</span> <span
+                        class="timecon">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></label>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="fa fa-calendar"></i><label>End date: <span
+                        class="">{{ object.End_Date|date:'M d, Y' }}</span> <span
+                        class="timecon">{{ object.End_Date|date:"d M, Y h:i A" }}</span></label>
+                </li>
+                <li class="surveyViewDates">
+                    <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
+                    Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
+                </li>
             </ul>
 
 
@@ -494,26 +496,30 @@ margin: 0 auto"></div>
               {% endif %} {% endfor %}
           </div>
         </div>
-        <div class="col-md-3">
-          {% for survey in history %}
-            <div class="x_panel" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+          <div class="col-md-3">
+              {% for survey in history %}
+                  <div class="x_panel" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
 
-              {% if survey.id == object.id %}
-                <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
-                <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
-                <h4 class="text-danger text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                <h4 class="text-danger text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
-              {% else %}
-                <h4 class="text-info text-center"><a
-                    href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
-                <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
-                <h4 class="text-info text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                <h4 class="text-info text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
-              {% endif %}
+                      {% if survey.id == object.id %}
+                          <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
+                          <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
+                          <h4 class="text-danger text-center ">{{ survey.Start_Date|date:'M d, Y' }} <span
+                                  class="timecon">{{ survey.Start_Date|date:"d M, Y h:i A" }}</span></h4>
+                          <h4 class="text-danger text-center ">{{ survey.End_Date|date:'M d, Y' }} <span
+                                  class="timecon">{{ survey.End_Date|date:"d M, Y h:i A" }}</span></h4>
+                      {% else %}
+                          <h4 class="text-info text-center"><a
+                                  href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
+                          <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
+                          <h4 class="text-info text-center ">{{ survey.Start_Date|date:'M d, Y' }} <span
+                                  class="timecon">{{ survey.Start_Date|date:"d M, Y h:i A" }}</span></h4>
+                          <h4 class="text-info text-center ">{{ survey.End_Date|date:'M d, Y H:i' }} <span
+                                  class="timecon">{{ survey.End_Date|date:"d M, Y h:i A" }}</span></h4>
+                      {% endif %}
 
-            </div>
-          {% endfor %}
-        </div>
+                  </div>
+              {% endfor %}
+          </div>
       </div>
     </div>
   </div>

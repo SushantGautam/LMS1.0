@@ -36,11 +36,11 @@
             </a> -->
             <a class="btn-sm btn-info" href="
                 {% if '/teachers' in request.path %}
-                    {% url 'teacher_contentviewer' object.Course_Code.pk object.pk %}
+                    {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
                 {% elif '/students' in request.path %}
-                    {% url 'student_contentviewer' object.Course_Code.pk object.pk %}
+                    {% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}
                 {% else %}
-                    {% url 'contentviewer' object.Course_Code.pk object.pk %}
+                    {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
                 {% endif %}" id="course-viewer" target="_self">
                 <i class="fa fa-laptop"></i> Content Viewer &nbsp;
             </a>
@@ -93,33 +93,40 @@
                 </tr>
 
                 <tr>
-                    <td>Published</td>
-                    <td>
-                        {% if object.Use_Flag is True %}<span style="color:green"> <b>Published</b>
-                        </span>{% elif object.Use_Flag is False %}
-                            <span class="text-danger"><b>Not Published</b></span>{% endif %}
-                    </td>
-                </tr>
-                <tr>
                     <td>Status</td>
                     <td>
+                        {% if object.Use_Flag is True %}
+                            <span class="badge badge-success">Published</span>
+                        {% elif object.Use_Flag is False %}
+                            <span class="badge badge-danger">Not Published</span>
+                        {% endif %}
+
                         {% now "Y-m-d H:i" as todays_datewithtime %}
                         {% if object.Start_Date and todays_datewithtime < object.Start_Date|date:"Y-m-d H:i" %}
-                            <span class="text-danger"><b>Inactive</b></span>
+                            <span class="badge badge-info">Upcoming</span>
                         {% elif object.End_Date and todays_datewithtime > object.End_Date|date:"Y-m-d H:i" %}
-                            <span class="text-danger"><b>Expired</b></span>
+                            <span class="badge badge-danger">Expired</span>
                         {% else %}
-                            <span class="text-info"><b>Active</b></span>
+                            <span class="badge badge-success">Active</span>
                         {% endif %}
+
                     </td>
                 </tr>
                 <tr>
                     <td>Start Date</td>
-                    <td class="datecon">{{ object.Start_Date|date:"d M, Y H:i" }}</td>
+                    <td>
+                        {% if object.Start_Date %}
+                            {{ object.Start_Date|date:"d M, Y" }} <span
+                                class="timecon">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></td>
+                        {% endif %}
                 </tr>
                 <tr>
                     <td>End Date</td>
-                    <td class="datecon">{{ object.End_Date|date:"d M, Y H:i" }}</td>
+                    <td>
+                        {% if object.End_Date %}
+                            {{ object.End_Date|date:"d M, Y" }} <span
+                                class="timecon">{{ object.End_Date|date:"d M, Y h:i A" }}</span></td>
+                        {% endif %}
                 </tr>
 
                 <tr>
@@ -340,9 +347,11 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
                     <p>Start Date - <span
-                            class="datecon">{{ o.Assignment_Start|date:'M d, Y H:i' }}</span></p>
+                            class="">{{ o.Assignment_Start|date:'M d, Y' }}</span> <span
+                            class="timecon">{{ o.Assignment_Start|date:"d M, Y h:i A" }}</span></p>
                     <p>Submission Deadline - <span
-                            class="datecon">{{ o.Assignment_Deadline|date:'M d, Y H:i' }}</span></p>
+                            class="">{{ o.Assignment_Deadline|date:'M d, Y' }}</span> <span
+                            class="timecon">{{ o.Assignment_Deadline|date:"d M, Y h:i A" }}</span></p>
                 </div>
             </div>
         {% endfor %}

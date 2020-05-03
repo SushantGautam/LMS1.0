@@ -59,11 +59,13 @@
                         <tr>
                             <td>Assignment Start Date</td>
                             {#                            Use Datecon class in td if conversion of date to local time is required#}
-                            <td class="datecon">{{ object.Assignment_Start|date:'M d, Y H:i' }}</td>
+                            <td class="">{{ object.Assignment_Start|date:'M d, Y' }} <span
+                                    class="timecon">{{ object.Assignment_Start|date:"d M, Y h:i A" }}</span></td>
                         </tr>
                         <tr>
                             <td>Assignment Deadline</td>
-                            <td class="datecon">{{ object.Assignment_Deadline|date:'M d, Y H:i' }}</td>
+                            <td class="">{{ object.Assignment_Deadline|date:'M d, Y' }} <span
+                                    class="timecon">{{ object.Assignment_Deadline|date:"d M, Y h:i A" }}</span></td>
                         </tr>
                         <tr>
                             <td>Course Code</td>
@@ -79,11 +81,21 @@
                         </tr>
                         <tr>
                             <td>Status</td>
-                            <td>{% if object.Use_Flag == True %}
-                                <span class="text-success">Active</span>
-                            {% else %}
-                                <span class="text-danger">Inactive</span>
-                            {% endif %}
+                            <td>
+                                {% if object.Use_Flag is True %}
+                                    <span class="badge badge-success">Published</span>
+                                {% elif object.Use_Flag is False %}
+                                    <span class="badge badge-danger">Not Published</span>
+                                {% endif %}
+
+                                {% now "Y-m-d H:i" as todays_datewithtime %}
+                                {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-info">Upcoming</span>
+                                {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-danger">Expired</span>
+                                {% else %}
+                                    <span class="badge badge-success">Active</span>
+                                {% endif %}
                             </td>
                         </tr>
                     </table>
@@ -654,8 +666,8 @@
         });
     </script>
     <script>
-        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString()
-        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString()
+        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
+        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")
         $('#id_Assignment_Deadline_edit').datetimepicker();
         $('#id_Assignment_Start_edit').datetimepicker();
         $("#ajaxassignmentinfoform").submit(function (e) {

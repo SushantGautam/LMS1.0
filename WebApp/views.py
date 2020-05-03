@@ -822,6 +822,36 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
 
+class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
+    model = ChapterInfo
+    form_class = ChapterInfoForm
+    template_name = 'ajax/chapterinfo_form_ajax.html'
+
+    def post(self, request, *args, **kwargs):
+        Obj = ChapterInfo.objects.get(pk=kwargs.get('pk'))
+        Obj.Chapter_No = request.POST["Chapter_No"]
+        Obj.Chapter_Name = request.POST["Chapter_Name"]
+        Obj.Summary = request.POST["Summary"]
+        # if request.POST["Use_Flag"] == 'false':
+        #     Obj.Use_Flag = False
+        # else:
+        #     Obj.Use_Flag = True
+        # Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
+        # Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
+        # Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+        Obj.save()
+
+        return JsonResponse(
+            data={
+                'Message': 'Success',
+                'chapter_no': Obj.Chapter_No,
+                'summary': (Obj.Summary[:70] + '..') if len(Obj.Summary) > 70 else Obj.Summary,
+                'chapter_name': Obj.Chapter_Name,
+                'chapter_pk': Obj.pk,
+            },
+
+            status=200
+        )
 
 class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
@@ -1754,6 +1784,8 @@ def save_video(request):
     if request.method == "POST":
         chapterID = request.POST['chapterID']
         courseID = request.POST['courseID']
+        courseObj = CourseInfo.objects.get(pk=courseID)
+        chapterObj = ChapterInfo.objects.get(pk=chapterID)
         media_type = request.POST['type']
         path = ''
         if request.FILES['file-0']:
@@ -1810,11 +1842,34 @@ def save_video(request):
                 if res.status_code == 204 or res.status_code == 200:
                     response = rs.head(r_responseText['upload']['upload_link'])
 
-                    a = rs.put(
-                        url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[-1],
+                    if settings.SERVER_NAME == "Korean_Server":
+                        a = rs.put(
+                            url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[
+                                -1],
+                            headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                     'Content-Type': 'application/json',
+                                     'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                    elif settings.SERVER_NAME == "Vietnam_Server":
+                        a = rs.put(
+                            url='https://api.vimeo.com/me/projects/1796938/videos/' + r_responseText['uri'].split('/')[
+                                -1],
+                            headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                     'Content-Type': 'application/json',
+                                     'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+
+                    tags = rs.put(
+                        url='https://api.vimeo.com/' + r_responseText['uri'] + '/tags',
                         headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                                  'Content-Type': 'application/json',
-                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                                 'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                        data=json.dumps([
+                            {"name": "center_" + request.user.Center_Code.Center_Name.lower()},
+                            {"name": "userid_" + str(request.user.pk)},
+                            {"name": "course_" + courseObj.Course_Name.lower()},
+                            {"name": "chapterid_" + str(chapterObj.pk)},
+                            {"name": settings.SERVER_NAME.lower()},
+                        ])
+                    )
                     return JsonResponse(
                         {'link': r_responseText['upload']['upload_link'], 'media_name': name,
                          'html': r_responseText['embed']['html']})
@@ -1989,33 +2044,41 @@ def import_chapter(request):
 
 
 def retrievechapterfile(request):
+    max_items = 10
     chapterID = request.GET['chapterID']
     courseID = request.GET['courseID']
     userID = request.GET['userpk']
+    if request.GET.get('max_items'):
+        max_items = int(request.GET.get('max_items'))
     path = settings.MEDIA_ROOT
     image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
     video_extensions = ['.mp4', ]
-    images = []
-    videos = []
+    _3d_extensions = ['.gltf', '.glb']
+    # images = []
+    # videos = []
     pdf = []
+    _3d = []
     try:
         if os.path.exists(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID)):
             chapterfiles = os.listdir(path + '/chapterBuilder/' + str(courseID) + '/' + str(chapterID))
             for files in chapterfiles:
-                if (files[-4:] in image_extensions):
-                    images.append(files)
-                elif (files[-4:] in video_extensions):
-                    videos.append(files)
-                elif (files.endswith('.pdf')):
+                if (files.endswith('.pdf')):
                     pdf.append(files)
+                elif (files[-4:] in _3d_extensions):
+                    _3d.append(files)
+                # elif (files[-4:] in image_extensions):
+                #     images.append(files)
+                # elif (files[-4:] in video_extensions):
+                #     videos.append(files)
         else:
             print("No directory of this chapter")
     except Exception as e:
         print(e)
     return JsonResponse({
-        'images': images,
-        'videos': videos,
-        'pdf': pdf
+        # 'images': images,
+        # 'videos': videos,
+        'pdf': pdf[:max_items] if len(pdf) > max_items else pdf,
+        '_3d': _3d[:max_items] if len(_3d) > max_items else _3d,
     })
 
 
@@ -2149,7 +2212,7 @@ class NewContentsView(TemplateView):
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
-        context['chat_details'] = []
+        context['chat_history'] = []
         context['connection_offline'] = False
         path = settings.MEDIA_ROOT
 
@@ -2161,20 +2224,21 @@ class NewContentsView(TemplateView):
             print(e)
             context['data'] = ""
 
-        list_of_files = sorted(glob.iglob(path + '/chatlog/chapterchat' + str(chapterID) + '/*.txt'),
+        # Retrieving recent 50 chat message of each individual chapter
+        list_of_files = sorted(glob.iglob(path + '/chatlog/chat_' + str(chapterID) + '/*.txt'),
                                key=os.path.getctime, reverse=True)[:50]
-
         for latest_file in list_of_files:
             try:
                 f = open(latest_file, 'r')
                 if f.mode == 'r':
-                    contents = f.read()
-                    contents = contents.replace('`', '')
-                    context['chat_details'].insert(0, contents)
+                    contents = json.loads(f.read())
+                    context['chat_history'].append(contents)
                 f.close()
 
             except Exception as e:
                 pass
+
+        context['chat_history'].reverse()
         return context        
 
 

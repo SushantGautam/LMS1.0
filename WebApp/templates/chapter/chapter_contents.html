@@ -83,7 +83,15 @@
         </a>
 
         {% if '/teachers' in request.path %}
-            <a href="chapterpagebuilder">
+            <a href="{% url 'teachers_newChapterBuilder' course.pk chapter.pk %}">
+                <div class="editbtn" title=""><i style="
+    color: #3c8dbc;
+    padding: 0.5px 2px;
+    text-shadow: 2px 2px #f9f5f5;
+" class="fa fa-pencil"></i></div>
+            </a>
+        {% elif '/teachers' not in request.path and '/students' not in request.path %}
+            <a href="{% url 'newChapterBuilder' course.pk chapter.pk %}">
                 <div class="editbtn" title=""><i style="
     color: #3c8dbc;
     padding: 0.5px 2px;
@@ -153,7 +161,15 @@
 
                 </li>
                 <li style="display: inline-block;">
-                    <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="/profile/"
+                    <a class="profileBtn" data-toggle="tooltip" data-placement="top" title="" href="
+                    {% if '/teachers' in request.path %}
+                        {% url 'teacher_user_profile' %}
+                    {% elif '/students' in request.path %}
+                        {% url 'student_user_profile' %}
+                    {% else %}
+                    /profile/
+                    {% endif %}
+                    "
                        data-original-title="Profile">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                     </a>
@@ -161,7 +177,7 @@
                 </li>
                 <li style="display: inline-block;">
                     <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title=""
-                       href="https://we.tl/t-HCjfXFbUd7" target="_blank"
+                       href="https://we.tl/t-zd5ecmEThc" target="_blank"
                        data-original-title="Download u-LMS Android App">
                         <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
                     </a>
@@ -520,7 +536,7 @@
 
     {% endblock chatui %}
 
-    <div id="examiframeholder">
+    <div id="examiframeholder slideInLeft">
         <div id="closeiframebtn" class="closeiframebtn">
             <button>
                 <i class="fa fa-close" aria-hidden="true">

@@ -1,11 +1,13 @@
 import os
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import socket
-import subprocess
 
+from django.contrib.messages import constants as messages
+
+# # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# import socket
+# import subprocess
 # import django_heroku
 # import sentry_sdk
-from django.contrib.messages import constants as messages
+
 # from sentry_sdk.integrations.celery import CeleryIntegration
 # from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -22,7 +24,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '210.127.211.100', '103.41.247.44', '192.168.1.29']
+ALLOWED_HOSTS = ['127.0.0.1', 'id.ublcloud.me', 'kr.ublcloud.me', 'vn.ublcloud.me']
 
 # Application definition
 
@@ -35,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'channels',
     'crispy_forms',
     'rest_framework',
     'rest_framework.authtoken',
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
     'quiz',
     'survey',
     'decorator_include',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -96,6 +100,21 @@ forum_REG_URL_NAME = "account:reg"
 forum_SITE_NAME = "A lovely forum"
 
 WSGI_APPLICATION = 'LMS.wsgi.application'
+ASGI_APPLICATION = 'LMS.routing.application'
+
+CHANNEL_LAYERS = {    
+    'default': {
+        # Without Redis
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+
+        # Redis server used for caching
+        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        # 'CONFIG': {
+        #     "hosts": [('127.0.0.1', 6379)],
+        # },
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -116,6 +135,21 @@ DATABASES = {
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
+# }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "ROUTING": "LMS.routing.channel_routing",
+
+#         # Dev Config
+#         "BACKEND": "asgiref.inmemory.ChannelLayer",
+
+#         # Production Config using REDIS
+#         # "BACKEND": "asgi_redis.RedisChannelLayer",
+#         # "CONFIG": {
+#         #    "hosts": [("redis", 6379)],
+#         # },
+#     },
 # }
 
 # Password validation
@@ -145,27 +179,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# Channels
-# https://channels.readthedocs.io/en/stable/getting-started.html
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "ROUTING": "LMS.routing.channel_routing",
-
-#         # Dev Config
-#         "BACKEND": "asgiref.inmemory.ChannelLayer",
-
-#         # Production Config using REDIS
-#         # "BACKEND": "asgi_redis.RedisChannelLayer",
-#         # "CONFIG": {
-#         #    "hosts": [("redis", 6379)],
-#         # },
-#     },
-# }
-
-# INSTALLED_APPS += [
-#     'channels'
-# ]
 
 INSTALLED_APPS += ("django_createsuperuserwithpassword",)
 
@@ -217,7 +230,9 @@ REST_FRAMEWORK = {
 #     }
 # }
 
-SERVER_NAME = 'Indonesian_Server'
+# SERVER_NAME = 'Indonesian_Server'
+# SERVER_NAME = 'Korean_Server'
+SERVER_NAME = 'Vietnam_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

@@ -33,6 +33,8 @@ function getEmbedVideo(url) {
     var webmMatch = url.match(webmRegExp);
     var fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
     var fbMatch = url.match(fbRegExp);
+    var cincopaRegExp = /(mediacdnl3.cincopa.com)/g;
+    var cincopaMatch = url.match(cincopaRegExp);
     var $video_element;
     if (ytMatch && ytMatch[1].length === 11) {
         var youtubeId = ytMatch[1];
@@ -67,6 +69,11 @@ function getEmbedVideo(url) {
             .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (mp4Match || oggMatch || webmMatch) {
         $video_element = $('<video controls>')
+            .attr('src', url)
+            .attr('width', '100%').attr('height', '100%');
+    } else if (cincopaMatch && cincopaMatch[0].length === 22) {
+        $video_element = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
             .attr('src', url)
             .attr('width', '100%').attr('height', '100%');
     } else {
@@ -119,8 +126,8 @@ class Textbox {
                         <div id="editor${id}" class="messageText"></div>
                         
                          <div id="text-actions" class = "text-actions">
-                         <i class=" hints fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
-                             <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="hints fas fa-arrows-alt" id="draghere" ></i>
+                         <i class ="fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
+                             <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghere" ></i>
                          </div>
                      </div>
               `;
@@ -190,8 +197,6 @@ class Textbox {
             });
             $('.note-editable').css('font-size', '15px');
             $('.note-toolbar').css('display', 'none');
-            $('[data-toggle="tooltip"]').tooltip()
-
 
             $('#editor' + id).parent().find('.note-statusbar').remove();
             $('#editor' + id).parent().find('.note-editable').html(message);
@@ -211,7 +216,6 @@ class Textbox {
 
 class picture {
     constructor(top, left, pic = null, link = null, width = null, height = null) {
-
         let id = (new Date).getTime();
         let position = {top, left, width, height};
         let message = "";
@@ -221,6 +225,16 @@ class picture {
                     <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
                 </div>
                 <p>Drag and drop images here...</p>
+                <div class="progressc mx-auto loadingDiv" data-value='0' style="display:none">
+                <span class="progress-left">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <span class="progress-right">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                <div class="h2 font-weight-bold percentcomplete">0<span class="small">%</span></div>
+                </div>
                 `
         }
         let img = '';
@@ -234,9 +248,12 @@ class picture {
         let html =
             `<div class='pic'>
             <div id="pic-actions">
-                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="hints fas fa-trash" id=${id} ></i>
-                <i data-toggle="tooltip" data-placement="bottom"  title='Upload File' class="hints fas fa-upload" id=${id}></i>
-                <i data-toggle="tooltip" data-placement="bottom"  title='Link Image' class="hints fas fa-link imagelink" id=${id}></i>
+                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
+              <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+              <span data-toggle="tooltip" data-placement="bottom"  title='Link Image'>
+              <i  class= "fas fa-link imagelink" id=${id}></i>
+              </span>
+                
             </div>
             ${img}
             <div>
@@ -278,10 +295,10 @@ class picture {
                     $(this).css("width", w);
                 }
             });
-            
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
-            $('[data-toggle="tooltip"]').tooltip();
+
 
         };
     }
@@ -350,9 +367,10 @@ class video {
         let html =
             `<div class='video-div'>
                 <div id="video-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload File' class="fas fa-upload" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link File' class="fas fa-link videolink" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom" title='Delete item' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                   
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Link File' class="fas fa-link videolink" id=${id}></i>
                 </div>
                 <div>
                     <p id="video-drag">${message}</p>
@@ -395,7 +413,6 @@ class video {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom)
         };
@@ -451,8 +468,10 @@ class Audio {
         let html =
             `<div class='audio-div'>
                 <div id="audio-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload  File' class="fas fa-upload" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Link File' class="fas fa-link audiolink" id=${id}></i>
+
                 </div>
                 <div>
                     <p id="audio-drag">${message}</p>
@@ -495,7 +514,6 @@ class Audio {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom)
         };
@@ -515,9 +533,10 @@ class Button {
         let html = `
                     <div class="btn-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link Button' class="fas fa-link"   id=${id} ></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
+                            
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
 
@@ -562,7 +581,7 @@ class Button {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -583,9 +602,10 @@ class Quiz {
         let html = `
                     <div class="quiz-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash"  class="fas fa-trash" id=${id}></i>
-                            <i title="Link Button" class="fas fa-link"   id=${id} ></i>
-                            <i title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash"  class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span>
+                            
+                            <i data-toggle="tooltip" data-placement="bottom" title="Drag Item" class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder ">
@@ -636,7 +656,7 @@ class Quiz {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -657,9 +677,9 @@ class Survey {
         let html = `
                     <div class="survey-div" data-width = "${width}">
                         <div class="options">
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" id=${id}></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Link File' class="fas fa-link"   id=${id} ></i>
-                            <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                            <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i class="fas fa-link"  id=${id}></i></span> 
+                            <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghanle"></i>
                         
                         </div> 
                         <div class="button-name-builder">
@@ -706,7 +726,7 @@ class Survey {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // canvas.append(dom);
@@ -741,8 +761,9 @@ class PDF {
         let html = `
         <div class='pdfdiv'>
             <div id="pdfdiv-actions1">
-                <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete item' class="fas fa-trash" ></i>
-                <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload File' class="fas fa-upload" id=${id}></i>
+                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                <i  class= "fas fa-link pdflink" id=${id}></i>
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -783,7 +804,7 @@ class PDF {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
             // Making element Resizable
@@ -823,8 +844,9 @@ class _3Dobject {
         let html =
             `<div class='_3dobj-div'>
                 <div id="_3dobj-actions">
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Delete Button' class="fas fa-trash" id=${id}></i>
-                    <i data-toggle="tooltip" data-placement="bottom" id="hints" title='Upload fIle' class="fas fa-upload" id=${id}></i>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Delete Button' class="fas fa-trash" id=${id}></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                    <i  class= "fas fa-link _3dlink" id=${id}></i>
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -865,7 +887,7 @@ class _3Dobject {
                     $(this).css("width", w);
                 }
             });
-            $('[data-toggle="tooltip"]').tooltip();
+
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
         };
@@ -878,17 +900,18 @@ class BaseLayout {
 
         let html = `<div class="baselayout">
                     <div class="layout-actions">
-                        <i title="delete-button" class="fas fa-trash"></i>
+                        <i title="delete-button" class="fas fa-trash" data-toggle="tooltip" data-placement="bottom"></i>
                     </div>
                     <div class="layout-icon-placement">
-                        <div>
-                                <span title="Text-box" class="layout-icons layout-text">
+                        <div>    
+                      
+                                <span data-toggle="tooltip" data-placement="top" title="Text-box" class="layout-icons layout-text">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/text.svg "></img>
                                 </span>
-                                <span title="Upload Image" class="layout-icons layout-image">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload Image" class="layout-icons layout-image">
                                 <img  class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/picture.svg "></img>
                                 </span>
-                                <span  title="Upload Video" class="layout-icons layout-video">
+                                <span data-toggle="tooltip" data-placement="top"  title="Upload Video" class="layout-icons layout-video">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/video.svg "></img>
                                 
                                 </span>
@@ -896,13 +919,13 @@ class BaseLayout {
                         </div>
                         <div>
 
-                                <span title="Upload Audio" class="layout-icons layout-audio">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload Audio" class="layout-icons layout-audio">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/audio.png "></img>
                                 </span>
-                                <span title="Upload PDF" class="layout-icons layout-pdf">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload PDF" class="layout-icons layout-pdf">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/pdf.svg "></img>
                                 </span>
-                                <span title="Upload 3D-FILE" class="layout-icons layout-3d">
+                                <span data-toggle="tooltip" data-placement="top" title="Upload 3D-FILE" class="layout-icons layout-3d">
                                 <img class="opacity-layout-icons" src = "/static/chapterPageBuilder/icons/newicon/3d-cube.svg "></img>
                                 </span>
 
@@ -944,6 +967,7 @@ class BaseLayout {
             var a = document.getElementsByClassName("current")[0];
             $('#' + a.id).append(dom);
         };
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }
 
@@ -1010,6 +1034,7 @@ function LayoutFunction(top = null, left = null, height = "100%", width = "100%"
                 null, $(this).closest('.baselayout').css('height'), $(this).closest('.baselayout').css('width'),
                 "Button", "", font_size = "75px")
         }
+        $('[data-toggle="tooltip"]').tooltip()
     })
 }
 
@@ -1105,21 +1130,22 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         var link_id = parseInt(e.currentTarget.id) + 1
         var div = $('#' + e.currentTarget.id).parent().parent();
         // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
-        var prevlink = $(this).parent().parent().find('img').attr('src')
+        var prevlink = $(this).closest('.pic').find('img').attr('src')
         if (prevlink == undefined) {
             prevlink = "";
         }
+        debugger
         var link = prompt("Link of image", prevlink);
         if (link == null) {
             return false
         } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
             link = '' + link
         }
-
         PictureFunction(
             $(div)[0].style.top,
             $(div)[0].style.left,
             link,
+            null,
             $(div)[0].style.width,
             $(div)[0].style.height,
         );
@@ -1189,7 +1215,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     }
                 }
                 request.send()
-                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                     console.log('success')
                 }).fail(function () {
                     console.log('failed')
@@ -1248,6 +1274,9 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                 data.append('chapterID', chapterID);
                 data.append('courseID', courseID);
                 file = input.files[0]
+                $(div).find('.file-upload-icon').hide()
+                $(div).find('p').hide()
+                $(div).find('.loadingDiv').show();
                 var options = {
                     url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                     chunk_size: 10, // MB
@@ -1272,7 +1301,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},,${courseName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -1288,8 +1317,8 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                         );
                     },
                     onUploadProgress: function (e) {
-                        $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
-                        $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                        $(div).find('.loadingDiv').attr('data-value', parseInt(e.percentComplete));
+                        $(div).find('.percentcomplete').html(parseInt(e.percentComplete) + '%');
                         addprogress();
                     },
                     onUploadError: function (e) {
@@ -1339,12 +1368,22 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
-    $('.fa-link').bind("click", function (e) {
+    $('.btn-div button').off().on('click', function (e) {
+        e.preventDefault()
+        link = $(this).closest('.btn-div').find('a')[0].href
+        if (link) {
+            window.open(link, '_blank');
+        } else {
+            $(this).closest('.btn-div').find('.fa-link').click()
+        }
+    });
+
+    $('.btn-div .fa-link').bind("click", function (e) {
         var btn_id = parseInt(e.currentTarget.id) + 1
 
         $('#btn-form input[type=text]').val('');
-        $('#btn-name').val($(this).parent().parent().find('a').text().trim());
-        var link = $(this).parent().parent().find('a').attr('href');
+        $('#btn-name').val($(this).closest('.btn-div').find('a').text().trim());
+        var link = $(this).closest('.btn-div').find('a').attr('href');
         if (link != undefined) {
             link = link.replace('http://', '');
         }
@@ -1388,7 +1427,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
 
     $('.quiz-div button').off().on('click', function (e) {
         e.preventDefault()
-        link = $(this).parent().parent().find('a')[0].href
+        link = $(this).closest('.quiz-div').find('a')[0].href
         if (link) {
             quizpk = (link.split('/')[4]).match(/\d+/);
             if (window.location.href.indexOf("/teachers") > -1) {
@@ -1407,7 +1446,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
     const div1 = $('i').parent();
 
     $('.fa-trash').click(function (e) {
-        $('#' + e.currentTarget.id).parent().parent().remove();
+        $('#' + e.currentTarget.id).closest('.quiz-div').remove();
     });
 
     $('.quiz-div .fa-link').bind("click", function (e) {
@@ -1432,8 +1471,8 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
         });
         var btn_id = parseInt(e.currentTarget.id) + 1
         $('#quiz-form input[type=text]').val('');
-        $('#quiz-btn-name').val($(this).parent().parent().find('.resizable-text-only').text().trim());
-        var link = $(this).parent().parent().find('a').attr('href');
+        $('#quiz-btn-name').val($(this).closest('.quiz-div').find('.resizable-text-only').text().trim());
+        var link = $(this).closest('.quiz-div').find('a').attr('href');
         if (link != undefined) {
             link = link.replace('http://', '');
         } else {
@@ -1441,7 +1480,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
             $('#quiz-name').parent().parent().hide()
         }
         $('#quiz-link').val(link);
-        $('#quiz-name').val($(this).parent().parent().find('.quiz-name').text().trim());
+        $('#quiz-name').val($(this).closest('.quiz-div').find('.quiz-name').text().trim());
         $('#quiz_id').val(btn_id);
         $('#quiz-modal').modal('show');
     });
@@ -1480,7 +1519,7 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
 
     $('.survey-div button').off().on('click', function (e) {
         e.preventDefault()
-        link = $(this).parent().parent().find('a')[0].href
+        link = $(this).closest('.survey-div').find('a')[0].href
         if (link) {
             surveypk = (link.split('/')[6]).match(/\d+/);
             if (window.location.href.indexOf("/teachers") > -1) {
@@ -1523,8 +1562,8 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
         });
         var btn_id = parseInt(e.currentTarget.id) + 1
         $('#survey-form input[type=text]').val('');
-        $('#survey-btn-name').val($(this).parent().parent().find('.resizable-text-only').text().trim());
-        var link = $(this).parent().parent().find('a').attr('href');
+        $('#survey-btn-name').val($(this).closest('.survey-div').find('.resizable-text-only').text().trim());
+        var link = $(this).closest('.survey-div').find('a').attr('href');
         if (link != undefined) {
             link = link.replace('http://', '');
         } else {
@@ -1532,7 +1571,7 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
             $('#survey-name').parent().parent().hide()
         }
         $('#survey-link').val(link);
-        $('#survey-name').val($(this).parent().parent().find('.survey-name').text().trim());
+        $('#survey-name').val($(this).closest('.survey-div').find('.survey-name').text().trim());
         $('#survey_id').val(btn_id);
         $('#survey-modal').modal('show');
     });
@@ -1579,6 +1618,28 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
 
     $('.fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('.pdflink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        }
+        PDFFunction(
+            $(div)[0].style.top,
+            $(div)[0].style.left,
+            link,
+            $(div)[0].style.height,
+            $(div)[0].style.width,
+        );
+        div.remove()
+
     });
 
     $('.pdfdiv').on('dragover', function (e) {
@@ -1790,8 +1851,9 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
             link = 'http://' + link
         }
         video_link = getEmbedVideo(link)
-        div.find('p, iframe, video').remove();
+        div.find('p, iframe, video, .progress').remove();
         div.append(video_link);
+
     });
 
     $('.video-div').on('dragover', function (e) {
@@ -1813,89 +1875,6 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
             });
         },
     });
-
-    // $('.video-div').on('drop', function (e) {
-    //     e.stopPropagation();
-    //     e.preventDefault();
-
-
-    //     $(this).css({
-    //         'padding': '5px'
-    //     })
-
-    //     const files = e.originalEvent.dataTransfer.files;
-    //     var file = files[0];
-    //     upload(file);
-    // });
-
-    // function upload(file) {
-    //     var data = new FormData();
-
-    //     data.append("FileName", file);
-    //     data.append('chapterID', chapterID);
-    //     data.append('courseID', courseID);
-    //     data.append('type', 'video');
-    //     $.ajax({
-    //         xhr: function () {
-    //             var xhr = new window.XMLHttpRequest();
-
-    //             xhr.upload.addEventListener("progress", function (evt) {
-    //                 $('#progress-bar').css("display", "block");
-
-    //                 if (evt.lengthComputable) {
-    //                     var percentComplete = evt.loaded / evt.total;
-    //                     percentComplete = parseInt(percentComplete * 100);
-    //                     console.log(percentComplete);
-    //                     // $('#progress-bar-fill').css('width', percentComplete + '%');
-    //                     $("#progress-bar").attr('aria-valuenow', percentComplete).css('width', percentComplete + '%').text(percentComplete + '%');
-
-    //                     if (percentComplete === 100) {
-    //                         // $('#progress-bar').css("display", "none");
-    //                         let div = $('#video-drag').parent().parent();
-    //                         $('#video-drag').css({
-    //                             'display': 'none'
-    //                         });
-
-    //                         div.append(`
-    //                                 <video width="400" height="200" controls>
-    //                                 <source src="../uploads/${data.media_name}" type="video/mp4">
-    //                                 Your browser does not support the video tag.
-    //                             </video>
-    //                         `);
-
-    //                         $(div).hover(function () {
-    //                             $(this).css("border", "1px solid red");
-    //                         }, function () {
-    //                             $(this).css("border", '0')
-    //                         })
-
-    //                         $('.video-div').resizable({
-    //                             containment: $('.editor-canvas'),
-    //                             grid: [20, 20],
-    //                             autoHide: true,
-    //                             minWidth: 150,
-    //                             minHeight: 150
-    //                         });
-    //                     }
-
-    //                 }
-    //             }, false);
-
-    //             return xhr;
-    //         },
-    //         url: save_video_url,
-    //         data: data,
-    //         contentType: false,
-    //         processData: false,
-    //         method: 'POST',
-    //         type: 'POST',
-    //         success: function (data) {
-    //             console.log(data);
-    //         }
-
-    //     });
-
-    // }
 
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -1937,7 +1916,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 }
                             }
                             request.send()
-                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
+                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                                 console.log('success')
                             }).fail(function () {
                                 console.log('failed')
@@ -2091,23 +2070,34 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
     });
-    // $('.videolink').off().bind("click", function (e) {
-    //     var link_id = parseInt(e.currentTarget.id) + 1
-    //     var div = $(this).parent().parent();
-    //     var prevlink = $(this).parent().parent().find('iframe').attr('src');
-    //     if (prevlink == undefined) {
-    //         prevlink = "http://";
-    //     }
-    //     var link = prompt("Url (Youtube, DailyMotion)", prevlink);
-    //     if (link == null) {
-    //         return false
-    //     } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
-    //         link = 'http://' + link
-    //     }
-    //     video_link = getEmbedVideo(link)
-    //     div.find('p, iframe, video').remove();
-    //     div.append(video_link);
-    // });
+    $('.audiolink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
+            link = 'http://' + link
+        }
+        var cincopaRegExp = /(mediacdnl3.cincopa.com)/g;
+        var cincopaMatch = link.match(cincopaRegExp);
+        if (cincopaMatch && cincopaMatch[0].length === 22) {
+            AudioFunction(
+                $(div)[0].style.top,
+                $(div)[0].style.left,
+                link,
+                $(div)[0].style.height,
+                $(div)[0].style.width,
+            );
+            div.remove()
+        } else {
+            alert("Link is not Valid")
+        }
+    });
 
     $('.audio').on('dragover', function (e) {
         e.stopPropagation();
@@ -2167,7 +2157,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -2232,6 +2222,27 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
+    $('._3dlink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        }
+        _3dFunction(
+            $(div)[0].style.top,
+            $(div)[0].style.left,
+            link,
+            $(div)[0].style.height,
+            $(div)[0].style.width,
+        );
+        div.remove()
+
+    });
     $('._3dobj-div').resizable({
         containment: $('#tabs-for-download'),
         grid: [20, 20],
@@ -2247,7 +2258,7 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
         },
     });
 
-    $('.3dobj').on('dragover', function (e) {
+    $('._3dobj').on('dragover', function (e) {
         e.stopPropagation();
         e.preventDefault();
         //   $(this).css('border',"2px solid #39F")
@@ -2298,8 +2309,13 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
                 div.find('#loadingDiv').remove();
             },
             success: function (data) {
-                _3dFunction(div.css('top'),
-                    div.css('left'), '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname, div.css('height'), div.css('width'));
+                _3dFunction(
+                    $(div)[0].style.top,
+                    $(div)[0].style.left,
+                    '/media/chapterBuilder/' + courseID + '/' + chapterID + '/' + data.objname,
+                    $(div)[0].style.height,
+                    $(div)[0].style.width,
+                );
                 div.remove()
             },
             error: function (data, status, errorThrown) {
@@ -2593,7 +2609,7 @@ function clearPage(page_number) {
 }
 
 function dropfunction(event, ui) {
-    let top = ui.helper.position().top;
+    let top = ui.helper.position().top - $('.ols-objects').height() - $('.component-container').height();
     let left = ui.helper.position().left;
 
     $(this).removeClass("over");
@@ -2601,9 +2617,9 @@ function dropfunction(event, ui) {
         top = $('#tab').position().top
     }
 
-    if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
-        top = $('#tab').height() - (0.25 * $('#tab').height())
-    }
+    // if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
+    //     top = $('#tab').height() - (0.25 * $('#tab').height())
+    // }
 
     if (ui.helper.offset().left + (0.20 * $('#tab').width()) > $('#tab').width() && !ui.helper.hasClass('button')) {   // 0.25 is multiplied to sum the height of element to the current pointer position
         left = $('#tab').width() - (0.40 * $('#tab').width()) + sidebarWidth
@@ -2734,6 +2750,7 @@ function dropfunction(event, ui) {
     $('.fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
 function displaypagenumbers() {
@@ -3255,6 +3272,7 @@ function changePage(page_number) {
             $('.pagenumber[value=1]').addClass('current')
             // $('#add-page-btn').click();
             display(data)
+            pickr.setColor(data.pages[currentPage][0].backgroundcolor)
             return
         } else {
             newpagefunction()
@@ -3283,6 +3301,10 @@ function changePage(page_number) {
             // })
         }
         display(data)
+        if (data.pages[currentPage]) {
+            pickr.setColor(data.pages[currentPage][0].backgroundcolor)
+        } else {
+        }
     }
     // localStorage.setItem(`chapter_${chapterID}_currentPage`, window.currentPage);
 }
@@ -3512,9 +3534,9 @@ function setThumbnailscallback(data, dive) {
     });
 }
 
-    $(document).ready(function(){
-        $(function () {
-          $('[data-toggle="tooltip"]').tooltip()
-        })       
-   });
+$(document).ready(function () {
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+});
 

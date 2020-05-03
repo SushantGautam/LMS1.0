@@ -81,7 +81,7 @@
  @media (min-width:1052px) and (max-width:1200px){
  .small-canvases {
     height: 100px;
-    width: 160px;
+    width: 133px;
     background-color: white;
     /* margin: auto; */
     /* margin: 15px auto; */
@@ -92,7 +92,7 @@
     }
     .small-canvases::before{
         content: attr(data-before);
-        margin-left: -22px;
+        margin-left: -19px;
     }
     .layout-icon-placement{
         position: absolute;

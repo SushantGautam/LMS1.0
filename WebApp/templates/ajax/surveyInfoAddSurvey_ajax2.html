@@ -45,7 +45,7 @@
         <div>
             <div id="step-1">
                 <h4 class="text-center" style="padding: 0em 0 !important;
-            
+
             ">Choose Type:</h4>
                 <div class="col-xs-12">
                     <div class="col-md-12">
@@ -195,8 +195,8 @@
 {% block customjss %}
     <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
     <script>
-        document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString()
-        document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString()
+        document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")
+        document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
         $('#id_Start_Date').datetimepicker();
         $('#id_End_Date').datetimepicker();
         $(document).ready(function () {
@@ -454,5 +454,11 @@
             addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
             addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
         }
+    </script>
+
+    <script>
+        date = new Date();
+        var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+        $('#id_Survey_Title').val('Survey ' + new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toLocaleString('en-US', options))
     </script>
 {% endblock customjss %}

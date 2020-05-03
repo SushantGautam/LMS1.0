@@ -107,6 +107,21 @@ body{
     text-decoration: none;
     cursor: pointer;
 }
+.icon-for-chat2{
+    text-decoration: none;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    background: rgb(54, 60, 69,0.8);
+    border-radius: 10%;
+    padding-left: 3px;
+    transition: color 0.3s ease;
+}
+
+.icon-for-chat2:hover{
+    color: black;
+   background-color: white;
+}
 #hamburg-nav{
     font-size: 30px;
     cursor:pointer;
@@ -116,7 +131,7 @@ body{
     color: white;
     font-size: 24px;
     background: rgb(54, 60, 69,0.8);
-    border-radius: 50%;
+    border-radius: 10%;
     padding: 5px;
     transition: color 0.3s ease;
 }
@@ -142,55 +157,70 @@ body{
     left: 0;
     right: 0;
     position: relative;
-    padding-bottom: 20px !important;
+    
     padding-top: 0 !important;
+}
+.page-contents{
+    height: 100%;
 }
 .custom-owl-slider{
     position: absolute;
     bottom: 1%;
-    right: 7%;
-    width: 60%;
+    right: 1%;
+    width: 74%;
     background-color: rgb(54, 60, 69,0.9);
     padding: 10px;
+    z-index: 999;
+}
+.custom-owl-slider2{
+    
+    display: none;
 }
 .page-link-view{
     position: absolute;
     bottom: 16%;
-    left: 8%;
-    width: 11%;
+    left: 1%;
+    width: 9%;
     min-height: 90px;
     background-color: white;
     border: 1px solid #363c45;
     text-align: center;
     box-shadow: 0 0 6px rgba(0,0,0,0.6);
     display: none;
+    z-index: 99;
+    min-width: 120px;
 }
 
 .navigation-owl{
     position: absolute;
     bottom: 1%;
-    left: 8%;
+    left: 1%;
     width: 9%;
     min-height: 90px;
     background-color: rgb(54, 60, 69,0.9);
+    min-width: 120px;
+    z-index: 999;
 }
 .link-view-box{
     position: absolute;
-    left: 26.9%;
+    left: 18.9%;
     bottom: 1%;
-    min-height: 91px;
+    min-height: 94px;
     width: 6%;
     background-color: rgb(54, 60, 69,0.9);
     padding: 7px 0;
+    z-index: 999;
 }
 
 .number-active{
     text-align: center;
-    padding: 5px ;
+    padding: 2px ;
     background-color: #363c45;
-    margin: 8px 10px;
+    margin: 20px 0;
     border: 1px solid #79a6fb;
     font-weight: 600;
+    width: 35px;
+    color: white;
 
 
 }
@@ -241,13 +271,13 @@ body{
 .sidebar-top{
     height: 11vh;
 }
-#sidebar-buttom{
+.sidebar-buttom{
     position: fixed;
     left: 0px;
     right: 0px;
     bottom: 0px;
     background: #363c45;
-    width:15%;
+
     padding: 10px;
     
 }
@@ -288,6 +318,8 @@ body{
 }
 .user-name-part{
     margin: 0px!important;
+    font-size:13px;
+    
 }
 .chapter-lists-all{
     padding: 13% 10px 10px 11%;
@@ -573,22 +605,27 @@ body{
  .owl-prev {
     position: fixed;
     bottom: 10.5vh;
-    left: 35%;
+    left: 27.5%;
     border-radius: 50%;
     /* color: #337ab7 !important; */
     box-shadow: 2px 2px 3px #999;
     font-size: 20px!important;
+    z-index: 999;
 }
 .owl-next {
     position: fixed;
     bottom: 10.5vh;
-    right: 10.75%;
+    right: 4.75%;
     border-radius: 50%;
     /* color: #337ab7 !important; */
     box-shadow: 2px 2px 3px #999;
     font-size: 20px!important;
+    z-index: 999;
 }
 textarea.form-control {
     height: auto;
     resize: none!important;
+}
+.icon2-smallscreen{
+    display: none;
 }
