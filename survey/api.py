@@ -46,6 +46,16 @@ class SubmitSurveyViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SubmitSurveySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = self.queryset
+        survey_id = self.request.GET.get('Survey_Code', None)
+        student_id = self.request.GET.get('Student_Code', None)
+        if survey_id:
+            queryset = queryset.filter(Survey_Code__pk=survey_id)
+        if student_id:
+            queryset = queryset.filter(Student_Code__pk=student_id)
+        return queryset
+
 
 class AnswerInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the AnswerInfo class"""
