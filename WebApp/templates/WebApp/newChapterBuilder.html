@@ -1400,10 +1400,15 @@
                         var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
                     }
                 }
+                title = element.filename
+                trunctitle = title
+                if (title.length > 25) {
+                    trunctitle = truncateString(title, 25)
+                }
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
                         <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-filename=${element.filename} data-href = ${element.content.url}>
+                        <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = ${element.content.url}>
                         <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
                         <img src = ${thumbnail} style="object-fit: contain">
                         </div>
