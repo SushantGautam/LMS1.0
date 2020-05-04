@@ -445,6 +445,8 @@
                             <form id="chapter-description-form" method="post"
                                   action="{% url 'partialchapterinfo_update_ajax' chapterdetails.pk %}">
                                 {% csrf_token %}
+                                <div class="alert alert-danger form-errors" style="display: none">
+                                </div>
                                 <div class="modal-body">
                                     <!-- Modal Contents Here -->
 
@@ -494,6 +496,9 @@
 
                                 </div>
                                 <div class="modal-footer">
+                                    <input type="hidden" name="Course_Code"
+                                           value="{{ chapterdetails.Course_Code.pk }}"
+                                           id="id_Course_Code">
                                     <button type="submit" class="#">Submit</button>
                                     <button type="button" class="#" data-dismiss="modal">Close</button>
                                 </div>
@@ -962,7 +967,10 @@
     <button type="button" class="copy-link-btn" style="display: none">Copy Link</button>
     <input type="text" class="copy-link-text" id="copy-link-text" style="display: none">
 </div>
-<div class="alert-info infomessage" style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">Link Copied</div>
+<div class="alert-info infomessage"
+     style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">
+    Link Copied
+</div>
 </body>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
@@ -1249,12 +1257,20 @@
             data: $(this).serialize(),
             success: function (data) {
                 $('#link-description').modal('toggle');
+                $('.form-errors').empty()
                 $('.chapter-name').text(data.chapter_name)
                 $('#chapter-description').find('p').text(data.summary)
                 $(`#chapterlist option[value=${data.chapter_pk}]`).text(data.chapter_no + '. ' + data.chapter_name)
             },
-            error: function () {
-                console.log('Error in updating')
+            error: function (err) {
+                console.log(err)
+                $('.form-errors').empty()
+                if (err.hasOwnProperty('responseJSON')) {
+                    console.log('Error in posting chapter create form', err.responseJSON.msg)
+                    $('.form-errors').append(err.responseJSON.msg).css('display', 'block')
+                } else {
+                    console.log('Error in posting chapter create form')
+                }
             },
         });
     });

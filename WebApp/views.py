@@ -825,18 +825,38 @@ class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
     form_class = ChapterInfoForm
     template_name = 'ajax/chapterinfo_form_ajax.html'
 
+    def clean(self, **kwargs):
+        pass1, pass2 = False, False
+        cleaned_data = self.request.POST
+        num = int(cleaned_data.get('Chapter_No'))
+        name = cleaned_data.get('Chapter_Name')
+        course = get_object_or_404(CourseInfo, pk=cleaned_data.get('Course_Code'))
+        chapternum = ChapterInfo.objects.filter(Course_Code=course, Chapter_No=num)
+        chaptername = ChapterInfo.objects.filter(Course_Code=course, Chapter_Name=name)
+        if chapternum.exists():
+            if chapternum.filter(pk=kwargs.get('kwargs')['pk'], Course_Code=course).exists():
+                if chapternum.get(pk=kwargs.get('kwargs')['pk']).Chapter_No == num:
+                    pass1 = True
+            if not pass1:
+                return False
+        if chaptername.exists():
+            if chaptername.filter(pk=kwargs.get('kwargs')['pk'], Course_Code=course).exists():
+                if chaptername.get(pk=kwargs.get('kwargs')['pk']).Chapter_Name == name:
+                    pass2 = True
+            if not pass2:
+                return False
+
+        return True
+
     def post(self, request, *args, **kwargs):
+        cleaned = self.clean(kwargs=kwargs)
+        if not cleaned:
+            return JsonResponse(data={'msg': 'Chapter Number or Chapter Name already Exists'}, status=500)
         Obj = ChapterInfo.objects.get(pk=kwargs.get('pk'))
         Obj.Chapter_No = request.POST["Chapter_No"]
         Obj.Chapter_Name = request.POST["Chapter_Name"]
         Obj.Summary = request.POST["Summary"]
-        # if request.POST["Use_Flag"] == 'false':
-        #     Obj.Use_Flag = False
-        # else:
-        #     Obj.Use_Flag = True
-        # Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
-        # Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-        # Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+
         Obj.save()
 
         return JsonResponse(

@@ -2882,6 +2882,8 @@ function newpagefunction(new_page_num) {
     if (!window.firstload) {
         changePage('tab' + num_tabs)
     }
+    const additionalCanvas = document.querySelector('.additional-canvas');
+    additionalCanvas.scrollTop = additionalCanvas.scrollHeight;
 
 }
 
