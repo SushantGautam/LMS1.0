@@ -674,7 +674,13 @@
                         <div class="col-md-12">
 
                             <div class="new-quiz">
-                                <a href="{% url 'chapterinfo_detail' course chapter %}?ifquiz=1" target="_blank"
+                                <a href="
+                                    {% if '/teachers' in request.path %}
+                                    {% url 'teacher_chapterinfo_detail' course chapter %}?ifquiz=1
+                                    {% else %}
+                                    {% url 'chapterinfo_detail' course chapter %}?ifquiz=1
+                                    {% endif %}
+                                    " target="_blank"
                                    id="quiz_create_link">
                                     <h5> <span
                                             style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
@@ -785,10 +791,10 @@
 
                             <div class="new-survey">
                                 <a id="survey_create_link" href="    {% if 'teachers' in request.path %}
-                    {% url  'teacher_courseinfo_detail' course %}?ifsurvey=1
-                    {% else %}
-                    {% url  'courseinfo_detail' course %}?ifsurvey=1
-                    {% endif %}"
+                                    {% url  'teacher_courseinfo_detail' course %}?ifsurvey=1
+                                    {% else %}
+                                    {% url  'courseinfo_detail' course %}?ifsurvey=1
+                                    {% endif %}"
                                    target="_blank">
                                     <h5> <span
                                             style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create

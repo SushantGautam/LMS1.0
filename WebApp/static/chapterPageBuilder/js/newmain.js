@@ -2569,30 +2569,28 @@ $(document).ready(function () {
         });
     });
 
+    $('#quiz_create_link').click(function (e) {
+        $('#iframeholder iframe').on('load', function () {
+            var iframe = $('#iframeholder iframe').contents();
+            $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button', function () {
+                setTimeout(() => {
+                    modalcloseFunction()
+                }, 1000)
+            });
+        });
+    })
 
+    $('#survey_create_link').click(function (e) {
+        $('#iframeholder iframe').on('load', function () {
+            var iframe = $('#iframeholder iframe').contents();
+            $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button', function () {
+                setTimeout(() => {
+                    modalcloseFunction()
+                }, 1000)
+            });
+        });
+    })
 });
-$('#quiz_create_link').click(function (e) {
-    $('#iframeholder iframe').on('load', function () {
-        var iframe = $('#iframeholder iframe').contents();
-        $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button', function () {
-            setTimeout(() => {
-                modalcloseFunction()
-            }, 1500)
-        });
-    });
-
-})
-$('#survey_create_link').click(function (e) {
-    $('#iframeholder iframe').on('load', function () {
-        var iframe = $('#iframeholder iframe').contents();
-        $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button', function () {
-            setTimeout(() => {
-                modalcloseFunction()
-            }, 1500)
-        });
-    });
-
-})
 
 function modalcloseFunction() {
     $('#closeiframebtn').click();
