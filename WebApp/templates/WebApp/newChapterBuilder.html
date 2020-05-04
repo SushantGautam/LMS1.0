@@ -445,6 +445,8 @@
                             <form id="chapter-description-form" method="post"
                                   action="{% url 'partialchapterinfo_update_ajax' chapterdetails.pk %}">
                                 {% csrf_token %}
+                                <div class="alert alert-danger form-errors" style="display: none">
+                                </div>
                                 <div class="modal-body">
                                     <!-- Modal Contents Here -->
 
@@ -494,6 +496,9 @@
 
                                 </div>
                                 <div class="modal-footer">
+                                    <input type="hidden" name="Course_Code"
+                                           value="{{ chapterdetails.Course_Code.pk }}"
+                                           id="id_Course_Code">
                                     <button type="submit" class="#">Submit</button>
                                     <button type="button" class="#" data-dismiss="modal">Close</button>
                                 </div>
@@ -669,7 +674,13 @@
                         <div class="col-md-12">
 
                             <div class="new-quiz">
-                                <a href="{% url 'chapterinfo_detail' course chapter %}?ifquiz=1" target="_blank"
+                                <a href="
+                                    {% if '/teachers' in request.path %}
+                                    {% url 'teacher_chapterinfo_detail' course chapter %}?ifquiz=1
+                                    {% else %}
+                                    {% url 'chapterinfo_detail' course chapter %}?ifquiz=1
+                                    {% endif %}
+                                    " target="_blank"
                                    id="quiz_create_link">
                                     <h5> <span
                                             style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
@@ -780,10 +791,10 @@
 
                             <div class="new-survey">
                                 <a id="survey_create_link" href="    {% if 'teachers' in request.path %}
-                    {% url  'teacher_courseinfo_detail' course %}?ifsurvey=1
-                    {% else %}
-                    {% url  'courseinfo_detail' course %}?ifsurvey=1
-                    {% endif %}"
+                                    {% url  'teacher_courseinfo_detail' course %}?ifsurvey=1
+                                    {% else %}
+                                    {% url  'courseinfo_detail' course %}?ifsurvey=1
+                                    {% endif %}"
                                    target="_blank">
                                     <h5> <span
                                             style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
@@ -962,7 +973,10 @@
     <button type="button" class="copy-link-btn" style="display: none">Copy Link</button>
     <input type="text" class="copy-link-text" id="copy-link-text" style="display: none">
 </div>
-<div class="alert-info infomessage" style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">Link Copied</div>
+<div class="alert-info infomessage"
+     style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">
+    Link Copied
+</div>
 </body>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
@@ -1249,12 +1263,20 @@
             data: $(this).serialize(),
             success: function (data) {
                 $('#link-description').modal('toggle');
+                $('.form-errors').empty()
                 $('.chapter-name').text(data.chapter_name)
                 $('#chapter-description').find('p').text(data.summary)
                 $(`#chapterlist option[value=${data.chapter_pk}]`).text(data.chapter_no + '. ' + data.chapter_name)
             },
-            error: function () {
-                console.log('Error in updating')
+            error: function (err) {
+                console.log(err)
+                $('.form-errors').empty()
+                if (err.hasOwnProperty('responseJSON')) {
+                    console.log('Error in posting chapter create form', err.responseJSON.msg)
+                    $('.form-errors').append(err.responseJSON.msg).css('display', 'block')
+                } else {
+                    console.log('Error in posting chapter create form')
+                }
             },
         });
     });
@@ -1263,6 +1285,12 @@
 {# End of Scripts from old builder #}
 
 <script>
+    const truncateString = (string, maxLength = 30) => {
+        if (!string) return null;
+        const showDots = string.length > maxLength;
+        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+    };
+
     function mediaFilesClickFunction($this) {
         if ($($this).closest('.mediaitemcontainer').hasClass('media-selected')) {
             $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
@@ -1274,7 +1302,7 @@
             $('.mediaitemcontainer').removeClass('media-selected')
             $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
             $('.media-selected').find('.source-gallery-holder').attr('data-original-title', $('.media-selected').find('.mediafiles').attr('data-filename'))
-            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-filename')}</div>`)
+            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-truncfilename')}</div>`)
         }
         if ($('.media-selected').length > 0) {
             $('.select-link-box').css('display', 'block')
@@ -1297,18 +1325,22 @@
                 'userpk': '{{ request.user.pk }}'
             },
             success: function (data) {
-                {#counter = 1#} //for combine limit
+                //counter = 1 //for combine limit
                 if (data.pdf.length > 0) {
                     data.pdf.forEach(x => {
                         /*if (counter >= max_items){
                             return
                         }
                         counter++*/
-                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
+                        trunctitle = title
+                        if (title.length > 25) {
+                            trunctitle = truncateString(title, 25)
+                        }
                         $('.pdf-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
-                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
                                 <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
                                     <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}" style="object-fit: contain;">
                                 </div>
@@ -1326,7 +1358,7 @@
                             return
                         }
                         counter++*/
-                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
                         $('._3d-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
@@ -1390,10 +1422,15 @@
                         var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
                     }
                 }
+                title = element.filename
+                trunctitle = title
+                if (title.length > 25) {
+                    trunctitle = truncateString(title, 25)
+                }
                 gallery_name.append(`
                     <div class="col-sm-6 col-xs-12 media-items-holder">
                         <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-filename=${element.filename} data-href = ${element.content.url}>
+                        <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = ${element.content.url}>
                         <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
                         <img src = ${thumbnail} style="object-fit: contain">
                         </div>
@@ -1404,7 +1441,7 @@
             });
             $('.mediafiles').on('dblclick', function (e) {
                 e.preventDefault()
-                {#loadPreview($(this).attr('data-href'), 1, null, 1)#}
+                //loadPreview($(this).attr('data-href'), 1, null, 1)
             })
 
             $('.mediafiles').on('click', function (e) {
@@ -1476,4 +1513,5 @@
             $('.dropdown-items div').css('display', 'block');
         }
     })
+
 </script>

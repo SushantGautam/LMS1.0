@@ -225,6 +225,16 @@ class picture {
                     <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
                 </div>
                 <p>Drag and drop images here...</p>
+                <div class="progressc mx-auto loadingDiv" data-value='0' style="display:none">
+                <span class="progress-left">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <span class="progress-right">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                <div class="h2 font-weight-bold percentcomplete">0<span class="small">%</span></div>
+                </div>
                 `
         }
         let img = '';
@@ -753,7 +763,8 @@ class PDF {
             <div id="pdfdiv-actions1">
                 <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                 <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
-                <i  class= "fas fa-link pdflink" id=${id}></i>
+                
+                <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i  class= "fas fa-link pdflink" id=${id}></i></span> 
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -836,7 +847,8 @@ class _3Dobject {
                 <div id="_3dobj-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete Button' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
-                    <i  class= "fas fa-link _3dlink" id=${id}></i>
+                    
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i  class= "fas fa-link _3dlink" id=${id}></i></span> 
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -1264,6 +1276,9 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                 data.append('chapterID', chapterID);
                 data.append('courseID', courseID);
                 file = input.files[0]
+                $(div).find('.file-upload-icon').hide()
+                $(div).find('p').hide()
+                $(div).find('.loadingDiv').show();
                 var options = {
                     url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                     chunk_size: 10, // MB
@@ -1304,8 +1319,8 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                         );
                     },
                     onUploadProgress: function (e) {
-                        $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
-                        $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                        $(div).find('.loadingDiv').attr('data-value', parseInt(e.percentComplete));
+                        $(div).find('.percentcomplete').html(parseInt(e.percentComplete) + '%');
                         addprogress();
                     },
                     onUploadError: function (e) {
@@ -1862,89 +1877,6 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
             });
         },
     });
-
-    // $('.video-div').on('drop', function (e) {
-    //     e.stopPropagation();
-    //     e.preventDefault();
-
-
-    //     $(this).css({
-    //         'padding': '5px'
-    //     })
-
-    //     const files = e.originalEvent.dataTransfer.files;
-    //     var file = files[0];
-    //     upload(file);
-    // });
-
-    // function upload(file) {
-    //     var data = new FormData();
-
-    //     data.append("FileName", file);
-    //     data.append('chapterID', chapterID);
-    //     data.append('courseID', courseID);
-    //     data.append('type', 'video');
-    //     $.ajax({
-    //         xhr: function () {
-    //             var xhr = new window.XMLHttpRequest();
-
-    //             xhr.upload.addEventListener("progress", function (evt) {
-    //                 $('#progress-bar').css("display", "block");
-
-    //                 if (evt.lengthComputable) {
-    //                     var percentComplete = evt.loaded / evt.total;
-    //                     percentComplete = parseInt(percentComplete * 100);
-    //                     console.log(percentComplete);
-    //                     // $('#progress-bar-fill').css('width', percentComplete + '%');
-    //                     $("#progress-bar").attr('aria-valuenow', percentComplete).css('width', percentComplete + '%').text(percentComplete + '%');
-
-    //                     if (percentComplete === 100) {
-    //                         // $('#progress-bar').css("display", "none");
-    //                         let div = $('#video-drag').parent().parent();
-    //                         $('#video-drag').css({
-    //                             'display': 'none'
-    //                         });
-
-    //                         div.append(`
-    //                                 <video width="400" height="200" controls>
-    //                                 <source src="../uploads/${data.media_name}" type="video/mp4">
-    //                                 Your browser does not support the video tag.
-    //                             </video>
-    //                         `);
-
-    //                         $(div).hover(function () {
-    //                             $(this).css("border", "1px solid red");
-    //                         }, function () {
-    //                             $(this).css("border", '0')
-    //                         })
-
-    //                         $('.video-div').resizable({
-    //                             containment: $('.editor-canvas'),
-    //                             grid: [20, 20],
-    //                             autoHide: true,
-    //                             minWidth: 150,
-    //                             minHeight: 150
-    //                         });
-    //                     }
-
-    //                 }
-    //             }, false);
-
-    //             return xhr;
-    //         },
-    //         url: save_video_url,
-    //         data: data,
-    //         contentType: false,
-    //         processData: false,
-    //         method: 'POST',
-    //         type: 'POST',
-    //         success: function (data) {
-    //             console.log(data);
-    //         }
-
-    //     });
-
-    // }
 
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -2637,30 +2569,28 @@ $(document).ready(function () {
         });
     });
 
+    $('#quiz_create_link').click(function (e) {
+        $('#iframeholder iframe').on('load', function () {
+            var iframe = $('#iframeholder iframe').contents();
+            $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button', function () {
+                setTimeout(() => {
+                    modalcloseFunction()
+                }, 1000)
+            });
+        });
+    })
 
+    $('#survey_create_link').click(function (e) {
+        $('#iframeholder iframe').on('load', function () {
+            var iframe = $('#iframeholder iframe').contents();
+            $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button', function () {
+                setTimeout(() => {
+                    modalcloseFunction()
+                }, 1000)
+            });
+        });
+    })
 });
-$('#quiz_create_link').click(function (e) {
-    $('#iframeholder iframe').on('load', function () {
-        var iframe = $('#iframeholder iframe').contents();
-        $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button', function () {
-            setTimeout(() => {
-                modalcloseFunction()
-            }, 1500)
-        });
-    });
-
-})
-$('#survey_create_link').click(function (e) {
-    $('#iframeholder iframe').on('load', function () {
-        var iframe = $('#iframeholder iframe').contents();
-        $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button', function () {
-            setTimeout(() => {
-                modalcloseFunction()
-            }, 1500)
-        });
-    });
-
-})
 
 function modalcloseFunction() {
     $('#closeiframebtn').click();
@@ -2950,6 +2880,8 @@ function newpagefunction(new_page_num) {
     if (!window.firstload) {
         changePage('tab' + num_tabs)
     }
+    const additionalCanvas = document.querySelector('.additional-canvas');
+    additionalCanvas.scrollTop = additionalCanvas.scrollHeight;
 
 }
 
@@ -3604,9 +3536,9 @@ function setThumbnailscallback(data, dive) {
     });
 }
 
-    $(document).ready(function(){
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-   });
+$(document).ready(function () {
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+});
 

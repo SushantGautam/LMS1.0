@@ -160,7 +160,7 @@
         </div>
     </div>
 </div>
-<div id="main-bottom-slider" class="custom-owl-slider2">
+<div id="main-bottom-slider2" class="custom-owl-slider2">
     <div class="owl-carousel owl-theme thumbnail-container" id="thumbnail-slider">
 
     </div>
@@ -1147,7 +1147,7 @@
 
     function Layout(x) {
         if (x.matches) {
-            $('.navigation-owl').css('visibility', 'hidden')
+            $('.navigation-owl').css('display', 'none')
             $('#main-bottom-slider').css('width', '100%')
             $('.owl-prev').css('left', '0')
             $('#page-contents').empty();
@@ -1157,7 +1157,7 @@
                 $(this).css('padding', '10px')
             })
         } else {
-            $('.navigation-owl').css('visibility', 'visible')
+            $('.navigation-owl').css('display', 'block')
             $('#main-bottom-slider').css('width', '74%')
             $('.owl-prev').css('left', '27.5%')
             $('#page-contents').empty();
@@ -1285,7 +1285,6 @@
         });
         $(".container12").click(function (e) {
             var target = $(e.target);
-            console.log(target)
             if (!target.hasClass('page-link-view') && target.parents('.page-link-view').length == 0 && !target.hasClass('view-icon') && target.parents('.view-icon').length == 0) {
                 $(".page-link-view").hide();
             }
@@ -1431,7 +1430,6 @@
                             'last_study_time': timewhensendingprogress,
                         },
                         success: function (data) {
-                            console.log(data)
                             window.currentPageUpdateOnServer = parseInt(data.contents.currentpagenumber)
                         },
                     })

@@ -243,7 +243,7 @@
         position: absolute;
         bottom: 1%;
         right: 1%;
-        width: 74%;
+        width: 100%;
         background-color: rgb(54, 60, 69,0.9);
         padding: 10px;
         z-index: 999;

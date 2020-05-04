@@ -72,7 +72,7 @@ def start(request):
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
 
-    if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),status=True).exists():
+    if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
         notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
         if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
             notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
@@ -1261,3 +1261,29 @@ def singleUserHomePageJSON(request):
         return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
     else:
         HttpResponse('You are not a student.')
+
+
+from django.core import serializers
+
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def studentCourseProgress(request, coursepk):
+    totalCourseProgress = 0
+    courseObj = get_object_or_404(CourseInfo, pk=coursepk)
+    chapters_list = ChapterInfo.objects.filter(
+        Course_Code=courseObj, Use_Flag=True) \
+        .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
+        .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
+        .order_by('Chapter_No')
+    student_data = getCourseProgress(courseObj, [request.user], chapters_list)
+    for count in range(len(student_data)):
+        del student_data[count]['student']
+        student_data[count]['chapter']['chapterObj'] = serializers.serialize('json', [
+            student_data[count]['chapter']['chapterObj'], ])
+        totalCourseProgress += student_data[count]['chapter']['progresspercent']
+    return JsonResponse(
+        {
+            'student_data': student_data,
+            'avgCourseProgress': totalCourseProgress / len(chapters_list) if len(chapters_list) > 0 else 0
+        }, safe=False, json_dumps_params={'indent': 4})
