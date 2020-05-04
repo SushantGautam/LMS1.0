@@ -8,8 +8,8 @@ from crispy_forms.layout import Layout, Div, Field, HTML, Submit
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Q
 from django.forms import SelectDateWidget
-from tinymce.widgets import TinyMCE
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
@@ -223,6 +223,17 @@ class CourseInfoForm(forms.ModelForm):
         model = CourseInfo
         fields = '__all__'
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('Course_Name')
+        course = CourseInfo.objects.filter(Course_Name=name, Center_Code=self.request.user.Center_Code)
+        if course.exists():
+            if self.instance.id:
+                if course.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if course.get(pk=self.instance.id).Course_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Course Name already Exists')
+
 
 class ChapterInfoForm(forms.ModelForm):
     mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput(attrs={'min': '0'}))
@@ -236,6 +247,25 @@ class ChapterInfoForm(forms.ModelForm):
     class Meta:
         model = ChapterInfo
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        num = cleaned_data.get('Chapter_No')
+        name = cleaned_data.get('Chapter_Name')
+        course = cleaned_data.get('Course_Code')
+        chapter = ChapterInfo.objects.filter(Course_Code=course).filter(
+            Q(Chapter_Name=name) | Q(Chapter_No=num))
+        if chapter.exists():
+            if self.instance.id:
+                if chapter.filter(pk=self.instance.id, Course_Code=course).exists():
+                    if chapter.get(pk=self.instance.id).Chapter_Name == name and chapter.get(
+                            pk=self.instance.id).Chapter_No == num:
+                        return cleaned_data
+            raise forms.ValidationError('Chapter Number or Chapter Name already Exists')
 
 
 class SessionInfoForm(forms.ModelForm):
@@ -274,6 +304,7 @@ class GroupMappingForm(forms.ModelForm):
                         return cleaned_data
             raise forms.ValidationError('Group Name already Exists')
 
+
 class InningGroupForm(forms.ModelForm):
     Teacher_Code = forms.ModelMultipleChoiceField(queryset=None, required=True,
                                                   widget=FilteredSelectMultiple("Teachers", is_stacked=False))
@@ -295,6 +326,7 @@ class InningGroupForm(forms.ModelForm):
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                         Use_Flag=True)
 
+
 class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):
     """
     Custom multiple select Feild with full name
@@ -302,6 +334,7 @@ class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):
 
     def label_from_instance(self, obj):
         return "%s (%s)" % (obj, obj.Teacher_Code.count())
+
 
 class InningInfoForm(forms.ModelForm):
     Course_Group = CoursesMultipleChoiceField(queryset=None, required=True,

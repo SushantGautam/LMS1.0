@@ -778,35 +778,33 @@ class ChapterInfoCreateView(CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['datetime'] = datetime.now()
         return context
 
-
+    
 class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
     template_name = 'ajax/chapterinfo_form_ajax.html'
 
-    # def post(self, request, *args, **kwargs):
-    #     Obj = ChapterInfo()
-    #     Obj.Chapter_No = request.POST["Chapter_No"]
-    #     Obj.Chapter_Name = request.POST["Chapter_Name"]
-    #     Obj.Summary = request.POST["Summary"]
-    #     if request.POST["Use_Flag"] == 'false':
-    #         Obj.Use_Flag = False
-    #     else:
-    #         Obj.Use_Flag = True
-    #     Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
-    #     Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-    #     Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-    #     Obj.save()
-
-    #     return JsonResponse(
-    #         data={'Message': 'Success'}
-    #     )
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
     def form_valid(self, form):
         form.save(commit=False)
@@ -907,6 +905,14 @@ def CourseForum(request, course):
 class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
     def form_valid(self, form):
         form.save(commit=False)
