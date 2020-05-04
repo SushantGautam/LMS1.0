@@ -212,6 +212,9 @@ a:hover {
 .media-items-only {
     background-color: #eef2f5;
     height: 72vh;
+    padding-bottom: 20px;
+    overflow: auto;
+
 }
 
 .list-objects a {
@@ -228,8 +231,8 @@ a:hover {
 .custom-dropdown {
     text-align: center;
     width: 100%;
-    margin-top: 20px
-
+    margin-bottom: 5px;
+    padding: 2px 12px 0px 12px !important;
 }
 .custom-dropdown-2{
     text-align: center;
@@ -1395,4 +1398,87 @@ html {
     color: white;
     text-decoration: none;
 }
+
+/* MEDIA ITEMS */
+   .source-media-holder{
+      font-size: 14px;
+   }
+   .source-gallery-holder{
+       height: 75px;
+       overflow: hidden;
+
+   }
+
+   .source-gallery-holder img{
+    height: 100%; 
+    width: 100%;
+    background-position:center ;
+    object-fit: cover;
+    transition: transform .4s;
+
+}
+.source-gallery-holder img:hover{
+    cursor: pointer;
+    margin: 7px 5px;
+    -ms-transform: scale(1.2); /* IE 9 */
+    -webkit-transform: scale(1.2); /* Safari 3-8 */
+    transform: scale(1.2); 
+    opacity: 0.3;
+
+}
+
+.media-items-holder{
+    padding: 4px!important;
+
+}
+.select-link-ul {
+    padding: 5px;
+    margin: 0 auto;
+    background-color: #cbd4e1;
+    border-radius: 5px;
+    width: 50%;
+    text-align: center;
+}
+.select-link-ul li{
+    display: inline-block;
+    list-style: none;
+    font-size: 10px;
+}
+
+.icon1-link{
+    width: 25%;
+
+}
+
+.icon2-link {
+    width: 25%;
+
+}
+
+.select-link-box {
+    margin: 3px 0;
+}
+
+/* ENDS */
 /*======================== End of Layout CSS ====================================================*/
+
+/* For Media Files */
+.media-selected {
+    border: 3px #79a6fb solid;
+    cursor: pointer;
+   
+  
+    opacity: 1;
+    overflow: hidden;
+    height: 75px;
+    overflow: hidden;
+    
+}
+.media-selected img{
+    opacity:0.3;
+}
+
+.dropdown-selected {
+    border: 2px #79a6fb  solid;
+}
+/* End for media files */

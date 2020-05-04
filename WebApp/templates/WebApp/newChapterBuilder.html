@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}" />
+    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}"/>
 
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
@@ -125,7 +125,7 @@
                                                                      src="{% static 'chapterPageBuilder/icons/newicon/source.svg' %}">
                                     <img id="id6" class="obj6"
                                          src="{% static 'chapterPageBuilder/icons/newicon/source-b.svg' %}">
-                                    <span class="ols-name3" style="color: white;">Source</span>
+                                    <span class="ols-name3" style="color: white;">Media</span>
 
                                 </a>
 
@@ -152,7 +152,7 @@
                                                  src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
                                             <span class="object-name-size">TEXT BOX</span>
                                         </li>
-                                      
+
                                         <!-- <li class="individual-objects draggable draggable-style ">
                                                 <span>
                                                  <img class="object-image-size"
@@ -284,29 +284,44 @@
 
                             </div>
                             <div style="color: black;" class="tab-pane" id="3a">
-                                <div class="media-items-only col-md-12">
+                                <div class="media-items-only col-md-12 col-xs-12">
 
 
                                     <div class="dropdown ">
                                         <button class="btn  dropdown-toggle custom-dropdown" type="button"
-                                                data-toggle="dropdown"><span> All Items</span>
+                                                data-toggle="dropdown"><span> Filter Items</span>
 
                                         </button>
                                         <ul class="dropdown-menu">
+                                            <li><a href="#">ALL ITEMS</a></li>
+                                            <li class="divider"></li>
                                             <li><a href="#">IMAGES</a></li>
                                             <li><a href="#">VIDEOS</a></li>
+                                            <li><a href="#">AUDIOS</a></li>
                                             <li><a href="#">PDF</a></li>
                                             <li><a href="#">3D</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">DISPLAY ALL</a></li>
 
+
+                                        </ul>
+                                    </div>
+                                    <div class="select-link-box" style="display: none">
+                                        <ul class="select-link-ul">
+
+                                            <li class="icon1-link">
+                                                <span data-toggle="tooltip" data-placement="left" title='Copy Link'><i
+                                                        class="fas fa-link"></i></span>
+                                            </li>
+                                            <li class="icon2-link">
+                                                <span data-toggle="tooltip" data-placement="right" title='Preview'>  <i
+                                                        style="color:black" class="fas fa-play-circle"></i></span>
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="dropdown-items">
                                         <div class="image-gallery"></div>
                                         <div class="video-gallery"></div>
                                         <div class="pdf-gallery"></div>
-                                        <div class="3d-gallery"></div>
+                                        <div class="_3d-gallery"></div>
                                         <div class="audio-gallery"></div>
                                     </div>
 
@@ -395,9 +410,11 @@
 
                 </div>
 
-                <a class="note-chapter-part"  data-toggle="modal" data-target="#link-description">
+                <a class="note-chapter-part" data-toggle="modal" data-target="#link-description">
                     <div class="note-holder1">
-                        <span data-toggle="tooltip" data-placement="right"  title='Edit Chapter information' style="color: white; font-weight:600; cursor:pointer;">Description <i class="fas fa-pencil-alt"></i></span>
+                        <span data-toggle="tooltip" data-placement="right" title='Edit Chapter information'
+                              style="color: white; font-weight:600; cursor:pointer;">Description <i
+                                class="fas fa-pencil-alt"></i></span>
                         <div id="chapter-description" class="note-chapter">
                             <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:70 }} </p>
                         </div>
@@ -408,75 +425,85 @@
 
                 <div id="link-description" class="modal fade" role="dialog">
                     <div class="modal-dialog">
-                
+
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header" style="background-color: #353c46;">
                                 <div class="col-sm-12">
                                     <div class="col-sm-6">
                                         <h4 class="modal-title" style="color: white;">Description</h4>
-                
+
                                     </div>
                                     <div class="col-sm-6">
-                                        <button type="button" class="close" data-dismiss="modal" style="color:white">&times;</button>
-                
+                                        <button type="button" class="close" data-dismiss="modal" style="color:white">
+                                            &times;
+                                        </button>
+
                                     </div>
                                 </div>
                             </div>
-                            <form id="chapter-description-form" method="post" action="{% url 'partialchapterinfo_update_ajax' chapterdetails.pk %}">
-                                    {% csrf_token %}
-                            <div class="modal-body">
-                                <!-- Modal Contents Here -->
+                            <form id="chapter-description-form" method="post"
+                                  action="{% url 'partialchapterinfo_update_ajax' chapterdetails.pk %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <!-- Modal Contents Here -->
 
                                     <div class="col-sm-12">
-                                      <div id="div_id_Chapter_No" class="form-group" style="margin-bottom: 10px!important;">
-                                        <label for="id_Chapter_No" class="control-label  requiredField">
-                                            Chapter No<span class="asteriskField">*</span>
-                                        </label>
-                                        
+                                        <div id="div_id_Chapter_No" class="form-group"
+                                             style="margin-bottom: 10px!important;">
+                                            <label for="id_Chapter_No" class="control-label  requiredField">
+                                                Chapter No<span class="asteriskField">*</span>
+                                            </label>
+
                                             <div class="controls ">
-                                                <input type="number" name="Chapter_No" value="{{ chapterdetails.Chapter_No }}" class="numberinput form-control" min="1" required="" id="id_Chapter_No">
+                                                <input type="number" name="Chapter_No"
+                                                       value="{{ chapterdetails.Chapter_No }}"
+                                                       class="numberinput form-control" min="1" required=""
+                                                       id="id_Chapter_No">
                                             </div>
                                         </div>
 
-                                         <div id="div_id_Chapter_Name" class="form-group" style="margin-bottom: 10px!important;">
+                                        <div id="div_id_Chapter_Name" class="form-group"
+                                             style="margin-bottom: 10px!important;">
                                             <label for="id_Chapter_Name" class="control-label  requiredField">
                                                 Chapter Name<span class="asteriskField">*</span>
                                             </label>
                                             <div class="controls ">
-                                                <input type="text" name="Chapter_Name" value="{{ chapterdetails.Chapter_Name }}" maxlength="200" class="textinput textInput form-control" required="" id="id_Chapter_Name">
-                                            </div>
-                                         </div>
-                                        
-                                         <div id="div_id_Summary" class="form-group" style="margin-bottom: 10px!important;">
-                                            <label for="id_Summary" class="control-label ">
-                                                Desription
-                                            </label>
-                                            <div class="controls ">
-                                                
-                                                    <textarea style="width: 100%;" name="Summary" rows="5" class="textarea  " id="id_Summary" > {{ chapterdetails.Summary }}</textarea>
-
-                                            
-                                                
-                                               
+                                                <input type="text" name="Chapter_Name"
+                                                       value="{{ chapterdetails.Chapter_Name }}" maxlength="200"
+                                                       class="textinput textInput form-control" required=""
+                                                       id="id_Chapter_Name">
                                             </div>
                                         </div>
-                               </div>
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="#">Submit</button>
-                                <button type="button" class="#" data-dismiss="modal">Close</button>
-                            </div>
+                                        <div id="div_id_Summary" class="form-group"
+                                             style="margin-bottom: 10px!important;">
+                                            <label for="id_Summary" class="control-label ">
+                                                Description
+                                            </label>
+                                            <div class="controls ">
+
+                                                <textarea style="width: 100%;" name="Summary" rows="5"
+                                                          class="textarea  "
+                                                          id="id_Summary"> {{ chapterdetails.Summary }}</textarea>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="#">Submit</button>
+                                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                                </div>
                             </form>
                         </div>
-                
+
                     </div>
                 </div>
-              
+
                 <!-- ends -->
-
-
 
 
                 <div class="additional-canvas tabs-to-click" style="position: relative;">
@@ -488,7 +515,7 @@
 
                                 <span style="float:right">
                                     <button class="clone-button" value="1">
-                                    <span  data-toggle="tooltip" data-placement="botton"  title=' Clone Button'>
+                                    <span data-toggle="tooltip" data-placement="botton" title=' Clone Button'>
                                     <i class="fa fa-clone " aria-hidden="true"></i>
                                     </span>
 
@@ -497,7 +524,7 @@
 
                                 <span style="float:right">
                                     <button class="delete-page-btn" value="1">
-                                    <span data-toggle="tooltip" data-placement="botton"  title=' Delete Page'>
+                                    <span data-toggle="tooltip" data-placement="botton" title=' Delete Page'>
                                     <i class="fa fa-times " aria-hidden="true"></i>
                                     </span>
 
@@ -537,14 +564,14 @@
 
 </section>
 <div id="examiframeholder">
-    <div id="closeiframebtn" class="closeiframebtn">
+    <div id="closeiframebtn" class="closeiframebtn" title="Close Preview">
         <button>
             <i class="fa fa-times">
             </i>
 
         </button>
     </div>
-    <div id="iframeholder"></div>
+    <div id="iframeholder" style="background: rgba(0,0,0,0.9);"></div>
 </div>
 <!-- Button Modal -->
 <div id="btn-modal" class="modal fade" role="dialog">
@@ -556,37 +583,33 @@
                 <div class="modal-header button-header-color">
                     <h4 class="modal-title button-position">Button</h4>
                     <button type="" class="close" data-dismiss="modal">
-                        <i style="color:white !important "class="fa fa-times"></i>
+                        <i style="color:white !important " class="fa fa-times"></i>
 
                     </button>
-                    
+
                 </div>
                 <div class="modal-body">
                     <!-- Modal Contents Here -->
                     <div class="col-md-12" style="padding: 10px;">
 
-                        
-                          
-                         
+
                         <label class="col-sm-4">Display Name</label>
-                        <div style="margin-bottom:10px"class="col-sm-8">
+                        <div style="margin-bottom:10px" class="col-sm-8">
                             <input class="form-control" type="text" name="btn-name" id="btn-name">
 
                         </div>
-                        
+
                         <br>
                         <label class="col-sm-4">Link &nbsp; (http://)</label>
                         <div class="col-sm-8">
                             <span class="btnlink">
                                 
-                                <input class="form-control" type="text" name="btn-link" id="btn-link" placeholder="ublcloud.me">
+                                <input class="form-control" type="text" name="btn-link" id="btn-link"
+                                       placeholder="ublcloud.me">
                             </span>
 
                         </div>
-                        
-                                
 
-                                 
 
                     </div>
 
@@ -638,8 +661,6 @@
 
                     </div>
 
-
-               
 
                     <input type="hidden" name="quiz-link" id="quiz-link">
 
@@ -722,9 +743,9 @@
         <div id="survey-link-chapter" class="modal-content">
             <form id="survey-form">
                 <div class="modal-header" style="background-color: #353c46;">
-                    <div class="col-md-12 col-sm-12 " >
+                    <div class="col-md-12 col-sm-12 ">
                         <div class="col-sm-8  col-xs-6">
-                            <h4 style ="color:white" class="modal-title">Survey</h4>
+                            <h4 style="color:white" class="modal-title">Survey</h4>
 
                         </div>
                         <div class="col-sm-4 col-xs-6">
@@ -750,8 +771,6 @@
 
                     </div>
 
-
-                   
 
                     <input type="hidden" name="survey-link" id="survey-link">
 
@@ -910,25 +929,22 @@
             </div>
             <div class="modal-body">
                 <!-- Modal Contents Here -->
-                <div class="col-sm-12"> 
-                        <label>Upload 3D file(.glb or .gltf)</label>
-                       
-                        <div class="custom-file mb-3">
-                            <input type="file" class="custom-file-input"  name="_3dfile" id="_3dfile-link" accept=".glb,.gltf">
-                            <label class="custom-file-label" for="_3dfile-link">Choose file</label>
-                          </div>
+                <div class="col-sm-12">
+                    <label>Upload 3D file(.glb or .gltf)</label>
 
-                         
-                          
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" name="_3dfile" id="_3dfile-link"
+                               accept=".glb,.gltf">
+                        <label class="custom-file-label" for="_3dfile-link">Choose file</label>
+                    </div>
 
-                       
-                
+
                     <div style="margin-top: 15px; font-weight:600">For converting 3D files online,
                         <a class="clickButton" href="https://blackthread.io/gltf-converter/" target="_blank">
                             Click Here
                         </a>
-                   </div>
-               </div>
+                    </div>
+                </div>
                 <!-- <div>
                 <label>Upload 3D file (MTL)</label>
                 <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
@@ -942,7 +958,11 @@
 
     </div>
 </div>
-
+<div>
+    <button type="button" class="copy-link-btn" style="display: none">Copy Link</button>
+    <input type="text" class="copy-link-text" id="copy-link-text" style="display: none">
+</div>
+<div class="alert-info infomessage" style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">Link Copied</div>
 </body>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
@@ -1117,7 +1137,8 @@
     var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
     var server_name = '{{ server_name }}';
     var centerName = '{{ request.user.Center_Code }}';
-    var courseName = '{{ course_name }}'
+    var courseName = '{{ course_name }}';
+    var user = '{{ user.pk }}'
     var imagegalleryid, videogalleryid, audiogalleryid;
     if (server_name == "Indonesian_Server") {
         imagegalleryid = 'A8AAAoODp5Za';
@@ -1185,45 +1206,7 @@
         let link = $("#survey_create_link").attr('href');
         loadPreview(link, 1)
     })
-    /*
-    setTimeout(function () {
-        $.ajax({
-            url: "{% url 'retrieve-chapter-files' %}",
-            data: {
-                'courseID': courseID,
-                'chapterID': chapterID,
-                'userpk': '{{ request.user.pk }}'
-            },
-            success: function (data) {
-                if (data.images.length > 0) {
-                    $('.dropdown-items').empty()
-                    data.images.forEach(x => {
-                        $('.dropdown-items .image-gallery').append(
-                            `<img src = "${load_file_url + '/' + x}" style = "height: 100px; width: 100px;object-fit: contain;"></img>`
-                        )
-                    });
-                }
-                if (data.videos.length > 0) {
-                    $('.dropdown-items .video-gallery').empty()
-                    data.videos.forEach(x => {
-                        $('.dropdown-items').append(
-                            x.split('&&&')[1]
-                        )
-                    });
-                }
-                if (data.pdf.length > 0) {
-                    $('.dropdown-items .pdf-gallery').empty()
-                    data.pdf.forEach(x => {
-                        $('.dropdown-items pdf').append(
-                            x.split('&&&')[1]
-                        )
-                    });
-                }
-            },
-            // dataType: dataType
-        });
-    }, 5000);
-*/
+
     // Add circular progress bar
     function addprogress() {
 
@@ -1251,10 +1234,10 @@
 
 </script>
 <script>
-   
-    $(".custom-file-input").on("change", function() {
-      var fileName = $(this).val().split("\\").pop();
-      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
     $('#chapter-description-form').on('submit', function (e) {
@@ -1268,7 +1251,7 @@
                 $('#link-description').modal('toggle');
                 $('.chapter-name').text(data.chapter_name)
                 $('#chapter-description').find('p').text(data.summary)
-                $(`#chapterlist option[value=${data.chapter_pk}]`).text(data.chapter_no +'. '+ data.chapter_name)
+                $(`#chapterlist option[value=${data.chapter_pk}]`).text(data.chapter_no + '. ' + data.chapter_name)
             },
             error: function () {
                 console.log('Error in updating')
@@ -1278,3 +1261,219 @@
 </script>
 
 {# End of Scripts from old builder #}
+
+<script>
+    function mediaFilesClickFunction($this) {
+        if ($($this).closest('.mediaitemcontainer').hasClass('media-selected')) {
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
+            $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
+            $('.selectedmediafilename').remove()
+        } else {
+            $('.selectedmediafilename').remove()
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
+            $('.mediaitemcontainer').removeClass('media-selected')
+            $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', $('.media-selected').find('.mediafiles').attr('data-filename'))
+            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-filename')}</div>`)
+        }
+        if ($('.media-selected').length > 0) {
+            $('.select-link-box').css('display', 'block')
+        } else {
+            $('.select-link-box').css('display', 'none')
+        }
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
+    setTimeout(function () {
+        retrieveServerMedias(10)
+    }, 2000)
+
+    function retrieveServerMedias(max_items = 10) {
+        $.ajax({
+            url: "{% url 'retrieve-chapter-files' %}?max_items=" + max_items,
+            data: {
+                'courseID': courseID,
+                'chapterID': chapterID,
+                'userpk': '{{ request.user.pk }}'
+            },
+            success: function (data) {
+                {#counter = 1#} //for combine limit
+                if (data.pdf.length > 0) {
+                    data.pdf.forEach(x => {
+                        /*if (counter >= max_items){
+                            return
+                        }
+                        counter++*/
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        $('.pdf-gallery').append(`
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}" style="object-fit: contain;">
+                                </div>
+                                </a>
+                                </div>
+                            </div>
+                            `
+                        )
+                    });
+                }
+                if (data._3d.length > 0) {
+                    data._3d.forEach(x => {
+                        /*
+                        if (counter >= max_items){
+                            return
+                        }
+                        counter++*/
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1])
+                        $('._3d-gallery').append(`
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}" style="object-fit: contain;">
+                                </div>
+                                </a>
+                                </div>
+                            </div>
+                            `
+                        )
+                    });
+                }
+                $('.mediafiles').on('click', function (e) {
+                    e.stopImmediatePropagation();
+                    mediaFilesClickFunction(this)
+
+                })
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+            // dataType: dataType
+        });
+    }
+
+    function retrieveMedias(mediatype) {
+        var gallery_name = null
+        var media_link = null
+
+        let api_token = '1453562iobwp33x0qrt34ip4bjiynb5olte';
+        let media_type = '';
+        let page_no = 1;
+        let item_per_page = 10;
+        let tags = server_name + ',' + 'center_' + centerName + ',' + 'course_' + courseName;
+
+        if (mediatype == 1) {
+            gallery_name = $('.image-gallery');
+            media_type = 'image';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+
+        } else if (mediatype == 2) {
+            gallery_name = $('.video-gallery');
+            media_type = 'video';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+        } else if (mediatype == 3) {
+            gallery_name = $('.audio-gallery');
+            media_type = 'audio';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+        }
+
+        $.get(media_link, function (data) {
+            data['items'].forEach(element => {
+                var thumbnail = element.thumbnail.url;
+                if (mediatype == 3) {
+                    if (element.thumbnail.url && element.thumbnail.url != "") {
+                        var thumbnail = element.thumbnail.url;
+                    } else {
+                        var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
+                    }
+                }
+                gallery_name.append(`
+                    <div class="col-sm-6 col-xs-12 media-items-holder">
+                        <div class = "mediaitemcontainer">
+                        <a class="mediafiles" href="javascript:void(0)" data-filename=${element.filename} data-href = ${element.content.url}>
+                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                        <img src = ${thumbnail} style="object-fit: contain">
+                        </div>
+                        </a>
+                        </div>
+                 </div>
+                `)
+            });
+            $('.mediafiles').on('dblclick', function (e) {
+                e.preventDefault()
+                {#loadPreview($(this).attr('data-href'), 1, null, 1)#}
+            })
+
+            $('.mediafiles').on('click', function (e) {
+                e.stopImmediatePropagation();
+                mediaFilesClickFunction(this)
+            })
+
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    }
+
+    retrieveMedias(1)
+    retrieveMedias(2)
+    retrieveMedias(3)
+
+    $('.icon1-link').on('click', function () {
+        var copyText = document.createElement("input");
+        copyText.value = $('.media-selected').find('a').attr('data-href');
+        document.body.appendChild(copyText);
+        copyText.select();
+        copyText.setSelectionRange(0, 999)
+        document.execCommand("copy");
+        document.body.removeChild(copyText);
+        $('.infomessage').fadeIn(1500)
+        $('.infomessage').fadeOut(1500)
+
+    })
+
+    $('.icon2-link').on('click', function () {
+        if ($('.media-selected').parents().hasClass('image-gallery')) {
+            $('#examiframeholder').addClass('examiframeholder')
+            $('#iframeholder').append(`
+                <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%" style="object-fit:contain;">
+            `);
+            $('#closeiframebtn').css({'display': 'block', 'top': '1vh'});
+        } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
+            $('#examiframeholder').addClass('examiframeholder')
+            $('#iframeholder').append(`
+                <model-viewer
+                src="${$('.media-selected').find('a').attr('data-href')}"
+                alt="Here is a 3D Object."
+                auto-rotate
+                camera-controls
+                style="height: 100%;width:100%;"></model-viewer>
+            `);
+            $('#closeiframebtn').css({'display': 'block', 'top': '1vh'});
+        } else {
+            loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1);
+        }
+    })
+
+    $('.dropdown-menu li').on('click', function () {
+        $('.dropdown-selected').removeClass('dropdown-selected active')
+        $(this).addClass('dropdown-selected active')
+        $('.custom-dropdown>span').text($(this).find('a').text())
+        $('.dropdown-items>div').css('display', 'none');
+
+        if ($(this).find('a').text().toLowerCase() == "images") {
+            $('.image-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "videos") {
+            $('.video-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "audios") {
+            $('.audio-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "pdf") {
+            $('.pdf-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "3d") {
+            $('._3d-gallery').css('display', 'block')
+        } else {
+            $('.dropdown-items div').css('display', 'block');
+        }
+    })
+</script>

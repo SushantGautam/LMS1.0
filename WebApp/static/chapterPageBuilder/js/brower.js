@@ -93,27 +93,29 @@ $('#save-and-exit-btn').click(function (e) {
   }, 5000)
 });
 
-function loadPreview(link, ShowCloseBoxonInit = false, message) {
+function loadPreview(link, ShowCloseBoxonInit = false, message, externallink = false) {
   $('#examiframeholder').addClass('examiframeholder')
   var ribbon = `<div class="ribbon blue"><span>${message}</span></div>`
   $('#iframeholder').append(`
       <iframe src = ${link} height = 100% width = 100%></iframe>
   `);
-  if(message){
+  if (message) {
     $('#iframeholder').append(`
       ${ribbon}
   `);
   }
   $('iframe').on('load', function () {
+    if (!externallink) {
       if ($(this).contents().find('#survey_already_taken').is(':visible')) {
-          $('#closeiframebtn').css('display', 'block')
+        $('#closeiframebtn').css({'display':'block', 'top':'6vh'})
       }
       if (link != this.contentWindow.location.href && link + '/' != this.contentWindow.location.href) {
-          $('#closeiframebtn').css('display', 'block')
+        $('#closeiframebtn').css({'display':'block', 'top':'6vh'})
       }
-      if (ShowCloseBoxonInit) {
-          $('#closeiframebtn').css('display', 'block')
-      }
+    }
+    if (ShowCloseBoxonInit) {
+      $('#closeiframebtn').css({'display':'block', 'top':'6vh'})
+    }
       
       $(this).contents().find('.closebtn, #hamburg-nav, #closechatopen').remove()
   });

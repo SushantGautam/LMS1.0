@@ -33,6 +33,8 @@ function getEmbedVideo(url) {
     var webmMatch = url.match(webmRegExp);
     var fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
     var fbMatch = url.match(fbRegExp);
+    var cincopaRegExp = /(mediacdnl3.cincopa.com)/g;
+    var cincopaMatch = url.match(cincopaRegExp);
     var $video_element;
     if (ytMatch && ytMatch[1].length === 11) {
         var youtubeId = ytMatch[1];
@@ -67,6 +69,11 @@ function getEmbedVideo(url) {
             .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (mp4Match || oggMatch || webmMatch) {
         $video_element = $('<video controls>')
+            .attr('src', url)
+            .attr('width', '100%').attr('height', '100%');
+    } else if (cincopaMatch && cincopaMatch[0].length === 22) {
+        $video_element = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
             .attr('src', url)
             .attr('width', '100%').attr('height', '100%');
     } else {
@@ -119,7 +126,7 @@ class Textbox {
                         <div id="editor${id}" class="messageText"></div>
                         
                          <div id="text-actions" class = "text-actions">
-                         <i class="   fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
+                         <i class ="fa fa-trash" id=${id} data-toggle="tooltip" data-placement="bottom"  title='Delete item'></i>
                              <i data-toggle="tooltip" data-placement="bottom"  title='Drag item' class="fas fa-arrows-alt" id="draghere" ></i>
                          </div>
                      </div>
@@ -209,7 +216,6 @@ class Textbox {
 
 class picture {
     constructor(top, left, pic = null, link = null, width = null, height = null) {
-
         let id = (new Date).getTime();
         let position = {top, left, width, height};
         let message = "";
@@ -235,7 +241,7 @@ class picture {
                 <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
               <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
               <span data-toggle="tooltip" data-placement="bottom"  title='Link Image'>
-              <i  class= fas fa-link imagelink" id=${id}></i>
+              <i  class= "fas fa-link imagelink" id=${id}></i>
               </span>
                 
             </div>
@@ -454,6 +460,8 @@ class Audio {
                 <div id="audio-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Link File' class="fas fa-link audiolink" id=${id}></i>
+
                 </div>
                 <div>
                     <p id="audio-drag">${message}</p>
@@ -743,8 +751,9 @@ class PDF {
         let html = `
         <div class='pdfdiv'>
             <div id="pdfdiv-actions1">
-            <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
+                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                 <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                <i  class= "fas fa-link pdflink" id=${id}></i>
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -827,6 +836,7 @@ class _3Dobject {
                 <div id="_3dobj-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete Button' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                    <i  class= "fas fa-link _3dlink" id=${id}></i>
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -1110,21 +1120,22 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         var link_id = parseInt(e.currentTarget.id) + 1
         var div = $('#' + e.currentTarget.id).parent().parent();
         // var prevlink = $(this).parent().parent().find('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
-        var prevlink = $(this).parent().parent().find('img').attr('src')
+        var prevlink = $(this).closest('.pic').find('img').attr('src')
         if (prevlink == undefined) {
             prevlink = "";
         }
+        debugger
         var link = prompt("Link of image", prevlink);
         if (link == null) {
             return false
         } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
             link = '' + link
         }
-
         PictureFunction(
             $(div)[0].style.top,
             $(div)[0].style.left,
             link,
+            null,
             $(div)[0].style.width,
             $(div)[0].style.height,
         );
@@ -1194,7 +1205,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     }
                 }
                 request.send()
-                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                     console.log('success')
                 }).fail(function () {
                     console.log('failed')
@@ -1277,7 +1288,7 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},,${courseName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -1354,7 +1365,7 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
         }
     });
 
-    $('.fa-link').bind("click", function (e) {
+    $('.btn-div .fa-link').bind("click", function (e) {
         var btn_id = parseInt(e.currentTarget.id) + 1
 
         $('#btn-form input[type=text]').val('');
@@ -1596,6 +1607,28 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
+    $('.pdflink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        }
+        PDFFunction(
+            $(div)[0].style.top,
+            $(div)[0].style.left,
+            link,
+            $(div)[0].style.height,
+            $(div)[0].style.width,
+        );
+        div.remove()
+
+    });
+
     $('.pdfdiv').on('dragover', function (e) {
         e.stopPropagation();
         e.preventDefault();
@@ -1805,8 +1838,9 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
             link = 'http://' + link
         }
         video_link = getEmbedVideo(link)
-        div.find('p, iframe, video').remove();
+        div.find('p, iframe, video, .progress').remove();
         div.append(video_link);
+
     });
 
     $('.video-div').on('dragover', function (e) {
@@ -1952,7 +1986,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 }
                             }
                             request.send()
-                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
+                            $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                                 console.log('success')
                             }).fail(function () {
                                 console.log('failed')
@@ -2106,23 +2140,34 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
     });
-    // $('.videolink').off().bind("click", function (e) {
-    //     var link_id = parseInt(e.currentTarget.id) + 1
-    //     var div = $(this).parent().parent();
-    //     var prevlink = $(this).parent().parent().find('iframe').attr('src');
-    //     if (prevlink == undefined) {
-    //         prevlink = "http://";
-    //     }
-    //     var link = prompt("Url (Youtube, DailyMotion)", prevlink);
-    //     if (link == null) {
-    //         return false
-    //     } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
-    //         link = 'http://' + link
-    //     }
-    //     video_link = getEmbedVideo(link)
-    //     div.find('p, iframe, video').remove();
-    //     div.append(video_link);
-    // });
+    $('.audiolink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
+            link = 'http://' + link
+        }
+        var cincopaRegExp = /(mediacdnl3.cincopa.com)/g;
+        var cincopaMatch = link.match(cincopaRegExp);
+        if (cincopaMatch && cincopaMatch[0].length === 22) {
+            AudioFunction(
+                $(div)[0].style.top,
+                $(div)[0].style.left,
+                link,
+                $(div)[0].style.height,
+                $(div)[0].style.width,
+            );
+            div.remove()
+        } else {
+            alert("Link is not Valid")
+        }
+    });
 
     $('.audio').on('dragover', function (e) {
         e.stopPropagation();
@@ -2182,7 +2227,7 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
                             }
                         }
                         request.send()
-                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${centerName},${courseName}`, function () {
+                        $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                             console.log('success')
                         }).fail(function () {
                             console.log('failed')
@@ -2247,6 +2292,27 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
+    $('._3dlink').off().bind("click", function (e) {
+        var link_id = parseInt(e.currentTarget.id) + 1
+        var div = $(this).parent().parent();
+        var prevlink = $(this).parent().parent().find('iframe').attr('src');
+        if (prevlink == undefined) {
+            prevlink = "http://";
+        }
+        var link = prompt("Url", prevlink);
+        if (link == null) {
+            return false
+        }
+        _3dFunction(
+            $(div)[0].style.top,
+            $(div)[0].style.left,
+            link,
+            $(div)[0].style.height,
+            $(div)[0].style.width,
+        );
+        div.remove()
+
+    });
     $('._3dobj-div').resizable({
         containment: $('#tabs-for-download'),
         grid: [20, 20],
