@@ -921,7 +921,7 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
         if form.cleaned_data['End_Date'] == "":
             form.instance.End_Date = None
 
-        form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
+        # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         form.save()
         return super().form_valid(form)
 

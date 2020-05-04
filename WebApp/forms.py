@@ -8,7 +8,6 @@ from crispy_forms.layout import Layout, Div, Field, HTML, Submit
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Q
 from django.forms import SelectDateWidget
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
@@ -253,19 +252,30 @@ class ChapterInfoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
     def clean(self):
+        pass1, pass2 = False, False
         cleaned_data = super().clean()
         num = cleaned_data.get('Chapter_No')
         name = cleaned_data.get('Chapter_Name')
         course = cleaned_data.get('Course_Code')
-        chapter = ChapterInfo.objects.filter(Course_Code=course).filter(
-            Q(Chapter_Name=name) | Q(Chapter_No=num))
-        if chapter.exists():
+        chapternum = ChapterInfo.objects.filter(Course_Code=course, Chapter_No=num)
+        chaptername = ChapterInfo.objects.filter(Course_Code=course, Chapter_Name=name)
+        if chapternum.exists():
             if self.instance.id:
-                if chapter.filter(pk=self.instance.id, Course_Code=course).exists():
-                    if chapter.get(pk=self.instance.id).Chapter_Name == name and chapter.get(
-                            pk=self.instance.id).Chapter_No == num:
-                        return cleaned_data
-            raise forms.ValidationError('Chapter Number or Chapter Name already Exists')
+                if chapternum.filter(pk=self.instance.id, Course_Code=course).exists():
+                    if chapternum.get(pk=self.instance.id).Chapter_No == num:
+                        pass1 = True
+            if not pass1:
+                raise forms.ValidationError('Chapter Number or Chapter Name already Exists')
+        if chaptername.exists():
+            if self.instance.id:
+                if chaptername.filter(pk=self.instance.id, Course_Code=course).exists():
+                    if chaptername.get(pk=self.instance.id).Chapter_Name == name:
+                        pass2 = True
+            if not pass2:
+                raise forms.ValidationError('Chapter Number or Chapter Name already Exists')
+
+        if pass1 and pass2:
+            return cleaned_data
 
 
 class SessionInfoForm(forms.ModelForm):
