@@ -2237,8 +2237,8 @@ class NewContentsView(TemplateView):
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         if '/students' in self.request.path:
             context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True).filter(
-                Q(Start_Date__gte=datetime.utcnow()) | Q(Start_Date=None)) \
-                .filter(Q(End_Date__lte=datetime.utcnow()) | Q(End_Date=None))
+                Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
+                .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None))
         else:
             context['chapterList'] = context['course'].chapterinfos.all()
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
