@@ -323,6 +323,14 @@ class ChapterInfoCreateView(CreateView):
     form_class = ChapterInfoForm
     template_name = 'teacher_module/chapterinfo_form.html'
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def get_success_url(self, **kwargs):
         return reverse_lazy('teacher_chapterinfo_detail',
                             kwargs={'course': self.object.Course_Code.id, 'pk': self.object.pk})
@@ -351,6 +359,14 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     form_class = ChapterInfoForm
     template_name = 'teacher_module/chapterinfo_form.html'
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
@@ -363,7 +379,7 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
         if form.cleaned_data['End_Date'] == "":
             form.instance.End_Date = None
 
-        form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
+        # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         form.save()
         return super().form_valid(form)
 

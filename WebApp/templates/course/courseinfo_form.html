@@ -16,7 +16,7 @@
         {% if 'create' in request.path %}
         Create New Course
         {% else %}
-        Edit Course Info
+            Edit Course Info
         {% endif %}
     </h2>
     <hr class="header_hr">
@@ -25,6 +25,20 @@
 <form method="POST" id="FormID" enctype="multipart/form-data">
 
     {% csrf_token %}
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="m-2 alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="m-2 alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
         <div id="div_id_Course_Name" class="form-group">
             <label for="id_Course_Name" class="control-label ">
