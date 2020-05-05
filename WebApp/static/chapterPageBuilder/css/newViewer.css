@@ -635,3 +635,8 @@ textarea.form-control {
 .inactive-chapter {
     color: #CCC;
 }
+
+.videodim {
+    height: 100%;
+    width: 100%;
+}
