@@ -134,8 +134,74 @@
 
 
     <div class="row">
+        <div class="padding_homepage col-md-6 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="title text-center">
+                    <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
+                            href="{% url 'student_myassignmentinfo_list' %}">List
+                                        of Incomplete Chapters </a></span></h3>
+                </div>
+                <ul class="list-group" style="max-height: 42vh;overflow:auto">
+                    {% for object in activeAssignments %}
+                        <li class="list-group-item1 ">
 
-        <div class="padding_homepage col-md-8 col-sm-12 col-xs-12">
+
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <b> {{ object.Assignment_Topic }}</b>
+                                        <h5 style="margin-bottom: 0;">
+                                            <a href="{{ object.student_get_absolute_url }}">
+                                                <button type="button" style="width:103px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px; padding:0 2px;
+                                                ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                                </button>
+
+                                            </a>
+                                        </h5>
+
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
+                                        <div class="assignment-status-margin"
+                                             style="font-size:14px; font-style: italic;  font-weight:600 ; ">Status:
+                                            {% getStatusoOfAssignment object user as assignment_status %}
+                                            {% if assignment_status == "Complete" %}
+                                                <span style="color: green"> Complete </span>
+                                            {% else %}
+                                                <span style="color: red"> Incomplete </span>
+                                            {% endif %}
+                                        </div>
+                                        <span style="font-size:14px; font-style: italic;  font-weight:600; color:red"> Deadline </span>
+                                        <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ object.Assignment_Deadline|timeuntil }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    {% endfor %}
+                </ul>
+            </div>
+            
+        </div>
+
+        <div class="padding_homepage col-md-6 col-sm-12 col-xs-12">
             <div class="panel panel-default">
                 <div class="title text-center">
                     <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
@@ -200,7 +266,8 @@
                 </ul>
             </div>
         </div>
-        <div class="padding_homepage col-md-4 col-sm-12 col-xs-12 ">
+       
+        <!-- <div class="padding_homepage col-md-4 col-sm-12 col-xs-12 ">
             <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
                 <div class="title text-center">
                     <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
@@ -212,13 +279,7 @@
                             <li class="list-group-item ">
                                 <h5>
                                     Group &nbsp; : <b style="float: right">{{ object.GroupMapping_Name }}</b>
-                                    <!-- <h5 style="margin-bottom: 0;">
-                                        <a href="{{ object.student_get_absolute_url }}">
-                                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                                ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                            </button>
-                                        </a>
-                                    </h5> -->
+                                  
                                 </h5>
                             </li>
                         {% endfor %}
@@ -230,20 +291,14 @@
                             <li class="list-group-item ">
                                 <h5>
                                     Session &nbsp; : <b style="float: right">{{ object.Inning_Name }}</b>
-                                    <!-- <h5 style="margin-bottom: 0;">
-                                        <a href="{{ object.student_get_absolute_url }}">
-                                            <button type="button" style="width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                                ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                            </button>
-                                        </a>
-                                    </h5> -->
+                               
                                 </h5>
                             </li>
                         {% endfor %}
                     {% endif %}
                 </ul>
             </div>
-        </div>
+        </div> -->
     </div>
 
 
