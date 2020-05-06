@@ -72,6 +72,24 @@ def start(request):
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
 
+    chapters = ChapterInfo.objects.filter(Course_Code__id__in=[course.Course_Code.id for course in courses],
+                                          Use_Flag=True).filter(
+        Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
+        Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
+    chapter_progress = []
+    counter = 0
+
+    for chapter in chapters:
+        if counter < 5:
+            if chapter.getChapterContent() != "":
+                student_progress = getCourseProgress(chapter.Course_Code, [request.user, ], [chapter, ]),
+                if student_progress[0][0]['chapter']['progresspercent'] != 100 and student_progress[0][0]['chapter'][
+                    'attendance'] == False:
+                    chapter_progress.append(student_progress)
+                    counter += 1
+        else:
+            break
+
     if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
         notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
         if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
@@ -86,7 +104,8 @@ def start(request):
                    'activeAssignments': activeassignments, 'sittings': sittings,
                    'wordCloud': wordCloud,
                    'notice': notice,
-                   'get_top_thread_keywords': thread_keywords
+                   'get_top_thread_keywords': thread_keywords,
+                   'chapter_progress': chapter_progress,
                    })
 
 
