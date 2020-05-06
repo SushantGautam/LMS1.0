@@ -1,7 +1,9 @@
+import json
 import os
 from datetime import datetime
 from time import timezone
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.models import ContentType
@@ -14,7 +16,6 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext as _
-
 from tinymce.models import HTMLField
 
 # from quiz.models import Quiz
@@ -296,10 +297,20 @@ class ChapterInfo(models.Model):
 
     def clean(self):
         super().clean()
-        if(self.Start_Date and self.End_Date):
-            if(self.Start_Date > self.End_Date):
+        if (self.Start_Date and self.End_Date):
+            if (self.Start_Date > self.End_Date):
                 raise ValidationError("End date must be greater than start date")
 
+    def getChapterContent(self):  # Check if chapter has contents
+        path = settings.MEDIA_ROOT
+        try:
+            with open(path + '/chapterBuilder/' + str(self.Course_Code.pk) + '/' + str(self.pk) + '/' + str(
+                    self.pk) + '.txt') as json_file:
+                content_data = json.load(json_file)
+        except Exception as e:
+            content_data = ""
+
+        return content_data
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
