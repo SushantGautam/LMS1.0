@@ -323,7 +323,9 @@
                 <div class="col-md-8 col-sm-8 col-xs-8">
                     <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
                         {% if o.Use_Flag == False %}
-                            <span class="text-danger"><b>[Inactive]</b></span>
+                            <span class="badge badge-danger"><b>Inactive</b></span>
+                        {% elif o.Assignment_Deadline and todays_datewithtime > o.Assignment_Deadline|date:"Y-m-d H:i" %}
+                            <span class="badge badge-danger">Expired</span>   
                         {% endif %}
                     </h5>
                     <h5>
