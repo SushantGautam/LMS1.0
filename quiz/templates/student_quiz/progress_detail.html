@@ -22,8 +22,14 @@
       <div class="col-md-3">
         {% if object.quiz.chapter_code %}
         <a href="{% url 'student_chapterinfo_detail' pk=object.quiz.chapter_code.pk course=object.quiz.chapter_code.Course_Code.pk %}">
-       <span class="" style="font-weight: 600; font-size: 20px; ">
-        Chapter: {{ object.quiz.chapter_code.Chapter_No }}</span></a>
+       <!-- <span class="" style="font-weight: 600; font-size: 20px; text-align:right">
+        Chapter: {{ object.quiz.chapter_code.Chapter_No }}</span> -->
+        <button class="progress-chapter" type="button" style="float: right;width:155px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+        margin-bottom: 10px;"><i
+        class="fa fa-arrow-left"></i>&nbsp; Return to Chapter {{ object.quiz.chapter_code.Chapter_No }}
+            </button>
+      
+      </a>
         {% endif %}
       </div>
     </div>
