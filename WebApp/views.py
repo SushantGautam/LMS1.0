@@ -574,7 +574,7 @@ def ImportCsvFile(request, *args, **kwargs):
                 if MemberInfo.objects.filter(username__iexact=obj_username).exists():
                     previous_uname.append(obj_username)
                     continue
-                
+
                 obj = MemberInfo()
                 obj.username = obj_username
                 obj.Member_ID = df.iloc[i]['Member ID']
@@ -792,7 +792,7 @@ class ChapterInfoCreateView(CreateView):
         context['datetime'] = datetime.now()
         return context
 
-    
+
 class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
@@ -819,6 +819,7 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
+
 
 class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
     model = ChapterInfo
@@ -870,6 +871,7 @@ class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
 
             status=200
         )
+
 
 class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
@@ -2233,7 +2235,12 @@ class NewContentsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True)
+        if '/students' in self.request.path:
+            context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True).filter(
+                Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
+                .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None))
+        else:
+            context['chapterList'] = context['course'].chapterinfos.all()
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
@@ -2265,7 +2272,7 @@ class NewContentsView(TemplateView):
                 pass
 
         context['chat_history'].reverse()
-        return context        
+        return context
 
 
 class OfflineContentsView(ContentsView):

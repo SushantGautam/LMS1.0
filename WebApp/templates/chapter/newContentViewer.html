@@ -200,27 +200,35 @@
                 Chapter Lists
             </div>
             <ul class="chapter-list">
+                {% now "Y-m-d H:i" as todays_datewithtime %}
                 {% for chapterobj in chapterList %}
-                    {% if "teachers" in request.path %}
-                        <li><a class="focus-page"
-                               {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8; padding:5px;"{% endif %}
-                               href="{% url 'teacher_NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}</a>
-                        </li>
-                    {% elif "students" in request.path %}
-                        <li>
-                            <a class="focus-page"
-                               {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8; padding:5px;"{% endif %}
-                               href="{% url 'student_NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
-                            </a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a class="focus-page"
-                               {% if chapterobj.pk == chapter.pk %}style="background-color: #647ca8;padding:5px;"{% endif %}
-                               href="{% url 'NewContentViewer' course.pk chapterobj.pk %}">{{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
-                            </a>
-                        </li>
-                    {% endif %}
+                    <li>
+                        <a class="focus-page"
+                           {% if chapterobj.pk == chapter.pk %}style=" background-color: #647ca8; padding:5px;"{% endif %}
+                           href="
+                                   {% if "teachers" in request.path %}
+                                        {% url 'teacher_NewContentViewer' course.pk chapterobj.pk %}
+                                   {% elif "students" in request.path %}
+                                        {% url 'student_NewContentViewer' course.pk chapterobj.pk %}
+                                   {% else %}
+                                    {% url 'NewContentViewer' course.pk chapterobj.pk %}
+                                   {% endif %}
+                               ">
+                            {% if not chapterobj.Use_Flag %}
+                                <span class="inactive-chapter">
+                                {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }} ( Unpublished )
+                            </span>
+                            {% elif chapterobj.End_Date and todays_datewithtime > chapterobj.End_Date|date:"Y-m-d H:i" or chapterobj.Start_Date and todays_datewithtime < chapterobj.Start_Date|date:"Y-m-d H:i" %}
+                                <span class="inactive-chapter">
+                                {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }} ( Inactive )
+                            </span>
+                            {% else %}
+                                <span>
+                                {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
                 {% endfor %}
 
             </ul>
