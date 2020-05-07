@@ -6,11 +6,15 @@ from .settings import MEDIA_ROOT
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+online_users = []
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
+        
+        # New user added
+        online_users.append(self.scope['user'])
 
         # Join room group
         await self.channel_layer.group_add(
@@ -21,6 +25,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        # User removed
+        online_users.remove(self.scope['user'])
+
         # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,
