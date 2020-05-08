@@ -111,11 +111,19 @@ body{
     text-decoration: none;
     cursor: pointer;
     color: white;
-    font-size: 24px;
+    font-size: 18px;
     background: rgb(54, 60, 69,0.8);
     border-radius: 10%;
-    padding-left: 3px;
+    padding:  0 3px;
     transition: color 0.3s ease;
+}
+.icon1-largescreen{
+    background: rgb(54, 60, 69,0.8);
+    /* padding: 3px 10px; */
+    color: white;
+    font-size: 30px;
+    border-radius: 10%;
+    padding: 3px;
 }
 
 .icon-for-chat2:hover{
@@ -437,10 +445,11 @@ body{
     width: 37%;
 }
 .options-chat{
-    padding-right: 25px;
-    padding-left: 40px;
+    /* padding-right: 37px; */
+    /* padding-left: 40px; */
     color: white;
     cursor: pointer;
+    width: 29%;
 }
 .close-chat{
     color: white;
@@ -639,4 +648,45 @@ textarea.form-control {
 .videodim {
     height: 100%;
     width: 100%;
+}
+.bell-icon{
+    
+    font-size: 20px;
+    color: white;
+    transition: color 0.3s;
+    margin-right: 15px;
+  
+}
+.bell-icon:hover , .bell-icon:focus , .bell-icon:active{
+   
+    color: black;
+    
+}
+.bell-icon-close{
+   
+  
+    display: none;
+    font-size: 20px;
+    opacity: 0.7;
+}
+.volume-icon{
+    font-size: 20px;
+    color: white;
+    transition: color 0.3s;
+}    
+.volume-icon:hover , .volume-icon:focus , .volume-icon:active{
+   
+    color: black;
+    
+}
+.volume-icon-close{
+    
+    font-size: 20px;
+    display: none;
+    opacity: 0.7;
+
+}
+.msg-bubble {
+    max-width: 273px!important;
+    overflow-wrap: break-word!important;
 }
