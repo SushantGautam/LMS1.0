@@ -142,14 +142,16 @@
                                         {% endif %}
                                         " class="back-btn-content"
                                                style="position: absolute; top:0px;right:5px; font-size:20px">
-                                            <div class="closebtn"><i style="
+                                            <div class="closebtn">
+                                                <!-- <i style="
                                                 background-color: #2A3F54;
                                                 color:white;
                                                 font-size:24px;
 
                                                 border-radius: 50%;
                                                 padding: 0.5px 2px;
-                                                " class="fa fa-times"></i>
+                                                " class="fa fa-times"></i> -->
+                                                <i  class="fas fa-window-close"></i>
                                             </div>
                                         </a>
                                   {# End of close button #}
@@ -294,7 +296,8 @@
 
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Chat Icon' class="icon-for-chat">
-                <i style="color: white;" class="chat-icon closechatopen fa fa-quote-right" id="closechatopen"></i>
+                <i style="color: white;" class="chat-icon closechatopen fa far fa-comment" id="closechatopen"></i>
+               
             </li>
         </ul>
         <ul class="chat-sidenav-close slideInLeft animate">
@@ -304,7 +307,7 @@
 
             </li>
             <li class="icon-for-chat2">
-                <i class="  fa fa-quote-right"></i>
+                <i class="  fa far fa-comment"></i>
             </li>
         </ul>
 
@@ -379,18 +382,29 @@
                 <li class="ham-icon">
                     <i class="fa fa-bars"></i>
                 </li>
-
+                 
                 <li class="user-image-padding">
-                    Online <span class="text-success">20</span>
-                    <!-- <div class="chat-user-image">
-                    </div> -->
+                <li>
+                    <div class="green-online"></div>
+                </li>
+                <span style="color: white;">  Online</span>&nbsp;
+                <li class="online-number">20</li>
+                <!-- <div class="chat-user-image">
+                </div> -->
                 </li>
 
                 <li class="name-user"></li>
                 <li class="options-chat">
-                    <span><i class="text-success fas fa-bell fa-2x"></i></span>
-                    <span><i class="text-success fas fa-volume-up fa-2x"></i></li></span>
-                <!-- <i class="text-danger fas fa-bell-slash"></i><i class="text-danger fas fa-volume-mute fa-lg"></i> -->
+                    <div class="bell col-md-6">
+                        <i class=" bell-icon fas fa-bell "></i>
+                        <i class=" bell-icon-close text-danger fas fa-bell-slash"></i>
+                    </div>
+                    <div class="volume col-md-6">
+                        <i class=" volume-icon fas fa-volume-up "></i>
+                        <i class="volume-icon-close text-danger fas fa-volume-mute "></i>
+                    </div>
+                </li>
+
                 <li class="close-chat"><i class="fa fa-times"></i></li>
             </ul>
 
@@ -492,6 +506,29 @@
 
 <!-- CHAT SCRIPT -->
 <script src="{% static 'chapterPageBuilder/js/chat.js' %}"></script>
+
+<!-- notificationchat -->
+<script>
+    $(document).on('click', '.bell-icon', function () {
+        $(".bell-icon-close").css("display" , "block");
+        $(".bell-icon").css("display" , "none");
+    });
+    $(document).on('click', '.bell-icon-close', function () {
+        $(".bell-icon").css("display" , "block");
+        $(".bell-icon-close").css("display" , "none");
+    });
+    $(document).on('click', '.volume-icon', function () {
+        $(".volume-icon-close").css("display" , "block");
+        $(".volume-icon").css("display" , "none");
+    });
+    $(document).on('click', '.volume-icon-close', function () {
+        $(".volume-icon").css("display" , "block");
+        $(".volume-icon-close").css("display" , "none");
+    });
+</script>
+
+
+<!-- ends -->
 
 <!-- Retrieve Chat History -->
 <script>
