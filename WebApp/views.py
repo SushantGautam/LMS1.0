@@ -2612,7 +2612,13 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
 
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
+                # jsondata['contents']['totalPage'] = totalPage
+
+            if int(totalPage) != int(jsondata['contents']['totalPage']):
+                if int(totalPage) < int(jsondata['contents']['currentpagenumber']):
+                    jsondata['contents']['currentpagenumber'] = totalPage
                 jsondata['contents']['totalPage'] = totalPage
+
             with open(student_data_file, "w") as outfile:
                 json.dump(jsondata, outfile, indent=4)
     else:
