@@ -312,6 +312,11 @@ class ChapterInfo(models.Model):
             content_data = ""
 
         return content_data
+    
+    def has_content(self):
+        file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
+
+        return os.path.exists(file_path)
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)

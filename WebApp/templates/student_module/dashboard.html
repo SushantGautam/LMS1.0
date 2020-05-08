@@ -119,20 +119,7 @@
     </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <!-- Display incomplete chapters list -->
     <div class="row">
         <div class="padding_homepage col-md-6 col-sm-12 col-xs-12">
             <div class="panel panel-default">
@@ -144,14 +131,14 @@
                     </span></h3>
                 </div>
                 <ul class="list-group" style="max-height: 42vh;overflow:auto">
-                    {% for chapter in chapter_progress %}
+                    {% for chapter in incomplete_chapters %}
                         <li class="list-group-item1 ">
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6 col-sm-6 col-xs-12">
-                                        <b> {{ chapter.0.0.chapter.chapterObj.Chapter_Name }}</b>
+                                        <b> {{ chapter.Chapter_Name }}</b>
                                         <h5 style="margin-bottom: 0;">
-                                            <a href="{{ chapter.0.0.chapter.chapterObj.student_get_absolute_url }}">
+                                            <a href="{{ chapter.student_get_absolute_url }}">
                                                 <button type="button" style="width:103px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px; padding:0 2px;
                                                 ">CONTINUE <i class="fa fa-arrow-right"></i>
                                                 </button>
@@ -163,16 +150,16 @@
                                     <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
                                         <div class="assignment-status-margin"
                                              style="font-size:14px; font-style: italic;  font-weight:600 ; ">Chapter
-                                            Progress: {{ chapter.0.0.chapter.progresspercent }} %
+                                            Progress: {{ chapter.chapter_progress }} %
 
                                         </div>
                                         <div>
                                             <span style="font-size:14px; font-style: italic;  font-weight:600;"> Quiz Progress </span>
-                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.0.0.quiz.progress }} %</span>
+                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.quiz.progress }} %</span>
                                         </div>
                                         <div>
                                             <span style="font-size:14px; font-style: italic;  font-weight:600;"> Completed/Total </span>
-                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.0.0.quiz.completed_quiz }}/{{ chapter.0.0.quiz.quiz_count }}</span>
+                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.quiz.completed_quiz }}/{{ chapter.quiz.quiz_count }}</span>
                                         </div>
                                     </div>
                                 </div>

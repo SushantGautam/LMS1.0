@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from .settings import MEDIA_ROOT
+from django.conf import settings
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
@@ -79,7 +79,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 # Function to store each chat text in new file inside chapterid folder
 def storeChat(data, room_name):
-    file_path = os.path.join(MEDIA_ROOT,'chatlog', room_name)
+    file_path = os.path.join(settings.MEDIA_ROOT,'chatlog', room_name)
 
     Path(file_path).mkdir(parents=True, exist_ok=True)
 
