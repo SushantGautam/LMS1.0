@@ -15,6 +15,7 @@ from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField,
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from tinymce.models import HTMLField
 
@@ -339,9 +340,6 @@ class ChapterContentsInfo(models.Model):
 
 
 # ================AssignmentModels================#
-from datetime import timedelta
-from django.utils import timezone
-
 
 def in_three_days():
     return timezone.now() + timedelta(days=3)

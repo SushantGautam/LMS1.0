@@ -38,7 +38,7 @@ from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
-from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog
+from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog, getChapterScore
 
 datetime_now = datetime.now()
 
@@ -78,15 +78,17 @@ def start(request):
         Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
     chapter_progress = []
     counter = 0
+    sorted_chapters = sorted(chapters, key=lambda chapter: getChapterScore(request.user, chapter)['totalProgressScore'],
+                             reverse=True)
 
-    for chapter in chapters:
+    for chapter in sorted_chapters:
         if counter < 5:
-            if chapter.getChapterContent() != "":
-                student_progress = getCourseProgress(chapter.Course_Code, [request.user, ], [chapter, ]),
-                if student_progress[0][0]['chapter']['progresspercent'] != 100 and student_progress[0][0]['chapter'][
-                    'attendance'] == False:
-                    chapter_progress.append(student_progress)
-                    counter += 1
+            # if chapter.getChapterContent() != "":
+            student_progress = getCourseProgress(chapter.Course_Code, [request.user, ], [chapter, ]),
+            if student_progress[0][0]['chapter']['progresspercent'] != 100 and student_progress[0][0]['chapter'][
+                'attendance'] == False:
+                chapter_progress.append(student_progress)
+                counter += 1
         else:
             break
 
