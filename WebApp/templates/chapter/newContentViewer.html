@@ -376,7 +376,8 @@
 
         <!-- Chat BOX UI -->
         <span class="chat-info" data-userName="{{ user }}" data-userID="{{ user.id }}" data-userIcon="{{ user.Avatar }}"
-              data-chapterID="{{ chapter.id }}"></span>
+              data-chapterID="{{ chapter.id }}" data-audioLink="{% static 'audio/incoming_msg.mp3' %}"></span>
+
         <div id="main-chat-box" class="chat-dialogbox  animate">
             <ul class="chat-header">
                 <li class="ham-icon">
@@ -396,11 +397,13 @@
                 <li class="name-user"></li>
                 <li class="options-chat">
                     <div class="bell col-md-6">
-                        <i class=" bell-icon fas fa-bell "></i>
-                        <i class=" bell-icon-close text-danger fas fa-bell-slash"></i>
+                        <input type="hidden" name="notification" id="id_notification" value="1">
+                        <i class="bell-icon fas fa-bell "></i>
+                        <i class="bell-icon-close text-danger fas fa-bell-slash"></i>
                     </div>
                     <div class="volume col-md-6">
-                        <i class=" volume-icon fas fa-volume-up "></i>
+                        <input type="hidden" name="sound" id="id_sound" value="1">
+                        <i class="volume-icon fas fa-volume-up "></i>
                         <i class="volume-icon-close text-danger fas fa-volume-mute "></i>
                     </div>
                 </li>
@@ -504,26 +507,38 @@
     <script src="{% static 'chapterPageBuilder/SummerNote/summernote.min.js' %}"></script>
 {% endif %}
 
+
+
+<!-- For notification sound -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.min.js"></script>
+
 <!-- CHAT SCRIPT -->
 <script src="{% static 'chapterPageBuilder/js/chat.js' %}"></script>
+
+<!-- For notification sound -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.min.js"></script>
 
 <!-- notificationchat -->
 <script>
     $(document).on('click', '.bell-icon', function () {
         $(".bell-icon-close").css("display" , "block");
         $(".bell-icon").css("display" , "none");
+        $("#id_notification").val('0');
     });
     $(document).on('click', '.bell-icon-close', function () {
         $(".bell-icon").css("display" , "block");
         $(".bell-icon-close").css("display" , "none");
+        $("#id_notification").val('1');
     });
     $(document).on('click', '.volume-icon', function () {
         $(".volume-icon-close").css("display" , "block");
         $(".volume-icon").css("display" , "none");
+        $("#id_sound").val('0');
     });
     $(document).on('click', '.volume-icon-close', function () {
         $(".volume-icon").css("display" , "block");
         $(".volume-icon-close").css("display" , "none");
+        $("#id_sound").val('1');
     });
 </script>
 

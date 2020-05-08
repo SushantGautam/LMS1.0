@@ -7,6 +7,13 @@ const userID = document.querySelector(".chat-info").getAttribute("data-userID");
 const userName = document.querySelector(".chat-info").getAttribute("data-userName");
 const userIcon = document.querySelector(".chat-info").getAttribute("data-userIcon");
 
+const audioURLIn = document.querySelector(".chat-info").getAttribute("data-audioLink");
+const audioURLOut = audioURLIn.replace("incoming", "outgoing");
+
+let soundIn = new Howl({ src: [audioURLIn], volume: 0.7, });
+let soundOut = new Howl({ src: [audioURLOut], volume: 0.7, });
+
+
 let webSProtocal = '';
 let locationhost = window.location.host;
 
@@ -20,6 +27,9 @@ const chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomID +
 
 chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
+
+    const notificationVal = document.querySelector("#id_notification").value;
+    const soundVal = document.querySelector("#id_sound").value;
 
 
     if (data.message_type === 'message'){
@@ -35,6 +45,10 @@ chatSocket.onmessage = function(e) {
 
         // Checking if the message is sent by same user
         let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
+
+        // Play sound if sound option is on
+        if(soundVal==='1' && msgClass==="left-msg") soundIn.play();
+        if(soundVal==='1' && msgClass==="right-msg") soundOut.play();
 
         // Appending message to canvas log
         chatLog.innerHTML += `
