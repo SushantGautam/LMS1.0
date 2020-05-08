@@ -15,6 +15,7 @@ from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField,
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from tinymce.models import HTMLField
 
@@ -311,6 +312,11 @@ class ChapterInfo(models.Model):
             content_data = ""
 
         return content_data
+    
+    def has_content(self):
+        file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
+
+        return os.path.exists(file_path)
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
@@ -339,9 +345,6 @@ class ChapterContentsInfo(models.Model):
 
 
 # ================AssignmentModels================#
-from datetime import timedelta
-from django.utils import timezone
-
 
 def in_three_days():
     return timezone.now() + timedelta(days=3)

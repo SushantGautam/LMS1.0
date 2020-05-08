@@ -27,6 +27,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
 from django.utils.translation import gettext as _
@@ -2737,6 +2738,39 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                 )
     return student_data
 
+
+def getChapterScore(user, chapterObj):
+    data = getCourseProgress(chapterObj.Course_Code, [user, ], [chapterObj, ])
+    if chapterObj.getChapterContent() != "":
+        dataScore = float(data[0]['chapter']['progresspercent']) if data != "" else 0
+        if isinstance(data[0]['chapter']['totalstudytime'], timedelta):
+            totalstudytime = data[0]['chapter']['totalstudytime'].total_seconds()
+        else:
+            h, m, s = data[0]['chapter']['totalstudytime'].split(':') if data != "" else '00:00:00'
+            totalstudytime = int(timedelta(hours=int(h), minutes=int(m), seconds=int(s)).total_seconds())
+        readtime = int(totalstudytime) if data != "" else 0
+        if chapterObj.mustreadtime:
+            if chapterObj.mustreadtime < readtime:
+                readtimeScore = 100
+            elif readtime == 0:
+                readtimeScore = 0
+            else:
+                readtimeScore = int(totalstudytime) / chapterObj.mustreadtime
+        else:
+            readtimeScore = 100
+
+        chapterDuration = timezone.now() - chapterObj.Register_DateTime
+        if chapterDuration < timedelta(days=30):
+            chapterDurationScore = 30
+        elif chapterDuration > timedelta(days=30) and chapterDuration < timedelta(days=90):
+            chapterDurationScore = 50
+        else:
+            chapterDurationScore = 100
+        totalProgressScore = dataScore + readtimeScore + chapterDurationScore
+
+        return {'totalProgressScore': totalProgressScore / 3, 'chapterProgress': data}
+    else:
+        return {'totalProgressScore': 100, 'chapterProgress': data}
 
 def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
     date = datetime.now().strftime('%Y%m%d')
