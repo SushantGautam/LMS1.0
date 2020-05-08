@@ -417,26 +417,7 @@
                 </li>
 
                 <li class="chat-canvas">
-                    <div id="chat-log">
-
-                        <div class="msg left-msg">
-                            <div
-                                    class="msg-img"
-                                    style="background-image: url({% static 'images/bot.png' %})"
-                            ></div>
-
-                            <div class="msg-bubble">
-                                <div class="msg-info">
-                                    <div class="msg-info-name">LMS BOT</div>
-                                    <div class="default-time msg-info-time"></div>
-                                </div>
-
-                                <div class="msg-text">
-                                    Hello! You can now send message to everyone here.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="chat-log"></div>
                 </li>
             </ul>
 
@@ -519,9 +500,11 @@
 
         $(document).ready(function () {
             const chatLog = document.querySelector('#chat-log');
-            let chat_history = {{ chat_history|safe }};
-            let userID = '{{ request.user.id }}';
+            const chatCanvas = document.querySelector('.chat-canvas');
+            const userID = document.querySelector(".chat-info").getAttribute("data-userID");
 
+            let chat_history = {{ chat_history|safe }};
+            
             // Clear chatlog at first
             chatLog.innerHTML = '';
             
@@ -551,9 +534,30 @@
                                 </div>
                             </div>
                             </div>`;
+
             });
+
+            // Scroll Down after message append
+            chatCanvas.scrollTop = chatCanvas.scrollHeight;
         });
 
+    {% else %}
+        $(document).ready(function () {
+            const chatLog = document.querySelector('#chat-log');
+            chatLog.innerHTML = `<div class="msg left-msg">
+                            <div class="msg-img"
+                                    style="background-image: url({% static 'images/bot.png' %})"></div>
+                            <div class="msg-bubble">
+                                <div class="msg-info">
+                                    <div class="msg-info-name">LMS BOT</div>
+                                    <div class="default-time msg-info-time"></div>
+                                </div>
+                                <div class="msg-text">
+                                    Hello! You can now send message to everyone here.
+                                </div>
+                            </div>
+                        </div>`;
+                    });
     {% endif %}
 
 </script>

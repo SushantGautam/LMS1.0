@@ -16,42 +16,44 @@ if (location.protocol === 'https:') {
     webSProtocal = "ws://";
 }
 
-console.log(locationhost);
-
 const chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomID + '/');
 
 chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
 
-    // converting datetime to local
-    let sender_datetime = new Date(data.sender_datetime);
-    let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
-        sender_datetime.getMonth(),
-        sender_datetime.getDate(),
-        sender_datetime.getHours(),
-        sender_datetime.getMinutes(),
-        sender_datetime.getSeconds())).toLocaleString('en-US', { hour12: true, hour: "numeric", minute: "numeric"});
 
-    // Checking if the message is sent by same user
-    let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
+    if (data.message_type === 'message'){
 
-    // Appending message to canvas log
-    chatLog.innerHTML += `
-            <div class="msg ${msgClass}">
-                <div class="msg-img" style="background-image: url(${data.sender_icon})"></div>
-                <div class="msg-bubble">
-                    <div class="msg-info">
-                    <div class="msg-info-name">${data.sender_name}</div>
-                    <div class="msg-info-time timecon">${localtime}</div>
+        // converting datetime to local
+        let sender_datetime = new Date(data.sender_datetime);
+        let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
+            sender_datetime.getMonth(),
+            sender_datetime.getDate(),
+            sender_datetime.getHours(),
+            sender_datetime.getMinutes(),
+            sender_datetime.getSeconds())).toLocaleString('en-US', { hour12: true, hour: "numeric", minute: "numeric"});
+
+        // Checking if the message is sent by same user
+        let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
+
+        // Appending message to canvas log
+        chatLog.innerHTML += `
+                <div class="msg ${msgClass}">
+                    <div class="msg-img" style="background-image: url(${data.sender_icon})"></div>
+                    <div class="msg-bubble">
+                        <div class="msg-info">
+                        <div class="msg-info-name">${data.sender_name}</div>
+                        <div class="msg-info-time timecon">${localtime}</div>
+                        </div>
+                        <div class="msg-text">
+                        ${data.message}
+                        </div>
                     </div>
-                    <div class="msg-text">
-                    ${data.message}
-                    </div>
-                </div>
-                </div>`;
-    
-    // Scroll Down on New message
-    chatCanvas.scrollTop = chatCanvas.scrollHeight;
+                    </div>`;
+        
+        // Scroll Down on New message
+        chatCanvas.scrollTop = chatCanvas.scrollHeight;
+    }
 };
 
 chatSocket.onclose = function(e) {
