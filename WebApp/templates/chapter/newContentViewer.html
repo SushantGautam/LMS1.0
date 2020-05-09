@@ -376,7 +376,7 @@
 
         <!-- Chat BOX UI -->
         <span class="chat-info" data-userName="{{ user }}" data-userID="{{ user.id }}" data-userIcon="{{ user.Avatar }}"
-              data-chapterID="{{ chapter.id }}" data-audioLink="{% static 'audio/incoming_msg.mp3' %}"></span>
+              data-chapterID="{{ chapter.id }}"></span>
 
         <div id="main-chat-box" class="chat-dialogbox  animate">
             <ul class="chat-header">
@@ -508,15 +508,19 @@
 {% endif %}
 
 
+<!-- Chat related scripts -->
+<script>
+    const chatHistory = {{ chat_history|safe }};
+    const audioURLIn = "{% static 'audio/incoming_msg.mp3' %}";
+    const audioURLOut = "{% static 'audio/outgoing_msg.mp3' %}";
+    const botImage = "{% static 'images/bot.png' %}";
+</script>
 
 <!-- For notification sound -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.min.js"></script>
 
 <!-- CHAT SCRIPT -->
 <script src="{% static 'chapterPageBuilder/js/chat.js' %}"></script>
-
-<!-- For notification sound -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.min.js"></script>
 
 <!-- notificationchat -->
 <script>
@@ -541,78 +545,8 @@
         $("#id_sound").val('1');
     });
 </script>
-
-
 <!-- ends -->
 
-<!-- Retrieve Chat History -->
-<script>
-
-    {% if chat_history %}
-
-        $(document).ready(function () {
-            const chatLog = document.querySelector('#chat-log');
-            const chatCanvas = document.querySelector('.chat-canvas');
-            const userID = document.querySelector(".chat-info").getAttribute("data-userID");
-
-            let chat_history = {{ chat_history|safe }};
-            
-            // Clear chatlog at first
-            chatLog.innerHTML = '';
-            
-            chat_history.forEach(data => {
-                let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
-
-                // converting datetime to local
-                let sender_datetime = new Date(data.sender_datetime);
-                let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
-                        sender_datetime.getMonth(),
-                        sender_datetime.getDate(),
-                        sender_datetime.getHours(),
-                        sender_datetime.getMinutes(),
-                        sender_datetime.getSeconds())).toLocaleString('en-US', { hour12: true, hour: "numeric", minute: "numeric"});
-                            
-                // Appending message to canvas log
-                chatLog.innerHTML += `
-                        <div class="msg ${msgClass}">
-                            <div class="msg-img" style="background-image: url(${data.sender_icon})"></div>
-                            <div class="msg-bubble">
-                                <div class="msg-info">
-                                <div class="msg-info-name">${data.sender_name}</div>
-                                <div class="msg-info-time timecon">${localtime}</div>
-                                </div>
-                                <div class="msg-text">
-                                ${data.message}
-                                </div>
-                            </div>
-                            </div>`;
-
-            });
-
-            // Scroll Down after message append
-            chatCanvas.scrollTop = chatCanvas.scrollHeight;
-        });
-
-    {% else %}
-        $(document).ready(function () {
-            const chatLog = document.querySelector('#chat-log');
-            chatLog.innerHTML = `<div class="msg left-msg">
-                            <div class="msg-img"
-                                    style="background-image: url({% static 'images/bot.png' %})"></div>
-                            <div class="msg-bubble">
-                                <div class="msg-info">
-                                    <div class="msg-info-name">LMS BOT</div>
-                                    <div class="default-time msg-info-time"></div>
-                                </div>
-                                <div class="msg-text">
-                                    Hello! You can now send message to everyone here.
-                                </div>
-                            </div>
-                        </div>`;
-                    });
-    {% endif %}
-
-</script>
 
 
 <script type="text/javascript">

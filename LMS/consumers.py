@@ -77,7 +77,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'message': message
         }))
 
-
 # Function to store each chat text in new file inside chapterid folder
 def storeChat(data, room_name):
     file_path = os.path.join(settings.MEDIA_ROOT,'chatlog', room_name)
