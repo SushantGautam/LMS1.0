@@ -1465,12 +1465,14 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         )
 
 
-class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
+class QuestionInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
     model = AssignmentQuestionInfo
+    form_class = QuestionInfoForm
+    template_name = 'ajax/questioninfo_form_ajax.html'
 
     def post(self, request, *args, **kwargs):
         try:
-            Obj = AssignmentQuestionInfo.objects.get(pk=request.POST["pk"])
+            Obj = AssignmentQuestionInfo.objects.get(pk=kwargs.get('pk'))
             Obj.Question_Title = request.POST["Question_Title"]
             Obj.Question_Score = request.POST["Question_Score"]
             Obj.Question_Description = request.POST["Question_Description"]
@@ -1498,12 +1500,16 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
 
         except:
             return JsonResponse(
-                data={'Message': 'Cannot edit form'}
+                data={'Message': 'Cannot edit form'}, status=500
             )
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     print(self.request.get('pk'))
+    #     context['questionpk'] = self.request.get('pk')
 
 class QuestionInfoDetailView(DetailView):
     model = AssignmentQuestionInfo
