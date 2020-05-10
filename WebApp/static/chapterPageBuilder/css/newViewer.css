@@ -99,9 +99,13 @@ body{
  .chat-sidenav-close li:hover{
      cursor: pointer;
  }
-
-.chat-icon{
+ .chat-icon{
     font-size: 30px;
+    
+}
+.chat-icon:active , .chat-icon:focus{
+    font-size: 30px;
+    color: #5a738e!important;
 }
 .icon-for-chat{
     text-decoration: none;
@@ -487,6 +491,9 @@ body{
     display: none;
 }
 .chat-canvas{
+    background: url("/static/chapterPageBuilder/images/chat-background.jpeg");
+    background-position: center;
+    background-size: cover;
     background-color: white;
     width: 100%;
     height: 350px;
@@ -657,11 +664,7 @@ textarea.form-control {
     margin-right: 15px;
   
 }
-.bell-icon:hover , .bell-icon:focus , .bell-icon:active{
-   
-    color: black;
-    
-}
+
 .bell-icon-close{
    
   
@@ -674,11 +677,7 @@ textarea.form-control {
     color: white;
     transition: color 0.3s;
 }    
-.volume-icon:hover , .volume-icon:focus , .volume-icon:active{
-   
-    color: black;
-    
-}
+
 .volume-icon-close{
     
     font-size: 20px;
@@ -705,3 +704,14 @@ textarea.form-control {
     border-radius: 50%;
     margin-bottom: -20px;
 } */
+.msg-bubble {
+    background: #eafaff!important;
+    color: #5a5757!important;
+    border-bottom-right-radius: 0;
+}
+.chat-canvas{
+    position: relative;
+}
+.color-chat{
+    color: #5a738e!important;
+}
