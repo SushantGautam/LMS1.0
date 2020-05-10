@@ -1,6 +1,8 @@
 const chatLog = document.querySelector('#chat-log');
 const chatCanvas = document.querySelector('.chat-canvas');
 const mainChatBox = document.querySelector('#main-chat-box');
+const onlineUserCount = document.querySelector('.online-number');
+const onlineUserList = document.querySelector('.user-list');
 
 // Info about user and chat room
 const roomID = document.querySelector(".chat-info").getAttribute("data-chapterID");
@@ -36,7 +38,30 @@ chatSocket.onmessage = function(e) {
     const notificationVal = document.querySelector("#id_notification").value;
     const soundVal = document.querySelector("#id_sound").value;
 
-    if (data.message_type === 'message'){
+    if (data.message_type === 'chat_users'){
+        let users = data.user_list;
+
+        // Clear onlineUserList at first
+        onlineUserList.innerHTML = '';
+
+        onlineUserCount.innerHTML = data.user_count;
+
+        users.forEach(user => {
+            onlineUserList.innerHTML += `
+                    <div class="eachbox">
+                        <ul class="leftchat-userbox">
+                            <li>
+                                <div class="chat-user-image2"><img src="${user.avatar}"></div>
+                            </li>
+                            <li><span style="font-size:10px ; font-weight:600">${user.username}</span></li>
+                        </ul>
+                    </div>`;
+        });
+
+        console.log(data.user_count);
+        console.log(data.user_list);
+
+    }else if (data.message_type === 'message'){
         // converting datetime to local
         let sender_datetime = new Date(data.sender_datetime);
         let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),

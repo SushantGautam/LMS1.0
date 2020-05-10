@@ -6,15 +6,18 @@ from django.conf import settings
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-online_users = []
+online_users = dict()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
         
-        # New user added
-        online_users.append(self.scope['user'])
+        # New user added according to room_name
+        if self.room_name in online_users.keys():
+            online_users[self.room_name].append(self.scope['user'])
+        else:
+            online_users[self.room_name] = [self.scope['user']]
 
         # Join room group
         await self.channel_layer.group_add(
@@ -24,15 +27,46 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
+        # Send message to room group on new user addition
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat_users',
+                'user_list': messages_to_json(set(online_users[self.room_name])),
+            }
+        )
+
     async def disconnect(self, close_code):
-        # User removed
-        online_users.remove(self.scope['user'])
+        # Remove user according to room_name
+        if self.room_name in online_users.keys():
+            online_users[self.room_name].remove(self.scope['user'])
 
         # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
+
+        # Send message to room group when user disconnect
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat_users',
+                'user_list': messages_to_json(set(online_users[self.room_name])),
+            }
+        )
+
+    # Receive message from connect disconnect
+    async def chat_users(self, event):
+        user_list = event['user_list']
+        user_count = len(user_list)
+        
+        # Send message to WebSocket about users list
+        await self.send(text_data=json.dumps({
+            'message_type': 'chat_users',
+            'user_list': user_list,
+            'user_count': user_count
+        }))
 
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -76,6 +110,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'sender_datetime': sender_datetime,
             'message': message
         }))
+
+# Serialization of django queryset
+def messages_to_json(messages):
+    result = []
+    for message in messages:
+        result.append(message_to_json(message))
+    return result
+
+def message_to_json(message):
+    return {
+        'id': message.id,
+        'username': message.username,
+        'fullname': message.getFullName(),
+        'avatar':message.Avatar
+    }
+    
 
 # Function to store each chat text in new file inside chapterid folder
 def storeChat(data, room_name):
