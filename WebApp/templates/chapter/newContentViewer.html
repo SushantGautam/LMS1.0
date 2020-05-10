@@ -396,15 +396,18 @@
 
                 <li class="name-user"></li>
                 <li class="options-chat">
-                    <div class="bell col-md-6">
+                    <div class="bell col-sm-6 col-xs-6">
                         <input type="hidden" name="notification" id="id_notification" value="1">
-                        <i class="bell-icon fas fa-bell "></i>
-                        <i class="bell-icon-close text-danger fas fa-bell-slash"></i>
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to hide'><i  class="bell-icon fas fa-bell "></i></span>
+                         <span data-toggle="tooltip" data-placement="bottom" title='click to show'> <i class="bell-icon-close text-danger fas fa-bell-slash"></i></span>
+                        
                     </div>
-                    <div class="volume col-md-6">
+                    <div class="volume col-sm-6 col-xs-6">
                         <input type="hidden" name="sound" id="id_sound" value="1">
-                        <i class="volume-icon fas fa-volume-up "></i>
-                        <i class="volume-icon-close text-danger fas fa-volume-mute "></i>
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Mute'><i class="volume-icon fas fa-volume-up "></i></span>
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Unmute'><i class="volume-icon-close text-danger fas fa-volume-mute "></i></span>
+                        
+                        
                     </div>
                 </li>
 
@@ -416,6 +419,7 @@
                 </li>
 
                 <li class="chat-canvas">
+                   
                     <div id="chat-log"></div>
                 </li>
             </ul>
@@ -528,7 +532,30 @@
     });
 </script>
 <!-- ends -->
+<!-- chat-icon active -->
 
+<script>
+    $(document).ready(function(){
+
+        $(".icon-for-chat").click(ActiveChatIcon);
+       
+           
+            
+    });
+    function ActiveChatIcon()    {
+        if($(".chat-dialogbox").is(":visible")){
+            $(".closechatopen").removeClass("color-chat");
+           
+        } else{
+            $(".closechatopen").addClass("color-chat");
+           
+        }
+   
+    }
+</script>
+
+
+<!-- ends -->
 
 
 <script type="text/javascript">
@@ -1271,6 +1298,7 @@
     $(document).on('click', '.close-chat', function () {
 
         $(".chat-dialogbox").css("display", "none");
+        $(".closechatopen").removeClass("color-chat");
 
 
     });
