@@ -247,15 +247,18 @@
                                 <td>  {{ a.chapter.chapterObj.getmustreadtimeinformat }} </td>
                                 <td>
                                     {{ a.chapter.totalstudytime }}
-                                    {% if '/students' not in request.path %}
-                                        <span class="edit_progress_studytime" data-toggle="modal"
-                                              data-target="#edit_progress_studytime_modal"
-                                              data-chapterpk="{{ a.chapter.chapterObj.pk }}"
-                                              data-chaptername="{{ a.chapter.chapterObj }}"
-                                              data-studentpk="{{ a.student.pk }}" data-student_name="{{ a.student }}"
-                                              data-totalstudytime="{{ a.chapter.totalstudytime }}">
-                                        <i class="fa fa-edit"></i>
-                                    </span>
+                                    {% if a.chapter.laststudydate and a.chapter.currentpagenumber %}
+                                        {% if '/students' not in request.path %}
+                                            <span class="edit_progress_studytime" data-toggle="modal"
+                                                  data-target="#edit_progress_studytime_modal"
+                                                  data-chapterpk="{{ a.chapter.chapterObj.pk }}"
+                                                  data-chaptername="{{ a.chapter.chapterObj }}"
+                                                  data-studentpk="{{ a.student.pk }}"
+                                                  data-student_name="{{ a.student }}"
+                                                  data-totalstudytime="{{ a.chapter.totalstudytime }}">
+                                            <i class="fa fa-edit"></i>
+                                        </span>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                                 <td class="laststudydate" data-laststudydate="{{ a.chapter.laststudydate }}"
