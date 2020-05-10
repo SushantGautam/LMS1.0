@@ -620,6 +620,18 @@
                         text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
                         fieldSeparator: '\t',
                         orientation: 'landscape',
+                    },
+                    {
+                        extend: 'csv',
+                        title: function () {
+                            return $('#QuizTable').attr('data-title');
+                        },
+                        text: 'Export To CSV',
+                        exportOptions: {
+                            modifier: {
+                                page: 'visible',
+                            }
+                        }
                     }
                 ],
                 columnDefs: [
