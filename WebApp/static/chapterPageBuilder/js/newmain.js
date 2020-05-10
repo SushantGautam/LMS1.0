@@ -763,7 +763,8 @@ class PDF {
             <div id="pdfdiv-actions1">
                 <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="fas fa-trash" id=${id}></i>
                 <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
-                <i  class= "fas fa-link pdflink" id=${id}></i>
+                
+                <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i  class= "fas fa-link pdflink" id=${id}></i></span> 
             </div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -846,7 +847,8 @@ class _3Dobject {
                 <div id="_3dobj-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete Button' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
-                    <i  class= "fas fa-link _3dlink" id=${id}></i>
+                    
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Link Button'><i  class= "fas fa-link _3dlink" id=${id}></i></span> 
                 </div>
                 <div>
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
@@ -2567,30 +2569,28 @@ $(document).ready(function () {
         });
     });
 
+    $('#quiz_create_link').click(function (e) {
+        $('#iframeholder iframe').on('load', function () {
+            var iframe = $('#iframeholder iframe').contents();
+            $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button', function () {
+                setTimeout(() => {
+                    modalcloseFunction()
+                }, 1000)
+            });
+        });
+    })
 
+    $('#survey_create_link').click(function (e) {
+        $('#iframeholder iframe').on('load', function () {
+            var iframe = $('#iframeholder iframe').contents();
+            $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button', function () {
+                setTimeout(() => {
+                    modalcloseFunction()
+                }, 1000)
+            });
+        });
+    })
 });
-$('#quiz_create_link').click(function (e) {
-    $('#iframeholder iframe').on('load', function () {
-        var iframe = $('#iframeholder iframe').contents();
-        $('#iframeholder iframe').contents().find("#quiz_form_ajax").on('click', '#quiz_submit_button', function () {
-            setTimeout(() => {
-                modalcloseFunction()
-            }, 1500)
-        });
-    });
-
-})
-$('#survey_create_link').click(function (e) {
-    $('#iframeholder iframe').on('load', function () {
-        var iframe = $('#iframeholder iframe').contents();
-        $('#iframeholder iframe').contents().find("#survey_form_ajax").on('click', '#survey_submit_button', function () {
-            setTimeout(() => {
-                modalcloseFunction()
-            }, 1500)
-        });
-    });
-
-})
 
 function modalcloseFunction() {
     $('#closeiframebtn').click();
@@ -2880,6 +2880,8 @@ function newpagefunction(new_page_num) {
     if (!window.firstload) {
         changePage('tab' + num_tabs)
     }
+    const additionalCanvas = document.querySelector('.additional-canvas');
+    additionalCanvas.scrollTop = additionalCanvas.scrollHeight;
 
 }
 

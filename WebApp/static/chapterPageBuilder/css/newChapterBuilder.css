@@ -456,7 +456,7 @@ a:hover {
 
 .main-central-canvas {
     height: 62vh;
-    /* background-color: white; */
+    background-color: white;
     position: relative;
 }
 
@@ -722,6 +722,11 @@ hr {
 
 
 /* Old chapterpagebuilder css */
+.videodim {
+    height: 100%;
+    width: 100%;
+}
+
 .note-toolbar .btn-sm {
     font-size: 12px !important;
     padding: 0px;

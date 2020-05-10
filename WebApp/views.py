@@ -27,6 +27,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
 from django.utils.translation import gettext as _
@@ -574,7 +575,7 @@ def ImportCsvFile(request, *args, **kwargs):
                 if MemberInfo.objects.filter(username__iexact=obj_username).exists():
                     previous_uname.append(obj_username)
                     continue
-                
+
                 obj = MemberInfo()
                 obj.username = obj_username
                 obj.Member_ID = df.iloc[i]['Member ID']
@@ -778,6 +779,14 @@ class ChapterInfoCreateView(CreateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
@@ -790,23 +799,13 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     form_class = ChapterInfoForm
     template_name = 'ajax/chapterinfo_form_ajax.html'
 
-    # def post(self, request, *args, **kwargs):
-    #     Obj = ChapterInfo()
-    #     Obj.Chapter_No = request.POST["Chapter_No"]
-    #     Obj.Chapter_Name = request.POST["Chapter_Name"]
-    #     Obj.Summary = request.POST["Summary"]
-    #     if request.POST["Use_Flag"] == 'false':
-    #         Obj.Use_Flag = False
-    #     else:
-    #         Obj.Use_Flag = True
-    #     Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
-    #     Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-    #     Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-    #     Obj.save()
-
-    #     return JsonResponse(
-    #         data={'Message': 'Success'}
-    #     )
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
     def form_valid(self, form):
         form.save(commit=False)
@@ -822,23 +821,44 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
 
+
 class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
     template_name = 'ajax/chapterinfo_form_ajax.html'
 
+    def clean(self, **kwargs):
+        pass1, pass2 = False, False
+        cleaned_data = self.request.POST
+        num = int(cleaned_data.get('Chapter_No'))
+        name = cleaned_data.get('Chapter_Name')
+        course = get_object_or_404(CourseInfo, pk=cleaned_data.get('Course_Code'))
+        chapternum = ChapterInfo.objects.filter(Course_Code=course, Chapter_No=num)
+        chaptername = ChapterInfo.objects.filter(Course_Code=course, Chapter_Name=name)
+        if chapternum.exists():
+            if chapternum.filter(pk=kwargs.get('kwargs')['pk'], Course_Code=course).exists():
+                if chapternum.get(pk=kwargs.get('kwargs')['pk']).Chapter_No == num:
+                    pass1 = True
+            if not pass1:
+                return False
+        if chaptername.exists():
+            if chaptername.filter(pk=kwargs.get('kwargs')['pk'], Course_Code=course).exists():
+                if chaptername.get(pk=kwargs.get('kwargs')['pk']).Chapter_Name == name:
+                    pass2 = True
+            if not pass2:
+                return False
+
+        return True
+
     def post(self, request, *args, **kwargs):
+        cleaned = self.clean(kwargs=kwargs)
+        if not cleaned:
+            return JsonResponse(data={'msg': 'Chapter Number or Chapter Name already Exists'}, status=500)
         Obj = ChapterInfo.objects.get(pk=kwargs.get('pk'))
         Obj.Chapter_No = request.POST["Chapter_No"]
         Obj.Chapter_Name = request.POST["Chapter_Name"]
         Obj.Summary = request.POST["Summary"]
-        # if request.POST["Use_Flag"] == 'false':
-        #     Obj.Use_Flag = False
-        # else:
-        #     Obj.Use_Flag = True
-        # Obj.mustreadtime = int(request.POST['mustreadtime']) * 60
-        # Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-        # Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+
         Obj.save()
 
         return JsonResponse(
@@ -852,6 +872,7 @@ class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
 
             status=200
         )
+
 
 class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
@@ -908,6 +929,14 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def form_valid(self, form):
         form.save(commit=False)
         if form.cleaned_data['Start_Date'] == "":
@@ -915,7 +944,7 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
         if form.cleaned_data['End_Date'] == "":
             form.instance.End_Date = None
 
-        form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
+        # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         form.save()
         return super().form_valid(form)
 
@@ -1436,12 +1465,14 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         )
 
 
-class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
+class QuestionInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
     model = AssignmentQuestionInfo
+    form_class = QuestionInfoForm
+    template_name = 'ajax/questioninfo_form_ajax.html'
 
     def post(self, request, *args, **kwargs):
         try:
-            Obj = AssignmentQuestionInfo.objects.get(pk=request.POST["pk"])
+            Obj = AssignmentQuestionInfo.objects.get(pk=kwargs.get('pk'))
             Obj.Question_Title = request.POST["Question_Title"]
             Obj.Question_Score = request.POST["Question_Score"]
             Obj.Question_Description = request.POST["Question_Description"]
@@ -1469,12 +1500,16 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
 
         except:
             return JsonResponse(
-                data={'Message': 'Cannot edit form'}
+                data={'Message': 'Cannot edit form'}, status=500
             )
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     print(self.request.get('pk'))
+    #     context['questionpk'] = self.request.get('pk')
 
 class QuestionInfoDetailView(DetailView):
     model = AssignmentQuestionInfo
@@ -2207,7 +2242,12 @@ class NewContentsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True)
+        if '/students' in self.request.path:
+            context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True).filter(
+                Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
+                .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None))
+        else:
+            context['chapterList'] = context['course'].chapterinfos.all()
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
@@ -2239,7 +2279,7 @@ class NewContentsView(TemplateView):
                 pass
 
         context['chat_history'].reverse()
-        return context        
+        return context
 
 
 class OfflineContentsView(ContentsView):
@@ -2578,7 +2618,13 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
 
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
+                # jsondata['contents']['totalPage'] = totalPage
+
+            if int(totalPage) != int(jsondata['contents']['totalPage']):
+                if int(totalPage) < int(jsondata['contents']['currentpagenumber']):
+                    jsondata['contents']['currentpagenumber'] = totalPage
                 jsondata['contents']['totalPage'] = totalPage
+
             with open(student_data_file, "w") as outfile:
                 json.dump(jsondata, outfile, indent=4)
     else:
@@ -2705,6 +2751,44 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
     return student_data
 
 
+def getChapterScore(user, chapterObj):
+    data = getCourseProgress(chapterObj.Course_Code, [user, ], [chapterObj, ])
+    if chapterObj.getChapterContent() != "":
+        dataScore = float(data[0]['chapter']['progresspercent']) if data != "" else 0
+        if isinstance(data[0]['chapter']['totalstudytime'], timedelta):
+            totalstudytime = data[0]['chapter']['totalstudytime'].total_seconds()
+        else:
+            h, m, s = data[0]['chapter']['totalstudytime'].split(':') if data != "" else '00:00:00'
+            totalstudytime = int(timedelta(hours=int(h), minutes=int(m), seconds=int(s)).total_seconds())
+        readtime = int(totalstudytime) if data != "" else 0
+        if chapterObj.mustreadtime:
+            if chapterObj.mustreadtime < readtime:
+                readtimeScore = 100
+            elif readtime == 0:
+                readtimeScore = 0
+            else:
+                readtimeScore = int(totalstudytime) / chapterObj.mustreadtime
+        else:
+            readtimeScore = 100
+
+        if (dataScore + readtimeScore) == 200:
+            chapterDurationScore = 100
+        else:
+            chapterDuration = (timezone.now() - chapterObj.Start_Date) if chapterObj.Start_Date else (
+                    timezone.now() - chapterObj.Register_DateTime)
+            if chapterDuration < timedelta(days=30):
+                chapterDurationScore = 30
+            elif chapterDuration > timedelta(days=30) and chapterDuration < timedelta(days=90):
+                chapterDurationScore = 50
+            else:
+                chapterDurationScore = 100
+        totalProgressScore = dataScore + readtimeScore + chapterDurationScore
+        # print(chapterObj, dataScore, readtimeScore, chapterDurationScore, totalProgressScore)
+        return {'totalProgressScore': totalProgressScore / 3, 'chapterProgress': data}
+    else:
+        return {'totalProgressScore': 100, 'chapterProgress': data}
+
+
 def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
     date = datetime.now().strftime('%Y%m%d')
     path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog", date)
@@ -2808,6 +2892,30 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
     context['chapter'] = chapterObj
     context['student'] = studentObj
     return render(request, 'teacher_module/progressdetail.html', context=context)
+
+
+def editStudentChapterProgressTime(request, chapterid, studentid):
+    if request.method == "POST":
+        chapter = ChapterInfo.objects.get(pk=chapterid)
+        # student = MemberInfo.objects.get(pk=studentid)
+        student_data_file = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", str(chapter.Course_Code.pk),
+                                         str(chapterid),
+                                         str(studentid) + '.txt')
+        try:
+            with open(student_data_file) as outfile:
+                jsondata = json.load(outfile)
+        except FileNotFoundError:
+            print(FileNotFoundError)
+        except JSONDecodeError:
+            print(JSONDecodeError)
+
+        if os.path.isfile(student_data_file):
+            jsondata['contents']['totalstudytime'] = int(request.POST.get('edit_progress_studytime_timeinput'))
+            with open(student_data_file, "w") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            return JsonResponse({'message': ' Failed! Student record not created'}, status=500)
 
 
 def loaderverifylink(request):

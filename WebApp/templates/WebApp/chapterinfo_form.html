@@ -32,6 +32,9 @@
                 if ($('#id_End_Date').val() != "") {
                     $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
                 }
+                if ($('#id_mustreadtime').val() != "") {
+                    $('#id_mustreadtime').val(parseFloat($('#id_mustreadtime').val()) * 60)
+                }
                 isSubmit = true
                 $("#FormID").submit()
             }

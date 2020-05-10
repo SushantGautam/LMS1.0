@@ -76,6 +76,7 @@
   .msg-info-name {
     margin-right: 10px;
     font-weight: bold;
+    color: black;
   }
   .msg-info-time {
     font-size: 0.85em;

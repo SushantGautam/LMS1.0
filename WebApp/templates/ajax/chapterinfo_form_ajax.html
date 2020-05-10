@@ -78,8 +78,14 @@
                 location.reload()
             },
             error: function (err) {
-                console.log('Error in posting chapter create form', err.responseJSON.errors.__all__[0])
-                $('.form-errors').append(err.responseJSON.errors.__all__[0]).css('display', 'block')
+                console.log(err)
+                $('.form-errors').empty()
+                if (err.hasOwnProperty('responseJSON')) {
+                    console.log('Error in posting chapter create form', err.responseJSON.errors.__all__[0])
+                    $('.form-errors').append(err.responseJSON.errors.__all__[0]).css('display', 'block')
+                } else {
+                    console.log('Error in posting chapter create form')
+                }
             }
         });
     });

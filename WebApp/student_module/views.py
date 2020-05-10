@@ -38,7 +38,7 @@ from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
-from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog
+from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog, getChapterScore
 
 datetime_now = datetime.now()
 
@@ -69,9 +69,55 @@ def start(request):
                     Course_Code__id=course.Course_Code.id,
                     Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
+
+    # Wordcloud
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
 
+    ## Incomplete chapters calculation
+    chapters = ChapterInfo.objects.filter(Course_Code__id__in=[course.Course_Code.id for course in courses],
+                                          Use_Flag=True).filter(
+        Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
+        Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
+
+    # Filtering out chapters which have no content and progress is 100%
+    chapters_list = []
+    for chapter in chapters:
+        if chapter.has_content():
+            response = getChapterScore(request.user, chapter)
+            chapter.progress_score = round(float(response['totalProgressScore']),3)
+            chapter.chapter_progress = response['chapterProgress'][0]['chapter']['progresspercent']
+            chapter.quiz = response['chapterProgress'][0]['quiz']
+            if chapter.progress_score != float(100):
+                chapters_list.append(chapter)
+
+   
+    # Sorting chapters based on progress score
+    chapters_list.sort(key=lambda x: x.progress_score, reverse=False)
+
+    # Only taking 5 chapters
+    incomplete_chapters = chapters_list[:5]
+
+   
+
+    # chapter_progress = []
+    # counter = 0
+
+    # sorted_chapters = sorted(chapters, key=lambda chapter: getChapterScore(request.user, chapter)['totalProgressScore'],
+    #                          reverse=True)
+
+    # for chapter in sorted_chapters:
+    #     if counter < 5:
+    #         if chapter.getChapterContent() != "":
+    #             student_progress = getCourseProgress(chapter.Course_Code, [request.user, ], [chapter, ]),
+    #             # if student_progress[0][0]['chapter']['progresspercent'] != '100' and student_progress[0][0]['chapter'][
+    #             #     'attendance'] == False:
+    #             chapter_progress.append(student_progress)
+    #             counter += 1
+    #     else:
+    #         break
+
+    # NOtice popup based on active notice and notice view turned off
     if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
         notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
         if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
@@ -86,7 +132,8 @@ def start(request):
                    'activeAssignments': activeassignments, 'sittings': sittings,
                    'wordCloud': wordCloud,
                    'notice': notice,
-                   'get_top_thread_keywords': thread_keywords
+                   'get_top_thread_keywords': thread_keywords,
+                   'incomplete_chapters': incomplete_chapters,
                    })
 
 
@@ -1209,7 +1256,10 @@ def singleUserHomePageJSON(request):
         survey_queryset = general_survey | session_survey | course_survey | system_survey
         survey_queryset = survey_queryset.filter(End_Date__gte=timezone.now()).exclude(
             submitsurvey__Student_Code__pk__in=[request.user.pk, ])
-
+        courses_progress = {}
+        for course in courses:
+            course_data = progress(request.user, course[0])
+            courses_progress[course[0]] = course_data
         user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'first_name', 'last_name', 'Member_Avatar',
                                                                     'email', 'username', 'Member_Permanent_Address',
                                                                     'Member_Temporary_Address', 'Member_BirthDate',
@@ -1256,7 +1306,8 @@ def singleUserHomePageJSON(request):
                     'answer_count': answers.count(),
                 })
 
-        response = {'userinfo': list(user), 'courses': list(courses_list), 'assignments': list(assignments_list),
+        response = {'userinfo': list(user), 'courses': list(courses_list), 'courses_progress_data': courses_progress,
+                    'assignments': list(assignments_list),
                     'survey': list(survey_list), 'sitting': list(sitting_list)}
         return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
     else:
@@ -1269,6 +1320,10 @@ from django.core import serializers
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
 def studentCourseProgress(request, coursepk):
+    return JsonResponse(progress(request.user, coursepk), safe=False, json_dumps_params={'indent': 4})
+
+
+def progress(user, coursepk):
     totalCourseProgress = 0
     courseObj = get_object_or_404(CourseInfo, pk=coursepk)
     chapters_list = ChapterInfo.objects.filter(
@@ -1276,11 +1331,13 @@ def studentCourseProgress(request, coursepk):
         .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
         .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
         .order_by('Chapter_No')
-    student_data = getCourseProgress(courseObj, [request.user], chapters_list)
+    student_data = getCourseProgress(courseObj, [user], chapters_list)
     for count in range(len(student_data)):
-        student_data[count]['student'] = serializers.serialize('json', [student_data[count]['student'], ])
+        del student_data[count]['student']
         student_data[count]['chapter']['chapterObj'] = serializers.serialize('json', [
             student_data[count]['chapter']['chapterObj'], ])
         totalCourseProgress += student_data[count]['chapter']['progresspercent']
-    return JsonResponse({'student_data': student_data, 'avgCourseProgress': totalCourseProgress / len(chapters_list)},
-                        safe=False, json_dumps_params={'indent': 4})
+    return {
+        'student_data': student_data,
+        'avgCourseProgress': totalCourseProgress / len(chapters_list) if len(chapters_list) > 0 else 0
+    }
