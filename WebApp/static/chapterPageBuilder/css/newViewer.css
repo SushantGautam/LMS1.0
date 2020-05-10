@@ -99,9 +99,13 @@ body{
  .chat-sidenav-close li:hover{
      cursor: pointer;
  }
-
-.chat-icon{
+ .chat-icon{
     font-size: 30px;
+    
+}
+.chat-icon:active , .chat-icon:focus{
+    font-size: 30px;
+    color: #5a738e!important;
 }
 .icon-for-chat{
     text-decoration: none;
@@ -111,11 +115,19 @@ body{
     text-decoration: none;
     cursor: pointer;
     color: white;
-    font-size: 24px;
+    font-size: 18px;
     background: rgb(54, 60, 69,0.8);
     border-radius: 10%;
-    padding-left: 3px;
+    padding:  0 3px;
     transition: color 0.3s ease;
+}
+.icon1-largescreen{
+    background: rgb(54, 60, 69,0.8);
+    /* padding: 3px 10px; */
+    color: white;
+    font-size: 30px;
+    border-radius: 10%;
+    padding: 3px;
 }
 
 .icon-for-chat2:hover{
@@ -198,7 +210,7 @@ body{
     width: 9%;
     min-height: 90px;
     background-color: rgb(54, 60, 69,0.9);
-    min-width: 120px;
+    min-width: 9em;
     z-index: 999;
 }
 .link-view-box{
@@ -252,7 +264,7 @@ body{
     display: inline-block;
     text-decoration: none;
     /* padding: 5px; */
-    width: 31.3%;
+    width: 30%;
     text-align: center;
     color: white;
     padding: 10px 0;
@@ -437,10 +449,11 @@ body{
     width: 37%;
 }
 .options-chat{
-    padding-right: 25px;
-    padding-left: 40px;
+    /* padding-right: 37px; */
+    /* padding-left: 40px; */
     color: white;
     cursor: pointer;
+    width: 29%;
 }
 .close-chat{
     color: white;
@@ -478,6 +491,8 @@ body{
     display: none;
 }
 .chat-canvas{
+    background-position: center;
+    background-size: cover;
     background-color: white;
     width: 100%;
     height: 350px;
@@ -639,4 +654,63 @@ textarea.form-control {
 .videodim {
     height: 100%;
     width: 100%;
+}
+.bell-icon{
+    
+    font-size: 20px;
+    color: white;
+    transition: color 0.3s;
+    margin-right: 15px;
+  
+}
+
+.bell-icon-close{
+   
+  
+    display: none;
+    font-size: 20px;
+    opacity: 0.7;
+}
+.volume-icon{
+    font-size: 20px;
+    color: white;
+    transition: color 0.3s;
+}    
+
+.volume-icon-close{
+    
+    font-size: 20px;
+    display: none;
+    opacity: 0.7;
+
+}
+.msg-bubble {
+    max-width: 273px!important;
+    overflow-wrap: break-word!important;
+}
+.green-online{
+    height: 7px;
+    width: 7px;
+    border-radius: 50%;
+    background-color: green;
+    margin-right: 5px;
+}
+/* .online-number{
+    height: 20px;
+    width: 20px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    margin-bottom: -20px;
+} */
+.msg-bubble {
+    background: #eafaff!important;
+    color: #5a5757!important;
+    border-bottom-right-radius: 0;
+}
+.chat-canvas{
+    position: relative;
+}
+.color-chat{
+    color: #5a738e!important;
 }

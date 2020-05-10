@@ -46,6 +46,12 @@
 </form>
 
 <script>
+    var postURL;
+    {% if object %}
+        postURL = `/questioninfo/edit/{{object.pk}}/ajax/`
+    {% else %}
+        postURL = `{% url 'questioninfo_create_ajax' %}`
+    {% endif %}
     var submitted = false
     $("#ajaxquestioninfoform").submit(function (e) {
         if (submitted) {
@@ -64,10 +70,13 @@
         formdata.append("Use_Flag", $('#id_Use_Flag').val());
         formdata.append("Register_Agent", $('#id_Register_Agent').val());
         formdata.append("Assignment_Code", $('#id_Assignment_Code').val());
+        {% if object %}
+            formdata.append("clear", $('#Question_Media_File-clear_id').prop('checked'));
+        {% endif %}
         // console.log($('#id_Question_Title').val());
 
         $.ajax({
-            url: "{% url 'questioninfo_create_ajax' %}",  // URL to your view that serves new info
+            url: postURL,  // URL to your view that serves new info
             data: formdata,
             // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -87,20 +96,19 @@
 </script>
 
 
-
 <!-- Tinmce editor configuration -->
-<script>
-
-tinymce.init({
-  selector: 'textarea#id_Question_Description',
-  height: 500,
-  menubar: false,
-  plugins: [
-    'advlist autolink lists link image charmap print preview anchor',
-    'searchreplace visualblocks code fullscreen',
-    'insertdatetime media table paste code help wordcount'
-  ],
-  toolbar: 'undo redo | formatselect | ' +
-  'bold italic | alignleft aligncenter alignright alignjustify | removeformat'
-});
-</script>
+{#<script>#}
+{##}
+{#    tinymce.init({#}
+{#        selector: 'textarea#id_Question_Description',#}
+{#        height: 500,#}
+{#        menubar: false,#}
+{#        plugins: [#}
+{#            'advlist autolink lists link image charmap print preview anchor',#}
+{#            'searchreplace visualblocks code fullscreen',#}
+{#            'insertdatetime media table paste code help wordcount'#}
+{#        ],#}
+{#        toolbar: 'undo redo | formatselect | ' +#}
+{#            'bold italic | alignleft aligncenter alignright alignjustify | removeformat'#}
+{#    });#}
+{#</script>#}

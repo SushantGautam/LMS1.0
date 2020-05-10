@@ -38,7 +38,7 @@ from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
 from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, AnswerInfo, QuestionInfo
 from .misc import get_query
-from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog
+from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog, getChapterScore
 
 datetime_now = datetime.now()
 
@@ -69,9 +69,55 @@ def start(request):
                     Course_Code__id=course.Course_Code.id,
                     Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
+
+    # Wordcloud
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
 
+    ## Incomplete chapters calculation
+    chapters = ChapterInfo.objects.filter(Course_Code__id__in=[course.Course_Code.id for course in courses],
+                                          Use_Flag=True).filter(
+        Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
+        Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
+
+    # Filtering out chapters which have no content and progress is 100%
+    chapters_list = []
+    for chapter in chapters:
+        if chapter.has_content():
+            response = getChapterScore(request.user, chapter)
+            chapter.progress_score = round(float(response['totalProgressScore']),3)
+            chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'],2)
+            chapter.quiz = response['chapterProgress'][0]['quiz']
+            if chapter.progress_score != float(100):
+                chapters_list.append(chapter)
+
+   
+    # Sorting chapters based on progress score
+    chapters_list.sort(key=lambda x: x.progress_score, reverse=False)
+
+    # Only taking 5 chapters
+    incomplete_chapters = chapters_list[:5]
+
+   
+
+    # chapter_progress = []
+    # counter = 0
+
+    # sorted_chapters = sorted(chapters, key=lambda chapter: getChapterScore(request.user, chapter)['totalProgressScore'],
+    #                          reverse=True)
+
+    # for chapter in sorted_chapters:
+    #     if counter < 5:
+    #         if chapter.getChapterContent() != "":
+    #             student_progress = getCourseProgress(chapter.Course_Code, [request.user, ], [chapter, ]),
+    #             # if student_progress[0][0]['chapter']['progresspercent'] != '100' and student_progress[0][0]['chapter'][
+    #             #     'attendance'] == False:
+    #             chapter_progress.append(student_progress)
+    #             counter += 1
+    #     else:
+    #         break
+
+    # NOtice popup based on active notice and notice view turned off
     if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
         notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
         if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
@@ -86,7 +132,8 @@ def start(request):
                    'activeAssignments': activeassignments, 'sittings': sittings,
                    'wordCloud': wordCloud,
                    'notice': notice,
-                   'get_top_thread_keywords': thread_keywords
+                   'get_top_thread_keywords': thread_keywords,
+                   'incomplete_chapters': incomplete_chapters,
                    })
 
 
