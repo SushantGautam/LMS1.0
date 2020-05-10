@@ -27,6 +27,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
 from django.utils.translation import gettext as _
@@ -1464,12 +1465,14 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         )
 
 
-class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
+class QuestionInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
     model = AssignmentQuestionInfo
+    form_class = QuestionInfoForm
+    template_name = 'ajax/questioninfo_form_ajax.html'
 
     def post(self, request, *args, **kwargs):
         try:
-            Obj = AssignmentQuestionInfo.objects.get(pk=request.POST["pk"])
+            Obj = AssignmentQuestionInfo.objects.get(pk=kwargs.get('pk'))
             Obj.Question_Title = request.POST["Question_Title"]
             Obj.Question_Score = request.POST["Question_Score"]
             Obj.Question_Description = request.POST["Question_Description"]
@@ -1497,12 +1500,16 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, CreateView):
 
         except:
             return JsonResponse(
-                data={'Message': 'Cannot edit form'}
+                data={'Message': 'Cannot edit form'}, status=500
             )
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     print(self.request.get('pk'))
+    #     context['questionpk'] = self.request.get('pk')
 
 class QuestionInfoDetailView(DetailView):
     model = AssignmentQuestionInfo
@@ -2611,7 +2618,13 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
 
             if int(currentPageNumber) > int(jsondata['contents']['currentpagenumber']):
                 jsondata['contents']['currentpagenumber'] = currentPageNumber
+                # jsondata['contents']['totalPage'] = totalPage
+
+            if int(totalPage) != int(jsondata['contents']['totalPage']):
+                if int(totalPage) < int(jsondata['contents']['currentpagenumber']):
+                    jsondata['contents']['currentpagenumber'] = totalPage
                 jsondata['contents']['totalPage'] = totalPage
+
             with open(student_data_file, "w") as outfile:
                 json.dump(jsondata, outfile, indent=4)
     else:
@@ -2701,8 +2714,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                         'quiz': {
                             'quiz_count': student_quiz.count(),
                             'completed_quiz': student_result.filter(complete=True).count(),
-                            'progress': student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            'progress': round(student_result.filter(
+                                complete=True).count() * 100 / student_quiz.count(),2) if student_quiz.count() is not 0 else 0,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
                             'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
@@ -2736,6 +2749,44 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                     },
                 )
     return student_data
+
+
+def getChapterScore(user, chapterObj):
+    data = getCourseProgress(chapterObj.Course_Code, [user, ], [chapterObj, ])
+    if chapterObj.getChapterContent() != "":
+        dataScore = float(data[0]['chapter']['progresspercent']) if data != "" else 0
+        if isinstance(data[0]['chapter']['totalstudytime'], timedelta):
+            totalstudytime = data[0]['chapter']['totalstudytime'].total_seconds()
+        else:
+            h, m, s = data[0]['chapter']['totalstudytime'].split(':') if data != "" else '00:00:00'
+            totalstudytime = int(timedelta(hours=int(h), minutes=int(m), seconds=int(s)).total_seconds())
+        readtime = int(totalstudytime) if data != "" else 0
+        if chapterObj.mustreadtime:
+            if chapterObj.mustreadtime < readtime:
+                readtimeScore = 100
+            elif readtime == 0:
+                readtimeScore = 0
+            else:
+                readtimeScore = int(totalstudytime) / chapterObj.mustreadtime
+        else:
+            readtimeScore = 100
+
+        if (dataScore + readtimeScore) == 200:
+            chapterDurationScore = 100
+        else:
+            chapterDuration = (timezone.now() - chapterObj.Start_Date) if chapterObj.Start_Date else (
+                    timezone.now() - chapterObj.Register_DateTime)
+            if chapterDuration < timedelta(days=30):
+                chapterDurationScore = 30
+            elif chapterDuration > timedelta(days=30) and chapterDuration < timedelta(days=90):
+                chapterDurationScore = 50
+            else:
+                chapterDurationScore = 100
+        totalProgressScore = dataScore + readtimeScore + chapterDurationScore
+        # print(chapterObj, dataScore, readtimeScore, chapterDurationScore, totalProgressScore)
+        return {'totalProgressScore': totalProgressScore / 3, 'chapterProgress': data}
+    else:
+        return {'totalProgressScore': 100, 'chapterProgress': data}
 
 
 def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
@@ -2841,6 +2892,30 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
     context['chapter'] = chapterObj
     context['student'] = studentObj
     return render(request, 'teacher_module/progressdetail.html', context=context)
+
+
+def editStudentChapterProgressTime(request, chapterid, studentid):
+    if request.method == "POST":
+        chapter = ChapterInfo.objects.get(pk=chapterid)
+        # student = MemberInfo.objects.get(pk=studentid)
+        student_data_file = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", str(chapter.Course_Code.pk),
+                                         str(chapterid),
+                                         str(studentid) + '.txt')
+        try:
+            with open(student_data_file) as outfile:
+                jsondata = json.load(outfile)
+        except FileNotFoundError:
+            print(FileNotFoundError)
+        except JSONDecodeError:
+            print(JSONDecodeError)
+
+        if os.path.isfile(student_data_file):
+            jsondata['contents']['totalstudytime'] = int(request.POST.get('edit_progress_studytime_timeinput'))
+            with open(student_data_file, "w") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            return JsonResponse({'message': ' Failed! Student record not created'}, status=500)
 
 
 def loaderverifylink(request):

@@ -119,25 +119,26 @@
     </div>
 
 
+    <!-- Display incomplete chapters list -->
     <div class="row">
         <div class="padding_homepage col-md-6 col-sm-12 col-xs-12">
             <div class="panel panel-default">
-                <!-- <div class="title text-center">
-                    <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
-                            href="{% url 'student_myassignmentinfo_list' %}">List
-                                        of Incomplete Chapters </a></span></h3>
+                <div class="title text-center">
+                    <h3 style="margin-left: 10px"><span><b>Incomplete Chapters</b>
+{#                       - <a#}
+{#                            href="{% url 'student_myassignmentinfo_list' %}">List#}
+{#                                        of Incomplete Chapters </a>#}
+                    </span></h3>
                 </div>
                 <ul class="list-group" style="max-height: 42vh;overflow:auto">
-                    {% for object in activeAssignments %}
+                    {% for chapter in incomplete_chapters %}
                         <li class="list-group-item1 ">
-
-
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6 col-sm-6 col-xs-12">
-                                        <b> {{ object.Assignment_Topic }}</b>
+                                        <b> {{ chapter.Chapter_Name }}</b>
                                         <h5 style="margin-bottom: 0;">
-                                            <a href="{{ object.student_get_absolute_url }}">
+                                            <a href="{{ chapter.student_get_absolute_url }}">
                                                 <button type="button" style="width:103px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px; padding:0 2px;
                                                 ">CONTINUE <i class="fa fa-arrow-right"></i>
                                                 </button>
@@ -148,16 +149,18 @@
                                     </div>
                                     <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
                                         <div class="assignment-status-margin"
-                                             style="font-size:14px; font-style: italic;  font-weight:600 ; ">Status:
-                                            {% getStatusoOfAssignment object user as assignment_status %}
-                                            {% if assignment_status == "Complete" %}
-                                                <span style="color: green"> Complete </span>
-                                            {% else %}
-                                                <span style="color: red"> Incomplete </span>
-                                            {% endif %}
+                                             style="font-size:14px; font-style: italic;  font-weight:600 ; ">Chapter
+                                            Progress: {{ chapter.chapter_progress|floatformat }} %
+
                                         </div>
-                                        <span style="font-size:14px; font-style: italic;  font-weight:600; color:red"> Deadline </span>
-                                        <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ object.Assignment_Deadline|timeuntil }}</span>
+                                        <div>
+                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> Quiz Progress </span>
+                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.quiz.progress|floatformat }} %</span>
+                                        </div>
+                                        <div>
+                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> Completed/Total </span>
+                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.quiz.completed_quiz }}/{{ chapter.quiz.quiz_count }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -166,7 +169,7 @@
                     {% endfor %}
                 </ul> -->
             </div>
-            
+
         </div>
 
         <div class="padding_homepage col-md-6 col-sm-12 col-xs-12">
@@ -234,7 +237,7 @@
                 </ul>
             </div>
         </div>
-       
+
         <!-- <div class="padding_homepage col-md-4 col-sm-12 col-xs-12 ">
             <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
                 <div class="title text-center">
@@ -300,11 +303,11 @@
 
     <script>
         $("#noticeForm").submit(function (e) {
-    
+
             e.preventDefault(); // avoid to execute the actual submit of the form.
             console.log($('#id_dont_show').is(":checked"));
-    
-            if($('#id_dont_show').is(":checked")) {
+
+            if ($('#id_dont_show').is(":checked")) {
                 $.ajax({
                     url: "{% url 'notice_view_create' %}",  // URL to your view that serves new info
                     data: {
@@ -313,7 +316,7 @@
                         "user_code": $('#id_user_code').val(),
                         "notice_code": $('#id_notice_code').val(),
                     },
-    
+
                     // get the form data
                     type: $(this).attr('method'), // GET or POST
                     success: function (response) {
@@ -324,7 +327,7 @@
                         console.log('Error in submitting response');
                     }
                 });
-            }else{
+            } else {
                 $('.close').click();
             }
         });
@@ -669,10 +672,10 @@
 
     </script>
 
-<script>
-$(window).on('load',function(){
-    $('#myModal').modal('show');
-   });
+    <script>
+        $(window).on('load', function () {
+            $('#myModal').modal('show');
+        });
 
-</script>
+    </script>
 {% endblock %}
