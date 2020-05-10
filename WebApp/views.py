@@ -2765,18 +2765,23 @@ def getChapterScore(user, chapterObj):
         else:
             readtimeScore = 100
 
-        chapterDuration = timezone.now() - chapterObj.Register_DateTime
-        if chapterDuration < timedelta(days=30):
-            chapterDurationScore = 30
-        elif chapterDuration > timedelta(days=30) and chapterDuration < timedelta(days=90):
-            chapterDurationScore = 50
-        else:
+        if (dataScore + readtimeScore) == 200:
             chapterDurationScore = 100
+        else:
+            chapterDuration = (timezone.now() - chapterObj.Start_Date) if chapterObj.Start_Date else (
+                        timezone.now() - chapterObj.Register_DateTime)
+            if chapterDuration < timedelta(days=30):
+                chapterDurationScore = 30
+            elif chapterDuration > timedelta(days=30) and chapterDuration < timedelta(days=90):
+                chapterDurationScore = 50
+            else:
+                chapterDurationScore = 100
         totalProgressScore = dataScore + readtimeScore + chapterDurationScore
-
+        # print(chapterObj, dataScore, readtimeScore, chapterDurationScore, totalProgressScore)
         return {'totalProgressScore': totalProgressScore / 3, 'chapterProgress': data}
     else:
         return {'totalProgressScore': 100, 'chapterProgress': data}
+
 
 def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
     date = datetime.now().strftime('%Y%m%d')
