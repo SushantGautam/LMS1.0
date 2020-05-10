@@ -2769,7 +2769,7 @@ def getChapterScore(user, chapterObj):
             chapterDurationScore = 100
         else:
             chapterDuration = (timezone.now() - chapterObj.Start_Date) if chapterObj.Start_Date else (
-                        timezone.now() - chapterObj.Register_DateTime)
+                    timezone.now() - chapterObj.Register_DateTime)
             if chapterDuration < timedelta(days=30):
                 chapterDurationScore = 30
             elif chapterDuration > timedelta(days=30) and chapterDuration < timedelta(days=90):
@@ -2886,6 +2886,30 @@ def StudentChapterProgressView(request, courseid, chapterid, studentid):
     context['chapter'] = chapterObj
     context['student'] = studentObj
     return render(request, 'teacher_module/progressdetail.html', context=context)
+
+
+def editStudentChapterProgressTime(request, chapterid, studentid):
+    if request.method == "POST":
+        chapter = ChapterInfo.objects.get(pk=chapterid)
+        # student = MemberInfo.objects.get(pk=studentid)
+        student_data_file = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", str(chapter.Course_Code.pk),
+                                         str(chapterid),
+                                         str(studentid) + '.txt')
+        try:
+            with open(student_data_file) as outfile:
+                jsondata = json.load(outfile)
+        except FileNotFoundError:
+            print(FileNotFoundError)
+        except JSONDecodeError:
+            print(JSONDecodeError)
+
+        if os.path.isfile(student_data_file):
+            jsondata['contents']['totalstudytime'] = int(request.POST.get('edit_progress_studytime_timeinput'))
+            with open(student_data_file, "w") as outfile:
+                json.dump(jsondata, outfile, indent=4)
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            return JsonResponse({'message': ' Failed! Student record not created'}, status=500)
 
 
 def loaderverifylink(request):

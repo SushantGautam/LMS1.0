@@ -283,8 +283,8 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
          views.chapterpagebuilder, name='chapterpagebuilder'),
 
-     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newChapterBuilder',
-       views.newChapterBuilder, name='newChapterBuilder'),
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newChapterBuilder',
+         views.newChapterBuilder, name='newChapterBuilder'),
 
     path('viewchapter',
          views.chapterviewer, name='chapterviewer'),
@@ -342,6 +342,8 @@ urlpatterns += (
          views.CourseProgressView, name='admin_course_progress_withinning'),
     path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
          views.StudentChapterProgressView, name='student_chapter_progress'),
+    path('editstudentChapterProgressTime/<int:chapterid>/<int:studentid>/', views.editStudentChapterProgressTime,
+         name="editStudentChapterProgressTime"),
 )
 
 # Notice URL
