@@ -491,7 +491,7 @@ body{
     display: none;
 }
 .chat-canvas{
-    background: url("/static/chapterPageBuilder/images/chat-background.png");
+    /* background: url("/static/chapterPageBuilder/images/chat-background.png"); */
     background-position: center;
     background-size: cover;
     background-color: white;

@@ -2714,8 +2714,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                         'quiz': {
                             'quiz_count': student_quiz.count(),
                             'completed_quiz': student_result.filter(complete=True).count(),
-                            'progress': student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            'progress': round(student_result.filter(
+                                complete=True).count() * 100 / student_quiz.count(),2) if student_quiz.count() is not 0 else 0,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
                             'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
