@@ -2,8 +2,9 @@
 {% load static %}
 {% block content %}
 <div class="container">
-    <div class="jumbothon text-center bg-thansparent">
-        <h1>List of Courses</h1>
+    <div class="jumbothon  bg-thansparent">
+        <h1 class="text-center">List of Courses
+        </h1>
     </div>
     <hr class="header_hr">
     <div class="row">
@@ -42,9 +43,9 @@
         </div>
         <div class="col-lg-3 col-md-4 col-sm-12">
             <!-- <div class="btn-group btn-group-sm"> -->
-            <a class="btn disabled text-black"><i class="fa fa-th-list"></i>
+            <a class="btn text-black" href="{% url 'courseinfo_list' %}"><i class="fa fa-th-list"></i>
                 List</a>
-            <a class="btn text-black" href="{% url 'courseinfo_grid' %}"><i class="fa fa-th-large"></i> Grid</a>
+            <a class="btn disabled text-black"><i class="fa fa-th-large"></i> Grid</a>
             <!-- </div> -->
         </div>
         {% if 'students' not in request.path %}
@@ -59,49 +60,58 @@
         {% endif %}
     </div>
     <br><br>
-    {% for object in object_list %}
-    <div class="panel panel-default paper-shadow" data-z="0.5">
-        <div class="panel-body">
-            <div class="media media-clearfix-xs">
-                <div class="media-left text-center">
-                    <div class="cover width-150 width-100pc-xs overlay cover-image-full hover margin-v-0-10">
-                        <span class="img icon-block height-130 bg-default"></span>
-                        <a href="{{ object.get_absolute_url }}"
-                            class="padding-none overlay overlay-full icon-block bg-default">
-                            <img src="{% if object.Course_Cover_File %}
+    <div class="row" data-toggle="isotope">
+        {% for object in object_list %}
+        <div class="item col-xs-12 col-sm-6 col-lg-4">
+            <div class="panel panel-default paper-shadow" data-z="0.5">
+
+                <div class="cover overlay cover-image-full hover">
+                    <!-- <span class="img icon-block height-150 bg-default"> -->
+
+                    <!-- </span> -->
+                    <!-- <span class="overlay overlay-full padding-none icon-block s90 bg-primary"> -->
+                    <a href="{{ object.get_absolute_url }}"
+                        class="padding-none overlay overlay-full icon-block bg-default">
+                        <img src="{% if object.Course_Cover_File %}
                         {{ object.Course_Cover_File.url }}
                     {% else %}
                         {% static 'images/course.jpg' %}
-                    {% endif %}" width="100%" height="100px" style="object-fit: cover" />
-                        </a>
-                        <!-- <span class="overlay overlay-full padding-none icon-block bg-default">
+                    {% endif %}" width="100%" height="180px" style="object-fit: cover" />
+                        <!-- <span class="v-center">
+                            <i class="fa fa-book"></i>
+                        </span> -->
+                    </a>
+                    <!-- </span> -->
 
-                            </span> -->
-                        <a href="{{ object.get_absolute_url }}"
-                            class="overlay overlay-full overlay-hover overlay-bg-white">
-                            <span class="v-center">
-                                <span class="btn btn-circle btn-white btn-lg"><i
-                                        class="fa fa-graduation-cap"></i></span>
-                            </span>
-                        </a>
-                    </div>
+                    <a href="{{ object.get_absolute_url }}" class="overlay overlay-full overlay-hover overlay-bg-white">
+                        <span class="v-center">
+                            <span class="btn btn-circle btn-white btn-lg"><i class="fa fa-book"></i></span>
+                        </span>
+                    </a>
+
                 </div>
-                <div class="media-body" style="padding-left: 10px;">
-                    <h4 class="text-headline margin-v-5-0"><a
-                            href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></h4>
-                    <p class="small">
+
+                <div class="panel-body">
+                    <h4 class="text-headline margin-v-0-10"><a
+                            href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a>
+                    </h4>
+
+                    <p class="small margin-none">
                         Difficulty :
                         {% for i in object.Course_Level|make_list %}
                         <span class="fa fa-fw fa-star text-yellow-800"></span>
                         {% endfor %}
                     </p>
-                    <hr class="margin-v-8" />
+
+                </div>
+                <hr class="margin-none" />
+                <div class="panel-body">
+
                     <p>{{ object.Course_Description }}</p>
 
-                    <!-- <hr class="margin-v-8" />
-                    <div class="media v-middle">
+                    <!-- <div class="media v-middle">
                         <div class="media-left">
-                            <img src="images/people/50/guy-2.jpg" alt="People" class="img-circle width-40" />
+                            <img src="images/people/50/guy-4.jpg" alt="People" class="img-circle width-40" />
                         </div>
                         <div class="media-body">
                             <h4><a href="">Adrian Demian</a>
@@ -112,10 +122,10 @@
                     </div> -->
 
                 </div>
-            </div>
 
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 {% endblock %}

@@ -471,9 +471,9 @@ def CenterInfoDeleteView(request, pk):
     return redirect("centerinfo_list")
 
 
-class MemberInfoListView(TemplateView):
+class MemberInfoListView(ListView):
     template_name = "center_admin/memberinfo_list.html"
-    # model = MemberInfo
+    model = MemberInfo
     #
     # def get_queryset(self):
     #     return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
@@ -785,6 +785,27 @@ class MemberInfoDeleteView(DeleteView):
             )
             return redirect(redirect_link)
 
+
+class CourseInfoGridView(ListView):
+    model = CourseInfo
+    paginate_by = 6
+    template_name = "center_admin/courseinfo_grid.html"
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(
+            Center_Code=self.request.user.Center_Code)
+        query = self.request.GET.get('query')
+        if query:
+            query = query.strip()
+            qs = qs.filter(Course_Name__icontains=query)
+            if not len(qs):
+                messages.error(
+                    self.request,
+                    'Sorry no course found! Try with a different keyword')
+        qs = qs.order_by(
+            "-id"
+        )  # you don't need this if you set up your ordering on the model
+        return qs
 
 class CourseInfoListView(ListView):
     model = CourseInfo
