@@ -245,7 +245,22 @@
                                 <td>  {{ a.student }} </td>
                                 <td>  {{ a.chapter.chapterObj.Chapter_No }}. {{ a.chapter.chapterObj.Chapter_Name }} </td>
                                 <td>  {{ a.chapter.chapterObj.getmustreadtimeinformat }} </td>
-                                <td>  {{ a.chapter.totalstudytime }} </td>
+                                <td>
+                                    {{ a.chapter.totalstudytime }}
+                                    {% if a.chapter.laststudydate and a.chapter.currentpagenumber %}
+                                        {% if '/students' not in request.path %}
+                                            <span class="edit_progress_studytime" data-toggle="modal"
+                                                  data-target="#edit_progress_studytime_modal"
+                                                  data-chapterpk="{{ a.chapter.chapterObj.pk }}"
+                                                  data-chaptername="{{ a.chapter.chapterObj }}"
+                                                  data-studentpk="{{ a.student.pk }}"
+                                                  data-student_name="{{ a.student }}"
+                                                  data-totalstudytime="{{ a.chapter.totalstudytime }}">
+                                            <i class="fa fa-edit"></i>
+                                        </span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
                                 <td class="laststudydate" data-laststudydate="{{ a.chapter.laststudydate }}"
                                     data-laststudydatewithutc="{{ a.chapter.laststudydate }} UTC">  {{ a.chapter.laststudydate }} </td>
                                 <td class="quiztd" data-quiz_completed="{{ a.quiz.completed_quiz }}"
@@ -286,6 +301,43 @@
         {% endif %}
     </div>
 
+    <!-- Modal -->
+    <div id="edit_progress_studytime_modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">
+                        Edit Study Progress Time of <span id="edit_progress_studytime_student_span"></span> in <span
+                            id="edit_progress_studytime_chapter_span"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="edit_progress_studytime_form">
+                        <label>Study Time</label>
+                        <input type="number" id="edit_progress_studytime_timeinputhh"
+                               name="edit_progress_studytime_inputhr" min="0" placeholder="hh">
+                        <input type="number" id="edit_progress_studytime_timeinputmm"
+                               name="edit_progress_studytime_inputmm" min="0" max="59" placeholder="mm">
+                        <input type="number" id="edit_progress_studytime_timeinputss"
+                               name="edit_progress_studytime_inputss" min="0" max="59" placeholder="ss">
+                        {#                        <input type="hidden" id="edit_progress_studytime_timeinput" name="edit_progress_studytime_input">#}
+                        <input type="hidden" id="edit_progress_studytime_chapterinput"
+                               name="edit_progress_studytime_chapterinput">
+                        <input type="hidden" id="edit_progress_studytime_studentinput"
+                               name="edit_progress_studytime_studentinput">
+                        <input type="submit">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}
 
 {% block customjss %}
@@ -740,5 +792,38 @@
                 }
             }
         });
+
+        $('.edit_progress_studytime').on('click', function (e) {
+            $('#edit_progress_studytime_student_span').text($(this).attr('data-student_name'));
+            $('#edit_progress_studytime_chapter_span').text($(this).attr('data-chaptername'));
+            $('#edit_progress_studytime_studentinput').val($(this).attr('data-studentpk'));
+            $('#edit_progress_studytime_chapterinput').val($(this).attr('data-chapterpk'));
+            total_studytime = $(this).attr('data-totalstudytime').split(':')
+            $('#edit_progress_studytime_timeinputhh').val(total_studytime[0]);
+            $('#edit_progress_studytime_timeinputmm').val(total_studytime[1]);
+            $('#edit_progress_studytime_timeinputss').val(total_studytime[2]);
+        });
+
+        $('#edit_progress_studytime_form').on('submit', function (e) {
+            e.preventDefault()
+            totalstudytime = parseInt($('#edit_progress_studytime_timeinputhh').val()) * 60 * 60 + parseInt($('#edit_progress_studytime_timeinputmm').val()) * 60 + parseInt($('#edit_progress_studytime_timeinputss').val())
+            studentpk = $('#edit_progress_studytime_studentinput').val();
+            chapterpk = $('#edit_progress_studytime_chapterinput').val();
+            $.ajax({
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': "{{ csrf_token }}",
+                    'edit_progress_studytime_timeinput': totalstudytime,
+                },
+                url: `/editstudentChapterProgressTime/${chapterpk}/${studentpk}/`,
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (response) {
+                    console.log(response)
+                    alert(response.responseJSON.message)
+                }
+            });
+        })
     </script>
 {% endblock %}
