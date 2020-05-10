@@ -38,6 +38,7 @@ class ChapterInfoSerializer(serializers.ModelSerializer):
         model = models.ChapterInfo
         fields = (
             'pk', 'Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag',
+            'Start_Date', 'End_Date',
             'Register_DateTime', 'Updated_DateTime', 'Register_Agent', 'Course_Code'
         )
 
