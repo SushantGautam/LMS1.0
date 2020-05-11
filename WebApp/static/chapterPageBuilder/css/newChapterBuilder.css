@@ -1114,7 +1114,12 @@ html {
     /* display: flex;
     flex-flow: column wrap;
     align-items: center;
-    justify-content: center; */
+    */
+    align-items: center;
+    text-align: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
 }
 
 #video-drag {

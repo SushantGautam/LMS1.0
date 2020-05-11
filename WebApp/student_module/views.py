@@ -86,7 +86,7 @@ def start(request):
         if chapter.has_content():
             response = getChapterScore(request.user, chapter)
             chapter.progress_score = round(float(response['totalProgressScore']),3)
-            chapter.chapter_progress = response['chapterProgress'][0]['chapter']['progresspercent']
+            chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'],2)
             chapter.quiz = response['chapterProgress'][0]['quiz']
             if chapter.progress_score != float(100):
                 chapters_list.append(chapter)

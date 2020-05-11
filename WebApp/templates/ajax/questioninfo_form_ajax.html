@@ -44,7 +44,6 @@
         <button class="btn btn-success" type="submit">Submit</button>
     </div>
 </form>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
 
 <script>
     var postURL;
@@ -98,18 +97,18 @@
 
 
 <!-- Tinmce editor configuration -->
-<script>
-
-    tinymce.init({
-        selector: 'textarea#id_Question_Description',
-        height: 500,
-        menubar: false,
-        plugins: [
-            'advlist autolink lists link image charmap print preview anchor',
-            'searchreplace visualblocks code fullscreen',
-            'insertdatetime media table paste code help wordcount'
-        ],
-        toolbar: 'undo redo | formatselect | ' +
-            'bold italic | alignleft aligncenter alignright alignjustify | removeformat'
-    });
-</script>
+{#<script>#}
+{##}
+{#    tinymce.init({#}
+{#        selector: 'textarea#id_Question_Description',#}
+{#        height: 500,#}
+{#        menubar: false,#}
+{#        plugins: [#}
+{#            'advlist autolink lists link image charmap print preview anchor',#}
+{#            'searchreplace visualblocks code fullscreen',#}
+{#            'insertdatetime media table paste code help wordcount'#}
+{#        ],#}
+{#        toolbar: 'undo redo | formatselect | ' +#}
+{#            'bold italic | alignleft aligncenter alignright alignjustify | removeformat'#}
+{#    });#}
+{#</script>#}

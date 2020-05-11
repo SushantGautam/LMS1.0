@@ -345,7 +345,7 @@ class video {
             }
         } else {
             message = `
-            Add video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a>`;
+            <p>Add video here...<br> <a href ='https://converterpoint.com/' target = '_blank'>Need help converting?</a></p>`;
             if (server_name == 'Indonesian_Server') {
                 videoobj = `<div class="progressc mx-auto" data-value='0' id="loadingDiv" style="display:none">
                 <span class="progress-left">
@@ -359,9 +359,9 @@ class video {
                 </div>
                 </div>`;
             } else {
-                videoobj = `<div class="progress video-text-div">
-                <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>`;
+                videoobj = `<div class = "file-upload-icon">
+                    <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
+                </div>`;
             }
         }
         let html =
@@ -373,12 +373,11 @@ class video {
                     <i data-toggle="tooltip" data-placement="bottom"  title='Link File' class="fas fa-link videolink" id=${id}></i>
                 </div>
                 <div>
-                    <p id="video-drag">${message}</p>
-                    
                     <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                     <input type='file' name="userImage" accept="video/*" style="display:none" id=${id + 1} class="video-form" />
                     </form>
                     ${videoobj}
+                    <p id="video-drag">${message}</p>
                 </div>
             </div>`
 
@@ -1961,6 +1960,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                         <p id = "percentcomplete"></p>
                         `)
                             $('#loadingDiv').show();
+                            div.find('.file-upload-icon').css('display', 'none');
                         },
                         error: function (errorThrown) {
                             if (errorThrown.responseText.message)
@@ -1969,12 +1969,14 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 alert('Failed to Upload. ' + errorThrown.status)
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
+                            div.find('.file-upload-icon').css('display', 'block');
                         },
                         success: function (data) {
                             console.log(data)
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
                             div.find('p').remove();
+                            div.find('.file-upload-icon').remove();
                             div.find('.progress').remove();
                             if (data.hasOwnProperty('html')) {
                                 var html = $(data.html);

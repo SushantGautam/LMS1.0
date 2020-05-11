@@ -58,9 +58,6 @@ chatSocket.onmessage = function(e) {
                     </div>`;
         });
 
-        console.log(data.user_count);
-        console.log(data.user_list);
-
     }else if (data.message_type === 'message'){
         // converting datetime to local
         let sender_datetime = new Date(data.sender_datetime);
