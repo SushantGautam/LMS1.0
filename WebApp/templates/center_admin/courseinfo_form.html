@@ -30,16 +30,15 @@
                 <div class="form-group">
                     <div class="form-control-material static">
                         <textarea name="Course_Description" id="id_Course_Description" class="form-control"
-                            rows="5"></textarea>
+                            rows="10">{{ object.Course_Description }}</textarea>
                         <label for="id_Course_Description">Course Description</label>
                     </div>
                 </div>
-                <div class="form-group form-control-material static">
-                    <input type="file" name="Course_Cover_File" accept="image/*" id="id_Course_Cover_File"
-                        class="form-control">
-                    <label for="id_Course_Cover_File">Course Cover File</label>
+                <div class="gapping">
+                    <div style="margin-bottom: 10px;">Course Cover File</div>
+                    {{form.Course_Cover_File}}
                 </div>
-                <div class="form-group form-control-material static">
+                <div class="form-group form-control-material static gapping">
                     <input class="form-control" id="id_Course_Level" type="number" name="Course_Level"
                         value="{{ object.Course_Level }}">
                     <label for="id_Course_Provider">Course Rating</label>

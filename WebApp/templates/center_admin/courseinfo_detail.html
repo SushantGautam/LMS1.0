@@ -52,8 +52,13 @@
                             <h1 class="text-display-1 margin-none">{{ object.Course_Name }}</h1>
                             <p class="small margin-none">
                                 Difficulty :
-                                {% for i in object.Course_Level|make_list %}
+                                {% for i in '12345'|make_list %}
+                                {% if object.Course_Level >= forloop.counter %}
                                 <span class="fa fa-fw fa-star text-yellow-800"></span>
+                                {% else %}
+                                <span class="fa fa-fw fa-star-o text-yellow-800"></span>
+
+                                {% endif %}
                                 {% endfor %}
                             </p>
                         </div>
@@ -232,20 +237,20 @@
                                 <br />
                                 <i class="fa fa-user fa-fw"></i> Instructor:
                                 {% if object.get_teachers_of_this_course %}
-                                <ul class="row">
-                                    {% for eachTeacher in object.get_teachers_of_this_course %}
-                                    <li>
-                                        {{ eachTeacher.getFullName }}
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                                {% else %}
-                                &nbsp; No Teachers Assigned Yet
-                                {% endif %}
-                                <br />
-                                <i class="fa fa-mortar-board fa-fw"></i> Max. students: 50
-                                <br />
-                                <i class="fa fa-check fa-fw"></i> Attending: 30
+                            <ul class="row">
+                                {% for eachTeacher in object.get_teachers_of_this_course %}
+                                <li>
+                                    {{ eachTeacher.getFullName }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            &nbsp; No Teachers Assigned Yet
+                            {% endif %}
+                            <br />
+                            <i class="fa fa-mortar-board fa-fw"></i> Max. students: 50
+                            <br />
+                            <i class="fa fa-check fa-fw"></i> Attending: 30
                             </p>
                         </div>
                         <hr class="margin-none" />

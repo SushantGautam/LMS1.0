@@ -550,6 +550,7 @@ class MemberInfoListViewInactive(ListView):
 class MemberInfoCreateView(CreateView):
     model = MemberInfo
     form_class = MemberInfoForm
+    template_name = "center_admin/memberinfo_form.html"
     success_url = reverse_lazy('memberinfo_list')
 
     def form_valid(self, form):
@@ -766,6 +767,7 @@ class MemberInfoDetailView(DetailView):
 class MemberInfoUpdateView(UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
+    template_name = "center_admin/memberinfo_form.html"
 
 
 class MemberInfoDeleteView(DeleteView):
@@ -806,6 +808,7 @@ class CourseInfoGridView(ListView):
             "-id"
         )  # you don't need this if you set up your ordering on the model
         return qs
+
 
 class CourseInfoListView(ListView):
     model = CourseInfo

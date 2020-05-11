@@ -2,12 +2,26 @@
 {% load static %}
 {% block content %}
 <div class="container">
-    <div class="jumbothon text-center bg-thansparent">
-        <h1>List of Courses</h1>
+    <div class="page-section">
+        <div class="media v-middle">
+            <div class="media-body">
+                <h1 class="text-display-1 margin-none">Courses</h1>
+                <p class="text-subhead">Browse through our courses</p>
+            </div>
+            <div class="media-right">
+                <div class="width-100 text-right">
+                    <div class="btn-group">
+                        <a class="btn btn-white" href="{% url 'courseinfo_grid' %}"><i class="fa fa-th"></i></a>
+                        <a class="btn btn-grey-800" href="{% url 'courseinfo_list' %}" disabled><i
+                                class="fa fa-list"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <hr class="header_hr">
+    <!-- <hr class="header_hr"> -->
     <div class="row">
-        <div class="col-lg-6 col-md-8 col-sm-12">
+        <div class="col-lg-8 col-md-6 col-sm-12">
             {% if 'teachers' in request.path %}
             <form method="get" action="">
                 <div class="col-md-4">
@@ -40,15 +54,9 @@
             </form>
             {% endif %}
         </div>
-        <div class="col-lg-3 col-md-4 col-sm-12">
-            <!-- <div class="btn-group btn-group-sm"> -->
-            <a class="btn disabled text-black"><i class="fa fa-th-list"></i>
-                List</a>
-            <a class="btn text-black" href="{% url 'courseinfo_grid' %}"><i class="fa fa-th-large"></i> Grid</a>
-            <!-- </div> -->
-        </div>
+
         {% if 'students' not in request.path %}
-        <div class="col-lg-3 col-md-12 col-sm-12 btn-createnew">
+        <div class="col-lg-4 col-md-6 col-sm-12 btn-createnew">
             <a class="btn btn-primary" style="float: right;" href="
             {% if '/teachers' in request.path %}
                 {% url 'teacher_courseinfo_create' %}
@@ -64,7 +72,7 @@
         <div class="panel-body">
             <div class="media media-clearfix-xs">
                 <div class="media-left text-center">
-                    <div class="cover width-150 width-100pc-xs overlay cover-image-full hover margin-v-0-10">
+                    <div class="cover width-200 width-100pc-xs overlay cover-image-full hover margin-v-0-10">
                         <span class="img icon-block height-130 bg-default"></span>
                         <a href="{{ object.get_absolute_url }}"
                             class="padding-none overlay overlay-full icon-block bg-default">
@@ -72,7 +80,7 @@
                         {{ object.Course_Cover_File.url }}
                     {% else %}
                         {% static 'images/course.jpg' %}
-                    {% endif %}" width="100%" height="100px" style="object-fit: cover" />
+                    {% endif %}" width="100%" height="130px" style="object-fit: cover" />
                         </a>
                         <!-- <span class="overlay overlay-full padding-none icon-block bg-default">
 
@@ -91,8 +99,13 @@
                             href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></h4>
                     <p class="small">
                         Difficulty :
-                        {% for i in object.Course_Level|make_list %}
+                        {% for i in '12345'|make_list %}
+                        {% if object.Course_Level >= forloop.counter %}
                         <span class="fa fa-fw fa-star text-yellow-800"></span>
+                        {% else %}
+                        <span class="fa fa-fw fa-star-o text-yellow-800"></span>
+
+                        {% endif %}
                         {% endfor %}
                     </p>
                     <hr class="margin-v-8" />
