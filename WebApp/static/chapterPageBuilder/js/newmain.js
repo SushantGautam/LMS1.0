@@ -1960,6 +1960,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                         <p id = "percentcomplete"></p>
                         `)
                             $('#loadingDiv').show();
+                            div.find('.file-upload-icon').css('display', 'none');
                         },
                         error: function (errorThrown) {
                             if (errorThrown.responseText.message)
@@ -1968,12 +1969,14 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                                 alert('Failed to Upload. ' + errorThrown.status)
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
+                            div.find('.file-upload-icon').css('display', 'block');
                         },
                         success: function (data) {
                             console.log(data)
                             div.find('#loadingDiv').remove();
                             div.find('#percentcomplete').remove();
                             div.find('p').remove();
+                            div.find('.file-upload-icon').remove();
                             div.find('.progress').remove();
                             if (data.hasOwnProperty('html')) {
                                 var html = $(data.html);
