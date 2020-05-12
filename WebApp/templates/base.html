@@ -204,7 +204,7 @@
     Includes Custom Application JavaScript used for the current theme/module;
     Do not use it simultaneously with the standalone modules below. -->
   <script src="{% static 'js/app/app.js' %}"></script>
-
+  {% block javascript %}{% endblock javascript %}
   <!-- Vendor Scripts Standalone Libraries -->
   <!-- <script src="js/vendor/core/all.js"></script> -->
   <!-- <script src="js/vendor/core/jquery.js"></script> -->

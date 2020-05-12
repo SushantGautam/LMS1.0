@@ -119,8 +119,8 @@
         </form>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+{% endblock %}
+{% block javascript %}
 <script>
     $(document).on('click', '.confirm-deactivate', function (event) {
         ans = confirm('Are you sure you want to deactivate this Member?');
