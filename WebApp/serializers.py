@@ -91,6 +91,7 @@ class AssignmentInfoSerializer(serializers.ModelSerializer):
         model = models.AssignmentInfo
         fields = (
             'pk', 'Assignment_Topic', 'Assignment_Deadline', 'Use_Flag', 'Register_DateTime',
+            'Assignment_Start',
             'Updated_DateTime', 'Register_Agent', 'course_code', 'course_name', 'chapter_code', 'Register_Agent_Name'
         )
 

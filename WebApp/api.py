@@ -157,7 +157,8 @@ class ChapterContent(generics.GenericAPIView):
         if models.ChapterInfo.objects.filter(id=chapterID).exists():
             chapterobj = models.ChapterInfo.objects.get(id=chapterID)
         else:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={'data': 'Chapter does not exist'})
+            # return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={'data': 'Chapter does not exist'})
+            return Response(status=status.HTTP_200_OK, data={'data': 'Chapter does not exist'})
         courseID = chapterobj.Course_Code.id
 
         path = settings.MEDIA_ROOT
@@ -167,7 +168,8 @@ class ChapterContent(generics.GenericAPIView):
                     chapterID) + '.txt') as json_file:
                 data = json.load(json_file)
         except Exception as e:
-            return Response(status=status.HTTP_404_NOT_FOUND, data={'data': 'Chapter File does not exist'})
+            # return Response(status=status.HTTP_404_NOT_FOUND, data={'data': 'Chapter File does not exist'})
+            return Response(status=status.HTTP_200_OK, data={'data': 'Chapter File does not exist'})
         return Response(status=status.HTTP_200_OK, data={'data': data})
 
 
