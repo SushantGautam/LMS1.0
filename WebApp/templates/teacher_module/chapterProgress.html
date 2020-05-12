@@ -265,12 +265,10 @@
                                     data-laststudydatewithutc="{{ a.chapter.laststudydate }} UTC">  {{ a.chapter.laststudydate }} </td>
                                 <td class="quiztd" data-quiz_completed="{{ a.quiz.completed_quiz }}"
                                     data-quiz_total="{{ a.quiz.quiz_count }}"
-                                    data-score_obtained="{{ a.quiz.avg_percent_score }}"><span
-                                        style="font-weight: 600;">Score Obtained</span>
-
-                                    :- {{ a.quiz.avg_percent_score }} %<br>
-                                    <span style="font-weight: 600;">Completed/Total Quiz</span>
-                                    :- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}
+                                    data-score_obtained="{{ a.quiz.avg_percent_score }}">
+<span style="font-weight: 600;">Score Obtained</span>:- {{ a.quiz.avg_percent_score }} %
+                                    <br>
+<span style="font-weight: 600;">Completed/Total Quiz</span>:- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}
 
                                 </td>
                                 <td class="attendance" data-attendance="{{ a.chapter.attendance }}">
@@ -620,6 +618,18 @@
                         text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
                         fieldSeparator: '\t',
                         orientation: 'landscape',
+                    },
+                    {
+                        extend: 'csv',
+                        title: function () {
+                            return $('#QuizTable').attr('data-title');
+                        },
+                        text: 'Export To CSV',
+                        exportOptions: {
+                            modifier: {
+                                page: 'visible',
+                            }
+                        }
                     }
                 ],
                 columnDefs: [

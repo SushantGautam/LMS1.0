@@ -491,6 +491,7 @@ body{
     display: none;
 }
 .chat-canvas{
+    background: url('/static/chapterPageBuilder/images/chat-background.png');
     background-position: center;
     background-size: cover;
     background-color: white;
@@ -704,8 +705,8 @@ textarea.form-control {
     margin-bottom: -20px;
 } */
 .msg-bubble {
-    background: #eafaff!important;
-    color: #5a5757!important;
+    background: #71bcd4!important;
+    color: #252424!important;
     border-bottom-right-radius: 0;
 }
 .chat-canvas{
@@ -714,3 +715,27 @@ textarea.form-control {
 .color-chat{
     color: #5a738e!important;
 }
+/* loader */
+.loadspin {
+    border: 5px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 5px solid #5a738e;
+    width: 30px;
+    height: 30px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+
+/* ends */
