@@ -762,6 +762,7 @@ class PasswordChangeView(PasswordContextMixin, FormView):
 
 class MemberInfoDetailView(DetailView):
     model = MemberInfo
+    template_name = "center_admin/memberinfo_detail.html"
 
 
 class MemberInfoUpdateView(UpdateView):
