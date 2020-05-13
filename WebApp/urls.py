@@ -351,3 +351,9 @@ urlpatterns += (
 urlpatterns += (
     path('notice_view_create', views.notice_view_create, name='notice_view_create'),
 )
+
+# For Media Direct Links
+
+urlpatterns += (
+    path('api/v1/video_urlresolver/', views.getDirectURLOfMedias, name='getDirectURLOfMedias'),
+)
