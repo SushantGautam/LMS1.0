@@ -1045,6 +1045,7 @@
     pickr.on('save', (color, instance) => {
         const rgbaColor = color.toRGBA().toString();
         document.querySelector('.current').style.backgroundColor = rgbaColor;
+        setThumbnailok = true
     })
 
 </script>
