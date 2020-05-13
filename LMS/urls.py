@@ -75,6 +75,8 @@ urlpatterns += [
          views.ThreeDViewer, name='3DViewer'),
     path('3DViewer/',
          views.ThreeDViewer, name='3DViewer'),
+
+    path('summernote/', include('django_summernote.urls')),
 ]
 
 urlpatterns += [

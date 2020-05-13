@@ -229,7 +229,7 @@
                                     Question Description :
                                 </div>
                                 <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
-                                    <b style="color: #000000">{{ questions.Question_Description }}</b>
+                                    <span style="color: #000000">{{ questions.Question_Description | safe }}</span>
                                 </div>
                             {% endif %}
                             {% if questions.Answer_Type %}
@@ -613,6 +613,7 @@
                 return false
             }
             $('#add_question_modal_body').empty();
+            $('#edit_question_modal_body').empty();
             $('#add_question_modal_body').append(
                 `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
                            class="select form-control">`

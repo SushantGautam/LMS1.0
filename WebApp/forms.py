@@ -14,6 +14,8 @@ from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
     InningManager, Attendance
 
+from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
+from django_summernote.fields import SummernoteTextFormField, SummernoteTextField
 
 class UserRegisterForm(UserCreationForm):
     # Member_Role = forms.MultipleChoiceField(choices=USER_ROLES, widget=forms.CheckboxSelectMultiple())
@@ -381,7 +383,16 @@ class AssignmentInfoForm(forms.ModelForm):
 
 
 class QuestionInfoForm(forms.ModelForm):
-    # Question_Description = forms.CharField(widget=TinyMCE(mce_attrs={},attrs={'cols': 40, 'rows': 10}))
+    Question_Description = forms.CharField(widget=SummernoteWidget(attrs=
+                            {'summernote': 
+                            {'width': '100%', 'height': '480px',
+                            'toolbar': [["style", ["style"]], 
+                            ["font", ["bold", "italic", "underline"]],
+                            ["para", ["ul", "ol"]],
+                            ["table", ["table"]], 
+                            ["insert", ["link", "picture"]], 
+                            ]}
+                            }))
     class Meta:
         model = AssignmentQuestionInfo
         fields = '__all__'
