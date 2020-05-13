@@ -83,6 +83,48 @@ function getEmbedVideo(url) {
     return $video_element[0];
 }
 
+function getVimeoThumbnail(url, divid) {
+    var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
+    var vimMatch = url.match(vimRegExp);
+    if (vimMatch && vimMatch[3].length) {
+        $.ajax({
+            url: 'https://api.vimeo.com//videos/' + vimMatch[3] + '/pictures/',
+            processData: false,
+            method: 'GET',
+            headers: {
+                'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+            },
+            success: function (response) {
+                $('#' + divid).find('iframe').css({
+                    'background-image': `url(${response.data[0].sizes[1].link})`,
+                    'background-position': 'center',
+                    'background-size': 'contain',
+                    'background-repeat': 'no-repeat'
+                })
+            },
+        });
+    }
+}
+
+function getCincopaThumbnail(url, divid) {
+    var ccRegExp = /\/\/(?:www\.)?(?:cincopa.com\/media-platform\/iframe.aspx\?fid=?.+)/g
+    var ccRegExpForStart = /(![A-Z])\w.+/g;
+    console.log(url.match(ccRegExpForStart)[0].length)
+    if (url.match(ccRegExp) && url.match(ccRegExpForStart)[0].length == 13) {
+        var rid = url.match(ccRegExpForStart)[0].substring(1);
+        $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=' + rid, function (response) {
+            $('#' + divid).find('iframe').css({
+                'background-image': `url(${response.items[0].thumbnail.url})`,
+                'background-position': 'center',
+                'background-size': 'contain',
+                'background-repeat': 'no-repeat'
+            })
+            // var img = `<img src = '${response.items[0].thumbnail.url}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
+            // $('#' + divid).append(img)
+        })
+    }
+}
+
 function revertpositionConvert(element, multiplier) {
     return parseFloat(element) * parseFloat(multiplier) / 100
 }
@@ -242,11 +284,12 @@ class picture {
             img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
         }
         if (link != null) {
+            getCincopaThumbnail(link, 'pic-' + id)
             img = `<iframe style="width:100%;height:100%;" src="${link}"
                          frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`
         }
         let html =
-            `<div class='pic'>
+            `<div class='pic' id="pic-${id}">
             <div id="pic-actions">
                 <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
               <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
@@ -327,6 +370,12 @@ class video {
 
         if (link != null) {
             if (link.includes('.com')) {
+                if (link.includes('vimeo.com')) {
+                    getVimeoThumbnail(link, 'video-div-' + id)
+                } else if (link.includes('cincopa.com/media-platform')) {
+                    getCincopaThumbnail(link, 'video-div-' + id)
+                }
+
                 videoobj = `<iframe width="100%" height="94%" src="${link}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>`
             } else if (link.includes('/media/chapterBuilder/')) {
                 videoobj = `
@@ -365,7 +414,7 @@ class video {
             }
         }
         let html =
-            `<div class='video-div'>
+            `<div class='video-div' id="video-div-${id}">
                 <div id="video-actions">
                     <i data-toggle="tooltip" data-placement="bottom" title='Delete item' class="fas fa-trash" id=${id}></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
@@ -3494,14 +3543,14 @@ async function setThumbnails(prev_page) {
             'background-repeat': 'no-repeat'
         })
     })
-    $('#tab').find('.video-div').each(function () {
-        $(this).css({
-            'background-image': `url('${video_icon}')`,
-            'background-position': 'center',
-            'background-size': 'contain',
-            'background-repeat': 'no-repeat'
-        })
-    });
+    // $('#tab').find('.video-div').each(function () {
+    //     $(this).css({
+    //         'background-image': `url('${video_icon}')`,
+    //         'background-position': 'center',
+    //         'background-size': 'contain',
+    //         'background-repeat': 'no-repeat'
+    //     })
+    // });
     $('#tab').find('.audio-div').each(function () {
         $(this).css({
             'background-image': `url('${audio_icon}')`,
@@ -3519,7 +3568,7 @@ async function setThumbnails(prev_page) {
         })
     });
 
-    html2canvas($('#tab')[0]).then(canvas => {
+    html2canvas($('#tab')[0], {logging: true, letterRendering: 1, allowTaint: false, useCORS: true}).then(canvas => {
         $('.pagenumber[value= ' + prev_page + ']').each(function () {
             if (canvas.toDataURL('image/png', 0.00,).startsWith('data:image')) {
                 resizeImage(canvas.toDataURL('image/png', 0.00), 120, 60, setThumbnailscallback, $(this));

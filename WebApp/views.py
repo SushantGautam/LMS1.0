@@ -1511,6 +1511,7 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
     #     print(self.request.get('pk'))
     #     context['questionpk'] = self.request.get('pk')
 
+
 class QuestionInfoDetailView(DetailView):
     model = AssignmentQuestionInfo
 
@@ -2715,7 +2716,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'quiz_count': student_quiz.count(),
                             'completed_quiz': student_result.filter(complete=True).count(),
                             'progress': round(student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count(),2) if student_quiz.count() is not 0 else 0,
+                                complete=True).count() * 100 / student_quiz.count(),
+                                              2) if student_quiz.count() is not 0 else 0,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
                             'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
@@ -2939,3 +2941,50 @@ def notice_view_create(request):
             obj.dont_show = False
         obj.save()
         return JsonResponse({'status': 'Success', 'msg': 'Added status'})
+
+
+def getDirectURLOfMedias(request):
+    if request.method == "GET":
+        matchfound = False
+        url = request.GET.get('url')
+        vimeoRegExp = re.search("\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*", url)
+        if (vimeoRegExp):
+            print(vimeoRegExp)
+            vimeoID = re.split("\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*", url)
+            id = vimeoID[3]
+            matchfound = True
+            r = requests.get(url='https://api.vimeo.com/videos/' + id + '/',
+                             headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                      'Content-Type': 'application/json',
+                                      'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                             )
+
+            if r.status_code == 200:
+                responseText = json.loads(r.text)
+                return JsonResponse({'message': responseText['files'][0]['link']})
+
+        if not matchfound:
+            ccRegExp = re.search(
+                "\/\/(www\.cincopa\.com)?/(media-platform)*/(iframe.aspx)\?fid=([A-Z]*[a-z].+)*!([A-Z]*[a-z].+)", url)
+
+            if ccRegExp:
+                cincopaID = re.split(
+                    "\/\/(www\.cincopa\.com)?/(media-platform)*/(iframe.aspx)\?fid=([A-Z]*[a-z].+)*!([A-Z]*[a-z].+)",
+                    url)
+                id = cincopaID[5]
+                matchfound = True
+
+                r = requests.get(
+                    url='https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=' + id + '/',
+                    headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                             'Content-Type': 'application/json',
+                             'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
+                )
+
+                if r.status_code == 200:
+                    responseText = json.loads(r.text)
+                    print(responseText['items'][0]['versions']['original']['url'])
+                    return JsonResponse({'message': responseText['items'][0]['versions']['original']['url']},
+                                        status=200)
+        if not matchfound:
+            return JsonResponse({'message': "No file"})
