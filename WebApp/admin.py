@@ -6,7 +6,7 @@ from import_export.resources import ModelResource
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
     InningManager, Attendance, Notice, NoticeView
-
+from django_summernote.admin import SummernoteModelAdmin
 
 class CenterInfoAdminForm(forms.ModelForm):
     class Meta:
@@ -263,8 +263,9 @@ class AttendanceAdmin(admin.ModelAdmin):
 admin.site.register(Attendance, AttendanceAdmin)
 
 
-class NoticeAdmin(admin.ModelAdmin):
+class NoticeAdmin(SummernoteModelAdmin):
     list_display = ['title', 'status', 'show', 'Start_Date', 'End_Date']
+    summernote_fields = ('message',)
 
 
 admin.site.register(Notice, NoticeAdmin)

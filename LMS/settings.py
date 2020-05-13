@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'quiz',
     'survey',
     'decorator_include',
-    'tinymce',
+    'django_summernote',
 ]
 
 MIDDLEWARE = [
@@ -91,6 +91,9 @@ MEDIA_URL = '/media/'
 
 # Form UI Settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+# Summernote with bootstrap
+SUMMERNOTE_THEME = 'bs3'
 
 # Configure where to link to from the Login and Reg buttons in the forum
 forum_LOGIN_URL_NAME = "account:login"
