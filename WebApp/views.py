@@ -1774,13 +1774,13 @@ def deletechapterfile(request):
         old_file = json.loads(request.POST['old'])
         for key, value in old_file.items():
             for x in value:
-                if key == '_3d':
-                    if os.path.exists(os.path.join(BASE_DIR, x[10:])):
-                        extensions = ['mtl', 'obj']
-                        for ext in extensions:
-                            if os.path.exists(os.path.join(BASE_DIR, x[10:-4] + '.' + ext)):
-                                os.remove(os.path.join(BASE_DIR, x[10:-4] + '.' + ext))
-                        return JsonResponse({'message': 'deletion success'})
+                # if key == '_3d':
+                #     if os.path.exists(os.path.join(BASE_DIR, x[10:])):
+                #         extensions = ['mtl', 'obj', 'glb']
+                #         for ext in extensions:
+                #             if os.path.exists(os.path.join(BASE_DIR, x[10:-4] + '.' + ext)):
+                #                 os.remove(os.path.join(BASE_DIR, x[10:-4] + '.' + ext))
+                #         return JsonResponse({'message': 'deletion success'})
                 if os.path.exists(os.path.join(BASE_DIR, x[1:])):
                     os.remove(os.path.join(BASE_DIR, x[1:]))
                     return JsonResponse({'message': 'deletion success'})
@@ -2943,13 +2943,18 @@ def notice_view_create(request):
         return JsonResponse({'status': 'Success', 'msg': 'Added status'})
 
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
 def getDirectURLOfMedias(request):
     if request.method == "GET":
         matchfound = False
         url = request.GET.get('url')
         vimeoRegExp = re.search("\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*", url)
         if (vimeoRegExp):
-            print(vimeoRegExp)
             vimeoID = re.split("\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*", url)
             id = vimeoID[3]
             matchfound = True
