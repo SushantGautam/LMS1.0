@@ -1112,7 +1112,7 @@ function TextboxFunction(top = null, left = null, height = "20%", width = "30%",
         })
     });
 
-    $('.fa-trash').click(function (e) {
+    $('.textdiv .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
     $('.textdiv').resizable({
@@ -1162,17 +1162,12 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         width, height);
     Pic.renderDiagram();
 
-    $('.fa-upload').off().unbind().click(function (e) {
+    $('.pic .fa-upload').off().unbind().click(function (e) {
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
     });
 
-    $('.fa-trash').click(function (e) {
-        if ($('#' + e.currentTarget.id).find('img').length > 0) {
-            if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
-                tobedeletedfiles.pic.push($('#' + e.currentTarget.id).find('img').attr('src'))
-            }
-        }
+    $('.pic .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
@@ -1414,7 +1409,7 @@ function ButtonFunction(top = null, left = null, link = null, height = null, wid
 
     const div1 = $('i').parent();
 
-    $('.fa-trash').click(function (e) {
+    $('.btn-div .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
@@ -1495,7 +1490,7 @@ function QuizFunction(top = null, left = null, link = null, height = null, width
 
     const div1 = $('i').parent();
 
-    $('.fa-trash').click(function (e) {
+    $('.quiz-div .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).closest('.quiz-div').remove();
     });
 
@@ -1586,7 +1581,7 @@ function SurveyFunction(top = null, left = null, link = null, height = null, wid
 
     const div1 = $('i').parent();
 
-    $('.fa-trash').click(function (e) {
+    $('.survey-div .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
@@ -1661,12 +1656,12 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
     Pdf.renderDiagram();
 
     // ==for pdf upload==
-    $('.fa-upload').off().click(function (e) {
+    $('.pdfdiv .fa-upload').off().click(function (e) {
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
     });
 
-    $('.fa-trash').click(function (e) {
+    $('.pdfdiv .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
@@ -1880,10 +1875,10 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
         play('#video' + Videos.id)
     }
 
-    $('.fa-trash').click(function (e) {
+    $('.video-div .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
-    $('.fa-upload').off().unbind().click(function (e) {
+    $('.video-div .fa-upload').off().unbind().click(function (e) {
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
     });
@@ -2116,10 +2111,10 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
         play('#audio' + Audios.id)
     }
 
-    $('.fa-trash').click(function (e) {
+    $('.audio-div .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
-    $('.fa-upload').off().unbind().click(function (e) {
+    $('.audio-div .fa-upload').off().unbind().click(function (e) {
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
     });
@@ -2271,7 +2266,7 @@ function _3dFunction(top = null, left = null, file = null, height = null, width 
         $('#link-3d-modal').modal();
     });
 
-    $('.fa-trash').click(function (e) {
+    $('._3dobj-div .fa-trash').click(function (e) {
         $('#' + e.currentTarget.id).parent().parent().remove();
     });
 
@@ -2798,9 +2793,7 @@ function dropfunction(event, ui) {
             null, '30%', '40%'
         );
     }
-    $('.fa-trash').click(function (e) {
-        $('#' + e.currentTarget.id).parent().parent().remove();
-    });
+
     $('[data-toggle="tooltip"]').tooltip();
 }
 
@@ -3367,7 +3360,7 @@ $('#tab').on('click', '.file-upload-icon', function () {
 })
 
 // Media File deletion
-function deleteFile() {
+function deleteFile(tobedeletedfiles = tobedeletedfiles, filetype = 0) {
     $.ajax({
         url: delete_file_url,
         data: {
@@ -3381,6 +3374,11 @@ function deleteFile() {
             alert("Failed to delete existing file")
         },
         success: function (data) {
+            if (filetype == 4 || filetype == 5) {
+                retrieveServerMedias(10)
+            } else {
+                retrieveMedias(filetype)
+            }
         },
     });
 }

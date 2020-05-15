@@ -2993,3 +2993,53 @@ def getDirectURLOfMedias(request):
                                         status=200)
         if not matchfound:
             return JsonResponse({'message': "No file"})
+
+
+def checkForMediaFiles(request):
+    chapterhavingfilelink = []
+    filelink = request.GET.get('filelink')
+    filekey = request.GET.get('filekey')
+    if CourseInfo.objects.filter(pk=int(request.GET.get('courseID'))).exists():
+        path = settings.MEDIA_ROOT
+        # course = CourseInfo.objects.get(pk=int(request.GET.get('courseID')))
+        try:
+            if os.path.exists(path + '/chapterBuilder/' + str(request.GET.get('courseID'))):
+                files = glob.glob(
+                    os.path.join(*[path, "chapterBuilder", str(request.GET.get('courseID'))]) + '/**/*.txt',
+                    recursive=True)
+                for eachfile in files:
+                    try:
+                        with open(eachfile) as json_file:
+                            data = json.load(json_file)
+                            for page in data['pages']:
+                                if filekey in data['pages'][page][0].keys():
+                                    if len(data['pages'][page][0][filekey]) > 0:
+                                        for itemnumber in range(len(data['pages'][page][0][filekey])):
+                                            if data['pages'][page][0][filekey][itemnumber]['link'] == filelink:
+                                                # print(os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0])
+                                                chapterpk = \
+                                                    os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0]
+                                                chapter = ChapterInfo.objects.get(pk=int(chapterpk))
+                                                if request.GET.get('teachers') == '1':
+                                                    chapter_link = chapter.teacher_get_absolute_url() + 'newChapterBuilder'
+                                                else:
+                                                    chapter_link = chapter.get_absolute_url() + 'newChapterBuilder'
+                                                print(chapter_link)
+                                                chapterhavingfilelink.append({
+                                                    'chapter_no': chapter.Chapter_No,
+                                                    'chapter_name': chapter.Chapter_Name,
+                                                    'course_name': chapter.Course_Code.Course_Name,
+                                                    'chapter_link': chapter_link,
+                                                    'page': page,
+                                                })
+                    except Exception as e:
+                        print(e)
+                print(chapterhavingfilelink)
+                return JsonResponse({'message': chapterhavingfilelink}, status=200)
+
+            else:
+                print("No directory of this course")
+        except Exception as e:
+            print(e)
+    else:
+        return JsonResponse({'message': 'Course Unavailable'})
