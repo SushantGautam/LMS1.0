@@ -1557,7 +1557,6 @@
 
     $('#delete-media-confirmed').on('click', function () {
         var filetype = 0;
-        debugger
         if ($('.media-selected').parents().hasClass('image-gallery') || $('.media-selected').parents().hasClass('audio-gallery')) {
             removeCincopaMedias(imagegalleryid, $('.media-selected').find('a').attr('data-id'), filetype)
         } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
