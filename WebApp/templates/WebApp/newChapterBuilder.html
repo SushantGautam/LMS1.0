@@ -1557,7 +1557,8 @@
 
     $('#delete-media-confirmed').on('click', function () {
         var filetype = 0;
-        if ($('.media-selected').parents().hasClass('image-gallery')) {
+        debugger
+        if ($('.media-selected').parents().hasClass('image-gallery') || $('.media-selected').parents().hasClass('audio-gallery')) {
             removeCincopaMedias(imagegalleryid, $('.media-selected').find('a').attr('data-id'), filetype)
         } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
             tobedeletedfiles._3d.push($('.media-selected').find('a').attr('data-href'))
@@ -1576,6 +1577,8 @@
         $.get(`https://api.cincopa.com/v2/asset.delete.json?api_token=${api_token}&rid=${rids}`, function (data) {
             console.log(data)
             retrieveMedias(filetype)
+        }).fail(function (err) {
+            console.log(err);
         })
     }
 

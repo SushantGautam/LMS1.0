@@ -1179,7 +1179,6 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         if (prevlink == undefined) {
             prevlink = "";
         }
-        debugger
         var link = prompt("Link of image", prevlink);
         if (link == null) {
             return false

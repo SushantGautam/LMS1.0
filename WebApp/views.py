@@ -3015,7 +3015,11 @@ def checkForMediaFiles(request):
                                 if filekey in data['pages'][page][0].keys():
                                     if len(data['pages'][page][0][filekey]) > 0:
                                         for itemnumber in range(len(data['pages'][page][0][filekey])):
-                                            if data['pages'][page][0][filekey][itemnumber]['link'] == filelink:
+                                            if filekey == "pic" or filekey == "pdf" or filekey == "_3d":
+                                                key_name = 'link'
+                                            elif filekey == 'video' or filekey == 'audio':
+                                                key_name = 'online_link'
+                                            if data['pages'][page][0][filekey][itemnumber][key_name] == filelink:
                                                 # print(os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0])
                                                 chapterpk = \
                                                     os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0]
@@ -3024,7 +3028,6 @@ def checkForMediaFiles(request):
                                                     chapter_link = chapter.teacher_get_absolute_url() + 'newChapterBuilder'
                                                 else:
                                                     chapter_link = chapter.get_absolute_url() + 'newChapterBuilder'
-                                                print(chapter_link)
                                                 chapterhavingfilelink.append({
                                                     'chapter_no': chapter.Chapter_No,
                                                     'chapter_name': chapter.Chapter_Name,
@@ -3034,7 +3037,6 @@ def checkForMediaFiles(request):
                                                 })
                     except Exception as e:
                         print(e)
-                print(chapterhavingfilelink)
                 return JsonResponse({'message': chapterhavingfilelink}, status=200)
 
             else:
