@@ -83,6 +83,14 @@ function getEmbedVideo(url) {
     return $video_element[0];
 }
 
+function getVimeoVideoID(url) {
+    var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
+    var vimMatch = url.match(vimRegExp);
+    if (vimMatch && vimMatch[3].length) {
+        return vimMatch[3]
+    }
+}
+
 function getVimeoThumbnail(url, divid) {
     var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
     var vimMatch = url.match(vimRegExp);

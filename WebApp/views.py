@@ -2080,6 +2080,7 @@ def import_chapter(request):
 
 
 def retrievechapterfile(request):
+    vimeo_videos = None
     max_items = 10
     chapterID = request.GET['chapterID']
     courseID = request.GET['courseID']
@@ -2110,13 +2111,49 @@ def retrievechapterfile(request):
             print("No directory of this chapter")
     except Exception as e:
         print(e)
+    if settings.SERVER_NAME != "Indonesian_Server":
+        vimeo_videos = getVimeoMedias(chapterID, courseID, request.user, max_items)
     return JsonResponse({
         # 'images': images,
         # 'videos': videos,
         'pdf': pdf[:max_items] if len(pdf) > max_items else pdf,
         '_3d': _3d[:max_items] if len(_3d) > max_items else _3d,
+        'vimeo_videos': vimeo_videos,
     })
 
+
+def getVimeoMedias(chapterID, courseID, userObj, max_items):
+    if settings.SERVER_NAME == "Korean_Server":
+        a = requests.get(
+            url='https://api.vimeo.com/me/projects/1508982/videos/?per_page=' + str(max_items),
+            headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                     'Content-Type': 'application/json',
+                     'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+    elif settings.SERVER_NAME == "Vietnam_Server":
+        a = requests.get(
+            url='https://api.vimeo.com/me/projects/1796938/videos/?per_page=' + str(max_items),
+            headers={
+                'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+            }, ),
+    if a[0].status_code == 200:
+        checkFlag = False
+        video_list = []
+        response_data = json.loads(a[0].text)
+        for x in response_data['data']:
+            # if x['tags'][0]['name'].split('_')[0] == 'center':
+            #     if x['tags']['name'].split('_')[1] == userObj.Center_Code.Center_Name:
+            #         checkFlag = True
+            # if checkFlag:
+            video_list.append(
+                {
+                    'video-thumbnail': x['pictures']['sizes'][0],
+                    'video-link': x['link'],
+                    'video-name': x['name'],
+                }
+            )
+        return video_list
+    else:
+        print('Failed to fetch vimeo videos')
 
 @xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):
