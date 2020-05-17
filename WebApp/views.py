@@ -2140,17 +2140,25 @@ def getVimeoMedias(chapterID, courseID, userObj, max_items):
         video_list = []
         response_data = json.loads(a[0].text)
         for x in response_data['data']:
-            # if x['tags'][0]['name'].split('_')[0] == 'center':
-            #     if x['tags']['name'].split('_')[1] == userObj.Center_Code.Center_Name:
-            #         checkFlag = True
-            # if checkFlag:
-            video_list.append(
-                {
-                    'video-thumbnail': x['pictures']['sizes'][0],
-                    'video-link': x['link'],
-                    'video-name': x['name'],
-                }
-            )
+            if len(x['tags']) > 3:
+                if x['tags'][0]['name'].split('_')[0] == 'center':
+                    if x['tags'][0]['name'].split('_')[1] == userObj.Center_Code.Center_Name:
+                        checkFlag = True
+                    else:
+                        checkFlag = False
+                if x['tags'][2]['name'].split('_')[0] == 'course':
+                    if x['tags'][2]['name'].split('_')[1] == CourseInfo.objects.get(pk=courseID).Course_Name.lower():
+                        checkFlag = True
+                    else:
+                        checkFlag = False
+                if checkFlag:
+                    video_list.append(
+                        {
+                            'video-thumbnail': x['pictures']['sizes'][0],
+                            'video-link': x['link'],
+                            'video-name': x['name'],
+                        }
+                    )
         return video_list
     else:
         print('Failed to fetch vimeo videos')
