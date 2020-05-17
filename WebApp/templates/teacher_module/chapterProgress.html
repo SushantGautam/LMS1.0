@@ -226,7 +226,7 @@
                             <th>{% trans "Study Time" %}</th>
                             <th>{% trans "Last Visit" %}</th>
                             <th>{% trans "Quiz Achievement" %}</th>
-                            <th>{% trans "Attendance" %}</th>
+                            <th>{% trans "Progress" %}</th>
                             <th>{% trans "History" %}</th>
                         </tr>
                         </thead>
@@ -275,9 +275,9 @@
                                     {% if a.chapter.attendance == None %}
                                         No Chapter Running Time
                                     {% elif a.chapter.attendance == True %}
-                                        Present
+                                        Completed
                                     {% else %}
-                                        Absent
+                                        On Progress
                                     {% endif %}
                                 </td>
                                 <td>
@@ -756,11 +756,11 @@
             table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 var node = this.node();
                 if ($(node).find('.attendance').attr('data-attendance').includes('True')) {
-                    $(node).find('.attendance').text('Present').parent().css('background-color', '#9fe890')
+                    $(node).find('.attendance').text('Completed').parent().css('background-color', '#9fe890')
                 } else if ($(node).find('.attendance').attr('data-attendance').includes('None')) {
                     $(node).find('.attendance').text('No Chapter Running Time').parent().css('background-color', '#f5f590')
                 } else {
-                    $(node).find('.attendance').text('Absent')
+                    $(node).find('.attendance').text('On Progress')
                 }
             });
 
