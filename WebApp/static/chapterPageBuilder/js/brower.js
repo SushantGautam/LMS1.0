@@ -48,7 +48,6 @@ $("#SaveBtn").on("click",function(e){
   $(this).html(`<i class='fa fa-spinner fa-spin '></i> Saving`);
   
   changePage(window.currentPage)
-  deleteFile()
   setTimeout(function(){
     var pages = {}
     var numberofpages = 0

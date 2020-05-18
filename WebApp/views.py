@@ -2080,6 +2080,7 @@ def import_chapter(request):
 
 
 def retrievechapterfile(request):
+    vimeo_videos = None
     max_items = 10
     chapterID = request.GET['chapterID']
     courseID = request.GET['courseID']
@@ -2110,13 +2111,57 @@ def retrievechapterfile(request):
             print("No directory of this chapter")
     except Exception as e:
         print(e)
+    if settings.SERVER_NAME != "Indonesian_Server":
+        vimeo_videos = getVimeoMedias(chapterID, courseID, request.user, max_items)
     return JsonResponse({
         # 'images': images,
         # 'videos': videos,
         'pdf': pdf[:max_items] if len(pdf) > max_items else pdf,
         '_3d': _3d[:max_items] if len(_3d) > max_items else _3d,
+        'vimeo_videos': vimeo_videos,
     })
 
+
+def getVimeoMedias(chapterID, courseID, userObj, max_items):
+    if settings.SERVER_NAME == "Korean_Server":
+        a = requests.get(
+            url='https://api.vimeo.com/me/projects/1508982/videos/?per_page=' + str(max_items),
+            headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                     'Content-Type': 'application/json',
+                     'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+    elif settings.SERVER_NAME == "Vietnam_Server":
+        a = requests.get(
+            url='https://api.vimeo.com/me/projects/1796938/videos/?per_page=' + str(max_items),
+            headers={
+                'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+            }, ),
+    if a[0].status_code == 200:
+        checkFlag = False
+        video_list = []
+        response_data = json.loads(a[0].text)
+        for x in response_data['data']:
+            if len(x['tags']) > 3:
+                if x['tags'][0]['name'].split('_')[0] == 'center':
+                    if x['tags'][0]['name'].split('_')[1] == userObj.Center_Code.Center_Name:
+                        checkFlag = True
+                    else:
+                        checkFlag = False
+                if x['tags'][2]['name'].split('_')[0] == 'course':
+                    if x['tags'][2]['name'].split('_')[1] == CourseInfo.objects.get(pk=courseID).Course_Name.lower():
+                        checkFlag = True
+                    else:
+                        checkFlag = False
+                if checkFlag:
+                    video_list.append(
+                        {
+                            'video-thumbnail': x['pictures']['sizes'][0],
+                            'video-link': x['link'],
+                            'video-name': x['name'],
+                        }
+                    )
+        return video_list
+    else:
+        print('Failed to fetch vimeo videos')
 
 @xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):
@@ -2993,3 +3038,55 @@ def getDirectURLOfMedias(request):
                                         status=200)
         if not matchfound:
             return JsonResponse({'message': "No file"})
+
+
+def checkForMediaFiles(request):
+    chapterhavingfilelink = []
+    filelink = request.GET.get('filelink')
+    filekey = request.GET.get('filekey')
+    if CourseInfo.objects.filter(pk=int(request.GET.get('courseID'))).exists():
+        path = settings.MEDIA_ROOT
+        # course = CourseInfo.objects.get(pk=int(request.GET.get('courseID')))
+        try:
+            if os.path.exists(path + '/chapterBuilder/' + str(request.GET.get('courseID'))):
+                files = glob.glob(
+                    os.path.join(*[path, "chapterBuilder", str(request.GET.get('courseID'))]) + '/**/*.txt',
+                    recursive=True)
+                for eachfile in files:
+                    try:
+                        with open(eachfile) as json_file:
+                            data = json.load(json_file)
+                            for page in data['pages']:
+                                if filekey in data['pages'][page][0].keys():
+                                    if len(data['pages'][page][0][filekey]) > 0:
+                                        for itemnumber in range(len(data['pages'][page][0][filekey])):
+                                            if filekey == "pic" or filekey == "pdf" or filekey == "_3d":
+                                                key_name = 'link'
+                                            elif filekey == 'video' or filekey == 'audio':
+                                                key_name = 'online_link'
+                                            if data['pages'][page][0][filekey][itemnumber][key_name] == filelink:
+                                                # print(os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0])
+                                                chapterpk = \
+                                                    os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0]
+                                                chapter = ChapterInfo.objects.get(pk=int(chapterpk))
+                                                if request.GET.get('teachers') == '1':
+                                                    chapter_link = chapter.teacher_get_absolute_url() + 'newChapterBuilder'
+                                                else:
+                                                    chapter_link = chapter.get_absolute_url() + 'newChapterBuilder'
+                                                chapterhavingfilelink.append({
+                                                    'chapter_no': chapter.Chapter_No,
+                                                    'chapter_name': chapter.Chapter_Name,
+                                                    'course_name': chapter.Course_Code.Course_Name,
+                                                    'chapter_link': chapter_link,
+                                                    'page': page,
+                                                })
+                    except Exception as e:
+                        print(e)
+                return JsonResponse({'message': chapterhavingfilelink}, status=200)
+
+            else:
+                print("No directory of this course")
+        except Exception as e:
+            print(e)
+    else:
+        return JsonResponse({'message': 'Course Unavailable'})

@@ -715,6 +715,21 @@ textarea.form-control {
 .color-chat{
     color: #5a738e!important;
 }
+.chat-today{
+    text-align: center;
+    margin-bottom: 10px;
+
+}
+.chat-date{
+  background-color: #71bbd457;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding:3px;
+  
+  max-width: 25%;
+  color: rgb(54, 60, 69);
+  
+}
 /* loader */
 .loadspin {
     border: 5px solid #f3f3f3;
