@@ -75,6 +75,8 @@ urlpatterns += [
          views.ThreeDViewer, name='3DViewer'),
     path('3DViewer/',
          views.ThreeDViewer, name='3DViewer'),
+
+    path('summernote/', include('django_summernote.urls')),
 ]
 
 urlpatterns += [
@@ -105,6 +107,12 @@ urlpatterns += (
 
 # Login URL get
 urlpatterns += (
-    path('loaderio-954a872bfd2583affa027425d4a0dd5a/',views.loaderverifylink),
+    path('loaderio-954a872bfd2583affa027425d4a0dd5a/', views.loaderverifylink),
     path('loginforappredirect/<slug:username>/<slug:password>/', views.loginforappredirect, name='loginforappredirect'),
+)
+
+# For Media Direct Links
+
+urlpatterns += (
+    path('api/v1/video_urlresolver/', views.getDirectURLOfMedias, name='getDirectURLOfMedias'),
 )
