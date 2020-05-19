@@ -300,6 +300,26 @@
                
             </li>
         </ul>
+
+        <ul class="edit-viewer">
+
+          {% if '/teachers' in request.path %}
+
+            <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
+                    <a href="{% url 'teachers_newChapterBuilder' course.pk chapter.pk %}"> <i class="fas fa-pen-square"></i> </a>
+            </li> 
+
+          {% elif '/teachers' not in request.path and '/students' not in request.path %}  
+
+            <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
+              <a href="{% url 'newChapterBuilder' course.pk chapter.pk %}"> <i class="fas fa-pen-square"></i> </a>
+           </li> 
+           
+          {% endif %}
+           
+        </ul>
+        
+   
         <ul class="chat-sidenav-close slideInLeft animate">
             <li class=close-icon-sidebar>
                 <i class="fa fa-times icon1-largescreen"></i>

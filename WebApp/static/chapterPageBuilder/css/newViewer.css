@@ -730,6 +730,23 @@ textarea.form-control {
   color: rgb(54, 60, 69);
   
 }
+.edit-viewer{
+    padding: 0px;
+
+    position: absolute;
+    top: 6%;
+    right: 13px;
+}
+.edit-viewer li{
+    list-style: none;
+    font-size: 25px;
+    color: #5a738e;
+    cursor: pointer;
+
+}
+.edit-viewer li:hover{
+    color: #23527c;
+}
 /* loader */
 .loadspin {
     border: 5px solid #f3f3f3;
