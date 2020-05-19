@@ -65,7 +65,7 @@ def start(request):
                 courses.update(course)
             for course in courses:
                 activeassignments += AssignmentInfo.objects.filter(
-                    Assignment_Deadline__gte=datetime.now().date(), Assignment_Start__lte=datetime.now().date(),
+                    Assignment_Deadline__gte=datetime.utcnow(), Assignment_Start__lte=datetime.utcnow(),
                     Course_Code__id=course.Course_Code.id,
                     Chapter_Code__Use_Flag=True)[:7]
     sittings = Sitting.objects.filter(user=request.user)
@@ -307,14 +307,14 @@ class MyAssignmentsListView(ListView):
         for course in Courses:
             Assignment.append(AssignmentInfo.objects.filter(
                 Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True,
-                Assignment_Start__lte=datetime_now.date()))
+                Assignment_Start__lte=datetime.utcnow()))
             activeAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__gte=datetime_now.date(),
-                Assignment_Start__lte=datetime_now.date(),
+                Course_Code__id=course.id, Assignment_Deadline__gte=datetime.utcnow(),
+                Assignment_Start__lte=datetime.utcnow(),
                 Use_Flag=True,
                 Chapter_Code__Use_Flag=True))
             expiredAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__lte=datetime_now.date(), Use_Flag=True,
+                Course_Code__id=course.id, Assignment_Deadline__lte=datetime.utcnow(), Use_Flag=True,
                 Chapter_Code__Use_Flag=True))
         context['Assignment'].append(Assignment)
         context['activeAssignment'].append(activeAssignment)

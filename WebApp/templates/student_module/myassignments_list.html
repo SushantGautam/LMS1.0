@@ -48,8 +48,8 @@
         <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
             <hr style="margin-top: 1px; margin-bottom: 10px;">
             <p class="text-danger">Submission Deadline -
-                {% now "Y-m-d" as todays_date %}
-                {% if a.Assignment_Deadline|date:"Y-m-d" <= todays_date %}
+                {% now "Y-m-d H:i" as todays_date %}
+                {% if a.Assignment_Deadline|date:"Y-m-d H:i" <= todays_date %}
                     Expired
                 {% else %}
                     {{ a.Assignment_Deadline|timeuntil }} left
