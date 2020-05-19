@@ -3397,6 +3397,8 @@ function deleteFile(tobedeletedfiles = tobedeletedfiles, filetype = 0) {
         success: function (data) {
             if (filetype == 4 || filetype == 5) {
                 retrieveServerMedias(10)
+            } else if (filetype == 2 && server_name != "Indonesian_Server") {
+                retrieveServerMedias(10)
             } else {
                 retrieveMedias(filetype)
             }

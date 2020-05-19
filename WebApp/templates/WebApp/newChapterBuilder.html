@@ -1399,7 +1399,7 @@
                             $('.video-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
-                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = "${embed_link}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=156032">
+                                <a class="mediafiles" href="javascript:void(0)" data-id="${x['video-id']}" data-filename=${title} data-truncfilename=${trunctitle} data-href = "${embed_link}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=156032">
                                 <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
                                     <img src="${x['video-thumbnail'].link}" style="object-fit: contain;">
                                 </div>
@@ -1597,6 +1597,14 @@
             tobedeletedfiles.pdf.push($('.media-selected').find('a').attr('data-href'))
             filetype = 4
             deleteFile(tobedeletedfiles, filetype)
+        } else if ($('.media-selected').parents().hasClass('video-gallery')) {
+            if (server_name == "Indonesian Server") {
+                removeCincopaMedias(videogalleryid, $('.media-selected').find('a').attr('data-id'), 2)
+            } else {
+                tobedeletedfiles.video.push($('.media-selected').find('a').attr('data-id'))
+                filetype = 2
+                deleteFile(tobedeletedfiles, filetype)
+            }
         }
         $('#mediafilealertmodal').modal('hide')
     })
