@@ -2718,6 +2718,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             jsondata['contents']['currentpagenumber']) > 0:
                         progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
                             jsondata['contents']['totalPage'])
+                        if progresspercent > 100:
+                            progresspercent = 100
                 else:
                     progresspercent = 0
             else:
@@ -2821,7 +2823,7 @@ def getChapterScore(user, chapterObj):
             totalstudytime = int(timedelta(hours=int(h), minutes=int(m), seconds=int(s)).total_seconds())
         readtime = int(totalstudytime) if data != "" else 0
         if chapterObj.mustreadtime:
-            if chapterObj.mustreadtime < readtime:
+            if chapterObj.mustreadtime <= readtime:
                 readtimeScore = 100
             elif readtime == 0:
                 readtimeScore = 0

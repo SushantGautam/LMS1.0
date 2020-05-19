@@ -88,7 +88,7 @@ def start(request):
             chapter.progress_score = round(float(response['totalProgressScore']),3)
             chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'],2)
             chapter.quiz = response['chapterProgress'][0]['quiz']
-            if chapter.progress_score != float(100):
+            if chapter.progress_score < float(100):
                 chapters_list.append(chapter)
 
    
