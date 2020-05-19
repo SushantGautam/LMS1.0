@@ -116,7 +116,7 @@ function loadPreview(link, ShowCloseBoxonInit = false, message, externallink = f
       $('#closeiframebtn').css({'display':'block', 'top':'6vh'})
     }
       
-      $(this).contents().find('.closebtn, #hamburg-nav, #closechatopen').remove()
+      $(this).contents().find('.closebtn, #hamburg-nav, #closechatopen, .edit-viewer').remove()
   });
 }
 
