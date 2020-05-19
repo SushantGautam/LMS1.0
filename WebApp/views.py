@@ -3064,7 +3064,8 @@ def checkForMediaFiles(request):
                                                 key_name = 'link'
                                             elif filekey == 'video' or filekey == 'audio':
                                                 key_name = 'online_link'
-                                            if data['pages'][page][0][filekey][itemnumber][key_name] == filelink:
+                                            if data['pages'][page][0][filekey][itemnumber][
+                                                key_name].strip() == filelink:
                                                 # print(os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0])
                                                 chapterpk = \
                                                     os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0]
