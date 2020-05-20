@@ -309,6 +309,7 @@ urlpatterns += (
          views.deletechapterfile, name='delete-chapter-files'),
     path('retrieve-chapter-files',
          views.retrievechapterfile, name='retrieve-chapter-files'),
+    path('checkMediaFiles/', views.checkForMediaFiles, name='checkMediaFiles'),
 )
 
 urlpatterns += (

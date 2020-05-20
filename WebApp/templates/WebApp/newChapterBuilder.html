@@ -315,6 +315,11 @@
                                                 <span data-toggle="tooltip" data-placement="right" title='Preview'>  <i
                                                         style="color:black" class="fas fa-play-circle"></i></span>
                                             </li>
+                                            <li class="icon3-link" data-toggle="modal"
+                                                data-target="#mediafilealertmodal">
+                                                <span data-toggle="tooltip" data-placement="right" title='Delete'>  <i
+                                                        style="color:black" class="fas fa-trash"></i></span>
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="dropdown-items">
@@ -977,6 +982,33 @@
      style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">
     Link Copied
 </div>
+
+<!-- Media Files Remove Confirmation Modal -->
+<div class="modal fade" id="mediafilealertmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete this media?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="mediafilealertmodalbody1">
+                    <p>This media items might be used by others.
+                        Following are the occurences where the media is used.</p>
+
+                </div>
+                <div id="mediafilealertmodalbody2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="delete-media-confirmed">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
@@ -1192,22 +1224,6 @@
         });
     })();
 
-    /*
-    $(document).ready(function () {
-        let trunc = truncateString(`{{chapterdetails.Summary}}`);
-        $('#chapter-description').find('p').text(trunc);
-        // Animate loader off screen
-        $(".se-pre-con").fadeOut("slow");
-        ;
-    });
-
-    const truncateString = (string, maxLength = 30) => {
-        if (!string) return null;
-        const showDots = string.length > maxLength;
-        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
-    };
-    */
-
     $('#quiz_create_link').click(function (e) {
         e.preventDefault();
         $('#quiz-modal').modal('toggle');
@@ -1328,11 +1344,8 @@
             success: function (data) {
                 //counter = 1 //for combine limit
                 if (data.pdf.length > 0) {
+                    $('.pdf-gallery').empty();
                     data.pdf.forEach(x => {
-                        /*if (counter >= max_items){
-                            return
-                        }
-                        counter++*/
                         title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
                         trunctitle = title
                         if (title.length > 25) {
@@ -1353,17 +1366,17 @@
                     });
                 }
                 if (data._3d.length > 0) {
+                    $('._3d-gallery').empty();
                     data._3d.forEach(x => {
-                        /*
-                        if (counter >= max_items){
-                            return
-                        }
-                        counter++*/
                         title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
+                        trunctitle = title
+                        if (title.length > 25) {
+                            trunctitle = truncateString(title, 25)
+                        }
                         $('._3d-gallery').append(`
                             <div class="col-sm-6 col-xs-12 media-items-holder">
                                 <div class = "mediaitemcontainer">
-                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
                                 <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
                                     <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}" style="object-fit: contain;">
                                 </div>
@@ -1373,6 +1386,30 @@
                             `
                         )
                     });
+                }
+                if (data.vimeo_videos) {
+                    if (data.vimeo_videos.length > 0) {
+                        data.vimeo_videos.forEach(x => {
+                            embed_link = "//player.vimeo.com/video/" + getVimeoVideoID(x['video-link'])
+                            title = (x['video-name'].includes('___') ? x['video-name'].split('___')[1] : x['video-name'].split('&&&')[1]) + '.' + x['video-name'].split('.')[1]
+                            trunctitle = title
+                            if (title.length > 25) {
+                                trunctitle = truncateString(title, 25)
+                            }
+                            $('.video-gallery').append(`
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-id="${x['video-id']}" data-filename=${title} data-truncfilename=${trunctitle} data-href = "${embed_link}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=156032">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="${x['video-thumbnail'].link}" style="object-fit: contain;">
+                                </div>
+                                </a>
+                                </div>
+                            </div>
+                            `
+                            )
+                        })
+                    }
                 }
                 $('.mediafiles').on('click', function (e) {
                     e.stopImmediatePropagation();
@@ -1385,10 +1422,17 @@
         });
     }
 
+    /* mediaType List
+        1- Image
+        2- Video
+        3- Audio
+        4- PDF
+        5- 3d object
+     */
     function retrieveMedias(mediatype) {
         var gallery_name = null
         var media_link = null
-
+        var galleryid
         let api_token = '1453562iobwp33x0qrt34ip4bjiynb5olte';
         let media_type = '';
         let page_no = 1;
@@ -1397,60 +1441,66 @@
 
         if (mediatype == 1) {
             gallery_name = $('.image-gallery');
+            galleryid = imagegalleryid;
             media_type = 'image';
             media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
             // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
 
         } else if (mediatype == 2) {
             gallery_name = $('.video-gallery');
+            galleryid = videogalleryid;
             media_type = 'video';
             media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
             // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         } else if (mediatype == 3) {
             gallery_name = $('.audio-gallery');
+            galleryid = audiogalleryid;
             media_type = 'audio';
             media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
             // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
         }
 
         $.get(media_link, function (data) {
-            data['items'].forEach(element => {
-                var thumbnail = element.thumbnail.url;
-                if (mediatype == 3) {
-                    if (element.thumbnail.url && element.thumbnail.url != "") {
-                        var thumbnail = element.thumbnail.url;
-                    } else {
-                        var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
+            if (typeof (data) !== 'string') {
+                data['items'].forEach(element => {
+                    var thumbnail = element.thumbnail.url;
+                    if (mediatype == 3) {
+                        if (element.thumbnail.url && element.thumbnail.url != "") {
+                            var thumbnail = element.thumbnail.url;
+                        } else {
+                            var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
+                        }
                     }
-                }
-                title = element.filename
-                trunctitle = title
-                if (title.length > 25) {
-                    trunctitle = truncateString(title, 25)
-                }
-                gallery_name.append(`
-                    <div class="col-sm-6 col-xs-12 media-items-holder">
-                        <div class = "mediaitemcontainer">
-                        <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = ${element.content.url}>
-                        <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
-                        <img src = ${thumbnail} style="object-fit: contain">
-                        </div>
-                        </a>
-                        </div>
-                 </div>
-                `)
-            });
-            $('.mediafiles').on('dblclick', function (e) {
-                e.preventDefault()
-                //loadPreview($(this).attr('data-href'), 1, null, 1)
-            })
+                    title = element.filename
+                    trunctitle = title
+                    if (title.length > 25) {
+                        trunctitle = truncateString(title, 25)
+                    }
 
-            $('.mediafiles').on('click', function (e) {
-                e.stopImmediatePropagation();
-                mediaFilesClickFunction(this)
-            })
+                    gallery_name.append(`
+                        <div class="col-sm-6 col-xs-12 media-items-holder">
+                            <div class = "mediaitemcontainer">
+                            <a class="mediafiles" href="javascript:void(0)" data-id="${element.rid}" data-filename=${title} data-truncfilename=${trunctitle} data-href = "//www.cincopa.com/media-platform/iframe.aspx?fid=${galleryid}!${element.rid}">
+                            <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                            <img src = ${thumbnail} style="object-fit: contain">
+                            </div>
+                            </a>
+                            </div>
+                     </div>
+                    `)
+                });
+                $('.mediafiles').on('dblclick', function (e) {
+                    e.preventDefault()
+                    //loadPreview($(this).attr('data-href'), 1, null, 1)
+                })
 
-            $('[data-toggle="tooltip"]').tooltip();
+                $('.mediafiles').on('click', function (e) {
+                    e.stopImmediatePropagation();
+                    mediaFilesClickFunction(this)
+                })
+
+                $('[data-toggle="tooltip"]').tooltip();
+            }
         })
     }
 
@@ -1493,6 +1543,81 @@
             loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1);
         }
     })
+
+    $('.icon3-link').on('click', function () {
+        $('#mediafilealertmodalbody2').empty()
+        var filekey;
+        if ($('.media-selected').parents().hasClass('image-gallery')) {
+            filekey = 'pic'
+        } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
+            filekey = '_3d'
+        } else if ($('.media-selected').parents().hasClass('pdf-gallery')) {
+            filekey = 'pdf'
+        } else if ($('.media-selected').parents().hasClass('video-gallery')) {
+            filekey = 'video'
+        } else if ($('.media-selected').parents().hasClass('audio-gallery')) {
+            filekey = 'audio'
+        }
+        $.ajax({
+            type: "GET",
+            url: '{% if '/teachers' in request.path %}{% url "checkMediaFiles" %}?teachers=1{% else %}{% url "checkMediaFiles" %}{% endif %}',  // URL to your view that serves new info
+            data: {
+                'courseID': courseID,
+                'filelink': $('.media-selected').find('a').attr('data-href'),
+                'filekey': filekey,
+            },
+            success: function (response) {
+                if (response.message.length == 0) {
+                    $('#mediafilealertmodalbody2').append('<div>Media is not used in other chapters.</div>')
+                    return false
+                }
+                response.message.forEach(x => {
+                    $('#mediafilealertmodalbody2').append(`
+                        <div>
+                            ${x.chapter_no}. ${x.chapter_name} Page: ${x.page} Link => <a href="${x.chapter_link}" target="_blank"> Click to visit </a>
+                        </div>
+                    `)
+                })
+            },
+            error: function (err) {
+                console.log(err)
+            },
+        });
+    })
+
+    $('#delete-media-confirmed').on('click', function () {
+        var filetype = 0;
+        if ($('.media-selected').parents().hasClass('image-gallery') || $('.media-selected').parents().hasClass('audio-gallery')) {
+            removeCincopaMedias(imagegalleryid, $('.media-selected').find('a').attr('data-id'), filetype)
+        } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
+            tobedeletedfiles._3d.push($('.media-selected').find('a').attr('data-href'))
+            filetype = 5
+            deleteFile(tobedeletedfiles, filetype)
+        } else if ($('.media-selected').parents().hasClass('pdf-gallery')) {
+            tobedeletedfiles.pdf.push($('.media-selected').find('a').attr('data-href'))
+            filetype = 4
+            deleteFile(tobedeletedfiles, filetype)
+        } else if ($('.media-selected').parents().hasClass('video-gallery')) {
+            if (server_name == "Indonesian Server") {
+                removeCincopaMedias(videogalleryid, $('.media-selected').find('a').attr('data-id'), 2)
+            } else {
+                tobedeletedfiles.video.push($('.media-selected').find('a').attr('data-id'))
+                filetype = 2
+                deleteFile(tobedeletedfiles, filetype)
+            }
+        }
+        $('#mediafilealertmodal').modal('hide')
+    })
+
+    function removeCincopaMedias(fid, rids, filetype) {
+        let api_token = '1453562iobwp33x0qrt34ip4bjiynb5olte';
+        $.get(`https://api.cincopa.com/v2/asset.delete.json?api_token=${api_token}&rid=${rids}`, function (data) {
+            console.log(data)
+            retrieveMedias(filetype)
+        }).fail(function (err) {
+            console.log(err);
+        })
+    }
 
     $('.dropdown-menu li').on('click', function () {
         $('.dropdown-selected').removeClass('dropdown-selected active')
