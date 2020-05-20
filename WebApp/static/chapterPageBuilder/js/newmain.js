@@ -117,18 +117,19 @@ function getVimeoThumbnail(url, divid) {
 function getCincopaThumbnail(url, divid) {
     var ccRegExp = /\/\/(?:www\.)?(?:cincopa.com\/media-platform\/iframe.aspx\?fid=?.+)/g
     var ccRegExpForStart = /(![A-Z])\w.+/g;
-    console.log(url.match(ccRegExpForStart)[0].length)
     if (url.match(ccRegExp) && url.match(ccRegExpForStart)[0].length == 13) {
         var rid = url.match(ccRegExpForStart)[0].substring(1);
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=' + rid, function (response) {
-            $('#' + divid).find('iframe').css({
-                'background-image': `url(${response.items[0].thumbnail.url})`,
-                'background-position': 'center',
-                'background-size': 'contain',
-                'background-repeat': 'no-repeat'
-            })
-            // var img = `<img src = '${response.items[0].thumbnail.url}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
-            // $('#' + divid).append(img)
+            if (response.items > 0) {
+                $('#' + divid).find('iframe').css({
+                    'background-image': `url(${response.items[0].thumbnail.url})`,
+                    'background-position': 'center',
+                    'background-size': 'contain',
+                    'background-repeat': 'no-repeat'
+                })
+                // var img = `<img src = '${response.items[0].thumbnail.url}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
+                // $('#' + divid).append(img)
+            }
         })
     }
 }
@@ -1193,14 +1194,27 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
             link = '' + link
         }
-        PictureFunction(
-            $(div)[0].style.top,
-            $(div)[0].style.left,
-            link,
-            null,
-            $(div)[0].style.width,
-            $(div)[0].style.height,
-        );
+        var ccRegExp = /\/\/(?:www\.)?(?:cincopa.com\/media-platform\/iframe.aspx\?fid=?.+)/g
+        var ccRegExpForStart = /(![A-Z])\w.+/g;
+        if (link.match(ccRegExp) && link.match(ccRegExpForStart)[0].length == 13) {
+            PictureFunction(
+                $(div)[0].style.top,
+                $(div)[0].style.left,
+                null,
+                link,
+                $(div)[0].style.width,
+                $(div)[0].style.height,
+            );
+        } else {
+            PictureFunction(
+                $(div)[0].style.top,
+                $(div)[0].style.left,
+                link,
+                null,
+                $(div)[0].style.width,
+                $(div)[0].style.height,
+            );
+        }
         div.remove()
     });
 
@@ -2138,9 +2152,9 @@ function AudioFunction(top = null, left = null, link = null, height = null, widt
         } else if (!link.startsWith('http://') && !link.startsWith('https://')) {
             link = 'http://' + link
         }
-        var cincopaRegExp = /(mediacdnl3.cincopa.com)/g;
-        var cincopaMatch = link.match(cincopaRegExp);
-        if (cincopaMatch && cincopaMatch[0].length === 22) {
+        var ccRegExp = /\/\/(?:www\.)?(?:cincopa.com\/media-platform\/iframe.aspx\?fid=?.+)/g
+        var ccRegExpForStart = /(![A-Z])\w.+/g;
+        if (link.match(ccRegExp) && link.match(ccRegExpForStart)[0].length == 13) {
             AudioFunction(
                 $(div)[0].style.top,
                 $(div)[0].style.left,
@@ -3382,6 +3396,8 @@ function deleteFile(tobedeletedfiles = tobedeletedfiles, filetype = 0) {
         },
         success: function (data) {
             if (filetype == 4 || filetype == 5) {
+                retrieveServerMedias(10)
+            } else if (filetype == 2 && server_name != "Indonesian_Server") {
                 retrieveServerMedias(10)
             } else {
                 retrieveMedias(filetype)

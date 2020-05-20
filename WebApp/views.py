@@ -1781,9 +1781,19 @@ def deletechapterfile(request):
                 #             if os.path.exists(os.path.join(BASE_DIR, x[10:-4] + '.' + ext)):
                 #                 os.remove(os.path.join(BASE_DIR, x[10:-4] + '.' + ext))
                 #         return JsonResponse({'message': 'deletion success'})
-                if os.path.exists(os.path.join(BASE_DIR, x[1:])):
-                    os.remove(os.path.join(BASE_DIR, x[1:]))
-                    return JsonResponse({'message': 'deletion success'})
+                if key == 'video':
+                    if settings.SERVER_NAME != "Indonesian_Server":
+                        a = requests.delete(
+                            url='https://api.vimeo.com/videos/' + str(x),
+                            headers={
+                                'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                            }, ),
+                        if a[0].status_code == 204:
+                            return JsonResponse({'message': 'deletion success'})
+                else:
+                    if os.path.exists(os.path.join(BASE_DIR, x[1:])):
+                        os.remove(os.path.join(BASE_DIR, x[1:]))
+                        return JsonResponse({'message': 'deletion success'})
     return HttpResponse('')
 
 
@@ -2152,11 +2162,13 @@ def getVimeoMedias(chapterID, courseID, userObj, max_items):
                     else:
                         checkFlag = False
                 if checkFlag:
+                    video_id = x['uri'].split('/')[-1]
                     video_list.append(
                         {
                             'video-thumbnail': x['pictures']['sizes'][0],
                             'video-link': x['link'],
                             'video-name': x['name'],
+                            'video-id': video_id,
                         }
                     )
         return video_list
@@ -2706,6 +2718,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             jsondata['contents']['currentpagenumber']) > 0:
                         progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
                             jsondata['contents']['totalPage'])
+                        if progresspercent > 100:
+                            progresspercent = 100
                 else:
                     progresspercent = 0
             else:
@@ -2809,7 +2823,7 @@ def getChapterScore(user, chapterObj):
             totalstudytime = int(timedelta(hours=int(h), minutes=int(m), seconds=int(s)).total_seconds())
         readtime = int(totalstudytime) if data != "" else 0
         if chapterObj.mustreadtime:
-            if chapterObj.mustreadtime < readtime:
+            if chapterObj.mustreadtime <= readtime:
                 readtimeScore = 100
             elif readtime == 0:
                 readtimeScore = 0
@@ -3064,7 +3078,8 @@ def checkForMediaFiles(request):
                                                 key_name = 'link'
                                             elif filekey == 'video' or filekey == 'audio':
                                                 key_name = 'online_link'
-                                            if data['pages'][page][0][filekey][itemnumber][key_name] == filelink:
+                                            if data['pages'][page][0][filekey][itemnumber][
+                                                key_name].strip() == filelink:
                                                 # print(os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0])
                                                 chapterpk = \
                                                     os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0]
