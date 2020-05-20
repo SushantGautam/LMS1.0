@@ -242,7 +242,8 @@
                                     </div>
                                     <span style="visibility: hidden">{{ a.chapter.progresspercent }}%</span>
                                 </td>
-                                <td>  {{ a.student }} </td>
+                                <td class="student-data-column"
+                                    data-student_username="{{ a.student.username }}">  {{ a.student }} </td>
                                 <td>  {{ a.chapter.chapterObj.Chapter_No }}. {{ a.chapter.chapterObj.Chapter_Name }} </td>
                                 <td>  {{ a.chapter.chapterObj.getmustreadtimeinformat }} </td>
                                 <td>
@@ -767,15 +768,36 @@
             function calculateAttendance(chapterpk = null) {
                 present = 0;
                 absent = 0;
+                numberofstudents = "{{ number_of_students }}"
+                present_arr = []
+                student_arr = []
                 table2_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var node = this.node();
                     if (chapterpk == 'all') {
                         if ($(node).find('.attendance').attr('data-attendance').includes('True')) {
-                            present++;
+                            if (student_arr.indexOf($(node).find('.student-data-column').attr('data-student_username')) == -1) {
+                                student_arr.push($(node).find('.student-data-column').attr('data-student_username'))
+                                present_arr.push($(node).find('.student-data-column').attr('data-student_username'))
+                            }
+
+                            {#present_arr.append($(node).find('.student-data-column').attr('data-student_username'))#}
+                            {#present++;#}
                         } else if ($(node).find('.attendance').attr('data-attendance').includes('None')) {
-                            absent++;
+                            if (student_arr.indexOf($(node).find('.student-data-column').attr('data-student_username')) == -1) {
+                                student_arr.push($(node).find('.student-data-column').attr('data-student_username'))
+                            }
+                            if (present_arr.indexOf($(node).find('.student-data-column').attr('data-student_username')) != -1) {
+                                present_arr.splice(present_arr.indexOf($(node).find('.student-data-column').attr('data-student_username')), 1);
+                            }
+                            {#absent++;#}
                         } else {
-                            absent++;
+                            if (student_arr.indexOf($(node).find('.student-data-column').attr('data-student_username')) == -1) {
+                                student_arr.push($(node).find('.student-data-column').attr('data-student_username'))
+                            }
+                            if (present_arr.indexOf($(node).find('.student-data-column').attr('data-student_username')) != -1) {
+                                present_arr.splice(present_arr.indexOf($(node).find('.student-data-column').attr('data-student_username')), 1);
+                            }
+                            {#absent++;#}
                         }
                     } else if (chapterpk == $(node).attr('data-chapterpk')) {
                         if ($(node).find('.attendance').attr('data-attendance').includes('True')) {
@@ -787,7 +809,10 @@
                         }
                     }
                 });
-
+                if (chapterpk == 'all') {
+                    present = present_arr.length
+                    absent = student_arr.length - present
+                }
                 var attendancenew_series = [{
                     colorByPoint: true,
                     "data": [

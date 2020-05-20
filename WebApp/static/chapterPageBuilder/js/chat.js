@@ -184,24 +184,63 @@ if (chatHistory.length === 0) {
 }
 else {
     $(document).ready(function () {
-        
+
         // Clear chatlog at first
         chatLog.innerHTML = '';
-        
+        chatdatediv = '';
+        let datearr = [];
+        let now = new Date();
         chatHistory.forEach(data => {
             let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
 
             // converting datetime to local
             let sender_datetime = new Date(data.sender_datetime);
             let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
-                    sender_datetime.getMonth(),
-                    sender_datetime.getDate(),
-                    sender_datetime.getHours(),
-                    sender_datetime.getMinutes(),
-                    sender_datetime.getSeconds())).toLocaleString('en-US', { hour12: true, hour: "numeric", minute: "numeric"});
-                        
+                sender_datetime.getMonth(),
+                sender_datetime.getDate(),
+                sender_datetime.getHours(),
+                sender_datetime.getMinutes(),
+                sender_datetime.getSeconds())).toLocaleString('en-US', {
+                hour12: true,
+                hour: "numeric",
+                minute: "numeric"
+            });
+            let localdate = new Date(Date.UTC(sender_datetime.getFullYear(),
+                sender_datetime.getMonth(),
+                sender_datetime.getDate(),
+                sender_datetime.getHours(),
+                sender_datetime.getMinutes(),
+                sender_datetime.getSeconds())).toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            if (datearr.indexOf(localdate) == -1) {
+                datearr.push(localdate)
+                date_to_display = null;
+                localdate_dateObj = new Date(localdate)
+                date_difference = Math.floor((now - localdate_dateObj) / 86400000)
+
+                if (date_difference == 0) {
+                    date_to_display = 'Today'
+                } else if (date_difference == 1) {
+                    date_to_display = 'Yesterday'
+                } else {
+                    date_to_display = localdate
+                }
+                chatdatediv = `
+                <div class="chat-today">
+                            <span class="chat-date">${date_to_display}</span>
+                    </div>
+                `
+            } else {
+                chatdatediv = ''
+            }
+            console.log(datearr)
+
             // Appending message to canvas log
             chatLog.innerHTML += `
+                    ${chatdatediv}
                     <div class="msg ${msgClass}">
                         <div class="msg-img" style="background-image: url(${data.sender_icon})"></div>
                         <div class="msg-bubble">
