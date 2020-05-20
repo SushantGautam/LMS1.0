@@ -3025,7 +3025,10 @@ def getDirectURLOfMedias(request):
 
             if r.status_code == 200:
                 responseText = json.loads(r.text)
-                return JsonResponse({'message': responseText['files'][0]['link']})
+                return JsonResponse({
+                    'message': responseText['files'][0]['link'],
+                    'thumbnail': responseText['pictures']['sizes'][1]['link'],
+                })
 
         if not matchfound:
             ccRegExp = re.search(
@@ -3047,9 +3050,12 @@ def getDirectURLOfMedias(request):
 
                 if r.status_code == 200:
                     responseText = json.loads(r.text)
-                    print(responseText['items'][0]['versions']['original']['url'])
-                    return JsonResponse({'message': responseText['items'][0]['versions']['original']['url']},
-                                        status=200)
+                    return JsonResponse(
+                        {
+                            'message': responseText['items'][0]['versions']['original']['url'],
+                            'thumbnail': responseText['items'][0]['thumbnail']['url'],
+                        },
+                        status=200)
         if not matchfound:
             return JsonResponse({'message': "No file"})
 
