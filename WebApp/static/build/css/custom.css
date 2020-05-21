@@ -2291,12 +2291,19 @@ label .asteriskField {
     font-size: 12px;
     line-height: 1.42857;
 }
+.custom-btn1{
+    background-color:#a6c7d177;
+    color: black;
+
+    
+}
 .custom-btn1:hover{
     background-color:white;
     color:black;
     font-weight: 600    ;
 
 }
+
 
 /* progress bar */
 .progressbar {
