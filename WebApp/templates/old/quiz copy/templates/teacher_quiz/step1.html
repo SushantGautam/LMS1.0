@@ -1,0 +1,29 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{{ wizard.form.media }}
+{% block breadcrumb %} 
+<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
+                
+ 
+<li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 
+{% endblock %} 
+{% block content %}
+
+
+{% include "quiz_base/step1.html" %}
+
+{% endblock %}
+
+{% block customjss %}
+  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+  <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+  <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+  <script>
+      $('#div_id_form1-title, #div_id_form1-course_code').wrapAll("<div class=\"col-md-12\"></div>");
+      $('#div_id_form1-title, #div_id_form1-course_code').wrap("<div class=\"col-md-6\"></div>");
+      $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
+      $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
+      $('#id_div_myform label').addClass("quiz-add-label");
+  </script>
+{% endblock customjss %}
