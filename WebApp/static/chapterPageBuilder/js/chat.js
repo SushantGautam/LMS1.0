@@ -236,7 +236,6 @@ else {
             } else {
                 chatdatediv = ''
             }
-            console.log(datearr)
 
             // Appending message to canvas log
             chatLog.innerHTML += `
