@@ -88,7 +88,7 @@ def start(request):
                                                                Assignment_Deadline__gte=datetime_now,
                                                                Chapter_Code__Use_Flag=True)
         if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
-                                     status=True).exists():
+                                 status=True).exists():
             notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
             if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
                 notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
@@ -433,11 +433,30 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        session_list = []
+        inningpk = self.kwargs.get('inningpk') if self.kwargs.get('inningpk') else None
+
+        assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
+        if '/teachers' in self.request.path:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
+                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
+                                                    Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
+        session_list.append(inning_info)
+
+        if inning_info.count() > 0:
+            if inningpk:
+                innings = get_object_or_404(inning_info, pk=inningpk)
+            else:
+                innings = inning_info.all().first()
         questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
                                                           )
         context['questions'] = questions
-        context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
-        context['Assignment'] = AssignmentInfo.objects.get(pk=self.kwargs['pk'])
+        context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
+                                                             Student_Code__in=innings.Groups.Students.all())
+        context['Assignment'] = assignmentinfoObj
+        context['session_list'] = session_list
+        context['inning'] = innings
         # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context

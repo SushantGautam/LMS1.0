@@ -203,8 +203,9 @@ class AssignmentInfoAuthMxnCls:
 
 
 def AssignmentInfoAuth(request, pk):
-    return 1 if AssignmentInfo.objects.get(
-        pk=pk).Course_Code.Center_Code == request.user.Center_Code else returnResultFunc(request)
+    return 1 if get_object_or_404(AssignmentInfo,
+                                  pk=pk).Course_Code.Center_Code == request.user.Center_Code else returnResultFunc(
+        request)
 
 
 class TeacherAssignmentAuthMxnCls:

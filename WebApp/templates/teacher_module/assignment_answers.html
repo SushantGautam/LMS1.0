@@ -63,7 +63,22 @@
             </div>
         </div>
     </div>
+    <div class="session-detail" style="padding: 10px 0;">
+        <span style="font-size:18px"><b> Session: </b></span>
+        <select id="select_session" class="" style="width: 50%;">
+            {% for x in session_list %}
+                {% for session in x %}
+                    <option value="{{ session.pk }}"
+                            {% if session.pk == inning.pk %}
+                            selected
+                            {% endif %}
+                    > {{ session }}</option>
+                {% endfor %}
+            {% endfor %}
+        </select>
 
+
+    </div>
     {% if questions %}
         <div style="padding-bottom: 10px;">
         {% for question in questions|slice:":1" %}
@@ -196,6 +211,19 @@
                 ],
                 columnDefs: []
 
+            });
+
+            $("#select_session").on("change", function () {
+                {% if 'iframe' in request.GET %}
+                    {% if '/teachers' in request.path %}
+                        {#window.location.href = `/teachers/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/?iframe=1`#}
+                        window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/inning/${this.value}/?iframe=1`
+                    {% endif %}
+                {% else %}
+                    {% if '/teachers' in request.path %}
+                        window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/inning/${this.value}/`
+                    {% endif %}
+                {% endif %}
             });
         });
 
