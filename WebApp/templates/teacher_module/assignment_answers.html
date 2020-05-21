@@ -87,7 +87,13 @@
         <hr class="header_hr">
     {% endif %}
 {% for question in questions %}
+
     <h5>Question : <br><br> <b>{{ question.Question_Title }}</b></h5>
+    {% if question.Answer_Type == 'F' %}
+        <btn class="btn btn-info downloadallfiles" data-question_id="{{ question.id }}" style="float: right">Download
+            All Files
+        </btn>
+    {% endif %}
     <table class="table table-striped table-bordered bg-white nowrap">
         <thead class="thead-light bg-primary">
         <tr class="tableTitleRow">
@@ -227,6 +233,46 @@
             });
         });
 
-
+        $('.downloadallfiles').on('click', function () {
+            let q_id = $(this).attr('data-question_id');
+            let answer_file_list = []
+            {% for answer in Answers %}
+                if (q_id == '{{ answer.Question_Code.id }}') {
+                    {% if answer.Assignment_File %}
+                        answer_file_list.push('{{ answer.Assignment_File }}')
+                    {% endif %}
+                }
+            {% endfor %}
+            if (answer_file_list.length > 0) {
+                $.ajax({
+                    url: "{% url 'downloadAssignmentAnswers' %}",
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'list_of_files': answer_file_list,
+                        'question_id': q_id,
+                        'assignment_id': '{{ Assignment.pk }}',
+                    },
+                    success: function (response) {
+                        window.open(response.link, '_blank');
+                        setTimeout(function () {
+                            $.ajax({
+                                url: "{% url 'deletedownloadAssignmentAnswers' %}",
+                                type: 'GET',
+                                data: {
+                                    'question_id': q_id,
+                                    'assignment_id': '{{ Assignment.pk }}',
+                                },
+                                success: function (data) {
+                                    console.log(data)
+                                }
+                            })
+                        }, 3000)
+                    },
+                });
+            } else {
+                alert('No Answers to download')
+            }
+        })
     </script>
 {% endblock %}

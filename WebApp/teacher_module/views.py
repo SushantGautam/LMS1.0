@@ -1,6 +1,7 @@
 # from django.core.checks import messages
 import json
 import os
+import shutil
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -460,6 +461,39 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
         # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
+
+
+def downloadAssignmentAnswers(request):
+    if request.method == "POST":
+        list_of_files = request.POST.getlist('list_of_files[]')
+        assignment_pk = str(request.POST.get('assignment_id'))
+        question_pk = str(request.POST.get('question_id'))
+        path = settings.MEDIA_ROOT
+        dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
+        for src in list_of_files:
+            # srcfile = os.path.join(path, src)
+            if os.path.isfile(os.path.join(path, src)):
+                if os.path.exists(dstfolder) and os.path.isdir(dstfolder):
+                    shutil.copy(os.path.join(path, src), dstfolder)
+                else:
+                    os.makedirs(dstfolder)
+                    shutil.copy(os.path.join(path, src), dstfolder)
+            shutil.make_archive(
+                path + '/assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk + '/' + assignment_pk + '_' + question_pk,
+                'zip', dstfolder)
+        return JsonResponse({
+            'link': settings.MEDIA_URL + 'assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk + '/' + assignment_pk + '_' + question_pk + '.zip'
+        }, status=200)
+
+
+def deletedownloadAssignmentAnswers(request):
+    assignment_pk = str(request.GET.get('assignment_id'))
+    question_pk = str(request.GET.get('question_id'))
+    path = settings.MEDIA_ROOT
+    dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
+    if os.path.exists(dstfolder):
+        shutil.rmtree(dstfolder)
+    return JsonResponse({'message': 'success'}, status=200)
 
 
 class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMxnCls, UpdateView):
