@@ -255,7 +255,7 @@
                     },
                     success: function (response) {
                         window.open(response.link, '_blank');
-                        setTimeout(function () {
+                        /*setTimeout(function () {
                             $.ajax({
                                 url: "{% url 'deletedownloadAssignmentAnswers' %}",
                                 type: 'GET',
@@ -267,7 +267,7 @@
                                     console.log(data)
                                 }
                             })
-                        }, 3000)
+                        }, 3000)*/
                     },
                 });
             } else {
