@@ -2032,10 +2032,14 @@ input[type=checkbox], input[type=radio] {
     border: none;
     cursor: pointer;
     overflow: hidden;
+    /* color: #c1c5c9; */
 }
 
 .tabButton.active {
-    color: #000000;
+    color:white;
+    background-color: lightseagreen;
+    border-radius: 1em;
+    padding: 0.4em;
 }
 
 .se-pre-con {
