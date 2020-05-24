@@ -404,11 +404,11 @@
                 </div>
             </div>
             <div id="mcans_list_{{ quest.id }}" class=" correct-list collapse">
-                <ul >
+                <ul style="list-style:none!important">
                     {% for ans in quest.get_answers %}
                         <li class="quiz-answer-listing"></li>
                         {{ forloop.counter }} <span>)&nbsp;</span>
-                        {{ ans.content }}{% if ans.correct %} -> <span class="mcq-correct">Correct</span>
+                        {{ ans.content }}{% if ans.correct %}  <i class="fa fa-arrow-right"></i> <span class="btn btn-xs btn-success">Correct</span>
                         {% endif %}
                     {% endfor %}
                 </ul>

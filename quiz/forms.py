@@ -425,7 +425,7 @@ class QuizBasicInfoForm(forms.ModelForm):
                 Column(css_class='col-md-4 mb-0'),
                 Column(css_class='col-md-4 mb-0'),
                 Column(
-                    StrictButton('Save', css_class='add-mcq', type='submit'),
+                    StrictButton('Save', css_class='add-mcq btn btn-default ripple ', type='submit'),
                     css_class='col-md-4 mb-0 text-right'
                 ),
                 css_class='form-row'

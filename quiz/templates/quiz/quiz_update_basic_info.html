@@ -15,11 +15,17 @@
 {% endblock %}
 
 {% block content %}
-  <form action="" method="post" onsubmit="return validateForm()">
+  <form class="custom-background-color" action="" method="post" onsubmit="return validateForm()">
     {{ form.non_field_errors }}
     {#      {{ wizard.form|crispy }}#}
     {% crispy form %}
   </form>
+  <style>
+      .custom-background-color{
+          background-color: white;
+          padding: 15px ;
+      }
+  </style>
 {% endblock %}
 
 {% block customjss %}
