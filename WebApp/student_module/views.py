@@ -40,7 +40,7 @@ from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, An
 from .misc import get_query
 from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog, getChapterScore
 
-datetime_now = datetime.now()
+datetime_now = datetime.utcnow()
 
 User = get_user_model()
 
@@ -290,35 +290,40 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Assignment'], context['activeAssignment'], context['expiredAssignment'] = [], [], []
-        Assignment, activeAssignment, expiredAssignment = [], [], []
-        Sessions = []
-        Courses = set()
+        
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
+        course_group = InningInfo.objects.filter(
+                                        Groups__in=student_groups, 
+                                        Use_Flag=True, 
+                                        Start_Date__lte=datetime_now, 
+                                        End_Date__gte=datetime_now).values_list('Course_Group',flat=True)
 
-        context['currentDate'] = datetime.now()
-        GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
-        for group in GroupName:
-            Sessions += InningInfo.objects.filter(Groups__id=group.id, End_Date__gt=datetime_now)
+        active_courses = InningGroup.objects.filter(
+                            pk__in=course_group, 
+                            Course_Code__Use_Flag=True).values_list('Course_Code', flat=True)
 
-        for session in Sessions:
-            for coursegroup in session.Course_Group.filter(Course_Code__Use_Flag=True):
-                Courses.add(coursegroup.Course_Code)
+        active_chapters = ChapterInfo.objects.filter(
+                            Course_Code__in=active_courses, 
+                            Use_Flag=True).filter(
+                            Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                            Q(End_Date__gte=datetime_now) | Q(End_Date=None))
 
-        for course in Courses:
-            Assignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True,
-                Assignment_Start__lte=datetime.utcnow()))
-            activeAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__gte=datetime.utcnow(),
-                Assignment_Start__lte=datetime.utcnow(),
-                Use_Flag=True,
-                Chapter_Code__Use_Flag=True))
-            expiredAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__lte=datetime.utcnow(), Use_Flag=True,
-                Chapter_Code__Use_Flag=True))
-        context['Assignment'].append(Assignment)
-        context['activeAssignment'].append(activeAssignment)
-        context['expiredAssignment'].append(expiredAssignment)
+        context['currentDate'] = datetime_now
+        context['Assignment'] = AssignmentInfo.objects.filter(
+                                    Chapter_Code__in=active_chapters, 
+                                    Use_Flag=True,
+                                    Assignment_Start__lte=datetime_now)
+        context['activeAssignment'] = AssignmentInfo.objects.filter(
+                                    Chapter_Code__in=active_chapters, 
+                                    Use_Flag=True,
+                                    Assignment_Start__lte=datetime_now,
+                                    Assignment_Deadline__gte=datetime_now)
+        context['expiredAssignment'] = AssignmentInfo.objects.filter(
+                                    Chapter_Code__in=active_chapters, 
+                                    Use_Flag=True,
+                                    Assignment_Start__lte=datetime_now,
+                                    Assignment_Deadline__lte=datetime_now)
+        
         return context
 
 
