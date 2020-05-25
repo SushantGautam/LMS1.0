@@ -479,10 +479,10 @@ def downloadAssignmentAnswers(request):
                     os.makedirs(dstfolder)
                     shutil.copy(os.path.join(path, src), dstfolder)
             shutil.make_archive(
-                path + '/assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk + '/' + assignment_pk + '_' + question_pk,
+                path + '/assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk,
                 'zip', dstfolder)
         return JsonResponse({
-            'link': settings.MEDIA_URL + 'assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk + '/' + assignment_pk + '_' + question_pk + '.zip'
+            'link': settings.MEDIA_URL + 'assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk + '.zip'
         }, status=200)
 
 

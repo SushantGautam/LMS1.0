@@ -313,15 +313,9 @@ class MyAssignmentsListView(ListView):
                                     Chapter_Code__in=active_chapters, 
                                     Use_Flag=True,
                                     Assignment_Start__lte=datetime_now)
-        context['activeAssignment'] = AssignmentInfo.objects.filter(
-                                    Chapter_Code__in=active_chapters, 
-                                    Use_Flag=True,
-                                    Assignment_Start__lte=datetime_now,
+        context['activeAssignment'] = context['Assignment'].filter(
                                     Assignment_Deadline__gte=datetime_now)
-        context['expiredAssignment'] = AssignmentInfo.objects.filter(
-                                    Chapter_Code__in=active_chapters, 
-                                    Use_Flag=True,
-                                    Assignment_Start__lte=datetime_now,
+        context['expiredAssignment'] = context['Assignment'].filter(
                                     Assignment_Deadline__lte=datetime_now)
         
         return context
