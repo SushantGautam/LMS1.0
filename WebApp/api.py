@@ -146,6 +146,12 @@ class AssignmentInfoViewSet(viewsets.ModelViewSet):
         context.update({"request": self.request})
         return context
 
+    def get_queryset(self):
+        queryset = self.queryset
+        if self.request.GET.get('Course_Code'):
+            queryset = queryset.filter(pk__in=self.request.GET.get('Course_Code').split(','))
+        return queryset
+
 class MessageInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the MessageInfo class"""
 
