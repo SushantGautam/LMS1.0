@@ -56,6 +56,14 @@
                 SHOW_JITSI_WATERMARK: 0,
                 SHOW_WATERMARK_FOR_GUESTS: false,
 
+                {% if user %}
+                    userInfo: {
+                        displayName: '{{ user }}',  // TODO replace by django user's name {{user}}
+                        email: '{{ user.email }}', // TODO replace by django   {{user.email}}
+
+                    },
+                {% endif %}
+
 
                 TOOLBAR_BUTTONS: [
 
