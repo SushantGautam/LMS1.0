@@ -352,3 +352,9 @@ urlpatterns += (
 urlpatterns += (
     path('notice_view_create', views.notice_view_create, name='notice_view_create'),
 )
+
+
+urlpatterns += (
+    path('meet/<int:userid>/<slug:meetcode>/',
+         views.MeetPublic, name='public-meet'),
+)

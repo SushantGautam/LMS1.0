@@ -2175,6 +2175,7 @@ def getVimeoMedias(chapterID, courseID, userObj, max_items):
     else:
         print('Failed to fetch vimeo videos')
 
+
 @xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):
     print(urlpath, "urlpath")
@@ -3111,3 +3112,17 @@ def checkForMediaFiles(request):
             print(e)
     else:
         return JsonResponse({'message': 'Course Unavailable'})
+
+
+def MeetPublic(request, userid, meetcode):
+    meetcodeInit = userid
+    for i in MemberInfo.objects.get(pk=userid).password[-5:]:
+        meetcodeInit *= ord(i)
+    if meetcode == str(meetcodeInit):
+        pass
+    else:
+        print('Invalid Meet Code')
+        meetcode = None
+
+    return render(request, 'WebApp/meet-public.html',
+                  {"meetcode": meetcode, "userobj": MemberInfo.objects.get(pk=userid)})
