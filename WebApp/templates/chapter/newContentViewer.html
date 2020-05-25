@@ -300,7 +300,7 @@
 
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
-                <i style="color: white;" class="fa fa-video icon-video"></i>
+                <i style="color: white;" class="fa fa-video icon-video closechatopen1 "></i>
 
             </li>
         </ul>
@@ -495,9 +495,7 @@
             <div class="close-minimizevideo">
                 <div class="relative-video-call">
                     <ul class="video-call-option">
-                        <li class="minimize-call">
-                            <i class="fa fa-window-minimize"></i>
-                        </li>
+                        
                         <li class="close-call">
                             <i class="fa fa-times"></i>
 
@@ -680,6 +678,25 @@
 
         } else {
             $(".closechatopen").addClass("color-chat");
+
+        }
+
+    }
+</script>
+<script>
+    $(document).ready(function () {
+
+        $(".icon-for-video").click(ActiveChatIcon);
+
+
+    });
+
+    function ActiveChatIcon() {
+        if ($(".video-box").is(":visible")) {
+            $(".closechatopen1").removeClass("color-chat");
+
+        } else {
+            $(".closechatopen1").addClass("color-chat");
 
         }
 
@@ -1455,6 +1472,8 @@
     $(document).on('click', '.close-call', function () {
 
         $(".video-box").css("display", "none");
+        $(".closechatopen1").removeClass("color-chat");
+
 
 
     });
