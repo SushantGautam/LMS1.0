@@ -149,7 +149,7 @@ class AssignmentInfoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         if self.request.GET.get('Course_Code'):
-            queryset = queryset.filter(pk__in=self.request.GET.get('Course_Code').split(','))
+            queryset = queryset.filter(Course_Code__in=self.request.GET.get('Course_Code').split(','))
         return queryset
 
 class MessageInfoViewSet(viewsets.ModelViewSet):
