@@ -2,9 +2,9 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from django.conf import settings
 
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.conf import settings
 
 online_users = dict()
 
@@ -79,18 +79,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Calls function to store the chat
         storeChat(text_data_json, self.room_group_name)
-
+        chatData = {
+            'type': 'chat_message',
+            'sender_id': sender_id,
+            'sender_name': sender_name,
+            'sender_icon': sender_icon,
+            'sender_datetime': sender_datetime,
+            'message': message,
+        }
+        # message_link_type => determines if message is for quiz or survey. Not present in case of chat messages.
+        # if message_link_type present -> 'message' is primary key of quiz or survey
+        if 'message_link_type' in text_data_json:
+            chatData['message_link_type'] = text_data_json['message_link_type']
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
-            {
-                'type': 'chat_message',
-                'sender_id': sender_id,
-                'sender_name': sender_name,
-                'sender_icon': sender_icon,
-                'sender_datetime': sender_datetime,
-                'message': message
-            }
+            chatData
         )
 
     # Receive message from room group
@@ -100,16 +104,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sender_icon = event['sender_icon']
         sender_datetime = event['sender_datetime']
         message = event['message']
-
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({
+        chatdata = {
             'message_type': 'message',
             'sender_id': sender_id,
             'sender_name': sender_name,
             'sender_icon': sender_icon,
             'sender_datetime': sender_datetime,
-            'message': message
-        }))
+            'message': message,
+        }
+        if 'message_link_type' in event:
+            chatdata['message_link_type'] = event['message_link_type']
+        await self.send(text_data=json.dumps(chatdata))
 
 # Serialization of django queryset
 def messages_to_json(messages):

@@ -120,7 +120,7 @@ function getCincopaThumbnail(url, divid) {
     if (url.match(ccRegExp) && url.match(ccRegExpForStart)[0].length == 13) {
         var rid = url.match(ccRegExpForStart)[0].substring(1);
         $.get('https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=' + rid, function (response) {
-            if (response.items > 0) {
+            if (response.items.length > 0) {
                 $('#' + divid).find('iframe').css({
                     'background-image': `url(${response.items[0].thumbnail.url})`,
                     'background-position': 'center',

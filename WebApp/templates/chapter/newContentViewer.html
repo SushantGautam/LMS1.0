@@ -295,9 +295,13 @@
                 id="hamburg-nav">
 
             </li>
-            <li data-toggle="tooltip" data-placement="right" title='Chat Icon' class="icon-for-chat">
+            <li data-toggle="tooltip" data-placement="right" title='Chat ' class="icon-for-chat">
                 <i style="color: white;" class="chat-icon closechatopen fa far fa-comment" id="closechatopen"></i>
                
+            </li>
+            <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
+                <i style="color: white;" class="fa fa-video icon-video"></i>
+
             </li>
         </ul>
 
@@ -329,6 +333,7 @@
             <li class="icon-for-chat2">
                 <i class="  fa far fa-comment"></i>
             </li>
+           
         </ul>
 
         <!-- <div class="page-view-icon">
@@ -415,16 +420,33 @@
                 </li>
 
                 <li class="name-user"></li>
+                {% if ifteacher %}
+                    <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
+                        <i
+                                class="fa fa-pencil"></i></li>
+
+                    <li id="QuickSurvey" data-toggle="modal" data-target="#survey_content_modal">Quick
+                        Survey
+
+                        <i class="fa fa-pencil"></i></li>
+                    {#                                <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>#}
+                    {#                            {% else %}#}
+                    {#                                <li id="followteacher" class="offline-followteacher">Teacher#}
+                    {#                                    Offline<i class="fa fa-book"> </i></li>#}
+                {% endif %}
                 <li class="options-chat">
                     <div class="bell col-sm-6 col-xs-6" style="padding: 0px!important;">
                         <input type="hidden" name="notification" id="id_notification" value="1">
-                        <span data-toggle="tooltip" data-placement="bottom" title='Click to hide'><i  class="bell-icon fas fa-bell "></i></span>
-                         <span data-toggle="tooltip" data-placement="bottom" title='click to show'> <i class="bell-icon-close text-danger fas fa-bell-slash"></i></span>
-                        
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to hide'><i
+                                class="bell-icon fas fa-bell "></i></span>
+                        <span data-toggle="tooltip" data-placement="bottom" title='click to show'> <i
+                                class="bell-icon-close text-danger fas fa-bell-slash"></i></span>
+
                     </div>
                     <div class="volume col-sm-6 col-xs-6" style="padding: 0px!important;">
                         <input type="hidden" name="sound" id="id_sound" value="1">
-                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Mute'><i class="volume-icon fas fa-volume-up "></i></span>
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Mute'><i
+                                class="volume-icon fas fa-volume-up "></i></span>
                         <span data-toggle="tooltip" data-placement="bottom" title='Click to Unmute'><i class="volume-icon-close text-danger fas fa-volume-mute "></i></span>
                         
                         
@@ -462,7 +484,39 @@
 
         </div>
         <!-- Chat UI end -->
+         <div class="video-box">
+             <div class="close-minimizevideo">
+                <div class="relative-video-call">
+                 <ul class="video-call-option">
+                     <li class="minimize-call">
+                        <i class="fa fa-window-minimize"></i>
+                     </li>
+                     <li class="close-call">
+                        <i class="fa fa-times"></i>
 
+                     </li>
+
+                 </ul>
+
+             </div>
+            <div id="meet"></div>
+
+            <script src='https://meet.jit.si/external_api.js'></script>
+            
+            <script>
+              const domain = 'meet.jit.si';
+              const options = {
+                roomName: 'UBLCloud-Meeting',
+                width: "100%",
+                height: "100%",
+                parentNode: document.querySelector('#meet'),
+                // interfaceConfigOverwrite: { filmStripOnly: true },
+              };
+              const api = new JitsiMeetExternalAPI(domain, options);
+            
+            </script>
+            </div>   
+         </div>
     </div>
        
    
@@ -1339,6 +1393,13 @@
 
 
     });
+    $(document).on('click', '.close-call', function () {
+
+        $(".video-box").css("display", "none");
+        
+
+
+    });
     //for main chhat icon
     $(document).on('click', '.icon-for-chat', function () {
         $(".chat-dialogbox").fadeToggle();
@@ -1356,6 +1417,11 @@
     });
     $(document).on('click', '.icon-for-chat2', function () {
         $(".chat-dialogbox").fadeToggle();
+
+
+    });
+    $(document).on('click', '.icon-for-video', function () {
+        $(".video-box").fadeToggle();
 
 
     });

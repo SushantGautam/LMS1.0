@@ -103,6 +103,16 @@ body{
     font-size: 30px;
     
 }
+.icon-video{
+    font-size: 28px;
+}
+.icon-video:hover{
+    cursor: pointer;
+}
+.icon-video:active , .icon-video:focus{
+   
+    color: #5a738e!important;
+}
 .chat-icon:active , .chat-icon:focus{
     font-size: 30px;
     color: #5a738e!important;
@@ -399,6 +409,43 @@ body{
     left: 10px;
     z-index: 999;
    
+}
+.video-box{
+    height: 435px;
+    width: 550px;
+    background-color: white;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 0 10px black;
+    box-shadow: 0 0 10px black;
+    display: none;
+     
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+}
+.video-call-option{
+    padding: 0;
+    text-align: right;
+    background-color: rgba(255,255,255,0.4);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    display: none;
+}
+.video-box:hover .video-call-option {
+    display: block;
+}
+.video-call-option li {
+    display: inline-block;
+    margin-right: 10px;
+    text-align: right;
+    cursor: pointer;
+} 
+.relative-video-call{
+    position: relative;
 }
 .chat-header{
     background-color: #00aeef;
