@@ -1014,6 +1014,7 @@ def CourseForum(request, course):
 class ChapterInfoUpdateView(UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
+    template_name = "center_admin/chapterinfo_edit.html"
 
     def form_valid(self, form):
         form.save(commit=False)
