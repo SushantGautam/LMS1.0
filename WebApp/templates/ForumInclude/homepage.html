@@ -5,17 +5,17 @@
 
 {% block main_contain %}
 
-<div class="panel panel-default paper-shadow" data-z="0.5">
-    <ul class="list-group">
-        <li class="list-group-item">
-            <div class="media v-middle">
-                <div class="media-body">
-                    <h2 class="text-headline margin-none" style="color:#368BC1">
-                        Recent Threads 
-                    </h2>
+    <div class="panel panel-default paper-shadow" data-z="0.5">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="media v-middle">
+                    <div class="media-body">
+                        <h2 class="text-headline margin-none" style="color:#368BC1">
+                            Recent Threads
+                        </h2>
 
-                </div>
-                {% if request.user.is_authenticated %}
+                    </div>
+                    {% if request.user.is_authenticated %}
                 {% if not '/students' in request.path %}
                 <div class="media-right">
                     <a  class="btn btn-white btn-fla  custom-size-font " href="{% if '/teachers' in request.path %}
@@ -135,11 +135,14 @@
                                         {% static 'images/profile/female.png' %}
                                     {% else %}
                                         {% static 'images/profile/profile.png' %}
-                                    {% endif %}" alt="..." class="img-circle width-20" />
+                                    {% endif %}" alt="..." class="img-circle width-20"/>
                                 {{ thread.user.username }}</a>
                             | <i class="fa fa-clock-o fa-fw"></i> {{ thread.pub_date }} |
                             &nbsp;
-                            |<i class="fa fa-clock-o fa-fw"></i> Last Replied: {{ thread.last_replied }}
+                            |<i class="fa fa-clock-o fa-fw"></i> Last Replied:
+                            <span class="">{{ thread.last_replied|date:'M d, Y' }}</span> <span
+                                class="timecon">{{ thread.last_replied|date:"d M, Y h:i A" }}</span></p>
+
                         </div>
                     </div>
 
