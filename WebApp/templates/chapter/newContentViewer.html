@@ -151,7 +151,7 @@
                                                 border-radius: 50%;
                                                 padding: 0.5px 2px;
                                                 " class="fa fa-times"></i> -->
-                                                <i  class="fas fa-window-close"></i>
+                                                <i class="fas fa-window-close"></i>
                                             </div>
                                         </a>
                                   {# End of close button #}
@@ -170,7 +170,7 @@
 
 </div>
 <section class="whole-container">
-    
+
 
     <div id="sidebar-id" class="sidenavbar-part  animate">
         <div class="sidebar-top">
@@ -218,19 +218,19 @@
                                     {% url 'NewContentViewer' course.pk chapterobj.pk %}
                                    {% endif %}
                                ">
-                            {% if not chapterobj.Use_Flag %}
-                                <span class="inactive-chapter">
+                                {% if not chapterobj.Use_Flag %}
+                                    <span class="inactive-chapter">
                                 {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }} ( Unpublished )
                             </span>
-                            {% elif chapterobj.End_Date and todays_datewithtime > chapterobj.End_Date|date:"Y-m-d H:i" or chapterobj.Start_Date and todays_datewithtime < chapterobj.Start_Date|date:"Y-m-d H:i" %}
-                                <span class="inactive-chapter">
+                                {% elif chapterobj.End_Date and todays_datewithtime > chapterobj.End_Date|date:"Y-m-d H:i" or chapterobj.Start_Date and todays_datewithtime < chapterobj.Start_Date|date:"Y-m-d H:i" %}
+                                    <span class="inactive-chapter">
                                 {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }} ( Inactive )
                             </span>
-                            {% else %}
-                                <span>
+                                {% else %}
+                                    <span>
                                 {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
                             </span>
-                            {% endif %}
+                                {% endif %}
                             </a>
                         {% else %}
                             <span class="inactive-chapter">
@@ -297,7 +297,7 @@
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Chat ' class="icon-for-chat">
                 <i style="color: white;" class="chat-icon closechatopen fa far fa-comment" id="closechatopen"></i>
-               
+
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
                 <i style="color: white;" class="fa fa-video icon-video"></i>
@@ -307,33 +307,34 @@
 
         <ul class="edit-viewer">
 
-          {% if '/teachers' in request.path %}
+            {% if '/teachers' in request.path %}
 
-            <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
-                    <a href="{% url 'teachers_newChapterBuilder' course.pk chapter.pk %}"> <i class="fas fa-pen-square"></i> </a>
-            </li> 
+                <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
+                    <a href="{% url 'teachers_newChapterBuilder' course.pk chapter.pk %}"> <i
+                            class="fas fa-pen-square"></i> </a>
+                </li>
 
-          {% elif '/teachers' not in request.path and '/students' not in request.path %}  
+            {% elif '/teachers' not in request.path and '/students' not in request.path %}
 
-            <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
-              <a href="{% url 'newChapterBuilder' course.pk chapter.pk %}"> <i class="fas fa-pen-square"></i> </a>
-           </li> 
-           
-          {% endif %}
-           
+                <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
+                    <a href="{% url 'newChapterBuilder' course.pk chapter.pk %}"> <i class="fas fa-pen-square"></i> </a>
+                </li>
+
+            {% endif %}
+
         </ul>
-        
-   
+
+
         <ul class="chat-sidenav-close slideInLeft animate">
             <li class=close-icon-sidebar>
                 <i class="fa fa-times icon1-largescreen"></i>
-                <i class="fa fa-minus-square icon2-smallscreen" ></i>
+                <i class="fa fa-minus-square icon2-smallscreen"></i>
 
             </li>
             <li class="icon-for-chat2">
                 <i class="  fa far fa-comment"></i>
             </li>
-           
+
         </ul>
 
         <!-- <div class="page-view-icon">
@@ -343,8 +344,8 @@
         </div> -->
 
     {% endif %}
-    
-   
+
+
     <div id="container" class="container12">
 
         <div id="page-contents" class="page-contents"></div>
@@ -408,7 +409,7 @@
                 <li class="ham-icon">
                     <i class="fa fa-bars"></i>
                 </li>
-                 
+
                 <li class="user-image-padding">
                 <li>
                     <div class="green-online"></div>
@@ -447,9 +448,10 @@
                         <input type="hidden" name="sound" id="id_sound" value="1">
                         <span data-toggle="tooltip" data-placement="bottom" title='Click to Mute'><i
                                 class="volume-icon fas fa-volume-up "></i></span>
-                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Unmute'><i class="volume-icon-close text-danger fas fa-volume-mute "></i></span>
-                        
-                        
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Unmute'><i
+                                class="volume-icon-close text-danger fas fa-volume-mute "></i></span>
+
+
                     </div>
                 </li>
 
@@ -484,43 +486,95 @@
 
         </div>
         <!-- Chat UI end -->
-         <div class="video-box">
-             <div class="close-minimizevideo">
+        <div class="video-box">
+            <div class="close-minimizevideo">
                 <div class="relative-video-call">
-                 <ul class="video-call-option">
-                     <li class="minimize-call">
-                        <i class="fa fa-window-minimize"></i>
-                     </li>
-                     <li class="close-call">
-                        <i class="fa fa-times"></i>
+                    <ul class="video-call-option">
+                        <li class="minimize-call">
+                            <i class="fa fa-window-minimize"></i>
+                        </li>
+                        <li class="close-call">
+                            <i class="fa fa-times"></i>
 
-                     </li>
+                        </li>
 
-                 </ul>
+                    </ul>
 
-             </div>
-            <div id="meet"></div>
+                </div>
+                <div id="meet"></div>
 
-            <script src='https://meet.jit.si/external_api.js'></script>
-            
-            <script>
-              const domain = 'meet.jit.si';
-              const options = {
-                roomName: 'UBLCloud-Meeting',
-                width: "100%",
-                height: "100%",
-                parentNode: document.querySelector('#meet'),
-                // interfaceConfigOverwrite: { filmStripOnly: true },
-              };
-              const api = new JitsiMeetExternalAPI(domain, options);
-            
-            </script>
-            </div>   
-         </div>
+                <script src='https://meet.jit.si/external_api.js'></script>
+
+                <script>
+                    const domain = 'meet.jit.si';
+                    const options = {
+                        roomName: 'UBLCloud-{{ chapter.id }}',
+                        width: "100%",
+                        height: "100%",
+                        parentNode: document.querySelector('#UBL-meet'),
+
+                        configOverwrite: {
+                            startWithAudioMuted: true, // TODO change to false for teacher
+                            startWithVideoMuted: true,
+                            disableDeepLinking: true,
+
+
+                        },
+
+                        interfaceConfigOverwrite: {
+                            APP_NAME: 'UBL Meet',
+                            NATIVE_APP_NAME: 'UBL Meet',
+                            PROVIDER_NAME: 'UBL',
+
+                            SHOW_JITSI_WATERMARK: 0,
+                            SHOW_WATERMARK_FOR_GUESTS: false,
+
+
+                            userInfo: {
+                                displayName: '{{ user }}',  // TODO replace by django user's name {{user}}
+                                email: '{{ user.email }}', // TODO replace by django   {{user.email}}
+
+                            },
+
+
+                            TOOLBAR_BUTTONS: [
+
+
+                                'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                                'fodeviceselection',
+                                'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                                'videoquality', 'filmstrip', 'stats', 'shortcuts',
+                                'tileview', 'videobackgroundblur', 'download',
+
+                                //HIDDEN OPTIONS  NOT USED IGNORE
+                                // 'e2ee', 'security',
+                                // 'hangup',
+                                // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
+
+
+                                // TODO SHOW THIS IF TEACHER and ABOVE ROLES
+                                'mute-everyone',
+
+                            ],
+
+                            SETTINGS_SECTIONS: ['devices',
+
+                                // TODO SHOW THIS IF TEACHER and ABOVE ROLES
+                                'moderator',
+
+                            ],
+
+                            SHOW_CHROME_EXTENSION_BANNER: false,
+                            SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+                            MOBILE_APP_PROMO: false,
+                        },
+                    };
+                    const api = new JitsiMeetExternalAPI(domain, options);
+
+                </script>
+            </div>
+        </div>
     </div>
-       
-   
-   
 
 
     {#  Iframe Holder   #}
@@ -584,23 +638,23 @@
 <!-- notificationchat -->
 <script>
     $(document).on('click', '.bell-icon', function () {
-        $(".bell-icon-close").css("display" , "block");
-        $(".bell-icon").css("display" , "none");
+        $(".bell-icon-close").css("display", "block");
+        $(".bell-icon").css("display", "none");
         $("#id_notification").val('0');
     });
     $(document).on('click', '.bell-icon-close', function () {
-        $(".bell-icon").css("display" , "block");
-        $(".bell-icon-close").css("display" , "none");
+        $(".bell-icon").css("display", "block");
+        $(".bell-icon-close").css("display", "none");
         $("#id_notification").val('1');
     });
     $(document).on('click', '.volume-icon', function () {
-        $(".volume-icon-close").css("display" , "block");
-        $(".volume-icon").css("display" , "none");
+        $(".volume-icon-close").css("display", "block");
+        $(".volume-icon").css("display", "none");
         $("#id_sound").val('0');
     });
     $(document).on('click', '.volume-icon-close', function () {
-        $(".volume-icon").css("display" , "block");
-        $(".volume-icon-close").css("display" , "none");
+        $(".volume-icon").css("display", "block");
+        $(".volume-icon-close").css("display", "none");
         $("#id_sound").val('1');
     });
 </script>
@@ -608,22 +662,22 @@
 <!-- chat-icon active -->
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         $(".icon-for-chat").click(ActiveChatIcon);
-       
-           
-            
+
+
     });
-    function ActiveChatIcon()    {
-        if($(".chat-dialogbox").is(":visible")){
+
+    function ActiveChatIcon() {
+        if ($(".chat-dialogbox").is(":visible")) {
             $(".closechatopen").removeClass("color-chat");
-           
-        } else{
+
+        } else {
             $(".closechatopen").addClass("color-chat");
-           
+
         }
-   
+
     }
 </script>
 
@@ -1271,7 +1325,7 @@
                 teacherchapterProgressFunction()
             {% endif %}
         {% endif %}
-        if (!x.matches){
+        if (!x.matches) {
             if (page_number >= parseInt($('#totalpages').text())) {
                 $('#next-btn').css('visibility', 'hidden')
             } else {
@@ -1284,7 +1338,7 @@
             }
 
         }
-      
+
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
@@ -1318,12 +1372,12 @@
             if (!x.matches) {
                 $(".custom-owl-slider").css("right", '1%');
                 $(".custom-owl-slider").css("width", '74%');
-               
+
                 $(".owl-prev").css("left", '27.5%');
                 $(".owl-next").css("right", '4.75%');
             }
             $(".chat-dialogbox").css("left", '1%');
-           
+
             $("#sidebar-id").addClass("slideOutLeft");
             $("#sidebar-id").removeClass("slideInLeft");
             $(".chat-sidenav-close").css("display", "none");
@@ -1354,7 +1408,7 @@
             $(".custom-owl-slider").css("right", '2%');
             $(".custom-owl-slider").css("width", '60%');
         }
-        
+
 
         $("#sidebar-id").addClass("slideInLeft");
         $("#sidebar-id").removeClass("slideOutLeft");
@@ -1396,7 +1450,6 @@
     $(document).on('click', '.close-call', function () {
 
         $(".video-box").css("display", "none");
-        
 
 
     });
@@ -1443,18 +1496,21 @@
     function onPicFrameLoad() {
         $(".pic .loadspin").remove();
     };
+
     function onVidFrameLoad() {
         $(".video-div .loadspin").remove();
     };
+
     function onPdfFrameLoad() {
         $(".pdf-div .loadspin").remove();
     };
+
     function onAudioFrameLoad() {
         $(".audio-div .loadspin").remove();
     };
 </script>
-    
-  
+
+
 <!-- ends -->
 <script>
     $(document).ready(function () {
