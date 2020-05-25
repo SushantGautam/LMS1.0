@@ -141,6 +141,10 @@ class AssignmentInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AssignmentInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_serializer_context(self):
+        context = super(AssignmentInfoViewSet, self).get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
 class MessageInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the MessageInfo class"""

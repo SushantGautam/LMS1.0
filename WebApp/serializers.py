@@ -84,17 +84,33 @@ class AssignmentInfoSerializer(serializers.ModelSerializer):
     course_name = serializers.ReadOnlyField(source='Course_Code.Course_Name')
     course_code = serializers.ReadOnlyField(source='Course_Code.id')
     chapter_code = serializers.ReadOnlyField(source='Chapter_Code.id')
-
+    chapter_name = serializers.ReadOnlyField(source='Chapter_Code.Chapter_Name')
+    complete = serializers.SerializerMethodField()
     Register_Agent_Name = serializers.ReadOnlyField(source='Register_Agent.__str__')
+    question_count = serializers.SerializerMethodField()
+    answer_count = serializers.SerializerMethodField()
 
     class Meta:
         model = models.AssignmentInfo
         fields = (
             'pk', 'Assignment_Topic', 'Assignment_Deadline', 'Use_Flag', 'Register_DateTime',
-            'Assignment_Start',
+            'Assignment_Start', 'chapter_name', 'complete', 'question_count', 'answer_count',
             'Updated_DateTime', 'Register_Agent', 'course_code', 'course_name', 'chapter_code', 'Register_Agent_Name'
         )
 
+    def get_complete(self, obj):
+        user = self.context['request'].user
+        return obj.get_student_assignment_status(user)
+
+    def get_question_count(self, obj):
+        user = self.context['request'].user
+        question = obj.get_QuestionAndAnswer(user)
+        return question[0].count()
+
+    def get_answer_count(self, obj):
+        user = self.context['request'].user
+        answer = obj.get_QuestionAndAnswer(user)
+        return answer[1].count()
 
 class QuestionInfoSerializer(serializers.ModelSerializer):
     class Meta:

@@ -404,8 +404,12 @@ class AssignmentInfo(models.Model):
         unanswered = Question - AnsweredQuestion
         if not unanswered:
             status = True
-        print(status)
         return status
+
+    def get_QuestionAndAnswer(self, user):
+        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code__pk=self.pk)
+        answers = AssignAnswerInfo.objects.filter(Question_Code__in=questions, Student_Code=user)
+        return questions, answers
 
     def clean(self):
         super().clean()
