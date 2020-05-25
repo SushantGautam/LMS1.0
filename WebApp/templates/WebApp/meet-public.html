@@ -3,16 +3,16 @@
     <div height="100vh">
         <div id="UBL-meet" style="height: 100vh;"></div>
     </div>
-    <div>
-        Meeting Room of {{ userobj }}
-    </div>
-    <div>
+    <span>
+        Meeting Room of {{ userobj }}  &nbsp; | &nbsp;
+    </span>
+    <span>
         <input type="text" id="copy-link" readonly/>
         <button onclick="copyToClipBoard()">
             Copy Invitation Link
         </button>
 
-    </div>
+    </span>
     <br>
     <script src='https://meet.jit.si/external_api.js'></script>
 
@@ -64,7 +64,7 @@
                     'fodeviceselection',
                     'etherpad', 'sharedvideo', 'settings', 'raisehand',
                     'videoquality', 'filmstrip', 'stats', 'shortcuts',
-                    'tileview', 'videobackgroundblur', 'download','chat',
+                    'tileview', 'videobackgroundblur', 'download', 'chat',
 
                     //HIDDEN OPTIONS  NOT USED IGNORE
                     // 'e2ee', 'security',
