@@ -131,6 +131,31 @@ body{
     padding:  0 3px;
     transition: color 0.3s ease;
 }
+.icon-for-chat2:hover{
+    color: black;
+   background-color: white;
+}
+.icon-for-video2{
+    
+    background-color: rgb(54, 60, 69,0.8);
+    border-radius: 10%;
+    padding:   3px;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+
+}
+.icon-for-video2:hover{
+    color: black;
+   background-color: white;
+}
+.icon-video2{
+    font-size: 18px;
+}
+.icon-for-video2 i{
+    font-size: 12px;
+}
 .icon1-largescreen{
     background: rgb(54, 60, 69,0.8);
     /* padding: 3px 10px; */
@@ -140,10 +165,7 @@ body{
     padding: 3px;
 }
 
-.icon-for-chat2:hover{
-    color: black;
-   background-color: white;
-}
+
 #hamburg-nav{
     font-size: 30px;
     cursor:pointer;
