@@ -298,3 +298,8 @@ urlpatterns += (
     path('courseinfo/detail/<int:courseid>/take-attendance/',
          views.teacherAttendance, name='taketeacherAttendance'),
 )
+
+urlpatterns += (
+    path('meet/',
+         views.Meet, name='teacher-meet'),
+)
