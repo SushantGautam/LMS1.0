@@ -123,14 +123,17 @@
                             <li class="course-name">{{ course }} &nbsp;<i style="color:white"
                                                                           class="fa fa-caret-right"></i></li>
                             <li class="chapter-name">{{ chapter }} </li>
-
                         </ul>
-
                     </div>
-
 
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-4 page-name-holder">
+                    {% if ifteacher %}
+                        <!-- <div style="margin-right: 4em;color: white;">
+                            <label for="id_screen_sync">Force Screen Sync</label>
+                            <input type="checkbox" name="screen_sync" id="id_screen_sync">
+                        </div> -->
+                    {% endif %}
                     <div class="page-name">
                             <span> 
                                  {#  Close Button   #}
@@ -295,15 +298,12 @@
         <ul class="chat-sidenav">
             <li data-toggle="tooltip" data-placement="right" title='Open Navgation' class="glyphicon glyphicon-th"
                 id="hamburg-nav">
-
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Chat ' class="icon-for-chat">
                 <i style="color: white;" class="chat-icon closechatopen fa far fa-comment" id="closechatopen"></i>
-
             </li>
-            <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
+            <li data-toggle="tooltip" data-placement="right" title='Start Video Call' class="icon-for-video">
                 <i style="color: white;" class="fa fa-video icon-video closechatopen1 "></i>
-
             </li>
         </ul>
 
@@ -509,73 +509,67 @@
                 <div id="UBL-meet"></div>
 
                 <script src='https://meet.jit.si/external_api.js'></script>
-
                 <script>
-                    const domain = 'meet.jit.si';
-                    const options = {
-                        roomName: 'UBLCloud-{{ chapter.id }}+ window.location.hostname',
-                        width: "100%",
-                        height: "100%",
-                        parentNode: document.querySelector('#UBL-meet'),
+                    $(document).one('click', '.icon-for-video', function () {
+                        $('.icon-for-video').prepend(`<i style="color: red; z-index:2; position:absolute;margin-top: 6px;margin-left: 4px;" class="far fa-dot-circle"></i>`);
+                        $('.icon-for-video').attr('title','Live');
+                        let audioMute = true;
+                        let toolbarButtons = [
+                                    'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                                    'fodeviceselection',
+                                    'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                                    'videoquality', 'filmstrip', 'stats', 'shortcuts',
+                                    'tileview', 'videobackgroundblur', 'download',
+                                    //HIDDEN OPTIONS  NOT USED IGNORE
+                                    // 'e2ee', 'security',
+                                    // 'hangup',
+                                    // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
+                                    // 'mute-everyone',
+                                ];
+                        let settingsSection = ['devices'];
+                        const domain = 'meet.jit.si';
 
-                        configOverwrite: {
-                            startWithAudioMuted: true, // TODO change to false for teacher
-                            startWithVideoMuted: true,
-                            disableDeepLinking: true,
-                            etherpad_base: "https://pad.riseup.net/p/"
+                        {% if ifteacher %}
+                            audioMute = false;
+                            toolbarButtons.push('mute-everyone');
+                            settingsSection.push('moderator');
+                        {% endif %}
 
+                        const options = {
+                            roomName: 'UBLCloud-{{ chapter.id }}+ window.location.hostname',
+                            width: "100%",
+                            height: "100%",
+                            parentNode: document.querySelector('#UBL-meet'),
 
-                        },
-
-                        interfaceConfigOverwrite: {
-                            APP_NAME: 'UBL Meet',
-                            NATIVE_APP_NAME: 'UBL Meet',
-                            PROVIDER_NAME: 'UBL',
-
-                            SHOW_JITSI_WATERMARK: 0,
-                            SHOW_WATERMARK_FOR_GUESTS: false,
-
-
-                            userInfo: {
-                                displayName: '{{ user }}',  // TODO replace by django user's name {{user}}
-                                email: '{{ user.email }}', // TODO replace by django   {{user.email}}
-
+                            configOverwrite: {
+                                startWithAudioMuted: audioMute,
+                                startWithVideoMuted: true,
+                                disableDeepLinking: true,
+                                etherpad_base: "https://pad.riseup.net/p/"
                             },
 
+                            interfaceConfigOverwrite: {
+                                APP_NAME: 'UBL Meet',
+                                NATIVE_APP_NAME: 'UBL Meet',
+                                PROVIDER_NAME: 'UBL',
+                                SHOW_JITSI_WATERMARK: 0,
+                                SHOW_WATERMARK_FOR_GUESTS: false,
+                                userInfo: {
+                                    displayName: '{{ user }}',  
+                                    email: '{{ user.email }}',
 
-                            TOOLBAR_BUTTONS: [
+                                },
+                            TOOLBAR_BUTTONS: toolbarButtons,
 
-
-                                'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-                                'fodeviceselection',
-                                'etherpad', 'sharedvideo', 'settings', 'raisehand',
-                                'videoquality', 'filmstrip', 'stats', 'shortcuts',
-                                'tileview', 'videobackgroundblur', 'download',
-
-                                //HIDDEN OPTIONS  NOT USED IGNORE
-                                // 'e2ee', 'security',
-                                // 'hangup',
-                                // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
-
-
-                                // TODO SHOW THIS IF TEACHER and ABOVE ROLES
-                                'mute-everyone',
-
-                            ],
-
-                            SETTINGS_SECTIONS: ['devices',
-
-                                // TODO SHOW THIS IF TEACHER and ABOVE ROLES
-                                'moderator',
-
-                            ],
+                            SETTINGS_SECTIONS: settingsSection,
 
                             SHOW_CHROME_EXTENSION_BANNER: false,
                             SHOW_PROMOTIONAL_CLOSE_PAGE: false,
                             MOBILE_APP_PROMO: false,
-                        },
-                    };
-                    const api = new JitsiMeetExternalAPI(domain, options);
+                            },
+                        };
+                        const api = new JitsiMeetExternalAPI(domain, options);
+                    });
 
                 </script>
             </div>

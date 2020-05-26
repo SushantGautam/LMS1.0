@@ -3,6 +3,7 @@ const chatCanvas = document.querySelector('.chat-canvas');
 const mainChatBox = document.querySelector('#main-chat-box');
 const onlineUserCount = document.querySelector('.online-number');
 const onlineUserList = document.querySelector('.user-list');
+const screenSync = document.querySelector('#id_screen_sync');
 
 // Info about user and chat room
 const roomID = document.querySelector(".chat-info").getAttribute("data-chapterID");
