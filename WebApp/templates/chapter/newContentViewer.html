@@ -129,10 +129,10 @@
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-4 page-name-holder">
                     {% if ifteacher %}
-                        <!-- <div style="margin-right: 4em;color: white;">
+                        <div style="margin-right: 4em;color: white;">
                             <label for="id_screen_sync">Force Screen Sync</label>
                             <input type="checkbox" name="screen_sync" id="id_screen_sync">
-                        </div> -->
+                        </div>
                     {% endif %}
                     <div class="page-name">
                             <span> 
@@ -302,7 +302,7 @@
             <li data-toggle="tooltip" data-placement="right" title='Chat ' class="icon-for-chat">
                 <i style="color: white;" class="chat-icon closechatopen fa far fa-comment" id="closechatopen"></i>
             </li>
-            <li data-toggle="tooltip" data-placement="right" title='Start Video Call' class="icon-for-video">
+            <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
                 <i style="color: white;" class="fa fa-video icon-video closechatopen1 "></i>
             </li>
         </ul>
@@ -400,6 +400,7 @@
         </div>
         <div class="link-view-box hidden-xs">
             <div data-toggle="tooltip" data-placement="top" title='Enter Page Number' style="text-align:center">
+                <input type="hidden" id="current-pg-num" value="">
                 <input class="number-active" type="number" min="1" max="{{ data.numberofpages }}" id="pg-change"
                        name="firstname" placeholder="page"> <span>/ </span><span class="totalpages"></span>
             </div>
@@ -591,9 +592,9 @@
 </section>
 {% if ifteacher %}
     {% include "chapter/content-viewer-moules/QuickSurvey.html" %}
-    {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
+    {% comment %}{% include "chapter/Content_Viewer_WebSocket_teacher.html" %} {% endcomment %}
 {% else %}
-    {% include "chapter/Content_Viewer_WebSocket_students.html" %}
+    {% comment %}{% include "chapter/Content_Viewer_WebSocket_students.html" %} {% endcomment %}
 {% endif %}
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
@@ -894,6 +895,10 @@
         $('.currentpage').text(window.currentpage);
 
         $('#pg-change').val(window.currentpage);
+
+        // For storing current page no. in hidden state
+        $('#current-pg-num').val(window.currentpage);
+        $('#current-pg-num').change();
 
         $.each(data.pages, function (key, value) {
             if (key == window.currentpage) {
@@ -1338,6 +1343,7 @@
 
 
     function changePage(page_number) {
+        {% comment %}
         {% if not connection_offline %}
             {% if '/students' in request.path %}
                 chapterProgressStopFunction()
@@ -1346,6 +1352,7 @@
                 teacherchapterProgressFunction()
             {% endif %}
         {% endif %}
+        {% endcomment %}
         if (!x.matches) {
             if (page_number >= parseInt($('#totalpages').text())) {
                 $('#next-btn').css('visibility', 'hidden')
@@ -1364,11 +1371,15 @@
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
         document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
+        
+        {% comment %}
         {% if ifteacher %}
             updatePageByTeacher();
         {% else %}
             // updatePageByStudent(); //TBI
         {% endif %}
+        {% endcomment %}
+
         localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
 
         try {
