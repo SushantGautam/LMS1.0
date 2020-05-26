@@ -140,9 +140,12 @@
                             | <i class="fa fa-clock-o fa-fw"></i> {{ thread.pub_date }} |
                             &nbsp;
                             |<i class="fa fa-clock-o fa-fw"></i> Last Replied:
-                            <span class="">{{ thread.last_replied|date:'M d, Y' }}</span> <span
-                                class="timecon">{{ thread.last_replied|date:"d M, Y h:i A" }}</span></p>
-
+                            {% if thread.last_replied|hours_ago:24 %}
+                                <span class="">{{ thread.last_replied|date:'M d, Y' }}</span> <span
+                                    class="timecon">{{ thread.last_replied|date:"d M, Y h:i A" }}</span></p>
+                            {% else %}
+                                {{ thread.last_replied|timesince }}
+                            {% endif %}
                         </div>
                     </div>
 
