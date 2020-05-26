@@ -38,17 +38,17 @@ Course
                     </a>                
                 </div>              
                 <div class="card-body" id="cardInfo">
-                    <h2 class="card-title"><strong><a
-                                href="{{ courses.Course_Code.student_get_absolute_url }}">{{ courses.Course_Code.Course_Name }}</a></strong>
+                    <h2 class="card-title" style="height:45px; overflow:hidden;   overflow-wrap:break-word; "><strong><a
+                                href="{{ courses.Course_Code.student_get_absolute_url }}">{{ courses.Course_Code.Course_Name|truncatechars:45 }}</a></strong>
                     </h2>
 
 
 
           {% if courses.Course_Code.get_teachers_of_this_course%} 
-          <p style="height:30px ; padding: 10px; " > 
+          <p style="height:40px ; padding: 10px; " > 
             Teacher(s): &nbsp;
             {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course %}
-            {{ eachTeacher.getFullName }}&nbsp;
+            {{ eachTeacher.getFullName|truncatechars:64 }}&nbsp;
             {% endfor%}
 
           </p>
@@ -76,7 +76,7 @@ Course
             overflow: hidden;
             white-space: normal;
             text-overflow: ellipsis;">
-                            {{ courses.Course_Code.Course_Description }}
+                            {{ courses.Course_Code.Course_Description|truncatechars:70 }}
                         </p>
                         {% else %}
                         <p style="
