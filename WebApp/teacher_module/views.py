@@ -2283,3 +2283,11 @@ def teacherAttendance(request, courseid, createFile=True):
                 json.dump(data, teacher_file, indent=4)
 
     return HttpResponse('success')
+
+
+def Meet(request, ):
+    meetcode = request.user.id
+    for i in request.user.password[-5:]:
+        meetcode *= ord(i)
+    print(meetcode)
+    return render(request, 'teacher_module/meet.html', {"meetcode": meetcode})

@@ -1,0 +1,107 @@
+<title> UBL Meet </title>
+{% if meetcode %}
+    <div height="100vh">
+        <div id="UBL-meet" style="height: 100vh;"></div>
+    </div>
+    <span>
+        Meeting Room of {{ userobj }}  &nbsp; | &nbsp;
+    </span>
+    <span>
+        <input type="text" id="copy-link" readonly/>
+        <button onclick="copyToClipBoard()">
+            Copy Invitation Link
+        </button>
+
+    </span>
+    <br>
+    <script src='https://meet.jit.si/external_api.js'></script>
+
+    <script>
+        document.getElementById('copy-link').value = document.location.origin + '/meet/{{ user.id }}/{{ meetcode }}/'
+
+        function copyToClipBoard() {
+            /* Get the text field */
+            var copyText = document.getElementById("copy-link");
+
+            /* Select the text field */
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+            /* Copy the text inside the text field */
+            document.execCommand("copy");
+        }
+    </script>
+
+    <script>
+        const domain = 'meet.jit.si';
+        const options = {
+            roomName: 'UBL Meet-{{ user.id }}' + window.location.hostname,  // TODO Change to ChapterNameID-CourseNameID  !Unicode Works fine for room name - -  long names cause problem in communication
+            width: "100%",
+            height: "100%",
+            parentNode: document.querySelector('#UBL-meet'),
+
+            configOverwrite: {
+                startWithAudioMuted: true, // TODO change to false for teacher
+                startWithVideoMuted: true,
+                disableDeepLinking: true,
+                etherpad_base: "https://pad.riseup.net/p/"
+
+
+            },
+
+            interfaceConfigOverwrite: {
+                APP_NAME: 'UBL Meet',
+                NATIVE_APP_NAME: 'UBL Meet',
+                PROVIDER_NAME: 'UBL',
+
+                SHOW_JITSI_WATERMARK: 0,
+                SHOW_WATERMARK_FOR_GUESTS: false,
+
+                {% if user %}
+                    userInfo: {
+                        displayName: '{{ user }}',  // TODO replace by django user's name {{user}}
+                        email: '{{ user.email }}', // TODO replace by django   {{user.email}}
+
+                    },
+                {% endif %}
+
+
+                TOOLBAR_BUTTONS: [
+
+
+                    'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                    'fodeviceselection',
+                    'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                    'videoquality', 'filmstrip', 'stats', 'shortcuts',
+                    'tileview', 'videobackgroundblur', 'download', 'chat',
+
+                    //HIDDEN OPTIONS  NOT USED IGNORE
+                    // 'e2ee', 'security',
+                    // 'hangup',
+                    // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording',
+
+
+                    {#// TODO SHOW THIS IF TEACHER and ABOVE ROLES#}
+                    {#'mute-everyone',#}
+
+                ],
+
+                SETTINGS_SECTIONS: ['devices',
+
+                    // TODO SHOW THIS IF TEACHER and ABOVE ROLES
+                    {#'moderator',#}
+
+                ],
+
+                SHOW_CHROME_EXTENSION_BANNER: false,
+                SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+                MOBILE_APP_PROMO: false,
+            },
+        };
+        const api = new JitsiMeetExternalAPI(domain, options);
+
+    </script>
+
+{% else %}
+    <h2> Sorry Your UBL Meet URL is Incorrect.</h2>
+{% endif %}

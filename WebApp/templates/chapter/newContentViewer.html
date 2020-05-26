@@ -302,7 +302,7 @@
 
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
-                <i style="color: white;" class="fa fa-video icon-video"></i>
+                <i style="color: white;" class="fa fa-video icon-video closechatopen1 "></i>
 
             </li>
         </ul>
@@ -497,9 +497,7 @@
             <div class="close-minimizevideo">
                 <div class="relative-video-call">
                     <ul class="video-call-option">
-                        <li class="minimize-call">
-                            <i class="fa fa-window-minimize"></i>
-                        </li>
+
                         <li class="close-call">
                             <i class="fa fa-times"></i>
 
@@ -508,18 +506,74 @@
                     </ul>
 
                 </div>
-                <div id="meet"></div>
+                <div id="UBL-meet"></div>
 
                 <script src='https://meet.jit.si/external_api.js'></script>
 
                 <script>
                     const domain = 'meet.jit.si';
                     const options = {
-                        roomName: 'UBLCloud-Meeting',
+                        roomName: 'UBLCloud-{{ chapter.id }}+ window.location.hostname',
                         width: "100%",
                         height: "100%",
-                        parentNode: document.querySelector('#meet'),
-                        // interfaceConfigOverwrite: { filmStripOnly: true },
+                        parentNode: document.querySelector('#UBL-meet'),
+
+                        configOverwrite: {
+                            startWithAudioMuted: true, // TODO change to false for teacher
+                            startWithVideoMuted: true,
+                            disableDeepLinking: true,
+                            etherpad_base: "https://pad.riseup.net/p/"
+
+
+                        },
+
+                        interfaceConfigOverwrite: {
+                            APP_NAME: 'UBL Meet',
+                            NATIVE_APP_NAME: 'UBL Meet',
+                            PROVIDER_NAME: 'UBL',
+
+                            SHOW_JITSI_WATERMARK: 0,
+                            SHOW_WATERMARK_FOR_GUESTS: false,
+
+
+                            userInfo: {
+                                displayName: '{{ user }}',  // TODO replace by django user's name {{user}}
+                                email: '{{ user.email }}', // TODO replace by django   {{user.email}}
+
+                            },
+
+
+                            TOOLBAR_BUTTONS: [
+
+
+                                'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                                'fodeviceselection',
+                                'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                                'videoquality', 'filmstrip', 'stats', 'shortcuts',
+                                'tileview', 'videobackgroundblur', 'download',
+
+                                //HIDDEN OPTIONS  NOT USED IGNORE
+                                // 'e2ee', 'security',
+                                // 'hangup',
+                                // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
+
+
+                                // TODO SHOW THIS IF TEACHER and ABOVE ROLES
+                                'mute-everyone',
+
+                            ],
+
+                            SETTINGS_SECTIONS: ['devices',
+
+                                // TODO SHOW THIS IF TEACHER and ABOVE ROLES
+                                'moderator',
+
+                            ],
+
+                            SHOW_CHROME_EXTENSION_BANNER: false,
+                            SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+                            MOBILE_APP_PROMO: false,
+                        },
                     };
                     const api = new JitsiMeetExternalAPI(domain, options);
 
@@ -618,17 +672,36 @@
 <script>
     $(document).ready(function () {
 
-        $(".icon-for-chat").click(ActiveChatIcon);
+        $(".icon-for-chat").click(ActiveChatIcon1);
 
 
     });
 
-    function ActiveChatIcon() {
+    function ActiveChatIcon1() {
         if ($(".chat-dialogbox").is(":visible")) {
             $(".closechatopen").removeClass("color-chat");
 
         } else {
             $(".closechatopen").addClass("color-chat");
+
+        }
+
+    }
+</script>
+<script>
+    $(document).ready(function () {
+
+        $(".icon-for-video").click(ActiveChatIcon);
+
+
+    });
+
+    function ActiveChatIcon() {
+        if ($(".video-box").is(":visible")) {
+            $(".closechatopen1").removeClass("color-chat");
+
+        } else {
+            $(".closechatopen1").addClass("color-chat");
 
         }
 
@@ -1404,6 +1477,7 @@
     $(document).on('click', '.close-call', function () {
 
         $(".video-box").css("display", "none");
+        $(".closechatopen1").removeClass("color-chat");
 
 
     });
