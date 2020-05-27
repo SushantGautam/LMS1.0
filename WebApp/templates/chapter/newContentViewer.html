@@ -417,26 +417,27 @@
                     <i class="fa fa-bars"></i>
                 </li>
 
-                <li class="user-image-padding">
-                <li>
+                <!-- <li class="user-image-padding">
+                <li> -->
                     <div class="green-online"></div>
                 </li>
                 <span style="color: white;">  Online</span>&nbsp;
-                <li class="online-number">1</li>
+                <li class="online-number">1</li>&nbsp;
                 <!-- <div class="chat-user-image">
                 </div> -->
                 </li>
 
-                <li class="name-user"></li>
+                <!-- <li class="name-user"></li> -->
                 {% if ifteacher %}
-                    <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
-                        <i
-                                class="fa fa-pencil"></i></li>
+                <li id="QuickQuiz" class="quiz-quick" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
+                        <i class="fa fa-pencil" style="color:black"></i>
+                    </li>
 
-                    <li id="QuickSurvey" data-toggle="modal" data-target="#survey_content_modal">Quick
+                <li id="QuickSurvey" class="survey-quick" data-toggle="modal" data-target="#survey_content_modal">Quick
                         Survey
 
-                        <i class="fa fa-pencil"></i></li>
+                        <i class="fa fa-pencil" style="color: black;"></i>
+                    </li>
                     {#                                <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>#}
                     {#                            {% else %}#}
                     {#                                <li id="followteacher" class="offline-followteacher">Teacher#}
