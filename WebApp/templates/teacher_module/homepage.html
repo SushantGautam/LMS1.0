@@ -318,23 +318,23 @@
 
 </script>
 
-<script>
-    function RetrieveChatper(urlx, coursepk) {
-        let chapterVal = localStorage.getItem("chapter_for_course" + coursepk);
+    <script>
+        function RetrieveChatper(urlx, coursepk) {
+            let chapterVal = localStorage.getItem("chapter_for_course" + coursepk);
 
 
-        if (chapterVal >= 1) {
-            window.location.href = "/teachers/courseinfo/" + coursepk + "/chapterinfo/" + chapterVal + "/contents";
-        } else
-            window.location.href = urlx;
+            if (chapterVal >= 1) {
+                window.location.href = "/teachers/courseinfo/" + coursepk + "/chapterinfo/" + chapterVal + "/newcontents";
+            } else
+                window.location.href = urlx;
 
-    }
+        }
 
-</script>
+    </script>
 
-<script>
-    $(window).on('load',function(){
-        $('#myModal').modal('show');
+    <script>
+        $(window).on('load', function () {
+            $('#myModal').modal('show');
        });
     
 </script>

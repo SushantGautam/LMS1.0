@@ -75,12 +75,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sender_name = text_data_json['sender_name']
         sender_icon = text_data_json['sender_icon']
         sender_datetime = text_data_json['sender_datetime']
+        message_type = text_data_json['message_type']
         message = text_data_json['message']
 
         # Calls function to store the chat
-        storeChat(text_data_json, self.room_group_name)
+        if message_type == 'chat_message':
+            storeChat(text_data_json, self.room_group_name)
+        
         chatData = {
             'type': 'chat_message',
+            'message_type': message_type,
             'sender_id': sender_id,
             'sender_name': sender_name,
             'sender_icon': sender_icon,
@@ -97,16 +101,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             chatData
         )
 
-    # Receive message from room group
+    # Receive message from room group for chat message
     async def chat_message(self, event):
         sender_id = event['sender_id']
         sender_name = event['sender_name']
         sender_icon = event['sender_icon']
         sender_datetime = event['sender_datetime']
+        message_type = event['message_type']
         message = event['message']
         # Send message to WebSocket
         chatdata = {
-            'message_type': 'message',
+            'message_type': message_type,
             'sender_id': sender_id,
             'sender_name': sender_name,
             'sender_icon': sender_icon,
@@ -116,6 +121,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if 'message_link_type' in event:
             chatdata['message_link_type'] = event['message_link_type']
         await self.send(text_data=json.dumps(chatdata))
+
 
 # Serialization of django queryset
 def messages_to_json(messages):
@@ -151,31 +157,3 @@ def storeChat(data, room_name):
     except Exception as e:
         print(e)
         return
-
-
-# from channels import Group
-# import time
-
-
-# # Connected to websocket.connect
-# def ws_job_connect(message, group_id):
-#     message.reply_channel.send({"accept": True})
-#     Group(group_id).add(message.reply_channel)
-
-
-# # Connected to websocket.receive
-# def ws_message(message, group_id):
-#     storeChat(message, group_id)
-#     Group(group_id).send({
-#         "text": "%s" % message.content['text'],
-#     })
-
-
-# # Connected to websocket.disconnect
-# def ws_disconnect(message, group_id):
-#     Group(group_id).discard(message.reply_channel)
-
-
-
-# from django.conf import settings
-# from functools import reduce
