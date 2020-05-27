@@ -134,6 +134,12 @@ class GroupMappingViewSet(viewsets.ModelViewSet):
     filter_fields = ['Students', ]
 
 
+from datetime import datetime
+from django.db.models import Q
+
+datetime_now = datetime.utcnow()
+
+
 class AssignmentInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the HomeworkInfo class"""
 
@@ -149,7 +155,19 @@ class AssignmentInfoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         if self.request.GET.get('Course_Code'):
-            queryset = queryset.filter(Course_Code__in=self.request.GET.get('Course_Code').split(','))
+            queryset = queryset.filter(
+                Course_Code__in=self.request.GET.get('Course_Code').split(','), Chapter_Code__Use_Flag=True,
+                Assignment_Start__lte=datetime_now
+            ).filter(
+                Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
+                Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None)
+            )
+        if self.request.GET.get('active'):
+            if self.request.GET.get('active') == '1':
+                queryset = queryset.filter(Assignment_Start__lte=datetime_now, Assignment_Deadline__gte=datetime_now)
+        if self.request.GET.get('expired'):
+            if self.request.GET.get('expired') == '1':
+                queryset = queryset.filter(Assignment_Deadline__lte=datetime_now)
         return queryset
 
 class MessageInfoViewSet(viewsets.ModelViewSet):
