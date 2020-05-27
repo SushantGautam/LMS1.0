@@ -3,6 +3,8 @@ const chatCanvas = document.querySelector('.chat-canvas');
 const mainChatBox = document.querySelector('#main-chat-box');
 const onlineUserCount = document.querySelector('.online-number');
 const onlineUserList = document.querySelector('.user-list');
+const screenSync = document.querySelector('#id_screen_sync');
+const currentPageNo = document.querySelector('#current-pg-num');
 
 // Info about user and chat room
 const roomID = document.querySelector(".chat-info").getAttribute("data-chapterID");
@@ -19,6 +21,7 @@ const locationhost = window.location.host;
 const webSProtocal = location.protocol === 'https:' ? "wss://" : "ws://";
 const chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomID + '/');
 
+// For Notification detecting inactive tab
 var hidden, visibilityChange; 
 if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
   hidden = "hidden";
@@ -31,10 +34,8 @@ if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and 
   visibilityChange = "webkitvisibilitychange";
 }
 
-
 // When chatsocket recieve message
 chatSocket.onmessage = function(e) {
-    console.log(e)
     const data = JSON.parse(e.data);
     const notificationVal = document.querySelector("#id_notification").value;
     const soundVal = document.querySelector("#id_sound").value;
@@ -57,8 +58,15 @@ chatSocket.onmessage = function(e) {
                         </ul>
                     </div>`;
         });
+    }else if (data.message_type === 'screen_sync'){
+        if(!screenSync){
+            const event = new Event('change');
+            document.querySelector('#pg-change').value = data.message;
+            document.querySelector('#pg-change').dispatchEvent(event);
+            console.log(data.message);
+        }
 
-    }else if (data.message_type === 'message'){
+    }else if (data.message_type === 'chat_message'){
         // converting datetime to local
         let sender_datetime = new Date(data.sender_datetime);
         let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
@@ -70,16 +78,17 @@ chatSocket.onmessage = function(e) {
 
         // Checking if the message is sent by same user
         let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
+        let msg = '';
 
         // Play sound if sound option is on
         if (soundVal === '1' && msgClass === "left-msg") soundIn.play();
         if (soundVal === '1' && msgClass === "right-msg") soundOut.play();
 
-        // if message_link_type present, then get link for the
+        // if message_link_type present, then get link
         if (data.hasOwnProperty('message_link_type')) {
-            var msg = getTypeLink(data.message_link_type, data.message)
+            msg = getTypeLink(data.message_link_type, data.message);
         } else {
-            var msg = data.message
+            msg = data.message;
         }
 
         // Appending message to canvas log
@@ -155,6 +164,25 @@ document.querySelector('#chat-message-submit').onclick = function () {
     sendChatMessage()
 }
 
+// Sending pagechange to websocket if screenSync is true
+currentPageNo.onchange = function() {
+    if(screenSync){
+        if(screenSync.checked == true){
+            let currentDateTime = new Date().toLocaleString('en-US', {timeZone: 'UTC'});
+            const pageNo = currentPageNo.value;
+            const messageData = {
+                'message_type': 'screen_sync',
+                'sender_id': userID,
+                'sender_name': userName,
+                'sender_icon': userIcon,
+                'sender_datetime': currentDateTime,
+                'message': pageNo,
+            }
+            chatSocket.send(JSON.stringify(messageData));
+        }
+    }
+};
+
 function sendChatMessage(extraParam = null) {
     let currentDateTime = new Date().toLocaleString('en-US', {timeZone: 'UTC'});
     const messageInputDom = document.querySelector('#chat-message-input');
@@ -162,6 +190,7 @@ function sendChatMessage(extraParam = null) {
     // Prevent submission of empty message
     if (!message) return;
     let messageData = {
+        'message_type': 'chat_message',
         'sender_id': userID,
         'sender_name': userName,
         'sender_icon': userIcon,
