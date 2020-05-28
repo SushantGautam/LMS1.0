@@ -247,7 +247,7 @@
             var topicId = $('#id_topic').val() ? $('#id_topic').val() : 0;
             var threadTitleText = $('#id_title').val() ? $('#id_title').val() : "";
             threadTitleText = threadTitleText.removeStopWords().replace("/", "").replace("\\", "").replace("_", "").replace("?", "").replace(",", " ");
-            threadTitleText = threadTitleText.replace(" ", "_");
+            threadTitleText = threadTitleText.split(' ').join('_');
 
 
             $.ajax({

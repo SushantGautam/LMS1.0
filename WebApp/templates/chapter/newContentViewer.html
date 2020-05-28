@@ -387,6 +387,7 @@
                     <li id="prev-btn"><i class="fa fa-angle-left"></i></li>
                     <li data-toggle="tooltip" data-placement="top" title='View Page Options' class="view-icon"
                         value="show"><i class="fa fa-list-ul"></i></li>
+
                     <li id="next-btn"><i class="fa fa-angle-right"></i></li>
                 </ul>
                 <div class="page-number-list">
@@ -416,18 +417,22 @@
                 <li class="ham-icon">
                     <i class="fa fa-bars"></i>
                 </li>
-
-                <!-- <li class="user-image-padding">
-                <li> -->
+                {% if not ifteacher %}
+                <li class="user-image-padding">
+                <li>
+                 {% endif %}   
                     <div class="green-online"></div>
                 </li>
                 <span style="color: white;">  Online</span>&nbsp;
                 <li class="online-number">1</li>&nbsp;
-                <!-- <div class="chat-user-image">
-                </div> -->
+                {% if not ifteacher %}
+                <div class="chat-user-image">
+                </div>
+                {% endif %}
                 </li>
-
-                <!-- <li class="name-user"></li> -->
+                {% if not ifteacher %}
+                <li class="name-user"></li>
+                {% endif %}
                 {% if ifteacher %}
                 <li id="QuickQuiz" class="quiz-quick" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
                         <i class="fa fa-pencil" style="color:black"></i>
