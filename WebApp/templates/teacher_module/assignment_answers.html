@@ -75,6 +75,12 @@
                     > {{ session }}</option>
                 {% endfor %}
             {% endfor %}
+            <option value="-1"
+                    {% if not inning %}
+                    selected
+                    {% endif %}
+            > All Sessions
+            </option>
         </select>
     </div>
     {% if questions %}
@@ -234,11 +240,19 @@
                 {% if 'iframe' in request.GET %}
                     {% if '/teachers' in request.path %}
                         {#window.location.href = `/teachers/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/?iframe=1`#}
-                        window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/inning/${this.value}/?iframe=1`
+                        if (this.value != -1) {
+                            window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/inning/${this.value}/?iframe=1`
+                        } else {
+                            window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/?iframe=1`
+                        }
                     {% endif %}
                 {% else %}
                     {% if '/teachers' in request.path %}
-                        window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/inning/${this.value}/`
+                        if (this.value != -1) {
+                            window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/inning/${this.value}/`
+                        } else {
+                            window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/`
+                        }
                     {% endif %}
                 {% endif %}
             });

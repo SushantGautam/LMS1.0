@@ -449,12 +449,16 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
             if inningpk:
                 innings = get_object_or_404(inning_info, pk=inningpk)
             else:
-                innings = inning_info.all().first()
+                innings = None
         questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
                                                           )
         context['questions'] = questions
-        context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
-                                                             Student_Code__in=innings.Groups.Students.all())
+        if innings:
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
+                                                                 Student_Code__in=innings.Groups.Students.all())
+        else:
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
+
         context['Assignment'] = assignmentinfoObj
         context['session_list'] = session_list
         context['inning'] = innings
