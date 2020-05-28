@@ -146,7 +146,7 @@ urlpatterns += (
     path('forum/notification', views.NotificationView.as_view(),
          name='teacher_notification'),
     path('forum/edit/<int:pk>/', views.edit_thread, name='teacher_edit_thread'),
-    path('forum/create_thread/threadsearchAjax/<int:topic_id>/<slug:threadkeywordList>/',
+    path('forum/create_thread/threadsearchAjax/<int:topic_id>/',
          views.ThreadSearchAjax, name='thread_search'),
 
 )
