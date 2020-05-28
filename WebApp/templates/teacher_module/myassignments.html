@@ -66,17 +66,23 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                 <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+                <p>Submission Deadline -
+                    {% now "Y-m-d H:i" as todays_date %}
+                    {% if a.Assignment_Deadline|date:"Y-m-d H:i" <= todays_date %}
+                        <span class="text-danger">Expired</span>
+                    {% else %}
+                        <span class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span>
+                    {% endif %}</p>
+            </div>
         </div>
-    </div>
     {% endfor %}
     {% endfor %}
     {% endfor %}
     {% endif %}
 </div>
 
-<div class="tabcontent" id="activeAssignments" style="display: none;">
-    {% if activeAssignment %}
+    <div class="tabcontent" id="activeAssignments" style="display: none;">
+        {% if activeAssignment %}
     {% for courses in activeAssignment %}
     {% for assignment in courses %}
     {% for a in assignment %}
@@ -103,16 +109,16 @@
 
         <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
             <hr style="margin-top: 1px; margin-bottom: 10px;">
-            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+            <p>Submission Deadline - {{ a.Assignment_Deadline|timeuntil }}</p>
         </div>
     </div>
     {% endfor %}
     {% endfor %}
     {% endfor %}
-    {% endif %}
-</div>
-<div class="tabcontent" id="expiredAssignments" style="display: none;">
-    {% if expiredAssignment %}
+        {% endif %}
+    </div>
+    <div class="tabcontent" id="expiredAssignments" style="display: none;">
+        {% if expiredAssignment %}
 
     {% for courses in expiredAssignment %}
     {% for assignment in courses %}
@@ -143,14 +149,17 @@
 
         <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
             <hr style="margin-top: 1px; margin-bottom: 10px;">
-            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+            <p>Submission Deadline -
+                <span class="text-danger">{{ a.Assignment_Deadline|date:'M d, Y' }}</span>
+                <span class="text-danger timecon">{{ a.Assignment_Deadline|date:"d M, Y h:i A" }}</span>
+            </p>
         </div>
     </div>
     {% endfor %}
     {% endfor %}
     {% endfor %}
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block customjss %}
