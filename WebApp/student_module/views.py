@@ -1226,7 +1226,10 @@ def singleUserHomePageJSON(request):
         courses = request.user.get_student_courses().distinct()
         assignments = AssignmentInfo.objects.filter(
             Course_Code__in=courses,
-            Chapter_Code__Use_Flag=True)[:7]
+            Chapter_Code__Use_Flag=True).filter(
+            Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
+            Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None)
+        )[:7]
 
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []

@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load model_template_relation %}
 {% block breadcrumb %}
 <li class="breadcrumb-item active" aria-current="page">My Assignments</li>
 
@@ -34,26 +35,38 @@
         <a href="{{ a.Course_Code.teacher_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
     </h3>
     {% endifchanged %}
-    <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
+        <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
-            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
-            <h5>
-                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
-            </h5>
-            <h5>Chapter - {{a.Chapter_Code}}</h5>
-        </div>
-        <div class="col-md-4 col-sm-4 col-xs-4">
-            <a href="{{ a.teacher_get_absolute_url }}">
-                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+            <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+                <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+                <h5>
+                    <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+                </h5>
+                <h5>Chapter - {{ a.Chapter_Code }}</h5>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-4">
+            <span class="assignment_status">
+                    {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
+                {% if teacher_assignment_status.assg_status %}
+                    <b style="color: green">
+                            All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
+                        </b>
+                {% else %}
+                    <b style="color: deepskyblue">
+                        {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }}
+                        </b>
+                {% endif %}
+                </span>
+                <a href="{{ a.teacher_get_absolute_url }}">
+                    <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                 margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
-                </button>
-            </a>
-        </div>
+                    </button>
+                </a>
+            </div>
 
-        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-            <hr style="margin-top: 1px; margin-bottom: 10px;">
-            <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
+            <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+                <hr style="margin-top: 1px; margin-bottom: 10px;">
+                <p>Submission Deadline - {{ a.Assignment_Deadline }}</p>
         </div>
     </div>
     {% endfor %}
