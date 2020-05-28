@@ -433,9 +433,11 @@ class AssignmentInfo(models.Model):
             })
         return data
 
-    def get_QuestionAndAnswer(self, user):
+    def get_QuestionAndAnswer(self, user=None):
+        answers = None
         questions = AssignmentQuestionInfo.objects.filter(Assignment_Code__pk=self.pk)
-        answers = AssignAnswerInfo.objects.filter(Question_Code__in=questions, Student_Code=user)
+        if user:
+            answers = AssignAnswerInfo.objects.filter(Question_Code__in=questions, Student_Code=user)
         return questions, answers
 
     def clean(self):

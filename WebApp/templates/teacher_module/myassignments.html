@@ -46,15 +46,19 @@
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4">
             <span class="assignment_status">
+                {% if a.get_QuestionAndAnswer.0|length > 0 %}
                     {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
-                {% if teacher_assignment_status.assg_status %}
-                    <b style="color: green">
-                            All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
-                        </b>
+                    {% if teacher_assignment_status.assg_status %}
+                        <b style="color: green">
+                                All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
+                            </b>
+                    {% else %}
+                        <b style="color: deepskyblue">
+                            {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }} Completed
+                            </b>
+                    {% endif %}
                 {% else %}
-                    <b style="color: deepskyblue">
-                        {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }}
-                        </b>
+                    <b style="color: orangered">No Questions</b>
                 {% endif %}
                 </span>
                 <a href="{{ a.teacher_get_absolute_url }}">
