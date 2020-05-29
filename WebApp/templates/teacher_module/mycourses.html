@@ -39,17 +39,21 @@ Course
                         </a>
                     </div>
                     <div class="card-body" id="cardInfo">
-                        <h2 class="card-title"><strong><a
-                                href="{{ courses.teacher_get_absolute_url }}">{{ courses.Course_Name }}</a></strong>
+                        <h2 class="card-title" style="height:45px; overflow: ;   overflow-wrap:break-word; "><strong><a
+                                href="{{ courses.teacher_get_absolute_url }}">{{ courses.Course_Name|truncatechars:45 }}</a></strong>
                         </h2>
 
 
                         {% if courses.get_teachers_of_this_course %}
-                            <p style="height: 30px;">
+                            <p style="height:45px ; padding: 10px; overflow:auto">
                                 Teacher(s):
-                                {% for eachTeacher in courses.get_teachers_of_this_course %}
-                                {{ eachTeacher.getFullName }}&nbsp;
+                                {% for eachTeacher in courses.get_teachers_of_this_course|slice:":4" %}
+                                {{ eachTeacher.getFullName|truncatechars:15 }}&nbsp;
                                 {% endfor%}
+                                {% if courses.get_teachers_of_this_course|length > 4 %}
+                                ....
+                              
+                             {% endif%}
                             </p>
                             {% else %}
                                     <p style="height:30px ; padding: 10px; " >
