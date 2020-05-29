@@ -2270,6 +2270,8 @@ class NewContentsView(TemplateView):
     template_name = 'chapter/newContentViewer.html'
 
     def get(self, request, *args, **kwargs):
+        datetime_now = timezone.now()
+
         if CourseAuth(request, self.kwargs.get('course')) == 1:
             if '/teachers' not in request.path and '/students' not in request.path:
                 if not request.user.Is_CenterAdmin:
@@ -2283,12 +2285,19 @@ class NewContentsView(TemplateView):
         else:
             return redirect('login')
         try:
-            if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
-                pass
+            chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
+            if chapterObj.Use_Flag:
+                if '/students' in request.path:
+                    if chapterObj.Start_Date or chapterObj.End_Date:
+                        if chapterObj.Start_Date >= datetime_now or chapterObj.End_Date <= datetime_now:
+                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                            raise ObjectDoesNotExist
             else:
-                messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                raise ObjectDoesNotExist
-        except:
+                if '/students' in request.path:
+                    messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                    raise ObjectDoesNotExist
+        except Exception as e:
+            print(e)
             if '/students/' in request.path:
                 return redirect('student_courseinfo_detail', pk=self.kwargs.get('course'))
             elif '/teachers/' in request.path:
