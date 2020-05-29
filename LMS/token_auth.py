@@ -3,11 +3,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AnonymousUser
 from django.db import close_old_connections
 
-
 class TokenAuthMiddleware:
-    """
-    Token authorization middleware for Django Channels 2
-    """
 
     def __init__(self, inner):
         self.inner = inner
