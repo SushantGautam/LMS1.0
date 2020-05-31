@@ -353,8 +353,10 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
             .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
             .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
             .order_by('Chapter_No')
-        context['surveycount'] = SurveyInfo.objects.filter(
+        surveys = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
+        survey_ids = [s.id for s in surveys if s.can_submit(self.request.user)[1] != 1]
+        context['surveycount'] = surveys.filter(id__in=survey_ids)
         context['quizcount'] = Quiz.objects.filter(
             course_code=self.kwargs.get('pk'), draft=False, exam_paper=True, chapter_code=None)
         context['numberOfQuizExclExams'] = Quiz.objects.filter(
