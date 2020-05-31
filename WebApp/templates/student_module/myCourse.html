@@ -45,11 +45,18 @@ Course
 
 
           {% if courses.Course_Code.get_teachers_of_this_course%} 
-          <p style="height:40px ; padding: 10px; " > 
+          <p style="height:45px ; padding: 10px; overflow:auto" > 
             Teacher(s): &nbsp;
-            {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course %}
-            {{ eachTeacher.getFullName|truncatechars:64 }}&nbsp;
+            {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course|slice:":4"  %}
+            
+             
+            {{ eachTeacher.getFullName|truncatechars:15 }}&nbsp;
+            
             {% endfor%}
+            {% if courses.Course_Code.get_teachers_of_this_course|length > 4 %}
+               ....
+             
+            {% endif%}
 
           </p>
           {% else %}
