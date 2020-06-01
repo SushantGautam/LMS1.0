@@ -3123,6 +3123,40 @@ def checkForMediaFiles(request):
         return JsonResponse({'message': 'Course Unavailable'})
 
 
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def getChatMessageHistory(request, chapterID):
+    chat_history = []
+    path = settings.MEDIA_ROOT
+
+    # messageRangeFrom => for pagination : 0 for latest message
+    # numberofmessages => maximum 50 if not specified.
+    messageRangeFrom = int(request.GET.get('messageRangeFrom')) if request.GET.get('messageRangeFrom') else 0
+    numberofmessages = int(request.GET.get('numberofmessages')) if request.GET.get('numberofmessages') else 50
+
+    # Retrieving recent 50 chat message of each individual chapter
+    list_of_files = sorted(glob.iglob(path + '/chatlog/chat_' + str(chapterID) + '/*.txt'),
+                           key=os.path.getctime, reverse=True)[messageRangeFrom:][:numberofmessages]
+    for latest_file in list_of_files:
+        try:
+            f = open(latest_file, 'r')
+            if f.mode == 'r':
+                contents = json.loads(f.read())
+                chat_history.append(contents)
+            f.close()
+
+        except Exception as e:
+            pass
+
+    chat_history.reverse()
+    return JsonResponse({
+        'chat_history': chat_history,
+        'messageRangeFrom': messageRangeFrom,
+        'numberofmessages': numberofmessages,
+        'message_count': len(chat_history),
+    }, json_dumps_params={'indent': 4}, status=200)
+
+
 def MeetPublic(request, userid, meetcode):
     meetcodeInit = userid
     for i in MemberInfo.objects.get(pk=userid).password[-5:]:
