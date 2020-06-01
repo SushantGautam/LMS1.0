@@ -11,7 +11,6 @@
                     <h4 class="modal-title">Create Chapter</h4>
                 </div>
                 <div class="modal-body" id="create_chapter_modal_body">
-                    asdasd
                 </div>
             </div>
         </div>
@@ -77,30 +76,17 @@
                     </div>
                 </div>
                 <div class="page-section">
-                    <!-- <h2 class="text-headline margin-none">Chapters</h2> -->
                     <p class="text-headline">List of Chapters</p>
-                    <ul class="list-group relative paper-shadow margin-none" data-hover-z="0.5" data-animated>
-                        <!-- <li class="list-group-item">
-                            <div class="media v-middle">
-                                <div class="media-left">
-                                    <div class="icon-block s30 bg-red-300 text-white img-circle">
-                                        <i class="fa fa-star"></i>
-                                    </div>
-                                </div>
-                                <div class="media-body text-body-2">
-                                    Basics of GIT and how to become a STAR.
-                                </div>
-                            </div>
-                        </li> -->
+                    <ul class="list-group relative paper-shadow margin-none">
                         {% for chapter in chapters %}
                         <a href="{% if '/students' in request.path %}
                         {{ chapter.student_get_absolute_url }}
-                    {% elif '/teachers' in request.path %}
+                        {% elif '/teachers' in request.path %}
                         {{ chapter.teacher_get_absolute_url }}
-                    {% else %}
-                       {{ chapter.get_absolute_url }}
-                    {% endif %}">
-                            <li class="list-group-item paper-shadow">
+                        {% else %}
+                        {{ chapter.get_absolute_url }}
+                        {% endif %}">
+                            <li class="list-group-item paper-shadow" data-hover-z="0.5" data-animated>
                                 <div class="media v-middle">
                                     <div class="media-left">
                                         <div class="icon-block s30 bg-green-300 text-white img-circle">
@@ -113,113 +99,10 @@
                                 </div>
                             </li>
                         </a>
+                        <br>
                         {% endfor %}
-                        <!-- <li class="list-group-item paper-shadow">
-                            <div class="media v-middle">
-                                <div class="media-left">
-                                    <div class="icon-block s30 bg-indigo-300 text-white img-circle">
-                                        <i class="fa fa-trophy"></i>
-                                    </div>
-                                </div>
-                                <div class="media-body text-body-2">
-                                    Eaque ex exercitationem quia reprehenderit?
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item paper-shadow">
-                            <div class="media v-middle">
-                                <div class="media-left">
-                                    <div class="icon-block s30 bg-orange-300 text-white img-circle">
-                                        <i class="fa fa-code-fork"></i>
-                                    </div>
-                                </div>
-                                <div class="media-body text-body-2">
-                                    Ab distinctio nemo, provident quia quibusdam ullam.
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item paper-shadow">
-                            <div class="media v-middle">
-                                <div class="media-left">
-                                    <div class="icon-block s30 bg-grey-500 text-white img-circle">
-                                        <i class="fa fa-check"></i>
-                                    </div>
-                                </div>
-                                <div class="media-body text-body-2">
-                                    Conclusion & Notes.
-                                </div>
-                            </div>
-                        </li> -->
                     </ul>
                 </div>
-                <!-- 
-                <div class="pull-right">
-                    <a class="btn btn-white btn-circle paper-shadow relative" data-z="1" href="#"><i
-                            class="md md-add"></i></a>
-                </div>
-
-                <h2 class="text-headline margin-none">Testimonials</h2>
-                <p class="text-subhead text-light">A few words from our past students</p>
-                <br />
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="testimonial">
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam amet
-                                        doloremque enim error id, inventore magni odio odit quo tenetur.</p>
-                                </div>
-                            </div>
-                            <div class="media v-middle">
-                                <div class="media-left">
-                                    <img src="images/people/50/guy-7.jpg" alt="People" class="img-circle width-40" />
-                                </div>
-                                <div class="media-body">
-                                    <p class="text-subhead margin-v-5-0">
-                                        <strong>Adrian D. <span class="text-muted">@ Mosaicpro
-                                                Inc.</span></strong>
-                                    </p>
-                                    <p class="small">
-                                        <span class="fa fa-fw fa-star text-yellow-800"></span>
-                                        <span class="fa fa-fw fa-star text-yellow-800"></span>
-                                        <span class="fa fa-fw fa-star text-yellow-800"></span>
-                                        <span class="fa fa-fw fa-star-o text-yellow-800"></span>
-                                        <span class="fa fa-fw fa-star-o text-yellow-800"></span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="testimonial">
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam amet
-                                        doloremque enim error id, inventore magni odio odit quo tenetur.</p>
-                                </div>
-                            </div>
-                            <div class="media v-middle">
-                                <div class="media-left">
-                                    <img src="images/people/50/guy-4.jpg" alt="People" class="img-circle width-40" />
-                                </div>
-                                <div class="media-body">
-                                    <p class="text-subhead margin-v-5-0">
-                                        <strong>Adrian D. <span class="text-muted">@ Mosaicpro
-                                                Inc.</span></strong>
-                                    </p>
-                                    <p class="small">
-                                        <span class="fa fa-fw fa-star text-yellow-800"></span>
-                                        <span class="fa fa-fw fa-star text-yellow-800"></span>
-                                        <span class="fa fa-fw fa-star text-yellow-800"></span>
-                                        <span class="fa fa-fw fa-star-o text-yellow-800"></span>
-                                        <span class="fa fa-fw fa-star-o text-yellow-800"></span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
             </div>
             <div class="media-right">
 
@@ -256,8 +139,7 @@
                         <hr class="margin-none" />
                         <ul class="list-group text-center">
                             <li class="list-group-item">
-                                <a class="btn btn-primary btn-sm paper-shadow relative" data-z="1" data-hover-z="2"
-                                    data-animated href="{% if '/teachers' in request.path %}
+                                <a class="btn btn-primary btn-sm relative" data-z="1" data-animated href="{% if '/teachers' in request.path %}
                                 /teachers{{ object.get_update_url }}
                                     {% else %}
                                         {{ object.get_update_url }}
@@ -265,9 +147,9 @@
                             </li>
                             {% if '/students' not in request.path %}
                             <li class="list-group-item">
-                                <button class="btn btn-success btn-sm paper-shadow relative" data-z="1"
-                                    data-toggle="modal" data-target="#create_chapter_modal" data-animated
-                                    id="add-newchapter-btn">Add Chapter</button>
+                                <button class="btn btn-success btn-sm relative" data-z="1" data-toggle="modal"
+                                    data-target="#create_chapter_modal" data-animated id="add-newchapter-btn">Add
+                                    Chapter</button>
                             </li>
                             {% endif %}
                         </ul>
@@ -275,7 +157,7 @@
                     <!-- // END .panel -->
 
                     <!-- .panel -->
-                    <div class=" panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
+                    <!-- <div class=" panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
                         <div class="panel-body">
                             <div class="media v-middle">
                                 <div class="media-left">
@@ -302,7 +184,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- // END .panel -->
 
                     <!-- .panel -->
