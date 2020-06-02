@@ -30,12 +30,16 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        
+
         var table_main = $('#QuizTable').DataTable({
             responsive: true,
             dom: 'lBfrtip',
             buttons: [],
 
+        });
+        table_main.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            var node = this.node();
+            $(node).find('.datecon_new').text(DateConvert($(node).find('.datecon_new').text()))
         });
     });
 

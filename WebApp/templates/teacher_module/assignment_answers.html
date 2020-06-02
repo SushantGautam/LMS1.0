@@ -63,7 +63,26 @@
             </div>
         </div>
     </div>
-
+    <div class="session-detail form-inline" style="padding: 10px 0;">
+        <span style="font-size:18px"><b> Session: </b></span>
+        <select id="select_session" class="form-control" style="width: 30%;">
+            {% for x in session_list %}
+                {% for session in x %}
+                    <option value="{{ session.pk }}"
+                            {% if session.pk == inning.pk %}
+                            selected
+                            {% endif %}
+                    > {{ session }}</option>
+                {% endfor %}
+            {% endfor %}
+            <option value="-1"
+                    {% if not inning %}
+                    selected
+                    {% endif %}
+            > All Sessions
+            </option>
+        </select>
+    </div>
     {% if questions %}
         <div style="padding-bottom: 10px;">
         {% for question in questions|slice:":1" %}
@@ -72,17 +91,24 @@
         <hr class="header_hr">
     {% endif %}
 {% for question in questions %}
+
     <h5>Question : <br><br> <b>{{ question.Question_Title }}</b></h5>
+    {% if question.Answer_Type == 'F' %}
+        <btn class="btn btn-info downloadallfiles" data-question_id="{{ question.id }}" style="float: right">Download
+            All Files
+        </btn>
+    {% endif %}
     <table class="table table-striped table-bordered bg-white nowrap">
         <thead class="thead-light bg-primary">
         <tr class="tableTitleRow">
             <td>S.No.</td>
+            <td>S.No.</td>
             <td>Student Name</td>
             <td>Total Marks</td>
             <td>Marks Obtained</td>
-            <td>Submission</td>
-
-
+            <td>Answer</td>
+            <td>Submitted on</td>
+            <td>Action</td>
         </tr>
         </thead>
 
@@ -90,6 +116,7 @@
             {% if question.id == answer.Question_Code.id %}
                 <tr>
                     <td class="counterCell" style=" padding-top: 15px;"></td>
+                    <td>{{forloop.counter  }}</td>
                     <td style=" padding-top: 15px;">{{ answer.Student_Code }}</td>
                     <td>{{ answer.Question_Code.Question_Score }} </td>
                     {% if answer.Assignment_Score is None %}
@@ -99,12 +126,14 @@
                             {{ answer.Assignment_Score }}
                         </td>
                     {% endif %}
+                    <td>{{ answer.Assignment_Answer }}</td>
                     <td>{% if answer %}
                         Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
                     {% elif not answer %}
                         Not Submitted
                     {% endif %}
-
+                    </td>
+                    <td>
                         <button class="btn btn-sm btn-info showanswer" data-toggle="modal" data-target="#exampleModal1"
                                 value="{{ answer.id }}" style="float: right;color:black">
                             <b>View Answer</b>
@@ -185,20 +214,90 @@
                         extend: 'csv',
                         text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                         exportOptions: {
-                            columns: [1, 2, 3, 4,]
+                            columns: [1,2,3,4,5]
                         }
                     },
-                    {
-                        extend: 'print',
-                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
-                        fieldSeparator: '\t'
-                    }
+                    // {
+                    //     extend: 'print',
+                    //     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                    //     fieldSeparator: '\t'
+                    // }
                 ],
-                columnDefs: []
+                "columnDefs": [
+                    {
+                        "targets": [1,5],
+                        "visible": false,
+                        "searchable": true,
+                    },
+                    {
+                        "orderable": false,
+                        "targets": [7]
+                    }
+                ]
+            });
 
+            $("#select_session").on("change", function () {
+                {% if 'iframe' in request.GET %}
+                    {% if '/teachers' in request.path %}
+                        {#window.location.href = `/teachers/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/?iframe=1`#}
+                        if (this.value != -1) {
+                            window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/inning/${this.value}/?iframe=1`
+                        } else {
+                            window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/?iframe=1`
+                        }
+                    {% endif %}
+                {% else %}
+                    {% if '/teachers' in request.path %}
+                        if (this.value != -1) {
+                            window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/inning/${this.value}/`
+                        } else {
+                            window.location.href = `/teachers/assignment_answers/{{Assignment.pk}}/`
+                        }
+                    {% endif %}
+                {% endif %}
             });
         });
 
-
+        $('.downloadallfiles').on('click', function () {
+            let q_id = $(this).attr('data-question_id');
+            let answer_file_list = []
+            {% for answer in Answers %}
+                if (q_id == '{{ answer.Question_Code.id }}') {
+                    {% if answer.Assignment_File %}
+                        answer_file_list.push('{{ answer.Assignment_File }}')
+                    {% endif %}
+                }
+            {% endfor %}
+            if (answer_file_list.length > 0) {
+                $.ajax({
+                    url: "{% url 'downloadAssignmentAnswers' %}",
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'list_of_files': answer_file_list,
+                        'question_id': q_id,
+                        'assignment_id': '{{ Assignment.pk }}',
+                    },
+                    success: function (response) {
+                        window.open(response.link, '_blank');
+                        /*setTimeout(function () {
+                            $.ajax({
+                                url: "{% url 'deletedownloadAssignmentAnswers' %}",
+                                type: 'GET',
+                                data: {
+                                    'question_id': q_id,
+                                    'assignment_id': '{{ Assignment.pk }}',
+                                },
+                                success: function (data) {
+                                    console.log(data)
+                                }
+                            })
+                        }, 3000)*/
+                    },
+                });
+            } else {
+                alert('No Answers to download')
+            }
+        })
     </script>
 {% endblock %}

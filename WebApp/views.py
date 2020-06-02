@@ -2175,6 +2175,7 @@ def getVimeoMedias(chapterID, courseID, userObj, max_items):
     else:
         print('Failed to fetch vimeo videos')
 
+
 @xframe_options_exempt
 def ThreeDViewer(request, urlpath=None):
     print(urlpath, "urlpath")
@@ -2269,6 +2270,8 @@ class NewContentsView(TemplateView):
     template_name = 'chapter/newContentViewer.html'
 
     def get(self, request, *args, **kwargs):
+        datetime_now = timezone.now()
+
         if CourseAuth(request, self.kwargs.get('course')) == 1:
             if '/teachers' not in request.path and '/students' not in request.path:
                 if not request.user.Is_CenterAdmin:
@@ -2282,12 +2285,19 @@ class NewContentsView(TemplateView):
         else:
             return redirect('login')
         try:
-            if ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Use_Flag:
-                pass
+            chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
+            if chapterObj.Use_Flag:
+                if '/students' in request.path:
+                    if chapterObj.Start_Date or chapterObj.End_Date:
+                        if chapterObj.Start_Date >= datetime_now or chapterObj.End_Date <= datetime_now:
+                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                            raise ObjectDoesNotExist
             else:
-                messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                raise ObjectDoesNotExist
-        except:
+                if '/students' in request.path:
+                    messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                    raise ObjectDoesNotExist
+        except Exception as e:
+            print(e)
             if '/students/' in request.path:
                 return redirect('student_courseinfo_detail', pk=self.kwargs.get('course'))
             elif '/teachers/' in request.path:
@@ -3111,3 +3121,51 @@ def checkForMediaFiles(request):
             print(e)
     else:
         return JsonResponse({'message': 'Course Unavailable'})
+
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def getChatMessageHistory(request, chapterID):
+    chat_history = []
+    path = settings.MEDIA_ROOT
+
+    # messageRangeFrom => for pagination : 0 for latest message
+    # numberofmessages => maximum 50 if not specified.
+    messageRangeFrom = int(request.GET.get('messageRangeFrom')) if request.GET.get('messageRangeFrom') else 0
+    numberofmessages = int(request.GET.get('numberofmessages')) if request.GET.get('numberofmessages') else 50
+
+    # Retrieving recent 50 chat message of each individual chapter
+    list_of_files = sorted(glob.iglob(path + '/chatlog/chat_' + str(chapterID) + '/*.txt'),
+                           key=os.path.getctime, reverse=True)[messageRangeFrom:][:numberofmessages]
+    for latest_file in list_of_files:
+        try:
+            f = open(latest_file, 'r')
+            if f.mode == 'r':
+                contents = json.loads(f.read())
+                chat_history.append(contents)
+            f.close()
+
+        except Exception as e:
+            pass
+
+    chat_history.reverse()
+    return JsonResponse({
+        'chat_history': chat_history,
+        'messageRangeFrom': messageRangeFrom,
+        'numberofmessages': numberofmessages,
+        'message_count': len(chat_history),
+    }, json_dumps_params={'indent': 4}, status=200)
+
+
+def MeetPublic(request, userid, meetcode):
+    meetcodeInit = userid
+    for i in MemberInfo.objects.get(pk=userid).password[-5:]:
+        meetcodeInit *= ord(i)
+    if meetcode == str(meetcodeInit):
+        pass
+    else:
+        print('Invalid Meet Code')
+        meetcode = None
+
+    return render(request, 'WebApp/meet-public.html',
+                  {"meetcode": meetcode, "userobj": MemberInfo.objects.get(pk=userid)})

@@ -10,6 +10,7 @@
 
 {% block head %}
     <head>
+        <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
         <style>
             .examiframeholder {
                 height: 100vh;
@@ -121,14 +122,17 @@
                             <li class="course-name">{{ course }} &nbsp;<i style="color:white"
                                                                           class="fa fa-caret-right"></i></li>
                             <li class="chapter-name">{{ chapter }} </li>
-
                         </ul>
-
                     </div>
-
 
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-4 page-name-holder">
+                    {% if ifteacher %}
+                        <div style="margin-right: 4em;color: white;">
+                            <label for="id_screen_sync">Force Screen Sync</label>
+                            <input type="checkbox" name="screen_sync" id="id_screen_sync">
+                        </div>
+                    {% endif %}
                     <div class="page-name">
                             <span> 
                                  {#  Close Button   #}
@@ -151,7 +155,7 @@
                                                 border-radius: 50%;
                                                 padding: 0.5px 2px;
                                                 " class="fa fa-times"></i> -->
-                                                <i  class="fas fa-window-close"></i>
+                                                <i class="fas fa-window-close"></i>
                                             </div>
                                         </a>
                                   {# End of close button #}
@@ -170,7 +174,7 @@
 
 </div>
 <section class="whole-container">
-    
+
 
     <div id="sidebar-id" class="sidenavbar-part  animate">
         <div class="sidebar-top">
@@ -218,19 +222,19 @@
                                     {% url 'NewContentViewer' course.pk chapterobj.pk %}
                                    {% endif %}
                                ">
-                            {% if not chapterobj.Use_Flag %}
-                                <span class="inactive-chapter">
+                                {% if not chapterobj.Use_Flag %}
+                                    <span class="inactive-chapter">
                                 {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }} ( Unpublished )
                             </span>
-                            {% elif chapterobj.End_Date and todays_datewithtime > chapterobj.End_Date|date:"Y-m-d H:i" or chapterobj.Start_Date and todays_datewithtime < chapterobj.Start_Date|date:"Y-m-d H:i" %}
-                                <span class="inactive-chapter">
+                                {% elif chapterobj.End_Date and todays_datewithtime > chapterobj.End_Date|date:"Y-m-d H:i" or chapterobj.Start_Date and todays_datewithtime < chapterobj.Start_Date|date:"Y-m-d H:i" %}
+                                    <span class="inactive-chapter">
                                 {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }} ( Inactive )
                             </span>
-                            {% else %}
-                                <span>
+                                {% else %}
+                                    <span>
                                 {{ chapterobj.Chapter_No }}. {{ chapterobj.Chapter_Name }}
                             </span>
-                            {% endif %}
+                                {% endif %}
                             </a>
                         {% else %}
                             <span class="inactive-chapter">
@@ -271,7 +275,7 @@
                 </li>
                 <li>
                     <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title=""
-                       href="https://we.tl/t-oYWUwhk63r" target="_blank"
+                       href="https://we.tl/t-NjDo1I27Vy" target="_blank"
                        data-original-title="Download u-LMS Android App">
                         <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
                     </a>
@@ -293,42 +297,50 @@
         <ul class="chat-sidenav">
             <li data-toggle="tooltip" data-placement="right" title='Open Navgation' class="glyphicon glyphicon-th"
                 id="hamburg-nav">
-
             </li>
-            <li data-toggle="tooltip" data-placement="right" title='Chat Icon' class="icon-for-chat">
+            <li data-toggle="tooltip" data-placement="right" title='Chat ' class="icon-for-chat">
                 <i style="color: white;" class="chat-icon closechatopen fa far fa-comment" id="closechatopen"></i>
-               
+            </li>
+            <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
+                <i style="color: white;" class="fa fa-video icon-video closechatopen1 "></i>
             </li>
         </ul>
 
         <ul class="edit-viewer">
 
-          {% if '/teachers' in request.path %}
+            {% if '/teachers' in request.path %}
 
-            <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
-                    <a href="{% url 'teachers_newChapterBuilder' course.pk chapter.pk %}"> <i class="fas fa-pen-square"></i> </a>
-            </li> 
+                <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
+                    <a href="{% url 'teachers_newChapterBuilder' course.pk chapter.pk %}"> <i
+                            class="fas fa-pen-square"></i> </a>
+                </li>
 
-          {% elif '/teachers' not in request.path and '/students' not in request.path %}  
+            {% elif '/teachers' not in request.path and '/students' not in request.path %}
 
-            <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
-              <a href="{% url 'newChapterBuilder' course.pk chapter.pk %}"> <i class="fas fa-pen-square"></i> </a>
-           </li> 
-           
-          {% endif %}
-           
+                <li data-toggle="tooltip" data-placement="bottom" title='Edit'>
+                    <a href="{% url 'newChapterBuilder' course.pk chapter.pk %}"> <i class="fas fa-pen-square"></i> </a>
+                </li>
+
+            {% endif %}
+
         </ul>
-        
-   
+
+
         <ul class="chat-sidenav-close slideInLeft animate">
             <li class=close-icon-sidebar>
                 <i class="fa fa-times icon1-largescreen"></i>
-                <i class="fa fa-minus-square icon2-smallscreen" ></i>
+                <i class="fa fa-minus-square icon2-smallscreen"></i>
 
             </li>
             <li class="icon-for-chat2">
                 <i class="  fa far fa-comment"></i>
             </li>
+            <li class="icon-for-video2">
+                <i class="fa fa-video icon-video2"></i>
+
+            </li>
+
+
         </ul>
 
         <!-- <div class="page-view-icon">
@@ -338,8 +350,8 @@
         </div> -->
 
     {% endif %}
-    
-   
+
+
     <div id="container" class="container12">
 
         <div id="page-contents" class="page-contents"></div>
@@ -375,6 +387,7 @@
                     <li id="prev-btn"><i class="fa fa-angle-left"></i></li>
                     <li data-toggle="tooltip" data-placement="top" title='View Page Options' class="view-icon"
                         value="show"><i class="fa fa-list-ul"></i></li>
+
                     <li id="next-btn"><i class="fa fa-angle-right"></i></li>
                 </ul>
                 <div class="page-number-list">
@@ -387,6 +400,7 @@
         </div>
         <div class="link-view-box hidden-xs">
             <div data-toggle="tooltip" data-placement="top" title='Enter Page Number' style="text-align:center">
+                <input type="hidden" id="current-pg-num" value="">
                 <input class="number-active" type="number" min="1" max="{{ data.numberofpages }}" id="pg-change"
                        name="firstname" placeholder="page"> <span>/ </span><span class="totalpages"></span>
             </div>
@@ -403,31 +417,54 @@
                 <li class="ham-icon">
                     <i class="fa fa-bars"></i>
                 </li>
-                 
+                {% if not ifteacher %}
                 <li class="user-image-padding">
                 <li>
+                 {% endif %}   
                     <div class="green-online"></div>
                 </li>
                 <span style="color: white;">  Online</span>&nbsp;
-                <li class="online-number">1</li>
-                <!-- <div class="chat-user-image">
-                </div> -->
+                <li class="online-number">1</li>&nbsp;
+                {% if not ifteacher %}
+                <div class="chat-user-image">
+                </div>
+                {% endif %}
                 </li>
-
+                {% if not ifteacher %}
                 <li class="name-user"></li>
+                {% endif %}
+                {% if ifteacher %}
+                <li id="QuickQuiz" class="quiz-quick" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
+                        <i class="fa fa-pencil" style="color:black"></i>
+                    </li>
+
+                <li id="QuickSurvey" class="survey-quick" data-toggle="modal" data-target="#survey_content_modal">Quick
+                        Survey
+
+                        <i class="fa fa-pencil" style="color: black;"></i>
+                    </li>
+                    {#                                <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>#}
+                    {#                            {% else %}#}
+                    {#                                <li id="followteacher" class="offline-followteacher">Teacher#}
+                    {#                                    Offline<i class="fa fa-book"> </i></li>#}
+                {% endif %}
                 <li class="options-chat">
                     <div class="bell col-sm-6 col-xs-6" style="padding: 0px!important;">
                         <input type="hidden" name="notification" id="id_notification" value="1">
-                        <span data-toggle="tooltip" data-placement="bottom" title='Click to hide'><i  class="bell-icon fas fa-bell "></i></span>
-                         <span data-toggle="tooltip" data-placement="bottom" title='click to show'> <i class="bell-icon-close text-danger fas fa-bell-slash"></i></span>
-                        
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to hide'><i
+                                class="bell-icon fas fa-bell "></i></span>
+                        <span data-toggle="tooltip" data-placement="bottom" title='click to show'> <i
+                                class="bell-icon-close text-danger fas fa-bell-slash"></i></span>
+
                     </div>
                     <div class="volume col-sm-6 col-xs-6" style="padding: 0px!important;">
                         <input type="hidden" name="sound" id="id_sound" value="1">
-                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Mute'><i class="volume-icon fas fa-volume-up "></i></span>
-                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Unmute'><i class="volume-icon-close text-danger fas fa-volume-mute "></i></span>
-                        
-                        
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Mute'><i
+                                class="volume-icon fas fa-volume-up "></i></span>
+                        <span data-toggle="tooltip" data-placement="bottom" title='Click to Unmute'><i
+                                class="volume-icon-close text-danger fas fa-volume-mute "></i></span>
+
+
                     </div>
                 </li>
 
@@ -462,11 +499,88 @@
 
         </div>
         <!-- Chat UI end -->
+        <div class="video-box">
+            <div class="close-minimizevideo">
+                <div class="relative-video-call">
+                    <ul class="video-call-option">
 
+                        <li class="close-call">
+                            <i class="fa fa-times"></i>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+                <div id="UBL-meet"></div>
+
+                <script src='https://meet.jit.si/external_api.js'></script>
+                <script>
+                    $(document).one('click', '.icon-for-video', function () {
+                        $('.icon-for-video').prepend(`<i style="color: red; z-index:2; position:absolute;margin-top: 6px;margin-left: 4px;" class="far fa-dot-circle"></i>`);
+                        $('.icon-for-video').attr('title','Live');
+                        let audioMute = true;
+                        let toolbarButtons = [
+                                    'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                                    'fodeviceselection',
+                                    'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                                    'videoquality', 'filmstrip', 'stats', 'shortcuts',
+                                    'tileview', 'videobackgroundblur', 'download',
+                                    //HIDDEN OPTIONS  NOT USED IGNORE
+                                    // 'e2ee', 'security',
+                                    // 'hangup',
+                                    // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
+                                    // 'mute-everyone',
+                                ];
+                        let settingsSection = ['devices'];
+                        const domain = 'meet.jit.si';
+
+                        {% if ifteacher %}
+                            audioMute = false;
+                            toolbarButtons.push('mute-everyone');
+                            settingsSection.push('moderator');
+                        {% endif %}
+
+                        const options = {
+                            roomName: 'UBLCloud-{{ chapter.id }}+ window.location.hostname',
+                            width: "100%",
+                            height: "100%",
+                            parentNode: document.querySelector('#UBL-meet'),
+
+                            configOverwrite: {
+                                startWithAudioMuted: audioMute,
+                                startWithVideoMuted: true,
+                                disableDeepLinking: true,
+                                etherpad_base: "https://pad.riseup.net/p/"
+                            },
+
+                            interfaceConfigOverwrite: {
+                                APP_NAME: 'UBL Meet',
+                                NATIVE_APP_NAME: 'UBL Meet',
+                                PROVIDER_NAME: 'UBL',
+                                SHOW_JITSI_WATERMARK: 0,
+                                SHOW_WATERMARK_FOR_GUESTS: false,
+                                userInfo: {
+                                    displayName: '{{ user }}',  
+                                    email: '{{ user.email }}',
+
+                                },
+                            TOOLBAR_BUTTONS: toolbarButtons,
+
+                            SETTINGS_SECTIONS: settingsSection,
+
+                            SHOW_CHROME_EXTENSION_BANNER: false,
+                            SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+                            MOBILE_APP_PROMO: false,
+                            },
+                        };
+                        const api = new JitsiMeetExternalAPI(domain, options);
+                    });
+
+                </script>
+            </div>
+        </div>
     </div>
-       
-   
-   
 
 
     {#  Iframe Holder   #}
@@ -483,11 +597,13 @@
 </section>
 {% if ifteacher %}
     {% include "chapter/content-viewer-moules/QuickSurvey.html" %}
-    {% include "chapter/Content_Viewer_WebSocket_teacher.html" %}
+    {% comment %}{% include "chapter/Content_Viewer_WebSocket_teacher.html" %} {% endcomment %}
 {% else %}
-    {% include "chapter/Content_Viewer_WebSocket_students.html" %}
+    {% comment %}{% include "chapter/Content_Viewer_WebSocket_students.html" %} {% endcomment %}
 {% endif %}
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
+
 <!-- jQuery -->
 <script src="{% static 'lightbox/js/lightbox.js' %}"></script>
 <script src="{% static 'vendorsx/bootstrap/dist/js/bootstrap.min.js' %}"></script>
@@ -530,23 +646,23 @@
 <!-- notificationchat -->
 <script>
     $(document).on('click', '.bell-icon', function () {
-        $(".bell-icon-close").css("display" , "block");
-        $(".bell-icon").css("display" , "none");
+        $(".bell-icon-close").css("display", "block");
+        $(".bell-icon").css("display", "none");
         $("#id_notification").val('0');
     });
     $(document).on('click', '.bell-icon-close', function () {
-        $(".bell-icon").css("display" , "block");
-        $(".bell-icon-close").css("display" , "none");
+        $(".bell-icon").css("display", "block");
+        $(".bell-icon-close").css("display", "none");
         $("#id_notification").val('1');
     });
     $(document).on('click', '.volume-icon', function () {
-        $(".volume-icon-close").css("display" , "block");
-        $(".volume-icon").css("display" , "none");
+        $(".volume-icon-close").css("display", "block");
+        $(".volume-icon").css("display", "none");
         $("#id_sound").val('0');
     });
     $(document).on('click', '.volume-icon-close', function () {
-        $(".volume-icon").css("display" , "block");
-        $(".volume-icon-close").css("display" , "none");
+        $(".volume-icon").css("display", "block");
+        $(".volume-icon-close").css("display", "none");
         $("#id_sound").val('1');
     });
 </script>
@@ -554,22 +670,41 @@
 <!-- chat-icon active -->
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
 
-        $(".icon-for-chat").click(ActiveChatIcon);
-       
-           
-            
+        $(".icon-for-chat").click(ActiveChatIcon1);
+
+
     });
-    function ActiveChatIcon()    {
-        if($(".chat-dialogbox").is(":visible")){
+
+    function ActiveChatIcon1() {
+        if ($(".chat-dialogbox").is(":visible")) {
             $(".closechatopen").removeClass("color-chat");
-           
-        } else{
+
+        } else {
             $(".closechatopen").addClass("color-chat");
-           
+
         }
-   
+
+    }
+</script>
+<script>
+    $(document).ready(function () {
+
+        $(".icon-for-video").click(ActiveChatIcon);
+
+
+    });
+
+    function ActiveChatIcon() {
+        if ($(".video-box").is(":visible")) {
+            $(".closechatopen1").removeClass("color-chat");
+
+        } else {
+            $(".closechatopen1").addClass("color-chat");
+
+        }
+
     }
 </script>
 
@@ -765,6 +900,10 @@
         $('.currentpage').text(window.currentpage);
 
         $('#pg-change').val(window.currentpage);
+
+        // For storing current page no. in hidden state
+        $('#current-pg-num').val(window.currentpage);
+        $('#current-pg-num').change();
 
         $.each(data.pages, function (key, value) {
             if (key == window.currentpage) {
@@ -1208,16 +1347,8 @@
     });
 
 
-    function changePage(page_number) {
-        {% if not connection_offline %}
-            {% if '/students' in request.path %}
-                chapterProgressStopFunction()
-                chapterProgressFunction()
-            {% elif '/teachers' in request.path %}
-                teacherchapterProgressFunction()
-            {% endif %}
-        {% endif %}
-        if (!x.matches){
+    function changePage(page_number) {        
+        if (!x.matches) {
             if (page_number >= parseInt($('#totalpages').text())) {
                 $('#next-btn').css('visibility', 'hidden')
             } else {
@@ -1230,16 +1361,12 @@
             }
 
         }
-      
+
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
-        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
-        {% if ifteacher %}
-            updatePageByTeacher();
-        {% else %}
-            // updatePageByStudent(); //TBI
-        {% endif %}
+        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();          
+
         localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
 
         try {
@@ -1264,12 +1391,12 @@
             if (!x.matches) {
                 $(".custom-owl-slider").css("right", '1%');
                 $(".custom-owl-slider").css("width", '74%');
-               
+
                 $(".owl-prev").css("left", '27.5%');
                 $(".owl-next").css("right", '4.75%');
             }
             $(".chat-dialogbox").css("left", '1%');
-           
+
             $("#sidebar-id").addClass("slideOutLeft");
             $("#sidebar-id").removeClass("slideInLeft");
             $(".chat-sidenav-close").css("display", "none");
@@ -1300,7 +1427,7 @@
             $(".custom-owl-slider").css("right", '2%');
             $(".custom-owl-slider").css("width", '60%');
         }
-        
+
 
         $("#sidebar-id").addClass("slideInLeft");
         $("#sidebar-id").removeClass("slideOutLeft");
@@ -1339,6 +1466,13 @@
 
 
     });
+    $(document).on('click', '.close-call', function () {
+
+        $(".video-box").css("display", "none");
+        $(".closechatopen1").removeClass("color-chat");
+
+
+    });
     //for main chhat icon
     $(document).on('click', '.icon-for-chat', function () {
         $(".chat-dialogbox").fadeToggle();
@@ -1356,6 +1490,16 @@
     });
     $(document).on('click', '.icon-for-chat2', function () {
         $(".chat-dialogbox").fadeToggle();
+
+
+    });
+    $(document).on('click', '.icon-for-video', function () {
+        $(".video-box").fadeToggle();
+
+
+    });
+    $(document).on('click', '.icon-for-video2', function () {
+        $(".video-box").fadeToggle();
 
 
     });
@@ -1377,18 +1521,21 @@
     function onPicFrameLoad() {
         $(".pic .loadspin").remove();
     };
+
     function onVidFrameLoad() {
         $(".video-div .loadspin").remove();
     };
+
     function onPdfFrameLoad() {
         $(".pdf-div .loadspin").remove();
     };
+
     function onAudioFrameLoad() {
         $(".audio-div .loadspin").remove();
     };
 </script>
-    
-  
+
+
 <!-- ends -->
 <script>
     $(document).ready(function () {
@@ -1559,4 +1706,21 @@
         }
     });
 </script>
+{# Video Call Scripts #}
+<script>
+    $('.video-box').draggable({
+        containment: "#container",
+        scroll: false,
+        cursor: "move",
+        snap: ".gridlines",
+        snapMode: 'inner',
+    }).resizable({
+        containment: "#container",
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 75,
+        minHeight: 25,
+    });
+</script>
+{# End of Video Call Scripts #}
 </body>

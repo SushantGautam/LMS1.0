@@ -311,7 +311,7 @@
                                                                 {% if can_submit.0 %}
                                                                     Participate
                                                                 {% else %}
-                                                                    View Details
+                                                                    <span style="color: green"> View Details </span>
                                                                 {% endif %}
                                                             </a>
                                                         {% endif %}
@@ -382,8 +382,8 @@
                                                                 <span style="color: limegreen; font-weight: bold">Completed</span>
                                                             {% else %}
                                                                 <a target="_blank"
-                                                                   href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
-                                                                    Quiz Again</a>
+                                                                   href="/quiz/quiz{{ eachquiz.pk }}/take/">
+                                                                    <span style="color: green">Take Quiz Again</span></a>
                                                             {% endif %}
                                                         {% else %}
                                                             <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take

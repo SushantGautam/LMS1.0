@@ -50,8 +50,8 @@
                     {% endif %}
                 </td>
 
-                <td>
-                    {{ quiz.updated_date|date:"d/m/Y h:i a" }}
+                <td class="datecon_new">
+                    {{ quiz.updated_date|date:'M d, Y H:i' }}
                 </td>
 
                 <td>{% if quiz.draft is True %}

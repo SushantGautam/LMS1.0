@@ -103,6 +103,16 @@ body{
     font-size: 30px;
     
 }
+.icon-video{
+    font-size: 28px;
+}
+.icon-video:hover{
+    cursor: pointer;
+}
+.icon-video:active , .icon-video:focus{
+   
+    color: #5a738e!important;
+}
 .chat-icon:active , .chat-icon:focus{
     font-size: 30px;
     color: #5a738e!important;
@@ -121,6 +131,31 @@ body{
     padding:  0 3px;
     transition: color 0.3s ease;
 }
+.icon-for-chat2:hover{
+    color: black;
+   background-color: white;
+}
+.icon-for-video2{
+    
+    background-color: rgb(54, 60, 69,0.8);
+    border-radius: 10%;
+    padding:   3px;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+
+}
+.icon-for-video2:hover{
+    color: black;
+   background-color: white;
+}
+.icon-video2{
+    font-size: 18px;
+}
+.icon-for-video2 i{
+    font-size: 12px;
+}
 .icon1-largescreen{
     background: rgb(54, 60, 69,0.8);
     /* padding: 3px 10px; */
@@ -130,10 +165,7 @@ body{
     padding: 3px;
 }
 
-.icon-for-chat2:hover{
-    color: black;
-   background-color: white;
-}
+
 #hamburg-nav{
     font-size: 30px;
     cursor:pointer;
@@ -387,18 +419,53 @@ body{
 
 .chat-dialogbox{
     height: 435px;
-    width: 340px;
+    width: 354px;
     background-color: white;
     border-radius: 5px;
     -webkit-box-shadow: 0 0 10px black;
     box-shadow: 0 0 10px black;
     display: none;
-    
     position: absolute;
     top: 10px;
     left: 10px;
     z-index: 999;
-   
+}
+.video-box{
+    height: 400px;
+    width: 500px;
+    background-color: white;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 0 10px black;
+    box-shadow: 0 0 10px black;
+    display: none;
+
+    position: absolute;
+    top: 10px;
+    left: 30%;
+    z-index: 9999;
+}
+.video-call-option{
+    padding: 0;
+    text-align: right;
+    background-color: rgba(255,255,255,0.4);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    display: none;
+}
+.video-box:hover .video-call-option {
+    display: block;
+}
+.video-call-option li {
+    display: inline-block;
+    margin-right: 10px;
+    text-align: right;
+    cursor: pointer;
+} 
+.relative-video-call{
+    position: relative;
 }
 .chat-header{
     background-color: #00aeef;
@@ -427,7 +494,7 @@ body{
     height: 30px;
     width: 30px;
     border-radius: 50%;
-    background-color: black;
+    
 }
 .chat-user-image img{
     height: 100%;
@@ -435,7 +502,7 @@ body{
     object-fit: cover;
 }
 .ham-icon{
-    padding-right: 10px;
+    padding-right: 5px;
     COLOR: WHITE;
     cursor: pointer;
 }
@@ -453,7 +520,7 @@ body{
     /* padding-left: 40px; */
     color: white;
     cursor: pointer;
-    width: 29%;
+    width: 21%;
 }
 .close-chat{
     color: white;
@@ -656,37 +723,66 @@ textarea.form-control {
     height: 100%;
     width: 100%;
 }
+.survey-quick{
+    width: 34%;
+    color: white;
+    cursor: pointer;
+}
+.quiz-quick{
+    width:30%;
+    margin-right: 5px;
+    color: white;
+    cursor: pointer;
+
+    
+}
 .bell-icon{
     
-    font-size: 20px;
-    color: white;
-    transition: color 0.3s;
-    margin-right: 15px;
-  
+font-size: 17px;
+    
+color: white;
+    
+transition: color 0.3s;
+    
+margin-left: 7px;
 }
+
 
 .bell-icon-close{
    
   
     display: none;
-    font-size: 20px;
+    font-size: 17px;
     opacity: 0.7;
 }
+.online-number{
+    margin-top: -24px;
+    font-size: 10px;
+    height: 14px;
+    width: 16px;
+    background-color: #d32c2c;
+    border-radius: 50%;
+    text-align: center;
+    margin-left: -5px;
+    color:white;
+
+    
+}
 .volume-icon{
-    font-size: 20px;
+    font-size: 17px;
     color: white;
     transition: color 0.3s;
 }    
 
 .volume-icon-close{
     
-    font-size: 20px;
+    font-size: 17px;
     display: none;
     opacity: 0.7;
 
 }
 .msg-bubble {
-    max-width: 273px!important;
+    max-width: 288px!important;
     overflow-wrap: break-word!important;
 }
 .green-online{

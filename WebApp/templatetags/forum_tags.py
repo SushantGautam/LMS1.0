@@ -1,11 +1,13 @@
-from django import template
-from django.utils.html import escape
-from django.contrib.auth.models import User
-from WebApp.models import MemberInfo
-from six.moves.urllib.parse import urlencode, urlparse, parse_qs
-from django.urls import reverse
-from forum.models import ForumAvatar
 import hashlib
+from datetime import datetime, timedelta, timezone
+
+from django import template
+from django.urls import reverse
+from django.utils.html import escape
+from six.moves.urllib.parse import urlencode, urlparse, parse_qs
+
+from WebApp.models import MemberInfo
+from forum.models import ForumAvatar
 
 register = template.Library()
 
@@ -114,3 +116,8 @@ def get_pagination(context, first_last_amount=2, before_after_amount=4):
         'is_paginated': is_paginated,
         'request': context['request'],
     }
+
+
+@register.filter
+def hours_ago(time, hours):
+    return time + timedelta(hours=hours) < datetime.now(timezone.utc)

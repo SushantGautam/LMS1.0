@@ -56,8 +56,13 @@ urlpatterns += (
          views.AssignmentInfoUpdateView.as_view(), name='teacher_assignmentinfo_update'),
     path('myassignments/', views.MyAssignmentsListView.as_view(),
          name='teacher_myassignmentinfo_list'),
-    path('assignment_answers/<int:pk>', views.AssignmentAnswers.as_view(),
+    path('assignment_answers/<int:pk>/', views.AssignmentAnswers.as_view(),
          name='teacher_assignment_answers'),
+    path('assignment_answers/<int:pk>/inning/<int:inningpk>/', views.AssignmentAnswers.as_view(),
+         name='teacher_assignment_answers_with_inning'),
+    path('assignment_answers/download', views.downloadAssignmentAnswers, name='downloadAssignmentAnswers'),
+    path('assignment_answers/download/delete', views.deletedownloadAssignmentAnswers,
+         name='deletedownloadAssignmentAnswers'),
     path('assignmentinfo/<int:pk>/', views.AssignmentInfoDeleteView.as_view(),
          name='teacher_assignmentinfo_delete'),
     path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/',
@@ -292,4 +297,9 @@ urlpatterns += (
 urlpatterns += (
     path('courseinfo/detail/<int:courseid>/take-attendance/',
          views.teacherAttendance, name='taketeacherAttendance'),
+)
+
+urlpatterns += (
+    path('meet/',
+         views.Meet, name='teacher-meet'),
 )

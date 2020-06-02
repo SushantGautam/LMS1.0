@@ -2032,10 +2032,14 @@ input[type=checkbox], input[type=radio] {
     border: none;
     cursor: pointer;
     overflow: hidden;
+    /* color: #c1c5c9; */
 }
 
 .tabButton.active {
-    color: #000000;
+    color:white;
+    background-color: lightseagreen;
+    border-radius: 1em;
+    padding: 0.4em;
 }
 
 .se-pre-con {
@@ -2291,12 +2295,19 @@ label .asteriskField {
     font-size: 12px;
     line-height: 1.42857;
 }
+.custom-btn1{
+    background-color:#a6c7d177;
+    color: black;
+
+    
+}
 .custom-btn1:hover{
     background-color:white;
     color:black;
     font-weight: 600    ;
 
 }
+
 
 /* progress bar */
 .progressbar {

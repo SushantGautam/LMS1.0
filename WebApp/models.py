@@ -404,8 +404,41 @@ class AssignmentInfo(models.Model):
         unanswered = Question - AnsweredQuestion
         if not unanswered:
             status = True
-        print(status)
         return status
+
+    def getTeachersAssignmentStatus(self, user):
+        data = []
+        inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=user.pk,
+                                                Course_Group__Course_Code__pk=self.Course_Code.pk,
+                                                Use_Flag=True,
+                                                End_Date__gt=datetime.now()).distinct()
+        print(inning_info)
+
+        for inning in inning_info:
+            completed_students = []
+            incompleted_students = []
+            student_group = inning.Groups.Students.all()
+            for student in student_group:
+                student_assg_status = self.get_student_assignment_status(student)
+                completed_students.append(student) if student_assg_status else incompleted_students.append(student)
+            if len(incompleted_students) == 0:
+                assg_status = True
+            else:
+                assg_status = False
+            data.append({
+                'inning': inning,
+                'assignment_status': assg_status,
+                'completed_students': completed_students,
+                'incompleted_students': incompleted_students,
+            })
+        return data
+
+    def get_QuestionAndAnswer(self, user=None):
+        answers = None
+        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code__pk=self.pk)
+        if user:
+            answers = AssignAnswerInfo.objects.filter(Question_Code__in=questions, Student_Code=user)
+        return questions, answers
 
     def clean(self):
         super().clean()

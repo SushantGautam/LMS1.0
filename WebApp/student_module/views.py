@@ -40,7 +40,7 @@ from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, An
 from .misc import get_query
 from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog, getChapterScore
 
-datetime_now = datetime.now()
+datetime_now = datetime.utcnow()
 
 User = get_user_model()
 
@@ -290,35 +290,34 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Assignment'], context['activeAssignment'], context['expiredAssignment'] = [], [], []
-        Assignment, activeAssignment, expiredAssignment = [], [], []
-        Sessions = []
-        Courses = set()
+        
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
+        course_group = InningInfo.objects.filter(
+                                        Groups__in=student_groups, 
+                                        Use_Flag=True, 
+                                        Start_Date__lte=datetime_now, 
+                                        End_Date__gte=datetime_now).values_list('Course_Group',flat=True)
 
-        context['currentDate'] = datetime.now()
-        GroupName = GroupMapping.objects.filter(Students__id=self.request.user.id)
-        for group in GroupName:
-            Sessions += InningInfo.objects.filter(Groups__id=group.id, End_Date__gt=datetime_now)
+        active_courses = InningGroup.objects.filter(
+                            pk__in=course_group, 
+                            Course_Code__Use_Flag=True).values_list('Course_Code', flat=True)
 
-        for session in Sessions:
-            for coursegroup in session.Course_Group.filter(Course_Code__Use_Flag=True):
-                Courses.add(coursegroup.Course_Code)
+        active_chapters = ChapterInfo.objects.filter(
+                            Course_Code__in=active_courses, 
+                            Use_Flag=True).filter(
+                            Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                            Q(End_Date__gte=datetime_now) | Q(End_Date=None))
 
-        for course in Courses:
-            Assignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Use_Flag=True, Chapter_Code__Use_Flag=True,
-                Assignment_Start__lte=datetime.utcnow()))
-            activeAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__gte=datetime.utcnow(),
-                Assignment_Start__lte=datetime.utcnow(),
-                Use_Flag=True,
-                Chapter_Code__Use_Flag=True))
-            expiredAssignment.append(AssignmentInfo.objects.filter(
-                Course_Code__id=course.id, Assignment_Deadline__lte=datetime.utcnow(), Use_Flag=True,
-                Chapter_Code__Use_Flag=True))
-        context['Assignment'].append(Assignment)
-        context['activeAssignment'].append(activeAssignment)
-        context['expiredAssignment'].append(expiredAssignment)
+        context['currentDate'] = datetime_now
+        context['Assignment'] = AssignmentInfo.objects.filter(
+                                    Chapter_Code__in=active_chapters, 
+                                    Use_Flag=True,
+                                    Assignment_Start__lte=datetime_now)
+        context['activeAssignment'] = context['Assignment'].filter(
+                                    Assignment_Deadline__gte=datetime_now)
+        context['expiredAssignment'] = context['Assignment'].filter(
+                                    Assignment_Deadline__lte=datetime_now)
+        
         return context
 
 
@@ -354,8 +353,10 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
             .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
             .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
             .order_by('Chapter_No')
-        context['surveycount'] = SurveyInfo.objects.filter(
+        surveys = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
+        survey_ids = [s.id for s in surveys if s.can_submit(self.request.user)[1] != 1]
+        context['surveycount'] = surveys.filter(id__in=survey_ids)
         context['quizcount'] = Quiz.objects.filter(
             course_code=self.kwargs.get('pk'), draft=False, exam_paper=True, chapter_code=None)
         context['numberOfQuizExclExams'] = Quiz.objects.filter(
@@ -450,8 +451,7 @@ class submitAnswer(View):
             name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
             filename = fs.save(name, media)
-            Obj.Question_Media_File = 'assignments/' + str(Assignment_Code.id) + name
-            Obj.Assignment_File = media
+            Obj.Assignment_File = 'assignments/' + str(Assignment_Code.id) + '/' + name
         Obj.save()
 
         return JsonResponse(
@@ -1227,7 +1227,13 @@ def singleUserHomePageJSON(request):
         courses = request.user.get_student_courses().distinct()
         assignments = AssignmentInfo.objects.filter(
             Course_Code__in=courses,
-            Chapter_Code__Use_Flag=True)[:7]
+            Chapter_Code__Use_Flag=True, Assignment_Start__lte=datetime_now,
+            Assignment_Deadline__gte=datetime_now).filter(
+            Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
+            Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None)
+        )
+        assignment_ids = [a.id for a in assignments if not a.get_student_assignment_status(request.user)]
+        assignments = assignments.filter(id__in=assignment_ids)[:5]
 
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
@@ -1278,6 +1284,7 @@ def singleUserHomePageJSON(request):
                                               course_code=F('Course_Code__pk'),
                                               course_name=F('Course_Code__Course_Name'),
                                               chapter_code=F('Chapter_Code__pk'),
+                                              chapter_name=F('Chapter_Code__Chapter_Name'),
                                               Register_Agent_Username=F('Register_Agent__username'),
                                               Register_Agent_Firstname=F('Register_Agent__first_name'),
                                               Register_Agent_Lastname=F('Register_Agent__last_name'))

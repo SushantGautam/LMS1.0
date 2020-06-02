@@ -1,6 +1,7 @@
 # from django.core.checks import messages
 import json
 import os
+import shutil
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -88,7 +89,7 @@ def start(request):
                                                                Assignment_Deadline__gte=datetime_now,
                                                                Chapter_Code__Use_Flag=True)
         if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
-                                     status=True).exists():
+                                 status=True).exists():
             notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
             if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
                 notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
@@ -433,14 +434,70 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        session_list = []
+        inningpk = self.kwargs.get('inningpk') if self.kwargs.get('inningpk') else None
+
+        assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
+        if '/teachers' in self.request.path:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
+                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
+                                                    Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
+        session_list.append(inning_info)
+
+        if inning_info.count() > 0:
+            if inningpk:
+                innings = get_object_or_404(inning_info, pk=inningpk)
+            else:
+                innings = None
         questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
                                                           )
         context['questions'] = questions
-        context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
-        context['Assignment'] = AssignmentInfo.objects.get(pk=self.kwargs['pk'])
+        if innings:
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
+                                                                 Student_Code__in=innings.Groups.Students.all())
+        else:
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
+
+        context['Assignment'] = assignmentinfoObj
+        context['session_list'] = session_list
+        context['inning'] = innings
         # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
+
+
+def downloadAssignmentAnswers(request):
+    if request.method == "POST":
+        list_of_files = request.POST.getlist('list_of_files[]')
+        assignment_pk = str(request.POST.get('assignment_id'))
+        question_pk = str(request.POST.get('question_id'))
+        path = settings.MEDIA_ROOT
+        dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
+        for src in list_of_files:
+            # srcfile = os.path.join(path, src)
+            if os.path.isfile(os.path.join(path, src)):
+                if os.path.exists(dstfolder) and os.path.isdir(dstfolder):
+                    shutil.copy(os.path.join(path, src), dstfolder)
+                else:
+                    os.makedirs(dstfolder)
+                    shutil.copy(os.path.join(path, src), dstfolder)
+            shutil.make_archive(
+                path + '/assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk,
+                'zip', dstfolder)
+        return JsonResponse({
+            'link': settings.MEDIA_URL + 'assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk + '.zip'
+        }, status=200)
+
+
+def deletedownloadAssignmentAnswers(request):
+    assignment_pk = str(request.GET.get('assignment_id'))
+    question_pk = str(request.GET.get('question_id'))
+    path = settings.MEDIA_ROOT
+    dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
+    if os.path.exists(dstfolder):
+        shutil.rmtree(dstfolder)
+    return JsonResponse({'message': 'success'}, status=200)
 
 
 class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMxnCls, UpdateView):
@@ -2230,3 +2287,11 @@ def teacherAttendance(request, courseid, createFile=True):
                 json.dump(data, teacher_file, indent=4)
 
     return HttpResponse('success')
+
+
+def Meet(request, ):
+    meetcode = request.user.id
+    for i in request.user.password[-5:]:
+        meetcode *= ord(i)
+    print(meetcode)
+    return render(request, 'teacher_module/meet.html', {"meetcode": meetcode})
