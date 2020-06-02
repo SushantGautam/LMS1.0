@@ -69,7 +69,7 @@
 }
 </style>
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
-  <div id="" class="form_wizard wizard_horizontal panel" style="padding-top:15px">
+  <div id="" class="form_wizard wizard_horizontal panel" style="padding-top:15px; margin-top:15px">
     <ul class="wizard_steps anchor">
       <li>
         <a href="#step-1" class="selected" isdone="1" rel="1">
@@ -110,15 +110,15 @@
   </form>
 {% endblock %}
 
-{% block customjss %}
+{% block javascript %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
   <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
   <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
   <script>
-      $('#div_id_form1-title, #div_id_form1-course_code').wrapAll("<div class=\"col-md-12\"></div>");
-      $('#div_id_form1-title, #div_id_form1-course_code').wrap("<div class=\"col-md-6\"></div>");
-      $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
-      $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
+     // $('#div_id_form1-title, #div_id_form1-course_code').wrapAll("<div class=\"col-md-12\"></div>");
+      //$('#div_id_form1-title, #div_id_form1-course_code').wrap("<div class=\"col-md-6\"></div>");
+     // $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
+      //$('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
       $('#id_div_myform label').addClass("quiz-add-label");
   </script>
-{% endblock customjss %}
+{% endblock javascript %}
