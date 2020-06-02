@@ -2320,7 +2320,7 @@ class NewContentsView(TemplateView):
         context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
-        context['chat_history'] = []
+        context['chat_history'] = getChatMessageHistory(self.request, self.kwargs.get('chapter'))
         context['connection_offline'] = False
         path = settings.MEDIA_ROOT
 
@@ -2332,21 +2332,6 @@ class NewContentsView(TemplateView):
             print(e)
             context['data'] = ""
 
-        # Retrieving recent 50 chat message of each individual chapter
-        list_of_files = sorted(glob.iglob(path + '/chatlog/chat_' + str(chapterID) + '/*.txt'),
-                               key=os.path.getctime, reverse=True)[:50]
-        for latest_file in list_of_files:
-            try:
-                f = open(latest_file, 'r')
-                if f.mode == 'r':
-                    contents = json.loads(f.read())
-                    context['chat_history'].append(contents)
-                f.close()
-
-            except Exception as e:
-                pass
-
-        context['chat_history'].reverse()
         return context
 
 
@@ -3125,14 +3110,26 @@ def checkForMediaFiles(request):
 
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
+def getChatMessageHistoryApi(request, chapterID):
+    chat_history = getChatMessageHistory(request, chapterID)
+
+    # messageRangeFrom => for pagination : 0 for latest message
+    # numberofmessages => maximum 50 if not specified.
+    # messageRangeFrom = int(request.GET.get('messageRangeFrom')) if request.GET.get('messageRangeFrom') else 0
+    # numberofmessages = int(request.GET.get('numberofmessages')) if request.GET.get('numberofmessages') else 2
+
+    return JsonResponse(chat_history, json_dumps_params={'indent': 4}, status=200)
+
+
 def getChatMessageHistory(request, chapterID):
     chat_history = []
     path = settings.MEDIA_ROOT
 
     # messageRangeFrom => for pagination : 0 for latest message
     # numberofmessages => maximum 50 if not specified.
-    messageRangeFrom = int(request.GET.get('messageRangeFrom')) if request.GET.get('messageRangeFrom') else 0
-    numberofmessages = int(request.GET.get('numberofmessages')) if request.GET.get('numberofmessages') else 50
+    page = int(request.GET.get('page')) if request.GET.get('page') else 1
+    numberofmessages = int(request.GET.get('per_page')) if request.GET.get('per_page') else 5
+    messageRangeFrom = (page - 1) * numberofmessages
 
     # Retrieving recent 50 chat message of each individual chapter
     list_of_files = sorted(glob.iglob(path + '/chatlog/chat_' + str(chapterID) + '/*.txt'),
@@ -3142,20 +3139,48 @@ def getChatMessageHistory(request, chapterID):
             f = open(latest_file, 'r')
             if f.mode == 'r':
                 contents = json.loads(f.read())
-                chat_history.append(contents)
+                # if 'message_link_type' in contents:
+                #     contents['message'] = getTypeLink(request, contents['message_link_type'], contents['message'])
+                if request.GET.get('search'):
+                    if request.GET.get('search') in contents['message']:
+                        chat_history.append(contents)
+                else:
+                    chat_history.append(contents)
             f.close()
 
         except Exception as e:
             pass
 
-    chat_history.reverse()
-    return JsonResponse({
+    # chat_history.reverse()
+    return {
         'chat_history': chat_history,
-        'messageRangeFrom': messageRangeFrom,
-        'numberofmessages': numberofmessages,
+        'page': page,
+        'per_page': numberofmessages,
         'message_count': len(chat_history),
-    }, json_dumps_params={'indent': 4}, status=200)
+        'next_page': '/api/v1/{}/chat_history/?page={}&per_page={}'.format(chapterID, (page + 1),
+                                                                           numberofmessages) if len(
+            chat_history) >= numberofmessages else '',
+    }
 
+
+# def getTypeLink(request, linktype, linkmsg):
+#     if (linktype == 'quiz'):
+#         if '/teachers' in request.path:
+#             msg = '/quiz/markingfilter/'+linkmsg+'/?iframe=1'
+#         elif '/students' in request.path:
+#             msg = '/quiz/quiz'+linkmsg+'/take/?iframe=1'
+#         else:
+#             msg = '/quiz/detail/'+linkmsg+'/?iframe=1'
+# 
+#     elif (linktype == 'survey'):
+#         if '/teachers' in request.path:
+#             msg = '/teachers/surveyinfodetail/detail/'+linkmsg+'/?iframe=1'
+#         elif '/students' in request.path:
+#             msg = '/students/questions_student_detail/detail/'+linkmsg+'/?iframe=1'
+#         else:
+#             msg = '/survey/surveyinfo/detail/'+linkmsg+'/?iframe=1'
+# 
+#     return msg
 
 def MeetPublic(request, userid, meetcode):
     meetcodeInit = userid

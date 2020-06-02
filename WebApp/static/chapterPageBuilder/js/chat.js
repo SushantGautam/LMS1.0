@@ -22,7 +22,7 @@ const webSProtocal = location.protocol === 'https:' ? "wss://" : "ws://";
 const chatSocket = new WebSocket(webSProtocal + locationhost + "/ws/" + roomID + '/');
 
 // For Notification detecting inactive tab
-var hidden, visibilityChange; 
+var hidden, visibilityChange;
 if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
   hidden = "hidden";
   visibilityChange = "visibilitychange";
@@ -105,7 +105,7 @@ chatSocket.onmessage = function(e) {
                         </div>
                     </div>
                     </div>`;
-        
+
         // Scroll Down on New message
         chatCanvas.scrollTop = chatCanvas.scrollHeight;
 
@@ -141,7 +141,7 @@ chatSocket.onmessage = function(e) {
                 }
             }
         }
-        
+
     }
 };
 
@@ -232,79 +232,84 @@ else {
         // Clear chatlog at first
         chatLog.innerHTML = '';
         chatdatediv = '';
-        let datearr = [];
+        // let datearr = [];
         let now = new Date();
-        chatHistory.forEach(data => {
-            let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
-
-            // converting datetime to local
-            let sender_datetime = new Date(data.sender_datetime);
-            let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
-                sender_datetime.getMonth(),
-                sender_datetime.getDate(),
-                sender_datetime.getHours(),
-                sender_datetime.getMinutes(),
-                sender_datetime.getSeconds())).toLocaleString('en-US', {
-                hour12: true,
-                hour: "numeric",
-                minute: "numeric"
-            });
-            let localdate = new Date(Date.UTC(sender_datetime.getFullYear(),
-                sender_datetime.getMonth(),
-                sender_datetime.getDate(),
-                sender_datetime.getHours(),
-                sender_datetime.getMinutes(),
-                sender_datetime.getSeconds())).toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-            if (datearr.indexOf(localdate) == -1) {
-                datearr.push(localdate)
-                date_to_display = null;
-                localdate_dateObj = new Date(localdate)
-                date_difference = Math.floor((now - localdate_dateObj) / 86400000)
-
-                if (date_difference == 0) {
-                    date_to_display = 'Today'
-                } else if (date_difference == 1) {
-                    date_to_display = 'Yesterday'
-                } else {
-                    date_to_display = localdate
-                }
-                chatdatediv = `
-                <div class="chat-today">
-                            <span class="chat-date">${date_to_display}</span>
-                    </div>
-                `
-            } else {
-                chatdatediv = ''
-            }
-
-            // Appending message to canvas log
-
-            if (data.hasOwnProperty('message_link_type')) {
-                var msg = getTypeLink(data.message_link_type, data.message)
-            } else {
-                var msg = data.message
-            }
-            chatLog.innerHTML += `
-                    ${chatdatediv}
-                    <div class="msg ${msgClass}">
-                        <div class="msg-img" style="background-image: url(${data.sender_icon})"></div>
-                        <div class="msg-bubble">
-                            <div class="msg-info">
-                            <div class="msg-info-name">${data.sender_name}</div>
-                            <div class="msg-info-time timecon">${localtime}</div>
-                            </div>
-                            <div class="msg-text">
-                            ${msg}
-                            </div>
-                        </div>
-                        </div>`;
-
-        });
-
+        // chatHistory.forEach(data => {
+        //     let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
+        //
+        //     // converting datetime to local
+        //     let sender_datetime = new Date(data.sender_datetime);
+        //     let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
+        //         sender_datetime.getMonth(),
+        //         sender_datetime.getDate(),
+        //         sender_datetime.getHours(),
+        //         sender_datetime.getMinutes(),
+        //         sender_datetime.getSeconds())).toLocaleString('en-US', {
+        //         hour12: true,
+        //         hour: "numeric",
+        //         minute: "numeric"
+        //     });
+        //     let localdate = new Date(Date.UTC(sender_datetime.getFullYear(),
+        //         sender_datetime.getMonth(),
+        //         sender_datetime.getDate(),
+        //         sender_datetime.getHours(),
+        //         sender_datetime.getMinutes(),
+        //         sender_datetime.getSeconds())).toLocaleString('en-US', {
+        //         year: 'numeric',
+        //         month: '2-digit',
+        //         day: '2-digit'
+        //     });
+        //     if (datearr.indexOf(localdate) == -1) {
+        //         datearr.push(localdate)
+        //         date_to_display = null;
+        //         localdate_dateObj = new Date(localdate)
+        //         date_difference = Math.floor((now - localdate_dateObj) / 86400000)
+        //
+        //         if (date_difference == 0) {
+        //             date_to_display = 'Today'
+        //         } else if (date_difference == 1) {
+        //             date_to_display = 'Yesterday'
+        //         } else {
+        //             date_to_display = localdate
+        //         }
+        //         chatdatediv = `
+        //         <div class="chat-today">
+        //                     <span class="chat-date">${date_to_display}</span>
+        //             </div>
+        //         `
+        //     } else {
+        //         chatdatediv = ''
+        //     }
+        //
+        //     // Appending message to canvas log
+        //
+        //     if (data.hasOwnProperty('message_link_type')) {
+        //         var msg = getTypeLink(data.message_link_type, data.message)
+        //     } else {
+        //         var msg = data.message
+        //     }
+        //     chatLog.innerHTML += `
+        //             ${chatdatediv}
+        //             <div class="msg ${msgClass}">
+        //                 <div class="msg-img" style="background-image: url(${data.sender_icon})"></div>
+        //                 <div class="msg-bubble">
+        //                     <div class="msg-info">
+        //                     <div class="msg-info-name">${data.sender_name}</div>
+        //                     <div class="msg-info-time timecon">${localtime}</div>
+        //                     </div>
+        //                     <div class="msg-text">
+        //                     ${msg}
+        //                     </div>
+        //                 </div>
+        //                 </div>`;
+        //
+        // });
+        addMessageToChat(chatHistory)
+        if (chatDetails.next_page != '') {
+            var conn = document.createElement('div');
+            conn.innerHTML = `<div id="see_more_messages"> See More </div>`
+            chatLog.parentElement.insertBefore(conn, chatLog)
+        }
         // Scroll Down after message append
         mainChatBox.style.display = "block";
         chatCanvas.scrollTop = chatCanvas.scrollHeight;
@@ -332,4 +337,96 @@ else {
         }
         return msg
     }
+}
+$(document).ready(function () {
+    $('#see_more_messages').on('click', function () {
+        $.get(chatDetails.next_page, function (chat_data) {
+            chatDetails = chat_data;
+            if (chatDetails.next_page == '') {
+                $('#see_more_messages').remove()
+            }
+            addMessageToChat(chat_data.chat_history)
+        })
+    })
+})
+
+function addMessageToChat(chat_history) {
+    // let datearr = [];
+    let now = new Date();
+    chat_history.forEach(data => {
+        let msgClass = userID === data.sender_id ? "right-msg" : "left-msg";
+
+        // converting datetime to local
+        let sender_datetime = new Date(data.sender_datetime);
+        let localtime = new Date(Date.UTC(sender_datetime.getFullYear(),
+            sender_datetime.getMonth(),
+            sender_datetime.getDate(),
+            sender_datetime.getHours(),
+            sender_datetime.getMinutes(),
+            sender_datetime.getSeconds())).toLocaleString('en-US', {
+            hour12: true,
+            hour: "numeric",
+            minute: "numeric"
+        });
+        let localdate = new Date(Date.UTC(sender_datetime.getFullYear(),
+            sender_datetime.getMonth(),
+            sender_datetime.getDate(),
+            sender_datetime.getHours(),
+            sender_datetime.getMinutes(),
+            sender_datetime.getSeconds())).toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        if (datearr.indexOf(localdate) == -1) {
+            datearr.push(localdate)
+            date_to_display = null;
+            localdate_dateObj = new Date(localdate)
+            date_difference = Math.floor((now - localdate_dateObj) / 86400000)
+
+            if (date_difference == 0) {
+                date_to_display = 'Today'
+            } else if (date_difference == 1) {
+                date_to_display = 'Yesterday'
+            } else {
+                date_to_display = localdate
+            }
+            chatdatediv = `
+            <div class="chat-today" data-localdate="${localdate}">
+                        <span class="chat-date">${date_to_display}</span>
+                </div>
+            `
+        } else {
+            // chatdatediv = ''
+            $(`.chat-today[data-localdate="${localdate}"]`).remove()
+            chatdatediv = `
+            <div class="chat-today" data-localdate="${localdate}">
+                        <span class="chat-date">${date_to_display}</span>
+                </div>
+            `
+        }
+
+        // Appending message to canvas log
+
+        if (data.hasOwnProperty('message_link_type')) {
+            var msg = getTypeLink(data.message_link_type, data.message)
+        } else {
+            var msg = data.message
+        }
+        $(chatLog).prepend(`
+            ${chatdatediv}
+            <div class="msg ${msgClass}">
+                <div class="msg-img" style="background-image: url(${data.sender_icon})"></div>
+                <div class="msg-bubble">
+                    <div class="msg-info">
+                    <div class="msg-info-name">${data.sender_name}</div>
+                    <div class="msg-info-time timecon">${localtime}</div>
+                    </div>
+                    <div class="msg-text">
+                    ${msg}
+                    </div>
+                </div>
+            </div>
+        `);
+    });
 }
