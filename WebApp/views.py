@@ -3128,7 +3128,7 @@ def getChatMessageHistory(request, chapterID):
     # messageRangeFrom => for pagination : 0 for latest message
     # numberofmessages => maximum 50 if not specified.
     page = int(request.GET.get('page')) if request.GET.get('page') else 1
-    numberofmessages = int(request.GET.get('per_page')) if request.GET.get('per_page') else 5
+    numberofmessages = int(request.GET.get('per_page')) if request.GET.get('per_page') else 50
     messageRangeFrom = (page - 1) * numberofmessages
 
     # Retrieving recent 50 chat message of each individual chapter
