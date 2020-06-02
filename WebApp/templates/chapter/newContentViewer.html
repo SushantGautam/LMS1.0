@@ -275,7 +275,7 @@
                 </li>
                 <li>
                     <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title=""
-                       href="https://we.tl/t-oYWUwhk63r" target="_blank"
+                       href="https://we.tl/t-NjDo1I27Vy" target="_blank"
                        data-original-title="Download u-LMS Android App">
                         <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
                     </a>
@@ -1347,17 +1347,7 @@
     });
 
 
-    function changePage(page_number) {
-        {% comment %}
-        {% if not connection_offline %}
-            {% if '/students' in request.path %}
-                chapterProgressStopFunction()
-                chapterProgressFunction()
-            {% elif '/teachers' in request.path %}
-                teacherchapterProgressFunction()
-            {% endif %}
-        {% endif %}
-        {% endcomment %}
+    function changePage(page_number) {        
         if (!x.matches) {
             if (page_number >= parseInt($('#totalpages').text())) {
                 $('#next-btn').css('visibility', 'hidden')
@@ -1375,15 +1365,7 @@
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
-        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
-        
-        {% comment %}
-        {% if ifteacher %}
-            updatePageByTeacher();
-        {% else %}
-            // updatePageByStudent(); //TBI
-        {% endif %}
-        {% endcomment %}
+        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();          
 
         localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
 
