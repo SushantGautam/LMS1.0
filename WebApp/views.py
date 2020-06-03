@@ -2288,8 +2288,13 @@ class NewContentsView(TemplateView):
             chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
             if chapterObj.Use_Flag:
                 if '/students' in request.path:
-                    if chapterObj.Start_Date or chapterObj.End_Date:
-                        if chapterObj.Start_Date >= datetime_now or chapterObj.End_Date <= datetime_now:
+                    if chapterObj.Start_Date:
+                        if chapterObj.Start_Date >= datetime_now:
+                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                            raise ObjectDoesNotExist
+
+                    if chapterObj.End_Date:
+                        if chapterObj.End_Date <= datetime_now:
                             messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
                             raise ObjectDoesNotExist
             else:
