@@ -503,10 +503,15 @@
             <div class="close-minimizevideo">
                 <div class="relative-video-call">
                     <ul class="video-call-option">
-
-                        <li class="close-call">
-                            <i class="fa fa-times"></i>
-
+                        <li class="close-call" style="color:red">
+                            <span data-toggle="tooltip" data-placement="bottom" title="Hang Up">
+                                <i class="fa fa-phone fa-rotate-90"></i>
+                            </span>
+                        </li>
+                        <li class="minimize-call">
+                            <span data-toggle="tooltip" data-placement="bottom" title="Minimize">
+                                <i class="fa fa-window-minimize"></i>
+                            </span>
                         </li>
 
                     </ul>
@@ -516,18 +521,23 @@
 
                 <script src='https://meet.jit.si/external_api.js'></script>
                 <script>
-                    $(document).one('click', '.icon-for-video', function () {
-                        $('.icon-for-video').prepend(`<i style="color: red; z-index:2; position:absolute;margin-top: 6px;margin-left: 4px;" class="far fa-dot-circle"></i>`);
-                        $('.icon-for-video').attr('title','Live');
+                    var videocall_on = false
+                    $(document).on('click', '.icon-for-video', function () {
+                        if (videocall_on) {
+                            return false
+                        }
+                        videocall_on = true;
+                        $('.icon-for-video').prepend(`<i style="color: red; z-index:2; position:absolute;margin-top: 6px;margin-left: 4px;" class="video-live-dot far fa-dot-circle"></i>`);
+                        $('.icon-for-video').attr('title', 'Live');
                         let audioMute = true;
                         let toolbarButtons = [
-                                    'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-                                    'fodeviceselection',
-                                    'etherpad', 'sharedvideo', 'settings', 'raisehand',
-                                    'videoquality', 'filmstrip', 'stats', 'shortcuts',
-                                    'tileview', 'videobackgroundblur', 'download',
-                                    //HIDDEN OPTIONS  NOT USED IGNORE
-                                    // 'e2ee', 'security',
+                            'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                            'fodeviceselection',
+                            'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                            'videoquality', 'filmstrip', 'stats', 'shortcuts',
+                            'tileview', 'videobackgroundblur', 'download',
+                            //HIDDEN OPTIONS  NOT USED IGNORE
+                            // 'e2ee', 'security',
                                     // 'hangup',
                                     // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
                                     // 'mute-everyone',
@@ -1470,8 +1480,18 @@
 
 
     });
-    $(document).on('click', '.close-call', function () {
+    $(document).on('click', '.minimize-call', function () {
 
+        $(".video-box").css("display", "none");
+        $(".closechatopen1").removeClass("color-chat");
+
+
+    });
+    $(document).on('click', '.close-call', function () {
+        videocall_on = false
+        $(".video-live-dot").remove();
+        $('.icon-for-video').removeAttr('title');
+        $("#UBL-meet").empty();
         $(".video-box").css("display", "none");
         $(".closechatopen1").removeClass("color-chat");
 
