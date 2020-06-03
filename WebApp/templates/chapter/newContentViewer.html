@@ -505,7 +505,7 @@
                     <ul class="video-call-option">
                         <li class="close-call" style="color:red">
                             <span data-toggle="tooltip" data-placement="bottom" title="Hang Up">
-                                <i class="fa fa-phone fa-rotate-90"></i>
+                                <i class="fa fa-phone fa-rotate-90" style=" transform: rotate(225deg);"></i>
                             </span>
                         </li>
                         <li class="minimize-call">
@@ -521,9 +521,9 @@
 
                 <script src='https://meet.jit.si/external_api.js'></script>
                 <script>
-                    var videocall_on = false
+                    var videocall_on = false    // Status that shows if video call is active or not
                     $(document).on('click', '.icon-for-video', function () {
-                        if (videocall_on) {
+                        if (videocall_on) { // if video call is active, return from here instead of re-establishing call.
                             return false
                         }
                         videocall_on = true;
@@ -1488,7 +1488,7 @@
 
     });
     $(document).on('click', '.close-call', function () {
-        videocall_on = false
+        videocall_on = false;   // When hanging up
         $(".video-live-dot").remove();
         $('.icon-for-video').removeAttr('title');
         $("#UBL-meet").empty();
