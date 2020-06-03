@@ -783,11 +783,11 @@
     {% endif %}
 
     function pauseAllVideos() {
-        $('iframe').each(function () {
+        $('.video-div iframe').each(function () {
             $(this).attr('src', $(this).attr('src'));
-            // console.log($(this)[0])
-            // $(this)[0].contentWindow.
-            // stMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
+        });
+        $('.audio-div iframe').each(function () {
+            $(this).attr('src', $(this).attr('src'));
         });
         $('video').each(function () {
             this.pause();
