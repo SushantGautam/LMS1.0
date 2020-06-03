@@ -535,6 +535,7 @@ class Quiz(models.Model):
 
         if self.exam_paper is True:
             self.single_attempt = True
+            self.chapter_code = None
             self.answers_at_end = False
         else:
             self.answers_at_end = True

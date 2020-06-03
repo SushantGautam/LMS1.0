@@ -369,6 +369,9 @@ class QuizBasicInfoForm(forms.ModelForm):
         my_obj = kwargs.pop('current_obj', None)
         super().__init__(*args, **kwargs)
         self.fields['course_code'].queryset = CourseInfo.objects.filter(Center_Code=my_obj.cent_code)
+        if my_obj.exam_paper:
+            self.fields['single_attempt'].widget.attrs['class'] = "readonly-field"
+            self.fields['chapter_code'].widget.attrs['class'] = "readonly-field"
 
         self.helper = FormHelper()
         self.helper.form_tag = False

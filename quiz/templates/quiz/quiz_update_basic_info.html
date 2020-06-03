@@ -47,18 +47,33 @@
                   $.each(data, function (key, value) {
                       $('#id_chapter_code').append($("<option></option>").attr("value", key).text(value));
                   });
-                  $('#id_chapter_code').val({{ form.chapter_code.value }});
+                  if ('{{ form.chapter_code.value }}' != 'None') {
+                      $('#id_chapter_code').val({{ form.chapter_code.value }});
+                  }
               }
           });
       });
       $('#id_duration').durationPicker({
           showDays: false,
       });
+
+      //forms.py cannot send disabled otherwise, it won't update fields when changed.
+      // readonly can be set to input only, checkbox cannot be set readonly.
+      $('.readonly-field').each(function () {
+          $(this).removeClass('readonly-field');
+          $(this).prop('disabled', 'disabled')
+      })
       $("#id_exam_paper").change(function () {
           if (this.checked) {
+              $('#id_single_attempt').prop('disabled', 'disabled')
+              $('#id_chapter_code').prop('disabled', 'disabled')
+              $('#id_single_attempt').prop('checked', 'checked')
               $("#div_id_duration").show();
               $("#div_id_pass_mark").show();
           } else {
+              $('#id_single_attempt').removeAttr('disabled readonly')
+              $('#id_chapter_code').removeAttr('disabled readonly')
+
               $("#div_id_duration").hide();
               $("#div_id_pass_mark").hide();
           }
