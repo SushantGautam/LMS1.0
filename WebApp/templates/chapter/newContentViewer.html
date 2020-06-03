@@ -631,7 +631,10 @@
 
 <!-- Chat related scripts -->
 <script>
-    const chatHistory = {{ chat_history|safe }};
+    var datearr = [];
+    var chatDetails =
+    {{ chat_history|safe }}
+    const chatHistory = chatDetails.chat_history;
     const audioURLIn = "{% static 'audio/incoming_msg.mp3' %}";
     const audioURLOut = "{% static 'audio/outgoing_msg.mp3' %}";
     const botImage = "{% static 'images/bot.png' %}";
@@ -713,6 +716,7 @@
 
 
 <script type="text/javascript">
+    var chapterID = '{{ chapter.id }}'
     {% if not data %}
         alert("No contents in this page. Returning back to previous page...");
         window.history.go(-1);
