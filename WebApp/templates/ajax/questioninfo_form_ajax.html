@@ -1,47 +1,33 @@
 {% load static %}
 <div>
-    <form method="post" id="ajaxquestioninfoform">
+    <form method="post" id="ajaxquestioninfoform" enctype="multipart/form-data">
         {% csrf_token %}
-
-        <div class="form-group">
-            <div class="form-control-material static required gapping">
-                <input type="text" name="Question_Title" maxlength="4000" id="id_Question_Title"
-                    class="textinput textInput form-control" required="required">
-                <label for="id_Question_Title" class="font-weight-bold">Question Title</label>
-            </div>
-        </div>
         <div class="form-group">
             <div class="form-control-material static">
-                <textarea name="Question_Description" id="id_Question_Description" class="form-control"
-                    rows="10"></textarea>
-                <label for="id_Question_Description" class="font-weight-bold">Question Description</label>
+                <input type="text" name="Question_Title" maxlength="500" id="id_Question_Title"
+                    class="textinput textInput form-control" required>
+                <label for="id_Question_Title" class="font-weight-bold">Question Title *</label>
             </div>
+        </div>
+        <div class="form-group gapping">
+            <label for="id_Question_Description" class="font-weight-bold">Question Description</label>
+            <textarea name="Question_Description" id="id_Question_Description" class="form-control" rows="5"></textarea>
         </div>
         <div class="row">
             <div class="col-lg-6">
                 <div class="form-group form-control-material static gapping">
-                    <input name="Question_Score" type="number" class="form-control" id="id_Question_Score">
-                    <label for="id_Question_Score" class="font-weight-bold">Question Score</label>
+                    <input name="Question_Score" type="number" class="form-control" id="id_Question_Score" required>
+                    <label for="id_Question_Score" class="font-weight-bold">Question Score *</label>
                 </div>
             </div>
             <div class="col-lg-6">
-                <!-- <div class="form-group form-control-material static gapping">
-                    <input name="Assignment_Deadline" type="date" class="form-control" id="id_Assignment_Deadline">
-                    <label for="Assignment_Deadline" class="font-weight-bold">Assignment Deadline</label>
-                </div> -->
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Select</label>
-                    <div class="col-sm-9">
-                        <select name="select" class="selectpicker" data-style="btn-white" data-live-search="true"
-                            data-size="5">
-                            <option>Mustard</option>
-                            <option>Ketchup</option>
-                            <option>Relish</option>
-                            <option>Garlic</option>
-                            <option>Tomatoes</option>
-                            <option>Onion</option>
-                        </select>
-                    </div>
+                    <label for="id_Answer_Type" class="font-weight-bold" style="line-height: 30px;">Answer
+                        Type *</label><br>
+                    <select name="Answer_Type" id="id_Answer_Type" style="width: 100%;height:30px" required>
+                        <option value="S">Short Answer</option>
+                        <option value="F">File Upload</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -49,13 +35,7 @@
             <div style="margin-bottom: 10px;" class="font-weight-bold">Question Media File</div>
             {{form.Question_Media_File}}
         </div>
-        <!-- <div class="form-group text-center">
-            <div class="checkbox gapping">
-                <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput">
-                <label for="id_Use_Flag" class="font-weight-bold">Use Flag</label>
-            </div>
-        </div> -->
-
+        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.pk }}"
             class="select form-control">
         <div class="text-center gapping">
@@ -67,30 +47,34 @@
 <!-- <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script> -->
 <script>
     $("#ajaxquestioninfoform").submit(function (e) {
-
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        $.ajax({
-            url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
-            data: {
-                "csrfmiddlewaretoken": '{{ csrf_token }}',
-                "Assignment_Topic": $('#id_Assignment_Topic').val(),
-                "Use_Flag": $('#id_Use_Flag').is(":checked"),
-                "Register_Agent": $('#id_Register_Agent').val(),
-                "Course_Code": $('#id_Course_Code').val(),
-                "Chapter_Code": $('#id_Chapter_Code').val(),
-                "Assignment_Start": $('#id_Assignment_Start').val(),
-                "Assignment_Deadline": $('#id_Assignment_Deadline').val(),
+        var formdata = new FormData();
+        var file = $('#id_Question_Media_File')[0].files[0];
+        formdata.append("Question_Media_File", file);
+        formdata.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+        formdata.append("Question_Title", $('#id_Question_Title').val());
+        formdata.append("Question_Score", $('#id_Question_Score').val());
+        formdata.append("Question_Description", $('#id_Question_Description').val());
+        formdata.append("Answer_Type", $('#id_Answer_Type').val());
+        formdata.append("Use_Flag", $('#id_Use_Flag').val());
+        formdata.append("Register_Agent", $('#id_Register_Agent').val());
+        formdata.append("Assignment_Code", $('#id_Assignment_Code').val());
+        // console.log($('#id_Question_Title').val());
 
-            },
+        $.ajax({
+            url: "{% url 'questioninfo_create_ajax' %}",  // URL to your view that serves new info
+            data: formdata,
             // get the form data
             type: $(this).attr('method'), // GET or POST
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
             success: function (response) {
                 console.log('Success')
                 location.reload()
             },
-            error: function (err) {
-                console.log('Error in posting chapter create form', err.responseJSON.errors.__all__[0])
-                $('.form-errors').append(err.responseJSON.errors.__all__[0]).css('display', 'block')
+            error: function () {
+                console.log('Error in posting assignment create form')
             }
         });
     });

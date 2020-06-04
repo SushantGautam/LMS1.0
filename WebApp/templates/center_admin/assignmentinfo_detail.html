@@ -16,6 +16,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal grow modal-backdrop-white fade" id="editAssignmentModal">
     <div class="modal-dialog">
         <div class="v-cell">
@@ -29,11 +30,12 @@
                     <form method="post" id="ajaxassignmentinfoform">
                         {% csrf_token %}
                         <div class="form-group">
-                            <div class="form-control-material static required gapping">
+                            <div class="form-control-material static gapping">
                                 <input type="text" name="Assignment_Topic_edit" maxlength="500"
-                                    id="id_Assignment_Topic_edit" class="textinput textInput form-control"
-                                    required="required" value="{{ object.Assignment_Topic }}">
-                                <label for="id_Assignment_Topic_edit" class="font-weight-bold">Assignment Topic</label>
+                                    id="id_Assignment_Topic_edit" class="textinput textInput form-control" required
+                                    value="{{ object.Assignment_Topic }}">
+                                <label for="id_Assignment_Topic_edit" class="font-weight-bold">Assignment Topic
+                                    *</label>
                             </div>
                         </div>
                         <div class="row">
@@ -41,8 +43,8 @@
                                 <div class="form-control-material static gapping">
                                     <input type="date" name="Assignment_Start_edit" class="form-control"
                                         id="id_Assignment_Start_edit" value="{{ object.Assignment_Start|date:'Y-m-d' }}"
-                                        min="" max="9999-12-31">
-                                    <label for="id_Assignment_Start" class="font-weight-bold">Assignment Start</label>
+                                        min="" max="9999-12-31" required>
+                                    <label for="id_Assignment_Start" class="font-weight-bold">Assignment Start *</label>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -50,9 +52,9 @@
                                     <input name="Assignment_Deadline_edit" type="date" class="form-control"
                                         id="id_Assignment_Deadline_edit"
                                         value="{{ object.Assignment_Deadline|date:'Y-m-d' }}"
-                                        min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31">
+                                        min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31" required>
                                     <label for="id_Assignment_Deadline_edit" class="font-weight-bold">Assignment
-                                        Deadline</label>
+                                        Deadline *</label>
                                 </div>
                             </div>
                         </div>
@@ -91,43 +93,190 @@
                             <h1 class="text-display-1 margin-none">{{ object.Assignment_Topic }}</h1>
                         </div>
                     </div>
-                    {% for question in questions %}
-                    <div class="panel panel-default curriculum open paper-shadow" data-z="0.5">
-                        <div class="panel-heading panel-heading-gray" data-toggle="collapse"
-                            data-target="#{{assignment.pk}}">
-                            <div class="media v-middle">
-                                <div class="media-left">
-                                    <div class="icon-block s30 bg-indigo-300 text-white img-circle">
-                                        {{ forloop.counter }}
+                    <br>
+                    {% for question in Questions %}
+                    <div class="modal grow modal-backdrop-white fade" id="editQuestionModal{{ question.pk }}">
+                        <div class="modal-dialog">
+                            <div class="v-cell">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span
+                                                aria-hidden="true">&times;</span><span
+                                                class="sr-only">Close</span></button>
+                                        <h4 class="modal-title">Edit Question</h4>
                                     </div>
-                                </div>
-                                <div class="media-body text-body-2">
-                                    {{assignment.Assignment_Topic}}
-                                </div>
-                                <div class="media-right">
-                                    <button class="btn btn-info btn-sm btn-stroke" href="{% if '/students' in request.path %}
-                                    {{ assignment.student_get_absolute_url }}
-                                {% elif '/teachers' in request.path %}
-                                    {{ assignment.teacher_get_absolute_url }}
-                                {% else %}
-                                   {{ assignment.get_absolute_url }}
-                                {% endif %}">
-                                        CONTINUE <i class="fa fa-arrow-right"></i>
-                                    </button>
+                                    <div class="modal-body" id="edit_question_modal_body{{ question.pk }}">
+                                        <form method="post" class="editQuestionForm" id="{{ question.pk }}"
+                                            enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="form-group gapping">
+                                                <div class="form-control-material static">
+                                                    <input type="text" name="Question_Title_edit" maxlength="500"
+                                                        id="id_Question_Title_edit{{ question.pk }}"
+                                                        class="textinput textInput form-control" required
+                                                        value="{{question.Question_Title}}">
+                                                    <label for="id_Question_Title_edit" class="font-weight-bold"
+                                                        style="line-height: 20px;">Question
+                                                        Title *</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group gapping">
+                                                <label for="id_Question_Description_edit"
+                                                    class="font-weight-bold">Question Description</label>
+                                                <textarea name="Question_Description_edit" rows="5"
+                                                    class="textarea form-control"
+                                                    id="id_Question_Description_edit{{ question.pk }}">{{ question.Question_Description }}</textarea>
+                                            </div>
+                                            <div class="row gapping">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group form-control-material static gapping">
+                                                        <input type="number" name="Question_Score_edit"
+                                                            class="numberinput form-control"
+                                                            id="id_Question_Score_edit{{ question.pk }}"
+                                                            value="{{question.Question_Score}}" required>
+                                                        <label for="id_Question_Score_edit" class="font-weight-bold"
+                                                            style="line-height: 20px;">Question
+                                                            Score *</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="id_Answer_Type_edit" class="font-weight-bold">Answer
+                                                            Type *</label><br>
+                                                        <select name="Answer_Type_edit"
+                                                            id="id_Answer_Type_edit{{ question.pk }}" required
+                                                            style="width: 100%;height:40px">
+                                                            <option value="S" {% if question.Answer_Type == 'S' %}
+                                                                selected {% endif %}>Short Answer</option>
+                                                            <option value="F" {% if question.Answer_Type == 'F' %}
+                                                                selected {% endif %}>File Upload</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="gapping">
+                                                <div style="margin-bottom: 10px;" class="font-weight-bold">Question
+                                                    Media File</div>
+                                                <div class="controls ">
+                                                    {% if question.Question_Media_File %}
+                                                    Currently: <a
+                                                        href="{{ question.Question_Media_File.url }}">{{question.Question_Media_File}}</a>
+                                                    <input type="checkbox" name="Question_Media_File-clear"
+                                                        id="Question_Media_File-clear_id{{question.pk}}">
+                                                    <label for="Question_Media_File-clear_id">Clear</label>
+                                                    <br>
+                                                    Change:
+                                                    {% endif %}
+                                                    <input type="file" name="Question_Media_File_edit"
+                                                        id="id_Question_Media_File_edit{{ question.pk }}"
+                                                        class="clearablefileinput">
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="id_Use_Flag_edit{{ question.pk }}" name="Use_Flag"
+                                                value="True">
+                                            <input type="hidden" name="Register_Agent_edit"
+                                                id="id_Register_Agent_edit{{ question.pk }}"
+                                                value="{{ request.user.id }}" class="select form-control">
+                                            <input type="hidden" name="Assignment_Code_edit"
+                                                id="id_Assignment_Code_edit{{ question.pk }}" value="{{ object.id }}"
+                                                class="select form-control">
+
+                                            * are the required fields
+                                            <br><br>
+                                            <div class="submitButton text-center">
+                                                <button class="btn btn-success" type="submit">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="list-group collapse" id="{{assignment.pk}}">
-                            <div class="list-group-item media" data-target="website-take-course.html">
-                                <!-- <div class="media-left">
-                                    <div class="text-crt">1.</div>
-                                </div> -->
-                                <div class="media-body">
-                                    <p>Start Date - {{ assignment.Assignment_Start }}</p>
-                                    <p>Submission Deadline - {{ assignment.Assignment_Deadline }}</p>
+                    </div>
+                    <div class="panel panel-default curriculum open paper-shadow" data-z="0.5">
+                        <div class="panel-heading panel-heading-gray">
+                            <div class="media v-middle">
+                                <div class="media-left">
+                                    <div class="icon-block half bg-indigo-300 text-white img-circle">
+                                        {{ forloop.counter }}
+                                    </div>
                                 </div>
-
+                                <div class="media-body text-body-2" data-toggle="collapse"
+                                    data-target="#collapse{{question.pk}}">
+                                    <h4>{{ question.Question_Title }}</h4>
+                                    &nbsp;{{ question.Question_Description }}
+                                </div>
+                                <div class="media-right" style="min-width: 100px;">
+                                    {% if '/students' not in request.path %}
+                                    <a class="text-success" data-toggle="modal"
+                                        data-target="#editQuestionModal{{ question.pk }}"
+                                        id="editquestion-btn{{ question.pk }}">
+                                        Edit
+                                    </a>
+                                    {% if '/teachers' in request.path %}
+                                    <a id="{{ question.pk }}" class="question-confirm-delete text-danger"
+                                        style="margin-left: 28px;">
+                                        Delete
+                                    </a>
+                                    <form method="post"
+                                        action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
+                                        id="deleteQuestion{{ question.pk }}">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{question.pk}}" name="question_id">
+                                        <input type="hidden" value="{{object.pk}}" name="assignment_id">
+                                        <input type="hidden" value="{{object.Course_Code.id}}" name="course_id">
+                                        <input type="hidden" value="{{object.Chapter_Code.id}}" name="chapter_id">
+                                    </form>
+                                    {% else %}
+                                    <a id="{{ question.pk }}" class="question-confirm-delete text-danger"
+                                        style="margin-left: 28px;">
+                                        Delete
+                                    </a>
+                                    <form method="post"
+                                        action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=question.pk %}"
+                                        id="deleteQuestion{{ question.pk }}">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{question.pk}}" name="question_id">
+                                        <input type="hidden" value="{{object.pk}}" name="assignment_id">
+                                        <input type="hidden" value="{{object.Course_Code.id}}" name="course_id">
+                                        <input type="hidden" value="{{object.Chapter_Code.id}}" name="chapter_id">
+                                    </form>
+                                    {% endif %}
+                                    {% endif %}
+                                </div>
                             </div>
+                        </div>
+                        <div class="list-group collapse" id="collapse{{question.pk}}">
+                            <div class="list-group-item media">
+                                <div class="media-body">
+                                    <p>Question Score - {{ question.Question_Score }}</p>
+                                    <p>Answer Type -
+                                        {% if question.Answer_Type == 'S' %}
+                                        Short Answer
+                                        {% elif question.Answer_Type == 'F' %}
+                                        File Upload
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            {% if  question.Question_Media_File %}
+                            <div class="list-group-item media">
+                                <div class="media-body">
+                                    <div>
+                                        Question Media :
+                                    </div>
+                                    <div class="text-center">
+                                        {% if question.extension == '.jpg' or question.extension == '.png' %}
+                                        <img class="card-img-top" width="600px"
+                                            src="{{ question.Question_Media_File.url }}">
+                                        {% else %}
+                                        <a href="{{ question.Question_Media_File.url }}" target="_blank"><b
+                                                style="color:#017a9b">Click
+                                                to view attatched file</b></a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
@@ -181,7 +330,7 @@
                             <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
                                 id="deleteAssignment{{ object.pk }}">
                                 {% csrf_token %}
-                                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                                <!-- <input type="hidden" value="{{question.pk}}" name="question_id"> -->
                                 <input type="hidden" value="{{ object.pk }}" name="assignment_id">
                                 <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
                                 <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
@@ -192,7 +341,7 @@
                             <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
                                 id="deleteAssignment{{ object.pk }}">
                                 {% csrf_token %}
-                                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                                <!-- <input type="hidden" value="{{question.pk}}" name="question_id"> -->
                                 <input type="hidden" value="{{ object.pk }}" name="assignment_id">
                                 <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
                                 <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
@@ -229,8 +378,32 @@
             }
         });
 
-        $('#add-newquestion-btn').on('click', function () {
+        $(document).on('click', '.question-confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Question?');
+            if (ans == true) {
+                $(`#deleteQuestion${this.id}`).submit();
+            } else {
+                return false;
+            }
+        });
 
+        const selectElement = document.querySelector('#id_Assignment_Deadline_edit');
+        selectElement.addEventListener('change', (event) => {
+            const result = document.querySelector('.result');
+            var date = Date.parse($('#id_today_date').val());
+            var deadline = Date.parse(event.target.value);
+            var remaining = (deadline - date) / (1000 * 3600 * 24);
+            if (remaining < 0) {
+                result.textContent = `Days Remaining : Invalid`;
+
+            }
+            else {
+                result.textContent = `Days Remaining : ${remaining} days`;
+
+            };
+        });
+
+        $('#add-newquestion-btn').on('click', function () {
             $('#add_question_modal_body').empty();
             $('#add_question_modal_body').append(
                 `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
@@ -251,6 +424,43 @@
                 }
             });
         });
+
+        $(".editQuestionForm").submit(function (e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            var formdata = new FormData();
+            var file = $(`#id_Question_Media_File_edit${this.id}`)[0].files[0];
+            formdata.append("Question_Media_File", file);
+            formdata.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+            formdata.append("clear", $(`#Question_Media_File-clear_id${this.id}`).is(":checked"));
+            // console.log($(`#Question_Media_File-clear_id${this.id}`).is(":checked"));
+            formdata.append("Question_Title", $(`#id_Question_Title_edit${this.id}`).val());
+            formdata.append("Question_Score", $(`#id_Question_Score_edit${this.id}`).val());
+            formdata.append("Question_Description", $(`#id_Question_Description_edit${this.id}`).val());
+            formdata.append("Answer_Type", $(`#id_Answer_Type_edit${this.id}`).val());
+            formdata.append("Use_Flag", $(`#id_Use_Flag_edit${this.id}`).val());
+            formdata.append("Register_Agent", $(`#id_Register_Agent_edit${this.id}`).val());
+            formdata.append("Assignment_Code", $(`#id_Assignment_Code_edit${this.id}`).val());
+            formdata.append("pk", this.id);
+
+            $.ajax({
+                url: "{% url 'webapp_questioninfo_edit_ajax' %}",  // URL to your view that serves new info
+                data: formdata,
+                // get the form data
+                type: $(this).attr('method'), // GET or POST
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log('Success')
+                    location.reload()
+                },
+                error: function () {
+                    console.log('Error in posting question edit form')
+                }
+
+            });
+        });
+
 
         $("#ajaxassignmentinfoform").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.

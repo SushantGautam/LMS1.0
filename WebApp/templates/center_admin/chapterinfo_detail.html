@@ -65,15 +65,15 @@
                     {% endif %}
                     {% for assignment in assignments %}
                     <div class="panel panel-default curriculum open paper-shadow" data-z="0.5">
-                        <div class="panel-heading panel-heading-gray" data-toggle="collapse"
-                            data-target="#{{assignment.pk}}">
+                        <div class="panel-heading panel-heading-gray">
                             <div class="media v-middle">
                                 <div class="media-left">
                                     <div class="icon-block s30 bg-indigo-300 text-white img-circle">
                                         {{ forloop.counter }}
                                     </div>
                                 </div>
-                                <div class="media-body text-body-2">
+                                <div class="media-body text-body-2" data-toggle="collapse"
+                                    data-target="#{{assignment.pk}}">
                                     {{assignment.Assignment_Topic}}
                                 </div>
                                 <div class="media-right">
