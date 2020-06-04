@@ -1,6 +1,7 @@
 const chatLog = document.querySelector('#chat-log');
 const chatCanvas = document.querySelector('.chat-canvas');
 const mainChatBox = document.querySelector('#main-chat-box');
+const unreadChat = document.querySelector('.unread-chat-count');
 const onlineUserCount = document.querySelector('.online-number');
 const onlineUserList = document.querySelector('.user-list');
 const screenSync = document.querySelector('#id_screen_sync');
@@ -89,6 +90,11 @@ chatSocket.onmessage = function(e) {
             msg = getTypeLink(data.message_link_type, data.message);
         } else {
             msg = data.message;
+        }
+
+        // Check log visible and add unread message counter
+        if (mainChatBox.style.display === 'none'){
+            unreadChat.style.display = "inline";
         }
 
         // Appending message to canvas log

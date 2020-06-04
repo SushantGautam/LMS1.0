@@ -300,6 +300,7 @@
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Chat ' class="icon-for-chat">
                 <i style="color: white;" class="chat-icon closechatopen fa far fa-comment" id="closechatopen"></i>
+                <span class="unread-chat-count"  style="display:none;"> </span>
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
                 <i style="color: white;" class="fa fa-video icon-video closechatopen1 "></i>
@@ -693,9 +694,11 @@
     function ActiveChatIcon1() {
         if ($(".chat-dialogbox").is(":visible")) {
             $(".closechatopen").removeClass("color-chat");
+            $(".unread-chat-count").css("display", "none");
 
         } else {
             $(".closechatopen").addClass("color-chat");
+            $(".unread-chat-count").css("display", "none");
 
         }
 
@@ -1514,7 +1517,7 @@
     });
     $(document).on('click', '.icon-for-chat2', function () {
         $(".chat-dialogbox").fadeToggle();
-
+        $(".unread-chat-count").css("display", "none");
 
     });
     $(document).on('click', '.icon-for-video', function () {
