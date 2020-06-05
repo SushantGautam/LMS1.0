@@ -534,7 +534,7 @@ class Quiz(models.Model):
         #                    letter.isalnum() or letter == '-')
 
         if self.exam_paper is True:
-            self.single_attempt = True
+            # self.single_attempt = True
             self.chapter_code = None
             self.answers_at_end = False
         else:
