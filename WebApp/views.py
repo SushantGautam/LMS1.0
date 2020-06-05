@@ -3133,12 +3133,14 @@ def getChatMessageHistory(request, chapterID):
     # messageRangeFrom => for pagination : 0 for latest message
     # numberofmessages => maximum 50 if not specified.
     page = int(request.GET.get('page')) if request.GET.get('page') else 1
-    numberofmessages = int(request.GET.get('per_page')) if request.GET.get('per_page') else 50
-    messageRangeFrom = (page - 1) * numberofmessages
-
+    numberofmessagesperpage = int(request.GET.get('per_page')) if request.GET.get('per_page') else 2
+    messageRangeFrom = (page - 1) * numberofmessagesperpage
+    total_numberofmessages = int(request.GET.get('total_messages')) if request.GET.get(
+        'total_messages') else 0
     # Retrieving recent 50 chat message of each individual chapter
-    list_of_files = sorted(glob.iglob(path + '/chatlog/chat_' + str(chapterID) + '/*.txt'),
-                           key=os.path.getctime, reverse=True)[messageRangeFrom:][:numberofmessages]
+    total_list_of_files = sorted(glob.iglob(path + '/chatlog/chat_' + str(chapterID) + '/*.txt'),
+                                 key=os.path.getctime, reverse=True)[-total_numberofmessages:]
+    list_of_files = total_list_of_files[messageRangeFrom:][:numberofmessagesperpage]
     for latest_file in list_of_files:
         try:
             f = open(latest_file, 'r')
@@ -3160,11 +3162,14 @@ def getChatMessageHistory(request, chapterID):
     return {
         'chat_history': chat_history,
         'page': page,
-        'per_page': numberofmessages,
+        'per_page': numberofmessagesperpage,
         'message_count': len(chat_history),
-        'next_page': '/api/v1/{}/chat_history/?page={}&per_page={}'.format(chapterID, (page + 1),
-                                                                           numberofmessages) if len(
-            chat_history) >= numberofmessages else '',
+        'next_page': '/api/v1/{}/chat_history/?page={}&per_page={}&total_messages={}'.format(chapterID, (page + 1),
+                                                                                             numberofmessagesperpage,
+                                                                                             len(
+                                                                                                 total_list_of_files)) if len(
+            chat_history) >= numberofmessagesperpage else '',
+        'total_messages': len(total_list_of_files),
     }
 
 
