@@ -763,12 +763,7 @@
             $("#quiz_create_popup").modal("show");
         });
 
-        function quiz_create_content(response) {
-            console.log(response['url']);
-            console.log(response['teacher_url']);
-            console.log(response['student_url']);
-            location.reload();
-        }
+
     </script>
     <script>
         let params = new URLSearchParams(location.search);
@@ -803,6 +798,10 @@
 
         function survey_create_content(response) {
             location.reload()
+        }
+
+        function quiz_create_content(response) {
+            location.reload();
         }
     </script>
 {% endblock %}

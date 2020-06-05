@@ -3133,11 +3133,15 @@ def getChatMessageHistory(request, chapterID):
     # messageRangeFrom => for pagination : 0 for latest message
     # numberofmessages => maximum 50 if not specified.
     page = int(request.GET.get('page')) if request.GET.get('page') else 1
-    numberofmessagesperpage = int(request.GET.get('per_page')) if request.GET.get('per_page') else 2
+    numberofmessagesperpage = int(request.GET.get('per_page')) if request.GET.get('per_page') else 50
     messageRangeFrom = (page - 1) * numberofmessagesperpage
+
+    # Total Chat messages loaded at the time.
     total_numberofmessages = int(request.GET.get('total_messages')) if request.GET.get(
         'total_messages') else 0
     # Retrieving recent 50 chat message of each individual chapter
+    # If the list gets updated, then fetch from previous end message instead of new latest message.
+    # Latest Message index is 0 and first message index is -1
     total_list_of_files = sorted(glob.iglob(path + '/chatlog/chat_' + str(chapterID) + '/*.txt'),
                                  key=os.path.getctime, reverse=True)[-total_numberofmessages:]
     list_of_files = total_list_of_files[messageRangeFrom:][:numberofmessagesperpage]
@@ -3146,8 +3150,6 @@ def getChatMessageHistory(request, chapterID):
             f = open(latest_file, 'r')
             if f.mode == 'r':
                 contents = json.loads(f.read())
-                # if 'message_link_type' in contents:
-                #     contents['message'] = getTypeLink(request, contents['message_link_type'], contents['message'])
                 if request.GET.get('search'):
                     if request.GET.get('search') in contents['message']:
                         chat_history.append(contents)
@@ -3172,25 +3174,6 @@ def getChatMessageHistory(request, chapterID):
         'total_messages': len(total_list_of_files),
     }
 
-
-# def getTypeLink(request, linktype, linkmsg):
-#     if (linktype == 'quiz'):
-#         if '/teachers' in request.path:
-#             msg = '/quiz/markingfilter/'+linkmsg+'/?iframe=1'
-#         elif '/students' in request.path:
-#             msg = '/quiz/quiz'+linkmsg+'/take/?iframe=1'
-#         else:
-#             msg = '/quiz/detail/'+linkmsg+'/?iframe=1'
-# 
-#     elif (linktype == 'survey'):
-#         if '/teachers' in request.path:
-#             msg = '/teachers/surveyinfodetail/detail/'+linkmsg+'/?iframe=1'
-#         elif '/students' in request.path:
-#             msg = '/students/questions_student_detail/detail/'+linkmsg+'/?iframe=1'
-#         else:
-#             msg = '/survey/surveyinfo/detail/'+linkmsg+'/?iframe=1'
-# 
-#     return msg
 
 def MeetPublic(request, userid, meetcode):
     meetcodeInit = userid
