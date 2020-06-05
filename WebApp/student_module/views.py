@@ -445,7 +445,7 @@ class submitAnswer(View):
             if media.size / 1024 > 10240:
                 return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 10MB"}, status=500)
             path = settings.MEDIA_ROOT
-            name = (str(uuid.uuid4())).replace('-', '') + '___' + str(request.user.username) + '___' + \
+            name = str(request.user.username) + '___' + (str(uuid.uuid4())).replace('-', '') + '___' + \
                    media.name.split('.')[0] + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
             filename = fs.save(name, media)
