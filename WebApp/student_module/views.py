@@ -67,7 +67,9 @@ def start(request):
                 activeassignments += AssignmentInfo.objects.filter(
                     Assignment_Deadline__gte=datetime.utcnow(), Assignment_Start__lte=datetime.utcnow(),
                     Course_Code__id=course.Course_Code.id,
-                    Chapter_Code__Use_Flag=True)[:7]
+                    Chapter_Code__Use_Flag=True).filter(
+                    Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
+                    Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None))[:7]
     sittings = Sitting.objects.filter(user=request.user)
 
     # Wordcloud
