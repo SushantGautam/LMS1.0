@@ -459,7 +459,7 @@ class AssignmentQuestionInfo(models.Model):
     Updated_DateTime = DateTimeField(auto_now=True)
 
     Question_Media_File = FileField(upload_to=upload_to, blank=True, null=True)
-    Question_Description = TextField()
+    Question_Description = TextField(blank=True, null=True)
     Answer_Choices = (
         ('S', 'Short Answer'),
         ('F', 'File Upload'),

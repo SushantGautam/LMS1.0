@@ -392,7 +392,7 @@ class QuestionInfoForm(forms.ModelForm):
                             ["table", ["table"]], 
                             ["insert", ["link", "picture"]], 
                             ]}
-                            }))
+                            }), required=False)
     class Meta:
         model = AssignmentQuestionInfo
         fields = '__all__'

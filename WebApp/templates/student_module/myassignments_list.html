@@ -8,14 +8,14 @@
 
 <h2 class="tableHeader">List of My Assignments</h2>
 <h4 class="text-center"><b>
-        <button class="tablinks tabButton active" onclick="openTab(event, 'allAssignments')">All</button>
-        <button class="tablinks tabButton" onclick="openTab(event, 'activeAssignments')">Active</button>
+        <button class="tablinks tabButton active" onclick="openTab(event, 'activeAssignments')">Active</button>
+        <button class="tablinks tabButton" onclick="openTab(event, 'allAssignments')">All</button>
         <button class="tablinks tabButton" onclick="openTab(event, 'expiredAssignments')">Expired</button>
     </b>
 </h4>
 
 <hr class="header_hr">
-<div class="tabcontent" id="allAssignments">
+<div class="tabcontent" id="allAssignments" style="display: none;">
     {% if Assignment %}
 
     {% for a in Assignment %}
@@ -55,7 +55,7 @@
     {% endfor %}
     {% endif %}
 </div>
-<div class="tabcontent" id="activeAssignments" style="display: none;">
+<div class="tabcontent" id="activeAssignments">
     {% if activeAssignment %}
 
     {% for a in activeAssignment %}
