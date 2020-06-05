@@ -732,7 +732,12 @@ class QuizCreateWizard(AdminAuthMxnCls, SessionWizardView):
             step = self.steps.current
 
         if step == 'form1':
-            form.fields["course_code"].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+            if '/teachers' in self.request.path:
+                form.fields["course_code"].queryset = CourseInfo.objects.filter(
+                    pk__in=[id.pk for id in self.request.user.get_teacher_courses()['courses']])
+            else:
+                form.fields["course_code"].queryset = CourseInfo.objects.filter(
+                    Center_Code=self.request.user.Center_Code)
 
         if step == 'form2':
             step1_data = self.get_cleaned_data_for_step('form1')

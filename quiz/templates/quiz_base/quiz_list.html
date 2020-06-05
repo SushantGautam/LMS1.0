@@ -10,6 +10,10 @@
                 <a class="icon-quiz-list" href="{% url 'quizfw' %}">
                     <i class="fa fa-plus fa-2x"></i>
                 </a>
+            {% elif '/teachers' in request.path %}
+                <a class="icon-quiz-list" href="{% url 'teachers_quizfw' %}">
+                    <i class="fa fa-plus fa-2x"></i>
+                </a>
             {% endif %}
         </div>
     </div>
