@@ -106,7 +106,7 @@
 
         function deleteForm(prefix, btn) {
             var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-            if (total > 1) {
+            if ($('.form-row:visible').length > 2) {
                 btn.closest('.form-row').css('display', 'none');
                 btn.closest('.form-row').find('.delete-ans-checkbox input[type=checkbox]').prop('checked', true);
                 btn.closest('.form-row').find('.correct-ans-checkbox input[type=checkbox]').prop('checked', false);
@@ -141,7 +141,7 @@
         $('#add_more').click(function (e) {
             {#copyEmptyOption('#emptyOptionForm', '#option_dynamic_append', 'answer_set');#}
             e.preventDefault();
-            cloneMore('.form-row:last', 'answer_set');
+            cloneMore('.form-row:visible:last', 'answer_set');
             return false;
         });
 
