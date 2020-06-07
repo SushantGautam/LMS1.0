@@ -191,7 +191,8 @@ class AnswerForm(forms.ModelForm):
         fields = '__all__'
 
 
-AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=['content', 'correct'], extra=2, )
+AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=['content', 'correct'], extra=2,
+                                   can_delete=True)
 
 
 class QuizForm1(forms.ModelForm):

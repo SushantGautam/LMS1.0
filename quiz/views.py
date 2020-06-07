@@ -557,7 +557,9 @@ class MCQuestionUpdateView(UpdateView):
             context['answers_formset'] = AnsFormset(
                 self.request.POST, instance=self.object)
         else:
-            context['answers_formset'] = AnsFormset(instance=self.object)
+            ansFormSet = AnsFormset(instance=self.object)
+            ansFormSet.extra = 0  # extra field on edit is removed
+            context['answers_formset'] = ansFormSet
             context['post_url'] = reverse('mcquestion_update', kwargs={'pk': self.object.pk})
         return context
 
