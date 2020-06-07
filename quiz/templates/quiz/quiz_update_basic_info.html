@@ -72,8 +72,8 @@
               $("#div_id_pass_mark").show();
           } else {
               {#$('#id_single_attempt').removeAttr('disabled readonly')#}
-              $('#id_chapter_code').removeAttr('disabled readonly')
-
+              $('#id_chapter_code').removeAttr('disabled readonly');
+              $('#id_single_attempt').prop('checked', false);
               $("#div_id_duration").hide();
               $("#div_id_pass_mark").hide();
           }
