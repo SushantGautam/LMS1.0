@@ -21,7 +21,7 @@
                     <div class="">
                         {{ form.content|as_crispy_field }}
                     </div>
-                    <div class="">
+                    <div class="correct-ans-checkbox">
                         {{ form.correct|as_crispy_field }}
                     </div>
                     <div class="form-button-div">
@@ -109,6 +109,7 @@
             if (total > 1) {
                 btn.closest('.form-row').css('display', 'none');
                 btn.closest('.form-row').find('.delete-ans-checkbox input[type=checkbox]').prop('checked', true);
+                btn.closest('.form-row').find('.correct-ans-checkbox input[type=checkbox]').prop('checked', false);
                 var forms = $('.form-row');
                 $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
 
