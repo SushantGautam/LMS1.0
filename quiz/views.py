@@ -557,7 +557,9 @@ class MCQuestionUpdateView(UpdateView):
             context['answers_formset'] = AnsFormset(
                 self.request.POST, instance=self.object)
         else:
-            context['answers_formset'] = AnsFormset(instance=self.object)
+            ansFormSet = AnsFormset(instance=self.object)
+            ansFormSet.extra = 0  # extra field on edit is removed
+            context['answers_formset'] = ansFormSet
             context['post_url'] = reverse('mcquestion_update', kwargs={'pk': self.object.pk})
         return context
 
@@ -732,7 +734,12 @@ class QuizCreateWizard(AdminAuthMxnCls, SessionWizardView):
             step = self.steps.current
 
         if step == 'form1':
-            form.fields["course_code"].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+            if '/teachers' in self.request.path:
+                form.fields["course_code"].queryset = CourseInfo.objects.filter(
+                    pk__in=[id.pk for id in self.request.user.get_teacher_courses()['courses']])
+            else:
+                form.fields["course_code"].queryset = CourseInfo.objects.filter(
+                    Center_Code=self.request.user.Center_Code)
 
         if step == 'form2':
             step1_data = self.get_cleaned_data_for_step('form1')
@@ -778,6 +785,7 @@ class CreateQuizAjax(CreateView):
             self.object.pre_test = True if self.request.GET.get("test_type", None) == 'pre_test' else False
             self.object.post_test = True if self.request.GET.get("test_type", None) == 'post_test' else False
             self.object.exam_paper = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
+            self.object.single_attempt = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
             self.object.save()
         self.object.url = 'quiz' + str(self.object.id)
         super().form_valid(form)

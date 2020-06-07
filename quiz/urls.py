@@ -9,7 +9,7 @@ try:
 except ImportError:
     from django.urls import re_path as url, path
 
-from .views import QuizListView, QuizCreateView, CategoriesListView, \
+from .views import QuizListView, CategoriesListView, \
     QuizUserProgressView, \
     QuizTake, MCQuestionCreateView, TFQuestionCreateView, MCQuestionUpdateView, TFQuestionUpdateView, \
     QuizDetailView, QuizUpdateView, QuizDeleteView, QuizMarkingList, QuizMarkingDetail, SAQuestionCreateView, \
@@ -104,6 +104,7 @@ urlpatterns += (
          name='saquestion_remove_link'),
 
     path('quizfw/', views.QuizCreateWizard.as_view(), name='quizfw'),
+    path('teachers/quizfw/', views.QuizCreateWizard.as_view(), name='teachers_quizfw'),
     path('get_course_chapter/', views.GetCourseChapter.as_view(),
          name='get_course_chapter'),
     path('activate_quiz/<int:pk>/',

@@ -9,13 +9,12 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import SelectDateWidget
+from django_summernote.widgets import SummernoteWidget
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
     InningManager, Attendance
 
-from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
-from django_summernote.fields import SummernoteTextFormField, SummernoteTextField
 
 class UserRegisterForm(UserCreationForm):
     # Member_Role = forms.MultipleChoiceField(choices=USER_ROLES, widget=forms.CheckboxSelectMultiple())
@@ -252,6 +251,8 @@ class ChapterInfoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
+        if '/edit' in self.request.path:
+            del self.fields['Register_Agent']
 
     def clean(self):
         pass1, pass2 = False, False
@@ -392,7 +393,7 @@ class QuestionInfoForm(forms.ModelForm):
                             ["table", ["table"]], 
                             ["insert", ["link", "picture"]], 
                             ]}
-                            }))
+                            }), required=False)
     class Meta:
         model = AssignmentQuestionInfo
         fields = '__all__'

@@ -67,7 +67,9 @@ def start(request):
                 activeassignments += AssignmentInfo.objects.filter(
                     Assignment_Deadline__gte=datetime.utcnow(), Assignment_Start__lte=datetime.utcnow(),
                     Course_Code__id=course.Course_Code.id,
-                    Chapter_Code__Use_Flag=True)[:7]
+                    Chapter_Code__Use_Flag=True).filter(
+                    Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
+                    Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None))[:7]
     sittings = Sitting.objects.filter(user=request.user)
 
     # Wordcloud
@@ -85,20 +87,17 @@ def start(request):
     for chapter in chapters:
         if chapter.has_content():
             response = getChapterScore(request.user, chapter)
-            chapter.progress_score = round(float(response['totalProgressScore']),3)
-            chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'],2)
+            chapter.progress_score = round(float(response['totalProgressScore']), 3)
+            chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
             chapter.quiz = response['chapterProgress'][0]['quiz']
             if chapter.progress_score < float(100):
                 chapters_list.append(chapter)
 
-   
     # Sorting chapters based on progress score
     chapters_list.sort(key=lambda x: x.progress_score, reverse=False)
 
     # Only taking 5 chapters
     incomplete_chapters = chapters_list[:5]
-
-   
 
     # chapter_progress = []
     # counter = 0
@@ -290,34 +289,34 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         student_groups = GroupMapping.objects.filter(Students=self.request.user)
         course_group = InningInfo.objects.filter(
-                                        Groups__in=student_groups, 
-                                        Use_Flag=True, 
-                                        Start_Date__lte=datetime_now, 
-                                        End_Date__gte=datetime_now).values_list('Course_Group',flat=True)
+            Groups__in=student_groups,
+            Use_Flag=True,
+            Start_Date__lte=datetime_now,
+            End_Date__gte=datetime_now).values_list('Course_Group', flat=True)
 
         active_courses = InningGroup.objects.filter(
-                            pk__in=course_group, 
-                            Course_Code__Use_Flag=True).values_list('Course_Code', flat=True)
+            pk__in=course_group,
+            Course_Code__Use_Flag=True).values_list('Course_Code', flat=True)
 
         active_chapters = ChapterInfo.objects.filter(
-                            Course_Code__in=active_courses, 
-                            Use_Flag=True).filter(
-                            Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
-                            Q(End_Date__gte=datetime_now) | Q(End_Date=None))
+            Course_Code__in=active_courses,
+            Use_Flag=True).filter(
+            Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+            Q(End_Date__gte=datetime_now) | Q(End_Date=None))
 
         context['currentDate'] = datetime_now
         context['Assignment'] = AssignmentInfo.objects.filter(
-                                    Chapter_Code__in=active_chapters, 
-                                    Use_Flag=True,
-                                    Assignment_Start__lte=datetime_now)
+            Chapter_Code__in=active_chapters,
+            Use_Flag=True,
+            Assignment_Start__lte=datetime_now)
         context['activeAssignment'] = context['Assignment'].filter(
-                                    Assignment_Deadline__gte=datetime_now)
+            Assignment_Deadline__gte=datetime_now)
         context['expiredAssignment'] = context['Assignment'].filter(
-                                    Assignment_Deadline__lte=datetime_now)
-        
+            Assignment_Deadline__lte=datetime_now)
+
         return context
 
 
@@ -448,7 +447,8 @@ class submitAnswer(View):
             if media.size / 1024 > 10240:
                 return JsonResponse(data={'status': 'Fail', "msg": "File size exceeds 10MB"}, status=500)
             path = settings.MEDIA_ROOT
-            name = (str(uuid.uuid4())).replace('-', '') + '.' + media.name.split('.')[-1]
+            name = str(request.user.username) + '___' + (str(uuid.uuid4())).replace('-', '') + '___' + \
+                   media.name.split('.')[0] + '.' + media.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
             filename = fs.save(name, media)
             Obj.Assignment_File = 'assignments/' + str(Assignment_Code.id) + '/' + name

@@ -191,7 +191,8 @@ class AnswerForm(forms.ModelForm):
         fields = '__all__'
 
 
-AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=['content', 'correct'], extra=2, )
+AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=['content', 'correct'], extra=2,
+                                   can_delete=True)
 
 
 class QuizForm1(forms.ModelForm):
@@ -370,7 +371,7 @@ class QuizBasicInfoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['course_code'].queryset = CourseInfo.objects.filter(Center_Code=my_obj.cent_code)
         if my_obj.exam_paper:
-            self.fields['single_attempt'].widget.attrs['class'] = "readonly-field"
+            # self.fields['single_attempt'].widget.attrs['class'] = "readonly-field"
             self.fields['chapter_code'].widget.attrs['class'] = "readonly-field"
 
         self.helper = FormHelper()

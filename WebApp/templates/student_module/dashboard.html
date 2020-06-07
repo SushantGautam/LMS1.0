@@ -129,45 +129,55 @@
 {#                            href="{% url 'student_myassignmentinfo_list' %}">List#}
 {#                                        of Incomplete Chapters </a>#}
                     </span></h3>
+                    {% if incomplete_chapters %}
+                        <strong style="color: red;font-weight: 700;">[Studied time must meet the
+                            Running time to complete chapter]</strong>
+                    {% endif %}
                 </div>
-                <ul class="list-group" style="max-height: 42vh;overflow:auto">
-                    {% for chapter in incomplete_chapters %}
-                        <li class="list-group-item1 ">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                        <b> {{ chapter.Chapter_Name }}</b>
-                                        <h5 style="margin-bottom: 0;">
-                                            <a href="{{ chapter.student_get_absolute_url }}">
-                                                <button type="button" style="width:103px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px; padding:0 2px;
-                                                ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                                </button>
+                {% if incomplete_chapters %}
+                    <ul class="list-group" style="max-height: 42vh;overflow:auto">
+                        {% for chapter in incomplete_chapters %}
+                            <li class="list-group-item1 ">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <b> {{ chapter.Chapter_Name }}</b>
+                                            <h5 style="margin-bottom: 0;">
+                                                <a href="{{ chapter.student_get_absolute_url }}">
+                                                    <button type="button" style="width:103px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px; padding:0 2px;
+                                                    ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                                    </button>
 
-                                            </a>
-                                        </h5>
-
-                                    </div>
-                                    <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
-                                        <div class="assignment-status-margin"
-                                             style="font-size:14px; font-style: italic;  font-weight:600 ; ">Chapter
-                                            Progress: {{ chapter.chapter_progress|floatformat }} %
+                                                </a>
+                                            </h5>
 
                                         </div>
-                                        <div>
-                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> Quiz Progress </span>
-                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.quiz.progress|floatformat }} %</span>
-                                        </div>
-                                        <div>
-                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> Completed/Total </span>
-                                            <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.quiz.completed_quiz }}/{{ chapter.quiz.quiz_count }}</span>
+                                        <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
+                                            <div class="assignment-status-margin"
+                                                 style="font-size:14px; font-style: italic;  font-weight:600 ; ">Chapter
+                                                Progress: {{ chapter.chapter_progress|floatformat }} %
+
+                                            </div>
+                                            <div>
+                                                <span style="font-size:14px; font-style: italic;  font-weight:600;"> Quiz Progress </span>
+                                                <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.quiz.progress|floatformat }} %</span>
+                                            </div>
+                                            <div>
+                                                <span style="font-size:14px; font-style: italic;  font-weight:600;"> Completed/Total </span>
+                                                <span style="font-size:14px; font-style: italic;  font-weight:600;"> : {{ chapter.quiz.completed_quiz }}/{{ chapter.quiz.quiz_count }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                        </li>
-                    {% endfor %}
-                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="text-center">
+                        <strong style="color: limegreen;font-weight: 700;">There are no incomplete chapters.</strong>
+                    </div>
+                {% endif %}
             </div>
 
         </div>

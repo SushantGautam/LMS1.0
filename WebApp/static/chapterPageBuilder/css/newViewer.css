@@ -764,10 +764,19 @@ margin-left: 7px;
     border-radius: 50%;
     text-align: center;
     margin-left: -5px;
-    color:white;
-
-    
+    color:white;   
 }
+.unread-chat-count{
+    margin-top: -24px;
+    font-size: 10px;
+    background-color: #d32c2c;
+    border-radius: 50%;
+    text-align: center;
+    margin-left: -10px;
+    color: white;
+    padding: 1px 6px;
+}
+
 .volume-icon{
     font-size: 17px;
     color: white;
