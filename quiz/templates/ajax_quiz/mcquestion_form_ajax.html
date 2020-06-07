@@ -14,21 +14,20 @@
         <div id="option_dynamic_append">
             {{ answers_formset.management_form }}
             {% for form in answers_formset %}
-                <div class="row form-group form-row form-inline">
+                <div class="row form-group form-row">
                     <div style="display: none" class="delete-ans-checkbox">
                         {{ form.DELETE }}
                     </div>
                     <div class="">
                         {{ form.content|as_crispy_field }}
+                    </div>
 
-                        <div class="correct-ans-checkbox col-md-2">
-                            {{ form.correct|as_crispy_field }}
-                        </div>
+                    <div class="correct-ans-checkbox col-md-2">
+                        {{ form.correct|as_crispy_field }}
+                    </div>
 
-                        <div class="form-button-div col-md-1">
-                            <button type="button" class="btn btn-danger remove-form-row">x</button>
-                        </div>
-
+                    <div class="form-button-div col-md-1">
+                        <button type="button" class="btn btn-danger remove-form-row">x</button>
                     </div>
                     
                     
