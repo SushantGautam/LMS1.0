@@ -133,14 +133,14 @@
                 </tr>
                 <tr>
                     <td>Registered By</td>
-                    <td>{{ object.Register_Agent }}</td>
+                    <td>{% getUser object.Register_Agent as user %}{{ user }}</td>
                 </tr>
                 <tr>
                     <td>Status</td>
                     <td>
                         {% if object.Use_Flag == True %}
                             <span class="badge badge-success">Active</span>
-                        </span>
+                            </span>
                         {% elif object.Use_Flag == False %}
                             <span class="badge badge-danger">Inactive</span>
                         {% endif %}

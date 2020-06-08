@@ -2,6 +2,8 @@
 
 from django import template
 
+from WebApp.models import MemberInfo
+
 register = template.Library()
 
 
@@ -53,3 +55,10 @@ def getUserQuizStatus(obj, user):
         'isExist': isExist,
         'isComplete': isComplete
     }
+
+
+@register.simple_tag
+def getUser(userdata):
+    if MemberInfo.objects.filter(username=userdata).exists():
+        return MemberInfo.objects.get(username=userdata)
+    return userdata
