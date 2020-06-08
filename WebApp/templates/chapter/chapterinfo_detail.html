@@ -1,4 +1,6 @@
 {% load static %}
+{% load model_template_relation %}
+
 {# <script src="https://player.vimeo.com/api/player.js"></script> #}
 {% now "Y-m-d" as todays_date %}
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -149,8 +151,9 @@
                                     <span> {{ pre_quiz.title }} </span>
                                 </div>
                                 <div class="col-md-3">
-{#                                    {% if pre_quiz.sitting_set.all.count > 0 %}#}
-                                    {% if pre_quiz.sitting_list.count > 0 %}
+                                    {% getUserQuizStatus pre_quiz.sitting_set.all user as student_quiz_status %}
+
+                                    {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
                                         {% if pre_quiz.single_attempt %}
                                             <span style="color: limegreen; font-weight: bold">Completed</span>
                                         {% else %}
@@ -228,14 +231,16 @@
                                     <span> {{ post_quiz.title }} </span>
                                 </div>
                                 <div class="col-md-6">
-                                    {% if post_quiz.sitting_list.count > 0 %}
+                                    {% getUserQuizStatus post_quiz.sitting_set.all user as student_quiz_status %}
+
+                                    {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
                                         {% if post_quiz.single_attempt %}
                                             <span style="color: limegreen; font-weight: bold">Completed</span>
                                         {% else %}
                                             <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
                                                 <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
                                                         class=" qts-button " data-toggle="modal"
-                                                        data-target="#quizmodal">Play
+                                                        data-target="#quizmodal" style="background-color: #65f665">Play
                                                     Again
                                                 </button>
                                             </a>
@@ -244,8 +249,7 @@
                                         <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
                                             <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
                                                     class=" qts-button " data-toggle="modal" data-target="#quizmodal">
-                                                Play
-                                                Quiz
+                                                Play Quiz
                                             </button>
                                         </a>
                                     {% endif %}

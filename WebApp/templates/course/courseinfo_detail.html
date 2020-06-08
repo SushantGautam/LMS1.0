@@ -216,12 +216,23 @@
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
                                                         {% if not eachquiz.draft %}
-                                                            {% if eachquiz.sitting_set.all.count > 0 %}
-                                                                <span style="color: limegreen; font-weight: bold">Completed</span>
+                                                            {% getUserQuizStatus eachquiz.sitting_set.all user as student_quiz_status %}
+
+                                                            {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
+                                                                {% if eachquiz.single_attempt %}
+                                                                    <span style="color: limegreen; font-weight: bold">Completed</span>
+                                                                {% else %}
+                                                                    <a target="_blank"
+                                                                       href="/quiz/quiz{{ eachquiz.pk }}/take/">
+                                                                    <span style="color: limegreen; font-weight: bold">
+                                                                        Take Exam Again
+                                                                    </span></a>
+                                                                {% endif %}
                                                             {% else %}
                                                                 <a target="_blank"
                                                                    href="/quiz/quiz{{ eachquiz.pk }}/take/">
-                                                                    Take Exam</a>
+                                                                    <span style="font-weight: bold; color: #721c24">Take Exam</span>
+                                                                </a>
                                                             {% endif %}
                                                         {% endif %}
                                                     {% elif "teachers" in request.path %}
@@ -377,17 +388,22 @@
                                                 {% for eachquiz in numberOfQuizExclExams %}
                                                     <br> {{ eachquiz.title }}
                                                     {% if "students" in request.path %}-
-                                                        {% if eachquiz.sitting_set.all.count > 0 %}
+                                                        {% getUserQuizStatus eachquiz.sitting_set.all user as student_quiz_status %}
+
+                                                        {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
                                                             {% if eachquiz.single_attempt %}
                                                                 <span style="color: limegreen; font-weight: bold">Completed</span>
                                                             {% else %}
                                                                 <a target="_blank"
                                                                    href="/quiz/quiz{{ eachquiz.pk }}/take/">
-                                                                    <span style="color: green">Take Quiz Again</span></a>
+                                                                <span style="color: limegreen; font-weight: bold">
+                                                                    Take Quiz Again
+                                                                </span></a>
                                                             {% endif %}
                                                         {% else %}
-                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">Take
-                                                                Quiz</a>
+                                                            <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">
+                                                                <span style="font-weight: bold; color: #721c24">Take Quiz</span>
+                                                            </a>
                                                         {% endif %}
                                                     {% elif "teachers" in request.path %}
                                                         <br>   <a style="color: #0c83e4; font-size: large"
