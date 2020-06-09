@@ -35,3 +35,18 @@ window.onload = function () {
         $(this).text(TimeConvert($(this).text()))
     });
 }
+
+// end_date, start_date must be date objects
+function dateDifference(end_date, start_date) {
+    if (end_date < start_date) {
+        return "Expired"
+    }
+    var msec = end_date - start_date;
+    var mins = Math.floor(msec / 60000);
+    var hrs = Math.floor(mins / 60);
+    var days = Math.floor(hrs / 24);
+    var yrs = Math.floor(days / 365);
+    mins = mins % 60;
+    hrs = hrs % 24;
+    return days + " days, " + hrs + " hours, " + mins + " minutes"
+}

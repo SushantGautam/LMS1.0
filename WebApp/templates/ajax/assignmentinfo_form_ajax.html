@@ -52,7 +52,7 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
-            class="select form-control">
+               class="select form-control">
     </div>
     <div class="submitButton text-center col-md-12">
         <button class="btn btn-success" type="submit">Submit</button>
@@ -60,21 +60,23 @@
 
 </form>
 <script>
-    const selectElement = document.querySelector('#id_Assignment_Deadline');
-    selectElement.addEventListener('change', (event) => {
-        const result = document.querySelector('.result');
-        var date = Date.parse($('#id_today_date').val());
-        var deadline = Date.parse(event.target.value);
-        var remaining = (deadline - date) / (1000 * 3600 * 24);
-        if (remaining < 0) {
-            result.textContent = `Days Remaining : Invalid`;
+    $(document).ready(function () {
+        $('#id_Assignment_Deadline').on('dp.change', function (event) {
+            const result = document.querySelector('.result');
+            var date = new Date();
+            var deadline = new Date(event.target.value);
+            var remaining = dateDifference(deadline, date);
+            if (remaining < 0) {
+                result.textContent = `Days Remaining : Invalid`;
 
-        } else {
-            result.textContent = `Days Remaining : ${remaining} days`;
+            } else {
+                result.textContent = `Days Remaining : ${remaining}`;
 
-        }
-        ;
-    });
+            }
+            ;
+        });
+    })
+
 </script>
 <script>
     $(".se-pre-con-ajax").fadeOut("fast");
