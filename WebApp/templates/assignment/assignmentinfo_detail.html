@@ -497,60 +497,24 @@
     <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
     <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
-    <script>
-        const selectElement = document.querySelector('#id_Assignment_Deadline_edit');
-        selectElement.addEventListener('change', (event) => {
-            const result = document.querySelector('.result');
-            var date = Date.parse($('#id_today_date').val());
-            var deadline = Date.parse(event.target.value);
-            var remaining = (deadline - date) / (1000 * 3600 * 24);
-            if (remaining < 0) {
-                result.textContent = `Days Remaining : Invalid`;
-
-            } else {
-                result.textContent = `Days Remaining : ${remaining} days`;
-
-            }
-            ;
-        });
-    </script>
     {#    <script>#}
-    {#        $("#edit_question_modal_body").submit(function (e) {#}
-    {#            e.preventDefault(); // avoid to execute the actual submit of the form.#}
-    {#            var formdata = new FormData();#}
-    {#            var file = $(`#id_Question_Media_File_edit${this.id}`)[0].files[0];#}
-    {#            formdata.append("Question_Media_File", file);#}
-    {#            formdata.append("csrfmiddlewaretoken", '{{ csrf_token }}');#}
-    {#            formdata.append("clear", $(`#Question_Media_File-clear_id${this.id}`).is(":checked"));#}
-    {#            // console.log($(`#Question_Media_File-clear_id${this.id}`).is(":checked"));#}
-    {#            formdata.append("Question_Title", $(`#id_Question_Title_edit${this.id}`).val());#}
-    {#            formdata.append("Question_Score", $(`#id_Question_Score_edit${this.id}`).val());#}
-    {#            formdata.append("Question_Description", $(`#id_Question_Description_edit${this.id}`).val());#}
-    {#            formdata.append("Answer_Type", $(`#id_Answer_Type_edit${this.id}`).val());#}
-    {#            formdata.append("Use_Flag", $(`#id_Use_Flag_edit${this.id}`).val());#}
-    {#            formdata.append("Register_Agent", $(`#id_Register_Agent_edit${this.id}`).val());#}
-    {#            formdata.append("Assignment_Code", $(`#id_Assignment_Code_edit${this.id}`).val());#}
-    {#            formdata.append("pk", this.id);#}
+    {#        const selectElement = document.querySelector('#id_Assignment_Deadline_edit');#}
+    {#        selectElement.addEventListener('change', (event) => {#}
+    {#            const result = document.querySelector('.result');#}
+    {#            var date = Date.parse($('#id_today_date').val());#}
+    {#            var deadline = Date.parse(event.target.value);#}
+    {#            var remaining = (deadline - date) / (1000 * 3600 * 24);#}
+    {#            if (remaining < 0) {#}
+    {#                result.textContent = `Days Remaining : Invalid`;#}
     {##}
-    {#            $.ajax({#}
-    {#                url: `/questioninfo/edit/${$('#edit_question_modal_body').attr('data-questionpk')}/ajax/`,  // URL to your view that serves new info#}
-    {#                data: formdata,#}
-    {#                // get the form data#}
-    {#                type: $(this).attr('method'), // GET or POST#}
-    {#                enctype: 'multipart/form-data',#}
-    {#                processData: false,#}
-    {#                contentType: false,#}
-    {#                success: function (response) {#}
-    {#                    console.log('Success')#}
-    {#                    location.reload()#}
-    {#                },#}
-    {#                error: function () {#}
-    {#                    console.log('Error in posting question edit form')#}
-    {#                }#}
+    {#            } else {#}
+    {#                result.textContent = `Days Remaining : ${remaining} days`;#}
     {##}
-    {#            });#}
+    {#            }#}
+    {#            ;#}
     {#        });#}
     {#    </script>#}
+
     <script>
         document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
         document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")
@@ -583,6 +547,20 @@
                 }
 
             });
+        });
+        $('#id_Assignment_Deadline_edit').on('dp.change', function (event) {
+            const result = document.querySelector('.result');
+            var date = new Date();
+            var deadline = new Date(event.target.value);
+            var remaining = dateDifference(deadline, date);
+            if (remaining < 0) {
+                result.textContent = `Days Remaining : Invalid`;
+
+            } else {
+                result.textContent = `Days Remaining : ${remaining}`;
+
+            }
+            ;
         });
     </script>
     <script>

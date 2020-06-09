@@ -218,6 +218,8 @@ class CourseInfoForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
         self.fields['Course_Provider'].initial = self.request.user.Center_Code
+        if '/edit' in self.request.path:
+            del self.fields['Register_Agent']
 
     class Meta:
         model = CourseInfo
@@ -305,6 +307,8 @@ class GroupMappingForm(forms.ModelForm):
         super(GroupMappingForm, self).__init__(*args, **kwargs)
         self.fields['Students'].queryset = MemberInfo.objects.filter(Is_Student=True, Use_Flag=True,
                                                                      Center_Code=self.request.user.Center_Code)
+        if '/update' in self.request.path:
+            del self.fields['Register_Agent']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -338,6 +342,8 @@ class InningGroupForm(forms.ModelForm):
                                                                          Center_Code=self.request.user.Center_Code)
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                         Use_Flag=True)
+        if '/update' in self.request.path:
+            del self.fields['Register_Agent']
 
 
 class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):
@@ -371,6 +377,8 @@ class InningInfoForm(forms.ModelForm):
                                                                          Use_Flag=True)
         self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                      Use_Flag=True)
+        if '/update' in self.request.path:
+            del self.fields['Register_Agent']
 
         # rel = ManyToOneRel(self.instance.Course_Group.model, 'id',field_name="Course Group")
         # self.fields['Course_Group'].widget = RelatedFieldWidgetWrapper(self.fields['Course_Group'].widget, rel, self.admin_site)

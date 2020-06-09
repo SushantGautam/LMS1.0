@@ -2,6 +2,8 @@
 
 from django import template
 
+from WebApp.models import MemberInfo
+
 register = template.Library()
 
 
@@ -34,3 +36,29 @@ def getTeacherStatusoOfAssignment(obj, user):
         'assg_status': assg_status,
         'total_students': completed + incomplete,
     }
+
+@register.simple_tag
+def getUserQuizStatus(obj, user):
+    userSittings = obj.filter(user__id=user.id)
+    if userSittings.exists():
+        isExist = True
+        for userSitting in userSittings:
+            if userSitting.complete:
+                isComplete = True
+                break
+            else:
+                isComplete = False
+    else:
+        isExist = False
+        isComplete = None
+    return {
+        'isExist': isExist,
+        'isComplete': isComplete
+    }
+
+
+@register.simple_tag
+def getUser(userdata):
+    if MemberInfo.objects.filter(username=userdata).exists():
+        return MemberInfo.objects.get(username=userdata)
+    return userdata

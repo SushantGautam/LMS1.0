@@ -458,7 +458,7 @@ class AssignmentQuestionInfo(models.Model):
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
 
-    Question_Media_File = FileField(upload_to=upload_to, blank=True, null=True)
+    Question_Media_File = FileField(upload_to=upload_to, blank=True, null=True, max_length=255)
     Question_Description = TextField(blank=True, null=True)
     Answer_Choices = (
         ('S', 'Short Answer'),
@@ -539,7 +539,7 @@ class AssignAnswerInfo(models.Model):
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
     Assignment_Answer = TextField(null=True, blank=True)
-    Assignment_File = FileField(upload_to=assignment_upload, null=True, blank=True)
+    Assignment_File = FileField(upload_to=assignment_upload, null=True, blank=True, max_length=255)
 
     # Relationship Fields
     Question_Code = ForeignKey(

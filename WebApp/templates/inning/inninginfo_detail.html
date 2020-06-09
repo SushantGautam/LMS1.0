@@ -1,4 +1,5 @@
 {% load static %}
+{% load model_template_relation %}
 
 <div class="outerdiv">
     {% include 'WebApp/theme/alerts.html' %}
@@ -64,7 +65,7 @@
 
                     <tr>
                         <td>Register Agent</td>
-                        <td>{{ object.Register_Agent }}</td>
+                        <td>{% getUser object.Register_Agent as user %}{{ user }}</td>
                     </tr>
                     <tr>
                         <td>Status</td>
