@@ -449,6 +449,8 @@ class submitAnswer(View):
             path = settings.MEDIA_ROOT
             name = str(request.user.username) + '___' + (str(uuid.uuid4())).replace('-', '') + '___' + \
                    media.name.split('.')[0] + '.' + media.name.split('.')[-1]
+            if len(name) > 200:
+                name = name.split('.')[0][:190] + '.' + name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
             filename = fs.save(name, media)
             Obj.Assignment_File = 'assignments/' + str(Assignment_Code.id) + '/' + name
