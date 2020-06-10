@@ -107,5 +107,20 @@
               }
           });
       });
+
+      $(document).ready(function () {
+          checkNegativeMarking($("#id_negative_marking"))
+          $("#id_negative_marking").on('change', function () {
+              checkNegativeMarking($(this))
+          });
+      })
+
+      function checkNegativeMarking($this) {
+          if ($this[0].checked) {
+              $("#div_id_negative_percentage").show();
+          } else {
+              $("#div_id_negative_percentage").hide();
+          }
+      }
   </script>
 {% endblock customjss %}

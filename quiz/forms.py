@@ -341,7 +341,7 @@ class QuizBasicInfoForm(forms.ModelForm):
         model = Quiz
         fields = ['title', 'course_code', 'description', 'chapter_code', 'pre_test', 'post_test', 'answers_at_end',
                   'random_order', 'single_attempt', 'draft', 'exam_paper', 'duration', 'pass_mark', 'success_text',
-                  'fail_text']
+                  'fail_text', 'negative_marking', 'negative_percentage']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -420,9 +420,14 @@ class QuizBasicInfoForm(forms.ModelForm):
             HTML('''<hr size="10">'''),
             HTML('''<label class=quiz-add-label>Quiz Features</label>'''),
             Row(
-                Column('random_order', css_class='form-group col-md-4 mb-0'),
-                Column('single_attempt', css_class='form-group col-md-4 mb-0'),
-                Column('draft', css_class='form-group col-md-4 mb-0'),
+                Column('negative_marking', css_class='form-group col-md-3 mb-0'),
+                Column('random_order', css_class='form-group col-md-3 mb-0'),
+                Column('single_attempt', css_class='form-group col-md-3 mb-0'),
+                Column('draft', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('negative_percentage', css_class='form-group col-md-12 mb-0'),
                 css_class='form-row'
             ),
             Row(

@@ -57,8 +57,13 @@
     </tr>
     <tr>
         <td><p>Quiz Feature</p></td>
-        <td><p>{% if quiz.random_order %}Random Order <br>{% endif %}
-            {% if quiz.single_attempt %}Single Attempt <br>{% endif %}</p>
+        <td>
+            <p>
+                {% if quiz.random_order %}Random Order <br>{% endif %}
+                {% if quiz.single_attempt %}Single Attempt <br>{% endif %}
+                {% if quiz.negative_marking %}Negative Attempt <br>{% endif %}
+            </p>
+        </td>
 
     </tr>
     <tr>
