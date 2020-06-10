@@ -379,8 +379,15 @@ function addMessageToChat(chat_history) {
 
         if (data.hasOwnProperty('message_link_type')) {
             var msg = getTypeLink(data.message_link_type, data.message)
+            if (data.hasOwnProperty('isComplete') && window.location.href.indexOf("/students") > -1) {
+                var completeStatus = data.isComplete == 1 ? '<i style="color: green" class="fa fa-check" aria-hidden="true"></i>' : ''
+            } else {
+                var completeStatus = ''
+            }
+
         } else {
             var msg = data.message
+            var completeStatus = ''
         }
         $(chatLog).prepend(`
             ${chatdatediv}
@@ -392,7 +399,7 @@ function addMessageToChat(chat_history) {
                     <div class="msg-info-time timecon">${localtime}</div>
                     </div>
                     <div class="msg-text">
-                    ${msg}
+                    ${completeStatus}${msg}
                     </div>
                 </div>
             </div>
