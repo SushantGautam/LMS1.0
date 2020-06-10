@@ -1,0 +1,12 @@
+{% extends 'forum/base.html' %}
+
+{% block breadcrumb %}
+
+<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
+<li class="active">Search</li>
+
+{% endblock %}
+
+{% block main_contain %}
+{% include 'ForumInclude/Search.html' %}
+{% endblock %}
