@@ -75,26 +75,31 @@
                             </form>
                             {% else %}
                             <span class="text-danger">Blocked</span>
-                            <a style="float: right;color: #2A3F54;cursor:pointer" class="confirm-activate" id="{{object.id}}"><u> Activate </u></a>
-                            <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}" id="activateForm">
+                            <a style="float: right;color: #2A3F54;cursor:pointer" class="confirm-activate"
+                               id="{{ object.id }}"><u> Activate </u></a>
+                            <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"
+                                  id="activateForm">
                                 {% csrf_token %}
                                 <input type="hidden" value='' name='url'>
                             </form>
-                            {% endif %}
+                        {% endif %}
                         </td>
                     </tr>
                     <tr>
                         <td class="mediumblack">Register DateTime</td>
-                        <td class="datecon">{{ object.date_joined|date:'M d, Y H:i' }}</td>
+                        <td class="">
+                            <span class="">{{ object.date_joined|date:'M d, Y' }}</span>
+                            <span class="timecon">{{ object.date_joined|date:"d M, Y h:i A" }}</span>
+                        </td>
                     </tr>
                     <tr>
                         <td class="mediumblack">Member Type</td>
                         <td>
                             {% if object.Is_CenterAdmin %}
-                            &nbsp;Admin
+                                &nbsp;Admin
                             {% endif %}
                             {% if object.Is_Teacher %}
-                            &nbsp;Teacher
+                                &nbsp;Teacher
                             {% endif %}
                             {% if object.Is_Student %}
                             &nbsp;Student

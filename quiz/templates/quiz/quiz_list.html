@@ -62,8 +62,9 @@
                     </td>
 
 
-                    <td class = "datecon">
-                        {{ quiz.updated_date|date:'M d, Y H:i' }}
+                    <td class="">
+                        <span class="">{{ quiz.updated_date|date:'d/m/Y' }}</span>
+                        <span class="timecon">{{ quiz.updated_date|date:"d M, Y h:i A" }}</span>
                     </td>
 
 
