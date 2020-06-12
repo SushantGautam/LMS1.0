@@ -6393,10 +6393,14 @@ cuentaAtras = setInterval(function () {
     $("#time").html(countdown);
   }
   update(count);
-
+  if (count % 15 == 0) {
+    updateFunctionTimeElapsed(count)
+  }
   if (count == totaltime) {
-    count = 0;
+    // count = 0;
     countdown = stop();
     totaltime = stop();
+    updateFunctionTimeElapsed(count)
+    clearInterval(cuentaAtras)
   }
 }, 1000);

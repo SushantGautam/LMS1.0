@@ -77,7 +77,7 @@
     {% if question %}
         {% if quiz.exam_paper %}
             <div class="col-md-12 col-md-12 col-xs-12 ">
-                <div class="pie degree" id="quiz-timer" data-timer="{{ quiz.duration }}">
+                <div class="pie degree" id="quiz-timer" data-timer="{{ remaininig_time }}">
                     <span class="block-timer"></span>
                     <span id="time"></span>
                     <!-- <span id="time1">0</span> -->
@@ -138,23 +138,19 @@
 													{% endfor %}
 
 												</ul>
-												
-										<input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block btn-warning" >
-									
-                    
-									</form>
 
-								</div>
-					 </div>
+										<input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block
+                                               btn-warning" >
 
-			</div>
+
+                                    </form>
+
+                            </div>
+                   </div>
+
+            </div>
 </div>
 
-		
-			
-
-
-		
 
 
 
@@ -164,7 +160,12 @@
 
 
 
-<!-- <p class="lead">{{ question.content }}</p>
+
+
+
+
+
+        <!-- <p class="lead">{{ question.content }}</p>
 
 {% if question.figure %}
   <div class="quiz-ques-image">
@@ -192,10 +193,41 @@
   <input type="submit" value={% trans "Check" %} class="btn btn-large btn-block btn-warning" >
 </form> -->
 
-{% endif %}
+    {% endif %}
 
-<hr>
+    <hr>
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 
+    {% block customjss %}
+        <script>
+            function updateFunctionTimeElapsed(count) {
+                $.ajax({
+                    url: "{% url 'quiz_update_time_taken' %}",
+                    method: 'post',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'sitting_id': '{{ sitting_id }}',
+                        'quiz_id': '{{ quiz.id }}',
+                        'time_elapsed': parseInt('{{ sitting.time_elapsed }}') + parseInt(count)
+                    },
+                    success: function (data) {
+                        console.log(data)
+                        if (data.url != 0 || data.url != '0') {
+                            clearInterval(cuentaAtras)
+                            window.location.href = data.url;
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e.responseText)
+                    }
+                })
+            }
+
+            $('form').on('submit', function (e) {
+                updateFunctionTimeElapsed(count)
+            })
+        </script>
+    {% endblock %}
 
 {% endblock %}
 
