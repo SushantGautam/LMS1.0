@@ -304,7 +304,7 @@
                                                    data-parent="#accordionmk" href="#collapseTwocd"
                                                    aria-expanded="false"
                                                    aria-controls="collapseTwocd">
-                                                    Surveys: ({{ surveycount.count }}) <i
+                                                    Surveys: ({{ surveycount|length }}) <i
                                                         class="fa fa-angle-double-down"></i>
                                                 </a>
                                             </h4>
@@ -322,7 +322,7 @@
                                                                 {% if can_submit.0 %}
                                                                     Participate
                                                                 {% else %}
-                                                                    <span style="color: green"> View Details </span>
+                                                                    <span style="color: green"> Completed </span>
                                                                 {% endif %}
                                                             </a>
                                                         {% endif %}

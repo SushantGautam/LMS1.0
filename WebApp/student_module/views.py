@@ -355,7 +355,8 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         surveys = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         survey_ids = [s.id for s in surveys if s.can_submit(self.request.user)[1] != 1]
-        context['surveycount'] = surveys.filter(id__in=survey_ids)
+        context['surveycount'] = sorted(surveys.filter(id__in=survey_ids),
+                                        key=lambda a: a.can_submit(self.request.user)[0], reverse=True)
         context['quizcount'] = Quiz.objects.filter(
             course_code=self.kwargs.get('pk'), draft=False, exam_paper=True, chapter_code=None)
         context['numberOfQuizExclExams'] = Quiz.objects.filter(
