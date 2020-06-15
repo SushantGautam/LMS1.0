@@ -6384,23 +6384,25 @@ function update(percent) {
 }
 var count = 0;
 
-cuentaAtras = setInterval(function () {
-  countdown--;
-  count += 1;
-  if (countdown < 10) {
-    $("#time").html(" &nbsp;" + countdown);
-  } else {
-    $("#time").html(countdown);
-  }
-  update(count);
-  if (count % 15 == 0) {
-    updateFunctionTimeElapsed(count)
-  }
-  if (count == totaltime) {
-    // count = 0;
-    countdown = stop();
-    totaltime = stop();
-    updateFunctionTimeElapsed(count)
-    clearInterval(cuentaAtras)
-  }
-}, 1000);
+function runQuizTimerInterval() {
+  cuentaAtras = setInterval(function () {
+    countdown--;
+    count += 1;
+    if (countdown < 10) {
+      $("#time").html(" &nbsp;" + countdown);
+    } else {
+      $("#time").html(countdown);
+    }
+    update(count);
+    if (count % 15 == 0) {
+      updateFunctionTimeElapsed(count)
+    }
+    if (count == totaltime) {
+      // count = 0;
+      countdown = stop();
+      totaltime = stop();
+      updateFunctionTimeElapsed(count)
+      clearInterval(cuentaAtras)
+    }
+  }, 1000);
+}

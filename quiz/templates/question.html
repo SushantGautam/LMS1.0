@@ -258,6 +258,8 @@
 
     {% block customjss %}
         <script>
+            runQuizTimerInterval()
+
             function updateFunctionTimeElapsed(count) {
                 $.ajax({
                     url: "{% url 'quiz_update_time_taken' %}",
