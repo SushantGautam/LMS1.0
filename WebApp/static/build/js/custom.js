@@ -6359,18 +6359,18 @@ $(document).ready(function () {
   $("#time").text().innerHTML = parseInt($("#quiz-timer").attr("data-timer"));
 });
 
-var totaltime = parseInt($("#quiz-timer").attr("data-timer"));
-var countdown = parseInt($("#quiz-timer").attr("data-timer"));
+var totaltime = parseInt($(".quiz-timer").attr("data-timer"));
+var countdown = parseInt($(".quiz-timer").attr("data-timer"));
 
 function update(percent) {
   var deg;
   if (percent < totaltime / 2) {
     deg = 90 + (360 * percent) / totaltime;
     $(".pie").css(
-      "background-image",
-      "linear-gradient(" +
-      deg +
-      "deg, transparent 50%, white 50%),linear-gradient(90deg, white 50%, transparent 50%)"
+        "background-image",
+        "linear-gradient(" +
+        deg +
+        "deg, transparent 50%, white 50%),linear-gradient(90deg, white 50%, transparent 50%)"
     );
   } else if (percent >= totaltime / 2) {
     deg = -90 + (360 * percent) / totaltime;
@@ -6384,19 +6384,25 @@ function update(percent) {
 }
 var count = 0;
 
-cuentaAtras = setInterval(function () {
-  countdown--;
-  count += 1;
-  if (countdown < 10) {
-    $("#time").html(" &nbsp;" + countdown);
-  } else {
-    $("#time").html(countdown);
-  }
-  update(count);
-
-  if (count == totaltime) {
-    count = 0;
-    countdown = stop();
-    totaltime = stop();
-  }
-}, 1000);
+function runQuizTimerInterval() {
+  cuentaAtras = setInterval(function () {
+    countdown--;
+    count += 1;
+    if (countdown < 10) {
+      $("#time").html(" &nbsp;" + countdown);
+    } else {
+      $("#time").html(countdown);
+    }
+    update(count);
+    if (count % 15 == 0) {
+      updateFunctionTimeElapsed(count)
+    }
+    if (count == totaltime) {
+      // count = 0;
+      countdown = stop();
+      totaltime = stop();
+      updateFunctionTimeElapsed(count)
+      clearInterval(cuentaAtras)
+    }
+  }, 1000);
+}

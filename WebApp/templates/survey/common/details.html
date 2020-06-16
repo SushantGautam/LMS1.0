@@ -182,7 +182,7 @@
       <div class="col-md-12">
         <div class="col-md-9" id="to_print">
           <div class="col-md-12">
-            <button type="button" id="btnDownload" class="btn btn-primary btn-md">Print</button>
+            <button type="button" id="btnDownload" class="btn btn-primary btn-md">Download PDF</button>
             {% for question in questions %}
               {% if question.Question_Type == "MCQ" %}
 
@@ -423,19 +423,22 @@ margin: 0 auto"></div>
                             <th>{% trans "Date Submitted" %}</th>
                           </tr>
                           </thead>
-                          <tbody>
+                            <tbody>
 
-                          {% for answer in question.get_answers %}
+                            {% for answer in question.get_answers %}
 
-                            <tr>
-                              <td>{{ forloop.counter }}</td>
-                              <td>{{ answer.Submit_Code.Student_Code.getFullName }}</td>
-                              <td>{{ answer.Answer_Value }}</td>
-                              <td class="datecon">{{ answer.Submit_Code.Created_Date|date:'M d, Y H:i' }}</td>
-                            </tr>
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ answer.Submit_Code.Student_Code.getFullName }}</td>
+                                    <td>{{ answer.Answer_Value }}</td>
+                                    <td class="">
+                                        <span class="">{{ answer.Submit_Code.Created_Date|date:'d/m/Y' }}</span>
+                                        <span class="timecon">{{ answer.Submit_Code.Created_Date|date:"d M, Y h:i A" }}</span>
+                                    </td>
+                                </tr>
 
-                          {% endfor %}
-                          </tbody>
+                            {% endfor %}
+                            </tbody>
 
                         </table>
 
@@ -443,7 +446,7 @@ margin: 0 auto"></div>
                       </div>
 
 
-                      {#                      <script>#}
+                        {#                      <script>#}
                       {#                          document.addEventListener("DOMContentLoaded", function (event) {#}
                       {##}
                       {#                              var Answer_str = "";#}

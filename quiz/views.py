@@ -264,7 +264,7 @@ class QuizTake(FormView):
     def form_valid(self, form):
         if self.logged_in_user:
             self.form_valid_user(form)
-            if self.sitting.get_first_question() is False:
+            if self.sitting.get_first_question() is False or self.sitting.complete:
                 return self.final_result_user()
         else:
             self.form_valid_anon(form)
@@ -280,6 +280,8 @@ class QuizTake(FormView):
         context['question'] = self.question
         context['quiz'] = self.quiz
         context['sitting_id'] = self.sitting.id
+        context['sitting'] = self.sitting
+        context['remaininig_time'] = self.quiz.duration - self.sitting.time_elapsed
         if hasattr(self, 'previous'):
             context['previous'] = self.previous
         if hasattr(self, 'progress'):
@@ -495,6 +497,27 @@ def anon_session_score(session, to_add=0, possible=0):
         session["session_score_possible"] += possible
 
     return session["session_score"], session["session_score_possible"]
+
+
+def UpdateQuizTime(request):
+    if request.method == 'POST':
+        quiz = Quiz.objects.get(pk=request.POST.get('quiz_id'))
+        sitting = Sitting.objects.get(pk=request.POST.get('sitting_id'))
+        elapsed_time = request.POST.get('time_elapsed')
+        sitting.time_elapsed = elapsed_time
+        if int(elapsed_time) >= quiz.duration:
+            sitting.complete = True
+        sitting.save()
+
+        if request.GET.get('iframe'):
+            url = "/students/quiz/progress/" + str(sitting.id) + "/?iframe=" + request.GET.get('iframe')
+        else:
+            url = "/students/quiz/progress/" + str(sitting.id)
+
+        return JsonResponse({
+            'sitting_time_elapsed': sitting.time_elapsed,
+            'url': url if sitting.complete else 0
+        }, status=200)
 
 
 class QuestionCreateView(CreateView):

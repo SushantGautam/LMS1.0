@@ -442,7 +442,7 @@
 
               // width of A4 in mm
 
-              var yPos = 20;
+              var yPos =  20;
               var xPos = lMargin;
 
               //yPos = add_text(doc,
@@ -552,8 +552,8 @@
                           //doc.save('Test.pdf');
 
                           doc.autoPrint();
-                          //doc.save('Test.pdf');
-                          window.open(doc.output('bloburl'))
+                          doc.save('Test.pdf');
+                          //window.open(doc.output('bloburl'))
                       } else {
                           doc.text(150, 285, 'page ' + doc.page);
                           doc.addPage();

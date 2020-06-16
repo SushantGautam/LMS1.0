@@ -3150,6 +3150,32 @@ def getChatMessageHistory(request, chapterID):
             f = open(latest_file, 'r')
             if f.mode == 'r':
                 contents = json.loads(f.read())
+                if request.user.Is_Student:
+                    if 'message_link_type' in contents:
+                        isComplete = 0
+                        if contents['message_link_type'] == 'quiz':
+                            if Quiz.objects.filter(pk=int(contents['message'])).exists():
+                                userSittings = Quiz.objects.get(
+                                    pk=int(contents['message'])).sitting_set.all.filter(
+                                    user__id=request.user.id)
+                                if userSittings.exists():
+                                    isExist = True
+                                    for userSitting in userSittings:
+                                        if userSitting.complete:
+                                            isComplete = 1
+                                            break
+                                        else:
+                                            isComplete = 0
+                        elif contents['message_link_type'] == 'survey':
+                            if SurveyInfo.objects.filter(pk=int(contents['message'])).exists():
+                                can_submit, datetimeexpired, options, questions = SurveyInfo.objects.get(
+                                    pk=int(contents['message'])).can_submit(request.user)
+                                if not can_submit:
+                                    isComplete = 1
+                                else:
+                                    isComplete = 0
+
+                        contents.update({"isComplete": isComplete})
                 if request.GET.get('search'):
                     if request.GET.get('search') in contents['message']:
                         chat_history.append(contents)

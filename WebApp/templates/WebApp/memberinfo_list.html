@@ -51,8 +51,8 @@
 
                         <div class="import-message"></div>
                         <div class="text-center">
-                            <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit
-                                File
+                            <button class="btn btn-success" id="submitcsv" type="submit" style="margin:3em auto 2em auto">
+                                <span id="submitspinner"></span>Submit File
                             </button>
                             <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
                                     style="margin:3em auto 2em auto">Close
@@ -265,6 +265,9 @@
                 csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
                 formData.append("csrfmiddlewaretoken", csrf);
                 if ($('#id_import_csv').val()) {
+                    $('#submitspinner').html(`<i class="fa fa-spinner fa-spin"></i> `);
+                    $('#submitcsv').attr('disabled', true);
+                    $('.closeImportCSV').attr('disabled', true);
                     $.ajax({
                         type: "POST",
                         url: "{% url 'csv_import_ajax' %}",  // URL to your view that serves new info
@@ -282,6 +285,11 @@
                             $('.import-message').removeClass('text-sucess');
                             $('.import-message').html("Error while processing data please try again and verify the format.");
                         },
+                        complete: function (){
+                            $('#submitspinner').html(``);
+                            $('#submitcsv').attr('disabled', false);
+                            $('.closeImportCSV').attr('disabled', false);
+                        }
                     });
                 } else {
                     $('.import-message').addClass('text-danger');

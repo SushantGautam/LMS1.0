@@ -116,16 +116,22 @@
             {% if question.id == answer.Question_Code.id %}
                 <tr>
                     <td class="counterCell" style=" padding-top: 15px;"></td>
-                    <td>{{forloop.counter  }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td style=" padding-top: 15px;">{{ answer.Student_Code }}</td>
                     <td>{{ answer.Question_Code.Question_Score }} </td>
-                    {% if answer.Assignment_Score is None %}
-                        <td id="Score_{{ answer.pk }}"> Not graded</td>
-                    {% else %}
-                        <td id="Score_{{ answer.pk }}">
+
+                    <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
+                        data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
+                        {% if answer.Assignment_Score is None %}
+                            Not graded
+                        {% else %}
                             {{ answer.Assignment_Score }}
-                        </td>
-                    {% endif %}
+                        {% endif %}
+                        <span class="edit_assignment_score" data-assignment_score="{{ answer.Assignment_Score }}">
+                            <i class="fa fa-edit"></i>
+                        </span>
+                    </td>
+
                     <td>{{ answer.Assignment_Answer }}</td>
                     <td>{% if answer %}
                         Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
@@ -180,10 +186,44 @@
             {% endfor %}
         })
 
-        function submitscoreajax() {
-            var answer_pk = $('#answerpk').val();
-            var stu_score = $('#studentScoresubmit').val() ? $('#studentScoresubmit').val() : 0;
+        $('td').on('click', '.edit_assignment_score', function (e) {
+            let assg_score = $(this).attr('data-assignment_score') == "None" ? '' : $(this).attr('data-assignment_score')
+            let max = $(this).closest('td').attr('data-assignment_max_score')
+            $(this).closest('td').empty().append(`
+            <form method="post">
+                <input type="number" value="${assg_score}" data-original="${assg_score}" min="0" max="${max}">
+                <button type="submit" style="color:green" class="assignment_score_submitBtn"><i class="fa fa-check" aria-hidden="true"></i></button>
+                <button type="button" style="color:red" class="assignment_score_closeBtn"><i class="fa fa-times" aria-hidden="true"></i></button>
+            </form>
+            `)
+        });
 
+        $('td').on('click', '.assignment_score_closeBtn', function (e) {
+            let assg_score = $(this).parent().find('input').attr('data-original') == "" ? 'None' : $(this).parent().find('input').attr('data-original')
+            let assg_display = assg_score == 'None' ? 'Not Graded' : assg_score
+            $(this).closest('td').empty().append(`
+            ${assg_display}
+            <span class="edit_assignment_score" data-assignment_score="${assg_score}">
+                <i class="fa fa-edit"></i>
+            </span>
+           `)
+        });
+
+        $('td').on('click', '.assignment_score_submitBtn', function (e) {
+            e.preventDefault()
+            answer_pk = $(this).closest('td').attr('data-answer_id')
+            stu_score = $(this).closest('td').find('input').val()
+            if (parseInt(stu_score) > parseInt($(this).closest('td').attr('data-assignment_max_score'))) {
+                return false
+            }
+            submitscoreajax(fromtd = true, answer_pk = answer_pk, stu_score = stu_score)
+        })
+
+        function submitscoreajax(fromtd = false, answer_pk = null, stu_score = null) {
+            if (!fromtd) {
+                var answer_pk = $('#answerpk').val();
+                var stu_score = $('#studentScoresubmit').val() ? $('#studentScoresubmit').val() : 0;
+            }
             const http = new XMLHttpRequest()
             http.onload = () => $('#Score_' + answer.pk).val(http.responseText);
             http.open("GET", '/teachers/submitStudentscore/' + answer_pk + '/' + stu_score + '/');
@@ -191,8 +231,16 @@
             http.onload = () => {
                 if (http.responseText === "success") {
                     $('#Score_' + answer_pk).html(stu_score).css("text-shadow", "2px 2px 5px red;");
+                    $('#Score_' + answer_pk).append(`
+                     <span class="edit_assignment_score" data-assignment_score="${stu_score}">
+                            <i class="fa fa-edit"></i>
+                        </span>
+                     `)
                     $('#Score_' + answer_pk).css("animation", "glowing 5000ms 1");
-                    $('#exampleModal1').modal('toggle');
+
+                    if (!fromtd) {
+                        $('#exampleModal1').modal('toggle');
+                    }
                 }
             }
             return false;

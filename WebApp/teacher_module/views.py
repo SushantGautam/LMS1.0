@@ -552,6 +552,8 @@ def submitStudentscore(request, Answer_id, score):
     if request.method == "GET":
 
         answerInfo = AssignAnswerInfo.objects.get(pk=Answer_id)
+        if score > answerInfo.Question_Code.Question_Score:
+            return HttpResponse("failure", status=500)
         answerInfo.Assignment_Score = score
         answerInfo.save()
         return HttpResponse("success")
