@@ -40,11 +40,37 @@ from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, An
 from .misc import get_query
 from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog, getChapterScore
 
-datetime_now = datetime.utcnow()
+datetime_now = timezone.now()
 
 User = get_user_model()
 
 from quiz.views import QuizUserProgressView, Sitting, Progress
+
+
+def student_all_assignements(user):
+    student_groups = GroupMapping.objects.filter(Students=user)
+    course_group = InningInfo.objects.filter(
+        Groups__in=student_groups,
+        Use_Flag=True,
+        Start_Date__lte=datetime_now,
+        End_Date__gte=datetime_now).values_list('Course_Group', flat=True)
+
+    active_courses = InningGroup.objects.filter(
+        pk__in=course_group,
+        Course_Code__Use_Flag=True).values_list('Course_Code', flat=True)
+
+    active_chapters = ChapterInfo.objects.filter(
+        Course_Code__in=active_courses,
+        Use_Flag=True).filter(
+        Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+        Q(End_Date__gte=datetime_now) | Q(End_Date=None))
+
+    assignments = AssignmentInfo.objects.filter(
+        Chapter_Code__in=active_chapters,
+        Use_Flag=True,
+        Assignment_Start__lte=datetime_now)
+
+    return assignments
 
 
 def start(request):
@@ -63,13 +89,14 @@ def start(request):
             for session in sessions:
                 course = session.Course_Group.filter(Course_Code__Use_Flag=True)
                 courses.update(course)
-            for course in courses:
-                activeassignments += AssignmentInfo.objects.filter(
-                    Assignment_Deadline__gte=datetime.utcnow(), Assignment_Start__lte=datetime.utcnow(),
-                    Course_Code__id=course.Course_Code.id,
-                    Chapter_Code__Use_Flag=True).filter(
-                    Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
-                    Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None))[:7]
+            # for course in courses:
+            #     activeassignments += AssignmentInfo.objects.filter(
+            #         Assignment_Deadline__gte=datetime_now, Assignment_Start__lte=datetime_now,
+            #         Course_Code__id=course.Course_Code.id,
+            #         Chapter_Code__Use_Flag=True).filter(
+            #         Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
+            #         Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None))[:7]
+    activeassignments = student_all_assignements(request.user).filter(Assignment_Deadline__gte=datetime_now)[:7]
     sittings = Sitting.objects.filter(user=request.user)
 
     # Wordcloud
@@ -290,28 +317,8 @@ class MyAssignmentsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        student_groups = GroupMapping.objects.filter(Students=self.request.user)
-        course_group = InningInfo.objects.filter(
-            Groups__in=student_groups,
-            Use_Flag=True,
-            Start_Date__lte=datetime_now,
-            End_Date__gte=datetime_now).values_list('Course_Group', flat=True)
-
-        active_courses = InningGroup.objects.filter(
-            pk__in=course_group,
-            Course_Code__Use_Flag=True).values_list('Course_Code', flat=True)
-
-        active_chapters = ChapterInfo.objects.filter(
-            Course_Code__in=active_courses,
-            Use_Flag=True).filter(
-            Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
-            Q(End_Date__gte=datetime_now) | Q(End_Date=None))
-
         context['currentDate'] = datetime_now
-        context['Assignment'] = AssignmentInfo.objects.filter(
-            Chapter_Code__in=active_chapters,
-            Use_Flag=True,
-            Assignment_Start__lte=datetime_now)
+        context['Assignment'] = student_all_assignements(self.request.user)
         context['activeAssignment'] = context['Assignment'].filter(
             Assignment_Deadline__gte=datetime_now)
         context['expiredAssignment'] = context['Assignment'].filter(
@@ -381,7 +388,7 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['assignments'] = AssignmentInfo.objects.filter(
-            Chapter_Code=self.kwargs.get('pk'), Use_Flag=True)
+            Chapter_Code=self.kwargs.get('pk'), Assignment_Start__lte=datetime_now, Use_Flag=True)
         context['post_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(
