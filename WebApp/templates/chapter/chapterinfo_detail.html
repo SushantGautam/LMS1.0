@@ -118,16 +118,14 @@
                     <td>Start Date</td>
                     <td>
                         {% if object.Start_Date %}
-                            {{ object.Start_Date|date:"d M, Y" }} <span
-                                class="timecon">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></td>
+                            <span class="dateconFullMonth">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></td>
                         {% endif %}
                 </tr>
                 <tr>
                     <td>End Date</td>
                     <td>
                         {% if object.End_Date %}
-                            {{ object.End_Date|date:"d M, Y" }} <span
-                                class="timecon">{{ object.End_Date|date:"d M, Y h:i A" }}</span></td>
+                            <span class="dateconFullMonth">{{ object.End_Date|date:"d M, Y h:i A" }}</span></td>
                         {% endif %}
                 </tr>
 
@@ -353,11 +351,9 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <hr style="margin-top: 1px; margin-bottom: 10px;">
                     <p>Start Date - <span
-                            class="">{{ o.Assignment_Start|date:'M d, Y' }}</span> <span
-                            class="timecon">{{ o.Assignment_Start|date:"d M, Y h:i A" }}</span></p>
+                            class="dateconFullMonth">{{ o.Assignment_Start|date:"d M, Y h:i A" }}</span></p>
                     <p>Submission Deadline - <span
-                            class="">{{ o.Assignment_Deadline|date:'M d, Y' }}</span> <span
-                            class="timecon">{{ o.Assignment_Deadline|date:"d M, Y h:i A" }}</span></p>
+                            class="dateconFullMonth">{{ o.Assignment_Deadline|date:"d M, Y h:i A" }}</span></p>
                 </div>
             </div>
         {% endfor %}

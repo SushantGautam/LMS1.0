@@ -59,13 +59,11 @@
                         <tr>
                             <td>Assignment Start Date</td>
                             {#                            Use Datecon class in td if conversion of date to local time is required#}
-                            <td class="">{{ object.Assignment_Start|date:'M d, Y' }} <span
-                                    class="timecon">{{ object.Assignment_Start|date:"d M, Y h:i A" }}</span></td>
+                            <td class="dateconFullMonth">{{ object.Assignment_Start|date:'d M, Y h:i A' }} </td>
                         </tr>
                         <tr>
                             <td>Assignment Deadline</td>
-                            <td class="">{{ object.Assignment_Deadline|date:'M d, Y' }} <span
-                                    class="timecon">{{ object.Assignment_Deadline|date:"d M, Y h:i A" }}</span></td>
+                            <td class="dateconFullMonth">{{ object.Assignment_Deadline|date:'d M, Y h:i A' }}</td>
                         </tr>
                         <tr>
                             <td>Course Code</td>
@@ -771,12 +769,6 @@
         // })
 
 
-        function DateConvert(date) {
-            date = new Date(date);
-            var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
-            let newdate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()))
-            return newdate
-        }
 
     </script>
 {% endblock %}

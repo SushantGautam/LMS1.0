@@ -39,13 +39,11 @@
                             </li>
                             <li class="surveyViewDates">
                                 <i class="fa fa-calendar"></i><label>Start date: <span
-                                    class="">{{ object.Start_Date|date:'M d, Y' }}</span> <span
-                                    class="timecon">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></label>
+                                    class="dateconFullMonth">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></label>
                             </li>
                             <li class="surveyViewDates">
                                 <i class="fa fa-calendar"></i><label>End date: <span
-                                    class="">{{ object.End_Date|date:'M d, Y' }}</span> <span
-                                    class="timecon">{{ object.End_Date|date:"d M, Y h:i A" }}</span></label>
+                                    class="dateconFullMonth">{{ object.End_Date|date:"d M, Y h:i A" }}</span></label>
                             </li>
                             <li class="surveyViewDates">
                                 <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
@@ -305,8 +303,7 @@ margin: 0 auto"></div>
                                                             <td>{{ answer.Submit_Code.Student_Code.getFullName }}</td>
                                                             <td>{{ answer.Answer_Value }}</td>
                                                             <td class="">
-                                                                <span class="">{{ answer.Submit_Code.Created_Date|date:'d/m/Y' }}</span>
-                                                                <span class="timecon">{{ answer.Submit_Code.Created_Date|date:"d M, Y h:i A" }}</span>
+                                                                <span class="datecon">{{ answer.Submit_Code.Created_Date|date:"d M, Y h:i A" }}</span>
                                                             </td>
                                                         </tr>
 
@@ -379,18 +376,18 @@ margin: 0 auto"></div>
                             {% if survey.id == object.id %}
                                 <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
                                 <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-danger text-center ">{{ survey.Start_Date|date:'M d, Y' }} <span
-                                        class="timecon">{{ survey.Start_Date|date:"d M, Y h:i A" }}</span></h4>
-                                <h4 class="text-danger text-center ">{{ survey.End_Date|date:'M d, Y' }} <span
-                                        class="timecon">{{ survey.End_Date|date:"d M, Y h:i A" }}</span></h4>
+                                <h4 class="text-danger text-center "><span
+                                        class="dateconFullMonth">{{ survey.Start_Date|date:"d M, Y h:i A" }}</span></h4>
+                                <h4 class="text-danger text-center "><span
+                                        class="dateconFullMonth">{{ survey.End_Date|date:"d M, Y h:i A" }}</span></h4>
                             {% else %}
                                 <h4 class="text-info text-center"><a
                                         href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
                                 <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-info text-center ">{{ survey.Start_Date|date:'M d, Y' }} <span
-                                        class="timecon">{{ survey.Start_Date|date:"d M, Y h:i A" }}</span></h4>
-                                <h4 class="text-info text-center ">{{ survey.End_Date|date:'M d, Y H:i' }} <span
-                                        class="timecon">{{ survey.End_Date|date:"d M, Y h:i A" }}</span></h4>
+                                <h4 class="text-info text-center "><span
+                                        class="dateconFullMonth">{{ survey.Start_Date|date:"d M, Y h:i A" }}</span></h4>
+                                <h4 class="text-info text-center "><span
+                                        class="dateconFullMonth">{{ survey.End_Date|date:"d M, Y h:i A" }}</span></h4>
                             {% endif %}
 
                         </div>
