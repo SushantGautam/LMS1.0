@@ -644,6 +644,82 @@ def ImportCsvFile(request, *args, **kwargs):
         return JsonResponse(data={"message": messages, "class": "text-success",
                                   "rmclass": "text-danger"})
 
+# The following function is for importing the course from the csv file
+def ImportCourse(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+
+        file_name = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + extension
+        path = 'media/import_csv/' + str(center_id) + '/course'
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name, media)
+        path = os.path.join(path, filename)
+
+        df = pd.read_csv(path, encoding='utf-8')
+        # Drop empty row of excel csv file
+        df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
+        error = ''
+        saved_id = []
+
+        if not df.empty:
+            for i in range(len(df)):
+                try:
+                    course_name = df.iloc[i]['Course Name(*)']
+                    course_provider = df.iloc[i]['Course Provider(*)']
+                    course_desc = df.iloc[i]['Course Description']
+                    course_level = df.iloc[i]['Level(1-5)']
+
+                    if pd.isnull(course_name):
+                        error = "Course Name is required"
+                        raise Exception
+                    if len(course_name) > 240:
+                        error = "Course Name can't be greater then 240 characters"
+                        raise Exception
+
+                    if pd.isnull(course_provider):
+                        error = "Course Provider is required"
+                        raise Exception
+                    if len(course_name) > 250:
+                        error = "Course Provider can't be greater then 250 characters"
+                        raise Exception
+
+                    if pd.isnull(course_level):
+                        course_level = 0
+                    else:
+                        try:
+                            course_level = int(course_level)
+                        except:
+                            error = "Course Level should be integer value"
+                            raise Exception   
+                    if course_level < 1 and course_level > 5:
+                        error = "Course Level should be between 1 and 5"
+                        raise Exception                   
+
+                    obj = CourseInfo()
+                    obj.Course_Name = course_name
+                    obj.Course_Description = course_desc
+                    obj.Course_Level = course_level
+                    obj.Register_Agent = request.user.username
+                    obj.Course_Provider = course_provider
+                    obj.Center_Code = request.user.Center_Code
+                    obj.save()
+                    saved_id.append(obj.id)
+
+                except Exception as e:
+                    for j in saved_id:
+                        CourseInfo.objects.filter(id=j).delete()
+                    msg = error + " Problem in " + str(i + 1) + "th row of data while uploading<br>"
+                    return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+        else:
+            error = "The uploaded excel has no data to register"
+        if not error:
+            error = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": error, "class": "text-success",
+                                  "rmclass": "text-danger"})
 
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
