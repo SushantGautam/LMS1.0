@@ -9,6 +9,10 @@ from WebApp.models import AssignmentQuestionInfo
 from . import models
 from . import serializers
 
+from datetime import datetime
+from django.db.models import Q
+from django.utils import timezone
+
 
 class CenterInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the CenterInfo class"""
@@ -133,13 +137,6 @@ class GroupMappingViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['Students', ]
 
-
-from datetime import datetime
-from django.db.models import Q
-
-datetime_now = datetime.utcnow()
-
-
 class AssignmentInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the HomeworkInfo class"""
 
@@ -154,6 +151,7 @@ class AssignmentInfoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+        datetime_now = timezone.now().replace(microsecond=0)
         if self.request.GET.get('Course_Code'):
             queryset = queryset.filter(
                 Course_Code__in=self.request.GET.get('Course_Code').split(','), Chapter_Code__Use_Flag=True,
