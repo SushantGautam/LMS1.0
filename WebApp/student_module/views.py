@@ -40,14 +40,13 @@ from survey.models import SurveyInfo, CategoryInfo, OptionInfo, SubmitSurvey, An
 from .misc import get_query
 from ..views import chapterProgressRecord, getCourseProgress, studentChapterLog, getChapterScore
 
-datetime_now = timezone.now()
-
 User = get_user_model()
 
 from quiz.views import QuizUserProgressView, Sitting, Progress
 
 
 def student_all_assignements(user):
+    datetime_now = timezone.now().replace(microsecond=0)
     student_groups = GroupMapping.objects.filter(Students=user)
     course_group = InningInfo.objects.filter(
         Groups__in=student_groups,
@@ -76,6 +75,7 @@ def student_all_assignements(user):
 def start(request):
     global courses, activeassignments, sessions, batches
     if request.user.Is_Student:
+        datetime_now = timezone.now().replace(microsecond=0)
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
         if batches:
@@ -220,6 +220,7 @@ def quizzes(request):
 
 def calendar(request):
     if request.user.Is_Student:
+        datetime_now = timezone.now().replace(microsecond=0)
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
         sessions = []
         if batches:
@@ -269,6 +270,7 @@ class MyCoursesListView(ListView):
         batches = GroupMapping.objects.filter(Students__id=self.request.user.id,
                                               Center_Code=self.request.user.Center_Code)
         sessions = []
+        datetime_now = timezone.now().replace(microsecond=0)
         if batches:
             for batch in batches:
                 # Filtering out only active sessions
@@ -317,6 +319,7 @@ class MyAssignmentsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        datetime_now = timezone.now().replace(microsecond=0)
         context['currentDate'] = datetime_now
         context['Assignment'] = student_all_assignements(self.request.user)
         context['activeAssignment'] = context['Assignment'].filter(
@@ -387,6 +390,7 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        datetime_now = timezone.now().replace(microsecond=0)
         context['assignments'] = AssignmentInfo.objects.filter(
             Chapter_Code=self.kwargs.get('pk'), Assignment_Start__lte=datetime_now, Use_Flag=True)
         context['post_quizes'] = Quiz.objects.filter(
@@ -612,6 +616,7 @@ class surveyFilterCategory_student(ListView):
         # try:
         category_name = self.request.GET['category_name'].lower()
         date_filter = self.request.GET['date_filter'].lower()
+        datetime_now = timezone.now().replace(microsecond=0)
         # student related data
         student_group = self.request.user.groupmapping_set.all()
         student_session = InningInfo.objects.filter(Groups__in=student_group)
@@ -1235,6 +1240,7 @@ from django.db.models import F
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
         courses = request.user.get_student_courses().distinct()
+        datetime_now = timezone.now().replace(microsecond=0)
         assignments = AssignmentInfo.objects.filter(
             Course_Code__in=courses,
             Chapter_Code__Use_Flag=True, Assignment_Start__lte=datetime_now,

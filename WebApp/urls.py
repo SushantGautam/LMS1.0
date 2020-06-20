@@ -73,6 +73,7 @@ urlpatterns += (
          views.CourseInfoUpdateView.as_view(), name='courseinfo_update'),
     path('courseinfo/delete/<int:pk>/',
          views.CourseInfoDeleteView, name='courseinfo_delete'),
+    path('importcsvcourse', views.ImportCourse, name='csv_import_course'),
 
 )
 

@@ -867,7 +867,10 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         for q in context['questions']:
             i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
             # score_list = context['sitting'].score_list.replace("not_graded", "0")
-            score = [s for s in context['sitting'].score_list.split(',') if s][i]
+            try:
+                score = [s for s in context['sitting'].score_list.split(',') if s][i]
+            except:
+                score = 'not_graded'
             q.score_obtained = score
             total += q.score
             if score != "not_graded":
