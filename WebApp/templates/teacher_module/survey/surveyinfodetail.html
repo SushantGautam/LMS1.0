@@ -505,26 +505,54 @@
                             //img.src = image64;
 
                         } else if ($this.classList.contains('SAQAnswers_div')) {
+                            var margin_top = 0;
+
+                            if (countAnswers === 1) {
+                                margin_top = 90
+                            } else {
+                                margin_top = 20
+                            }
                             let currentSelectedValue = $($this).find('.dataTables_length select').val()
                             $($this).find('.dataTables_length select').find('option[value="-1"]').prop('selected', true).trigger('change')
+                            let hcanvas = document.createElement("CANVAS");
+                            hcanvas.height = 150;
+                            hcanvas.width = 400;
+                            var hctx1 = hcanvas.getContext("2d");
+                            let ini_y = 14;
+                            hctx1.font = "14px Georgia";
+                            hctx1.textAlign = "start";
+                            ini_y = addTextCanvas(hcanvas, hctx1, $($this).find('h2').text(), 0, ini_y);
+                            ini_y += 14;
+                            let a_r = hcanvas.width / hcanvas.height;
+                            imgHeight = (doc.internal.pageSize.getHeight() * 0.2);
+                            imgWidth = (imgHeight * a_r);
+                            yPos += 1;
                             var header = function (data) {
-                                doc.setFontSize(14);
-                                {#doc.setTextColor(40);#}
-                                doc.setFontStyle('Georgia');
-                                doc.text($($this).find('h2').text(), data.settings.margin.left, data.settings.margin.top);
+
+                                // If question only in first page
+                                /*if (data.pageNumber !== 1) {
+                                    margin_top = 0
+                                    return false
+                                }*/
+
+                                doc.addImage(hcanvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
+
+                                {#doc.text($($this).find('h2').text(), data.settings.margin.left, data.settings.margin.top);#}
                             };
+                            let lines = getLines(hctx1, $($this).find('h2').text(), hcanvas.width - 10);
+                            margin_top += (10 * lines.length);
                             source = $($this).find('table')[0];
                             doc.autoTable({
                                 html: source,
                                 didDrawPage: header,
-                                margin: {top: 30, bottom: 20},
+                                margin: {top: margin_top, bottom: 25},
 
                             })
                             $($this).find('.dataTables_length select').find('option[value="' + currentSelectedValue + '"]').prop('selected', true).trigger('change')
                         }
 
-                        await waitFor(100);
-                        {#doc.text(150, 285, 'Page ' + doc.page);#}
+                    await waitFor(100);
+                    {#doc.text(150, 285, 'Page ' + doc.page);#}
                         if (countAnswers !== $('.SurveyAnswers').length) {
                             doc.addPage();
                             yPos = 20;
