@@ -3,8 +3,8 @@ function DateConvert(date) {
         return 'None'
     }
     date = new Date(date);
-    var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
-    let newdate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes())).toLocaleString("en-US", options)
+    var options = {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'};
+    let newdate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes())).toLocaleString("en-IN", options)
     return newdate
 }
 
@@ -27,12 +27,25 @@ function TimeConvert(date) {
     return newdate.split(' ')[1] + ' ' + newdate.split(' ')[2]
 }
 
+function DateConvertFullMonth(date) {
+    if (date == "") {
+        return 'None'
+    }
+    date = new Date(date);
+    var options = {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+    let newdate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes())).toLocaleString("en-IN", options)
+    return newdate
+}
+
 window.onload = function () {
     $('.datecon').each(function () {
         $(this).text(DateConvert($(this).text()))
     });
     $('.timecon').each(function () {
         $(this).text(TimeConvert($(this).text()))
+    });
+    $('.dateconFullMonth').each(function () {
+        $(this).text(DateConvertFullMonth($(this).text()))
     });
 }
 

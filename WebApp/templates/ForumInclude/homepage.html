@@ -137,12 +137,14 @@
                                         {% static 'images/profile/profile.png' %}
                                     {% endif %}" alt="..." class="img-circle width-20"/>
                                 {{ thread.user.username }}</a>
-                            | <i class="fa fa-clock-o fa-fw"></i> {{ thread.pub_date }} |
+                            | <i class="fa fa-clock-o fa-fw"></i>
+                            <span class="dateconFullMonth">{{ thread.pub_date|date:"d M, Y h:i A" }}</span> |
                             &nbsp;
                             |<i class="fa fa-clock-o fa-fw"></i> Last Replied:
                             {% if thread.last_replied|hours_ago:24 %}
-                                <span class="">{{ thread.last_replied|date:'M d, Y' }}</span> <span
-                                    class="timecon">{{ thread.last_replied|date:"d M, Y h:i A" }}</span></p>
+                                <span
+                                        class="dateconFullMonth">{{ thread.last_replied|date:"d M, Y h:i A" }}</span>
+                                </p>
                             {% else %}
                                 {{ thread.last_replied|timesince }}
                             {% endif %}

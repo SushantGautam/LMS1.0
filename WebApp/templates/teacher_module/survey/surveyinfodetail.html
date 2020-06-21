@@ -2,538 +2,587 @@
 {% load static %}
 
 {% block stylesheets %}
-  <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item" aria-current="page">
-    <a href="{% url 'question_teachers' %}">Survey</a>
-  </li>
-  <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'question_teachers' %}">Survey</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
 
 {% block content %}
-  {% include 'survey/common/details.html' %}
-  <img id="test_image"/>
+    {% include 'survey/common/details.html' %}
+    <img id="test_image"/>
 {% endblock %}
 
 {% block customjss %}
 
-  <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-  <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-
-  <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
-  <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
-  <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
-  <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
-
-  <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-  <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
-
-  <script src="{% static 'js/highchart_data.js' %}"></script>
-  <script src="{% static 'js/highcharts.js' %}"></script>
-  <script src="{% static 'js/jspdf.debug.js' %}"></script>
-  <script src="{% static 'vendorsx/worldcloud.js' %}"></script>
-
-  {% for question in questions %}
-    {% if question.Question_Type == "MCQ" %}
-      <script>
-          document.addEventListener("DOMContentLoaded", function (event) {
-              $(function () {
-                  // Create the chart
-                  var options = {
-                      chart: {
-                          events: {
-                              drilldown: function (e) {
-                                  if (!e.seriesOptions) {
-                                      var chart = this;
-                                      // Show the loading label
-                                      chart.showLoading('Loading ...');
-                                      setTimeout(function () {
-                                          chart.hideLoading();
-                                          chart.addSeriesAsDrilldown(e.point, series);
-                                      }, 1000);
-                                  }
-                              }
-                          },
-                          plotBorderWidth: 0
-                      },
-                      credits: {
-                          enabled: false
-                      },
-                      title: {
-                          text: '',
-                      },
-                      //
-                      // subtitle: {
-                      //         text: 'Subtitle'
-                      // },
-                      //
-                      xAxis: {
-                          type: 'category',
-                      },
-                      //
-                      yAxis: {
-                          title: {
-                              margin: 10,
-                              text: 'Percentage(%)'
-                          },
-                      },
-                      //
-                      legend: {
-                          enabled: false,
-                      },
-                      //
-                      plotOptions: {
-                          series: {
-                              pointPadding: 0.2,
-                              borderWidth: 0,
-                              dataLabels: {
-                                  enabled: true,
-                                  format: '{point.y:.1f}%'
-                              }
-                          },
-                          pie: {
-                              allowPointSelect: true,
-                              cursor: 'pointer',
-                              dataLabels: {
-                                  enabled: true,
-                                  format: '{point.name}: <b>{point.y}%</b>'
-                              }
-                          }
-                      },
-                      //
-                      tooltip: {
-                          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                          pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
-                      },
-                      series: [{
-                          name: "",
-                          colorByPoint: true,
-                          data: [
-                              {% for option in question.optioninfo.all %}
-                                  {
-                                      name: "{{ forloop.counter }}. {{ option.Option_Name }}",
-                                      y: {{ option.get_option_percentage }},
-                                      drilldown: "Chrome"
-                                  },
-                              {% endfor %}
-
-                          ]
-                      }],
-                      //
-                      drilldown: {
-                          series: []
-                      }
-                  };
-
-                  // Column chart
-                  options.chart.renderTo = 'container{{ forloop.counter }}';
-                  options.chart.type = 'column';
-                  options.yAxis.max = 100;
-                  var chart1 = new Highcharts.Chart(options);
-
-                  chartfunc{{ forloop.counter }} = function () {
-                      var column = document.getElementById('column{{ forloop.counter }}');
-                      var bar = document.getElementById('bar{{ forloop.counter }}');
-                      var pie = document.getElementById('pie{{ forloop.counter }}');
-                      var line = document.getElementById('line{{ forloop.counter }}');
-                      $('#chk').prop('checked', false);
-                      if (column.checked) {
-
-                          options.chart.renderTo = 'container{{ forloop.counter }}';
-                          options.chart.type = 'column';
-                          options.yAxis.max = 100;
-                          var chart1 = new Highcharts.Chart(options);
-                      } else if (bar.checked) {
-                          options.chart.renderTo = 'container{{ forloop.counter }}';
-                          options.chart.type = 'bar';
-                          var chart1 = new Highcharts.Chart(options);
-                      } else if (pie.checked) {
-                          options.chart.renderTo = 'container{{ forloop.counter }}';
-                          options.chart.type = 'pie';
-                          var chart1 = new Highcharts.Chart(options);
-                      } else {
-                          options.chart.renderTo = 'container{{ forloop.counter }}';
-                          options.chart.type = 'line';
-                          var chart1 = new Highcharts.Chart(options);
-                      }
-                  }
-              });
-          });
-      </script>
-      <script>
-          document.addEventListener("DOMContentLoaded", function (event) {
-
-              var Answer_str = "";
-              $('[id^="{{ forloop.counter }}Answer_"]').each(function () {
-                  Answer_str += $(this).text() + " ";
-
-                  var lines = Answer_str.split(/[,\. ]+/g),
-                      data = Highcharts.reduce(lines, function (arr, word) {
-                          var obj = Highcharts.find(arr, function (obj) {
-                              return obj.name === word;
-                          });
-                          if (obj) {
-                              obj.weight += 1;
-                          } else {
-                              obj = {
-                                  name: word,
-                                  weight: 1
-                              };
-                              arr.push(obj);
-                          }
-                          return arr;
-                      }, []);
-
-                  Highcharts.chart('WordCloud{{ forloop.counter }}',
-                      {
-                          credits: {
-                              enabled: false
-                          },
-
-                          series: [{
-                              type: 'wordcloud',
-                              data: data,
-                              name: 'Occurrences'
-                          }],
-                          title: {
-                              text: ''
-                          }
-                      });
-              });
-          });
-
-      </script>
-    {% endif %}
-  {% endfor %}
-
-  <script>
-
-      var current_progress = 0;
-      $(document).ready(function () {
-
-          var table_main = $('.SATable').DataTable({
-              responsive: true,
-              dom: 'lBfrtip',
-              buttons: [],
-
-          });
-
-          $('#survey_form_modal').on('hidden.bs.modal', function () {
-              location.reload();
-          });
-
-          var interval = setInterval(function () {
-              if ($('#chk').prop('checked')) {
-
-                  current_progress += 10;
-                  $("#dynamic")
-                      .css("width", current_progress + "%")
-                      .attr("aria-valuenow", current_progress)
-                      .text("Refreshing In :" + (10 - (current_progress / 10)));
-              } else {
-                  $("#dynamic").text("Paused");
-              }
-
-              if (current_progress >= 98) {
-                  clearInterval(interval);
-                  location.reload();
-                  // $.ajax({
-                  //     type: "GET",
-                  //     url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
-                  //     success: function (data) {
-                  //         obj = JSON.parse(data[0]);
-                  //         NumberofParticipants = JSON.parse(data[1]);
-                  //         for (var i = 0; i < obj.length; i++) {
-                  //             $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
-                  //             console.log($("#progress" + obj[i].pk).css('width'));
-                  //             $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
-                  //             $("#Participants").html(NumberofParticipants);
-                  //             console.log($("#progress_span" + obj[i].pk).html());
-                  //             console.log(obj[i].pk)
-                  //         }
-                  //     },
-                  //     complete: function () {
-                  //         current_progress = 0;
-                  //         $(".se-pre-con-ajax").fadeOut("fast");
-                  //     }
-                  // });
-              }
-
-          }, 1000);
-      });
-
-  </script>
-  <script>
-      $('#retakeSurveyBtn').on('click', function () {
-
-          $.ajax({
-              type: "GET",
-              data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-              url: "{% url 'teacher_surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#surveyForm").html(data);
-              },
-              complete: function () {
-                  $(".se-pre-con-ajax").fadeOut("fast");
-                  $(".modal-backdrop ").removeClass("modal-backdrop");
-              }
-          });
-      });
-      $('#update_survey_button').on('click', function () {
-          current_progress = -10000;
-
-          $.ajax({
-              type: "GET",
-              data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-              url: "{% url 'TeacherSurveyInfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#surveyForm").html(data);
-              },
-              complete: function () {
-                  $(".modal-backdrop ").removeClass("modal-backdrop");
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              },
-
-          });
-      });
-      $('#update_survey_button_limited').on('click', function () {
-          current_progress = -10000;
-          let url_get = "";
-          {% if 'teachers' in request.path %}
-              url_get = "{% url 'TeacherSurveyInfo_ajax_update_limited' pk=object.id %}";
-          {% else %}
-              url_get = "{% url 'surveyinfo_ajax_update_limited' pk=object.id %}";
-          {% endif %}
-          $.ajax({
-              type: "GET",
-              data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-              url: url_get,  // URL to your view that serves new info
-              success: function (data) {
-                  $("#surveyForm").html(data);
-              },
-              complete: function () {
-                  $(".modal-backdrop ").removeClass("modal-backdrop");
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              },
-
-          });
-      });
-  </script>
-  <script>
-      function survey_create_content(response) {
-          //location.reload();
-          console.log(response['teacher_url']);
-          window.location.href = String(response['teacher_url']);
-      }
-  </script>
-
-  {#  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"#}
-  {#          integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"#}
-  {#          crossorigin="anonymous"></script>#}
-
-  <script>
-
-      let lMargin = 15; //left margin in mm
-      let rMargin = 15; //right margin in mm
-      let pdfInMM = 210;
-
-      let add_text = function (doc, text, size, x_pos, y_pos, center = false) {
-          doc.setFontSize(size);
-
-          //if (center){
-          //    x_pos = (doc.internal.pageSize.width / 2) - (doc.getStringUnitWidth(text) * doc.internal.getFontSize() / 2)
-          //}
-
-          let lines = doc.splitTextToSize(text, (pdfInMM - lMargin - rMargin));
-          let lineHeight = doc.getLineHeight(text) / doc.internal.scaleFactor;
-          let lines_len = lines.length;  // splitted text is a string array
-          let blockHeight = lines_len * lineHeight;
-
-          if (center) {
-              doc.text(lines, doc.internal.pageSize.getWidth() * 0.5, y_pos, 'center');
-          } else {
-              doc.text(lines, x_pos, y_pos);
-          }
-
-
-          return y_pos + blockHeight;
-      };
-
-      function getLines(ctx, text, maxWidth) {
-          var words = text.split(" ");
-          var lines = [];
-          var currentLine = words[0];
-
-          for (var i = 1; i < words.length; i++) {
-              var word = words[i];
-              var width = ctx.measureText(currentLine + " " + word).width;
-              if (width < maxWidth) {
-                  currentLine += " " + word;
-              } else {
-                  lines.push(currentLine);
-                  currentLine = word;
-              }
-          }
-          lines.push(currentLine);
-          return lines;
-      }
-
-      function addTextCanvas(canv, ctx, text, xx, yy) {
-          let h = parseInt(ctx.font.split("px")[0]);
-          let lines = getLines(ctx, text, canv.width);
-          for (const ln of lines) {
-              ctx.fillText(ln, xx, yy);
-              yy += h + 3;
-          }
-          return yy
-      }
-
-      //$(window).on('load', function () {
-      $("#btnDownload").on('click', function () {
-
-              var doc = new jsPDF();
-              doc.page = 1;
-
-              // width of A4 in mm
-
-              var yPos = 20;
-              var xPos = lMargin;
-
-              //yPos = add_text(doc,
-              {#//    "{{ object.Survey_Title }}",#}
-              //    20, xPos, yPos, true);
-
-              //yPos = add_text(doc,
-              //    "SURVEY REPORT",
-              //    14, xPos, yPos, true);
-
-              //yPos = add_text(doc,
-              {#//    "Start Date: {{ object.Start_Date|date:'M d, Y H:i' }}",#}
-              //    12, xPos, yPos);
-
-              //yPos = add_text(doc,
-              {#//    "End Date: {{ object.End_Date|date:'M d, Y H:i' }}",#}
-              //    12, xPos, yPos);
-
-              //yPos = add_text(doc,
-              {#//    "Number of Participants: {{ submit }}",#}
-              //    12, xPos, yPos);
-
-
-              let hcanvas = document.createElement("CANVAS");
-              hcanvas.height = 150;
-              hcanvas.width = 400;
-              var hctx = hcanvas.getContext("2d");
-
-              let ini_y = 14;
-              hctx.textAlign = "center";
-              hctx.font = "16px Georgia";
-              ini_y = addTextCanvas(hcanvas, hctx, "SURVEY REPORT", hcanvas.width * 0.5, ini_y);
-              ini_y = addTextCanvas(hcanvas, hctx, "{{ object.Survey_Title }}", hcanvas.width * 0.5, ini_y);
-              hctx.textAlign = "start";
-              hctx.font = "12px Georgia";
-              ini_y += 14;
-              ini_y = addTextCanvas(hcanvas, hctx, "Start Date: " + DateConvert("{{ object.Start_Date|date:'M d, Y H:i' }}"), 0, ini_y);
-              ini_y = addTextCanvas(hcanvas, hctx, "End Date: " + DateConvert("{{ object.End_Date|date:'M d, Y H:i' }}"), 0, ini_y);
-              ini_y = addTextCanvas(hcanvas, hctx, "Number of Participants: {{ submit }}", 0, ini_y);
-
-              let a_r = hcanvas.width / hcanvas.height;
-              var imgHeight = (doc.internal.pageSize.getHeight() * 0.2);
-              var imgWidth = (imgHeight * a_r);
-              yPos += 5;
-              doc.addImage(hcanvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
-              yPos += imgHeight;
-              yPos += 5;
-              //$("#test_image").attr('src', hcanvas.toDataURL());
-
-
-              $("svg").each(function (index) {
-                  let svgel = this;
-                  let xml = new XMLSerializer().serializeToString(svgel);
-
-                  let svg = new Blob([xml], {type: "image/svg+xml;charset=utf-8"}),
-                      domURL = self.URL || self.webkitURL || self,
-                      url = domURL.createObjectURL(svg);
-
-                  // make it base64
-                  //var svg64 = btoa(xml);
-                  //var b64Start = 'data:image/svg+xml;base64,';
-
-                  // prepend a "header"
-                  //var image64 = b64Start + svg64;
-
-                  //let canvas = document.querySelector("#test_canvas");
-                  let canvas = document.createElement("CANVAS");
-                  canvas.height = svgel.height.baseVal.value + 200;
-                  canvas.width = svgel.width.baseVal.value + 200;
-                  var ctx = canvas.getContext("2d");
-                  var img = new Image();
-                  img.onload = function () {
-                      let qn_title = $(svgel).parent().parent().attr('data-qn-title');
-                      //let qn_title = `#. 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 end`;
-                      ctx.font = "12px Georgia";
-                      let lines = getLines(ctx, qn_title, canvas.width - 10);
-                      let ini_y = 12;
-                      for (const ln of lines) {
-                          ctx.fillText(ln, 0, ini_y);
-                          ini_y += 15;
-                      }
-                      ctx.drawImage(img, 125, ini_y); // destination rectangle
-                      console.log(canvas.toDataURL());
-
-                      //let link = document.createElement('a');
-                      //link.href = canvas.toDataURL();
-                      //link.download = "test.png";
-                      //document.body.appendChild(link);
-                      //link.click();
-
-                      //var imgWidth = doc.internal.pageSize.getWidth()*0.7;
-                      let a_r = canvas.width / canvas.height;
-                      var imgHeight = (doc.internal.pageSize.getHeight() * 0.6);
-                      var imgWidth = (imgHeight * a_r);
-
-                      //yPos += 5;
-                      //yPos = add_text(doc,
-                      //    qn_title,
-                      //    12, xPos, yPos);
-                      yPos += 5;
-                      doc.addImage(canvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
-                      yPos += imgHeight;
-                      yPos += 5;
-                      if (index === $("svg").length - 1) {
-                          doc.text(150, 285, 'page ' + doc.page);
-                          //doc.output('dataurlnewwindow'); //opens pdf in new tab
-                          //doc.save('Test.pdf');
-
-                          doc.autoPrint();
-                          //doc.save('Test.pdf');
-                          window.open(doc.output('bloburl'))
-                      } else {
-                          doc.text(150, 285, 'page ' + doc.page);
-                          doc.addPage();
-                          yPos = 20;
-                          doc.page++;
-                      }
-
-                      //else if ((index + 1) % 2 === 0) {
-                      //    doc.text(150, 285, 'page ' + doc.page);
-                      //    doc.addPage();
-                      //    yPos = 20;
-                      //    doc.page++;
-                      //}
-
-                  };
-                  img.src = url;
-                  //img.src = image64;
-
-              });
-          }
-      );
-
-
-  </script>
+    <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+    <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+
+    <script src="{% static 'js/highchart_data.js' %}"></script>
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/jspdf.debug.js' %}"></script>
+    <script src="{% static 'vendorsx/worldcloud.js' %}"></script>
+    <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
+
+
+    {% for question in questions %}
+        {% if question.Question_Type == "MCQ" %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+                    $(function () {
+                        // Create the chart
+                        var options = {
+                            chart: {
+                                events: {
+                                    drilldown: function (e) {
+                                        if (!e.seriesOptions) {
+                                            var chart = this;
+                                            // Show the loading label
+                                            chart.showLoading('Loading ...');
+                                            setTimeout(function () {
+                                                chart.hideLoading();
+                                                chart.addSeriesAsDrilldown(e.point, series);
+                                            }, 1000);
+                                        }
+                                    }
+                                },
+                                plotBorderWidth: 0
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: '',
+                            },
+                            //
+                            // subtitle: {
+                            //         text: 'Subtitle'
+                            // },
+                            //
+                            xAxis: {
+                                type: 'category',
+                            },
+                            //
+                            yAxis: {
+                                title: {
+                                    margin: 10,
+                                    text: 'Percentage(%)'
+                                },
+                            },
+                            //
+                            legend: {
+                                enabled: false,
+                            },
+                            //
+                            plotOptions: {
+                                series: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.y:.1f}%'
+                                    }
+                                },
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name}: <b>{point.y}%</b>'
+                                    }
+                                }
+                            },
+                            //
+                            tooltip: {
+                                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
+                            },
+                            series: [{
+                                name: "",
+                                colorByPoint: true,
+                                data: [
+                                    {% for option in question.optioninfo.all %}
+                                        {
+                                            name: "{{ forloop.counter }}. {{ option.Option_Name }}",
+                                            y: {{ option.get_option_percentage }},
+                                            drilldown: "Chrome"
+                                        },
+                                    {% endfor %}
+
+                                ]
+                            }],
+                            //
+                            drilldown: {
+                                series: []
+                            }
+                        };
+
+                        // Column chart
+                        options.chart.renderTo = 'container{{ forloop.counter }}';
+                        options.chart.type = 'column';
+                        options.yAxis.max = 100;
+                        var chart1 = new Highcharts.Chart(options);
+
+                        chartfunc{{ forloop.counter }} = function () {
+                            var column = document.getElementById('column{{ forloop.counter }}');
+                            var bar = document.getElementById('bar{{ forloop.counter }}');
+                            var pie = document.getElementById('pie{{ forloop.counter }}');
+                            var line = document.getElementById('line{{ forloop.counter }}');
+                            $('#chk').prop('checked', false);
+                            if (column.checked) {
+
+                                options.chart.renderTo = 'container{{ forloop.counter }}';
+                                options.chart.type = 'column';
+                                options.yAxis.max = 100;
+                                var chart1 = new Highcharts.Chart(options);
+                            } else if (bar.checked) {
+                                options.chart.renderTo = 'container{{ forloop.counter }}';
+                                options.chart.type = 'bar';
+                                var chart1 = new Highcharts.Chart(options);
+                            } else if (pie.checked) {
+                                options.chart.renderTo = 'container{{ forloop.counter }}';
+                                options.chart.type = 'pie';
+                                var chart1 = new Highcharts.Chart(options);
+                            } else {
+                                options.chart.renderTo = 'container{{ forloop.counter }}';
+                                options.chart.type = 'line';
+                                var chart1 = new Highcharts.Chart(options);
+                            }
+                        }
+                    });
+                });
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+
+                    var Answer_str = "";
+                    $('[id^="{{ forloop.counter }}Answer_"]').each(function () {
+                        Answer_str += $(this).text() + " ";
+
+                        var lines = Answer_str.split(/[,\. ]+/g),
+                            data = Highcharts.reduce(lines, function (arr, word) {
+                                var obj = Highcharts.find(arr, function (obj) {
+                                    return obj.name === word;
+                                });
+                                if (obj) {
+                                    obj.weight += 1;
+                                } else {
+                                    obj = {
+                                        name: word,
+                                        weight: 1
+                                    };
+                                    arr.push(obj);
+                                }
+                                return arr;
+                            }, []);
+
+                        Highcharts.chart('WordCloud{{ forloop.counter }}',
+                            {
+                                credits: {
+                                    enabled: false
+                                },
+
+                                series: [{
+                                    type: 'wordcloud',
+                                    data: data,
+                                    name: 'Occurrences'
+                                }],
+                                title: {
+                                    text: ''
+                                }
+                            });
+                    });
+                });
+
+            </script>
+        {% endif %}
+    {% endfor %}
+
+    <script>
+
+        var current_progress = 0;
+        $(document).ready(function () {
+
+            var table_main = $('.SATable').DataTable({
+                responsive: true,
+                dom: 'lBfrtip',
+                buttons: [],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+
+            });
+
+            $('#survey_form_modal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+
+            var interval = setInterval(function () {
+                if ($('#chk').prop('checked')) {
+
+                    current_progress += 10;
+                    $("#dynamic")
+                        .css("width", current_progress + "%")
+                        .attr("aria-valuenow", current_progress)
+                        .text("Refreshing In :" + (10 - (current_progress / 10)));
+                } else {
+                    $("#dynamic").text("Paused");
+                }
+
+                if (current_progress >= 98) {
+                    clearInterval(interval);
+                    location.reload();
+                    // $.ajax({
+                    //     type: "GET",
+                    //     url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
+                    //     success: function (data) {
+                    //         obj = JSON.parse(data[0]);
+                    //         NumberofParticipants = JSON.parse(data[1]);
+                    //         for (var i = 0; i < obj.length; i++) {
+                    //             $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
+                    //             console.log($("#progress" + obj[i].pk).css('width'));
+                    //             $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
+                    //             $("#Participants").html(NumberofParticipants);
+                    //             console.log($("#progress_span" + obj[i].pk).html());
+                    //             console.log(obj[i].pk)
+                    //         }
+                    //     },
+                    //     complete: function () {
+                    //         current_progress = 0;
+                    //         $(".se-pre-con-ajax").fadeOut("fast");
+                    //     }
+                    // });
+                }
+
+            }, 1000);
+        });
+
+    </script>
+    <script>
+        $('#retakeSurveyBtn').on('click', function () {
+
+            $.ajax({
+                type: "GET",
+                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+                url: "{% url 'teacher_surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#surveyForm").html(data);
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                    $(".modal-backdrop ").removeClass("modal-backdrop");
+                }
+            });
+        });
+        $('#update_survey_button').on('click', function () {
+            current_progress = -10000;
+
+            $.ajax({
+                type: "GET",
+                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+                url: "{% url 'TeacherSurveyInfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#surveyForm").html(data);
+                },
+                complete: function () {
+                    $(".modal-backdrop ").removeClass("modal-backdrop");
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                },
+
+            });
+        });
+        $('#update_survey_button_limited').on('click', function () {
+            current_progress = -10000;
+            let url_get = "";
+            {% if 'teachers' in request.path %}
+                url_get = "{% url 'TeacherSurveyInfo_ajax_update_limited' pk=object.id %}";
+            {% else %}
+                url_get = "{% url 'surveyinfo_ajax_update_limited' pk=object.id %}";
+            {% endif %}
+            $.ajax({
+                type: "GET",
+                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+                url: url_get,  // URL to your view that serves new info
+                success: function (data) {
+                    $("#surveyForm").html(data);
+                },
+                complete: function () {
+                    $(".modal-backdrop ").removeClass("modal-backdrop");
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                },
+
+            });
+        });
+    </script>
+    <script>
+        function survey_create_content(response) {
+            //location.reload();
+            console.log(response['teacher_url']);
+            window.location.href = String(response['teacher_url']);
+        }
+    </script>
+
+    {#  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"#}
+    {#          integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"#}
+    {#          crossorigin="anonymous"></script>#}
+
+    <script>
+
+        let lMargin = 15; //left margin in mm
+        let rMargin = 15; //right margin in mm
+        let pdfInMM = 210;
+
+        let add_text = function (doc, text, size, x_pos, y_pos, center = false) {
+            doc.setFontSize(size);
+
+            //if (center){
+            //    x_pos = (doc.internal.pageSize.width / 2) - (doc.getStringUnitWidth(text) * doc.internal.getFontSize() / 2)
+            //}
+
+            let lines = doc.splitTextToSize(text, (pdfInMM - lMargin - rMargin));
+            let lineHeight = doc.getLineHeight(text) / doc.internal.scaleFactor;
+            let lines_len = lines.length;  // splitted text is a string array
+            let blockHeight = lines_len * lineHeight;
+
+            if (center) {
+                doc.text(lines, doc.internal.pageSize.getWidth() * 0.5, y_pos, 'center');
+            } else {
+                doc.text(lines, x_pos, y_pos);
+            }
+
+
+            return y_pos + blockHeight;
+        };
+
+        function getLines(ctx, text, maxWidth) {
+            var words = text.split(" ");
+            var lines = [];
+            var currentLine = words[0];
+
+            for (var i = 1; i < words.length; i++) {
+                var word = words[i];
+                var width = ctx.measureText(currentLine + " " + word).width;
+                if (width < maxWidth) {
+                    currentLine += " " + word;
+                } else {
+                    lines.push(currentLine);
+                    currentLine = word;
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        function addTextCanvas(canv, ctx, text, xx, yy) {
+            let h = parseInt(ctx.font.split("px")[0]);
+            let lines = getLines(ctx, text, canv.width);
+            for (const ln of lines) {
+                ctx.fillText(ln, xx, yy);
+                yy += h + 3;
+            }
+            return yy
+        }
+
+        //$(window).on('load', function () {
+        $("#btnDownload").on('click', async function () {
+
+            var doc = new jsPDF();
+            doc.page = 1;
+
+            // width of A4 in mm
+
+            var yPos = 20;
+            var xPos = lMargin;
+
+
+            let hcanvas = document.createElement("CANVAS");
+            hcanvas.height = 150;
+            hcanvas.width = 400;
+            var hctx = hcanvas.getContext("2d");
+
+            let ini_y = 14;
+            hctx.textAlign = "center";
+            hctx.font = "16px Georgia";
+            ini_y = addTextCanvas(hcanvas, hctx, "SURVEY REPORT", hcanvas.width * 0.5, ini_y);
+            ini_y = addTextCanvas(hcanvas, hctx, "{{ object.Survey_Title }}", hcanvas.width * 0.5, ini_y);
+            hctx.textAlign = "start";
+            hctx.font = "12px Georgia";
+            ini_y += 14;
+            ini_y = addTextCanvas(hcanvas, hctx, "Start Date: " + DateConvert("{{ object.Start_Date|date:'M d, Y H:i' }}"), 0, ini_y);
+            ini_y = addTextCanvas(hcanvas, hctx, "End Date: " + DateConvert("{{ object.End_Date|date:'M d, Y H:i' }}"), 0, ini_y);
+            ini_y = addTextCanvas(hcanvas, hctx, "Number of Participants: {{ submit }}", 0, ini_y);
+
+            let a_r = hcanvas.width / hcanvas.height;
+            var imgHeight = (doc.internal.pageSize.getHeight() * 0.2);
+            var imgWidth = (imgHeight * a_r);
+            yPos += 5;
+            doc.addImage(hcanvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
+            yPos += imgHeight;
+            yPos += 5;
+            //$("#test_image").attr('src', hcanvas.toDataURL());
+
+            const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+
+            async function asyncForEach(array, callback) {
+                for (let index = 0; index < array.length; index++) {
+                    await callback(array[index], index, array);
+                }
+            }
+
+            const start = async () => {
+                var countAnswers = 0;
+                await asyncForEach($('.SurveyAnswers'), async function (index) {
+                        // $('.SurveyAnswers').each(function (index) {
+                        countAnswers++;
+                        $this = index
+
+                        if ($this.classList.contains('MCQAnswers_div')) {
+                            let svgel = $($this).find('svg')[0];
+                            let xml = new XMLSerializer().serializeToString(svgel);
+
+                            let svg = new Blob([xml], {type: "image/svg+xml;charset=utf-8"}),
+                                domURL = self.URL || self.webkitURL || self,
+                                url = domURL.createObjectURL(svg);
+
+                            // make it base64
+                            //var svg64 = btoa(xml);
+                            //var b64Start = 'data:image/svg+xml;base64,';
+
+                            // prepend a "header"
+                            //var image64 = b64Start + svg64;
+
+                            //let canvas = document.querySelector("#test_canvas");
+                            let canvas = document.createElement("CANVAS");
+                            canvas.height = svgel.height.baseVal.value + 200;
+                            canvas.width = svgel.width.baseVal.value + 200;
+                            var ctx = canvas.getContext("2d");
+                            var img = new Image();
+                            img.onload = function () {
+                                let qn_title = $(svgel).parent().parent().attr('data-qn-title');
+                                //let qn_title = `#. 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 end`;
+                                ctx.font = "14px Georgia";
+                                let lines = getLines(ctx, qn_title, canvas.width - 10);
+                                let ini_y = 12;
+                                for (const ln of lines) {
+                                    ctx.fillText(ln, 0, ini_y);
+                                    ini_y += 15;
+                                }
+                                ctx.drawImage(img, 125, ini_y); // destination rectangle
+
+                                //let link = document.createElement('a');
+                                //link.href = canvas.toDataURL();
+                                //link.download = "test.png";
+                                //document.body.appendChild(link);
+                                //link.click();
+
+                                //var imgWidth = doc.internal.pageSize.getWidth()*0.7;
+                                let a_r = canvas.width / canvas.height;
+                                var imgHeight = (doc.internal.pageSize.getHeight() * 0.6);
+                                var imgWidth = (imgHeight * a_r);
+
+                                //yPos += 5;
+                                //yPos = add_text(doc,
+                                //    qn_title,
+                                //    12, xPos, yPos);
+                                yPos += 5;
+                                doc.addImage(canvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
+                                yPos += imgHeight;
+                                yPos += 5;
+
+
+                            };
+                            img.src = url;
+                            //img.src = image64;
+
+                        } else if ($this.classList.contains('SAQAnswers_div')) {
+                            var margin_top = 0;
+
+                            if (countAnswers === 1) {
+                                margin_top = 90
+                            } else {
+                                margin_top = 20
+                            }
+                            let currentSelectedValue = $($this).find('.dataTables_length select').val()
+                            $($this).find('.dataTables_length select').find('option[value="-1"]').prop('selected', true).trigger('change')
+                            let hcanvas = document.createElement("CANVAS");
+                            hcanvas.height = 150;
+                            hcanvas.width = 400;
+                            var hctx1 = hcanvas.getContext("2d");
+                            let ini_y = 14;
+                            hctx1.font = "14px Georgia";
+                            hctx1.textAlign = "start";
+                            ini_y = addTextCanvas(hcanvas, hctx1, $($this).find('h2').text(), 0, ini_y);
+                            ini_y += 14;
+                            let a_r = hcanvas.width / hcanvas.height;
+                            imgHeight = (doc.internal.pageSize.getHeight() * 0.2);
+                            imgWidth = (imgHeight * a_r);
+                            yPos += 1;
+                            var header = function (data) {
+
+                                // If question only in first page
+                                /*if (data.pageNumber !== 1) {
+                                    margin_top = 0
+                                    return false
+                                }*/
+
+                                doc.addImage(hcanvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
+
+                                {#doc.text($($this).find('h2').text(), data.settings.margin.left, data.settings.margin.top);#}
+                            };
+                            let lines = getLines(hctx1, $($this).find('h2').text(), hcanvas.width - 10);
+                            margin_top += (10 * lines.length);
+                            source = $($this).find('table')[0];
+                            doc.autoTable({
+                                html: source,
+                                didDrawPage: header,
+                                margin: {top: margin_top, bottom: 25},
+
+                            })
+                            $($this).find('.dataTables_length select').find('option[value="' + currentSelectedValue + '"]').prop('selected', true).trigger('change')
+                        }
+
+                    await waitFor(100);
+                    {#doc.text(150, 285, 'Page ' + doc.page);#}
+                        if (countAnswers !== $('.SurveyAnswers').length) {
+                            doc.addPage();
+                            yPos = 20;
+                            doc.page++;
+                        }
+
+                    }
+                );
+
+                const pages = doc.internal.getNumberOfPages();
+                const pageWidth = doc.internal.pageSize.width;  //Optional
+                const pageHeight = doc.internal.pageSize.height;  //Optional
+                doc.setFontSize(10);  //Optional
+
+                for (let j = 1; j < pages + 1; j++) {
+                    let horizontalPos = pageWidth / 2;  //Can be fixed number
+                    let verticalPos = pageHeight - 10;  //Can be fixed number
+                    doc.setPage(j);
+                    doc.text(`Page ${j} of ${pages}`, horizontalPos, verticalPos, {align: 'center'})  //Optional text styling});
+                }
+
+                doc.autoPrint();
+                window.open(doc.output('bloburl'))
+
+            }
+            start()
+        });
+
+
+    </script>
 
 
 

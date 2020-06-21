@@ -17,7 +17,7 @@
     <script src='https://meet.jit.si/external_api.js'></script>
 
     <script>
-        document.getElementById('copy-link').value = document.location.origin + '/meet/{{ user.id }}/{{ meetcode }}/'
+        document.getElementById('copy-link').value = document.location.origin + '/meet/{{ userobj.id }}/{{ meetcode }}/'
 
         function copyToClipBoard() {
             /* Get the text field */
@@ -35,7 +35,7 @@
     <script>
         const domain = 'meet.jit.si';
         const options = {
-            roomName: 'UBL Meet-{{ user.id }}' + window.location.hostname,  // TODO Change to ChapterNameID-CourseNameID  !Unicode Works fine for room name - -  long names cause problem in communication
+            roomName: 'UBL Meet-{{ userobj.id }}' + window.location.hostname,  // TODO Change to ChapterNameID-CourseNameID  !Unicode Works fine for room name - -  long names cause problem in communication
             width: "100%",
             height: "100%",
             parentNode: document.querySelector('#UBL-meet'),
