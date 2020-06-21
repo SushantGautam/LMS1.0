@@ -586,9 +586,9 @@ def ImportCsvFile(request, *args, **kwargs):
 
                     # Validation
                     if MemberInfo.objects.filter(username__iexact=username).exists():
-                        previous_uname.append(obj_username)
+                        previous_uname.append(username)
                         continue
-                    if pd.isnull(username):
+                    if not username:
                         error = "Username is required"
                         raise Exception
                     if len(username) >= 150:
@@ -605,10 +605,10 @@ def ImportCsvFile(request, *args, **kwargs):
                         error = "Last name can't be more than 50 characters"
                         raise Exception
                     
-                    if pd.isnull(gender):
+                    if not gender:
                         error = "Gender is required"
                         raise Exception
-                    gender = gender.uppercase()
+                    gender = gender.upper()
                     if not gender in ['M','F']:
                         error = "Gender must be either m or f for male and female respectively"
                         raise Exception
@@ -618,18 +618,24 @@ def ImportCsvFile(request, *args, **kwargs):
                     except:
                         birth_date = None
 
-                    if pd.isnull(student):
-                        error = "Student value is required"
+                    try:
+                        student = int(student)
+                    except:
+                        error = "Student value should be integer"
                         raise Exception
-                    if not isinstance(student, int) or not student in [0,1]:
+                    if not student in [0,1]:
                         error = "Student value should be either 0 or 1"
                         raise Exception
-                    if pd.isnull(teacher):
-                        error = "Teacher value is required"
+                    student = bool(student)
+                    try:
+                        teacher = int(teacher)
+                    except:
+                        error = "Teacher value should be integer"
                         raise Exception
-                    if not isinstance(teacher, int) or not teacher in [0,1]:
+                    if not teacher in [0,1]:
                         error = "Teacher value should be either 0 or 1"
                         raise Exception
+                    teacher = bool(teacher)
 
                     # Saving the member object
                     obj = MemberInfo()
@@ -640,7 +646,9 @@ def ImportCsvFile(request, *args, **kwargs):
                     obj.email = email
                     obj.Member_Permanent_Address = permanent_address
                     obj.Member_Temporary_Address = temp_address
-                    obj.Member_Phone = phone 
+                    obj.Member_Phone = phone
+                    obj.Is_Teacher = teacher
+                    obj.Is_Student = student
                     obj.Center_Code = request.user.Center_Code
                     obj.set_password('00000')
                     obj.save()
@@ -676,10 +684,9 @@ def ImportCsvFile(request, *args, **kwargs):
                 except Exception as e:
                     for j in saved_id:
                         MemberInfo.objects.filter(id=j).delete()
-                    msg = error + "Can't Upload all data. Problem in " + str(
-                        i + 1) + "th row of data while uploading. <br><br> "
-                        #  + "<br> ".join(
-                        # ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>"
+                    msg = error + ". Can't Upload data, Problem in " + str(
+                        i + 1) + "th row of data while uploading. <br><br> " + "<br>".join(
+                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>"
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         else:
             msg = "The uploaded excel has no data to register"
