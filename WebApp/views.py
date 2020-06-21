@@ -547,102 +547,148 @@ def MemberInfoDeactivate(request, pk):
     return redirect('memberinfo_detail', pk=pk)
 
 
-# The following function is for importing the students from the csv file. Used in Memberinfo and GroupMapping
+# The following function is for importing the members from the csv file. Used in Memberinfo and GroupMapping
 def ImportCsvFile(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
         center_id = request.user.Center_Code.id
-        file_name = uuid.uuid4()
+        file_name = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
         extension = media.name.split('.')[-1]
-        new_file_name = str(file_name) + '.' + str(extension)
-        path = 'media/import_csv/' + str(center_id)
-
+        new_file_name = str(file_name) + '.' + extension
+        path = 'media/import_csv/' + str(center_id) + '/member'
         fs = FileSystemStorage(location=path)
-        filename = fs.save(new_file_name + '.' + extension, media)
+        filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
-        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
-        df.column = ['Username', 'Member ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Gender', 'Student',
-                     'Teacher', 'Temporary Address', 'Permanent Address', 'Birthdate']
+
+        df = pd.read_csv(path, encoding='utf-8')
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
+        error = ''
         saved_id = []
         previous_uname = []
-        for i in range(len(df)):
-            try:
 
-                obj_username = df.iloc[i]['Username']
-                if MemberInfo.objects.filter(username__iexact=obj_username).exists():
-                    previous_uname.append(obj_username)
-                    continue
-
-                obj = MemberInfo()
-                obj.username = obj_username
-                obj.Member_ID = df.iloc[i]['Member ID']
-                obj.first_name = df.iloc[i]['First Name']
-                obj.last_name = df.iloc[i]['Last Name']
-                obj.email = df.iloc[i]['Email']
-                obj.Member_Permanent_Address = df.iloc[i]['Permanent Address']
-                obj.Member_Temporary_Address = df.iloc[i]['Temporary Address']
+        if not df.empty:
+            for i in range(len(df)):
                 try:
-                    obj.Member_BirthDate = datetime.strptime(df.iloc[i]['Birthdate'], "%m/%d/%Y").strftime('%Y-%m-%d')
-                except:
-                    obj.Member_BirthDate = None
-                obj.Member_Phone = df.iloc[i]['Phone']
+                    username = df.iloc[i]['(*)Username']
+                    member_id = df.iloc[i]['Member ID']
+                    first_name = df.iloc[i]['First Name']
+                    last_name = df.iloc[i]['Last Name']
+                    email = df.iloc[i]['Email']
+                    permanent_address = df.iloc[i]['Permanent Address']
+                    temp_address = df.iloc[i]['Temporary Address']
+                    phone = df.iloc[i]['Phone']
+                    gender = df.iloc[i]['(*)Gender(m/f)']
+                    birth_date = df.iloc[i]['Birthdate']
+                    student = df.iloc[i]['(*)Student(0/1)']
+                    teacher = df.iloc[i]['(*)Teacher(0/1)']
 
-                if df.iloc[i]['Gender'] == 'Male' or df.iloc[i]['Gender'] == 'M':
-                    obj.Member_Gender = 'M'
-                elif df.iloc[i]['Gender'] == 'Female' or df.iloc[i]['Gender'] == 'F':
-                    obj.Member_Gender = 'F'
-                else:
-                    obj.Member_Gender = ''
+                    # Validation
+                    if MemberInfo.objects.filter(username__iexact=username).exists():
+                        previous_uname.append(obj_username)
+                        continue
+                    if pd.isnull(username):
+                        error = "Username is required"
+                        raise Exception
+                    if len(username) >= 150:
+                        error = "Username can't be more than 150 characters"
+                        raise Exception
 
-                # This is to check if the url contains the query parameter groupmappingpk.
-                # groupmappingpk is added to url when this function is called from groupmapping_detail.html.
-                # If groupmappingpk is in the url then the csv file containing all members are students only.
-                if request.GET.get('groupmappingpk'):
-                    obj.Is_Student = True
-                else:
-                    if df.iloc[i]['Teacher'] == 1:
-                        obj.Is_Teacher = True
-                    else:
-                        obj.Is_Teacher = False
+                    if len(member_id) >= 150:
+                        error = "Member ID can't be more than 150 characters"
+                        raise Exception
+                    if len(first_name) >= 50:
+                        error = "First name can't be more than 50 characters"
+                        raise Exception
+                    if len(last_name) >= 50:
+                        error = "Last name can't be more than 50 characters"
+                        raise Exception
+                    
+                    if pd.isnull(gender):
+                        error = "Gender is required"
+                        raise Exception
+                    gender = gender.uppercase()
+                    if not gender in ['M','F']:
+                        error = "Gender must be either m or f for male and female respectively"
+                        raise Exception
 
-                    if df.iloc[i]['Student'] == 1:
-                        obj.Is_Student = True
-                    else:
-                        obj.Is_Student = False
+                    try:
+                        birth_date = datetime.strptime(birth_date, "%m/%d/%Y").strftime('%Y-%m-%d')
+                    except:
+                        birth_date = None
 
-                obj.Center_Code = request.user.Center_Code
-                obj.set_password('00000')
-                obj.save()
+                    if pd.isnull(student):
+                        error = "Student value is required"
+                        raise Exception
+                    if not isinstance(student, int) or not student in [0,1]:
+                        error = "Student value should be either 0 or 1"
+                        raise Exception
+                    if pd.isnull(teacher):
+                        error = "Teacher value is required"
+                        raise Exception
+                    if not isinstance(teacher, int) or not teacher in [0,1]:
+                        error = "Teacher value should be either 0 or 1"
+                        raise Exception
 
-                # Following is to add the new students to the group from which they were imported.
-                # groupmappingpk contains the primary key of the group that is used to call the function.
-                if request.GET.get('groupmappingpk'):
-                    # If no group exist then raise the exception to terminate the process
-                    if GroupMapping.objects.filter(pk=request.GET.get('groupmappingpk')).exists():
-                        g = GroupMapping.objects.get(pk=request.GET.get('groupmappingpk'))
-                    else:
-                        raise Exception('Group %s does not exist' % request.GET.get('groupmappingpk'))
-                    obj.groupmapping_set.add(g)
-                saved_id.append(obj.id)
+                    # Saving the member object
+                    obj = MemberInfo()
+                    obj.username = username
+                    obj.Member_ID = member_id
+                    obj.first_name = first_name
+                    obj.last_name = last_name
+                    obj.email = email
+                    obj.Member_Permanent_Address = permanent_address
+                    obj.Member_Temporary_Address = temp_address
+                    obj.Member_Phone = phone 
+                    obj.Center_Code = request.user.Center_Code
+                    obj.set_password('00000')
+                    obj.save()
 
+                    saved_id.append(obj.id)
 
-            except Exception as e:
-                for j in saved_id:
-                    MemberInfo.objects.filter(id=j).delete()
-                msg = "Can't Upload all data. Problem in " + str(
-                    i + 1) + "th row of data while uploading. <br><br> " + "<br> ".join(
-                    ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>"
-                return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+                    # This is to check if the url contains the query parameter groupmappingpk.
+                    # groupmappingpk is added to url when this function is called from groupmapping_detail.html.
+                    # # If groupmappingpk is in the url then the csv file containing all members are students only.
+                    # if request.GET.get('groupmappingpk'):
+                    #     obj.Is_Student = True
+                    # else:
+                    #     if df.iloc[i]['Teacher'] == 1:
+                    #         obj.Is_Teacher = True
+                    #     else:
+                    #         obj.Is_Teacher = False
+
+                    #     if df.iloc[i]['Student'] == 1:
+                    #         obj.Is_Student = True
+                    #     else:
+                    #         obj.Is_Student = False
+
+                    # Following is to add the new students to the group from which they were imported.
+                    # groupmappingpk contains the primary key of the group that is used to call the function.
+                    # if request.GET.get('groupmappingpk'):
+                    #     # If no group exist then raise the exception to terminate the process
+                    #     if GroupMapping.objects.filter(pk=request.GET.get('groupmappingpk')).exists():
+                    #         g = GroupMapping.objects.get(pk=request.GET.get('groupmappingpk'))
+                    #     else:
+                    #         raise Exception('Group %s does not exist' % request.GET.get('groupmappingpk'))
+                    #     obj.groupmapping_set.add(g)
+
+                except Exception as e:
+                    for j in saved_id:
+                        MemberInfo.objects.filter(id=j).delete()
+                    msg = error + "Can't Upload all data. Problem in " + str(
+                        i + 1) + "th row of data while uploading. <br><br> "
+                        #  + "<br> ".join(
+                        # ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br><br>"
+                    return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+        else:
+            msg = "The uploaded excel has no data to register"
         if previous_uname:
-            messages = """User Data has been uploaded<br><div class='text-danger'>But These users are already
+            msg = """User Data has been uploaded<br><div class='text-danger'>But These users are already
              present in the system so are not registered:<br>""" + str(previous_uname) + """</div>"""
         else:
-            messages = "All data has been Uploaded Sucessfully"
-        return JsonResponse(data={"message": messages, "class": "text-success",
-                                  "rmclass": "text-danger"})
+            msg = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
 
 # The following function is for importing the course from the csv file
 def ImportCourse(request, *args, **kwargs):
@@ -668,8 +714,8 @@ def ImportCourse(request, *args, **kwargs):
         if not df.empty:
             for i in range(len(df)):
                 try:
-                    course_name = df.iloc[i]['Course Name(*)']
-                    course_provider = df.iloc[i]['Course Provider(*)']
+                    course_name = df.iloc[i]['(*)Course Name']
+                    course_provider = df.iloc[i]['(*)Course Provider']
                     course_desc = df.iloc[i]['Course Description']
                     course_level = df.iloc[i]['Level(1-5)']
 
