@@ -141,7 +141,7 @@ urlpatterns += (
          views.UserThreads.as_view(), name='student_threads'),
     path('forum/notification', views.NotificationView.as_view(),
          name='student_notification'),
-    path('forum/create_thread/threadsearchAjax/<int:topic_id>/<slug:threadkeywordList>/',
+    path('forum/create_thread/threadsearchAjax/<int:topic_id>/',
          views.ThreadSearchAjax, name='thread_search_student'),
     path('quiz/progress/<int:pk>/', views.QuizUserProgressDetailView.as_view(),
          name='student_progress_detail'),
