@@ -120,19 +120,19 @@
                                                                             {% else %}
                                                                                 {% static 'images/profile/profile.png' %}
                                                                             {% endif %}" alt="..."
-                                        class="img-circle width-20" />
-                                    {{ thread.user.username }}</a>
-                                <span>{{ thread.pub_date }}</span>
+                                         class="img-circle width-20"/>
+                                {{ thread.user.username }}</a>
+                                <span class="dateconFullMonth">{{ thread.pub_date|date:'d M, Y h:i A' }}</span>
                                 |
                                 <span>{% blocktrans with view_count=thread.view_count %} <i class="fa fa-eye"></i>
                                     viewed
                                     {{ view_count }}
                                     times{% endblocktrans %}</span> | <span> {% if thread.reply_count %}
-                                    <i class="fa fa-comments-o"></i>
-                                    {% blocktrans count reply_count=thread.reply_count %}{{ reply_count }} Reply
+                                <i class="fa fa-comments-o"></i>
+                                {% blocktrans count reply_count=thread.reply_count %}{{ reply_count }} Reply
                                     {% plural %}{{ reply_count }} Replies{% endblocktrans %}
-                                    {% else %}
-                                    {% trans "No Replies" %}
+                            {% else %}
+                                {% trans "No Replies" %}
                                     {% endif %}
                                 </span>
                             </div>
