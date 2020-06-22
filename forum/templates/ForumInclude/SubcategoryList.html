@@ -54,7 +54,7 @@
                 {% else %}
                 {% url 'forum:user_info' pk=thread.user.pk %}
                 {% endif %}">
-                    <img style=" " src="{{ thread.user.Avatar }}" alt="profile_picture"
+                    <img style=" " src="{{ thread.user.Avatar }}" alt="profilepic"
                         class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default forum-user-img ">
                 </a>
                 <h3 class="thread_title">
@@ -133,7 +133,8 @@
                         </p>
 
                         <div class="media-right media-middle">
-                            <span class="btn btn-primary btn-xs">{{ thread.reply_count }} Reply</span>
+                            <span class="btn btn-primary btn-xs">{{ thread.reply_count }}  Reply</span>
+                         
                         </div>
 
 
