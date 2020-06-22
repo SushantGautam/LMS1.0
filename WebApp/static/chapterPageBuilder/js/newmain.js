@@ -3424,15 +3424,15 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
             return false
         }
     }
-    $(this).parent().parent().parent().remove();
+    $(this).closest('.pagenumber').remove();
     delete data.pages[this.value]
 
     numberofloops = Object.keys(data.pages).length + 1
     for (x = this.value; x <= numberofloops; x++) {
-        $('.pagenumber[value="' + (parseInt(x) + 1) + '"').parent().find('.clone-page-btn').attr({
+        $('.pagenumber[value="' + (parseInt(x) + 1) + '"').find('.clone-page-btn').attr({
             "value": parseInt(x),
         });
-        $('.pagenumber[value="' + (parseInt(x) + 1) + '"').parent().find('.delete-page-btn').attr({
+        $('.pagenumber[value="' + (parseInt(x) + 1) + '"').find('.delete-page-btn').attr({
             "value": parseInt(x),
         });
         $('.pagenumber[value="' + (parseInt(x) + 1) + '"').attr({
@@ -3456,7 +3456,7 @@ $('.tabs-to-click').on('click', '.delete-page-btn', function () {
 // clone Page function
 $('.tabs-to-click').on('click', '.clone-page-btn', function () {
     var prev_data = $('#tab').clone()
-    $(this).attr('disabled', true)
+    $(this).attr('disabled', true)  // clone button disabled for preventing multiple clicks
     var promise = new Promise((resolve, reject) => {
         updateData(window.currentPage, prev_data)
         resolve('success')
@@ -3464,32 +3464,38 @@ $('.tabs-to-click').on('click', '.clone-page-btn', function () {
     source = this.value
     destination = parseInt(source) + 1
     // numberofloops = Object.keys(data.pages).length
+
+    // Loop through all side navigation slides and update value of clone, delete and onchange button.
     $.each($('.pagenumber'), function () {
-        if (this.value > source) {
+        if (this.value > parseInt(source)) {
             let new_value = parseInt(this.value) + 1
             $(this).attr({
                 "value": new_value,
                 "onclick": "changePage('tab" + new_value + "')"
             });
-            $(this).parent().find('.clone-page-btn').attr({
+            $(this).find('.clone-page-btn').attr({
                 "value": new_value,
             });
-            $(this).parent().find('.delete-page-btn').attr({
+            $(this).find('.delete-page-btn').attr({
                 "value": new_value,
             });
         }
     });
-    numberofloops = Object.keys(data.pages).length
+
+    numberofloops = Object.keys(data.pages).length  // number of pages before cloning in json.
+
     promise.then((successmessage) => {
         setTimeout(() => {
             // window.currentPage = 'tab'+(parseInt(window.currentPage) + 1)
-            for (x = numberofloops; x >= (parseInt(this.value) + 1); x--) {
+            for (x = numberofloops; x >= (parseInt(source) + 1); x--) {
+                // swap index of data['pages']
+                // For instance => data['pages']['10'] will be swapped to data['pages']['11']
                 data.pages[parseInt(x) + 1] = data.pages[x]
                 // delete data.pages[parseInt(x)]
             }
             data.pages[destination] = data.pages[source]
             // $('.current.pagenumber').removeClass('current')
-            var num_tabs = parseInt(this.value) + 1;
+            var num_tabs = parseInt(source) + 1;
             let copy = $(this).closest('li').clone();
             // for cloning page navigation tabs
             copy.removeClass('current')
