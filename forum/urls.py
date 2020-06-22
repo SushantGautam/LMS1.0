@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import url, include
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework import routers
+from django.conf.urls import include
 from django.urls import path
+from rest_framework import routers
+
 from . import api
 from . import views
 
@@ -62,7 +62,7 @@ urlpatterns = [
     path(r'notifications/', views.NotificationView.as_view(), name='notifications'),
     path(r'avatar/', views.upload_avatar, name="upload_avatar"),
 
-    path('t/create/threadsearchAjax/<int:topic_id>/<slug:threadkeywordList>/',
+    path('t/create/threadsearchAjax/<int:topic_id>/',
          views.ThreadSearchAjax, name='Admin_thread_search'),
     path(r'api/v1/', include(router.urls)),
 ]

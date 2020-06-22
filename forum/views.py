@@ -358,10 +358,10 @@ from django.db.models import Q
 from functools import reduce
 
 
-def ThreadSearchAjax(request, topic_id, threadkeywordList):
+def ThreadSearchAjax(request, topic_id):
     if AuthCheck(request, admn=1) == 2:
         return redirect('login')
-    threadkeywordList = threadkeywordList.split("_")
+    threadkeywordList = request.GET.get('threadkeywordList').split("_")
     RelevantThread = []
     if topic_id:
         RelevantThread = Thread.objects.filter(topic=topic_id)
