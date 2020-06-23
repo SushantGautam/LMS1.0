@@ -1073,7 +1073,7 @@ class SessionInfoUpdateView(UpdateView):
 
 class InningInfoListView(ListView):
     model = InningInfo
-    template_name = 'WebApp/inninginfo_list.html'
+    template_name = 'center_admin/inninginfo_list.html'
 
     def get_queryset(self):
         return InningInfo.objects.filter(
@@ -1083,7 +1083,7 @@ class InningInfoListView(ListView):
 
 class InningInfoListViewInactive(ListView):
     model = InningInfo
-    template_name = 'WebApp/inninginfo_list_inactive.html'
+    template_name = 'center_admin/inninginfo_list_inactive.html'
 
     def get_queryset(self):
         return InningInfo.objects.filter(
@@ -1094,6 +1094,7 @@ class InningInfoListViewInactive(ListView):
 class InningInfoCreateView(CreateView):
     model = InningInfo
     form_class = InningInfoForm
+    template_name = "center_admin/inninginfo_form.html"
 
     def get_form_kwargs(self):
         kwargs = super(InningInfoCreateView, self).get_form_kwargs()
