@@ -1,6 +1,8 @@
 import json
 
 from django.conf import settings
+from django.db.models import Q
+from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
@@ -8,10 +10,6 @@ from rest_framework.response import Response
 from WebApp.models import AssignmentQuestionInfo
 from . import models
 from . import serializers
-
-from datetime import datetime
-from django.db.models import Q
-from django.utils import timezone
 
 
 class CenterInfoViewSet(viewsets.ModelViewSet):
@@ -150,7 +148,7 @@ class AssignmentInfoViewSet(viewsets.ModelViewSet):
         return context
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = self.queryset.filter(Course_Code__Center_Code=self.request.user.Center_Code)
         datetime_now = timezone.now().replace(microsecond=0)
         if self.request.GET.get('Course_Code'):
             queryset = queryset.filter(
