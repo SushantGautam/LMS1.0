@@ -1824,8 +1824,8 @@ from django.db.models import Q
 from functools import reduce
 
 
-def ThreadSearchAjax(request, topic_id, threadkeywordList):
-    threadkeywordList = threadkeywordList.split("_")
+def ThreadSearchAjax(request, topic_id):
+    threadkeywordList = request.GET.get('threadkeywordList').split("_")
     RelevantThread = []
     if topic_id:
         RelevantThread = Thread.objects.filter(topic=topic_id)

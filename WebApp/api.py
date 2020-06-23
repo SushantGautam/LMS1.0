@@ -1,6 +1,8 @@
 import json
 
 from django.conf import settings
+from django.db.models import Q
+from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
@@ -8,10 +10,6 @@ from rest_framework.response import Response
 from WebApp.models import AssignmentQuestionInfo
 from . import models
 from . import serializers
-
-from datetime import datetime
-from django.db.models import Q
-from django.utils import timezone
 
 
 class CenterInfoViewSet(viewsets.ModelViewSet):
@@ -150,16 +148,19 @@ class AssignmentInfoViewSet(viewsets.ModelViewSet):
         return context
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = self.queryset.filter(Course_Code__Center_Code=self.request.user.Center_Code)
         datetime_now = timezone.now().replace(microsecond=0)
-        if self.request.GET.get('Course_Code'):
-            queryset = queryset.filter(
-                Course_Code__in=self.request.GET.get('Course_Code').split(','), Chapter_Code__Use_Flag=True,
-                Assignment_Start__lte=datetime_now
-            ).filter(
-                Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
-                Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None)
-            )
+        if 'Course_Code' in self.request.GET:
+            if self.request.GET.get('Course_Code'):
+                queryset = queryset.filter(
+                    Course_Code__in=self.request.GET.get('Course_Code').split(','), Chapter_Code__Use_Flag=True,
+                    Assignment_Start__lte=datetime_now
+                ).filter(
+                    Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
+                    Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None)
+                )
+            else:
+                queryset = ''
         if self.request.GET.get('active'):
             if self.request.GET.get('active') == '1':
                 queryset = queryset.filter(Assignment_Start__lte=datetime_now, Assignment_Deadline__gte=datetime_now)

@@ -242,29 +242,25 @@
         if ($("#id_title").val() === "") {
             $("#threadList").html('');
 
-        }
-
-        else if (e.keyCode == 32) {
+        } else if (e.keyCode == 32) {
             var topicId = $('#id_topic').val() ? $('#id_topic').val() : 0;
             var threadTitleText = $('#id_title').val() ? $('#id_title').val() : "";
             threadTitleText = threadTitleText.removeStopWords().replace("/", "").replace("\\", "").replace("_", "").replace("?", "").replace(",", " ");
             threadTitleText = threadTitleText.split(' ').join('_');
+            if (threadTitleText || threadTitleText !== '') {
+                $.ajax({
+                    type: "GET",
+                    url: "/forum/t/create/threadsearchAjax/" + topicId + "/?threadkeywordList=" + threadTitleText,
+                    success: function (data) {
+                        if (data.length !== 9) {
+                            $("#threadList").html("Related Threads");
+                            $("#threadList").append(data);
+                        }
 
-
-            $.ajax({
-                type: "GET",
-                url: "/forum/t/create/threadsearchAjax/" + topicId + "/" + threadTitleText,
-                success: function (data) {
-                    if (data.length !== 9) {
-                        $("#threadList").html("Related Threads");
-                        $("#threadList").append(data);
                     }
-
-                }
-            });
+                });
+            }
         }
-
-
 
 
     });
