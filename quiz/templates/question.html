@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n%}
+{% load i18n %}
 {% load static %}
 {% load quiz_tags %}
 
@@ -7,76 +7,78 @@
 {% block description %} {{ quiz.title }} - {{ quiz.description }} {% endblock %}
 {% block breadcrumb %}
 
-{% block top_navigation %}
+    {% block top_navigation %}
 
-{% endblock top_navigation %}
+    {% endblock top_navigation %}
 
-{% block sidebar %}
+    {% block sidebar %}
 
-<style>
-.nav-md .container.body .right_col {
-    padding: 10px 20px 0;
-    margin-left: 0px!important;
-}
-.breadcrumb{
-	display: none;
-}
-.base-timer {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: auto;
-  }
-  
-  .base-timer__svg {
-    transform: scaleX(-1);
-  }
-  
-  .base-timer__circle {
-    fill: none;
-    stroke: none;
-  }
-  
-  .base-timer__path-elapsed {
-    stroke-width: 7px;
-    stroke: grey;
-  }
-  
-  .base-timer__path-remaining {
-    stroke-width: 7px;
-    stroke-linecap: round;
-    transform: rotate(90deg);
-    transform-origin: center;
-    transition: 1s linear all;
-    fill-rule: nonzero;
-    stroke: currentColor;
-  }
-  
-  .base-timer__path-remaining.green {
-    color: rgb(65, 184, 131);
-  }
-  
-  .base-timer__path-remaining.orange {
-    color: orange;
-  }
-  
-  .base-timer__path-remaining.red {
-    color:rgb(177, 21, 21);
-  }
-  
-  .base-timer__label {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-  }
-</style>
+        <style>
+            .nav-md .container.body .right_col {
+                padding: 10px 20px 0;
+                margin-left: 0px !important;
+            }
 
-{% endblock sidebar %}
+            .breadcrumb {
+                display: none;
+            }
+
+            .base-timer {
+                position: relative;
+                width: 150px;
+                height: 150px;
+                margin: auto;
+            }
+
+            .base-timer__svg {
+                transform: scaleX(-1);
+            }
+
+            .base-timer__circle {
+                fill: none;
+                stroke: none;
+            }
+
+            .base-timer__path-elapsed {
+                stroke-width: 7px;
+                stroke: grey;
+            }
+
+            .base-timer__path-remaining {
+                stroke-width: 7px;
+                stroke-linecap: round;
+                transform: rotate(90deg);
+                transform-origin: center;
+                transition: 1s linear all;
+                fill-rule: nonzero;
+                stroke: currentColor;
+            }
+
+            .base-timer__path-remaining.green {
+                color: rgb(65, 184, 131);
+            }
+
+            .base-timer__path-remaining.orange {
+                color: orange;
+            }
+
+            .base-timer__path-remaining.red {
+                color: rgb(177, 21, 21);
+            }
+
+            .base-timer__label {
+                position: absolute;
+                width: 150px;
+                height: 150px;
+                top: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+            }
+        </style>
+
+    {% endblock sidebar %}
 
 
 
@@ -87,35 +89,35 @@
 {% endblock %}
 {% block content %}
 
-{% if previous.answers %}
+    {% if previous.answers %}
 
-  <p class="muted"><small>{% trans "The previous question" %}:</small></p>
-  <p>{{ previous.previous_question }}</p>
+        <p class="muted"><small>{% trans "The previous question" %}:</small></p>
+        <p>{{ previous.previous_question }}</p>
 
-  {% if previous.previous_outcome %}
-	<div class="alert alert-success">
-  {% else %}
-	<div class="alert alert-warning">
-  {% endif %}
-  	  <p><small>
-		{% trans "Your answer was" %} </small>
-		<strong>
-		  {{ previous.previous_outcome|yesno:"correct,incorrect" }}
-		</strong>
-	  </p>
+        {% if previous.previous_outcome %}
+            <div class="alert alert-success">
+        {% else %}
+            <div class="alert alert-warning">
+        {% endif %}
+    <p><small>
+        {% trans "Your answer was" %} </small>
+        <strong>
+            {{ previous.previous_outcome|yesno:"correct,incorrect" }}
+        </strong>
+    </p>
 
-	</div>
-
-	{% include 'correct_answer.html' %}
-
-	<p><strong>{% trans "Explanation" %}:</strong></p>
-    <div class="well " style="background-color: #fcf8e3;">
-        <p>{{ previous.previous_question.explanation }}</p>
     </div>
 
-    <hr>
+        {% include 'correct_answer.html' %}
 
-{% endif %}
+        <p><strong>{% trans "Explanation" %}:</strong></p>
+        <div class="well " style="background-color: #fcf8e3;">
+            <p>{{ previous.previous_question.explanation }}</p>
+        </div>
+
+        <hr>
+
+    {% endif %}
 
 
     <div class="" style="text-align:right; margin-bottom: 10px;">
@@ -156,58 +158,57 @@
                 {% trans "Question category" %}:
 
             </strong>
-		</small>
-  <strong>{{ question.category }}</strong>
-</p>
+            </small>
+            <strong>{{ question.category }}</strong>
+        </p>
 
 
 
 
 
 
-<div class="quiz-questions" style="
+        <div class="quiz-questions" style="
     padding-left: 15vw;
     padding-right: 15vw;
 ">
-			<div id="step-1">
-				   <div class="privew1">
-						    <div class="questionsBox">
-										<div class="questions">{{ progress.0|add:1 }})&nbsp; {{ question.content }}</div>
+            <div id="step-1">
+                <div class="privew1">
+                    <div class="questionsBox">
+                        <div class="questions">{{ progress.0|add:1 }})&nbsp; {{ question.content }}</div>
 
 
-										{% if question.figure %}
-  												<div class="quiz-ques-image">
+                        {% if question.figure %}
+                            <div class="quiz-ques-image">
 
-																<img src="{{ question.figure.url }}" alt="{{ question.content }}" />
+                                <img src="{{ question.figure.url }}" alt="{{ question.content }}"/>
 
-
-
-														</div>
-
-										{% endif %}
-									<form action="" method="POST">{% csrf_token %}
-										 <input type=hidden name="question_id" value="{{ question.id }}">
-										 		<ul class="list-group">
-
-													{% for answer in form.answers %}
-														<li class="list-group-item">
-															{{ answer }}
-													</li>
-													{% endfor %}
-
-												</ul>
-
-										<input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block
-                                               btn-warning" >
-
-
-                                    </form>
 
                             </div>
-                   </div>
+
+                        {% endif %}
+                        <form action="" method="POST">{% csrf_token %}
+                            <input type=hidden name="question_id" value="{{ question.id }}">
+                            <ul class="list-group">
+
+                                {% for answer in form.answers %}
+                                    <li class="list-group-item">
+                                        {{ answer }}
+                                    </li>
+                                {% endfor %}
+
+                            </ul>
+
+                            <input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block
+                                   btn-warning" >
+
+
+                        </form>
+
+                    </div>
+                </div>
 
             </div>
-</div>
+        </div>
 
 
 
@@ -258,7 +259,10 @@
 
     {% block customjss %}
         <script>
-            runQuizTimerInterval()
+            $(document).ready(function () {
+                runQuizTimerInterval()
+            })
+
 
             function updateFunctionTimeElapsed(count) {
                 $.ajax({
@@ -271,7 +275,6 @@
                         'time_elapsed': parseInt('{{ sitting.time_elapsed }}') + parseInt(count)
                     },
                     success: function (data) {
-                        console.log(data)
                         if (data.url != 0 || data.url != '0') {
                             clearInterval(cuentaAtras)
                             window.location.href = data.url;
@@ -289,22 +292,22 @@
         </script>
         <script>
             const FULL_DASH_ARRAY = 283;
-const WARNING_THRESHOLD = 10;
-const ALERT_THRESHOLD = 5;
+            const WARNING_THRESHOLD = 10;
+            const ALERT_THRESHOLD = 5;
 
-const COLOR_CODES = {
-  info: {
-    color: "green"
-  },
-    warning: {
-        color: "orange",
-        threshold: WARNING_THRESHOLD
-    },
-    alert: {
-        color: "red",
-        threshold: ALERT_THRESHOLD
-    }
-};
+            const COLOR_CODES = {
+                info: {
+                    color: "green"
+                },
+                warning: {
+                    color: "orange",
+                    threshold: WARNING_THRESHOLD
+                },
+                alert: {
+                    color: "red",
+                    threshold: ALERT_THRESHOLD
+                }
+            };
 
             const TIME_LIMIT = '{{ quiz.duration }}';
             let timePassed = '{{ quiz.duration }}' - '{{ remaininig_time }}';
@@ -313,50 +316,50 @@ const COLOR_CODES = {
             let remainingPathColor = COLOR_CODES.info.color;
 
             document.getElementById("app").innerHTML = `
-<div class="base-timer">
-  <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <g class="base-timer__circle">
-      <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
-      <path
-        id="base-timer-path-remaining"
-        stroke-dasharray="283"
-        class="base-timer__path-remaining ${remainingPathColor}"
-        d="
-          M 50, 50
-          m -45, 0
-          a 45,45 0 1,0 90,0
-          a 45,45 0 1,0 -90,0
-        "
-      ></path>
-    </g>
-  </svg>
-  <span id="base-timer-label" class="base-timer__label">${formatTime(
-    timeLeft
-  )}</span>
-</div>
-`;
+                <div class="base-timer">
+                  <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <g class="base-timer__circle">
+                      <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+                      <path
+                        id="base-timer-path-remaining"
+                        stroke-dasharray="283"
+                        class="base-timer__path-remaining ${remainingPathColor}"
+                        d="
+                          M 50, 50
+                          m -45, 0
+                          a 45,45 0 1,0 90,0
+                          a 45,45 0 1,0 -90,0
+                        "
+                      ></path>
+                    </g>
+                  </svg>
+                  <span id="base-timer-label" class="base-timer__label">${formatTime(
+                timeLeft
+            )}</span>
+                </div>
+                `;
 
-startTimer();
+            startTimer();
 
-function onTimesUp() {
-  clearInterval(timerInterval);
-}
+            function onTimesUp() {
+                clearInterval(timerInterval);
+            }
 
-function startTimer() {
-  timerInterval = setInterval(() => {
-    timePassed = timePassed += 1;
-    timeLeft = TIME_LIMIT - timePassed;
-    document.getElementById("base-timer-label").innerHTML = formatTime(
-      timeLeft
-    );
-      setCircleDasharray();
-      setRemainingPathColor(timeLeft);
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    timePassed = timePassed += 1;
+                    timeLeft = TIME_LIMIT - timePassed;
+                    document.getElementById("base-timer-label").innerHTML = formatTime(
+                        timeLeft
+                    );
+                    setCircleDasharray();
+                    setRemainingPathColor(timeLeft);
 
-      if (timeLeft === 0) {
-          onTimesUp();
-      }
-  }, 1000);
-}
+                    if (timeLeft === 0) {
+                        onTimesUp();
+                    }
+                }, 1000);
+            }
 
             function formatTime(time) {
                 let hours = Math.floor(time / 60 / 60);
@@ -384,30 +387,30 @@ function startTimer() {
                         .classList.remove(warning.color);
                     document
                         .getElementById("base-timer-path-remaining")
-      .classList.add(alert.color);
-  } else if (timeLeft <= warning.threshold) {
-    document
-      .getElementById("base-timer-path-remaining")
-      .classList.remove(info.color);
-    document
-      .getElementById("base-timer-path-remaining")
-      .classList.add(warning.color);
-  }
-}
+                        .classList.add(alert.color);
+                } else if (timeLeft <= warning.threshold) {
+                    document
+                        .getElementById("base-timer-path-remaining")
+                        .classList.remove(info.color);
+                    document
+                        .getElementById("base-timer-path-remaining")
+                        .classList.add(warning.color);
+                }
+            }
 
-function calculateTimeFraction() {
-  const rawTimeFraction = timeLeft / TIME_LIMIT;
-  return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
-}
+            function calculateTimeFraction() {
+                const rawTimeFraction = timeLeft / TIME_LIMIT;
+                return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
+            }
 
-function setCircleDasharray() {
-  const circleDasharray = `${(
-    calculateTimeFraction() * FULL_DASH_ARRAY
-  ).toFixed(0)} 283`;
-  document
-    .getElementById("base-timer-path-remaining")
-    .setAttribute("stroke-dasharray", circleDasharray);
-}
+            function setCircleDasharray() {
+                const circleDasharray = `${(
+                    calculateTimeFraction() * FULL_DASH_ARRAY
+                ).toFixed(0)} 283`;
+                document
+                    .getElementById("base-timer-path-remaining")
+                    .setAttribute("stroke-dasharray", circleDasharray);
+            }
         </script>
     {% endblock %}
 
