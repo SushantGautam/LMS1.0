@@ -2858,7 +2858,13 @@ function setslider() {
             `);
             } else {
                 $(".tabs-to-click ul").append(`
-                    <li class="small-canvases pagenumber" data-before="${key}" style="position: relative;"
+                    <li class="small-canvases pagenumber" data-before="${key}" style="
+                    position: relative;
+                    background-image: url('${value[0]['thumbnail']}'); 
+                    background-position: center;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    "
                         onclick="changePage('tab${key}')" value="${key}">
                         <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
                             
