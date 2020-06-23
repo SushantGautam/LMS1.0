@@ -26,7 +26,7 @@
                 {% elif '/forum' in request.path %}
                 {% url 'forum:user_info' pk=thread.user.pk %}
                 {% endif %}">
-                    <img style="height: 30px;" src="
+                    <img  src="
                                                                             {% if thread.user.Member_Avatar %}
                                                                                 {{ thread.user.Member_Avatar.url }}
                                                                             {% elif thread.user.Member_Gender == 'M' %}

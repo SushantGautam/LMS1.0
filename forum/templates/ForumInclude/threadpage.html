@@ -10,9 +10,9 @@
 
 
     <div class="x_panel">
-        <div class="x_title">
+        <div class="x_title panel" style="padding: 0 10px">
             <h2>{{ thread.topic.node_group }} </h2>
-            <div class="top_button ">
+            <div class="top_button " style="margin-top: 10px;">
 
                 {% if request.user == thread.user %}
                 <a href="
@@ -22,7 +22,7 @@
                     {% url 'student_edit_thread' pk=thread.pk %}  
                      {% elif '/forum' in request.path %}
                      {% url 'forum:edit_thread' pk=thread.pk %}
-                     {% endif %}"><span class="btn btn-xs btn-primary"><i class="fa fa-edit"></i> {% trans 'Edit' %}
+                     {% endif %}"><span class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i> {% trans 'Edit' %}
                     </span></a>
                 {% endif %}
 
@@ -39,13 +39,13 @@
                 <a href="#" class="moderate-action open-thread" data-toggle="modal" data-target="#moderation-modal"
                     data-pk="{{ thread.pk }}" data-action="open-thread"
                     data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                    <span class="btn btn-info btn-xs"><i class="fa fa-close"></i> Open </span>
+                    <span class="btn btn-info btn-xs" style="margin-right: 5px;"><i class="fa fa-close"></i> Open </span>
                 </a>
                 {% else %}
                 <a href="#" class="moderate-action close-thread" data-toggle="modal" data-target="#moderation-modal"
                     data-pk="{{ thread.pk }}" data-action="close-thread"
                     data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                    <span class="btn btn-info btn-xs">
+                    <span class="btn btn-info btn-xs" style="margin-right: 5px;">
                         <i class="fa fa-folder-open-o"></i> Close </span>
                 </a>
                 {% endif %}
@@ -77,7 +77,7 @@
             <ul class="list-unstyled timeline">
                 <li>
                     <div class="block">
-                        <div class="tags">
+                        <div class="tags panel" style="padding: 10px;">
                             <a href="  {% if '/teachers' in request.path %}
                             {% url 'teacher_topic' pk=thread.topic.pk %}
                             {% elif '/students' in request.path %}
@@ -86,11 +86,8 @@
                             {% url 'forum:topic' pk=thread.topic.pk %}
                             {% endif %}
                       " class="tag">
-                                <span>{{ thread.topic.title }}</span>
+                                <span style="font-size: 18px;">{{ thread.topic.title }}</span>
                             </a>
-
-                        </div>
-                        <div class="block_content">
                             <p class="thread-font">
                                 {{ thread.title }}
 
@@ -98,18 +95,18 @@
 
 
 
-                            <div class="byline">
+                            <div class="byline" style="font-style: italic; color:#aab6aa">
 
 
 
-                                posted by <a href="
+                                <span > Posted by:- </span> <a href="
                                 {% if '/teachers' in request.path %}
                                 {% url 'teacher_info' pk=thread.user.pk %}
                                 {% elif '/students' in request.path %}
                                 {% url 'student_info' pk=thread.user.pk %}
                                 {% elif '/forum' in request.path %}
                                 {% url 'forum:user_info' pk=thread.user.pk %}
-                                {% endif %}" class="link-text-color">
+                                {% endif %}" class="link-text">
                                     <img src="
                                                                             {% if thread.user.Member_Avatar %}
                                                                                 {{ thread.user.Member_Avatar.url }}
@@ -121,44 +118,60 @@
                                                                                 {% static 'images/profile/profile.png' %}
                                                                             {% endif %}" alt="..."
                                         class="img-circle width-20" />
-                                    {{ thread.user.username }}</a>
+                                 {{ thread.user.username }} </a>
                                 <span>{{ thread.pub_date }}</span>
                                 |
                                 <span>{% blocktrans with view_count=thread.view_count %} <i class="fa fa-eye"></i>
-                                    viewed
+                                    Viewed:-
                                     {{ view_count }}
                                     times{% endblocktrans %}</span> | <span> {% if thread.reply_count %}
                                     <i class="fa fa-comments-o"></i>
                                     {% blocktrans count reply_count=thread.reply_count %}{{ reply_count }} Reply
-                                    {% plural %}{{ reply_count }} Replies{% endblocktrans %}
+                                    {% plural %}Replies:-{{ reply_count }} {% endblocktrans %}
                                     {% else %}
                                     {% trans "No Replies" %}
                                     {% endif %}
                                 </span>
                             </div>
+                            <div>{{ thread.content_raw | safe }}</div>
+                        </div>
+                        <div class="block_content">
                            
-                                <div>{{ thread.content_raw | safe }}</div>
+                           
+                                
                             
 
-                            <ul class="list-comment reply-lists">
-                                {% if thread.reply_count > 3 %}
-                                <div class="reply_header">
-                                    <a href="#Goto_Reply">Post a Reply</a>
+                            <ul class="list-comment reply-lists" style="padding: 20px 30px 20px 20px;">
+                                <div class="row">
+                                  
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <span class="thread_replies" style="line-height: 35px; margin-left:0px!important;color:#42a5f5 !important">
+                                            {% if thread.reply_count %}
+                                            <i class="fa fa-comments-o"></i>
+                                            {% blocktrans count reply_count=thread.reply_count %}
+                                            Reply ({{ reply_count }})
+                                            {% plural %} Replies ({{ reply_count }}) {% endblocktrans %}
+                                            {% else %}
+                                            <i class="fa fa-comments-o"></i> {% trans "No Replies" %}
+                                            {% endif %}
+        
+                                        </span>
+
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        {% if thread.reply_count > 3 %}
+                                        <div class="reply_header">
+                                            
+                                            <a href="#Goto_Reply" class="btn btn-white paper-shadow relative" data-z="0.5" data-hover-z="1" data-animated=""><i class="fa fa-fw fa-reply"></i> Post A Reply</a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                {% endif %}
-                                <hr>
+                              
+                              
+                               
 
-                                <h2 class="thread_replies">
-                                    {% if thread.reply_count %}
-                                    <i class="fa fa-comments-o"></i>
-                                    {% blocktrans count reply_count=thread.reply_count %}
-                                    Reply ({{ reply_count }})
-                                    {% plural %} Replies ({{ reply_count }}) {% endblocktrans %}
-                                    {% else %}
-                                    <i class="fa fa-comments-o"></i> {% trans "No Replies" %}
-                                    {% endif %}
-
-                                </h2>
+                               
 
 
                                 <hr>
