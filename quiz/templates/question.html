@@ -259,11 +259,6 @@
 
     {% block customjss %}
         <script>
-            $(document).ready(function () {
-                runQuizTimerInterval()
-            })
-
-
             function updateFunctionTimeElapsed(count) {
                 $.ajax({
                     url: "{% url 'quiz_update_time_taken' %}",
@@ -311,7 +306,7 @@
 
             const TIME_LIMIT = '{{ quiz.duration }}';
             let timePassed = '{{ quiz.duration }}' - '{{ remaininig_time }}';
-            let timeLeft = TIME_LIMIT;
+            let timeLeft = TIME_LIMIT - timePassed;
             let timerInterval = null;
             let remainingPathColor = COLOR_CODES.info.color;
 
@@ -338,6 +333,7 @@
             )}</span>
                 </div>
                 `;
+            setCircleDasharray()
 
             startTimer();
 
@@ -413,7 +409,11 @@
             }
         </script>
     {% endblock %}
-
+    <script>
+        $(document).ready(function () {
+            runQuizTimerInterval()
+        })
+    </script>
 {% endblock %}
 
 {% block footer %}
