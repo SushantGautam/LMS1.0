@@ -3663,7 +3663,7 @@ $(document).ready(function () {
                 data.pages = {};    //  Empty all data
 
                 //  change all keys of data in sorted order
-                for (let i = 0; i < Object.keys(temp).length; i++) {    //  Loop through the number of pages
+                for (let i = 0; i < new_keys.length; i++) {    //  Loop through the number of pages
                     /*
                         Example:
                         new_keys = [3, 1, 2, 4]
