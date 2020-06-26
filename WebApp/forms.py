@@ -288,6 +288,21 @@ class SessionInfoForm(forms.ModelForm):
         model = SessionInfo
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(SessionInfoForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('Session_Name')
+        session = SessionInfo.objects.filter(Session_Name=name, Center_Code=self.request.user.Center_Code)
+        if session.exists():
+            if self.instance.id:
+                if session.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if session.get(pk=self.instance.id).Session_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Session Name already Exists')
+
 
 class GroupMappingForm(forms.ModelForm):
     Students = forms.ModelMultipleChoiceField(queryset=None, required=True,

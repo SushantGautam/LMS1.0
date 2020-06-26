@@ -1917,7 +1917,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
             link = 'http://' + link
         }
         video_link = getEmbedVideo(link)
-        div.find('p, iframe, video, .progress').remove();
+        div.find('p, iframe, video, .progress, .file-upload-icon').remove();
         div.append(video_link);
 
     });
@@ -1990,7 +1990,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                             var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A4HAcLOLOO68!${options.rid}"
                              frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
                             div.find('#loadingDiv').remove();
-                            div.find('p').remove();
+                            div.find('p, .file-upload-icon').remove();
                             // div.find('.progress').remove();
                             div.append(html);
                         },
