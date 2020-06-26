@@ -209,6 +209,8 @@ urlpatterns += (
          views.InningInfoUpdateView.as_view(), name='inninginfo_update'),
     path('innninginfo/delete/<int:pk>/',
          views.InningInfoDeleteView, name='inninginfo_delete'),
+    path('inninginfo/csv_import', views.ImportSession, name='csv_import_inninginfo')
+         
 
 )
 

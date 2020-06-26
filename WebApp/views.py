@@ -802,27 +802,79 @@ def ImportSession(request, *args, **kwargs):
                     start_date = df.iloc[i]['(*)Start Date']
                     end_date = df.iloc[i]['(*)End Date']
                     student_group = df.iloc[i]['(*)Student Group Name']
-                    courses = df.iloc[i]['(*)Courses']
+                    courses = df.iloc[i]['(*)Teacher Course Name']
 
+                    # Session Name validation
+                    if not SessionInfo.objects.filter(Session_Name__iexact=session_name).exists():
+                        error = "Session Name <strong>" + session_name + """</strong> does not exists.
+                                            Please register it from <a href=''>here</a>"""
+                        raise Exception
+                    session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name)
+
+                    # Start date and End date Validation
+                    if not start_date:
+                        error = "Start date is required"
+                        raise Exception
+                    start_date = str(start_date)
+                    try:
+                        start_date = datetime.strptime(start_date, '%m/%d/%Y')
+                    except ValueError:
+                        error = "Start Date <strong>" + start_date + "</strong> is not valid. Must be MM/DD/YYYY"
+                        raise Exception
+                    if not end_date:
+                        error = "End date is required"
+                        raise Exception
+                    end_date = str(end_date)
+                    try:
+                        end_date = datetime.strptime(end_date, '%m/%d/%Y')
+                    except ValueError:
+                        error = "End Date <strong>" + end_date + "</strong> is not valid. Must be MM/DD/YYYY"
+                        raise Exception
+                    if start_date >= end_date:
+                        error = "Start Date can't be greater than End Date"
+                        raise Exception
+
+                    # Student Group Name validation
+                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group).exists():
+                        error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
+                                            Please register it from <a href=''>here</a>"""
+                        raise Exception
+                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
+
+                    # Courses validation
                     if not courses:
                         error = "At least 1 course is required"
-                        raise Exception            
+                        raise Exception
+                    try:
+                        courses = courses.split(',')
+                    except:
+                        error = "Error in course list format. Seperate multiple course by comma"
+                        raise Exception
 
                     obj = InningInfo()
-                    obj.Inning_Name = session_name
+                    obj.Inning_Name = session_name_code
                     obj.Start_Date = start_date
                     obj.End_Date = end_date
-                    obj.Groups = student_group
-                    obj.Course_Group = courses
+                    obj.Groups = student_group_code
                     obj.Register_Agent = request.user.username
                     obj.Center_Code = request.user.Center_Code
                     obj.save()
                     saved_id.append(obj.id)
 
+                    # Course Group validation and registration
+                    for course in courses:
+                        if not InningGroup.objects.filter(InningGroup_Name__iexact=course).exists():
+                            error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
+                                                Please register it from <a href=''>here</a>"""
+                            raise Exception
+                        course_code = InningGroup.objects.get(Course_Code__Course_Name__iexact=course)
+                        obj.Course_Group.add(course_code)
+
                 except Exception as e:
                     for j in saved_id:
                         InningInfo.objects.filter(id=j).delete()
-                    msg = error + " Problem in " + str(i + 1) + "th row of data while uploading<br>"
+                    msg = error + "<br>Problem in " + str(i + 1) + "th row of data while uploading<br>"+ "<br>".join(
+                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         else:
             error = "The uploaded excel has no data to register"
