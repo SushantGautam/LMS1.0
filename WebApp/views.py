@@ -1314,6 +1314,11 @@ class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
     form_class = SessionInfoForm
     template_name = 'ajax/sessioncreate_form_ajax.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoCreateSessionAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
     model = InningGroup
