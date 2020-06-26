@@ -254,8 +254,7 @@ def start(request):
             else:
                 notice = None
             # return HttpResponse("default home")
-<<<<<<< HEAD
-            return render(request, "WebApp/homepage.html",
+            return render(request, "center_admin/dashboard.html",
                           {'course': course, 'coursecount': coursecount, 'studentcount': studentcount,
                            'teachercount': teachercount,
                            'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,
@@ -265,26 +264,6 @@ def start(request):
                            'sessions': sessions,
                            'sessioncount': sessioncount,
                            'notice': notice})
-=======
-            return render(
-                request, "center_admin/dashboard.html", {
-                    'course': course,
-                    'coursecount': coursecount,
-                    'studentcount': studentcount,
-                    'teachercount': teachercount,
-                    'threadcount': threadcount,
-                    'totalcount': totalcount,
-                    'thread': thread,
-                    'wordCloud': wordCloud,
-                    'get_top_thread_keywords': thread_keywords,
-                    'surveys': surveys,
-                    'surveycount': surveycount,
-                    'sessions': sessions,
-                    'sessioncount': sessioncount
-                })
-        elif request.user.Is_Student:
-            return redirect('student_home')
->>>>>>> NewUI
         elif request.user.Is_Teacher:
             return redirect('teacher_home')
         elif request.user.Is_Student:
@@ -660,19 +639,7 @@ def ImportCsvFile(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
-<<<<<<< HEAD
-
         df = pd.read_csv(path, encoding='utf-8')
-=======
-        df = pd.read_csv(path,
-                         encoding='utf-8')  # delimiter=';|,', engine='python',
-        df.column = [
-            'Username', 'Member ID', 'First Name', 'Last Name', 'Email',
-            'Phone', 'Gender', 'Student', 'Teacher', 'Temporary Address',
-            'Permanent Address', 'Birthdate'
-        ]
-        print(df)
->>>>>>> NewUI
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
@@ -683,7 +650,6 @@ def ImportCsvFile(request, *args, **kwargs):
         if not df.empty:
             for i in range(len(df)):
                 try:
-<<<<<<< HEAD
                     username = df.iloc[i]['(*)Username']
                     member_id = df.iloc[i]['Member ID']
                     first_name = df.iloc[i]['First Name']
@@ -809,23 +775,6 @@ def ImportCsvFile(request, *args, **kwargs):
         else:
             msg = "All data has been Uploaded Sucessfully"
         return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
-=======
-                    obj.Member_BirthDate = datetime.strptime(
-                        df.iloc[i]['Birthdate'],
-                        "%m/%d/%Y").strftime('%Y-%m-%d')
-                except:
-                    obj.Member_BirthDate = None
-                obj.Member_Phone = df.iloc[i]['Phone']
-
-                if df.iloc[i]['Gender'] == 'Male' or df.iloc[i][
-                        'Gender'] == 'M':
-                    obj.Member_Gender = 'M'
-                elif df.iloc[i]['Gender'] == 'Female' or df.iloc[i][
-                        'Gender'] == 'F':
-                    obj.Member_Gender = 'F'
-                else:
-                    obj.Member_Gender = ''
->>>>>>> NewUI
 
 # The following function is for importing the course from the csv file
 def ImportCourse(request, *args, **kwargs):
@@ -840,8 +789,6 @@ def ImportCourse(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
-
-<<<<<<< HEAD
         df = pd.read_csv(path, encoding='utf-8')
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
@@ -918,49 +865,6 @@ def ImportSession(request, *args, **kwargs):
         fs = FileSystemStorage(location=path)
         filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
-=======
-                obj.Center_Code = CenterInfo.objects.get(
-                    id=request.user.Center_Code.id)
-                obj.set_password('00000')
-                obj.save()
-
-                # Following is to add the new students to the group from which they were imported.
-                # groupmappingpk contains the primary key of the group that is used to call the function.
-                if request.GET.get('groupmappingpk'):
-                    # If no group exist then raise the exception to terminate the process
-                    if GroupMapping.objects.filter(
-                            pk=request.GET.get('groupmappingpk')).exists():
-                        g = GroupMapping.objects.get(
-                            pk=request.GET.get('groupmappingpk'))
-                    else:
-                        raise Exception('Group %s does not exist' %
-                                        request.GET.get('groupmappingpk'))
-                    obj.groupmapping_set.add(g)
-                saved_id.append(obj.id)
-
-            except Exception as e:
-                for j in saved_id:
-                    MemberInfo.objects.filter(id=j).delete()
-                msg = "Can't Upload all data. Problem in " + str(
-                    i + 1
-                ) + "th row of data while uploading. <br><br> " + "<br> ".join(
-                    [
-                        "{} -> {}".format(k, v)
-                        for k, v in df.iloc[i].to_dict().items()
-                    ]) + "<br><br>" + str(e)
-                return JsonResponse(
-                    data={
-                        "message": msg,
-                        "class": "text-danger",
-                        "rmclass": "text-success"
-                    })
-        return JsonResponse(
-            data={
-                "message": "All data has been Uploaded Sucessfully",
-                "class": "text-success",
-                "rmclass": "text-danger"
-            })
->>>>>>> NewUI
 
         df = pd.read_csv(path, encoding='utf-8')
         # Drop empty row of excel csv file
@@ -1217,7 +1121,6 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-<<<<<<< HEAD
         form.save(commit=False)
         if form.cleaned_data['Start_Date'] == "":
             form.instance.Start_Date = None
@@ -1230,14 +1133,6 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
-=======
-        super(ChapterInfoCreateViewAjax, self).form_valid(form)
-        return JsonResponse(data={'Message': 'Success'})
-
-    def form_invalid(self, form):
-        return JsonResponse({'errors': form.errors}, status=500)
-
->>>>>>> NewUI
 
 
 class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
@@ -1368,17 +1263,12 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-<<<<<<< HEAD
         if form.cleaned_data['Start_Date'] == "":
             form.instance.Start_Date = None
         if form.cleaned_data['End_Date'] == "":
             form.instance.End_Date = None
 
         # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
-=======
-        form.instance.mustreadtime = int(
-            form.cleaned_data['mustreadtime']) * 60
->>>>>>> NewUI
         form.save()
         return super().form_valid(form)
 
@@ -1793,7 +1683,6 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj.Assignment_Start = request.POST["Assignment_Start"]
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
         Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
-<<<<<<< HEAD
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
         Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
@@ -1803,14 +1692,6 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
                 return JsonResponse(
                     data={'Message': 'Assignment Deadline must be greater than start date.'}, status=500
                 )
-=======
-        Obj.Course_Code = CourseInfo.objects.get(
-            pk=request.POST["Course_Code"])
-        Obj.Chapter_Code = ChapterInfo.objects.get(
-            id=request.POST["Chapter_Code"])
-        Obj.Register_Agent = MemberInfo.objects.get(
-            pk=request.POST["Register_Agent"])
->>>>>>> NewUI
         Obj.save()
 
         return JsonResponse(data={'Message': 'Success'})
@@ -1826,7 +1707,6 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
             Obj.Assignment_Start = request.POST["Assignment_Start"]
             Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
             Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
-<<<<<<< HEAD
             Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
             Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
             Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
@@ -1836,14 +1716,6 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
                         data={'Message': 'Deadline date must be greater than start date'},
                         status=500
                     )
-=======
-            Obj.Course_Code = CourseInfo.objects.get(
-                pk=request.POST["Course_Code"])
-            Obj.Chapter_Code = ChapterInfo.objects.get(
-                id=request.POST["Chapter_Code"])
-            Obj.Register_Agent = MemberInfo.objects.get(
-                pk=request.POST["Register_Agent"])
->>>>>>> NewUI
             Obj.save()
 
             return JsonResponse(data={'Message': 'Success'})
@@ -2003,17 +1875,12 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
             Obj.save()
 
         except:
-<<<<<<< HEAD
             return JsonResponse(
                 data={'Message': 'Cannot edit form'}, status=500
             )
         return JsonResponse(
             data={'Message': 'Success'}
         )
-=======
-            return JsonResponse(data={'Message': 'Cannot edit form'})
-        return JsonResponse(data={'Message': 'Success'})
->>>>>>> NewUI
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
@@ -2204,7 +2071,6 @@ def chapterviewer(request):
 
 
 def chapterpagebuilder(request, course, chapter):
-<<<<<<< HEAD
     if CourseAuth(request, course) == 1:
         if '/teachers' not in request.path and '/students' not in request.path:
             if not request.user.Is_CenterAdmin:
@@ -2215,10 +2081,6 @@ def chapterpagebuilder(request, course, chapter):
     else:
         return redirect('login')
     chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
-=======
-    chapterlist = ChapterInfo.objects.filter(
-        Course_Code=CourseInfo.objects.get(id=course))
->>>>>>> NewUI
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
     server_name = settings.SERVER_NAME
@@ -2257,17 +2119,9 @@ def save_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-<<<<<<< HEAD
             name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
                 re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '___' + str(
                 request.user.pk) + '.' + media.name.split('.')[-1]
-=======
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-                re.findall(
-                    "[a-zA-Z0-9]+",
-                    media.name.split('.')[0])) + '&&&' + str(
-                        request.user.pk) + '.' + media.name.split('.')[-1]
->>>>>>> NewUI
             # name = "".join(re.findall("[a-zA-Z0-9]+", name))
             fs = FileSystemStorage(location=path + '/chapterBuilder/' +
                                    courseID + '/' + chapterID)
@@ -2277,7 +2131,6 @@ def save_file(request):
 
 
 def newChapterBuilder(request, course, chapter):
-<<<<<<< HEAD
     if CourseAuth(request, course) == 1:
         if '/teachers' not in request.path and '/students' not in request.path:
             if not request.user.Is_CenterAdmin:
@@ -2288,10 +2141,6 @@ def newChapterBuilder(request, course, chapter):
     else:
         return redirect('login')
     chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
-=======
-    chapterlist = ChapterInfo.objects.filter(
-        Course_Code=CourseInfo.objects.get(id=course))
->>>>>>> NewUI
     chapterdetails = chapterlist.get(id=chapter)
     # Course name passed for tag
     course_name = CourseInfo.objects.get(id=course).Course_Name
@@ -2322,7 +2171,6 @@ def deletechapterfile(request):
         old_file = json.loads(request.POST['old'])
         for key, value in old_file.items():
             for x in value:
-<<<<<<< HEAD
                 # if key == '_3d':
                 #     if os.path.exists(os.path.join(BASE_DIR, x[10:])):
                 #         extensions = ['mtl', 'obj', 'glb']
@@ -2342,18 +2190,6 @@ def deletechapterfile(request):
                 else:
                     if os.path.exists(os.path.join(BASE_DIR, x[1:])):
                         os.remove(os.path.join(BASE_DIR, x[1:]))
-=======
-                if key == '_3d':
-                    if os.path.exists(os.path.join(BASE_DIR, x[10:])):
-                        extensions = ['mtl', 'obj']
-                        for ext in extensions:
-                            if os.path.exists(
-                                    os.path.join(BASE_DIR,
-                                                 x[10:-4] + '.' + ext)):
-                                os.remove(
-                                    os.path.join(BASE_DIR,
-                                                 x[10:-4] + '.' + ext))
->>>>>>> NewUI
                         return JsonResponse({'message': 'deletion success'})
     return HttpResponse('')
 
@@ -2373,16 +2209,9 @@ def save_3d_file(request):
 
             # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
             # Eg: 561561561&&&test.jpg&&&17
-<<<<<<< HEAD
             name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
                 re.findall("[a-zA-Z0-9]+", obj.name.split('.')[0])) + '___' + str(
                 request.user.pk)
-=======
-            name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-                re.findall("[a-zA-Z0-9]+",
-                           obj.name.split('.')[0])) + '&&&' + str(
-                               request.user.pk)
->>>>>>> NewUI
             # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' +
@@ -2414,16 +2243,9 @@ def save_video(request):
 
         # file name for the saved file --> uuid&&&uploadedfilename&&&userPK
         # Eg: 561561561&&&test.jpg&&&17
-<<<<<<< HEAD
         name = (str(uuid.uuid4())).replace('-', '') + '___' + "".join(
             re.findall("[a-zA-Z0-9]+", media.name.split('.')[0])) + '___' + str(
             request.user.pk) + '.' + media.name.split('.')[-1]
-=======
-        name = (str(uuid.uuid4())).replace('-', '') + '&&&' + "".join(
-            re.findall("[a-zA-Z0-9]+",
-                       media.name.split('.')[0])) + '&&&' + str(
-                           request.user.pk) + '.' + media.name.split('.')[-1]
->>>>>>> NewUI
 
         # fs = FileSystemStorage(location=path + '/chapterBuilder/' + courseID + '/' + chapterID)
         # filename = fs.save(name, media)
@@ -2473,8 +2295,6 @@ def save_video(request):
 
                 if res.status_code == 204 or res.status_code == 200:
                     response = rs.head(r_responseText['upload']['upload_link'])
-
-<<<<<<< HEAD
                     if settings.SERVER_NAME == "Korean_Server":
                         a = rs.put(
                             url='https://api.vimeo.com/me/projects/1508982/videos/' + r_responseText['uri'].split('/')[
@@ -2506,27 +2326,6 @@ def save_video(request):
                     return JsonResponse(
                         {'link': r_responseText['upload']['upload_link'], 'media_name': name,
                          'html': r_responseText['embed']['html']})
-=======
-                    a = rs.put(
-                        url='https://api.vimeo.com/me/projects/1508982/videos/'
-                        + r_responseText['uri'].split('/')[-1],
-                        headers={
-                            'Authorization':
-                            'bearer 3b42ecf73e2a1d0088dd677089d23e32',
-                            'Content-Type': 'application/json',
-                            'Accept':
-                            'application/vnd.vimeo.*+json;version=3.4'
-                        },
-                    ),
-                    return JsonResponse({
-                        'link':
-                        r_responseText['upload']['upload_link'],
-                        'media_name':
-                        name,
-                        'html':
-                        r_responseText['embed']['html']
-                    })
->>>>>>> NewUI
         else:
             if (media.size / 1024) > (
                     500 * 1024
@@ -2742,18 +2541,10 @@ def retrievechapterfile(request):
         max_items = int(request.GET.get('max_items'))
     path = settings.MEDIA_ROOT
     image_extensions = ['.jpg', '.png', '.jpeg', 'svg']
-<<<<<<< HEAD
     video_extensions = ['.mp4', ]
     _3d_extensions = ['.gltf', '.glb']
     # images = []
     # videos = []
-=======
-    video_extensions = [
-        '.mp4',
-    ]
-    images = []
-    videos = []
->>>>>>> NewUI
     pdf = []
     _3d = []
     try:
@@ -2774,7 +2565,6 @@ def retrievechapterfile(request):
             print("No directory of this chapter")
     except Exception as e:
         print(e)
-<<<<<<< HEAD
     if settings.SERVER_NAME != "Indonesian_Server":
         vimeo_videos = getVimeoMedias(chapterID, courseID, request.user, max_items)
     return JsonResponse({
@@ -2784,9 +2574,6 @@ def retrievechapterfile(request):
         '_3d': _3d[:max_items] if len(_3d) > max_items else _3d,
         'vimeo_videos': vimeo_videos,
     })
-=======
-    return JsonResponse({'images': images, 'videos': videos, 'pdf': pdf})
->>>>>>> NewUI
 
 
 def getVimeoMedias(chapterID, courseID, userObj, max_items):
@@ -3357,7 +3144,6 @@ def CourseProgressView(request, coursepk, inningpk=None):
         'chapter_list': chapters_list,
         'basefile': basefile,
     }
-<<<<<<< HEAD
     return render(request, 'teacher_module/chapterProgress.html', context=context)
 
 
@@ -3366,24 +3152,6 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
                           ):
     jsondata = None
     path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
-=======
-    return render(request,
-                  'teacher_module/chapterProgress.html',
-                  context=context)
-
-
-def chapterProgressRecord(courseid,
-                          chapterid,
-                          studentid,
-                          fromcontents=False,
-                          currentPageNumber=None,
-                          totalPage=None,
-                          studytimeinseconds=None,
-                          createFile=True,
-                          isjson=False):
-    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid,
-                        chapterid)
->>>>>>> NewUI
     try:
         os.makedirs(
             path)  # Creates the directories and subdirectories structure
@@ -3463,7 +3231,6 @@ def getCourseProgress(courseObj,
                                              str(x.id),
                                              createFile=False)
             if jsondata is not None:
-<<<<<<< HEAD
                 if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
                     if int(jsondata['contents']['totalPage']) > 0 and int(
                             jsondata['contents']['currentpagenumber']) > 0:
@@ -3471,13 +3238,6 @@ def getCourseProgress(courseObj,
                             jsondata['contents']['totalPage'])
                         if progresspercent > 100:
                             progresspercent = 100
-=======
-                if int(jsondata['contents']['totalPage']) > 0 and int(
-                        jsondata['contents']['currentpagenumber']) > 0:
-                    progresspercent = int(
-                        jsondata['contents']['currentpagenumber']) * 100 / int(
-                            jsondata['contents']['totalPage'])
->>>>>>> NewUI
                 else:
                     progresspercent = 0
             else:
@@ -3485,14 +3245,8 @@ def getCourseProgress(courseObj,
 
             student_quiz = Quiz.objects.filter(chapter_code=chapter)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
-
-<<<<<<< HEAD
             student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
             # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
-=======
-            student_result = Sitting.objects.order_by('-end').filter(
-                user=x, quiz__in=student_quiz)
->>>>>>> NewUI
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
@@ -3506,7 +3260,6 @@ def getCourseProgress(courseObj,
             # Attendance here means chapter completion.
             ''' Attendance is present if the student has spent time as mentioned in the chapter model mustreadtime
                 field and the chapter progress is 100% '''
-<<<<<<< HEAD
             if chapter.mustreadtime and jsondata:
                 if jsondata['contents']['totalstudytime']:
                     attendance = int(jsondata['contents'][
@@ -3615,65 +3368,6 @@ def getChapterScore(user, chapterObj):
 
 
 def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False):
-=======
-            if chapter.mustreadtime:
-                attendance = int(
-                    jsondata['contents']['totalstudytime']
-                ) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
-            else:
-                attendance = None
-            student_data.append(
-                {
-                    'student': x,
-                    'chapter': {
-                        'chapterObj':
-                        chapter,
-                        'laststudydate':
-                        datetime.strptime(
-                            jsondata['contents']['laststudydate'],
-                            "%m/%d/%Y %H:%M:%S").strftime("%Y/%m/%d %H:%M:%S")
-                        if jsondata is not None else None,
-                        'totalstudytime':
-                        timedelta(seconds=int(jsondata['contents']
-                                              ['totalstudytime']))
-                        if jsondata is not None else "00:00:00",
-                        'currentpagenumber':
-                        int(jsondata['contents']['currentpagenumber'])
-                        if jsondata is not None else None,
-                        'totalPage':
-                        int(jsondata['contents']['totalPage'])
-                        if jsondata is not None else None,
-                        'progresspercent':
-                        progresspercent,
-                        'attendance':
-                        attendance,
-                    },
-                    'quiz': {
-                        'quiz_count':
-                        student_quiz.count(),
-                        'completed_quiz':
-                        student_result.filter(complete=True).count(),
-                        'progress':
-                        student_result.filter(complete=True).count() * 100 /
-                        student_quiz.count()
-                        if student_quiz.count() is not 0 else 0,
-                        # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
-                        # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                        'avg_percent_score':
-                        float(total_quiz_percent_score /
-                              student_result.filter(complete=True).count()) if
-                        student_result.filter(complete=True).count() > 0 else 0
-                    }
-                }, )
-    return student_data
-
-
-def studentChapterLog(chapterid,
-                      studentid,
-                      type,
-                      createFile=True,
-                      isjson=False):
->>>>>>> NewUI
     date = datetime.now().strftime('%Y%m%d')
     path = os.path.join(settings.MEDIA_ROOT, ".studentChapterLog", date)
     try:

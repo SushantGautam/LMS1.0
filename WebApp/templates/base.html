@@ -6,311 +6,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Baston - Responsive Admin Dashboard Template</title>
+    <title>LMS {% block title %}{% endblock %}</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="../../assets/media/image/favicon.png"/>
+    <link rel="shortcut icon" href="{% static 'media/image/favicon.png' %}"/>
 
     <!-- Main css -->
-    <link rel="stylesheet" href="../../vendors/bundle.css" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/bundle.css' %}" type="text/css">
 
     <!-- Google font -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Slick -->
-    <link rel="stylesheet" href="../../vendors/slick/slick.css" type="text/css">
-    <link rel="stylesheet" href="../../vendors/slick/slick-theme.css" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/slick/slick.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/slick/slick-theme.css' %}" type="text/css">
 
     <!-- Daterangepicker -->
-    <link rel="stylesheet" href="../../vendors/datepicker/daterangepicker.css" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/datepicker/daterangepicker.css' %}" type="text/css">
 
     <!-- DataTable -->
-    <link rel="stylesheet" href="../../vendors/dataTable/datatables.min.css" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/dataTable/datatables.min.css' %}" type="text/css">
 
 <!-- App css -->
-    <link rel="stylesheet" href="../../assets/css/app.min.css" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/app.min.css' %}" type="text/css">
 
     <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js' %}"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js' %}"></script>
     <![endif]-->
 </head>
 <body>
 <!-- Preloader -->
 <div class="preloader">
-    <img class="logo" src="../../assets/media/image/logo/logo.png" alt="logo">
-    <img class="dark-logo" src="../../assets/media/image/logo/dark-logo.png" alt="logo dark">
+    <img class="logo" src="{% static 'media/image/logo/logo.png' %}" alt="logo">
+    <img class="dark-logo" src="{% static 'media/image/logo/dark-logo.png' %}" alt="logo dark">
     <div class="preloader-icon"></div>
 </div>
 <!-- ./ Preloader -->
 
 <!-- Sidebar group -->
-<div class="sidebar-group">
-    <!-- Sidebar >>> Settings -->
-    <div class="sidebar" id="settings">
-        <div class="card">
-            <div class="card-body">
-                <h6 class="card-title">Settings</h6>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item pl-0 pr-0">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
-                            <label class="custom-control-label" for="customSwitch1">Allow notifications.</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item pl-0 pr-0">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch2">
-                            <label class="custom-control-label" for="customSwitch2">Hide user requests</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item pl-0 pr-0">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch3" checked>
-                            <label class="custom-control-label" for="customSwitch3">Speed up demands</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item pl-0 pr-0">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch4" checked>
-                            <label class="custom-control-label" for="customSwitch4">Hide menus</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item pl-0 pr-0">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch5">
-                            <label class="custom-control-label" for="customSwitch5">Remember next visits</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item pl-0 pr-0">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch6">
-                            <label class="custom-control-label" for="customSwitch6">Enable report
-                                generation.</label>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- ./ Sidebar >>> Settings -->
-
-    <!-- Sidebar >>> Chat list -->
-    <div class="sidebar" id="chat-list">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-4">
-                    <h6 class="card-title mb-0">Chats</h6>
-                    <a href="chat.html" class="btn btn-primary btn-sm">New Chat</a>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-danger">
-                                <img src="../../assets/media/image/user/women_avatar3.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </span>
-                        </div>
-                        <div class="flex-grow- 1">
-                            <h6 class="mb-1">Cass Queyeiro</h6>
-                            <span class="text-muted">
-                                <i class="fa fa-image mr-1"></i> Photo
-                            </span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">Yesterday</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-warning">
-                                <img src="../../assets/media/image/user/man_avatar4.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </span>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">Evered Asquith</h6>
-                            <span class="text-muted">
-                                <i class="fa fa-video-camera mr-1"></i> Video
-                            </span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">Last week</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item px-0 d-flex align-items-center">
-                        <div class="pr-3">
-                            <div class="avatar avatar-state-danger">
-                                <span class="avatar-title bg-success rounded-circle">F</span>
-                            </div>
-                        </div>
-                        <div>
-                            <h6 class="mb-1">Francisco Ubsdale</h6>
-                            <span class="text-muted">Hello how are you?</span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">2:32 PM</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item px-0 d-flex align-items-center">
-                        <div class="pr-3">
-                            <div class="avatar avatar-state-success">
-                                <img src="../../assets/media/image/user/women_avatar1.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </div>
-                        </div>
-                        <div>
-                            <h6 class="mb-1">Natale Janu</h6>
-                            <span class="text-muted">Hi!</span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="badge badge-primary badge-pill ml-auto mb-2">3</span>
-                            <span class="small text-muted">08:27 PM</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-warning">
-                                <img src="../../assets/media/image/user/women_avatar2.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </span>
-                        </div>
-                        <div class="flex-grow- 1">
-                            <h6 class="mb-1">Orelie Rockhall</h6>
-                            <span class="text-muted">
-                                <i class="fa fa-image mr-1"></i> Photo
-                            </span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">Yesterday</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-info">
-                                <img src="../../assets/media/image/user/man_avatar1.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </span>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">Barbette Bolf</h6>
-                            <span class="text-muted">
-                                <i class="fa fa-video-camera mr-1"></i> Video
-                            </span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">Last week</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-secondary">
-                                <span class="avatar-title bg-warning rounded-circle">D</span>
-                            </span>
-                        </div>
-                        <div>
-                            <h6 class="mb-1">Dudley Laborde</h6>
-                            <span class="text-muted">Hello how are you?</span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">2:32 PM</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-success">
-                                <img src="../../assets/media/image/user/man_avatar2.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </span>
-                        </div>
-                        <div>
-                            <h6 class="mb-1">Barbaraanne Riby</h6>
-                            <span class="text-muted">Hi!</span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">08:27 PM</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-danger">
-                                <img src="../../assets/media/image/user/women_avatar3.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </span>
-                        </div>
-                        <div class="flex-grow- 1">
-                            <h6 class="mb-1">Mariana Ondrousek</h6>
-                            <span class="text-muted">
-                                <i class="fa fa-image mr-1"></i> Photo
-                            </span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">Yesterday</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-warning">
-                                <img src="../../assets/media/image/user/man_avatar4.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </span>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">Ruprecht Lait</h6>
-                            <span class="text-muted">
-                                <i class="fa fa-video-camera mr-1"></i> Video
-                            </span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">Last week</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-info">
-                                <img src="../../assets/media/image/user/man_avatar1.jpg"
-                                     class="rounded-circle"
-                                     alt="image">
-                            </span>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">Cosme Hubbold</h6>
-                            <span class="text-muted">
-                                <i class="fa fa-video-camera mr-1"></i> Video
-                            </span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">Last week</span>
-                        </div>
-                    </a>
-                    <a href="chat.html" class="list-group-item d-flex px-0 align-items-center">
-                        <div class="pr-3">
-                            <span class="avatar avatar-state-secondary">
-                                <span class="avatar-title bg-secondary rounded-circle">M</span>
-                            </span>
-                        </div>
-                        <div>
-                            <h6 class="mb-1">Mallory Darch</h6>
-                            <span class="text-muted">Hello how are you?</span>
-                        </div>
-                        <div class="text-right ml-auto d-flex flex-column">
-                            <span class="small text-muted">2:32 PM</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- ./ Sidebar >>> Chat list -->
-</div>
+{% include "components/sidebar.html" %}
 <!-- ./ Sidebar group -->
 
 <!-- Layout wrapper -->
@@ -504,7 +239,7 @@
                                     <a href="#" class="list-group-item px-3 d-flex">
                                         <div>
                                             <figure class="avatar mr-3">
-                                                <img src="../../assets/media/image/products/product6.png" class="rounded"
+                                                <img src="{% static 'media/image/products/product6.png' %}" class="rounded"
                                                      alt="Flowerpot">
                                             </figure>
                                         </div>
@@ -520,7 +255,7 @@
                                     <a href="#" class="list-group-item px-3 d-flex">
                                         <div>
                                             <figure class="avatar mr-3">
-                                                <img src="../../assets/media/image/products/product3.png" class="rounded"
+                                                <img src="{% static 'media/image/products/product3.png' %}" class="rounded"
                                                      alt="Plate">
                                             </figure>
                                         </div>
@@ -536,7 +271,7 @@
                                     <a href="#" class="list-group-item px-3 d-flex">
                                         <div>
                                             <figure class="avatar mr-3">
-                                                <img src="../../assets/media/image/products/product7.png"
+                                                <img src="{% static 'media/image/products/product7.png' %}"
                                                      class="rounded" alt="Wall Clock">
                                             </figure>
                                         </div>
@@ -552,7 +287,7 @@
                                     <a href="#" class="list-group-item px-3 d-flex">
                                         <div>
                                             <figure class="avatar mr-3">
-                                                <img src="../../assets/media/image/products/product1.png" class="rounded"
+                                                <img src="{% static 'media/image/products/product1.png' %}" class="rounded"
                                                      alt="Vase">
                                             </figure>
                                         </div>
@@ -568,7 +303,7 @@
                                     <a href="#" class="list-group-item px-3 d-flex">
                                         <div>
                                             <figure class="avatar mr-3">
-                                                <img src="../../assets/media/image/products/product2.png" class="rounded"
+                                                <img src="{% static 'media/image/products/product2.png' %}" class="rounded"
                                                      alt="Glasses">
                                             </figure>
                                         </div>
@@ -615,16 +350,16 @@
                                 Hi! <strong>Bony Gidden</strong>
                             </span>
                             <figure class="avatar avatar-sm">
-                                <img src="../../assets/media/image/user/man_avatar3.jpg"
+                                <img src="{% static 'media/image/user/man_avatar3.jpg' %}"
                                      class="rounded-circle"
                                      alt="avatar">
                             </figure>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-big">
                             <div class="text-center py-4"
-                                 data-background-image="../../assets/media/image/image1.jpg">
+                                 data-background-image="{% static 'media/image/image1.jpg' %}">
                                 <figure class="avatar avatar-lg mb-3 border-0">
-                                    <img src="../../assets/media/image/user/man_avatar3.jpg"
+                                    <img src="{% static 'media/image/user/man_avatar3.jpg' %}"
                                          class="rounded-circle" alt="image">
                                 </figure>
                                 <h5 class="mb-0">Bony Gidden</h5>
@@ -675,15 +410,16 @@
 
     <!-- Content wrapper -->
     <div class="content-wrapper">
+      {% block content %}{% endblock %}
         <!-- Navigation -->
         <div class="navigation">
             <!-- Logo -->
             <div class="navigation-header">
                 <a class="navigation-logo" href=index.html>
-                    <img class="logo" src="../../assets/media/image/logo/logo.png" alt="logo">
-                    <img class="dark-logo" src="../../assets/media/image/logo/dark-logo.png" alt="dark logo">
-                    <img class="small-logo" src="../../assets/media/image/logo/small-logo.png" alt="small logo">
-                    <img class="small-dark-logo" src="../../assets/media/image/logo/small-dark-logo.png" alt="small dark logo">
+                    <img class="logo" src="{% static 'media/image/logo/logo.png' %}" alt="logo">
+                    <img class="dark-logo" src="{% static 'media/image/logo/dark-logo.png' %}" alt="dark logo">
+                    <img class="small-logo" src="{% static 'media/image/logo/small-logo.png' %}" alt="small logo">
+                    <img class="small-dark-logo" src="{% static 'media/image/logo/small-dark-logo.png' %}" alt="small dark logo">
                 </a>
                 <a href="#" class="small-navigation-toggler"></a>
             </div>
@@ -1387,7 +1123,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product1.png"
+                            <img width="40" src="{% static 'media/image/products/product1.png' %}"
                                  class="rounded mr-3" alt="Vase">
                             <span>Vase</span>
                         </a>
@@ -1410,7 +1146,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product2.png"
+                            <img width="40" src="{% static 'media/image/products/product2.png' %}"
                                  class="rounded mr-3" alt="Glasses">
                             <span>Glasses</span>
                         </a>
@@ -1433,7 +1169,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product3.png"
+                            <img width="40" src="{% static 'media/image/products/product3.png' %}"
                                  class="rounded mr-3" alt="Plate">
                             <span>Plate</span>
                         </a>
@@ -1456,7 +1192,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product4.png"
+                            <img width="40" src="{% static 'media/image/products/product4.png' %}"
                                  class="rounded mr-3" alt="Pen">
                             <span>Pen</span>
                         </a>
@@ -1479,7 +1215,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product5.png"
+                            <img width="40" src="{% static 'media/image/products/product5.png' %}"
                                  class="rounded mr-3" alt="Armchair">
                             <span>Armchair</span>
                         </a>
@@ -1502,7 +1238,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product6.png"
+                            <img width="40" src="{% static 'media/image/products/product6.png' %}"
                                  class="rounded mr-3" alt="Flowerpot">
                             <span>Flowerpot</span>
                         </a>
@@ -1525,7 +1261,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product7.png"
+                            <img width="40" src="{% static 'media/image/products/product7.png' %}"
                                  class="rounded mr-3" alt="Wall Clock">
                             <span>Wall Clock</span>
                         </a>
@@ -1548,7 +1284,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product8.png"
+                            <img width="40" src="{% static 'media/image/products/product8.png' %}"
                                  class="rounded mr-3" alt="Desk">
                             <span>Desk</span>
                         </a>
@@ -1571,7 +1307,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product9.png"
+                            <img width="40" src="{% static 'media/image/products/product9.png' %}"
                                  class="rounded mr-3" alt="Night Light">
                             <span>Night Light</span>
                         </a>
@@ -1594,7 +1330,7 @@
                 <tr>
                     <td>
                         <a href="product-detail.html" class="d-flex align-items-center">
-                            <img width="40" src="../../assets/media/image/products/product10.png"
+                            <img width="40" src="{% static 'media/image/products/product10.png' %}"
                                  class="rounded mr-3" alt="Shoe">
                             <span>Shoe</span>
                         </a>
@@ -1719,7 +1455,7 @@
                             <li class="list-group-item d-flex px-0 py-4">
                                 <a href="#" class="flex-shrink-0">
                                     <figure class="avatar mr-3">
-                                        <img src="../../assets/media/image/user/man_avatar1.jpg"
+                                        <img src="{% static 'media/image/user/man_avatar1.jpg' %}"
                                              class="rounded-circle" alt="image">
                                     </figure>
                                 </a>
@@ -1766,7 +1502,7 @@
                             <li class="list-group-item d-flex px-0 py-4">
                                 <a href="#" class="flex-shrink-0">
                                     <figure class="avatar mr-3">
-                                        <img src="../../assets/media/image/user/man_avatar2.jpg"
+                                        <img src="{% static 'media/image/user/man_avatar2.jpg' %}"
                                              class="rounded-circle" alt="image">
                                     </figure>
                                 </a>
@@ -1813,7 +1549,7 @@
                             <li class="list-group-item d-flex px-0 py-4">
                                 <a href="#" class="flex-shrink-0">
                                     <figure class="avatar mr-3">
-                                        <img src="../../assets/media/image/user/man_avatar3.jpg"
+                                        <img src="{% static 'media/image/user/man_avatar3.jpg' %}"
                                              class="rounded-circle" alt="image">
                                     </figure>
                                 </a>
@@ -1860,7 +1596,7 @@
                             <li class="list-group-item d-flex px-0 py-4">
                                 <a href="#" class="flex-shrink-0">
                                     <figure class="avatar mr-3">
-                                        <img src="../../assets/media/image/user/man_avatar4.jpg"
+                                        <img src="{% static 'media/image/user/man_avatar4.jpg' %}"
                                              class="rounded-circle" alt="image">
                                     </figure>
                                 </a>
@@ -1994,17 +1730,9 @@
             <!-- ./ Content -->
 
             <!-- Footer -->
-            <footer class="content-footer">
-                <div>© 2020 Baston - <a href="http://laborasyon.com" target="_blank">Laborasyon</a></div>
-                <div>
-                    <nav class="nav">
-                        <a href="https://themeforest.net/licenses/standard" class="nav-link">Licenses</a>
-                        <a href="#" class="nav-link">Change Log</a>
-                        <a href="#" class="nav-link">Get Help</a>
-                    </nav>
-                </div>
-            </footer>
-            <!-- ./ Footer -->
+            {% include "components/footer.html" %}
+            <!-- // Footer -->
+
         </div>
         <!-- ./ Content body -->
     </div>
@@ -2013,22 +1741,22 @@
 <!-- ./ Layout wrapper -->
 
 <!-- Main scripts -->
-<script src="../../vendors/bundle.js"></script>
+<script src="{% static 'vendors/bundle.js' %}"></script>
 
 <!-- Apex chart -->
-<script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
-<script src="../../vendors/charts/apex/apexcharts.min.js"></script>
+<script src="https://apexcharts.com/samples/assets/irregular-data-series.js' %}"></script>
+<script src="{% static 'vendors/charts/apex/apexcharts.min.js' %}"></script>
 
 <!-- Daterangepicker -->
-<script src="../../vendors/datepicker/daterangepicker.js"></script>
+<script src="{% static 'vendors/datepicker/daterangepicker.js' %}"></script>
 
 <!-- DataTable -->
-<script src="../../vendors/dataTable/datatables.min.js"></script>
+<script src="{% static 'vendors/dataTable/datatables.min.js' %}"></script>
 
 <!-- Dashboard scripts -->
-<script src="../../assets/js/examples/pages/ecommerce-dashboard.js"></script>
+<script src="{% static 'js/examples/pages/ecommerce-dashboard.js' %}"></script>
 
 <!-- App scripts -->
-<script src="../../assets/js/app.min.js"></script>
+<script src="{% static 'js/app.min.js' %}"></script>
 </body>
 </html>

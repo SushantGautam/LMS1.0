@@ -100,14 +100,8 @@ urlpatterns += (
          views.CourseInfoUpdateView.as_view(),
          name='courseinfo_update'),
     path('courseinfo/delete/<int:pk>/',
-<<<<<<< HEAD
          views.CourseInfoDeleteView, name='courseinfo_delete'),
     path('importcsvcourse', views.ImportCourse, name='csv_import_course'),
-
-=======
-         views.CourseInfoDeleteView,
-         name='courseinfo_delete'),
->>>>>>> NewUI
 )
 
 urlpatterns += (
@@ -190,15 +184,8 @@ urlpatterns += (
          views.QuestionInfoCreateViewAjax.as_view(),
          name='questioninfo_create_ajax'),
     path('assignmentinfo/<int:assignment>/questioninfo/delete/<int:pk>/',
-<<<<<<< HEAD
          views.QuestionInfoDeleteView.as_view(), name='webapp_questioninfo_delete'),
     path('questioninfo/edit/<int:pk>/ajax/', views.QuestionInfoEditViewAjax.as_view(),
-=======
-         views.QuestionInfoDeleteView.as_view(),
-         name='webapp_questioninfo_delete'),
-    path('questioninfo/edit/ajax/',
-         views.QuestionInfoEditViewAjax.as_view(),
->>>>>>> NewUI
          name='webapp_questioninfo_edit_ajax'),
 )
 
@@ -329,17 +316,8 @@ urlpatterns += (
          views.GroupMappingUpdateView.as_view(),
          name='groupmapping_update'),
     path('groupmapping/delete/<int:pk>/',
-<<<<<<< HEAD
          views.GroupMappingDeleteView, name='groupmapping_delete'),
     path('groupmapping/csv_import', views.GroupMappingCSVImport, name='csv_import_student_group')
-=======
-         views.GroupMappingDeleteView,
-         name='groupmapping_delete'),
-    path('groupmapping/csv_import',
-         views.GroupMappingCSVImport,
-         name='csv_import_student_group')
->>>>>>> NewUI
-
     # path('admin/jsi18n', i18n.javascript_catalog),
 )
 
@@ -380,7 +358,6 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for chapterpagebuilder
-<<<<<<< HEAD
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
          views.chapterpagebuilder, name='chapterpagebuilder'),
 
@@ -389,16 +366,6 @@ urlpatterns += (
 
     path('viewchapter',
          views.chapterviewer, name='chapterviewer'),
-=======
-    path(
-        'courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
-        views.chapterpagebuilder,
-        name='chapterpagebuilder'),
-    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newChapterBuilder',
-         views.newChapterBuilder,
-         name='newChapterBuilder'),
-    path('viewchapter', views.chapterviewer, name='chapterviewer'),
->>>>>>> NewUI
     path('saveFile', views.save_file, name='saveFile'),
     path('saveVideo', views.save_video, name='saveVideo'),
     path('save3d', views.save_3d_file, name='save3d'),
@@ -408,7 +375,6 @@ urlpatterns += (
          name='exportzip'),
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
-<<<<<<< HEAD
          views.ContentsView.as_view(), name='contentviewer'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/newcontents',
          views.NewContentsView.as_view(), name='NewContentViewer'),
@@ -418,26 +384,12 @@ urlpatterns += (
          views.ContentsView.as_view(), name='previewcontentviewer'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/newpreview',
          views.NewContentsView.as_view(), name='newpreviewcontentviewer'),
-=======
-         views.ContentsView.as_view(),
-         name='contentviewer'),
-    # path('courseinfo/<int:course>/chapterinfo/<int:chapter>/offline_contents',
-    #     views.OfflineContentsView.as_view(), name='offlinecontentviewer'),
-    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/preview',
-         views.ContentsView.as_view(),
-         name='previewcontentviewer'),
->>>>>>> NewUI
     path('delete-chapter-files',
          views.deletechapterfile,
          name='delete-chapter-files'),
     path('retrieve-chapter-files',
-<<<<<<< HEAD
          views.retrievechapterfile, name='retrieve-chapter-files'),
     path('checkMediaFiles/', views.checkForMediaFiles, name='checkMediaFiles'),
-=======
-         views.retrievechapterfile,
-         name='retrieve-chapter-files'),
->>>>>>> NewUI
 )
 
 urlpatterns += (
@@ -470,7 +422,6 @@ urlpatterns += (
          views.CourseProgressView,
          name='admin_course_progress'),
     path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
-<<<<<<< HEAD
          views.CourseProgressView, name='admin_course_progress_withinning'),
     path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
          views.StudentChapterProgressView, name='student_chapter_progress'),
@@ -487,12 +438,4 @@ urlpatterns += (
 urlpatterns += (
     path('meet/<int:userid>/<slug:meetcode>/',
          views.MeetPublic, name='public-meet'),
-=======
-         views.CourseProgressView,
-         name='admin_course_progress_withinning'),
-    path(
-        'courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
-        views.StudentChapterProgressView,
-        name='student_chapter_progress'),
->>>>>>> NewUI
 )
