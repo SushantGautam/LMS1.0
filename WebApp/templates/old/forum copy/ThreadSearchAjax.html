@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+
+
+{% for thread in RelevantThread %}
+<h5>
+    <div id="ThreadSearch">
+        <a style="color: #1F618D;" href="/forum/t/{{ thread.pk }}">{{ thread.title }}</a><br>
+    </div>
+</h5>
+
+{% endfor %}

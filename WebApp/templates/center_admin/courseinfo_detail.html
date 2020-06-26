@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="modal grow modal-backdrop-white fade" id="create_chapter_modal">
+    <div class="modal-dialog">
+        <div class="v-cell">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Create Chapter</h4>
+                </div>
+                <div class="modal-body" id="create_chapter_modal_body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="create_chapter_modal"
+    xmlns="http://www.w3.org/1999/html">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title" id="exampleModalLabel"><b>Create Chapter</b>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body modal-auto" id="create_chapter_modal_body">
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="st-pusher">
+    <!-- sidebar effects INSIDE of st-pusher: -->
+    <!-- st-effect-3, st-effect-6, st-effect-7, st-effect-8, st-effect-14 -->
+    <!-- this is the wrapper for the content -->
+    <!-- extra div for emulating position:fixed of the menu -->
+
+    <div class="container-fluid">
+        <div class="media media-grid media-clearfix-xs">
+            <div class="media-body">
+                <div class="page-section">
+                    <div class="media">
+                        <div class="media-left">
+                            <span class="icon-block s60 bg-lightred"><i class="fa fa-book"></i></span>
+                        </div>
+                        <div class="media-body">
+                            <h1 class="text-display-1 margin-none">{{ object.Course_Name }}</h1>
+                            <p class="small margin-none">
+                                Difficulty :
+                                {% for i in '12345'|make_list %}
+                                {% if object.Course_Level >= forloop.counter %}
+                                <span class="fa fa-fw fa-star text-yellow-800"></span>
+                                {% else %}
+                                <span class="fa fa-fw fa-star-o text-yellow-800"></span>
+
+                                {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-section">
+                    <div class="paragraph-inline">
+                        <img src="{% if object.Course_Cover_File %}
+                                    /media/{{ object.Course_Cover_File }}
+                                {% else %}
+                                    {% static '/images/course.jpg' %}
+                                {% endif %}" class="width-350">
+                    </div>
+                    <div class="course-description-div">
+                        {{ object.Course_Description }}
+                    </div>
+                </div>
+                <div class="page-section">
+                    <p class="text-headline">List of Chapters</p>
+                    <ul class="list-group relative paper-shadow margin-none">
+                        {% for chapter in chapters %}
+                        <a href="{% if '/students' in request.path %}
+                        {{ chapter.student_get_absolute_url }}
+                        {% elif '/teachers' in request.path %}
+                        {{ chapter.teacher_get_absolute_url }}
+                        {% else %}
+                        {{ chapter.get_absolute_url }}
+                        {% endif %}">
+                            <li class="list-group-item paper-shadow" data-hover-z="0.5" data-animated>
+                                <div class="media v-middle">
+                                    <div class="media-left">
+                                        <div class="icon-block s30 bg-green-300 text-white img-circle">
+                                            {{ chapter.Chapter_No }}
+                                        </div>
+                                    </div>
+                                    <div class="media-body text-body-2">
+                                        {{ chapter.Chapter_Name }}
+                                    </div>
+                                </div>
+                            </li>
+                        </a>
+                        <br>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="media-right">
+
+                <div class="page-section width-270 width-auto-xs">
+
+                    <!-- .panel -->
+                    <div class="panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
+                        <div class="panel-heading">
+                            <h4 class="text-headline">Course</h4>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-caption margin-none">
+                                <i class="fa fa-clock-o fa-fw"></i> 4 hrs &nbsp;
+                                <i class="fa fa-calendar fa-fw"></i> 21/10/14
+                                <br />
+                                <i class="fa fa-user fa-fw"></i> Instructor:
+                                {% if object.get_teachers_of_this_course %}
+                            <ul class="row">
+                                {% for eachTeacher in object.get_teachers_of_this_course %}
+                                <li>
+                                    {{ eachTeacher.getFullName }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            &nbsp; No Teachers Assigned Yet
+                            {% endif %}
+                            <br />
+                            <i class="fa fa-mortar-board fa-fw"></i> Max. students: 50
+                            <br />
+                            <i class="fa fa-check fa-fw"></i> Attending: 30
+                            </p>
+                        </div>
+                        <hr class="margin-none" />
+                        <ul class="list-group text-center">
+                            <li class="list-group-item">
+                                <a class="btn btn-primary btn-sm relative" data-z="1" data-animated href="{% if '/teachers' in request.path %}
+                                /teachers{{ object.get_update_url }}
+                                    {% else %}
+                                        {{ object.get_update_url }}
+                                    {% endif %}">Edit Course</a>
+                            </li>
+                            {% if '/students' not in request.path %}
+                            <li class="list-group-item">
+                                <button class="btn btn-success btn-sm relative" data-z="1" data-toggle="modal"
+                                    data-target="#create_chapter_modal" data-animated id="add-newchapter-btn">Add
+                                    Chapter</button>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <!-- // END .panel -->
+
+                    <!-- .panel -->
+                    <!-- <div class=" panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
+                        <div class="panel-body">
+                            <div class="media v-middle">
+                                <div class="media-left">
+                                    <img src="images/people/110/guy-6.jpg" alt="About Adrian" width="60"
+                                        class="img-circle" />
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="text-title margin-none"><a href="#">Adrian Demian</a></h4>
+                                    <span class="caption text-light">Biography</span>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="expandable expandable-indicator-white expandable-trigger">
+                                <div class="expandable-content">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusamus
+                                        aut
+                                        consectetur consequatur cum cupiditate debitis doloribus, error ex
+                                        explicabo harum illum minima mollitia nisi nostrum officiis omnis
+                                        optio
+                                        qui quisquam
+                                        saepe sit sunt totam vel velit voluptatibus? Adipisci ducimus
+                                        expedita
+                                        id nostrum quas quia!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- // END .panel -->
+
+                    <!-- .panel -->
+                    <div class="panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
+                        <div class="panel-body">
+                            <h4 class="text-headline">Other Courses</h4>
+                        </div>
+                        <ul class="list-group">
+                            {% for courses in other_courses %}
+                            <li class="list-group-item">
+                                <div class="media v-middle">
+                                    <div class="media-left">
+                                        <div class="icon-block s30 bg-grey-400 text-white">
+                                            <i class="fa fa-mortar-board"></i>
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+                                        <a href="{{ courses.get_absolute_url }}"
+                                            class="link-text-color">{{ courses.Course_Name }}</a>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- // END .panel -->
+
+                </div>
+                <!-- // END .page-section -->
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- /st-content-inner -->
+
+    <!-- /st-content -->
+
+</div>
+
+{% endblock %}
+{% block javascript %}
+<script>
+    $('#add-newchapter-btn').on('click', function () {
+        $('#create_chapter_modal_body').empty();
+        $("#create_chapter_modal_body").append('<div class="se-pre-con-ajax"></div>');
+        $('#create_chapter_modal_body').append(`<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}" class="select form-control">`);
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
+            success: function (response) {
+                $('#create_chapter_modal_body').append(response);
+                Switchery(document.querySelector('.js-switch'));
+            },
+            error: function () {
+                console.log('Error in generating chapter create form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+                $("#id_Chapter_No").val(lastchapter + 1);
+            }
+        });
+
+
+    });
+</script>
+{% endblock %}

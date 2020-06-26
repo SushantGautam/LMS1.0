@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="jumbothon text-center bg-thansparent">
+        <h1>{% if 'create' in request.path %}
+            Create New{% elif 'update' in request.path %}
+            Edit {% endif %}
+            Member</h1>
+    </div>
+    <hr class="header_hr">
+    <form method="post" id="FormID" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div id='form-errors'>{{ form_errors }}</div>
+        <div id='form-errors'>{{ form.non_field_errors }}</div>
+        <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+            <div class="panel-heading panel-collapse-trigger" style="margin: 20px 5px;">
+                <h3>Basic Information</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static">
+                            <input type="text" name="Member_ID" id="id_Member_ID" maxlength="150"
+                                value="{{ object.Member_ID }}" class="form-control">
+                            <label for="id_Member_ID" class="font-weight-bold">Registration ID</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 5px;font-weight: bold;">Gender</div>
+                        <div class="radio radio-info radio-inline">
+                            <input type="radio" id="male" value="M" name="gender" class="custom-control-input"
+                                {% if object.Member_Gender == 'M' %}checked{% endif %}>
+                            <label class="custom-control-label pmd-radio-ripple-effect" for="male">Male</label>
+                        </div> &nbsp; &nbsp; &nbsp;
+                        <div class="radio radio-info radio-inline">
+                            <input type="radio" id="female" value="F" name="gender" class="custom-control-input"
+                                {% if object.Member_Gender == 'F' %}checked{% endif %}>
+                            <label class="custom-control-label pmd-radio-ripple-effect" for="female">Female</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static gapping">
+                            <input type="text" class="form-control" name="first_name" id="id_first_name" type="text"
+                                value="{{ object.first_name}}" required autofocus>
+                            <label for="id_first_name" class="font-weight-bold">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static gapping">
+                            <input type="text" class="form-control" name="last_name" id="id_last_name" type="text"
+                                value="{{ object.last_name}}" required autofocus>
+                            <label for="id_last_name" class="font-weight-bold">Last Name</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static gapping">
+                            <input type="text" class="form-control" name="username" id="id_username" type="text"
+                                value="{{ object.username}}" required autofocus>
+                            <label for="id_username" class="font-weight-bold">Username</label>
+                        </div>
+                    </div>
+                    {% if 'create' in request.path %}
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static gapping">
+                            <input type="password" name="password" value="{{ object.password }}" id="id_password"
+                                required class="form-control">
+                            <label for="id_password" class="font-weight-bold">Password</label>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static gapping">
+                            <input type="text" name="email" value="{{ object.email }}" id="id_email" required
+                                class="form-control">
+                            <label for="id_email" class="font-weight-bold">Email</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 gapping">
+                        <div class="checkbox checkbox-inline">
+                            <input type="checkbox" name="Is_Student" id="id_Is_Student" {% if object.Is_Student %}
+                                checked {% endif %} class="checkboxinput">
+                            <label for="id_Is_Student" class="font-weight-bold">Is Student</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 gapping">
+                        <div class="checkbox checkbox-inline">
+                            <input type="checkbox" name="Is_Teacher" id="id_Is_Teacher" {% if object.Is_Teacher %}
+                                checked {% endif %}>
+                            <label for="id_Is_Teacher" class="font-weight-bold">Is Teacher</label>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- <div class="x_content">
+                </div> -->
+            </div>
+        </div>
+        <div class="panel panel-default" data-toggle="panel-collapse" {% if 'update' in request.path %} data-open="true"
+            {% else %} data-open="false" {% endif %}>
+            <div class="panel-heading panel-collapse-trigger" style="margin: 20px 5px;">
+                <h3>Additional Information</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static">
+                            <input type="text" name="Member_Permanent_Address" id="id_Member_Permanent_Address"
+                                maxlength="150" value="{{ object.Member_Permanent_Address }}" class="form-control">
+                            <label for="id_Member_Permanent_Address" class="font-weight-bold">Member Permanent
+                                Address</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static">
+                            <input type="text" name="Member_Temporary_Address" id="id_Member_Temporary_Address"
+                                maxlength="150" value="{{ object.Member_Temporary_Address }}" class="form-control">
+                            <label for="id_Member_Temporary_Address" class="font-weight-bold">Member Temporary
+                                Address</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static gapping">
+                            <input name="Member_BirthDate" type="text" class="form-control datepicker"
+                                id="id_Member_BirthDate" max="9999-12-31"
+                                value="{{ object.Member_BirthDate|date:'m/d/Y' }}" required>
+                            <label for="id_Member_BirthDate" class="font-weight-bold">Date of Birth</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-control-material static gapping">
+                            <input type="tel" name="Member_Phone" class="form-control" id="id_Member_Phone"
+                                value="{{ object.Member_Phone }}" required>
+                            <label for="id_Member_Phone" class="font-weight-bold">Phone Number</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group form-control-material static gapping">
+                    <textarea class="form-control" name="Member_Memo" id="id_Member_Memo"
+                        rows="10">{{ object.Member_Memo }}</textarea>
+                    <label for="id_Member_Memo" class="font-weight-bold">Member Memo</label>
+                </div>
+                <div class="gapping">
+                    <div style="margin-bottom: 5px;font-weight: bold;">Member Avatar</div>
+                    {{ form.Member_Avatar }}
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="true">
+        <div class="text-center gapping">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </form>
+    <!-- {{ form }} -->
+</div>
+{% endblock %}

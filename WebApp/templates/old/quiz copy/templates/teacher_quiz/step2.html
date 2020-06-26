@@ -1,0 +1,94 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{{ wizard.form.media }}
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
+{% endblock stylesheets %}
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
+
+
+  <li class="breadcrumb-item active" aria-current="page">Quiz Create</li>
+{% endblock %}
+{% block content %}
+
+  {% include "quiz_base/step2.html" %}
+{% endblock %}
+{% block customjss %}
+  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+  <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+  <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+  <script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
+  <script>
+      $('label').addClass("quiz-add-label");
+      //$('#div_id_form2-chapter_code').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
+      //var row_2_sel = $('#div_id_form2-pre_test, #div_id_form2-post_test, #div_id_form2-answers_at_end');
+      //row_2_sel.wrapAll("<div class=\"col-md-12\"></div>");
+      //row_2_sel.wrap("<div class=\"col-md-4\"></div>");
+      //var row_3_sel = $('#div_id_form2-random_order, #div_id_form2-single_attempt, #div_id_form2-draft');
+      //row_3_sel.wrapAll("<div class=\"col-md-12\"></div>");
+      //row_3_sel.wrap("<div class=\"col-md-4\"></div>");
+      //var row_4_sel = $('#div_id_form2-exam_paper, #div_id_form2-duration, #div_id_form2-pass_mark');
+      //row_4_sel.wrapAll("<div class=\"col-md-12\"></div>");
+      //row_4_sel.wrap("<div class=\"col-md-4\"></div>");
+      //$('#div_id_form2-success_text').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
+      //$('#div_id_form2-fail_text').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
+      //console.log($('#id_form2-duration').val());
+      $(document).ready(function () {
+          if ($("#id_form2-exam_paper").is(':checked')) {
+              $("#div_id_form2-duration").show();
+              $("#div_id_form2-pass_mark").show();
+          } else {
+              $("#div_id_form2-duration").hide();
+              $("#div_id_form2-pass_mark").hide();
+          }
+          $("#test_error").hide();
+          $("#div_id_form2-negative_percentage").hide();
+      });
+
+
+      $('#id_form2-duration').durationPicker({
+          showDays: false,
+          onChanged: function (newVal) {
+              console.log(newVal);
+              console.log($('#id_form2-duration').val());
+          }
+      });
+      $("#id_form2-exam_paper").change(function () {
+          if (this.checked) {
+              $("#div_id_form2-duration").show();
+              $("#div_id_form2-pass_mark").show();
+              $("#div_id_form2-single_attempt").hide();
+          } else {
+              $("#div_id_form2-duration").hide();
+              $("#div_id_form2-pass_mark").hide();
+              $("#div_id_form2-single_attempt").show();
+
+          }
+      });
+
+      $("#id_form2-negative_marking").change(function () {
+          if (this.checked) {
+              $("#div_id_form2-negative_percentage").show();
+          } else {
+              $("#div_id_form2-negative_percentage").hide();
+          }
+      });
+
+      function validateForm() {
+          if ($("#id_form2-exam_paper").is(':checked')) {
+              if ($("#id_form2-pre_test").is(':checked') || $("#id_form2-post_test").is(':checked')) {
+                  $("#test_error").show();
+                  $("#test_error").html("Exam cannot be pre or post test.");
+                  return false;
+              }
+          } else if (!($("#id_form2-pre_test").is(':checked') || $("#id_form2-post_test").is(':checked'))) {
+              $("#test_error").show();
+              $("#test_error").html("Please select at least one test type.");
+              return false;
+          }
+      }
+  </script>
+{% endblock customjss %}

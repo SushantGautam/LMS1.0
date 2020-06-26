@@ -1,0 +1,72 @@
+.navbar-brand-custom {
+  background: #2a3f54;
+}
+
+.title-text {
+  color: white;
+  padding-left: 1em;
+  font-weight: 400;
+}
+
+.center-info {
+  height: 64px;
+  line-height: 64px;
+  font-size: 1.3rem;
+  font-weight: 400;
+  padding: 0 15px;
+  /* padding-left: 2em;
+  margin-top: 10px;
+  font-size: 1.4em; */
+}
+
+.course-description-div {
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+}
+
+.profile-edit-dropdown {
+  color: black;
+  padding: 7px;
+  font-size: large;
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 35px;
+  cursor: pointer;
+}
+
+.profile-edit-dropdown:hover {
+  color: grey;
+  border: 1px solid grey;
+}
+
+.gapping {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.font-weight-bold {
+  font-weight: bold !important;
+}
+/* forum */
+.forum-user-img {
+
+  height: 50px;
+  width: 50px;
+  
+ 
+  border-radius: 50%;
+  padding: 2px;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+  float:left;
+}
+.x_title h2 {
+  margin: 5px 0 6px;
+  float: left;
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* ends */

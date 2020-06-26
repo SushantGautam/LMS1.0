@@ -1,0 +1,54 @@
+{% load i18n static %}
+{% load static %}
+{%  load crispy_forms_tags %}
+
+
+
+{% block content %}
+<base href="/" />
+<div class="headerDiv">
+    <h2 class="infoFormHeader">
+        Edit Profile
+    </h2>
+    <hr class="header_hr">
+</div>
+
+<!-- <div class="alert alert-info" role="alert">
+    Edit Profile
+</div> -->
+
+
+<form enctype="multipart/form-data" method="post" id="FormID">
+    {% csrf_token %}
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.email|as_crispy_field }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.Member_Phone|as_crispy_field }}
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.Member_Permanent_Address|as_crispy_field }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.Member_Temporary_Address|as_crispy_field }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <!-- <label for="Member_BirthDate" class="control-label ">
+            Member BirthDate
+        </label> <br> -->
+        {{ form.Member_BirthDate|as_crispy_field }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        {{ form.Member_Avatar|as_crispy_field }}
+    </div>
+
+    <!-- {{ form|crispy}} -->
+    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+        <br>
+        <button type="submit" class="btn btn-success">Update</button>
+    </div>
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'forum/base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+{% load static %}
+
+{% block breadcrumb %}
+
+
+<li class="active"><a href="{% url 'forum:index' %}">Forum</a></li>
+
+{% endblock %}
+
+{% block main_contain %}
+
+{% include 'ForumInclude/homepage.html' %}
+{% endblock %}

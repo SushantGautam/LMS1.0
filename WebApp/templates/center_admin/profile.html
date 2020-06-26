@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="modal grow modal-backdrop-white fade" id="edit_basic_info_modal">
+    <div class="modal-dialog">
+        <div class="v-cell">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Edit Basic Information</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="edit-basic-card">
+                        {% csrf_token %}
+                        <div class="text-center">
+                            <div class="form-group form-control-material static">
+                                <input type="text" class="form-control" name="username" id="id_username" type="text"
+                                    value="{{ user.username}}" required autofocus
+                                    {% if not request.path == '/profile/' %} readonly {% endif %}>
+                                <label for="username" class="font-weight-bold">Username</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-control-material static gapping">
+                                        <input type="text" class="form-control" name="first_name" id="id_first_name"
+                                            type="text" value="{{ user.first_name}}" required autofocus>
+                                        <label for="first_name" class="font-weight-bold">First Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-control-material static gapping">
+                                        <input type="text" class="form-control" name="last_name" id="id_last_name"
+                                            type="text" value="{{ user.last_name}}" required autofocus>
+                                        <label for="last_name" class="font-weight-bold">Last Name</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-control-material static gapping">
+                                <input name="Member_BirthDate" type="text" class="form-control datepicker"
+                                    id="id_Member_BirthDate" max="9999-12-31"
+                                    value="{{ user.Member_BirthDate|date:'m/d/Y' }}" required>
+                                <label for="Member_BirthDate" class="font-weight-bold">Date of Birth</label>
+                            </div>
+                            <div class="form-group gapping">
+                                <div class="gapping font-weight-bold">Gender</div>
+                                <div class="radio radio-info radio-inline">
+                                    <input type="radio" id="male" value="M" name="gender" class="custom-control-input"
+                                        {% if user.Member_Gender == 'M' %}checked{% endif %}>
+                                    <label class="custom-control-label pmd-radio-ripple-effect" for="male">Male</label>
+                                </div> &nbsp; &nbsp; &nbsp;
+                                <div class="radio radio-info radio-inline">
+                                    <input type="radio" id="female" value="F" name="gender" class="custom-control-input"
+                                        {% if user.Member_Gender == 'F' %}checked{% endif %}>
+                                    <label class="custom-control-label pmd-radio-ripple-effect"
+                                        for="female">Female</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center gapping">
+                                <button class="btn btn-primary" type="submit">Submit</button> &nbsp; &nbsp; &nbsp;
+                                <button class="btn btn-outline-secondary" type="reset"
+                                    id="reset-basic-info">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal grow modal-backdrop-white fade" id="edit_contact_info_modal">
+    <div class="modal-dialog">
+        <div class="v-cell">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Edit Contact Information</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="edit-contact-card">
+                        {% csrf_token %}
+                        <div class="text-center">
+                            <div class="form-group form-control-material static">
+                                <input type="email" value="{{ user.email }}" class="form-control" name="email"
+                                    id="id_email" type="text" required>
+                                <label for="email" class="font-weight-bold">Personal Email</label>
+                            </div>
+                            <div class="form-group form-control-material static gapping">
+                                <input type="tel" name="Member_Phone" class="form-control" id="id_Member_Phone"
+                                    value="{{ user.Member_Phone }}" required>
+                                <label for="Member_Phone" class="font-weight-bold">Phone Number</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-control-material static gapping">
+                                        <input type="text" name="Member_Temporary_Address" class="form-control"
+                                            value="{{ user.Member_Temporary_Address }}"
+                                            id="id_Member_Temporary_Address">
+                                        <label for="Member_Temporary_Address" class="font-weight-bold">Temporary
+                                            Address</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-control-material static gapping">
+                                        <input type="text" name="Member_Permanent_Address" class="form-control"
+                                            value="{{ user.Member_Permanent_Address }}"
+                                            id="id_Member_Permanent_Address">
+                                        <label for="Member_Permanent_Address" class="font-weight-bold">Permanent
+                                            Address</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="text-center gapping">
+                                <button class="btn btn-primary" type="submit">Submit</button> &nbsp; &nbsp; &nbsp;
+                                <button class="btn btn-outline-secondary" type="reset"
+                                    id="reset-contact-info">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="jumbothon text-center bg-thansparent">
+    <h1>User Profile</h1>
+</div>
+<br>
+<div class="tab-content" style="margin-bottom: 20px;">
+    <div id="account" class="tab-pane active">
+        <div class="form-horizontal">
+            <div class="">
+                <h3 class="text-primary text-center">Basic Information
+                    <div class="dropdown pull-right">
+                        <div class="profile-edit-dropdown dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </div>
+                        <ul class="dropdown-menu">
+                            <li><a href="javascript:void(0);" data-toggle="modal" data-target="#edit_basic_info_modal"
+                                    data-animated>Edit</a></li>
+                        </ul>
+
+                    </div>
+                </h3>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-2 control-label">Avatar</label>
+                <div class="col-md-6">
+                    <div class="media v-middle">
+                        <div class="media-left">
+                            <div class="icon-block width-100 bg-grey-100">
+                                <i class="fa fa-photo text-light"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <label for="member_id" class="col-md-2 control-label">
+                    <i class="fa fa-n"></i> &nbsp; &nbsp; Member ID
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_ID }}</h4>
+                </div>
+            </div> -->
+            <div class="form-group">
+                <label for="member_id" class="col-md-2 control-label">
+                    Username
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.username }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="full_name" class="col-md-2 control-label">Full Name</label>
+                <div class="col-md-8">
+                    <h4>
+                        {{ user.getFullName }}
+                    </h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date_of_birth" class="col-md-2 control-label">
+                    Date of Birth &nbsp; &nbsp; <i class="fa fa-calendar"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_BirthDate|date }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gender" class="col-md-2 control-label">
+                    Gender &nbsp; &nbsp; <i class="fa fa-gender"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.get_Member_Gender_display }}</h4>
+                </div>
+            </div>
+            <hr>
+            <h3 class="text-primary text-center">Contact Information
+                <div class="dropdown pull-right">
+                    <div class="profile-edit-dropdown dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-ellipsis-v"></i>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:void(0);" data-toggle="modal" data-target="#edit_contact_info_modal"
+                                data-animated>Edit</a></li>
+                    </ul>
+
+                </div>
+            </h3>
+            <div class="form-group">
+                <label for="email" class="col-md-2 control-label">
+                    Email &nbsp; &nbsp; <i class="fa fa-envelope"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.email }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phone_number" class="col-md-2 control-label">
+                    Phone Number &nbsp; &nbsp; <i class="fa fa-phone"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_Phone }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="temporary_address" class="col-md-2 control-label">
+                    Temporary Address &nbsp; &nbsp; <i class="fa fa-map-marker"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_Temporary_Address }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="permanent_address" class="col-md-2 control-label">
+                    Permanent Address &nbsp; &nbsp; <i class="fa fa-home"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Member_Permanent_Address }}</h4>
+                </div>
+            </div>
+            <hr>
+            <h3 class="text-center text-primary">Additional Information</h3>
+            <div class="form-group">
+                <label for="center_code" class="col-md-2 control-label">
+                    Center Name &nbsp; &nbsp; <i class="fa fa-institution"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Center_Code.Center_Name }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="user_type" class="col-md-2 control-label">
+                    User Type &nbsp; &nbsp; <i class="fa fa-user"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.get_user_type }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="user_type" class="col-md-2 control-label">
+                    Joined Date &nbsp; &nbsp; <i class="fa fa-calendar"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.Register_DateTime|date }}</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="last_login" class="col-md-2 control-label">
+                    Last Login &nbsp; &nbsp; <i class="fa fa-clock-o"></i>
+                </label>
+                <div class="col-md-6">
+                    <h4>{{ user.last_login|timesince }} ago</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,8 +9,67 @@
 <li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 
 {% endblock %} 
 {% block content %}
+<style>
+  .wizard_horizontal ul.wizard_steps li a .step_no{
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 100px;
+    display: block;
+    margin: 0 auto 5px;
+    font-size: 16px;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+    .step_no, .wizard_verticle ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+    }
+    .wizard_horizontal ul.wizard_steps {
+      display: table;
+      list-style: none;
+      position: relative;
+      width: 100%;
+      margin: 0 0 20px;
+  } 
+  .wizard_horizontal ul.wizard_steps li {
+    display: table-cell;
+    text-align: center;
+  } 
+  .wizard_horizontal ul.wizard_steps li:first-child a:before {
+    left: 50%;
+}
+.step_no, .wizard_horizontal ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+}
+.wizard_horizontal ul.wizard_steps li a:before {
+    content: "";
+    position: absolute;
+    height: 4px;
+    background: #ccc;
+    top: 20px;
+    width: 100%;
+    z-index: 4;
+    left: 0;
+}  
+.wizard_horizontal ul.wizard_steps li a, .wizard_horizontal ul.wizard_steps li:hover {
+  display: block;
+  position: relative;
+ 
+
+  opacity: 1;
+  color: #666;
+}
+.wizard_horizontal ul.wizard_steps li:last-child a:before {
+  right: 50%;
+  width: 50%;
+  left: auto;
+}
+</style>
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
-  <div id="" class="form_wizard wizard_horizontal">
+  <div id="" class="form_wizard wizard_horizontal panel" style="padding-top:15px; margin-top:15px">
     <ul class="wizard_steps anchor">
       <li>
         <a href="#step-1" class="selected" isdone="1" rel="1">
@@ -33,29 +92,33 @@
     </ul>
   </div>
 
-  <form action="" method="post" id="quiz_form_1">{% csrf_token %}
+  <form action="" method="post" id="quiz_form_1" class="panel" style="padding: 15px;">{% csrf_token %}
     {{ wizard.management_form }}
     <div id="id_div_myform">
       {{ wizard.form|crispy }}
     </div>
-    <div class="col-md-12 submitforquiz">
+    <div class="col-md-12 submitforquiz  " style="margin-top: -20px;">
+       <div class="row">
+
+       
       <div class="col-md-6"></div>
       <div class="col-md-6 text-right">
         <button name="wizard_goto_step" class="add-mcq">Next</button>
       </div>
     </div>
+   </div>
   </form>
 {% endblock %}
 
-{% block customjss %}
+{% block javascript %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
   <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
   <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
   <script>
-      $('#div_id_form1-title, #div_id_form1-course_code').wrapAll("<div class=\"col-md-12\"></div>");
-      $('#div_id_form1-title, #div_id_form1-course_code').wrap("<div class=\"col-md-6\"></div>");
-      $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
-      $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
+     // $('#div_id_form1-title, #div_id_form1-course_code').wrapAll("<div class=\"col-md-12\"></div>");
+      //$('#div_id_form1-title, #div_id_form1-course_code').wrap("<div class=\"col-md-6\"></div>");
+     // $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
+      //$('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
       $('#id_div_myform label').addClass("quiz-add-label");
   </script>
-{% endblock customjss %}
+{% endblock javascript %}

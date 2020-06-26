@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Registration Successful{% endblock %}
+
+{% block smart_forum_title %} Registration Successful  {% endblock %}
+
+
+
+{% block top_navigation %}
+
+{% endblock top_navigation %}
+
+
+{% block sidebar %}
+{% endblock %}
+{% block content %}
+    <h3> Great! You are now registered.
+
+    </h3>
+    <div class="alert alert-success" role="alert">
+        <h2><a style="color: blue" href="{% url 'login' %}"> Login </a> with your new credentials.</h2><br>
+
+    </div>
+
+    <script type="text/javascript">
+        function Redirect() {
+            window.location.href = ("/login");
+        }
+
+        document.write("Or, wait until you are automatically redirected to LOGIN page in ten seconds.");
+        setTimeout('Redirect()', 8000);
+    </script>
+
+{% endblock %}

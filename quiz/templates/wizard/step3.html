@@ -9,8 +9,70 @@
   <li class="breadcrumb-item active" aria-current="page">Quiz Create</li>
 {% endblock %}
 {% block content %}
+<style>
+  .wizard_horizontal ul.wizard_steps li a .step_no{
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 100px;
+    display: block;
+    margin: 0 auto 5px;
+    font-size: 16px;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+    .step_no, .wizard_verticle ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+    }
+    .wizard_horizontal ul.wizard_steps {
+      display: table;
+      list-style: none;
+      position: relative;
+      width: 100%;
+      margin: 0 0 20px;
+  } 
+  .wizard_horizontal ul.wizard_steps li {
+    display: table-cell;
+    text-align: center;
+  } 
+  .wizard_horizontal ul.wizard_steps li:first-child a:before {
+    left: 50%;
+}
+.step_no, .wizard_horizontal ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+}
+.wizard_horizontal ul.wizard_steps li a:before {
+    content: "";
+    position: absolute;
+    height: 4px;
+    background: #ccc;
+    top: 20px;
+    width: 100%;
+    z-index: 4;
+    left: 0;
+}  
+.wizard_horizontal ul.wizard_steps li a, .wizard_horizontal ul.wizard_steps li:hover {
+  display: block;
+  position: relative;
+ 
+
+  opacity: 1;
+  color: #666;
+}
+.wizard_horizontal ul.wizard_steps li:last-child a:before {
+  right: 50%;
+  width: 50%;
+  left: auto;
+}
+#id_form3-mcquestion, #id_form3-tfquestion, #id_form3-saquestion {
+  width: 100% !important;
+}
+</style>
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
-  <div id="" class="form_wizard wizard_horizontal">
+  <div id="" class="form_wizard wizard_horizontal panel" style="padding-top:15px; margin-top:15px">
     <ul class="wizard_steps anchor">
       <li>
         <a href="#step-1" class="done" isdone="1" rel="1">
@@ -43,17 +105,17 @@
     {% else %}
       <div class="form-group">
         {{ wizard.form.non_field_errors }}
-        <div class="col-md-12 questions-wrapper">
+        <div class="col-md-12 questions-wrapper panel" style="padding-top: 15px;">
           <div class="col-md-6">
             <label class="quiz-add-label" for="">Multiple Choice Question</label>
           </div>
-          <div class="col-md-6 questions-only">
+          <div class="col-md-6 questions-only text-right">
             <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
-            <button type="button" class="btn qts-button" id="mcq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup">Add MCQ question
+            <button type="button" class="btn btn-default btn-xs qts-button" id="mcq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup" style="margin-bottom: 10px;">Add MCQ question
             </button>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-12" style="width: 100%;">
             {{ wizard.form.mcquestion }}
             {{ wizard.form.mcquestion.help_text }}
             {{ wizard.form.mcquestion.errors }}
@@ -64,14 +126,14 @@
         </div>
       </div>
       <div class="form-group">
-        <div class="col-md-12 questions-wrapper">
+        <div class="col-md-12 questions-wrapper panel"  style="padding-top: 15px;">
           <div class="col-md-6">
             <label class="quiz-add-label" for="">True False Question</label>
           </div>
-          <div class="col-md-6 questions-only">
+          <div class="col-md-6 questions-only text-right">
             <!-- <a class="btn qts-button" href="{% url 'tfquestion_create' %}" > Add T/F question </a> -->
-            <button type="button" class="btn qts-button" id="tfq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup">Add T/F question
+            <button type="button" class="btn qts-button btn-default btn-xs" id="tfq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup"style="margin-bottom: 10px;">Add T/F question
             </button>
 
           </div>
@@ -86,14 +148,14 @@
         </div>
       </div>
       <div class="form-group">
-        <div class="col-md-12 questions-wrapper">
+        <div class="col-md-12 questions-wrapper panel" style="padding-top: 15px;">
           <div class="col-md-6">
             <label class="quiz-add-label" for="">Short Type Question</label>
           </div>
-          <div class="col-md-6 questions-only">
+          <div class="col-md-6 questions-only text-right">
             <!-- <a class="btn qts-button" href="{% url 'saquestion_create' %}" > Add Short question </a>    -->
-            <button type="button" class="btn qts-button" id="saq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup">Add SA question
+            <button type="button" class="btn qts-button btn-default btn-xs" id="saq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup"style="margin-bottom: 10px;">Add SA question
             </button>
 
           </div>
@@ -109,14 +171,14 @@
       </div>
     {% endif %}
     <input type="hidden" id="wizard_goto_input">
-    <div class="col-md-12 submitforquiz">
+    <div class="col-md-12 submitforquiz" style="padding-bottom: 15px;">
       <div class="col-md-4"></div>
       <div class="col-md-4 text-center">
         <div class="quiz-admin-btn">
-          <button id="" class="btn btn-success " type="submit">Submit</button>
+          <button id="" class="btn btn-info btn-sm ripple " type="submit">Submit</button>
         </div>
       </div>
-      <div class="col-md-4 button-place">
+      <div class="col-md-4 button-place text-right">
         <button id="step_3_prev" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="add-mcq">Previous
         </button>
       </div>
@@ -138,7 +200,7 @@
     </div>
   </div>
 {% endblock %}
-{% block customjss %}
+{% block javascript %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
   <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
   <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
@@ -208,4 +270,4 @@
       }
 
   </script>
-{% endblock customjss %}
+{% endblock javascript %}

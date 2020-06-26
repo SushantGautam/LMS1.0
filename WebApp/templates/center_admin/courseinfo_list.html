@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="page-section">
+        <div class="media v-middle">
+            <div class="media-body">
+                <h1 class="text-display-1 margin-none">Courses</h1>
+                <p class="text-subhead">Browse through our courses</p>
+            </div>
+            <div class="media-right">
+                <div class="width-100 text-right">
+                    <div class="btn-group">
+                        <a class="btn btn-white" href="{% url 'courseinfo_grid' %}"><i class="fa fa-th"></i></a>
+                        <a class="btn btn-grey-800" href="{% url 'courseinfo_list' %}" disabled><i
+                                class="fa fa-list"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <hr class="header_hr"> -->
+    <div class="row">
+        <div class="col-lg-8 col-md-6 col-sm-12">
+            {% if 'teachers' in request.path %}
+            <form method="get" action="">
+                <div class="col-md-4">
+                    <input type="text" name="teacher_coursequery" placeholder="Search Course"
+                        value="{{ request.GET.query }}" class="form-control" />
+                </div>
+                <button class="btn btn-default" type="submit">
+                    <i class="fa fa-search"></i>&nbsp;Search
+                </button>
+            </form>
+            {% elif 'students' in request.path %}
+            <form method="get" action="">
+                <div class="col-md-4">
+                    <input type="text" name="coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
+                        class="form-control" />
+                </div>
+                <button class="btn btn-default" type="submit">
+                    <i class="fa fa-search"></i>&nbsp;Search
+                </button>
+            </form>
+            {% else %}
+            <form method="get" action="">
+                <div class="col-md-4">
+                    <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
+                        class="form-control" />
+                </div>
+                <button class="btn btn-default" type="submit">
+                    <i class="fa fa-search"></i>&nbsp;Search
+                </button>
+            </form>
+            {% endif %}
+        </div>
+
+        {% if 'students' not in request.path %}
+        <div class="col-lg-4 col-md-6 col-sm-12 btn-createnew">
+            <a class="btn btn-primary" style="float: right;" href="
+            {% if '/teachers' in request.path %}
+                {% url 'teacher_courseinfo_create' %}
+            {% else %}
+                {% url 'courseinfo_create' %}
+            {% endif %}">Create new Course</a>
+        </div>
+        {% endif %}
+    </div>
+    <br><br>
+    {% for object in object_list %}
+    <div class="panel panel-default paper-shadow" data-z="0.5">
+        <div class="panel-body">
+            <div class="media media-clearfix-xs">
+                <div class="media-left text-center">
+                    <div class="cover width-200 width-100pc-xs overlay cover-image-full hover margin-v-0-10">
+                        <span class="img icon-block height-130 bg-default"></span>
+                        <a href="{{ object.get_absolute_url }}"
+                            class="padding-none overlay overlay-full icon-block bg-default">
+                            <img src="{% if object.Course_Cover_File %}
+                        {{ object.Course_Cover_File.url }}
+                    {% else %}
+                        {% static 'images/course.jpg' %}
+                    {% endif %}" width="100%" height="130px" style="object-fit: cover" />
+                        </a>
+                        <!-- <span class="overlay overlay-full padding-none icon-block bg-default">
+
+                            </span> -->
+                        <a href="{{ object.get_absolute_url }}"
+                            class="overlay overlay-full overlay-hover overlay-bg-white">
+                            <span class="v-center">
+                                <span class="btn btn-circle btn-white btn-lg"><i
+                                        class="fa fa-graduation-cap"></i></span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="media-body" style="padding-left: 10px;">
+                    <h4 class="text-headline margin-v-5-0"><a
+                            href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></h4>
+                    <p class="small">
+                        Difficulty :
+                        {% for i in '12345'|make_list %}
+                        {% if object.Course_Level >= forloop.counter %}
+                        <span class="fa fa-fw fa-star text-yellow-800"></span>
+                        {% else %}
+                        <span class="fa fa-fw fa-star-o text-yellow-800"></span>
+
+                        {% endif %}
+                        {% endfor %}
+                    </p>
+                    <hr class="margin-v-8" />
+                    <p>{{ object.Course_Description }}</p>
+
+                    <!-- <hr class="margin-v-8" />
+                    <div class="media v-middle">
+                        <div class="media-left">
+                            <img src="images/people/50/guy-2.jpg" alt="People" class="img-circle width-40" />
+                        </div>
+                        <div class="media-body">
+                            <h4><a href="">Adrian Demian</a>
+                                <br />
+                            </h4>
+                            Instructor
+                        </div>
+                    </div> -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

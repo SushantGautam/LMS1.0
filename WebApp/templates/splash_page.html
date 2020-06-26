@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS</title>
+</head>
+
+<body class="splashContainer">
+    <style>
+        .splashContainer {
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 7rem;
+            padding: 0 2rem;
+            overflow: hidden;
+            font-family: monospace;
+        }
+
+        .splashImg {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .splashImg img {
+            width: 800px;
+        }
+
+        .splashContent {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        .splashContent a {
+            text-decoration: none;
+            color: rgb(64, 108, 252);
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        @media screen and (max-width: 1050px) {
+            .splashContainer {
+                grid-gap: 5rem;
+            }
+        }
+
+        @media screen and (max-width: 1000px) {
+            .splashContent h2 {
+                font-size: 1.5rem;
+                margin: 8px 0;
+            }
+
+            .splashContent h1 {
+                font-size: 2rem;
+
+            }
+
+            .splashImg img {
+                width: 400px;
+            }
+
+            .splashContent {
+                background-image: url("static/images/LMS-svg.svg");
+                background-size: cover;
+            }
+        }
+
+        @media screen and (max-width: 900px) {
+            .splashContainer {
+                grid-template-columns: 1fr;
+            }
+
+            .splashImg {
+                display: none;
+            }
+
+            .splashContent {
+                justify-content: center;
+            }
+        }
+    </style>
+
+
+    <div class="splashImg">
+        <img src="{% static 'images/LMS-svg.svg' %}">
+    </div>
+    <div class="splashContent">
+        <h1>Welcome to LMS</h1>
+        <h2>Already a user? <a href="{% url 'login' %}">Login</a></h2>
+        <h3 style="padding-left: 5rem;">or</h3>
+        <h3><a href="{% url 'register' %}">Register</a> as a new user</h3>
+    </div>
+
+</body>
+
+</html>

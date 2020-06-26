@@ -1,0 +1,157 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+
+{{ form.media }}
+<form method="post" id="mcq_form_post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+
+        {{ form.content|as_crispy_field }}
+
+        <div id="option_dynamic_append">
+            {{ answers_formset|crispy }}
+        </div>
+        <div class="text-danger" id="option_error"></div>
+        <div class="add-more">
+            <a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more
+                options</a>
+        </div>
+        <hr>
+
+
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse1">More Options</a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+
+                    {{ form.answer_order|as_crispy_field }}
+                    {{ form.figure|as_crispy_field }}
+                    {{ form.score|as_crispy_field }}
+                    {{ form.explanation|as_crispy_field }}
+
+                    {{ form.course_code|as_crispy_field }}
+                    {{ form.cent_code|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    {% if quiz_id %}
+        <input name="quiz_id" value="{{ quiz_id }}" type="hidden">
+    {% endif %}
+
+    <hr>
+    <!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+
+<div style="display:none">
+    <div id="emptyOptionForm">
+        <div class="multiField">
+            {{ answers_formset.empty_form|crispy }}
+        </div>
+    </div>
+</div>
+
+{% block customjss %}
+    <script>
+        function copyEmptyOption(selector, append_after, type) {
+            var optionId = $('#id_' + type + '-TOTAL_FORMS').val();
+            var str1 = String(type + '-' + optionId);
+            var r1 = new RegExp(type + '\-__prefix__', 'g');
+
+            $(append_after).append($(selector).html().replace(r1, str1));
+            optionId++;
+            $('#id_' + type + '-TOTAL_FORMS').val(optionId);
+        }
+
+        $('#add_more').click(function () {
+            copyEmptyOption('#emptyOptionForm', '#option_dynamic_append', 'answer_set');
+        });
+
+
+        $(".multiField").addClass("col-md-12");
+        $(".multiField > .form-group").addClass('col-md-3');
+
+        $('div[id$="-content"]').addClass("col-md-6");
+        $('div[id$="-content"]').removeClass("col-md-3");
+        //$('div[id$="-correct"]').addClass("col-md-3");
+        //$('div[id$="-DELETE"]').addClass("col-md-3");
+        $('p[id^="hint_id_answer_set"]').remove();
+
+        //$(".control-label").after(`&nbsp;`);
+
+        $('div[id^="div_id_answer_set"]').wrapInner("<div class='col-md-12 answer_set_wrapper' ></div>");
+        $('label[for^="id_answer_set"]').wrap("<div class='col-md-3'></div>");
+        $('.answer_set_wrapper > .controls').addClass('col-md-9');
+
+        $('#div_id_content').addClass('col-md-12');
+        $('#div_id_answer_order, #div_id_figure, #div_id_score').wrapAll("<div class = col-md-12></div>");
+        $('#div_id_answer_order').addClass('col-md-4');
+        $('#div_id_figure').addClass('col-md-4');
+        $('#div_id_score').addClass('col-md-4');
+
+
+        $('label').addClass("quiz-add-label");
+
+        $("#mcq_form_post").submit(function (e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            //form validation:
+
+            var is_checked = false;
+            var cnt = 0;
+            var non_empty_count = 0;
+            for (cnt = 0; cnt < $("#id_answer_set-TOTAL_FORMS").val(); cnt++) {
+                if ($("#id_answer_set-" + cnt + "-correct").is(':checked')) {
+                    is_checked = true;
+                    if ($("#id_answer_set-" + cnt + "-content").val().length == 0) {
+                        $("#option_error").html("Correct answer cannot be empty");
+                        return false;
+                    }
+                }
+                if ($("#id_answer_set-" + cnt + "-content").val().length > 0) {
+                    non_empty_count++;
+                }
+            }
+            if (non_empty_count < 2) {
+                $("#option_error").html("Please enter at least two answers");
+                return false;
+            }
+            if (!is_checked) {
+                $("#option_error").html("Please select at least one correct answer");
+                return false;
+            }
+
+            $.ajax({
+                //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: new FormData($(this)[0]),
+                url: "{{ post_url }}", // URL to your view that serves new info
+                //data: $(this).serialize(), // get the form data
+                type: $(this).attr('method'), // GET or POST
+                success: function (response) {
+                    mcq_success(response);
+                },
+                error: function () {
+                    console.log('Error in posting form');
+                }
+            });
+        });
+
+        $("#div_id_course_code").hide();
+        $("#id_course_code").val('{{ course_from_quiz }}');
+        $("#div_id_cent_code").hide();
+        $("#id_cent_code").val('{{ request.user.Center_Code.id }}');
+        $('.modal-dialog').css("width", "80%").css("height", "90vh").css("overflow-y", "scroll");
+    </script>
+{% endblock customjss %}

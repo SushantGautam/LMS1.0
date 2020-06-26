@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="modal grow modal-backdrop-white fade" id="create_assignment_modal">
+    <div class="modal-dialog">
+        <div class="v-cell">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Create Assignment</h4>
+                </div>
+                <div class="modal-body" id="create_assignment_modal_body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="st-content">
+    <div class="container-fluid">
+        <div class="media media-grid media-clearfix-xs">
+            <div class="media-body">
+                <div class="page-section">
+                    <div class="media media-grid v-middle">
+                        <div class="media-left">
+                            <span class="icon-block half bg-blue-300 text-white">{{ object.Chapter_No }}</span>
+                        </div>
+                        <div class="media-body">
+                            <h1 class="text-display-1 margin-none">{{ object.Chapter_Name }}</h1>
+                        </div>
+                    </div>
+                    <br />
+                    <p>{{ object.Summary }}</p>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-lg btn-info" href="
+                    {% if '/teachers' in request.path %}
+                        {% url 'teacher_contentviewer' object.Course_Code.pk object.pk %}
+                    {% elif '/students' in request.path %}
+                        {% url 'student_contentviewer' object.Course_Code.pk object.pk %}
+                    {% else %}
+                        {% url 'contentviewer' object.Course_Code.pk object.pk %}
+                    {% endif %}" id="course-viewer" target="_self"><i class="fa fa-laptop"></i> Content Viewer</button>
+                    &nbsp;
+                    {% if '/students' not in request.path %}
+                    {% if '/teachers' in request.path %}
+                    <button class="btn btn-lg btn-success"
+                        href="{% url 'teachers_chapterpagebuilder' object.Course_Code.id object.id %}"> <i
+                            class="fa fa-pencil"></i> Content
+                        Builder
+                        &nbsp;</button>
+                    {% else %}
+                    <button class="btn btn-lg btn-success"
+                        href="{% url 'chapterpagebuilder' object.Course_Code.id object.id %}">
+                        <i class="fa fa-pencil"></i> Content
+                        Builder &nbsp;</button>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="page-section">
+                    <p class="text-headline">List of Assignments</p>
+                    {% if object.Use_Flag is False %}
+                    <p style="color:red">Note: Chapter is inactive, therefore assignments are not assigned to students.
+                    </p>
+                    {% endif %}
+                    {% for assignment in assignments %}
+                    <div class="panel panel-default curriculum open paper-shadow" data-z="0.5">
+                        <div class="panel-heading panel-heading-gray">
+                            <div class="media v-middle">
+                                <div class="media-left">
+                                    <div class="icon-block s30 bg-indigo-300 text-white img-circle">
+                                        {{ forloop.counter }}
+                                    </div>
+                                </div>
+                                <div class="media-body text-body-2" data-toggle="collapse"
+                                    data-target="#{{assignment.pk}}">
+                                    {{assignment.Assignment_Topic}}
+                                </div>
+                                <div class="media-right">
+                                    <button class="btn btn-info btn-sm btn-stroke" href="{% if '/students' in request.path %}
+                                    {{ assignment.student_get_absolute_url }}
+                                {% elif '/teachers' in request.path %}
+                                    {{ assignment.teacher_get_absolute_url }}
+                                {% else %}
+                                   {{ assignment.get_absolute_url }}
+                                {% endif %}">
+                                        CONTINUE <i class="fa fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group collapse" id="{{assignment.pk}}">
+                            <div class="list-group-item media" data-target="website-take-course.html">
+                                <!-- <div class="media-left">
+                                    <div class="text-crt">1.</div>
+                                </div> -->
+                                <div class="media-body">
+                                    <p>Start Date - {{ assignment.Assignment_Start }}</p>
+                                    <p>Submission Deadline - {{ assignment.Assignment_Deadline }}</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="media-right">
+                <div class="page-section width-320 width-auto-xs">
+                    <div class="panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
+                        <div class="panel-heading">
+                            <h4 class="text-headline"> Course Code : {{ object.Course_Code }}</h4>
+                        </div>
+
+                        <ul class="list-group">
+                            <!-- <li class="list-group-item">
+                                Course Code : {{ object.Course_Code }}
+                            </li> -->
+                            <li class="list-group-item">
+                                Status :
+                                {% if object.Start_Date and todays_date < object.Start_Date|date:"Y-m-d" %}
+                                <span class="text-danger"><b>Inactive</b></span>
+                                {% elif object.End_Date and todays_date > object.End_Date|date:"Y-m-d" %}
+                                <span class="text-danger"><b>Expired</b></span>
+                                {% else %}
+                                <span class="text-primary"><b>Active</b></span>
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">
+                                Start Date : {{ object.Start_Date|date:'m/d/Y' }}
+                            </li>
+                            <li class="list-group-item">
+                                End Date : {{ object.End_Date|date:'m/d/Y' }}
+                            </li>
+                            <li class="list-group-item">
+                                Register Agent : {{ object.Register_Agent }}
+                            </li>
+                        </ul>
+                        <div class="panel-body text-center">
+                            <a class="btn btn-primary btn-sm" href="{% if '/teachers' in request.path %}
+                            /teachers{{ object.get_update_url }}
+                            {% else %}
+                                {{ object.get_update_url }}
+                            {% endif %}">Edit Chapter</a>
+                            &nbsp;
+                            <a class="btn btn-danger btn-sm chapter-confirm-delete" id="{{ object.pk }}">Delete
+                                Chapter</a>
+                            <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
+                                id="deleteChapter{{ object.pk }}">
+                                {% csrf_token %}
+                                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                                <input type="hidden" value="{{ object.pk }}" name="chapter_id">
+                                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                            </form>
+                        </div>
+                        {% if '/students' not in request.path %}
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <div class="panel-body text-center">
+                                    <a class="btn btn-success" data-toggle="modal"
+                                        data-target="#create_assignment_modal" id="add-newassignment-btn">
+                                        Create New Assignment
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block javascript %}
+    <script>
+        $(document).on('click', '.chapter-confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Chapter?');
+            if (ans == true) {
+                $(`#deleteChapter${this.id}`).submit();
+            } else {
+                return false;
+            }
+        });
+
+        $('#add-newassignment-btn').on('click', function () {
+            $('#create_assignment_modal_body').empty();
+            $('#create_assignment_modal_body').append(
+                `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+               class="select form-control">
+            <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
+               class="select form-control">`
+            )
+
+            $.ajax({
+                type: "GET",
+                url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+                success: function (response) {
+                    $('#create_assignment_modal_body').append(response);
+                    $('#id_Assignment_Deadline').attr('min', '{{datetime|date:"Y-m-d"}}');
+                },
+                error: function () {
+                    console.log('Error in generating assignment create form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+    </script>
+    {% endblock %}

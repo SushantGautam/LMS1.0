@@ -19,7 +19,7 @@
   
 {% endblock %}
 
-{% block customjss %}
+{% block javascript %}
   <script>
       $(document).on('click', '.confirm-remove', function (event) {
           ans = confirm('Are you sure you want to remove this Question?');
@@ -159,4 +159,4 @@
           location.reload();
       }
   </script>
-{% endblock %}
+{% endblock javascript %}

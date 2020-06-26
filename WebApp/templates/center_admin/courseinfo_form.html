@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="jumbothon text-center bg-thansparent">
+        <h1>{% if 'create' in request.path %}
+            Create New{% elif 'edit' in request.path %}
+            Edit {% endif %}
+            Course</h1>
+    </div>
+    <hr class="header_hr">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form method="POST" id="FormID" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group form-control-material static required">
+                    <input type="text" class="form-control" name="Course_Name" id="id_Course_Name"
+                        value="{{ object.Course_Name }}" placeholder="Enter name of the course" required
+                        {% if '/teachers' in request.path %} readonly {% endif %}>
+                    <label for="id_Course_Name">Course Name</label>
+                </div>
+                <div class="form-group form-control-material static required">
+                    <input type="text" class="form-control" name="Course_Provider"
+                        value="{{ form.Course_Provider.value }}" maxlength="250" id="id_Course_Provider"
+                        placeholder="Enter course provider" required>
+                    <label for="id_Course_Provider">Course Provider</label>
+                </div>
+                <div class="form-group">
+                    <div class="form-control-material static">
+                        <textarea name="Course_Description" id="id_Course_Description" class="form-control"
+                            rows="10">{{ object.Course_Description }}</textarea>
+                        <label for="id_Course_Description">Course Description</label>
+                    </div>
+                </div>
+                <div class="gapping">
+                    <div style="margin-bottom: 10px;">Course Cover File</div>
+                    {{form.Course_Cover_File}}
+                </div>
+                <div class="form-group form-control-material static gapping">
+                    <input class="form-control" id="id_Course_Level" type="number" name="Course_Level"
+                        value="{{ object.Course_Level }}">
+                    <label for="id_Course_Provider">Course Rating</label>
+                </div>
+                {% if 'edit' in request.path %}
+                <div class="form-group">
+                    <label style="font-weight: normal;">
+                        Status
+                    </label><br>
+                    <input type="checkbox" id="id_Use_Flag" name="Use_Flag" {% if object.Use_Flag == False %} &nbsp;
+                        {% else %} checked {% endif %}>
+                </div>
+                {% else %}
+                <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                {% endif %}
+
+                <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}">
+                <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
