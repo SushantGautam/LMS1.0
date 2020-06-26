@@ -1170,6 +1170,11 @@ class SessionInfoCreateView(CreateView):
     model = SessionInfo
     form_class = SessionInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(SessionInfoCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class SessionInfoDetailView(DetailView):
     model = SessionInfo
@@ -1178,6 +1183,11 @@ class SessionInfoDetailView(DetailView):
 class SessionInfoUpdateView(UpdateView):
     model = SessionInfo
     form_class = SessionInfoForm
+
+    def get_form_kwargs(self):
+        kwargs = super(SessionInfoUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class InningInfoListView(ListView):

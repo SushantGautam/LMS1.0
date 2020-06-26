@@ -22,9 +22,9 @@
     <div class="headerDiv">
         <h2 class="infoFormHeader">
             {% if '/sessioninfo/create/' == request.path %}
-            Create New Session Name
+                Create New Session Name
             {% else %}
-            Edit Session Name
+                Edit Session Name
             {% endif %}
         </h2>
         <hr class="header_hr">
@@ -32,23 +32,36 @@
     <div class="col-md-6 col-md-offset-3 col-sm-offset-1 text-center" style="margin-top: 3%">
         <form method="post" id="FormID">
             {% csrf_token %}
-
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="m-2 alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="m-2 alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 {{ form.Session_Name|as_crispy_field }}
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div id="div_id_Description" class="form-group">
                     {{ form.Description|as_crispy_field }}
-                     <!-- <label for="id_Description" class="control-label ">
-                        Description
-                    </label> -->
+                    <!-- <label for="id_Description" class="control-label ">
+                       Description
+                   </label> -->
                     <!-- <div class="controls ">
                         <textarea name="Description" cols="40" id="id_Description" rows="5"
                                   class="textarea form-control"></textarea>
                     </div> -->
                 </div>
             </div>
-            
+
                 {% if '/sessioninfo/create/' == request.path %}
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
@@ -64,9 +77,9 @@
                             {% else %}
                         checked
                             {% endif %}
-                    ><br> <br></div>   
+                    ><br> <br></div>
                 {% endif %}
-                
+
 
             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                 <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
