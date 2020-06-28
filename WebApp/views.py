@@ -1438,67 +1438,66 @@ def GroupMappingCSVImport(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
         center_id = request.user.Center_Code.id
-        file_name = uuid.uuid4()
-        extension = media.name.split('.')[-1]
-        new_file_name = str(file_name) + '.' + str(extension)
-        path = 'media/import_csv/student_group' + str(center_id)
 
+        file_name = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + extension
+        path = 'media/import_csv/' + str(center_id) + '/student_group'
         fs = FileSystemStorage(location=path)
-        filename = fs.save(new_file_name + '.' + extension, media)
+        filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
+
         df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
         df = df.dropna(how='all')
-
+        df = df.replace(pd.np.nan, '', regex=True)
         reg_agent = request.user.username
         center = request.user.Center_Code
-        err_msg = []
-        msg = []
-        try:
-            groups = df['Group'].unique()
-        except Exception as e:
-            return JsonResponse(
-                data={"message": "There is no Column <b>Group</b> in the input file", "class": "text-danger",
-                      "rmclass": "text-success"})
-        for i in range(len(groups)):
-            try:
-                flag = 0
-                obj = GroupMapping()
-                obj.GroupMapping_Name = groups[i]
-                obj.Register_Agent = reg_agent
-                obj.Center_Code = center
-                students = df[df['Group'] == groups[i]].reset_index(drop=True)
-                obj.save()
-                for j in range(len(students)):
-                    if MemberInfo.objects.filter(username=students['Username'][j]).exists():
-                        obj_student = MemberInfo.objects.get(username=students['Username'][j])
-                        obj.Students.add(obj_student)
-                    else:
-                        # obj_create = MemberInfo()
-                        # obj_create.username = students['Username'][j]
-                        # obj_create.Center_Code = center
-                        # obj_create.save()
-                        # obj.Students.add(obj_student)
-                        err_msg.append(
-                            "Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>".format(
-                                groups[i], students['Username'][j]))
-                        flag = 1
-                        break
+        error = ''
+        saved_id = []
 
-                if flag == 1:
-                    obj.delete()
-                    if msg:
-                        err_msg = err_msg + msg
-                        msg.clear()
-                else:
-                    msg.append("<div class='text-success'>Student Group: <b>{}</b> created</div>".format(groups[i]))
-                    if err_msg:
-                        err_msg = err_msg + msg
-                        msg.clear()
+        if not df.empty:
+            try:
+                groups = df['(*)Group Name'].unique()
             except Exception as e:
-                err_msg.append("Student Group: <b>{}</b> can't be created<br> {}".format(groups[i], e))
-    if err_msg:
-        return JsonResponse(data={"message": err_msg, "class": "text-danger", "rmclass": "text-success"})
-    return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
+                return JsonResponse(
+                    data={"message": "There is no data in column <b>(*)Group Name</b> in the file", "class": "text-danger",
+                        "rmclass": "text-success"})
+    
+            for i in range(len(groups)):
+                try:
+                    group_name = groups[i]
+                    students = df[df['(*)Group Name'] == groups[i]].reset_index(drop=True)
+
+                    if GroupMapping.objects.filter(GroupMapping_Name__iexact=group_name, Center_Code=request.user.Center_Code).exists():
+                        error = "Student Group Name already exist in the center please choose another name"
+                        raise Exception
+
+                    obj = GroupMapping()
+                    obj.GroupMapping_Name = group_name
+                    obj.Register_Agent = reg_agent
+                    obj.Center_Code = center
+                    obj.save()
+                    saved_id.append(obj.id)
+
+                    for j in range(len(students)):
+                        if MemberInfo.objects.filter(username=students['(*)Student Username'][j],
+                                                    Center_Code=center, Is_Student=True).exists():
+                            obj_student = MemberInfo.objects.get(username=students['(*)Student Username'][j])
+                            obj.Students.add(obj_student)
+                        else:
+                            error ="Student Username <b>{}</b> not found<br>".format(students['(*)Student Username'][j])
+                            raise Exception
+
+                except Exception as e:
+                    for k in saved_id:
+                        GroupMapping.objects.filter(id=k).delete()
+                    msg = error + ". Can't Upload data, Problem while registering group <b>" + str(group_name) + "<b><br>" + str(e)
+                    return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+            else:
+                error = "The uploaded excel has no data to register"
+        if not error:
+            error = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": error, "class": "text-success","rmclass": "text-danger"})
 
 
 class GroupMappingCreateView(CreateView):
