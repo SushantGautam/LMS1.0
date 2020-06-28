@@ -26,7 +26,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
@@ -810,8 +810,9 @@ def ImportSession(request, *args, **kwargs):
 
                     # Session Name validation
                     if not SessionInfo.objects.filter(Session_Name__iexact=session_name).exists():
+                        url = str(reverse('sessioninfo_list'))
                         error = "Session Name <strong>" + session_name + """</strong> does not exists.
-                                            Please register it from <a href=''>here</a>"""
+                                            Please register it from <a href='"""+ url +"""'>here</a>"""
                         raise Exception
                     session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name)
 
@@ -840,8 +841,9 @@ def ImportSession(request, *args, **kwargs):
 
                     # Student Group Name validation
                     if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group).exists():
+                        url = str(reverse('groupmapping_list'))
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
-                                            Please register it from <a href=''>here</a>"""
+                                            Please register it from <a href='"""+ url +"""'>here</a>"""
                         raise Exception
                     student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
 
@@ -868,8 +870,9 @@ def ImportSession(request, *args, **kwargs):
                     # Course Group validation and registration
                     for course in courses:
                         if not InningGroup.objects.filter(InningGroup_Name__iexact=course).exists():
+                            url = str(reverse('inninggroup_list'))
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
-                                                Please register it from <a href=''>here</a>"""
+                                                Please register it from <a href='"""+ url +"""'>here</a>"""
                             raise Exception
                         course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
                         obj.Course_Group.add(course_code)
