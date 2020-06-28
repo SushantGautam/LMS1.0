@@ -190,6 +190,8 @@ urlpatterns += (
          name='sessioninfo_create'),
     path('sessioninfo/<int:pk>/',
          views.SessionInfoDetailView.as_view(), name='sessioninfo_detail'),
+    path('sessioninfo/delete/<int:pk>/',
+         views.SessionInfoDeleteView, name='sessioninfo_delete'),
     path('sessioninfo/update/<int:pk>/',
          views.SessionInfoUpdateView.as_view(), name='sessioninfo_update'),
 )
