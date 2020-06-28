@@ -732,11 +732,14 @@ def ImportCourse(request, *args, **kwargs):
                     if len(course_name) > 240:
                         error = "Course Name can't be greater then 240 characters"
                         raise Exception
+                    if CourseInfo.objects.filter(Course_Name__iexact=course_name, Center_Code=request.user.Center_Code).exists():
+                        error = "Course Name already exist in the center please choose another name"
+                        raise Exception
 
                     if not course_provider:
                         error = "Course Provider is required"
                         raise Exception
-                    if len(course_name) > 250:
+                    if len(course_provider) > 250:
                         error = "Course Provider can't be greater then 250 characters"
                         raise Exception
 
@@ -765,7 +768,8 @@ def ImportCourse(request, *args, **kwargs):
                 except Exception as e:
                     for j in saved_id:
                         CourseInfo.objects.filter(id=j).delete()
-                    msg = error + " Problem in " + str(i + 1) + "th row of data while uploading<br>"
+                    msg = error + ". <br>Problem in " + str(i + 1) + "th row of data while uploading<br><br>"+ "<br>".join(
+                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         else:
             error = "The uploaded excel has no data to register"
