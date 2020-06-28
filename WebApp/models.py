@@ -633,7 +633,7 @@ class GroupMapping(models.Model):
 
 
 class InningGroup(models.Model):
-    # InningGroup_Name = CharField(max_length=200)
+    InningGroup_Name = CharField(max_length=200, null=True)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
