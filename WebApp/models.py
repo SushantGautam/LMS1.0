@@ -591,6 +591,9 @@ class SessionInfo(models.Model):
     def get_update_url(self):
         return reverse('sessioninfo_update', args=(self.pk,))
 
+    def get_delete_url(self):
+        return reverse('sessioninfo_delete', args=(self.pk,))
+
     def __str__(self):
         return self.Session_Name
 

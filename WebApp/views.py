@@ -1231,6 +1231,9 @@ class SessionInfoCreateView(CreateView):
 class SessionInfoDetailView(DetailView):
     model = SessionInfo
 
+def SessionInfoDeleteView(request, pk):
+    SessionInfo.objects.filter(pk=pk).delete()
+    return redirect("sessioninfo_list")
 
 class SessionInfoUpdateView(UpdateView):
     model = SessionInfo
