@@ -802,7 +802,7 @@ def ImportSession(request, *args, **kwargs):
                     start_date = df.iloc[i]['(*)Start Date']
                     end_date = df.iloc[i]['(*)End Date']
                     student_group = df.iloc[i]['(*)Student Group Name']
-                    courses = df.iloc[i]['(*)Teacher Course Name']
+                    courses = df.iloc[i]['(*)Course Allocation Name']
 
                     # Session Name validation
                     if not SessionInfo.objects.filter(Session_Name__iexact=session_name).exists():
@@ -867,7 +867,7 @@ def ImportSession(request, *args, **kwargs):
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
                                                 Please register it from <a href=''>here</a>"""
                             raise Exception
-                        course_code = InningGroup.objects.get(Course_Code__Course_Name__iexact=course)
+                        course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
                         obj.Course_Group.add(course_code)
 
                 except Exception as e:
