@@ -818,10 +818,15 @@ def ImportSession(request, *args, **kwargs):
                         raise Exception
                     session_name = str(session_name)
                     if not SessionInfo.objects.filter(Session_Name__iexact=session_name).exists():
-                        url = str(reverse('sessioninfo_list'))
-                        error = "Session Name <strong>" + session_name + """</strong> does not exists.
-                                            Please register it from <a href='"""+ url +"""'>here</a>"""
-                        raise Exception
+                        # Instead of error the new session name is created
+                        obj2 = SessionInfo()
+                        obj2.Session_Name = session_name
+                        obj2.Center_Code = request.user.Center_Code
+                        obj2.save()
+                        # url = str(reverse('sessioninfo_list'))
+                        # error = "Session Name <strong>" + session_name + """</strong> does not exists.
+                        #                     Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
+                        # raise Exception
                     session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name)
 
                     # Start date and End date Validation
@@ -855,7 +860,7 @@ def ImportSession(request, *args, **kwargs):
                     if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group).exists():
                         url = str(reverse('groupmapping_list'))
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
-                                            Please register it from <a href='"""+ url +"""'>here</a>"""
+                                            Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
                         raise Exception
                     student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
 
@@ -885,7 +890,7 @@ def ImportSession(request, *args, **kwargs):
                         if not InningGroup.objects.filter(InningGroup_Name__iexact=course).exists():
                             url = str(reverse('inninggroup_list'))
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
-                                                Please register it from <a href='"""+ url +"""'>here</a>"""
+                                                Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
                             raise Exception
                         course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
                         obj.Course_Group.add(course_code)
