@@ -540,6 +540,7 @@ class AssignAnswerInfo(models.Model):
     Updated_DateTime = DateTimeField(auto_now=True)
     Assignment_Answer = TextField(null=True, blank=True)
     Assignment_File = FileField(upload_to=assignment_upload, null=True, blank=True, max_length=255)
+    Assignment_Feedback = TextField(default=None, blank=True, null=True)
 
     # Relationship Fields
     Question_Code = ForeignKey(

@@ -141,7 +141,9 @@
                     </td>
                     <td>
                         <button class="btn btn-sm btn-info showanswer" data-toggle="modal" data-target="#exampleModal1"
-                                value="{{ answer.id }}" style="float: right;color:black">
+                                value="{{ answer.id }}" style="float: right;color:black"
+                                data-student_Score="{{ answer.Assignment_Score }}"
+                                data-assignment_feedback="{{ answer.Assignment_Feedback }}">
                             <b>View Answer</b>
                         </button>
                     </td>
@@ -162,6 +164,7 @@
 {% block customjss %}
     <script>
         $('table').on('click', '.showanswer', function () {
+            $(this).addClass('clickedShowAnswer')
             {% for answer in Answers %}
                 if (this.value == '{{ answer.id }}') {
                     $('#answercontent').text(`{{answer.Assignment_Answer}}`)
@@ -175,15 +178,32 @@
                         `)
                     }
                     $('#StudentScore').html(`
-                        <form onsubmit="return submitscoreajax()" id="StudentScoreForm">Score <input type="number" id="studentScoresubmit" value=" {{ answer.Assignment_Score }}"  max="{{ answer.Question_Code.Question_Score }}" >
+                        <form id="StudentScoreForm">
+                        <div>
+                            <p>FeedBack</p>
+                            <p>
+                                <textarea name="assignment_feedback" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
+                            </p>
+                        </div>
+                        <div>
+                        Score
+                        <input type="number" id="studentScoresubmit" value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
+                        max="{{ answer.Question_Code.Question_Score }}" >
                             <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">SubmitScore</button>
+                        </div>
                         </form>
                         <br> Full Score: <b>{{ answer.Question_Code.Question_Score }} </b>
                          <input type="hidden" id="answerpk" value="{{ answer.pk }}">
 
-                    `)
+                    `);
+                    $('#studentScoresubmit').val($(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score'));
+                    $('#assignment_feedback').val($(this).attr('data-assignment_feedback'));
                 }
             {% endfor %}
+        })
+
+        $('#exampleModal1').on('hidden.bs.modal', function () {
+            $('.clickedShowAnswer').removeClass('clickedShowAnswer')
         })
 
         $('td').on('click', '.edit_assignment_score', function (e) {
@@ -219,17 +239,26 @@
             submitscoreajax(fromtd = true, answer_pk = answer_pk, stu_score = stu_score)
         })
 
+        $('#StudentScore').on('submit', 'form', function (e) {
+            e.preventDefault()
+            submitscoreajax()
+        })
+
         function submitscoreajax(fromtd = false, answer_pk = null, stu_score = null) {
             if (!fromtd) {
                 var answer_pk = $('#answerpk').val();
                 var stu_score = $('#studentScoresubmit').val() ? $('#studentScoresubmit').val() : 0;
+                var feedback = $('#assignment_feedback').val();
             }
-            const http = new XMLHttpRequest()
-            http.onload = () => $('#Score_' + answer.pk).val(http.responseText);
-            http.open("GET", '/teachers/submitStudentscore/' + answer_pk + '/' + stu_score + '/');
-            http.send();
-            http.onload = () => {
-                if (http.responseText === "success") {
+            $.ajax({
+                url: '/teachers/submitStudentscore/' + answer_pk + '/' + stu_score + '/',
+                method: 'post',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'assignment_feedback': feedback,
+                    'stu_score': stu_score,
+                },
+                success: function (data) {
                     $('#Score_' + answer_pk).html(stu_score).css("text-shadow", "2px 2px 5px red;");
                     $('#Score_' + answer_pk).append(`
                      <span class="edit_assignment_score" data-assignment_score="${stu_score}">
@@ -240,10 +269,15 @@
 
                     if (!fromtd) {
                         $('#exampleModal1').modal('toggle');
+                        $('.clickedShowAnswer').attr('data-assignment_feedback', feedback);
                     }
+                    {#$('.clickedShowAnswer').attr('data-student_Score', stu_score);#}
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                    return false
                 }
-            }
-            return false;
+            })
         }
 
 
@@ -262,7 +296,7 @@
                         extend: 'csv',
                         text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                         exportOptions: {
-                            columns: [1,2,3,4,5]
+                            columns: [1, 2, 3, 4, 5]
                         }
                     },
                     // {
@@ -273,7 +307,7 @@
                 ],
                 "columnDefs": [
                     {
-                        "targets": [1,5],
+                        "targets": [1, 5],
                         "visible": false,
                         "searchable": true,
                     },
@@ -330,11 +364,23 @@
                         window.open(response.link, '_blank');
                         /*setTimeout(function () {
                             $.ajax({
-                                url: "{% url 'deletedownloadAssignmentAnswers' %}",
+                                url: "
+
+
+
+
+
+                        {% url 'deletedownloadAssignmentAnswers' %}",
                                 type: 'GET',
                                 data: {
                                     'question_id': q_id,
-                                    'assignment_id': '{{ Assignment.pk }}',
+                                    'assignment_id': '
+
+
+
+
+
+                        {{ Assignment.pk }}',
                                 },
                                 success: function (data) {
                                     console.log(data)
