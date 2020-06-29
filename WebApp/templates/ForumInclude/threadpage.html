@@ -202,7 +202,11 @@
 
                                                 </div>
                                                 <div class="thread_date">
-                                                    <span class="pull-right">{{ post.pub_date | naturaltime }}</span>
+                                                    {% if thread.pub_date|hours_ago:24 %}
+                                                        <span class="dateconFullMonth pull-right">{{ thread.pub_date|date:"d M, Y h:i A" }}</span>
+                                                    {% else %}
+                                                        <span class="pull-right">{{ post.pub_date | naturaltime }}</span>
+                                                    {% endif %}
                                                 </div>
                                                 <div class="reply-content-detail">
 
