@@ -26,7 +26,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
@@ -585,15 +585,16 @@ def ImportCsvFile(request, *args, **kwargs):
                     teacher = df.iloc[i]['(*)Teacher(0/1)']
 
                     # Validation
-                    if MemberInfo.objects.filter(username__iexact=username).exists():
-                        previous_uname.append(username)
-                        continue
                     if not username:
                         error = "Username is required"
                         raise Exception
                     if len(username) >= 150:
                         error = "Username can't be more than 150 characters"
                         raise Exception
+                    username = str(username)
+                    if MemberInfo.objects.filter(username__iexact=username).exists():
+                        previous_uname.append(username)
+                        continue
 
                     if len(member_id) >= 150:
                         error = "Member ID can't be more than 150 characters"
@@ -608,6 +609,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     if not gender:
                         error = "Gender is required"
                         raise Exception
+                    gender = str(gender)
                     gender = gender.upper()
                     if not gender in ['M','F']:
                         error = "Gender must be either m or f for male and female respectively"
@@ -729,6 +731,7 @@ def ImportCourse(request, *args, **kwargs):
                     if not course_name:
                         error = "Course Name is required"
                         raise Exception
+                    course_name = str(course_name)
                     if len(course_name) > 240:
                         error = "Course Name can't be greater then 240 characters"
                         raise Exception
@@ -739,6 +742,7 @@ def ImportCourse(request, *args, **kwargs):
                     if not course_provider:
                         error = "Course Provider is required"
                         raise Exception
+                    course_provider = str(course_provider)
                     if len(course_provider) > 250:
                         error = "Course Provider can't be greater then 250 characters"
                         raise Exception
@@ -809,9 +813,14 @@ def ImportSession(request, *args, **kwargs):
                     courses = df.iloc[i]['(*)Course Allocation Name']
 
                     # Session Name validation
+                    if not session_name:
+                        error = "Session Name is required"
+                        raise Exception
+                    session_name = str(session_name)
                     if not SessionInfo.objects.filter(Session_Name__iexact=session_name).exists():
+                        url = str(reverse('sessioninfo_list'))
                         error = "Session Name <strong>" + session_name + """</strong> does not exists.
-                                            Please register it from <a href=''>here</a>"""
+                                            Please register it from <a href='"""+ url +"""'>here</a>"""
                         raise Exception
                     session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name)
 
@@ -839,9 +848,14 @@ def ImportSession(request, *args, **kwargs):
                         raise Exception
 
                     # Student Group Name validation
+                    if not student_group:
+                        error = "Student Group Name is required"
+                        raise Exception
+                    student_group = str(student_group)
                     if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group).exists():
+                        url = str(reverse('groupmapping_list'))
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
-                                            Please register it from <a href=''>here</a>"""
+                                            Please register it from <a href='"""+ url +"""'>here</a>"""
                         raise Exception
                     student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
 
@@ -849,6 +863,7 @@ def ImportSession(request, *args, **kwargs):
                     if not courses:
                         error = "At least 1 course is required"
                         raise Exception
+                    courses = str(courses)
                     try:
                         courses = courses.split(',')
                     except:
@@ -868,8 +883,9 @@ def ImportSession(request, *args, **kwargs):
                     # Course Group validation and registration
                     for course in courses:
                         if not InningGroup.objects.filter(InningGroup_Name__iexact=course).exists():
+                            url = str(reverse('inninggroup_list'))
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
-                                                Please register it from <a href=''>here</a>"""
+                                                Please register it from <a href='"""+ url +"""'>here</a>"""
                             raise Exception
                         course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
                         obj.Course_Group.add(course_code)
@@ -1468,7 +1484,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
     
             for i in range(len(groups)):
                 try:
-                    group_name = groups[i]
+                    group_name = str(groups[i])
                     students = df[df['(*)Group Name'] == groups[i]].reset_index(drop=True)
 
                     if GroupMapping.objects.filter(GroupMapping_Name__iexact=group_name, Center_Code=request.user.Center_Code).exists():
@@ -1483,12 +1499,16 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                     saved_id.append(obj.id)
 
                     for j in range(len(students)):
-                        if MemberInfo.objects.filter(username=students['(*)Student Username'][j],
-                                                    Center_Code=center, Is_Student=True).exists():
-                            obj_student = MemberInfo.objects.get(username=students['(*)Student Username'][j])
+                        student = students['(*)Student Username'][j]
+                        if not student:
+                            error = "Student Username not present"
+                            raise Exception
+                        student = str(student)
+                        if MemberInfo.objects.filter(username=student, Center_Code=center, Is_Student=True).exists():
+                            obj_student = MemberInfo.objects.get(username=student)
                             obj.Students.add(obj_student)
                         else:
-                            error ="Student Username <b>{}</b> not found<br>".format(students['(*)Student Username'][j])
+                            error ="Student Username <b>{}</b> not found<br>".format(student)
                             raise Exception
 
                 except Exception as e:
