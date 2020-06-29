@@ -190,6 +190,8 @@ urlpatterns += (
          name='sessioninfo_create'),
     path('sessioninfo/<int:pk>/',
          views.SessionInfoDetailView.as_view(), name='sessioninfo_detail'),
+    path('sessioninfo/delete/<int:pk>/',
+         views.SessionInfoDeleteView, name='sessioninfo_delete'),
     path('sessioninfo/update/<int:pk>/',
          views.SessionInfoUpdateView.as_view(), name='sessioninfo_update'),
 )
@@ -209,6 +211,8 @@ urlpatterns += (
          views.InningInfoUpdateView.as_view(), name='inninginfo_update'),
     path('innninginfo/delete/<int:pk>/',
          views.InningInfoDeleteView, name='inninginfo_delete'),
+    path('inninginfo/csv_import', views.ImportSession, name='csv_import_inninginfo')
+         
 
 )
 

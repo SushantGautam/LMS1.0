@@ -540,6 +540,7 @@ class AssignAnswerInfo(models.Model):
     Updated_DateTime = DateTimeField(auto_now=True)
     Assignment_Answer = TextField(null=True, blank=True)
     Assignment_File = FileField(upload_to=assignment_upload, null=True, blank=True, max_length=255)
+    Assignment_Feedback = TextField(default='', blank=True, null=True)
 
     # Relationship Fields
     Question_Code = ForeignKey(
@@ -591,6 +592,9 @@ class SessionInfo(models.Model):
     def get_update_url(self):
         return reverse('sessioninfo_update', args=(self.pk,))
 
+    def get_delete_url(self):
+        return reverse('sessioninfo_delete', args=(self.pk,))
+
     def __str__(self):
         return self.Session_Name
 
@@ -633,7 +637,7 @@ class GroupMapping(models.Model):
 
 
 class InningGroup(models.Model):
-    # InningGroup_Name = CharField(max_length=200)
+    InningGroup_Name = CharField(max_length=200, null=True)
     Use_Flag = BooleanField(default=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)

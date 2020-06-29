@@ -138,7 +138,12 @@
                                     {% endif %}" alt="..." class="img-circle width-20"/>
                                 {{ thread.user.username }}</a>
                             | <i class="fa fa-clock-o fa-fw"></i>
-                            <span class="dateconFullMonth">{{ thread.pub_date|date:"d M, Y h:i A" }}</span> |
+                            {% if thread.pub_date|hours_ago:24 %}
+                                <span class="dateconFullMonth">{{ thread.pub_date|date:"d M, Y h:i A" }}</span>
+                            {% else %}
+                                {{ thread.pub_date|timesince }}
+                            {% endif %}
+                            |
                             &nbsp;
                             |<i class="fa fa-clock-o fa-fw"></i> Last Replied:
                             {% if thread.last_replied|hours_ago:24 %}

@@ -1917,7 +1917,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
             link = 'http://' + link
         }
         video_link = getEmbedVideo(link)
-        div.find('p, iframe, video, .progress').remove();
+        div.find('p, iframe, video, .progress, .file-upload-icon').remove();
         div.append(video_link);
 
     });
@@ -1990,7 +1990,7 @@ function VideoFunction(top = null, left = null, link = null, height = null, widt
                             var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A4HAcLOLOO68!${options.rid}"
                              frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
                             div.find('#loadingDiv').remove();
-                            div.find('p').remove();
+                            div.find('p, .file-upload-icon').remove();
                             // div.find('.progress').remove();
                             div.append(html);
                         },
@@ -3623,6 +3623,75 @@ function setThumbnailscallback(data, dive) {
 $(document).ready(function () {
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
+
+        $("#sortable-slides").sortable({
+            // axis: "y",   // only moves in top/bottom direction
+            cursor: "move", // icon to display while sorting
+            start: function (event, ui) {
+                $(ui.item).css("opacity", "0.6");
+            },
+            stop: function (event, ui) {
+                $(ui.item).css("opacity", "1.0");
+            },
+            change: function (event, ui) {
+                ui.placeholder.css({visibility: 'visible', border: '1px dashed orange'});
+            },
+            update: function (event, ui) {  //  After Sort
+                //  Empty array to store the sorted order of slides.
+                //  Example:
+                //  Before sorting. Pages: 1, 2, 3, 4
+                // After Sort. Pages: 3, 1, 2, 4
+                let new_keys = [];
+                displaypagenumbers();   //  change pagenumbers after sorting ends
+                $.each($(this).find('li'), function (index) {
+                    new_value = parseInt(index) + 1;    //  Array index starts from 0. Page number from 1 so increment +1
+                    new_keys.push($(this)[0].value);    //  Push sorted page numbers in array in order.
+                    //  Change value of slides.
+                    $(this).attr({
+                        "value": new_value,
+                        "onclick": "changePage('tab" + new_value + "')"
+                    });
+                    $(this).find('.clone-page-btn').attr({
+                        "value": new_value,
+                    });
+                    $(this).find('.delete-page-btn').attr({
+                        "value": new_value,
+                    });
+                });
+
+                temp = data.pages;  //  Store page data in temporary variable
+                data.pages = {};    //  Empty all data
+
+                //  change all keys of data in sorted order
+                for (let i = 0; i < new_keys.length; i++) {    //  Loop through the number of pages
+                    /*
+                        Example:
+                        new_keys = [3, 1, 2, 4]
+                        data['pages'][1] = temp[3]
+                        Stores content of page 3 in page 1.
+                     */
+                    data.pages[i + 1] = temp[new_keys[i]]
+                }
+
+                //  Change currentPage variable.
+                window.currentPage = $('.pagenumber.current')[0].value.toString()
+            }
+        });
+        $("#sortable-slides").disableSelection();
     })
+
+    //  Check If the clicked element is slide 'li'.
+    // If clicked target is delete/clone button, then do not change slides.
+    $('.tabs-to-click li[onclick]').each(function () {
+        $(this).data('onclick', this.onclick);
+
+        this.onclick = function (event) {
+            if (!event.target.classList.contains('pagenumber')) {
+                return false;
+            }
+
+            $(this).data('onclick').call(this, event || window.event);
+        };
+    });
 });
 

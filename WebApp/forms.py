@@ -288,6 +288,21 @@ class SessionInfoForm(forms.ModelForm):
         model = SessionInfo
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(SessionInfoForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('Session_Name')
+        session = SessionInfo.objects.filter(Session_Name=name, Center_Code=self.request.user.Center_Code)
+        if session.exists():
+            if self.instance.id:
+                if session.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if session.get(pk=self.instance.id).Session_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Session Name already Exists')
+
 
 class GroupMappingForm(forms.ModelForm):
     Students = forms.ModelMultipleChoiceField(queryset=None, required=True,
@@ -342,8 +357,22 @@ class InningGroupForm(forms.ModelForm):
                                                                          Center_Code=self.request.user.Center_Code)
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
                                                                         Use_Flag=True)
+
+        self.fields['InningGroup_Name'].label = "Course Allocation Name"
+        self.fields['Course_Code'].label = "Course Code"
         if '/update' in self.request.path:
             del self.fields['Register_Agent']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('InningGroup_Name')
+        inninggroupname = InningGroup.objects.filter(InningGroup_Name=name, Center_Code=self.request.user.Center_Code)
+        if inninggroupname.exists():
+            if self.instance.id:
+                if inninggroupname.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if inninggroupname.get(pk=self.instance.id).Course_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Course Allocation Name already Exists')
 
 
 class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):

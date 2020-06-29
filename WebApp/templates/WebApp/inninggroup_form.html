@@ -48,7 +48,24 @@
 
         <form method="post" id="FormID">
             {% csrf_token %}
-            <div class="m-2 alert alert-danger" style="width: max-content;">{{ form.errors }}</div>
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="m-2 alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="m-2 alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                {{ form.InningGroup_Name|as_crispy_field }}
+            </div>
 
             <div class="col-md-12 col-sm-12 col-xs-12 ">
                 {{ form.Course_Code|as_crispy_field }}

@@ -549,15 +549,17 @@ class MyAssignmentsListView(ListView):
 
 
 def submitStudentscore(request, Answer_id, score):
-    if request.method == "GET":
+    if request.method == "POST":
 
         answerInfo = AssignAnswerInfo.objects.get(pk=Answer_id)
-        if score > answerInfo.Question_Code.Question_Score:
+        score = request.POST.get('stu_score')
+        if float(score) > answerInfo.Question_Code.Question_Score:
             return HttpResponse("failure", status=500)
         answerInfo.Assignment_Score = score
+        if request.POST.get('assignment_feedback'):
+            answerInfo.Assignment_Feedback = request.POST.get('assignment_feedback')
         answerInfo.save()
         return HttpResponse("success")
-
     else:
         return HttpResponse("You are not allowed to do this")
 

@@ -723,13 +723,19 @@ FORMS = [("form1", QuizForm1),
 TEMPLATES = {"form1": "wizard/step1.html",
              "form2": "wizard/step2.html",
              "form3": "wizard/step3.html"}
+TEACHER_TEMPLATES = {"form1": "teacher_quiz/step1.html",
+                     "form2": "teacher_quiz/step2.html",
+                     "form3": "teacher_quiz/step3.html"}
 
 
-class QuizCreateWizard(AdminAuthMxnCls, SessionWizardView):
+class QuizCreateWizard(SessionWizardView):
     form_list = FORMS
 
     def get_template_names(self):
-        return [TEMPLATES[self.steps.current]]
+        if '/teachers' in self.request.path:
+            return [TEACHER_TEMPLATES[self.steps.current]]
+        else:
+            return [TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):
         form_dict = self.get_all_cleaned_data()
@@ -747,7 +753,10 @@ class QuizCreateWizard(AdminAuthMxnCls, SessionWizardView):
         my_quiz.mcquestion.add(*mcq)
         my_quiz.tfquestion.add(*tfq)
         my_quiz.saquestion.add(*saq)
-        return redirect('quiz_list')
+        if self.request.user.Is_Teacher and not self.request.user.Is_CenterAdmin:
+            return redirect('teacher_quiz_list')
+        else:
+            return redirect('quiz_list')
 
     def get_form(self, step=None, data=None, files=None):
         form = super().get_form(step, data, files)
