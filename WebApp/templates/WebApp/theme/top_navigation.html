@@ -2,14 +2,15 @@
 {% load i18n %}
 {% load static %}
 <div class="nav_menu">
-    <nav> 
+    <nav>
         <div class="nav toggle">
             <a id="menu_toggle"><i class="fa fa-bars"></i></a>
         </div>
 
         <span class="centerNameTopNav">
             {% if user.Center_Code %}
-            Center : <b>{{ user.Center_Code }}</b>
+       <img style="max-height: 40px" src="{{ user.Center_Code.Center_Logo }}"  alt=""/>
+                Center : <b>{{ user.Center_Code }}</b>
             {% endif %}
         </span>
 
