@@ -1,12 +1,13 @@
 from django import forms
 from django.contrib import admin
-from import_export.admin import ImportExportModelAdmin
+from django_summernote.admin import SummernoteModelAdmin
+from import_export.admin import ImportExportModelAdmin, ExportMixin
 from import_export.resources import ModelResource
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
     InningManager, Attendance, Notice, NoticeView
-from django_summernote.admin import SummernoteModelAdmin
+
 
 class CenterInfoAdminForm(forms.ModelForm):
     class Meta:
@@ -83,17 +84,33 @@ class CourseInfoAdmin(admin.ModelAdmin):
 admin.site.register(CourseInfo, CourseInfoAdmin)
 
 
+class ChapterInfoResource(ModelResource):
+    class Meta:
+        model = ChapterInfo
+
+    def dehydrate_Register_DateTime(self, chapter):
+        return chapter.Register_DateTime.strftime("%Y-%m-%d")
+
+    def dehydrate_Updated_DateTime(self, chapter):
+        return chapter.Register_DateTime.strftime("%Y-%m-%d")
+
+    def dehydrate_Course_Code(self, chapter):
+        return chapter.Course_Code.Course_Name
+
+
 class ChapterInfoAdminForm(forms.ModelForm):
     class Meta:
         model = ChapterInfo
         fields = '__all__'
 
 
-class ChapterInfoAdmin(admin.ModelAdmin):
+class ChapterInfoAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = ChapterInfoResource
     form = ChapterInfoAdminForm
     list_display = ['id', 'Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'Use_Flag', 'mustreadtime',
                     'Register_DateTime', 'Updated_DateTime', 'Register_Agent', 'Course_Code']
     search_fields = ('Chapter_Name',)
+    list_filter = ('Course_Code',)
 
 
 admin.site.register(ChapterInfo, ChapterInfoAdmin)
