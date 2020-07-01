@@ -652,6 +652,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     obj.Is_Teacher = teacher
                     obj.Is_Student = student
                     obj.Center_Code = request.user.Center_Code
+                    obj.Member_Gender = gender
                     obj.set_password('00000')
                     obj.save()
 
