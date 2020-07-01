@@ -432,6 +432,19 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
     model = AssignAnswerInfo
     template_name = 'teacher_module/assignment_answers.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if '/teachers' in self.request.path:
+            assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
+                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
+                                                    Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct().count()
+            if inning_info == 0:
+                messages.add_message(self.request, messages.ERROR, 'Access Denied. Please Contact Admin.')
+                return redirect('teacher_home')
+            else:
+                return super(AssignmentAnswers, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         session_list = []
@@ -450,6 +463,7 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
                 innings = get_object_or_404(inning_info, pk=inningpk)
             else:
                 innings = None
+
         questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
                                                           )
         context['questions'] = questions
@@ -529,8 +543,8 @@ class MyAssignmentsListView(ListView):
         context['Assignment'] = []
         context['expiredAssignment'] = []
         context['activeAssignment'] = []
-        for groups in context['Group']:
-            course.append(groups.Course_Code.id)
+        for c in self.request.user.get_teacher_courses()['courses']:
+            course.append(c.id)
         Assignment = []
         expiredAssignment = []
         activeAssignment = []
