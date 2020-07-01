@@ -1,6 +1,7 @@
 # This file contains template tags for template-model relation.
 
 from django import template
+from django.db.models import Sum
 
 from WebApp.models import MemberInfo
 
@@ -62,3 +63,16 @@ def getUser(userdata):
     if MemberInfo.objects.filter(username=userdata).exists():
         return MemberInfo.objects.get(username=userdata)
     return userdata
+
+
+@register.simple_tag
+def getAssignmentsScore(assignmentObj, userObj):
+    questions, answers = assignmentObj.get_QuestionAndAnswer(userObj)
+    total_score = questions.aggregate(Question_Score__sum=Sum('Question_Score'))['Question_Score__sum']
+    total_score_obtained = answers.aggregate(Assignment_Score__sum=Sum('Assignment_Score'))['Assignment_Score__sum']
+    return {
+        'questions': questions,
+        'answers': answers,
+        'total_score': total_score,
+        'total_score_obtained': total_score_obtained if total_score_obtained else 0,
+    }
