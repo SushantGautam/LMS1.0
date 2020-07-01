@@ -166,3 +166,8 @@ urlpatterns += (
     path('studentChapterLogUpdateAjax/<int:chapter>/',
          views.StudentChapterLogUpdateAjax, name='studentChapterLogUpdateAjax'),
 )
+
+urlpatterns += (
+    path('assignmentdetails/<int:assignmentpk>/',
+         views.getStudentAssignmentDetail, name='student_assignment_detail'),
+)

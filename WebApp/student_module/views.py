@@ -1364,3 +1364,18 @@ def progress(user, coursepk):
         'student_data': student_data,
         'avgCourseProgress': totalCourseProgress / len(chapters_list) if len(chapters_list) > 0 else 0
     }
+
+def getStudentAssignmentDetail(request, assignmentpk):
+    assgObj = AssignmentInfo.objects.get(pk=assignmentpk)
+    questions, answers = assgObj.get_QuestionAndAnswer(request.user)
+    assignmentDetails = []
+    for answer in answers:
+        assignmentDetails.append({
+            'question_title': answer.Question_Code.Question_Title,
+            'question_score': answer.Question_Code.Question_Score,
+            'Assignment_Answer': answer.Assignment_Answer,
+            'Assignment_File': answer.Assignment_File.url,
+            'Assignment_Score': answer.Assignment_Score,
+            'Assignment_Feedback': answer.Assignment_Feedback if answer.Assignment_Feedback is not '' else '----',
+        })
+    return JsonResponse({'assignmentDetails': assignmentDetails, 'questions_count': questions.count()})
