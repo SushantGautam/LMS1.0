@@ -3532,8 +3532,9 @@ def progress_download(request):
             for chapter in chapter_list:
                 chapter_no = chapter.Chapter_No
                 chapter_name = chapter.Chapter_Name
-                running_time = chapter.mustreadtime / 60
-                running_time = str(int(running_time)) + ' min.'
+                running_time = '-'
+                if chapter.mustreadtime:
+                    running_time = str(int(chapter.mustreadtime / 60)) + ' min.'
                 for student in student_group:
                     student_id = student.username
                     student_name = student.first_name + " " + student.last_name
