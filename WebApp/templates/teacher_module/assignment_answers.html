@@ -233,7 +233,8 @@
             e.preventDefault()
             answer_pk = $(this).closest('td').attr('data-answer_id')
             stu_score = $(this).closest('td').find('input').val()
-            if (parseInt(stu_score) > parseInt($(this).closest('td').attr('data-assignment_max_score'))) {
+            if (parseInt(stu_score) > parseInt($(this).closest('td').attr('data-assignment_max_score')) || parseInt(stu_score) < 0) {
+                alert('Score must be in between 0 and ' + parseInt($(this).closest('td').attr('data-assignment_max_score')))
                 return false
             }
             submitscoreajax(fromtd = true, answer_pk = answer_pk, stu_score = stu_score)
@@ -248,6 +249,10 @@
             if (!fromtd) {
                 var answer_pk = $('#answerpk').val();
                 var stu_score = $('#studentScoresubmit').val() ? $('#studentScoresubmit').val() : 0;
+                if (parseInt(stu_score) < 0) {
+                    alert('Score cannot be less than 0');
+                    return false
+                }
                 var feedback = $('#assignment_feedback').val();
             }
             $.ajax({
@@ -370,11 +375,13 @@
 
 
 
+
                         {% url 'deletedownloadAssignmentAnswers' %}",
                                 type: 'GET',
                                 data: {
                                     'question_id': q_id,
                                     'assignment_id': '
+
 
 
 
