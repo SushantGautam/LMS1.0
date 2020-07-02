@@ -588,20 +588,23 @@ def ImportCsvFile(request, *args, **kwargs):
                     if not username:
                         error = "Username is required"
                         raise Exception
+                    username = str(username)
                     if len(username) >= 150:
                         error = "Username can't be more than 150 characters"
                         raise Exception
-                    username = str(username)
                     if MemberInfo.objects.filter(username__iexact=username).exists():
                         previous_uname.append(username)
                         continue
 
+                    member_id = str(member_id)
                     if len(member_id) >= 150:
                         error = "Member ID can't be more than 150 characters"
                         raise Exception
+                    first_name = str(first_name)
                     if len(first_name) >= 50:
                         error = "First name can't be more than 50 characters"
                         raise Exception
+                    last_name = str(last_name)
                     if len(last_name) >= 50:
                         error = "Last name can't be more than 50 characters"
                         raise Exception
@@ -689,7 +692,7 @@ def ImportCsvFile(request, *args, **kwargs):
                         MemberInfo.objects.filter(id=j).delete()
                     msg = error + ". Can't Upload data, Problem in " + str(
                         i + 1) + "th row of data while uploading. <br><br> " + "<br>".join(
-                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>"
+                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         else:
             msg = "The uploaded excel has no data to register"
