@@ -11,19 +11,92 @@
     <meta name="author" content="">
     <title>LMS | Register</title>
 
-<<<<<<< HEAD
-    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-    <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}"/>
-    <link rel="stylesheet" href="{% static 'css/floating-labels.css' %}"/>
-    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
-=======
-    <link href="{% static 'css/vendor/all.css' %}" rel="stylesheet">
-    <link href="{% static 'css/app/app.css' %}" rel="stylesheet">
->>>>>>> NewUI
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="{% static 'css/app.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/bundle.css' %}" type="text/css">
 </head>
 
-<body>
-    <div class="container">
+<body class="form-membership" style="background: url(../../../static/media/image/LMS_background.jpg)no-repeat center center fixed;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;">
+    <div class="form-wrapper">
+        <!-- logo -->
+        <div id="logo">
+            <img class="logo" src="../../../static/media/image/logo/logo.png" alt="logo">
+        </div>
+        <!-- ./ logo -->
+        <h5>Create account</h5>
+        <!-- form -->
+        <form method="POST" id="registration-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Username" name="username" id="id_username" required
+                    autofocus>
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="Email" name="email" id="id_email" required>
+            </div>
+            <div class="form-group">
+                <label for="id_Center_Code" class="float-left">Center Code</label>
+                <select class="form-control" id="id_Center_Code" name="Center_Code">
+                    {% for x, y in form.fields.Center_Code.choices %}
+                    <option value="{{ x }}" {% if form.fields.Center_Code.value == x %} selected{% endif %}>{{ y }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="id_Center_Code" class="float-left">Gender</label>
+                <select class="form-control" id="id_Member_Gender" name="Member_Gender">
+                    {% for x, y in form.fields.Member_Gender.choices %}
+                    <option value="{{ x }}" {% if form.fields.Member_Gender.value == x %} selected{% endif %}>{{ y }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <label for="member_type">Member Type</label>
+            <div class="form-group">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="member_type" id="id_Is_Student"
+                        value="Is_Student">
+                    <label class="form-check-label" for="id_Is_Student">Student</label>
+                </div>
+                <div class="form-check form-check-inline ml-5">
+                    <input class="form-check-input" type="radio" name="member_type" id="id_Is_Teacher"
+                        value="Is_Teacher">
+                    <label class="form-check-label" for="id_Is_Teacher">Teacher</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password" id="id_password1" name="password1"
+                    required>
+                {% if form.non_field_errors %}
+                <ul class='form-errors'>
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <small id="password-error-message" class="input-error text-danger"></small>
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Confirm Password" id="id_password2"
+                    name="password2" required>
+            </div>
+            <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False">
+            <button class="btn btn-primary btn-block">Register</button>
+            <hr>
+            <p class="text-muted">Already have an account?</p>
+            <a href="{% url 'login' %}" class="btn btn-outline-light">Sign In</a>
+        </form>
+        <!-- ./ form -->
+
+
+    </div>
+    <!-- <div class="container">
         <div class="page-section">
             <div class="row">
                 <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
@@ -114,36 +187,10 @@
             </div>
 
         </div>
-    </div>
+    </div> -->
 
-    <footer class="footer">
-        <b> Copyright (C) {% now "Y" %} NSDeVil ALL RIGHTS RESERVED </b>
-    </footer>
-    <script>
-        var colors = {
-            "danger-color": "#e74c3c",
-            "success-color": "#81b53e",
-            "warning-color": "#f0ad4e",
-            "inverse-color": "#2c3e50",
-            "info-color": "#2d7cb5",
-            "default-color": "#6e7882",
-            "default-light-color": "#cfd9db",
-            "purple-color": "#9D8AC7",
-            "mustard-color": "#d4d171",
-            "lightred-color": "#e15258",
-            "body-bg": "#f6f6f6"
-        };
-        var config = {
-            theme: "html",
-            skins: {
-                "default": {
-                    "primary-color": "#42a5f5"
-                }
-            }
-        };
-    </script>
-    <script src="{% static 'js/vendor/all.js' %}"></script>
-    <script src="{% static 'js/app/all.js' %}"></script>
+    <script src="{% static 'vendors/bundle.js' %}"></script>
+    <script src="{% static 'js/app.min.js' %}"></script>
     <script>
         $(document).ready(function () {
             $('#id_Center_Code option:first').attr("disabled", "true")
@@ -230,9 +277,6 @@
             })
         });
     </script>
-
-
-    <!-- <script src="{% static 'js/app/app.js' %}"></script> -->
 </body>
 
 </html>
