@@ -1374,7 +1374,7 @@ def getStudentAssignmentDetail(request, assignmentpk):
             'question_title': answer.Question_Code.Question_Title,
             'question_score': answer.Question_Code.Question_Score,
             'Assignment_Answer': answer.Assignment_Answer,
-            'Assignment_File': answer.Assignment_File.url,
+            'Assignment_File': answer.Assignment_File.url if answer.Assignment_File else '',
             'Assignment_Score': answer.Assignment_Score,
             'Assignment_Feedback': answer.Assignment_Feedback if answer.Assignment_Feedback is not '' else '----',
         })

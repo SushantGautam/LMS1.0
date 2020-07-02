@@ -424,16 +424,21 @@ class QuestionInfoForm(forms.ModelForm):
     Question_Description = forms.CharField(widget=SummernoteWidget(attrs=
                             {'summernote': 
                             {'width': '100%', 'height': '480px',
-                            'toolbar': [["style", ["style"]], 
-                            ["font", ["bold", "italic", "underline"]],
-                            ["para", ["ul", "ol"]],
-                            ["table", ["table"]], 
-                            ["insert", ["link", "picture"]], 
-                            ]}
-                            }), required=False)
+                             'toolbar': [["style", ["style"]],
+                                         ["font", ["bold", "italic", "underline"]],
+                                         ["para", ["ul", "ol"]],
+                                         ["table", ["table"]],
+                                         ["insert", ["link", "picture"]],
+                                         ]}
+                             }), required=False)
+
     class Meta:
         model = AssignmentQuestionInfo
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(QuestionInfoForm, self).__init__(*args, **kwargs)
+        self.fields['Question_Media_File'].label = "Question_Media_File (Max Size: 2 MB)"
 
 
 class AssignAssignmentInfoForm(forms.ModelForm):
