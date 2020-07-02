@@ -362,3 +362,8 @@ urlpatterns += (
     path('meet/<int:userid>/<slug:meetcode>/',
          views.MeetPublic, name='public-meet'),
 )
+
+urlpatterns += (
+     path('course/progress/download',
+     views.progress_download, name='course_progress_download'),
+)
