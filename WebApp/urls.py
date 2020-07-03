@@ -364,6 +364,6 @@ urlpatterns += (
 )
 
 urlpatterns += (
-     path('course/progress/download',
+     path('course/progress/download/<int:teacher_pk>',
      views.progress_download, name='course_progress_download'),
 )

@@ -7,6 +7,7 @@ import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 from json import JSONDecodeError
 from io import BytesIO
+# from pathlib import Path
 
 import cloudinary
 import cloudinary.api
@@ -3503,25 +3504,26 @@ def MeetPublic(request, userid, meetcode):
     return render(request, 'WebApp/meet-public.html',
                   {"meetcode": meetcode, "userobj": MemberInfo.objects.get(pk=userid)})
 
-def progress_download(request):
-    center = request.user.Center_Code
-    datetime_now = timezone.now().replace(microsecond=0)
-    sessions = InningInfo.objects.filter(Center_Code=center,
-        Use_Flag=True,
-        Start_Date__lte=datetime_now,
-        End_Date__gte=datetime_now)
-    session_name = list()
-    course_name = ''
+def progress_download(request, teacher_pk):
+    # center = request.user.Center_Code
+     # datetime_now = timezone.now().replace(microsecond=0)
+    # sessions = InningInfo.objects.filter(Center_Code=center, Use_Flag=True)
+    
+    teacher = MemberInfo.objects.get(pk=int(teacher_pk))
+    teacher_courses = InningGroup.objects.filter(Teacher_Code=teacher)
+    sessions = InningInfo.objects.filter(Course_Group__in=teacher_courses)
 
-    # file_path = os.path.join(settings.STATIC_ROOT, "초안 0702.xlsx")
-    # df = pd.read_excel(file_path, sheet_name = "학생 학습 현황")
+    # file_path = os.path.join(settings.STATIC_ROOT, "download")
+    # Path(file_path).mkdir(parents=True, exist_ok=True)
+    # file_path = os.path.join(file_path,"all_course_progress.xlsx")
+    # # df = pd.read_excel(file_path, sheet_name = "학생 학습 현황")
     df = pd.DataFrame(columns=['Course','Chapter No.','Chapter','Teacher',
                         'Running time','Student ID','Full name','Studied time','Attandance'])
 
     for session in sessions:
-        session_name.append(session.Inning_Name.Session_Name)
-        teacher_courses = session.Course_Group.all()
+        session_teacher_courses = session.Course_Group.all()
         student_group = session.Groups.Students.all()
+        teacher_courses = teacher_courses & session_teacher_courses
         for teacher_course in teacher_courses:
             course_name = teacher_course.Course_Code.Course_Name
             teacher_list = list(teacher_course.Teacher_Code.all().values_list('username',flat=True))
@@ -3532,8 +3534,9 @@ def progress_download(request):
             for chapter in chapter_list:
                 chapter_no = chapter.Chapter_No
                 chapter_name = chapter.Chapter_Name
-                running_time = chapter.mustreadtime / 60
-                running_time = str(int(running_time)) + ' min.'
+                running_time = '-'
+                if chapter.mustreadtime:
+                    running_time = str(int(chapter.mustreadtime / 60)) + ' min.'
                 for student in student_group:
                     student_id = student.username
                     student_name = student.first_name + " " + student.last_name
@@ -3547,12 +3550,14 @@ def progress_download(request):
                                 'Full name':student_name, 'Studied time':study_time, 'Attandance':progress}
                     #append row to the dataframe
                     df = df.append(new_row, ignore_index=True)
+    # df.to_excel(file_path)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
     with BytesIO() as b:
         # Use the StringIO object as the filehandle.
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
         df.index += 1
         df.index.name = 'S.N.'
-        df.to_excel(writer, sheet_name="학생 학습 현황")
+        df.to_excel(writer, sheet_name=str(teacher.username))
         writer.save()
         return HttpResponse(b.getvalue(), content_type='application/vnd.ms-excel')                
 
