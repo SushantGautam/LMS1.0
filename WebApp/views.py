@@ -3521,7 +3521,9 @@ def progress_download(request, teacher_pk):
                         'Running time','Student ID','Full name','Studied time','Attandance'])
 
     for session in sessions:
+        session_teacher_courses = session.Course_Group.all()
         student_group = session.Groups.Students.all()
+        teacher_courses = teacher_courses & session_teacher_courses
         for teacher_course in teacher_courses:
             course_name = teacher_course.Course_Code.Course_Name
             teacher_list = list(teacher_course.Teacher_Code.all().values_list('username',flat=True))
