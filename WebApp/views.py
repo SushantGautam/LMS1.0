@@ -6,7 +6,8 @@ import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 from json import JSONDecodeError
-from io import BytesIO
+# from io import BytesIO
+from pathlib import Path
 
 import cloudinary
 import cloudinary.api
@@ -3513,7 +3514,9 @@ def progress_download(request):
     session_name = list()
     course_name = ''
 
-    # file_path = os.path.join(settings.STATIC_ROOT, "초안 0702.xlsx")
+    file_path = os.path.join(settings.STATIC_ROOT, "download")
+    Path(file_path).mkdir(parents=True, exist_ok=True)
+    file_path = os.path.join(file_path,"all_course_progress.xlsx")
     # df = pd.read_excel(file_path, sheet_name = "학생 학습 현황")
     df = pd.DataFrame(columns=['Course','Chapter No.','Chapter','Teacher',
                         'Running time','Student ID','Full name','Studied time','Attandance'])
@@ -3548,14 +3551,16 @@ def progress_download(request):
                                 'Full name':student_name, 'Studied time':study_time, 'Attandance':progress}
                     #append row to the dataframe
                     df = df.append(new_row, ignore_index=True)
-    with BytesIO() as b:
-        # Use the StringIO object as the filehandle.
-        writer = pd.ExcelWriter(b, engine='xlsxwriter')
-        df.index += 1
-        df.index.name = 'S.N.'
-        df.to_excel(writer, sheet_name="학생 학습 현황")
-        writer.save()
-        return HttpResponse(b.getvalue(), content_type='application/vnd.ms-excel')                
+    df.to_excel(file_path)
+    return HttpResponse("<h4>Student All Course Progress download</h4>")
+    # with BytesIO() as b:
+    #     # Use the StringIO object as the filehandle.
+    #     writer = pd.ExcelWriter(b, engine='xlsxwriter')
+    #     df.index += 1
+    #     df.index.name = 'S.N.'
+    #     df.to_excel(writer, sheet_name="학생 학습 현황")
+    #     writer.save()
+    #     return HttpResponse(b.getvalue(), content_type='application/vnd.ms-excel')                
 
 def get_study_time(course_id, chapter, student):
     jsondata = ''
