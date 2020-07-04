@@ -5,9 +5,8 @@ import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
-from json import JSONDecodeError
 from io import BytesIO
-# from pathlib import Path
+from json import JSONDecodeError
 
 import cloudinary
 import cloudinary.api
@@ -56,6 +55,9 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
     InningManager, Notice, NoticeView
+
+
+# from pathlib import Path
 
 
 class Changestate(View):
@@ -972,8 +974,17 @@ class CourseInfoListView(ListView):
     model = CourseInfo
     paginate_by = 6
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.GET.get('paginate_by'):
+            self.paginate_by = self.request.GET.get('paginate_by')
+        return super(CourseInfoListView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        if '/inactive/' in self.request.path:
+            qs = qs.filter(Use_Flag=False)
+        if '/active/' in self.request.path:
+            qs = qs.filter(Use_Flag=True)
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
