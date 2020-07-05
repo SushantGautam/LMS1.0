@@ -40,7 +40,7 @@ urlpatterns += (
     # urls for CourseInfo
     #     path('courseinfo/', views.CourseInfoListView.as_view(),
     #          name='student_courseinfo_list'),
-    path('courseinfo/mycourses', views.MyCoursesListView.as_view(),
+    path('courseinfo/mycourses/', views.MyCoursesListView.as_view(),
          name='student_mycourses_list'),
     path('courseinfo/detail/forum/<int:course>',
          views.CourseForum, name='Student_Course_Forum'),

@@ -49,26 +49,33 @@ aria-hidden="true">
 <!-- End of model -->
 
 <div class="courseInfoListClass">
-  <h2 class="tableHeader">List of Courses
-    
-  </h2>
-  
-  <div class="col-md-12 text-right">
-    <div class="row">
-      <form action="">
-        <span> <b>Show</b> </span>  <label> <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"><option value="6">6</option><option value="12">12</option><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36">36</option></select> </label> <span> <b>Entries</b> </span>
-        </form>
-    </div>
-   
-    
-   
-  
-   
-  </div>
-  <hr class="header_hr">
+    <h2 class="tableHeader">List of Courses
 
- 
-  <div class="col-md-12 col-sm-12 col-xs-12">
+    </h2>
+
+    <div class="col-md-12 text-right">
+        <div class="row">
+            <span> <b>Show</b> </span>
+            <label>
+                <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                        id="paginate_courses">
+                    <option value="6">6</option>
+                    <option value="12">12</option>
+                    <option value="18">18</option>
+                    <option value="24">24</option>
+                    <option value="30">30</option>
+                    <option value="36">36</option>
+                </select>
+            </label>
+            <span> <b>Entries</b> </span>
+        </div>
+
+
+    </div>
+    <hr class="header_hr">
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
 
    
@@ -103,28 +110,39 @@ aria-hidden="true">
         <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
           class="form-control" />
       </div>
-      <button class="btn btn-default" type="submit">
-        <i class="fa fa-search"></i>&nbsp;Search
-      </button>
+        <button class="btn btn-default" type="submit">
+            <i class="fa fa-search"></i>&nbsp;Search
+        </button>
     </form>
   </div>
   {% endif %}
 
-  {% if 'students' not in request.path %}
-  <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
-    <button class="text-right btn btn-default btn-sm" style="float:right" >View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>
-      courses</button>
-    
-    <a class="btn btn-success btn-sm" style="float: right;" href="
+        {% if 'students' not in request.path %}
+            <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
+                {% if '/active' in request.path %}
+                    <a href="{% url 'courseinfo_list_inactive' %}">
+                        <button class="text-right btn btn-default btn-sm" style="float:right">
+                            View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>courses
+                        </button>
+                    </a>
+                {% else %}
+                    <a href="{% url 'courseinfo_list_active' %}">
+                        <button class="text-right btn btn-default btn-sm" style="float:right">
+                            View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
+                        </button>
+                    </a>
+                {% endif %}
+                <a class="btn btn-success btn-sm" style="float: right;" href="
             {% if '/teachers' in request.path %}
                 {% url 'teacher_courseinfo_create' %}
             {% else %}
                 {% url 'courseinfo_create' %}
             {% endif %}">Create new Course</a>
-    <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
-  
+                <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal" data-target="#exampleModal1"
+                   id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
 
-  </div>
+
+            </div>
   {% endif %}
 </div>
 </div>
@@ -304,10 +322,16 @@ $(document).ready(function () {
       }
   });
 
-  $('.closeImportCSV').click(function () {
-    window.location.reload();
-  });
+    $('.closeImportCSV').click(function () {
+        window.location.reload();
+    });
 
+    if ('{{ request.GET.paginate_by }}') {
+        $('#paginate_courses').val('{{ request.GET.paginate_by }}')
+    }
+    $('#paginate_courses').on('change', function () {
+        window.location.href = "{{ request.path }}?paginate_by=" + this.value;
+    })
 });
 
 const truncateString = (string, maxLength = 120) => {
@@ -315,5 +339,6 @@ const truncateString = (string, maxLength = 120) => {
     const showDots = string.length > maxLength;
     return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
 };
+
 
 </script>
