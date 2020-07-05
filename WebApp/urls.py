@@ -213,8 +213,11 @@ urlpatterns += (
          views.InningInfoUpdateView.as_view(), name='inninginfo_update'),
     path('innninginfo/delete/<int:pk>/',
          views.InningInfoDeleteView, name='inninginfo_delete'),
+    path('innninginfo/delete/checked/',
+         views.InningInfoDeleteViewChecked, name='inninginfo_delete_checked'),
+    path('innninginfo/inactive/delete/checked/',
+         views.InningInfoDeleteViewChecked, name='inninginfo_inactive_delete_checked'),
     path('inninginfo/csv_import', views.ImportSession, name='csv_import_inninginfo')
-         
 
 )
 
@@ -366,6 +369,6 @@ urlpatterns += (
 )
 
 urlpatterns += (
-     path('course/progress/download/<int:teacher_pk>',
-     views.progress_download, name='course_progress_download'),
+    path('course/progress/download/<int:teacher_pk>',
+         views.progress_download, name='course_progress_download'),
 )

@@ -1372,6 +1372,24 @@ def InningInfoDeleteView(request, pk):
             return redirect('inninginfo_detail', pk=pk)
 
 
+def InningInfoDeleteViewChecked(request):
+    if request.method == 'POST':
+        print(request.POST.getlist('inning_id[]'))
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = InningInfo.objects.filter(pk__in=request.POST.getlist('inning_id[]'))
+            Obj.delete()
+            if '/inactive' in request.path:
+                return redirect('inninginfo_list_inactive')
+            else:
+                return redirect('inninginfo_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete inning")
+            return JsonResponse({}, status=500)
+
+
 class InningGroupListView(ListView):
     model = InningGroup
 
