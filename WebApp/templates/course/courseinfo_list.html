@@ -54,9 +54,15 @@ aria-hidden="true">
   </h2>
   
   <div class="col-md-12 text-right">
+    <div class="row">
+      <form action="">
+        <span> <b>Show</b> </span>  <label> <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"><option value="6">6</option><option value="12">12</option><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36">36</option></select> </label> <span> <b>Entries</b> </span>
+        </form>
+    </div>
    
-    <button class="text-right btn btn-default btn-sm" style="" >View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>
-       courses</button>
+    
+   
+  
    
   </div>
   <hr class="header_hr">
@@ -106,6 +112,8 @@ aria-hidden="true">
 
   {% if 'students' not in request.path %}
   <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
+    <button class="text-right btn btn-default btn-sm" style="float:right" >View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>
+      courses</button>
     
     <a class="btn btn-success btn-sm" style="float: right;" href="
             {% if '/teachers' in request.path %}
@@ -114,6 +122,8 @@ aria-hidden="true">
                 {% url 'courseinfo_create' %}
             {% endif %}">Create new Course</a>
     <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
+  
+
   </div>
   {% endif %}
 </div>
