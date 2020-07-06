@@ -49,8 +49,12 @@ aria-hidden="true">
 <!-- End of model -->
 
 <div class="courseInfoListClass">
-    <h2 class="tableHeader">List of Courses
-
+    <h2 class="tableHeader">
+        {% if '/active' in request.path %}
+        List of Courses
+        {% else %}
+        List of Inactive Courses
+        {% endif %}
     </h2>
 
     <div class="col-md-12 text-right">
@@ -60,13 +64,13 @@ aria-hidden="true">
               {% if '/active' in request.path %}
                   <a href="{% url 'courseinfo_list_inactive' %}">
                       <span class="text-right " style="float:right;color:#5A738E">
-                         <b>View <span style="color: rgb(219, 0, 0); ">  Inactive  </span>courses</b> 
+                         <b>View Inactive Courses</b> 
                       </span>
                   </a>
               {% else %}
                   <a href="{% url 'courseinfo_list_active' %}">
                       <span class="text-right " style="float:right;color:#5A738E">
-                        <b>  View <span style="color: rgb(48, 112, 55); "> Active  </span>courses</b>
+                        <b>  View Active Courses</b>
                       </span>
                   </a>
               {% endif %}
@@ -150,6 +154,7 @@ aria-hidden="true">
                                 </button>
                             </a>
                         {% endif %} -->
+                        {% if '/active' in request.path %}
                         <a class="btn btn-success btn-sm" style="float: right;" href="
                     {% if '/teachers' in request.path %}
                         {% url 'teacher_courseinfo_create' %}
@@ -158,6 +163,7 @@ aria-hidden="true">
                     {% endif %}">Create new Course</a>
                         <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal" data-target="#exampleModal1"
                           id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
+                          {% endif %}
 
              {% endif %}
              <div style="float: right; margin-right:10px">
@@ -174,7 +180,7 @@ aria-hidden="true">
                      <option value="60">60</option>
                  </select>
              </label>
-             <span> <b>Entries</b> </span>  </div>
+             <span> <b> entries </b> </span>  </div>
 
             </div>
 
