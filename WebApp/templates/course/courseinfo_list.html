@@ -55,7 +55,24 @@ aria-hidden="true">
 
     <div class="col-md-12 text-right">
         <div class="row">
-            <span> <b>Show</b> </span>
+          {% if 'students' not in request.path %}
+          <div class="btn-createnew">
+              {% if '/active' in request.path %}
+                  <a href="{% url 'courseinfo_list_inactive' %}">
+                      <span class="text-right " style="float:right;color:#5A738E">
+                         <b>View <span style="color: rgb(219, 0, 0); ">  Inactive  </span>courses</b> 
+                      </span>
+                  </a>
+              {% else %}
+                  <a href="{% url 'courseinfo_list_active' %}">
+                      <span class="text-right " style="float:right;color:#5A738E">
+                        <b>  View <span style="color: rgb(48, 112, 55); "> Active  </span>courses</b>
+                      </span>
+                  </a>
+              {% endif %}
+           </div>   
+          {% endif %}   
+            <!-- <span> <b>Show</b> </span>
             <label>
                 <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
                         id="paginate_courses">
@@ -67,7 +84,7 @@ aria-hidden="true">
                     <option value="36">36</option>
                 </select>
             </label>
-            <span> <b>Entries</b> </span>
+            <span> <b>Entries</b> </span> -->
         </div>
 
 
@@ -117,33 +134,50 @@ aria-hidden="true">
   </div>
   {% endif %}
 
-        {% if 'students' not in request.path %}
+       
             <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
-                {% if '/active' in request.path %}
-                    <a href="{% url 'courseinfo_list_inactive' %}">
-                        <button class="text-right btn btn-default btn-sm" style="float:right">
-                            View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>courses
-                        </button>
-                    </a>
-                {% else %}
-                    <a href="{% url 'courseinfo_list_active' %}">
-                        <button class="text-right btn btn-default btn-sm" style="float:right">
-                            View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
-                        </button>
-                    </a>
-                {% endif %}
-                <a class="btn btn-success btn-sm" style="float: right;" href="
-            {% if '/teachers' in request.path %}
-                {% url 'teacher_courseinfo_create' %}
-            {% else %}
-                {% url 'courseinfo_create' %}
-            {% endif %}">Create new Course</a>
-                <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal" data-target="#exampleModal1"
-                   id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
+              {% if 'students' not in request.path %}
+                        <!-- {% if '/active' in request.path %}
+                            <a href="{% url 'courseinfo_list_inactive' %}">
+                                <button class="text-right btn btn-default btn-sm" style="float:right">
+                                    View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>courses
+                                </button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'courseinfo_list_active' %}">
+                                <button class="text-right btn btn-default btn-sm" style="float:right">
+                                    View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
+                                </button>
+                            </a>
+                        {% endif %} -->
+                        <a class="btn btn-success btn-sm" style="float: right;" href="
+                    {% if '/teachers' in request.path %}
+                        {% url 'teacher_courseinfo_create' %}
+                    {% else %}
+                        {% url 'courseinfo_create' %}
+                    {% endif %}">Create new Course</a>
+                        <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal" data-target="#exampleModal1"
+                          id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
 
+             {% endif %}
+             <div style="float: right; margin-right:10px">
+
+           
+             <span> <b>Show</b> </span>
+             <label >
+                 <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                         id="paginate_courses">
+                     <option value="6">6</option>
+                     <option value="12">12</option>
+             
+                     <option value="30">30</option>
+                     <option value="60">60</option>
+                 </select>
+             </label>
+             <span> <b>Entries</b> </span>  </div>
 
             </div>
-  {% endif %}
+
 </div>
 </div>
   <br /><br /><br />

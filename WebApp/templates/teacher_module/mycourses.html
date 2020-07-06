@@ -14,7 +14,20 @@
         <hr class="header_hr">
         <div class="row">
             <div class="col-md-12 text-right">
-                <span> <b>Show</b> </span>
+                {% if '/active' in request.path %}
+                <a href="{% url 'teacher_mycourses_list_inactive' %}">
+                    <span class="text-right " style="float:right;color:#5A738E">
+                        <b>View <span style="color: rgb(219, 0, 0); ">  Inactive  </span>courses</b> 
+                     </span>
+                </a>
+            {% else %}
+                <a href="{% url 'teacher_mycourses_list_active' %}">
+                    <span class="text-right " style="float:right;color:#5A738E">
+                        View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
+                    </span>
+                </a>
+            {% endif %}
+                <!-- <span> <b>Show</b> </span>
                 <label>
                     <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
                             id="paginate_courses">
@@ -26,7 +39,7 @@
                         <option value="36">36</option>
                     </select>
                 </label>
-                <span> <b>Entries</b> </span>
+                <span> <b>Entries</b> </span> -->
             </div>
         </div>
 
@@ -42,19 +55,31 @@
         </div>
 
         <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
-            {% if '/active' in request.path %}
+            <span> <b>Show</b> </span>
+                <label>
+                    <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                            id="paginate_courses">
+                        <option value="6">6</option>
+                        <option value="12">12</option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                      
+                    </select>
+                </label>
+                <span> <b>Entries</b> </span>
+            <!-- {% if '/active' in request.path %}
                 <a href="{% url 'teacher_mycourses_list_inactive' %}">
-                    <button class="text-right btn btn-default btn-sm" style="float:right">
-                        View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>courses
-                    </button>
+                    <span class="text-right " style="float:right;color:#5A738E">
+                        <b>View <span style="color: rgb(219, 0, 0); ">  Inactive  </span>courses</b> 
+                     </span>
                 </a>
             {% else %}
                 <a href="{% url 'teacher_mycourses_list_active' %}">
-                    <button class="text-right btn btn-default btn-sm" style="float:right">
+                    <span class="text-right " style="float:right;color:#5A738E">
                         View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
-                    </button>
+                    </span>
                 </a>
-            {% endif %}
+            {% endif %} -->
         </div>
 
         <br><br><br>
