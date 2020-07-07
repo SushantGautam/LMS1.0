@@ -112,13 +112,17 @@
 
     $('#editCheckedInnings').on('submit', function (e) {
         e.preventDefault()
-        start = new Date($('#start_Date').val()).getTime()
-        end = new Date($('#end_Date').val()).getTime()
-        if (end < start) {
-            alert('End Date must be greater than Start Date.')
-            return false
-        } else {
+        if ($('#start_Date').is(':disabled') || $('#end_Date').is(':disabled')) {
             $(this).submit()
+        } else {
+            start = new Date($('#start_Date').val()).getTime()
+            end = new Date($('#end_Date').val()).getTime()
+            if (end < start) {
+                alert('End Date must be greater than Start Date.')
+                return false
+            } else {
+                $(this).submit()
+            }
         }
     });
 
