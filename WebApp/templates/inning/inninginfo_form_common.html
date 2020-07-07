@@ -12,7 +12,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="
+            <form method="post" id="editCheckedInnings" action="
             {% if '/inactive' in request.path %}
                 {% url 'inninginfo_inactive_edit_checked' %}
             {% else %}
@@ -24,21 +24,42 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="Student_Group"> Select Student Group</label>
-                        <select class="form-control" id="Student_Group" name="Student_Group">
-                            {% for groupmapping in student_group_list %}
-                                <option value="{{ groupmapping.pk }}">{{ groupmapping.GroupMapping_Name }}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="row">
+                            <div class="col col-md-9">
+                                <select class="form-control" id="Student_Group" name="Student_Group" disabled>
+                                    {% for groupmapping in student_group_list %}
+                                        <option value="{{ groupmapping.pk }}">{{ groupmapping.GroupMapping_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col col-md-3">
+                                <button class="btn btn-block" type="button" id="changestudentgroup-btn">Change</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="start_Date">Start Date</label>
-                        <input type="date" class="form-control" id="start_Date" name="start_Date">
+                        <div class="row">
+                            <div class="col col-md-9">
+                                <input type="date" class="form-control" id="start_Date" name="start_Date" disabled>
+                            </div>
+                            <div class="col col-md-3">
+                                <button class="btn btn-block" type="button" id="changestartdate-btn">Change</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="end_Date">End Date</label>
-                        <input type="date" class="form-control" id="end_Date" name="end_Date">
+                        <div class="row">
+                            <div class="col col-md-9">
+                                <input type="date" class="form-control" id="end_Date" name="end_Date" disabled>
+                            </div>
+                            <div class="col col-md-3">
+                                <button class="btn btn-block" type="button" id="changeenddate-btn">Change</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -86,6 +107,38 @@
         } else {
             $('.checkboxCheckedLength').text('')
             $('.editCheckedInnings, .deleteCheckedInnings').prop('disabled', 'disabled')
+        }
+    }
+
+    $('#editCheckedInnings').on('submit', function (e) {
+        e.preventDefault()
+        start = new Date($('#start_Date').val()).getTime()
+        end = new Date($('#end_Date').val()).getTime()
+        if (end < start) {
+            alert('End Date must be greater than Start Date.')
+            return false
+        } else {
+            $(this).submit()
+        }
+    });
+
+    $('#changestudentgroup-btn').on('click', function () {
+        toggleInput('#Student_Group')
+    });
+
+    $('#changestartdate-btn').on('click', function () {
+        toggleInput('#start_Date')
+    });
+
+    $('#changeenddate-btn').on('click', function () {
+        toggleInput('#end_Date')
+    });
+
+    function toggleInput(inputID) {
+        if ($(inputID).is(':disabled')) {
+            $(inputID).removeAttr('disabled');
+        } else {
+            $(inputID).prop('disabled', 'disabled')
         }
     }
 

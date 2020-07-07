@@ -1404,9 +1404,12 @@ def InningInfoEditViewChecked(request):
     if request.method == 'POST':
         inninginfo_list = InningInfo.objects.filter(pk__in=request.POST.get('inning_ids[]').split(','))
         for inning in inninginfo_list:
-            inning.Groups = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
-            inning.Start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
-            inning.End_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
+            if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
+                inning.Groups = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
+            if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
+                inning.Start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
+            if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
+                inning.End_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
             inning.save()
         if '/inactive' in request.path:
             return redirect('inninginfo_list_inactive')
