@@ -38,7 +38,11 @@
                         {% getAssignmentsScore a user as Assignment_Score %}
                         {% if  Assignment_Score.questions|length > 0 %}
                             {% if Assignment_Score.answers|length > 0 %}
-                                {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
+                                {% if Assignment_Score.total_score_obtained %}
+                                    {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
+                                {% else %}
+                                    <span class="text-danger" style="font-weight: bold"> Not Graded </span>
+                                {% endif %}
                                 <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
                                         data-toggle="modal"
                                         data-target="#AssignmentResultModal" data-assignment_pk="{{ a.pk }}"
@@ -97,7 +101,11 @@
                         {% getAssignmentsScore a user as Assignment_Score %}
                         {% if  Assignment_Score.questions|length > 0 %}
                             {% if Assignment_Score.answers|length > 0 %}
-                                {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
+                                {% if Assignment_Score.total_score_obtained %}
+                                    {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
+                                {% else %}
+                                    <span class="text-danger" style="font-weight: bold"> Not Graded </span>
+                                {% endif %}
                                 <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
                                         data-toggle="modal"
                                         data-target="#AssignmentResultModal" data-assignment_pk="{{ a.pk }}"
@@ -151,7 +159,11 @@
                         {% getAssignmentsScore a user as Assignment_Score %}
                         {% if  Assignment_Score.questions|length > 0 %}
                             {% if Assignment_Score.answers|length > 0 %}
-                                {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
+                                {% if Assignment_Score.total_score_obtained %}
+                                    {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
+                                {% else %}
+                                    <span class="text-danger" style="font-weight: bold"> Not Graded </span>
+                                {% endif %}
                                 <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
                                         data-toggle="modal"
                                         data-target="#AssignmentResultModal" data-assignment_pk="{{ a.pk }}"
