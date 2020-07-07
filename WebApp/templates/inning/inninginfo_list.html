@@ -36,6 +36,10 @@
                                 onclick="return confirm('Are you sure you want to delete ?')">
                             <i class="fa fa-trash"></i>
                         </button>
+                        <button class="btn btn-info editCheckedInnings" type="button" data-toggle="modal"
+                                data-target="#edit_checked_details_modal">
+                            <i class="fa fa-edit"></i>
+                        </button>
                     </div>
                 {% endif %}
             </div>
@@ -43,7 +47,7 @@
             <div class="table-responsive" id="tableView">
 
                 <br>
-                <table class="table table-striped table-bordered bg-white nowrap">
+                <table class="table table-striped table-bordered bg-white nowrap" id="inning_dataTable">
                     <thead class="thead-light bg-primary">
                     <tr class="tableTitleRow">
                         <td></td>
@@ -116,24 +120,4 @@
     </div>
 </div>
 
-<script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-<script>
-    $(document).ready(function () {
-        $('.inning-confirm-delete').on('click', function (e) {
-            console.log('hello')
-            debugger
-            e.preventDefault()
-            $.ajax({
-                url: '{% url 'inninginfo_delete_checked' %}',
-                method: 'post',
-                data: $('#deleteInning').serialize(),
-                success: function (data) {
-                    location.reload()
-                },
-                error: function (e) {
-                    location.reload()
-                }
-            })
-        })
-    })
-</script>
+{% include 'inning/inninginfo_form_common.html' %}

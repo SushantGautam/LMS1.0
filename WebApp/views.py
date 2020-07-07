@@ -1291,6 +1291,11 @@ class InningInfoListView(ListView):
     model = InningInfo
     template_name = 'WebApp/inninginfo_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['student_group_list'] = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
+        return context
+
     def get_queryset(self):
         return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__gte=datetime.now())
 
@@ -1298,6 +1303,11 @@ class InningInfoListView(ListView):
 class InningInfoListViewInactive(ListView):
     model = InningInfo
     template_name = 'WebApp/inninginfo_list_inactive.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['student_group_list'] = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
+        return context
 
     def get_queryset(self):
         return InningInfo.objects.filter(Center_Code=self.request.user.Center_Code, End_Date__lte=datetime.now())
@@ -1388,6 +1398,20 @@ def InningInfoDeleteViewChecked(request):
             messages.error(request,
                            "Cannot delete inning")
             return JsonResponse({}, status=500)
+
+
+def InningInfoEditViewChecked(request):
+    if request.method == 'POST':
+        inninginfo_list = InningInfo.objects.filter(pk__in=request.POST.get('inning_ids[]').split(','))
+        for inning in inninginfo_list:
+            inning.Groups = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
+            inning.Start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
+            inning.End_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
+            inning.save()
+        if '/inactive' in request.path:
+            return redirect('inninginfo_list_inactive')
+        else:
+            return redirect('inninginfo_list')
 
 
 class InningGroupListView(ListView):

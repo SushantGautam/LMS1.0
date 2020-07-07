@@ -217,6 +217,11 @@ urlpatterns += (
          views.InningInfoDeleteViewChecked, name='inninginfo_delete_checked'),
     path('innninginfo/inactive/delete/checked/',
          views.InningInfoDeleteViewChecked, name='inninginfo_inactive_delete_checked'),
+    path('innninginfo/update/checked/',
+         views.InningInfoEditViewChecked, name='inninginfo_edit_checked'),
+    path('innninginfo/inactive/update/checked/',
+         views.InningInfoEditViewChecked, name='inninginfo_inactive_edit_checked'),
+
     path('inninginfo/csv_import', views.ImportSession, name='csv_import_inninginfo')
 
 )
