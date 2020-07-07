@@ -67,4 +67,27 @@
     $('#Student_Group').select2({
         width: '100%',
     });
+
+    $('.inningInfoCheckAll').on('click', function () {
+        $('#inning_dataTable input:checkbox').not(this).prop('checked', this.checked);
+        checkboxChangeEvent()
+    })
+
+    $('.inningInfoCheckbox').on('click', function () {
+        checkboxChangeEvent()
+    })
+
+    function checkboxChangeEvent() {
+        let checkBoxlength = $('#inning_dataTable input[type="checkbox"]:checked').not('.inningInfoCheckAll').length
+
+        if (checkBoxlength > 0) {
+            $('.checkboxCheckedLength').text(checkBoxlength + ' of ' + $('.inningInfoCheckbox').length + ' selected')
+            $('.editCheckedInnings, .deleteCheckedInnings').removeAttr('disabled')
+        } else {
+            $('.checkboxCheckedLength').text('')
+            $('.editCheckedInnings, .deleteCheckedInnings').prop('disabled', 'disabled')
+        }
+    }
+
+    checkboxChangeEvent()
 </script>
