@@ -27,6 +27,7 @@
                         <div class="row">
                             <div class="col col-md-9">
                                 <select class="form-control" id="Student_Group" name="Student_Group" disabled>
+                                    <option value="">Select Student Group</option>
                                     {% for groupmapping in student_group_list %}
                                         <option value="{{ groupmapping.pk }}">{{ groupmapping.GroupMapping_Name }}</option>
                                     {% endfor %}
@@ -96,7 +97,13 @@
 
     $('.inningInfoCheckbox').on('click', function () {
         checkboxChangeEvent()
-    })
+
+        if ($('.inningInfoCheckbox').length === $('.inningInfoCheckbox:checked').length) {
+            $('.inningInfoCheckAll').prop('checked', 'checked');
+        } else {
+            $('.inningInfoCheckAll').prop('checked', false);
+        }
+    });
 
     function checkboxChangeEvent() {
         let checkBoxlength = $('#inning_dataTable input[type="checkbox"]:checked').not('.inningInfoCheckAll').length
@@ -112,6 +119,13 @@
 
     $('#editCheckedInnings').on('submit', function (e) {
         e.preventDefault()
+        if (($('#start_Date').is(':disabled') && $('#end_Date').is(':disabled') && $('#Student_Group').is(':disabled'))
+            || ($('#start_Date').val() == '' && $('#end_Date').val() == '' && $('#Student_Group').val() == '')
+        ) {
+            alert('Please input data and enable required fields to submit')
+            return false
+        }
+
         if ($('#start_Date').is(':disabled') || $('#end_Date').is(':disabled')) {
             $(this).submit()
         } else {
