@@ -14,6 +14,8 @@
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
     <link rel="stylesheet" href="{% static 'css/app.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'vendors/bundle.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
+
 </head>
 
 <body class="form-membership" style="background: url(../../../static/media/image/LMS_background.jpg)no-repeat center center fixed;
@@ -21,7 +23,7 @@
 -moz-background-size: cover;
 -o-background-size: cover;
 background-size: cover;">
-    <div class="form-wrapper">
+    <div class="form-wrapper" style="min-width: 500px;">
         <!-- logo -->
         <div id="logo">
             <img class="logo" src="../../../static/media/image/logo/logo.png" alt="logo">
@@ -40,7 +42,7 @@ background-size: cover;">
             </div>
             <div class="form-group">
                 <label for="id_Center_Code" class="float-left">Center Code</label>
-                <select class="form-control" id="id_Center_Code" name="Center_Code">
+                <select class="select2" id="id_Center_Code" name="Center_Code">
                     {% for x, y in form.fields.Center_Code.choices %}
                     <option value="{{ x }}" {% if form.fields.Center_Code.value == x %} selected{% endif %}>{{ y }}
                     </option>
@@ -49,7 +51,7 @@ background-size: cover;">
             </div>
             <div class="form-group">
                 <label for="id_Center_Code" class="float-left">Gender</label>
-                <select class="form-control" id="id_Member_Gender" name="Member_Gender">
+                <select class="form-control form-control-sm" id="id_Member_Gender" name="Member_Gender">
                     {% for x, y in form.fields.Member_Gender.choices %}
                     <option value="{{ x }}" {% if form.fields.Member_Gender.value == x %} selected{% endif %}>{{ y }}
                     </option>
@@ -191,7 +193,12 @@ background-size: cover;">
 
     <script src="{% static 'vendors/bundle.js' %}"></script>
     <script src="{% static 'js/app.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
     <script>
+        $('.select2').select2({
+            placeholder: 'Select your Center'
+        });
+
         $(document).ready(function () {
             $('#id_Center_Code option:first').attr("disabled", "true")
             // $('#id_Member_Gender option:first').attr("disabled", "true")
