@@ -1411,15 +1411,45 @@ def InningInfoDeleteViewChecked(request):
 
 def InningInfoEditViewChecked(request):
     if request.method == 'POST':
+        inning_list = []
+        startdateerror = enddateerror = False
+        student_groupObj = start_Date = end_Date = None
+
+        if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
+            start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
+        if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
+            end_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
+
         inninginfo_list = InningInfo.objects.filter(pk__in=request.POST.get('inning_ids[]').split(','))
+        if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
+            student_groupObj = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
         for inning in inninginfo_list:
-            if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
-                inning.Groups = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
-            if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
-                inning.Start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
-            if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
-                inning.End_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
-            inning.save()
+            if start_Date and not end_Date:
+                if inning.End_Date.replace(tzinfo=None) < start_Date:
+                    startdateerror = True
+                    inning_list.append({
+                        'Inning_Name': inning.Inning_Name.Session_Name,
+                    })
+            if not start_Date and end_Date:
+                if inning.Start_Date.replace(tzinfo=None) > end_Date:
+                    enddateerror = True
+                    inning_list.append({
+                        'Inning_Name': inning.Inning_Name.Session_Name,
+                    })
+
+        if startdateerror or enddateerror:
+            return JsonResponse({
+                'message': "Start date is greater than end date in the following.",
+                'inning_list': inning_list,
+            }, status=500)
+
+        if student_groupObj:
+            inninginfo_list.update(Groups=student_groupObj)
+        if start_Date:
+            inninginfo_list.update(Start_Date=start_Date)
+        if end_Date:
+            inninginfo_list.update(End_Date=end_Date)
+
         if '/inactive' in request.path:
             return redirect('inninginfo_list_inactive')
         else:
