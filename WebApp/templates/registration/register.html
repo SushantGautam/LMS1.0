@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{% static 'css/app.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'vendors/bundle.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
-
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
 </head>
 
 <body class="form-membership" style="background: url(../../../static/media/image/LMS_background.jpg)no-repeat center center fixed;
@@ -51,15 +51,17 @@ background-size: cover;">
             </div>
             <div class="form-group">
                 <label for="id_Center_Code" class="float-left">Gender</label>
-                <select class="form-control form-control-sm" id="id_Member_Gender" name="Member_Gender">
+                <select class="form-control" id="id_Member_Gender" name="Member_Gender">
                     {% for x, y in form.fields.Member_Gender.choices %}
                     <option value="{{ x }}" {% if form.fields.Member_Gender.value == x %} selected{% endif %}>{{ y }}
                     </option>
                     {% endfor %}
                 </select>
             </div>
-            <label for="member_type">Member Type</label>
-            <div class="form-group">
+            <div class="d-flex">
+                <label for="member_type" class="pull-left">Member Type</label>
+            </div>
+            <div class="form-group float-left mb-4">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="member_type" id="id_Is_Student"
                         value="Is_Student">
