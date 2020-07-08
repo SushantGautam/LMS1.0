@@ -9,11 +9,135 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-8 col-md-12">
+    <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card card-body bg-success-gradient">
+            <p class="d-flex justify-content-between mb-2">
+                <span>Student</span>
+            </p>
+            <h2>{{ studentcount }}</h2>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card card-body bg-info-gradient">
+            <p class="d-flex justify-content-between mb-2">
+                <span>Teacher</span>
+            </p>
+            <h2>{{ teachercount }}</h2>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card card-body bg-warning-gradient">
+            <p class="d-flex justify-content-between mb-2">
+                <span>Member</span>
+            </p>
+            <h2>{{ totalcount }}</h2>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card card-body bg-secondary-gradient">
+            <p class="d-flex justify-content-between mb-2">
+                <span>Courses</span>
+            </p>
+            <h2>{{ coursecount }}</h2>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-5 col-md-6 col-sm-12">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title">Content Title</h6>
-                <p>Lorem ipsum dolor sit amet, cuptas.</p>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <a href="{% url 'courseinfo_list' %}">
+                        <h6 class="card-title mb-0">Session</h6>
+                    </a>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for object in course %}
+                    <li class="list-group-item d-flex px-0 py-2">
+                        <b><a href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></b>
+                    </li>
+                    {% empty%}
+                    No Sessions
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-body text-center pt-0">
+                <a href="{% url 'courseinfo_list' %}" class="btn btn-outline-light">
+                    View All
+                </a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <a href="{% url 'courseinfo_list' %}">
+                        <h6 class="card-title mb-0">Courses</h6>
+                    </a>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for object in course %}
+                    <li class="list-group-item d-flex px-0 py-2">
+                        <b><a href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></b>
+                    </li>
+                    {% empty%}
+                    No courses available
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-body text-center pt-0">
+                <a href="{% url 'courseinfo_list' %}" class="btn btn-outline-light">
+                    View All
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7 col-md-6 col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <!-- <a href="{% url 'forum:index' %}"> -->
+                    <h6 class="card-title mb-0">Forum</h6>
+                    <span>{{ threadcount }}</span>
+                    <!-- </a> -->
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for object in thread  %}
+                    <li class="list-group-item d-flex px-0 py-2">
+                        <b><a href="{{ object.get_absolute_url }}">{{ object.title|truncatechars:68 }}</a></b>
+                    </li>
+                    {% empty%}
+                    Forum empty
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-body text-center pt-0">
+                <a href="{% url 'forum:index' %}" class="btn btn-outline-light">
+                    View All
+                </a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <!-- <a href="{% url 'forum:index' %}"> -->
+                    <h6 class="card-title mb-0">Survey</h6>
+                    <span>{{ threadcount }}</span>
+                    <!-- </a> -->
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for object in thread  %}
+                    <li class="list-group-item d-flex px-0 py-2">
+                        <b><a href="{{ object.get_absolute_url }}">{{ object.title|truncatechars:68 }}</a></b>
+                    </li>
+                    {% empty%}
+                    No surveys conducted
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-body text-center pt-0">
+                <a href="{% url 'forum:index' %}" class="btn btn-outline-light">
+                    View All
+                </a>
             </div>
         </div>
     </div>
