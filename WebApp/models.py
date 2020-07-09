@@ -32,6 +32,7 @@ USER_ROLES = (
 
 class CenterInfo(models.Model):
     Center_Name = CharField(max_length=500, unique=True)
+    Center_Logo = models.ImageField(upload_to="Center_logo/", blank=True, null=True, default='/static/images/logo.png')
     Center_Address = CharField(max_length=500, blank=True, null=True)
     Use_Flag = BooleanField(default=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
