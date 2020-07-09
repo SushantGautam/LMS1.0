@@ -247,6 +247,14 @@
             event.currentTarget.className += " active";
         }
 
+        $('.assignment-modal-body').on('click', '.answerbtn', function () {
+            $(this).closest('.answer_div').find('.answers').toggle(300)
+        })
+
+        $('.assignment-modal-body').on('click', '.feedbackbtn', function () {
+            $(this).closest('.feedback_div').find('.feedbacks').toggle(300)
+        })
+
         $('.assignmentDetailsBtn').on('click', function () {
             $('.modal-title').text($(this).attr('data-modal-title'))
             $.ajax({
@@ -262,11 +270,24 @@
                         </div>
                     `)
                     $.each(data.assignmentDetails, function (index, value) {
+                        let answer = ''
+                        if (value.question_type == 'S') {
+                            answer = `<p>${value.Assignment_Answer}</p>`
+                        } else {
+                            answer = `<p><a href="${value.Assignment_File}" target="_blank">Answer File</a></p>`
+                        }
                         $('.assignment-modal-body').append(`
                             <hr>
                             <div class="row">
-                            <p>  <b>${index + 1}. Question:</b> ${value.question_title}</p>
-                            <p> <b> &nbsp;&nbsp;&nbsp;&nbsp;Feedback: </b> ${value.Assignment_Feedback}</p>
+                                <p>  <b>${index + 1}. Question:</b> ${value.question_title}</p>
+                                <div class="feedback_div">
+                                    <button class="btn btn-info feedbackbtn"> Feedback </button>
+                                    <div style="display:none" class="feedbacks">${value.Assignment_Feedback}</div>
+                                </div>
+                                <div class="answer_div">
+                                    <button class="btn btn-info answerbtn"> Answer </button>
+                                    <div style="display:none" class="answers">${answer}</div>
+                                </div>
                             </div>
                         `)
                     })

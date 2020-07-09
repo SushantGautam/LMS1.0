@@ -612,13 +612,13 @@ def ImportCsvFile(request, *args, **kwargs):
                     if len(last_name) >= 50:
                         error = "Last name can't be more than 50 characters"
                         raise Exception
-                    
+
                     if not gender:
                         error = "Gender is required"
                         raise Exception
                     gender = str(gender)
                     gender = gender.upper()
-                    if not gender in ['M','F']:
+                    if not gender in ['M', 'F']:
                         error = "Gender must be either m or f for male and female respectively"
                         raise Exception
 
@@ -632,7 +632,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     except:
                         error = "Student value should be integer"
                         raise Exception
-                    if not student in [0,1]:
+                    if not student in [0, 1]:
                         error = "Student value should be either 0 or 1"
                         raise Exception
                     student = bool(student)
@@ -641,7 +641,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     except:
                         error = "Teacher value should be integer"
                         raise Exception
-                    if not teacher in [0,1]:
+                    if not teacher in [0, 1]:
                         error = "Teacher value should be either 0 or 1"
                         raise Exception
                     teacher = bool(teacher)
@@ -707,6 +707,7 @@ def ImportCsvFile(request, *args, **kwargs):
             msg = "All data has been Uploaded Sucessfully"
         return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
 
+
 # The following function is for importing the course from the csv file
 def ImportCourse(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
@@ -743,7 +744,8 @@ def ImportCourse(request, *args, **kwargs):
                     if len(course_name) > 240:
                         error = "Course Name can't be greater then 240 characters"
                         raise Exception
-                    if CourseInfo.objects.filter(Course_Name__iexact=course_name, Center_Code=request.user.Center_Code).exists():
+                    if CourseInfo.objects.filter(Course_Name__iexact=course_name,
+                                                 Center_Code=request.user.Center_Code).exists():
                         error = "Course Name already exist in the center please choose another name"
                         raise Exception
 
@@ -762,10 +764,10 @@ def ImportCourse(request, *args, **kwargs):
                             course_level = int(course_level)
                         except:
                             error = "Course Level should be integer value"
-                            raise Exception   
+                            raise Exception
                     if course_level < 1 and course_level > 5:
                         error = "Course Level should be between 1 and 5"
-                        raise Exception                   
+                        raise Exception
 
                     obj = CourseInfo()
                     obj.Course_Name = course_name
@@ -780,7 +782,8 @@ def ImportCourse(request, *args, **kwargs):
                 except Exception as e:
                     for j in saved_id:
                         CourseInfo.objects.filter(id=j).delete()
-                    msg = error + ". <br>Problem in " + str(i + 1) + "th row of data while uploading<br><br>"+ "<br>".join(
+                    msg = error + ". <br>Problem in " + str(
+                        i + 1) + "th row of data while uploading<br><br>" + "<br>".join(
                         ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         else:
@@ -789,6 +792,7 @@ def ImportCourse(request, *args, **kwargs):
             error = "All data has been Uploaded Sucessfully"
         return JsonResponse(data={"message": error, "class": "text-success",
                                   "rmclass": "text-danger"})
+
 
 # The following function is for importing the sessions from the csv file
 def ImportSession(request, *args, **kwargs):
@@ -868,7 +872,7 @@ def ImportSession(request, *args, **kwargs):
                     if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group).exists():
                         url = str(reverse('groupmapping_list'))
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
-                                            Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
+                                            Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                         raise Exception
                     student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
 
@@ -898,7 +902,7 @@ def ImportSession(request, *args, **kwargs):
                         if not InningGroup.objects.filter(InningGroup_Name__iexact=course).exists():
                             url = str(reverse('inninggroup_list'))
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
-                                                Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
+                                                Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                             raise Exception
                         course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
                         obj.Course_Group.add(course_code)
@@ -906,7 +910,7 @@ def ImportSession(request, *args, **kwargs):
                 except Exception as e:
                     for j in saved_id:
                         InningInfo.objects.filter(id=j).delete()
-                    msg = error + "<br>Problem in " + str(i + 1) + "th row of data while uploading<br>"+ "<br>".join(
+                    msg = error + "<br>Problem in " + str(i + 1) + "th row of data while uploading<br>" + "<br>".join(
                         ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         else:
@@ -915,6 +919,7 @@ def ImportSession(request, *args, **kwargs):
             error = "All data has been Uploaded Sucessfully"
         return JsonResponse(data={"message": error, "class": "text-success",
                                   "rmclass": "text-danger"})
+
 
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
@@ -1273,9 +1278,11 @@ class SessionInfoCreateView(CreateView):
 class SessionInfoDetailView(DetailView):
     model = SessionInfo
 
+
 def SessionInfoDeleteView(request, pk):
     SessionInfo.objects.filter(pk=pk).delete()
     return redirect("sessioninfo_list")
+
 
 class SessionInfoUpdateView(UpdateView):
     model = SessionInfo
@@ -1293,7 +1300,8 @@ class InningInfoListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['student_group_list'] = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
+        context['student_group_list'] = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                    Use_Flag=True)
         return context
 
     def get_queryset(self):
@@ -1306,7 +1314,8 @@ class InningInfoListViewInactive(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['student_group_list'] = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
+        context['student_group_list'] = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                    Use_Flag=True)
         return context
 
     def get_queryset(self):
@@ -1402,15 +1411,45 @@ def InningInfoDeleteViewChecked(request):
 
 def InningInfoEditViewChecked(request):
     if request.method == 'POST':
+        inning_list = []
+        startdateerror = enddateerror = False
+        student_groupObj = start_Date = end_Date = None
+
+        if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
+            start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
+        if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
+            end_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
+
         inninginfo_list = InningInfo.objects.filter(pk__in=request.POST.get('inning_ids[]').split(','))
+        if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
+            student_groupObj = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
         for inning in inninginfo_list:
-            if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
-                inning.Groups = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
-            if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
-                inning.Start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
-            if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
-                inning.End_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
-            inning.save()
+            if start_Date and not end_Date:
+                if inning.End_Date.replace(tzinfo=None) < start_Date:
+                    startdateerror = True
+                    inning_list.append({
+                        'Inning_Name': inning.Inning_Name.Session_Name,
+                    })
+            if not start_Date and end_Date:
+                if inning.Start_Date.replace(tzinfo=None) > end_Date:
+                    enddateerror = True
+                    inning_list.append({
+                        'Inning_Name': inning.Inning_Name.Session_Name,
+                    })
+
+        if startdateerror or enddateerror:
+            return JsonResponse({
+                'message': "Start date is greater than end date in the following.",
+                'inning_list': inning_list,
+            }, status=500)
+
+        if student_groupObj:
+            inninginfo_list.update(Groups=student_groupObj)
+        if start_Date:
+            inninginfo_list.update(Start_Date=start_Date)
+        if end_Date:
+            inninginfo_list.update(End_Date=end_Date)
+
         if '/inactive' in request.path:
             return redirect('inninginfo_list_inactive')
         else:
@@ -1546,15 +1585,17 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                 groups = df['(*)Group Name'].unique()
             except Exception as e:
                 return JsonResponse(
-                    data={"message": "There is no data in column <b>(*)Group Name</b> in the file", "class": "text-danger",
-                        "rmclass": "text-success"})
-    
+                    data={"message": "There is no data in column <b>(*)Group Name</b> in the file",
+                          "class": "text-danger",
+                          "rmclass": "text-success"})
+
             for i in range(len(groups)):
                 try:
                     group_name = str(groups[i])
                     students = df[df['(*)Group Name'] == groups[i]].reset_index(drop=True)
 
-                    if GroupMapping.objects.filter(GroupMapping_Name__iexact=group_name, Center_Code=request.user.Center_Code).exists():
+                    if GroupMapping.objects.filter(GroupMapping_Name__iexact=group_name,
+                                                   Center_Code=request.user.Center_Code).exists():
                         error = "Student Group Name already exist in the center please choose another name"
                         raise Exception
 
@@ -1575,19 +1616,20 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                             obj_student = MemberInfo.objects.get(username=student)
                             obj.Students.add(obj_student)
                         else:
-                            error ="Student Username <b>{}</b> not found<br>".format(student)
+                            error = "Student Username <b>{}</b> not found<br>".format(student)
                             raise Exception
 
                 except Exception as e:
                     for k in saved_id:
                         GroupMapping.objects.filter(id=k).delete()
-                    msg = error + ". Can't Upload data, Problem while registering group <b>" + str(group_name) + "<b><br>" + str(e)
+                    msg = error + ". Can't Upload data, Problem while registering group <b>" + str(
+                        group_name) + "<b><br>" + str(e)
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
             else:
                 error = "The uploaded excel has no data to register"
         if not error:
             error = "All data has been Uploaded Sucessfully"
-        return JsonResponse(data={"message": error, "class": "text-success","rmclass": "text-danger"})
+        return JsonResponse(data={"message": error, "class": "text-success", "rmclass": "text-danger"})
 
 
 class GroupMappingCreateView(CreateView):
@@ -3560,11 +3602,12 @@ def MeetPublic(request, userid, meetcode):
     return render(request, 'WebApp/meet-public.html',
                   {"meetcode": meetcode, "userobj": MemberInfo.objects.get(pk=userid)})
 
+
 def progress_download(request, teacher_pk):
     # center = request.user.Center_Code
-     # datetime_now = timezone.now().replace(microsecond=0)
+    # datetime_now = timezone.now().replace(microsecond=0)
     # sessions = InningInfo.objects.filter(Center_Code=center, Use_Flag=True)
-    
+
     teacher = MemberInfo.objects.get(pk=int(teacher_pk))
     teacher_courses = InningGroup.objects.filter(Teacher_Code=teacher)
     sessions = InningInfo.objects.filter(Course_Group__in=teacher_courses)
@@ -3573,8 +3616,8 @@ def progress_download(request, teacher_pk):
     # Path(file_path).mkdir(parents=True, exist_ok=True)
     # file_path = os.path.join(file_path,"all_course_progress.xlsx")
     # # df = pd.read_excel(file_path, sheet_name = "학생 학습 현황")
-    df = pd.DataFrame(columns=['Course','Chapter No.','Chapter','Teacher',
-                        'Running time','Student ID','Full name','Studied time','Attandance'])
+    df = pd.DataFrame(columns=['Course', 'Chapter No.', 'Chapter', 'Teacher',
+                               'Running time', 'Student ID', 'Full name', 'Studied time', 'Attandance'])
 
     for session in sessions:
         session_teacher_courses = session.Course_Group.all()
@@ -3582,7 +3625,7 @@ def progress_download(request, teacher_pk):
         teacher_courses = teacher_courses & session_teacher_courses
         for teacher_course in teacher_courses:
             course_name = teacher_course.Course_Code.Course_Name
-            teacher_list = list(teacher_course.Teacher_Code.all().values_list('username',flat=True))
+            teacher_list = list(teacher_course.Teacher_Code.all().values_list('username', flat=True))
             teacher_list = ', '.join(teacher_list)
 
             chapter_list = ChapterInfo.objects.filter(Course_Code=teacher_course.Course_Code)
@@ -3601,10 +3644,10 @@ def progress_download(request, teacher_pk):
                     study_time = str(int(study_time / 60)) + ' min.'
                     progress = data['progress']
 
-                    new_row = {'Course':course_name, 'Chapter No.':chapter_no, 'Chapter':chapter_name,
-                                'Teacher':teacher_list, 'Running time':running_time, 'Student ID':student_id,
-                                'Full name':student_name, 'Studied time':study_time, 'Attandance':progress}
-                    #append row to the dataframe
+                    new_row = {'Course': course_name, 'Chapter No.': chapter_no, 'Chapter': chapter_name,
+                               'Teacher': teacher_list, 'Running time': running_time, 'Student ID': student_id,
+                               'Full name': student_name, 'Studied time': study_time, 'Attandance': progress}
+                    # append row to the dataframe
                     df = df.append(new_row, ignore_index=True)
     # df.to_excel(file_path)
     # return HttpResponse("<h4>Student All Course Progress download</h4>")
@@ -3615,7 +3658,8 @@ def progress_download(request, teacher_pk):
         df.index.name = 'S.N.'
         df.to_excel(writer, sheet_name=str(teacher.username))
         writer.save()
-        return HttpResponse(b.getvalue(), content_type='application/vnd.ms-excel')                
+        return HttpResponse(b.getvalue(), content_type='application/vnd.ms-excel')
+
 
 def get_study_time(course_id, chapter, student):
     jsondata = ''
@@ -3633,13 +3677,14 @@ def get_study_time(course_id, chapter, student):
     if jsondata:
         if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
             if int(jsondata['contents']['totalPage']) > 0 and int(
-                jsondata['contents']['currentpagenumber']) > 0:
-                progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(jsondata['contents']['totalPage'])
+                    jsondata['contents']['currentpagenumber']) > 0:
+                progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                    jsondata['contents']['totalPage'])
             if progresspercent > 100:
                 progresspercent = 100
         if chapter.mustreadtime and jsondata['contents']['totalstudytime']:
             if int(jsondata['contents']['totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100:
                 progress = 'Complete'
 
-    data = {'study_time':study_time, 'progress':progress}
+    data = {'study_time': study_time, 'progress': progress}
     return data

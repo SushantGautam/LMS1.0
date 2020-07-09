@@ -12,6 +12,9 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <div class="error-div" style="display: none">
+
+            </div>
             <form method="post" id="editCheckedInnings" action="
             {% if '/inactive' in request.path %}
                 {% url 'inninginfo_inactive_edit_checked' %}
@@ -27,6 +30,7 @@
                         <div class="row">
                             <div class="col col-md-9">
                                 <select class="form-control" id="Student_Group" name="Student_Group" disabled>
+                                    <option value="">Select Student Group</option>
                                     {% for groupmapping in student_group_list %}
                                         <option value="{{ groupmapping.pk }}">{{ groupmapping.GroupMapping_Name }}</option>
                                     {% endfor %}
@@ -78,7 +82,7 @@
     $(document).ready(function () {
         $(".editCheckedInnings").on('click', function () {
             let seleced_innings = []
-            $.each($('#inning_dataTable input[type="checkbox"]:checked'), function (index) {
+            $.each($('#inning_dataTable input[type="checkbox"]:checked').not('.inningInfoCheckAll'), function (index) {
                 seleced_innings.push($(this).val())
             })
             $('#inning_ids').val(seleced_innings)
@@ -96,7 +100,13 @@
 
     $('.inningInfoCheckbox').on('click', function () {
         checkboxChangeEvent()
-    })
+
+        if ($('.inningInfoCheckbox').length === $('.inningInfoCheckbox:checked').length) {
+            $('.inningInfoCheckAll').prop('checked', 'checked');
+        } else {
+            $('.inningInfoCheckAll').prop('checked', false);
+        }
+    });
 
     function checkboxChangeEvent() {
         let checkBoxlength = $('#inning_dataTable input[type="checkbox"]:checked').not('.inningInfoCheckAll').length
@@ -112,8 +122,38 @@
 
     $('#editCheckedInnings').on('submit', function (e) {
         e.preventDefault()
+        if (($('#start_Date').is(':disabled') && $('#end_Date').is(':disabled') && $('#Student_Group').is(':disabled'))
+            || ($('#start_Date').val() == '' && $('#end_Date').val() == '' && $('#Student_Group').val() == '')
+        ) {
+            alert('Please input data and enable required fields to submit')
+            return false
+        }
+
         if ($('#start_Date').is(':disabled') || $('#end_Date').is(':disabled')) {
-            $(this).submit()
+            var form = $(this);
+            var url = form.attr('action');
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function (data) {
+                    location.reload(); // show response from the php script.
+                },
+                error: function (e) {
+                    $('.error-div').empty()
+                    $('.error-div').css('display', 'block')
+                    $('.error-div').append(`
+                        <p style="font-weight: bold; font-size: medium">${e.responseJSON.message}</p>
+                    `)
+                    $.each(e.responseJSON.inning_list, function (index) {
+                        $('.error-div').append(`
+                            <p style="font-size: small">${e.responseJSON.inning_list[index]['Inning_Name']}</p>
+                        `)
+                    })
+
+                }
+            });
         } else {
             start = new Date($('#start_Date').val()).getTime()
             end = new Date($('#end_Date').val()).getTime()

@@ -1377,6 +1377,7 @@ def getStudentAssignmentDetail(request, assignmentpk):
         assignmentDetails.append({
             'question_title': answer.Question_Code.Question_Title,
             'question_score': answer.Question_Code.Question_Score,
+            'question_type': answer.Question_Code.Answer_Type,
             'Assignment_Answer': answer.Assignment_Answer,
             'Assignment_File': answer.Assignment_File.url if answer.Assignment_File else '',
             'Assignment_Score': answer.Assignment_Score,
