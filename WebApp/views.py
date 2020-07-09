@@ -1048,7 +1048,7 @@ def CourseInfoDeleteView(request, pk):
             # return self.delete(request, *args, **kwargs)
             Obj = CourseInfo.objects.get(pk=pk)
             Obj.delete()
-            return redirect('courseinfo_list')
+            return redirect('courseinfo_list_active')
 
         except:
             messages.error(request,
