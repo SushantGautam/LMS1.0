@@ -17,7 +17,7 @@ class CenterInfoAdminForm(forms.ModelForm):
 
 class CenterInfoAdmin(admin.ModelAdmin):
     form = CenterInfoAdminForm
-    list_display = ['Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent']
+    list_display = ['Center_Name', 'Center_Logo', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent']
 
 
 admin.site.register(CenterInfo, CenterInfoAdmin)
