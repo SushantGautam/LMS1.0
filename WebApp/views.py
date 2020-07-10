@@ -5,6 +5,7 @@ import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
+from dateutil.parser import parse
 from io import BytesIO
 from json import JSONDecodeError
 
@@ -623,7 +624,8 @@ def ImportCsvFile(request, *args, **kwargs):
                         raise Exception
 
                     try:
-                        birth_date = datetime.strptime(birth_date, "%m/%d/%Y").strftime('%Y-%m-%d')
+                        # birth_date = datetime.strptime(birth_date, "%m/%d/%Y").strftime('%Y-%m-%d')
+                        birth_date = parse(birth_date)
                     except:
                         birth_date = None
 
@@ -847,18 +849,20 @@ def ImportSession(request, *args, **kwargs):
                         raise Exception
                     start_date = str(start_date)
                     try:
-                        start_date = datetime.strptime(start_date, '%m/%d/%Y')
+                        # start_date = datetime.strptime(start_date, '%m/%d/%Y')
+                        start_date = parse(start_date) # It accepts most of the standard date format
                     except ValueError:
-                        error = "Start Date <strong>" + start_date + "</strong> is not valid. Must be MM/DD/YYYY"
+                        error = "Start Date <strong>" + start_date + "</strong> is not valid. It must be in standard date format"
                         raise Exception
                     if not end_date:
                         error = "End date is required"
                         raise Exception
                     end_date = str(end_date)
                     try:
-                        end_date = datetime.strptime(end_date, '%m/%d/%Y')
+                        # end_date = datetime.strptime(end_date, '%m/%d/%Y')
+                        end_date = parse(end_date)
                     except ValueError:
-                        error = "End Date <strong>" + end_date + "</strong> is not valid. Must be MM/DD/YYYY"
+                        error = "End Date <strong>" + end_date + "</strong> is not valid. It must be in standard date format"
                         raise Exception
                     if start_date >= end_date:
                         error = "Start Date can't be greater than End Date"
