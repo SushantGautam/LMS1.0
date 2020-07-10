@@ -305,56 +305,62 @@
             <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
                 <i style="color: white;" class="fa fa-video icon-video closechatopen1 "></i>
             </li>
-
-            <li data-toggle="tooltip" data-placement="right" title='HeadPos'
-                onclick="$('#HeadPosModal').modal('toggle')">
-                <i style="color: white;" class="fa fa-user-md icon-video "></i>
-            </li>
+            {% if '/students' in request.path %}
+                <li data-toggle="tooltip" data-placement="right" title='HeadPos'
+                    onclick="$('#HeadPosModal').modal('toggle')">
+                    <i style="color: white;" class="fa fa-user-md icon-video "></i>
+                </li>
+            {% endif %}
         </ul>
+        {% if '/students' in request.path %}
 
-        <!-- Modal -->
-        <div class="modal fade" id="HeadPosModal" tabindex="-1" role="dialog" aria-labelledby="HeadPosModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title" id="HeadPosModalLabel">HeadPos</h3>
-                    </div>
-                    <div class="modal-body" style="text-align-last: center;">
-
-                        <script src="{% static "HeadPos/bundle.js" %}" type="text/javascript"></script>
-
-
-                        <style>
-                            .p5Canvas {
-                                display: none;
-                            }
-                        </style>
-
-                        <div>
-                            <b>Started:</b>
-                            <time class="timeago" id="startTime"></time> &nbsp;
-                            <b>Frames Recorded: </b><span id="FramesRecorded">0</span>
+            <!-- Modal -->
+            <div class="modal fade" id="HeadPosModal" tabindex="-1" role="dialog" aria-labelledby="HeadPosModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="HeadPosModalLabel">HeadPos</h3>
                         </div>
+                        <div class="modal-body" style="text-align-last: center;">
 
-                        <p id="status">
-                            Loading model...</p>
-                        <br>
-                        <!-- Just for demo canvas.. To show the progress -->
-                        <canvas id="myCanvas" width="640" height="50"></canvas>
-
-                        <b class="link-text text-center" onclick="downloadLog()"><i class="fa fa-download"></i> Download Log</b>
-
-                        <script src="{% static "HeadPos/headpos.js" %}" type="text/javascript"></script>
+                            <script src="{% static "HeadPos/bundle.js" %}" type="text/javascript"></script>
 
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <style>
+                                .p5Canvas {
+                                    display: none;
+                                }
+                            </style>
+
+                            <div>
+                                <b>Started:</b>
+                                <time class="timeago" id="startTime"></time> &nbsp;
+                                <b>Frames Recorded: </b><span id="FramesRecorded">0</span>
+                            </div>
+
+                            <p id="status">
+                                Loading model...</p>
+                            <br>
+                            <!-- Just for demo canvas.. To show the progress -->
+                            <canvas id="myCanvas" width="640" height="50"></canvas>
+
+                            <b class="link-text text-center" onclick="downloadLog()"><i class="fa fa-download"></i>
+                                Download
+                                Log</b>
+
+                            <script src="{% static "HeadPos/headpos.js" %}" type="text/javascript"></script>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
+
 
         <ul class="edit-viewer">
 
