@@ -1,147 +1,100 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="container">
-    <div class="page-section">
-        <div class="media v-middle">
-            <div class="media-body">
-                <h1 class="text-display-1 margin-none">Courses</h1>
-                <p class="text-subhead">Browse through our courses</p>
-            </div>
-            <div class="media-right">
-                <div class="width-100 text-right">
-                    <div class="btn-group">
-                        <a class="btn btn-grey-800" href="{% url 'courseinfo_grid' %}" disabled><i
-                                class="fa fa-th"></i></a>
-                        <a class="btn btn-white" href="{% url 'courseinfo_list' %}"><i class="fa fa-list"></i></a>
-                    </div>
-                </div>
-            </div>
+<div class="page-header">
+    <div class="page-title">
+        <h2>Courses</h2>
+        <div>
+            <a href="{% url 'courseinfo_list' %}" class="btn btn-sm btn-outline-primary " title="List"
+                data-toggle="tooltip">
+                <i class="fa fa-th-list"></i>
+            </a>
+            <a href="{% url 'courseinfo_grid' %}" class="btn btn-sm btn-outline-primary ml-2 active" title="Grid"
+                data-toggle="tooltip">
+                <i class="fa fa-th-large"></i>
+            </a>
         </div>
     </div>
+</div>
 
-    <!-- <hr class="header_hr"> -->
-    <div class="row">
-        <div class="col-lg-8 col-md-6 col-sm-12">
-            {% if 'teachers' in request.path %}
-            <form method="get" action="">
-                <div class="col-md-4">
-                    <input type="text" name="teacher_coursequery" placeholder="Search Course"
-                        value="{{ request.GET.query }}" class="form-control" />
-                </div>
-                <button class="btn btn-default" type="submit">
-                    <i class="fa fa-search"></i>&nbsp;Search
-                </button>
-            </form>
-            {% elif 'students' in request.path %}
-            <form method="get" action="">
-                <div class="col-md-4">
-                    <input type="text" name="coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-sm-12">
+        {% if 'teachers' in request.path %}
+        <form method="get" action="">
+            <div class="col-md-4 col-sm-6">
+                <input type="text" name="teacher_coursequery" placeholder="Search Course"
+                    value="{{ request.GET.query }}" class="form-control" />
+            </div>
+            <button class="btn btn-default" type="submit">
+                <i class="fa fa-search"></i>&nbsp;Search
+            </button>
+        </form>
+        {% elif 'students' in request.path %}
+        <form method="get" action="">
+            <div class="col-md-4 col-sm-6">
+                <input type="text" name="coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
+                    class="form-control" />
+            </div>
+            <button class="btn btn-default" type="submit">
+                <i class="fa fa-search"></i>&nbsp;Search
+            </button>
+        </form>
+        {% else %}
+        <form method="get" action="">
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
                         class="form-control" />
                 </div>
                 <button class="btn btn-default" type="submit">
                     <i class="fa fa-search"></i>&nbsp;Search
                 </button>
-            </form>
-            {% else %}
-            <form method="get" action="">
-                <div class="row">
-                    <div class="col-md-4">
-                        <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
-                            class="form-control" />
-                    </div>
-                    <button class="btn btn-default" type="submit">
-                        <i class="fa fa-search"></i>&nbsp;Search
-                    </button>
-                </div>
-            </form>
+            </div>
+        </form>
 
-            {% endif %}
-        </div>
-
-        {% if 'students' not in request.path %}
-        <div class="col-lg-4 col-md-6 col-sm-12 btn-createnew">
-            <a class="btn btn-primary" style="float: right;" href="
+        {% endif %}
+    </div>
+    {% if 'students' not in request.path %}
+    <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
+        <a class="btn btn-primary pull-right" href="
             {% if '/teachers' in request.path %}
                 {% url 'teacher_courseinfo_create' %}
             {% else %}
                 {% url 'courseinfo_create' %}
             {% endif %}">Create new Course</a>
-        </div>
-        {% endif %}
     </div>
-    <br><br>
-    <div class="row" data-toggle="isotope">
-        {% for object in object_list %}
-        <div class="item col-xs-12 col-sm-6 col-lg-4">
-            <div class="panel panel-default paper-shadow" data-z="0.5">
+    {% endif %}
+</div>
+<br><br>
+<div class="row">
+    {% for object in object_list %}
+    <div class="col-lg-4 col-sm-6 col-xs-12">
+        <div class="card">
+            <a href="{{ object.get_absolute_url }}">
+                <img src="{% if object.Course_Cover_File %}
+            {{ object.Course_Cover_File.url }}
+        {% else %}
+            {% static 'media/image/course.jpg' %}
+        {% endif %}" class="card-img-top" alt="image" width="100%" height="180px" style="object-fit: cover">
+            </a>
+            <div class="card-body p-3">
+                <h5><a href="{{ object.get_absolute_url }}" class="text-primary">{{ object.Course_Name }}</a></h5>
+                Difficulty :
+                {% for i in '12345'|make_list %}
+                {% if object.Course_Level >= forloop.counter %}
+                <span class="fa fa-fw fa-star text-warning"></span>
+                {% else %}
+                <span class="fa fa-fw fa-star-o text-warning"></span>
 
-                <div class="cover overlay cover-image-full hover">
-                    <!-- <span class="img icon-block height-150 bg-default"> -->
-
-                    <!-- </span> -->
-                    <!-- <span class="overlay overlay-full padding-none icon-block s90 bg-primary"> -->
-                    <a href="{{ object.get_absolute_url }}"
-                        class="padding-none overlay overlay-full icon-block bg-default">
-                        <img src="{% if object.Course_Cover_File %}
-                        {{ object.Course_Cover_File.url }}
-                    {% else %}
-                        {% static 'images/course.jpg' %}
-                    {% endif %}" width="100%" height="180px" style="object-fit: cover" />
-                        <!-- <span class="v-center">
-                            <i class="fa fa-book"></i>
-                        </span> -->
-                    </a>
-                    <!-- </span> -->
-
-                    <a href="{{ object.get_absolute_url }}" class="overlay overlay-full overlay-hover overlay-bg-white">
-                        <span class="v-center">
-                            <span class="btn btn-circle btn-white btn-lg"><i class="fa fa-book"></i></span>
-                        </span>
-                    </a>
-
-                </div>
-
-                <div class="panel-body">
-                    <h4 class="text-headline margin-v-0-10"><a
-                            href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a>
-                    </h4>
-
-                    <p class="small margin-none">
-                        Difficulty :
-                        {% for i in '12345'|make_list %}
-                        {% if object.Course_Level >= forloop.counter %}
-                        <span class="fa fa-fw fa-star text-yellow-800"></span>
-                        {% else %}
-                        <span class="fa fa-fw fa-star-o text-yellow-800"></span>
-
-                        {% endif %}
-                        {% endfor %}
-                    </p>
-
-                </div>
-                <hr class="margin-none" />
-                <div class="panel-body">
-
-                    <p>{{ object.Course_Description }}</p>
-
-                    <!-- <div class="media v-middle">
-                        <div class="media-left">
-                            <img src="images/people/50/guy-4.jpg" alt="People" class="img-circle width-40" />
-                        </div>
-                        <div class="media-body">
-                            <h4><a href="">Adrian Demian</a>
-                                <br />
-                            </h4>
-                            Instructor
-                        </div>
-                    </div> -->
-
-                </div>
-
+                {% endif %}
+                {% endfor %}
+                </p>
+                <hr>
+                <p class="card-text">{{ object.Course_Description }}</p>
             </div>
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
 </div>
+
 {% endblock %}
