@@ -238,6 +238,7 @@ urlpatterns += (
          views.InningGroupUpdateView.as_view(), name='inninggroup_update'),
     path('inninggroup/delete/<int:pk>/',
          views.InningGroupDeleteView, name='inninggroup_delete'),
+    path('inninggroup/csv_import', views.CourseAllocationCSVImport, name='csv_import_inninggroup')
 )
 
 urlpatterns += (

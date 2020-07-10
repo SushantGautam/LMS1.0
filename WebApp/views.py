@@ -1558,6 +1558,88 @@ class GroupMappingListView(ListView):
     def get_queryset(self):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
+def CourseAllocationCSVImport(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+
+        file_name = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + extension
+        path = 'media/import_csv/' + str(center_id) + '/course_allocation'
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name, media)
+        path = os.path.join(path, filename)
+
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
+        error = ''
+        saved_id = []
+
+        if not df.empty:
+            for i in range(len(df)):
+                try:
+                    course_allocation_name = df.iloc[i]['(*)Course Allocation Name']
+                    course_name = df.iloc[i]['(*)Course Name']
+                    teachers = df.iloc[i]['(*)Teachers Username']
+
+                    # Course Allocation Name validation
+                    if not course_allocation_name:
+                        error = "Course Allocation Name is required"
+                        raise Exception
+                    course_allocation_name = str(course_allocation_name)
+                    
+                    # Course Name validation
+                    if not course_name:
+                        error = "Course Allocation Name is required"
+                        raise Exception
+                    course_name = str(course_name)
+                    if not CourseInfo.objects.filter(Course_Name__iexact=course_name).exists():
+                        error = "Course Name <strong>" + course_name + "</strong> does not exists."
+                        raise Exception
+                    course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name)
+
+                    # Teachers validation
+                    if not teachers:
+                        error = "At least 1 teacher is required"
+                        raise Exception
+                    teachers = str(teachers)
+                    try:
+                        teachers = teachers.split(',')
+                    except:
+                        error = "Error in teachers list format. Seperate multiple teacher by comma"
+                        raise Exception
+
+                    obj = InningGroup()
+                    obj.InningGroup_Name = course_allocation_name
+                    obj.Course_Code = course_name_code
+                    obj.Register_Agent = request.user.username
+                    obj.Center_Code = request.user.Center_Code
+                    obj.save()
+                    saved_id.append(obj.id)
+
+                    # Teachers validation and registration
+                    for teacher in teachers:
+                        if not MemberInfo.objects.filter(username__iexact=teacher, Is_Teacher=True).exists():
+                            error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
+                            raise Exception
+                        teacher_code = MemberInfo.objects.get(username__iexact=teacher)
+                        obj.Teacher_Code.add(teacher_code)
+
+                except Exception as e:
+                    for j in saved_id:
+                        InningGroup.objects.filter(id=j).delete()
+                    msg = error + "<br>Problem in " + str(i + 1) + "th row of data while uploading<br>" + "<br>".join(
+                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
+                    return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+        else:
+            error = "The uploaded excel has no data to register"
+        if not error:
+            error = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": error, "class": "text-success",
+                                  "rmclass": "text-danger"})
+
 
 def GroupMappingCSVImport(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
