@@ -9,7 +9,8 @@
 
         <span class="centerNameTopNav">
             {% if user.Center_Code %}
-            Center : <b>{{ user.Center_Code }}</b>
+                <img style="max-height: 50px" src="{{ user.Center_Code.Center_Logo.url }}"  alt=""/>
+                <b style="padding-left: 1em;">{{ user.Center_Code }}</b>
             {% endif %}
         </span>
 

@@ -2,17 +2,17 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block breadcrumb %}
-{#    <li class="breadcrumb-item"><a href="{% url 'assignmentinfo_list'  %}">Assignment</a></li>#}
-<li class="breadcrumb-item"><a href="{% url 'courseinfo_list' %}">Course</a></li>
-<li class="breadcrumb-item"><a href="{{ Course_Code.get_absolute_url }}">{{ Course_Code }}</a></li>
-<li class="breadcrumb-item"><a href="{{ Chapter_No.get_absolute_url }}">{{ Chapter_No }}</a></li>
-<li class="breadcrumb-item active" aria-current="page">
-    {% if '/create/' in request.path %}
-    Create New Assignment
-    {% else %}
-    Edit Assignment
-    {% endif %}
-</li>
+    {#    <li class="breadcrumb-item"><a href="{% url 'assignmentinfo_list'  %}">Assignment</a></li>#}
+    <li class="breadcrumb-item"><a href="{% url 'courseinfo_list_active' %}">Course</a></li>
+    <li class="breadcrumb-item"><a href="{{ Course_Code.get_absolute_url }}">{{ Course_Code }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ Chapter_No.get_absolute_url }}">{{ Chapter_No }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {% if '/create/' in request.path %}
+            Create New Assignment
+        {% else %}
+            Edit Assignment
+        {% endif %}
+    </li>
 {% endblock %}
 {% block content %}
 {% include 'assignment/assignmentinfo_form.html' %}

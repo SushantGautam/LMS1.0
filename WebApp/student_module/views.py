@@ -285,7 +285,11 @@ class MyCoursesListView(ListView):
         courses = courses.distinct()
         filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
         filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
-        paginator = Paginator(filtered_qs, 8)
+        if self.request.GET.get('paginate_by'):
+            paginate_by = self.request.GET.get('paginate_by')
+        else:
+            paginate_by = 8
+        paginator = Paginator(filtered_qs, paginate_by)
         page = self.request.GET.get('page')
 
         try:
@@ -1373,6 +1377,7 @@ def getStudentAssignmentDetail(request, assignmentpk):
         assignmentDetails.append({
             'question_title': answer.Question_Code.Question_Title,
             'question_score': answer.Question_Code.Question_Score,
+            'question_type': answer.Question_Code.Answer_Type,
             'Assignment_Answer': answer.Assignment_Answer,
             'Assignment_File': answer.Assignment_File.url if answer.Assignment_File else '',
             'Assignment_Score': answer.Assignment_Score,

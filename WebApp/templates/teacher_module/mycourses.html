@@ -1,119 +1,181 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
 {% block title %}
-Course
+    Course
 {% endblock %}
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">My Courses</li>
+    <li class="breadcrumb-item active" aria-current="page">My Courses</li>
 {% endblock %}
 {% block content %}
-<div class="courseInfoListClass">
-    <h2 class="tableHeader">List of My Courses</h2>
+    <div class="courseInfoListClass">
+        <h2 class="tableHeader">List of My Courses</h2>
 
 
-    <hr class="header_hr">
-    <div class="col-md-8 col-sm-6 col-xs-12">
-        <form method="get" action="">
-            <div class="col-md-4">
-                <input type="text" name="teacher_mycoursequery" placeholder="Search Course"
-                    value="{{ request.GET.query }}" class="form-control">
+        <hr class="header_hr">
+        <div class="row">
+            <div class="col-md-12 text-right">
+                {% if '/active' in request.path %}
+                <a href="{% url 'teacher_mycourses_list_inactive' %}">
+                    <span class="text-right " style="float:right;color:#5A738E">
+                        <b>View <span style="color: rgb(219, 0, 0); ">  Inactive  </span>courses</b> 
+                     </span>
+                </a>
+            {% else %}
+                <a href="{% url 'teacher_mycourses_list_active' %}">
+                    <span class="text-right " style="float:right;color:#5A738E">
+                        View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
+                    </span>
+                </a>
+            {% endif %}
+                <!-- <span> <b>Show</b> </span>
+                <label>
+                    <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                            id="paginate_courses">
+                        <option value="6">6</option>
+                        <option value="12">12</option>
+                        <option value="18">18</option>
+                        <option value="24">24</option>
+                        <option value="30">30</option>
+                        <option value="36">36</option>
+                    </select>
+                </label>
+                <span> <b>Entries</b> </span> -->
             </div>
-            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;Search</button>
+        </div>
 
-        </form>
-    </div>
-    <br><br><br>
-    <div class="container" id="divID">
-        {% include 'WebApp/theme/alerts.html' %}
-        {% for courses in response %}
-            <div class="col-md-3 col-sm-6 col-xs-12" id="listCard">
-                <div class="gridContentsList">
-                    <div class="card-header">
-                        <a href="{{ courses.teacher_get_absolute_url }}">
-                            <img id="courseListImage" class="card-img-top" src="
+        <div class="col-md-8 col-sm-6 col-xs-12">
+            <form method="get" action="">
+                <div class="col-md-4">
+                    <input type="text" name="teacher_mycoursequery" placeholder="Search Course"
+                           value="{{ request.GET.query }}" class="form-control">
+                </div>
+                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;Search</button>
+
+            </form>
+        </div>
+
+        <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
+            <span> <b>Show</b> </span>
+                <label>
+                    <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                            id="paginate_courses">
+                        <option value="6">6</option>
+                        <option value="12">12</option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                      
+                    </select>
+                </label>
+                <span> <b>Entries</b> </span>
+            <!-- {% if '/active' in request.path %}
+                <a href="{% url 'teacher_mycourses_list_inactive' %}">
+                    <span class="text-right " style="float:right;color:#5A738E">
+                        <b>View <span style="color: rgb(219, 0, 0); ">  Inactive  </span>courses</b> 
+                     </span>
+                </a>
+            {% else %}
+                <a href="{% url 'teacher_mycourses_list_active' %}">
+                    <span class="text-right " style="float:right;color:#5A738E">
+                        View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
+                    </span>
+                </a>
+            {% endif %} -->
+        </div>
+
+        <br><br><br>
+        <div class="container" id="divID">
+            {% include 'WebApp/theme/alerts.html' %}
+            {% for courses in response %}
+                <div class="col-md-3 col-sm-6 col-xs-12" id="listCard">
+                    <div class="gridContentsList">
+                        <div class="card-header">
+                            <a href="{{ courses.teacher_get_absolute_url }}">
+                                <img id="courseListImage" class="card-img-top" src="
                             {% if courses.Course_Cover_File %}
                                 /media/{{ courses.Course_Cover_File }}
                             {% else %}
                                 {% static 'images/course.jpg' %}
                             {% endif %}" alt="Card image cap" width="100%" height="180px" style="object-fit: cover">
-                        </a>
-                    </div>
-                    <div class="card-body" id="cardInfo">
-                        <h2 class="card-title" style="height:45px; overflow: ;   overflow-wrap:break-word; "><strong><a
-                                href="{{ courses.teacher_get_absolute_url }}">{{ courses.Course_Name|truncatechars:45 }}</a></strong>
-                        </h2>
+                            </a>
+                        </div>
+                        <div class="card-body" id="cardInfo">
+                            <h2 class="card-title" style="height:45px; overflow: ;   overflow-wrap:break-word; ">
+                                <strong><a
+                                        href="{{ courses.teacher_get_absolute_url }}">{{ courses.Course_Name|truncatechars:45 }}</a></strong>
+                            </h2>
 
 
-                        {% if courses.get_teachers_of_this_course %}
-                            <p style="height:45px ; padding: 10px; overflow:auto">
-                                Teacher(s):
-                                {% for eachTeacher in courses.get_teachers_of_this_course|slice:":4" %}
-                                {{ eachTeacher.getFullName|truncatechars:15 }}&nbsp;
-                                {% endfor%}
-                                {% if courses.get_teachers_of_this_course|length > 4 %}
-                                ....
-                              
-                             {% endif%}
-                            </p>
+                            {% if courses.get_teachers_of_this_course %}
+                                <p style="height:45px ; padding: 10px; overflow:auto">
+                                    Teacher(s):
+                                    {% for eachTeacher in courses.get_teachers_of_this_course|slice:":4" %}
+                                        {{ eachTeacher.getFullName|truncatechars:15 }}&nbsp;
+                                    {% endfor %}
+                                    {% if courses.get_teachers_of_this_course|length > 4 %}
+                                        ....
+
+                                    {% endif %}
+                                </p>
                             {% else %}
-                                    <p style="height:30px ; padding: 10px; " >
-                                        No Teacher Assigned
-                                        
-                                    
+                                <p style="height:30px ; padding: 10px; ">
+                                    No Teacher Assigned
+
+
+                                </p>
+                            {% endif %}
+
+
+
+
+
+
+
+
+
+
+                            <hr>
+
+                            <h5 class="courseDescription" style="padding-bottom: 10px;">
+                                {% if courses.Course_Description %}
+                                    <p style="
+                        padding-right: 10px;
+                        line-height: 1.5em;
+                        height: 3em;
+                        overflow-wrap:break-word;
+                        overflow: hidden;
+                        white-space: normal;
+                        text-overflow: ellipsis;">
+                                        {{ courses.Course_Description }}
                                     </p>
-                        {% endif %}
-
-
-
-                        
-                        
-              
-                          
-
-
-
-                    <hr>
-
-                    <h5 class="courseDescription" style="padding-bottom: 10px;">
-                        {% if courses.Course_Description %}
-                        <p style="
+                                {% else %}
+                                    <p style="
                         padding-right: 10px;
                         line-height: 1.5em;
                         height: 3em;
-                        overflow-wrap:break-word; 
+                        overflow-wrap:break-word;
                         overflow: hidden;
                         white-space: normal;
                         text-overflow: ellipsis;">
-                            {{ courses.Course_Description }}
-                        </p>
-                        {% else %}
-                        <p style="
-                        padding-right: 10px;
-                        line-height: 1.5em;
-                        height: 3em;
-                        overflow-wrap:break-word; 
-                        overflow: hidden;
-                        white-space: normal;
-                        text-overflow: ellipsis;">
-                            No Description
-                        </p> {% endif %}
-                    </h5>
+                                        No Description
+                                    </p> {% endif %}
+                            </h5>
 
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+            {% endfor %}
         </div>
 
-        {% endfor %}
+
     </div>
-
-
-</div>
     {% if response.has_other_pages %}
         <div class=" text-center">
             <ul class="pagination">
                 {% if response.has_previous %}
                     <li>
-<a href="?page={{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
+                        <a href="?page=
+                                {{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
                     </li>
                 {% else %}
                     <li class="disabled"><span>&laquo;</span></li>
@@ -129,7 +191,8 @@ Course
                 {% endfor %}
                 {% if response.has_next %}
                     <li>
-<a href="?page={{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
+                        <a href="?page=
+                                {{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
                     </li>
                 {% else %}
                     <li class="disabled"><span>&raquo;</span></li>
@@ -137,4 +200,17 @@ Course
             </ul>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block customjss %}
+    <script>
+        $(document).ready(function () {
+            if ('{{ request.GET.paginate_by }}') {
+                $('#paginate_courses').val('{{ request.GET.paginate_by }}')
+            }
+            $('#paginate_courses').on('change', function () {
+                window.location.href = "{{ request.path }}?paginate_by=" + this.value;
+            })
+        })
+    </script>
 {% endblock %}

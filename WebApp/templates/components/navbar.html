@@ -8,7 +8,7 @@
     <a class="navbar-brand" href="#">u-LMS</a>
     <img src="{% static 'image/uni-cap.png' %}" alt="unicap-img" width="50" height="50">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04"
-        aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -18,7 +18,7 @@
                 <a class="nav-link" href="{% url 'centerinfo_list' %}">Center <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'courseinfo_list' %}">Course</a>
+                <a class="nav-link" href="{% url 'courseinfo_list_active' %}">Course</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'memberinfo_list' %}">Member</a>
@@ -28,7 +28,7 @@
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown04" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                   aria-haspopup="true" aria-expanded="false">Dropdown</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown04">
                     <a class="dropdown-item" href="#">Action</a>
                     <a class="dropdown-item" href="#">Another action</a>

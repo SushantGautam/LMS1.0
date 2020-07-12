@@ -174,7 +174,12 @@ class MyCourseListView(ListView):
     model = CourseInfo
     template_name = 'teacher_module/mycourses.html'
 
-    # paginate_by = 8
+    paginate_by = 8
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.GET.get('paginate_by'):
+            self.paginate_by = self.request.GET.get('paginate_by')
+        return super(MyCourseListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -195,7 +200,7 @@ class MyCourseListView(ListView):
         # ).qs
         # filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
         courses = self.object_list
-        paginator = Paginator(courses, 8)
+        paginator = Paginator(courses, self.paginate_by)
         page = self.request.GET.get('page')
         try:
             response = paginator.page(page)
@@ -209,6 +214,10 @@ class MyCourseListView(ListView):
 
     def get_queryset(self):
         qsearch = self.request.user.get_teacher_courses()['courses']
+        if '/inactive/' in self.request.path:
+            qsearch = [x for x in qsearch if x.Use_Flag is False]
+        if '/active/' in self.request.path:
+            qsearch = [x for x in qsearch if x.Use_Flag is True]
         courses = []
         query = self.request.GET.get('teacher_mycoursequery')
         if query:

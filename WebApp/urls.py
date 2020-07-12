@@ -65,6 +65,8 @@ urlpatterns += (
 urlpatterns += (
     # urls for CourseInfo
     path('courseinfo/', views.CourseInfoListView.as_view(), name='courseinfo_list'),
+    path('courseinfo/active/', views.CourseInfoListView.as_view(), name='courseinfo_list_active'),
+    path('courseinfo/inactive/', views.CourseInfoListView.as_view(), name='courseinfo_list_inactive'),
     path('courseinfo/create/', views.CourseInfoCreateView.as_view(),
          name='courseinfo_create'),
     path('courseinfo/<int:pk>/', views.CourseInfoDetailView.as_view(),
@@ -211,8 +213,16 @@ urlpatterns += (
          views.InningInfoUpdateView.as_view(), name='inninginfo_update'),
     path('innninginfo/delete/<int:pk>/',
          views.InningInfoDeleteView, name='inninginfo_delete'),
+    path('innninginfo/delete/checked/',
+         views.InningInfoDeleteViewChecked, name='inninginfo_delete_checked'),
+    path('innninginfo/inactive/delete/checked/',
+         views.InningInfoDeleteViewChecked, name='inninginfo_inactive_delete_checked'),
+    path('innninginfo/update/checked/',
+         views.InningInfoEditViewChecked, name='inninginfo_edit_checked'),
+    path('innninginfo/inactive/update/checked/',
+         views.InningInfoEditViewChecked, name='inninginfo_inactive_edit_checked'),
+
     path('inninginfo/csv_import', views.ImportSession, name='csv_import_inninginfo')
-         
 
 )
 
@@ -228,6 +238,7 @@ urlpatterns += (
          views.InningGroupUpdateView.as_view(), name='inninggroup_update'),
     path('inninggroup/delete/<int:pk>/',
          views.InningGroupDeleteView, name='inninggroup_delete'),
+    path('inninggroup/csv_import', views.CourseAllocationCSVImport, name='csv_import_inninggroup')
 )
 
 urlpatterns += (
@@ -364,6 +375,6 @@ urlpatterns += (
 )
 
 urlpatterns += (
-     path('course/progress/download/<int:teacher_pk>',
-     views.progress_download, name='course_progress_download'),
+    path('course/progress/download/<int:teacher_pk>',
+         views.progress_download, name='course_progress_download'),
 )
