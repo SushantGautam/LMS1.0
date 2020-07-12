@@ -667,32 +667,6 @@ def ImportCsvFile(request, *args, **kwargs):
 
                     saved_id.append(obj.id)
 
-                    # This is to check if the url contains the query parameter groupmappingpk.
-                    # groupmappingpk is added to url when this function is called from groupmapping_detail.html.
-                    # # If groupmappingpk is in the url then the csv file containing all members are students only.
-                    # if request.GET.get('groupmappingpk'):
-                    #     obj.Is_Student = True
-                    # else:
-                    #     if df.iloc[i]['Teacher'] == 1:
-                    #         obj.Is_Teacher = True
-                    #     else:
-                    #         obj.Is_Teacher = False
-
-                    #     if df.iloc[i]['Student'] == 1:
-                    #         obj.Is_Student = True
-                    #     else:
-                    #         obj.Is_Student = False
-
-                    # Following is to add the new students to the group from which they were imported.
-                    # groupmappingpk contains the primary key of the group that is used to call the function.
-                    # if request.GET.get('groupmappingpk'):
-                    #     # If no group exist then raise the exception to terminate the process
-                    #     if GroupMapping.objects.filter(pk=request.GET.get('groupmappingpk')).exists():
-                    #         g = GroupMapping.objects.get(pk=request.GET.get('groupmappingpk'))
-                    #     else:
-                    #         raise Exception('Group %s does not exist' % request.GET.get('groupmappingpk'))
-                    #     obj.groupmapping_set.add(g)
-
                 except Exception as e:
                     for j in saved_id:
                         MemberInfo.objects.filter(id=j).delete()
@@ -814,6 +788,7 @@ def ImportSession(request, *args, **kwargs):
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
+        center = request.user.Center_Code
         error = ''
         saved_id = []
 
@@ -831,7 +806,7 @@ def ImportSession(request, *args, **kwargs):
                         error = "Session Name is required"
                         raise Exception
                     session_name = str(session_name)
-                    if not SessionInfo.objects.filter(Session_Name__iexact=session_name).exists():
+                    if not SessionInfo.objects.filter(Session_Name__iexact=session_name, Center_Code=center).exists():
                         # Instead of error the new session name is created
                         obj2 = SessionInfo()
                         obj2.Session_Name = session_name
@@ -873,7 +848,7 @@ def ImportSession(request, *args, **kwargs):
                         error = "Student Group Name is required"
                         raise Exception
                     student_group = str(student_group)
-                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group).exists():
+                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group, Center_Code=center).exists():
                         url = str(reverse('groupmapping_list'))
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
                                             Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
@@ -897,13 +872,14 @@ def ImportSession(request, *args, **kwargs):
                     obj.End_Date = end_date
                     obj.Groups = student_group_code
                     obj.Register_Agent = request.user.username
-                    obj.Center_Code = request.user.Center_Code
+                    obj.Center_Code = center
                     obj.save()
                     saved_id.append(obj.id)
 
                     # Course Group validation and registration
                     for course in courses:
-                        if not InningGroup.objects.filter(InningGroup_Name__iexact=course).exists():
+                        course = course.strip()
+                        if not InningGroup.objects.filter(InningGroup_Name__iexact=course, Center_Code=center).exists():
                             url = str(reverse('inninggroup_list'))
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
                                                 Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
@@ -1578,6 +1554,7 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
         df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
+        center = request.user.Center_Code
         error = ''
         saved_id = []
 
@@ -1593,13 +1570,17 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                         error = "Course Allocation Name is required"
                         raise Exception
                     course_allocation_name = str(course_allocation_name)
+                    if InningGroup.objects.filter(InningGroup_Name__iexact=course_allocation_name,
+                                                   Center_Code=center).exists():
+                        error = "Course Allocation Name already exist in the center please choose another name"
+                        raise Exception
                     
                     # Course Name validation
                     if not course_name:
                         error = "Course Allocation Name is required"
                         raise Exception
                     course_name = str(course_name)
-                    if not CourseInfo.objects.filter(Course_Name__iexact=course_name).exists():
+                    if not CourseInfo.objects.filter(Course_Name__iexact=course_name, Center_Code=center).exists():
                         error = "Course Name <strong>" + course_name + "</strong> does not exists."
                         raise Exception
                     course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name)
@@ -1619,13 +1600,14 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     obj.InningGroup_Name = course_allocation_name
                     obj.Course_Code = course_name_code
                     obj.Register_Agent = request.user.username
-                    obj.Center_Code = request.user.Center_Code
+                    obj.Center_Code = center
                     obj.save()
                     saved_id.append(obj.id)
 
                     # Teachers validation and registration
                     for teacher in teachers:
-                        if not MemberInfo.objects.filter(username__iexact=teacher, Is_Teacher=True).exists():
+                        teacher = teacher.strip()
+                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center, Is_Teacher=True).exists():
                             error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
                             raise Exception
                         teacher_code = MemberInfo.objects.get(username__iexact=teacher)
