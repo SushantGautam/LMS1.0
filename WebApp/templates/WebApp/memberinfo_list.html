@@ -194,7 +194,7 @@
                 dt.one('preXhr', function (e, s, data) {
                     // Just this once, load all data from the server...
                     data.start = 0;
-                    data.length = 2147483647;
+                    data.length = -1; // if value is >100 :: only 100 data will be displayed
                     dt.one('preDraw', function (e, settings) {
                         // Call the original action function
                         if (button[0].className.indexOf('buttons-copy') >= 0) {
@@ -242,6 +242,7 @@
                     "infoFiltered": "",
                 },
                 order: [],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
                 buttons: [
                     {
                         extend: 'csv',
