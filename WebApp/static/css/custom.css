@@ -16,3 +16,7 @@
   .select2-selection__arrow {
   top: 7px !important;
 }
+
+.align-items-center {
+  align-items: center;
+}

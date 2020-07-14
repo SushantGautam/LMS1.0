@@ -1,111 +1,30 @@
 {% load static %}
-<<<<<<< HEAD
-{% load crispy_forms_tags %}
-
-<div class="se-pre-con-ajax"></div>
-
-<form method="post" id="ajaxassignmentinfoform">
-    {% csrf_token %}
-    <div class="alert alert-danger form-errors" style="display: none">
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <div id="div_id_Assignment_Topic" class="form-group">
-            <label for="id_Assignment_Topic" class="control-label ">
-                Assignment Topic *
-            </label>
-            <div class="controls ">
-=======
 <div>
     <form method="post" id="ajaxassignmentinfoform">
         {% csrf_token %}
-
         <div class="form-group">
-            <div class="form-control-material static required gapping">
->>>>>>> NewUI
-                <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic"
-                    class="textinput textInput form-control" required="required">
-                <label for="id_Assignment_Topic" class="font-weight-bold">Assignment Topic</label>
-            </div>
+            <label for="id_Assignment_Topic" class="font-weight-bold">Assignment Topic</label>
+            <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic"
+                class="textinput textInput form-control" required="required">
         </div>
-<<<<<<< HEAD
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <div id="div_id_Assignment_Start" class="form-group">
-            <label for="id_Assignment_Start" class="control-label ">
-                Assignment Starting *
-            </label>
-            <div class="controls ">
-                <input type="text" name="Assignment_Start" class="form-control"
-                       id="id_Assignment_Start" value="{{ Object.Assignment_Start }}" max="9999-12-31">
-            </div>
-        </div>
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <div id="div_id_Assignment_Deadline" class="form-group">
-            <label for="id_Assignment_Deadline" class="control-label ">
-                Assignment Deadline *
-            </label>
-            <div class="controls ">
-                <input type="text" name="Assignment_Deadline" class="form-control"
-                       id="id_Assignment_Deadline" value="{{ Object.Assignment_Deadline }}" max="9999-12-31">
-=======
         <div class="row">
             <div class="col-lg-6">
-                <div class="form-group form-control-material static gapping">
-                    <input name="Assignment_Start" type="date" class="form-control" id="id_Assignment_Start">
+                <div class="form-group">
                     <label for="Assignment_Start" class="font-weight-bold">Assignment Start</label>
+                    <input name="Assignment_Start" type="date" class="form-control" id="id_Assignment_Start">
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="form-group form-control-material static gapping">
-                    <input name="Assignment_Deadline" type="date" class="form-control" id="id_Assignment_Deadline">
+                <div class="form-group">
                     <label for="Assignment_Deadline" class="font-weight-bold">Assignment Deadline</label>
+                    <input name="Assignment_Deadline" type="date" class="form-control" id="id_Assignment_Deadline">
                 </div>
->>>>>>> NewUI
             </div>
         </div>
-
         <div class="form-group text-center">
-            <div class="checkbox gapping">
-                <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput">
-                <label for="id_Use_Flag" class="font-weight-bold">Use Flag</label>
-            </div>
+            <label for="id_Use_Flag" class="font-weight-bold">Use Flag</label><br>
+            <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput">
         </div>
-
-<<<<<<< HEAD
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
-               class="select form-control">
-    </div>
-    <div class="submitButton text-center col-md-12">
-        <button class="btn btn-success" type="submit">Submit</button>
-    </div>
-
-</form>
-<script>
-    $(document).ready(function () {
-        $('#id_Assignment_Deadline').on('dp.change', function (event) {
-            const result = document.querySelector('.result');
-            var date = new Date();
-            var deadline = new Date(event.target.value);
-            var remaining = dateDifference(deadline, date);
-            if (remaining < 0) {
-                result.textContent = `Days Remaining : Invalid`;
-
-            } else {
-                result.textContent = `Days Remaining : ${remaining}`;
-
-            }
-            ;
-        });
-    })
-
-</script>
-<script>
-    $(".se-pre-con-ajax").fadeOut("fast");
-    $('#id_Assignment_Deadline').datetimepicker();
-    $('#id_Assignment_Start').datetimepicker();
-=======
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.pk }}"
             class="select form-control">
         <div class="text-center gapping">
@@ -113,23 +32,18 @@
         </div>
     </form>
 </div>
-
+<!-- "Assignment_Start": new Date($('#id_Assignment_Start').val()).toISOString(),
+"Assignment_Deadline": new Date($('#id_Assignment_Deadline').val()).toISOString(), -->
 <!-- <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script> -->
 <script>
->>>>>>> NewUI
     $("#ajaxassignmentinfoform").submit(function (e) {
-
         e.preventDefault(); // avoid to execute the actual submit of the form.
         $.ajax({
             url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic').val(),
-<<<<<<< HEAD
-                "Assignment_Start": new Date($('#id_Assignment_Start').val()).toISOString(),
-                "Assignment_Deadline": new Date($('#id_Assignment_Deadline').val()).toISOString(),
-=======
->>>>>>> NewUI
+
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Register_Agent": $('#id_Register_Agent').val(),
                 "Course_Code": $('#id_Course_Code').val(),
@@ -145,13 +59,8 @@
                 location.reload()
             },
             error: function (err) {
-<<<<<<< HEAD
                 console.log('Error in posting assignment create form', err.responseJSON)
                 $('.form-errors').empty().append(err.responseJSON.Message).css('display', 'block')
-=======
-                console.log('Error in posting chapter create form', err.responseJSON.errors.__all__[0])
-                $('.form-errors').append(err.responseJSON.errors.__all__[0]).css('display', 'block')
->>>>>>> NewUI
             }
         });
     });

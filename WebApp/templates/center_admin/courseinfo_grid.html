@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Course</li>
+{% endblock %}
 {% block content %}
 <div class="page-header">
     <div class="page-title">

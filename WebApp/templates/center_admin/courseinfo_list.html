@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Course</li>
+{% endblock %}
 {% block content %}
-
-
 <div class="page-header">
     <div class="page-title">
         <h2>Courses</h2>
@@ -18,7 +20,6 @@
         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-lg-8 col-md-6 col-sm-12">
         {% if 'teachers' in request.path %}
@@ -67,7 +68,6 @@
     </div>
     {% endif %}
 </div>
-
 <div class="mt-4">
     {% for object in object_list %}
     <div class="card">
@@ -105,8 +105,6 @@
             </div>
         </div>
     </div>
-
     {% endfor %}
 </div>
-
 {% endblock %}
