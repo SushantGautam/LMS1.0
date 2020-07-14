@@ -2,7 +2,13 @@
 {% load static %}
 {% block breadcrumb %}
 
-    <li class="breadcrumb-item"><a href="{% url 'teacher_mycourses_list_active' %}">My Courses</a></li>
+    <li class="breadcrumb-item"><a href="
+        {% if Assignment.Course_Code.Use_Flag %}
+            {% url 'teacher_mycourses_list_active' %}
+        {% else %}
+            {% url 'teacher_mycourses_list_inactive' %}
+        {% endif %}
+    ">My Courses</a></li>
     <li class="breadcrumb-item"><a href="{% url 'teacher_myassignmentinfo_list' %}">My Assignments</a></li>
     <li class="breadcrumb-item"><a
             href="{{ Assignment.Course_Code.teacher_get_absolute_url }}">{{ Assignment.Course_Code }}</a>

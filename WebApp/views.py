@@ -825,7 +825,7 @@ def ImportSession(request, *args, **kwargs):
                     start_date = str(start_date)
                     try:
                         # start_date = datetime.strptime(start_date, '%m/%d/%Y')
-                        start_date = parse(start_date) # It accepts most of the standard date format
+                        start_date = parse(start_date)  # It accepts most of the standard date format
                     except ValueError:
                         error = "Start Date <strong>" + start_date + "</strong> is not valid. It must be in standard date format"
                         raise Exception
@@ -848,7 +848,8 @@ def ImportSession(request, *args, **kwargs):
                         error = "Student Group Name is required"
                         raise Exception
                     student_group = str(student_group)
-                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group, Center_Code=center).exists():
+                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group,
+                                                       Center_Code=center).exists():
                         url = str(reverse('groupmapping_list'))
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
                                             Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
@@ -1022,13 +1023,19 @@ class CourseInfoUpdateView(CourseAuthMxnCls, AdminAuthMxnCls, UpdateView):
 
 def CourseInfoDeleteView(request, pk):
     if request.method == 'POST':
+        courseactive = True
         if AuthCheck(request, admn=1) == 2 or CourseAuth(request, pk) == 2:
             return redirect('login')
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = CourseInfo.objects.get(pk=pk)
+            if not Obj.Use_Flag:
+                courseactive = False
             Obj.delete()
-            return redirect('courseinfo_list_active')
+            if courseactive:
+                return redirect('courseinfo_list_active')
+            else:
+                return redirect('courseinfo_list_inactive')
 
         except:
             messages.error(request,
@@ -1538,6 +1545,7 @@ class GroupMappingListView(ListView):
     def get_queryset(self):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
+
 def CourseAllocationCSVImport(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
@@ -1571,10 +1579,10 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                         raise Exception
                     course_allocation_name = str(course_allocation_name)
                     if InningGroup.objects.filter(InningGroup_Name__iexact=course_allocation_name,
-                                                   Center_Code=center).exists():
+                                                  Center_Code=center).exists():
                         error = "Course Allocation Name already exist in the center please choose another name"
                         raise Exception
-                    
+
                     # Course Name validation
                     if not course_name:
                         error = "Course Allocation Name is required"
@@ -1607,7 +1615,8 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     # Teachers validation and registration
                     for teacher in teachers:
                         teacher = teacher.strip()
-                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center, Is_Teacher=True).exists():
+                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center,
+                                                         Is_Teacher=True).exists():
                             error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
                             raise Exception
                         teacher_code = MemberInfo.objects.get(username__iexact=teacher)
